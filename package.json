@@ -1,0 +1,57 @@
+{
+    "name": "ilib-loctool-android-resource",
+    "version": "1.0.0",
+    "main": "./AndroidResourceFileType.js",
+    "description": "A loctool plugin that knows how to process Android Resource Files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+		"android",
+		"resource"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "AndroidResourceFileType.js",
+        "AndroidResourceFile.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-loctool-android-resource.git"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "ilib": "^14.1.0",
+        "log4js": "^2.0.0",
+        "pretty-data": ">=0.40.0",
+        "xml2json": "^0.11.2"
+    },
+    "peerDependencies": {
+        "loctool": "^1.2.0"
+    }
+}
