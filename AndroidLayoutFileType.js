@@ -17,28 +17,20 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
-var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
-var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("loctool/lib/utils.js");
-var ResourceFactory = require("loctool/lib/ResourceFactory.js");
 var FileType = require("loctool/lib/FileType.js");
-var ContextResourceString = require("loctool/lib/ContextResourceString.js");
-var ResourcePlural = require("loctool/lib/ResourcePlural.js");
-var ResourceArray = require("loctool/lib/ResourceArray.js");
 var PseudoFactory = require("loctool/lib/PseudoFactory.js");
 
 var AndroidLayoutFile = require("./AndroidLayoutFile.js");
 
 var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 
-var AndroidLayoutFileType = function(project) {
+var AndroidLayoutFileType = function(project, API) {
     this.type = "java";
     this.datatype = "x-android-resource";
 
+    this.API = API;
     this.parent.call(this, project);
 
     this.files = []; // all files of this type
@@ -54,6 +46,10 @@ var dirRE = new RegExp("^(layout|menu|xml)");
 var lang = new RegExp("[a-z][a-z]");
 var reg = new RegExp("r[A-Z][A-Z]");
 var fullLocale = /-b\+[a-z][a-z]\+[A-Z][a-z][a-z][a-z]\+[A-Z][A-Z]/;
+
+AndroidLayoutFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
 
 AndroidLayoutFileType.prototype.handles = function(pathName) {
     logger.debug("AndroidLayoutFileType handles " + pathName + "?");
@@ -83,13 +79,13 @@ AndroidLayoutFileType.prototype.handles = function(pathName) {
     var parts = dir.split("-");
 
     for (var i = parts.length-1; i > 0; i--) {
-        if (reg.test(parts[i]) && utils.iso3166[parts[i]]) {
+        if (reg.test(parts[i]) && this.API.utils.iso3166[parts[i]]) {
             // already localized dir
             logger.debug("No");
             return false;
         }
 
-        if (lang.test(parts[i]) && utils.iso639[parts[i]]) {
+        if (lang.test(parts[i]) && this.API.utils.iso639[parts[i]]) {
             // already localized dir
             logger.debug("No");
             return false;
@@ -185,20 +181,21 @@ AndroidLayoutFileType.prototype.newFile = function(path) {
     var ret = new AndroidLayoutFile({
         project: this.project,
         pathName: path,
-        type: this
+        type: this,
+        API: API
     });
     this.files.push(ret);
     return ret;
 };
 
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
- */
-AndroidLayoutFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ContextResourceString);
-    ResourceFactory.registerDataType(this.datatype, "plural", ResourcePlural);
-    ResourceFactory.registerDataType(this.datatype, "array", ResourceArray);
+AndroidLayoutFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+AndroidLayoutFileType.prototype.getResourceTypes = function() {
+    return {
+        "string": "contextString"
+    };
 };
 
 /**
