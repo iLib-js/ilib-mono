@@ -17,8 +17,8 @@
         "translation",
         "webpack",
         "loader",
-		"android",
-		"layout"
+        "android",
+        "layout"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -46,11 +46,8 @@
         "node": ">=6.0"
     },
     "dependencies": {
-	    "ilib": "^14.1.0",
+        "ilib": "^14.1.0",
         "log4js": "^2.0.0",
-	    "xml2json": "^0.11.2"
-    },
-	"peerDependencies": {
-	    "loctool": "^1.2.0"
-	}
+        "xml2json": "^0.11.2"
+    }
 }

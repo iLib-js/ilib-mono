@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFile.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,6 @@ var path = require("path");
 var xml2json = require("xml2json");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale");
-
-var utils = require("loctool/lib/utils.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js");
-var ContextResourceString = require("loctool/lib/ContextResourceString.js");
 
 var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 
@@ -50,11 +46,12 @@ var AndroidLayoutFile = function(props) {
         this.pathName = props.pathName;
         this.type = props.type;
         this.locale = props.locale;
+        this.API = props.API;
     }
 
     this.sourceLocale = this.project && this.project.sourceLocale || "en-US";
 
-    this.set = new TranslationSet(this.sourceLocale);
+    this.set = this.API.newTranslationSet(this.sourceLocale);
 
     this.replacements = {};
 };
@@ -212,14 +209,16 @@ AndroidLayoutFile.prototype.walkLayout = function(node) {
             if (subnode.length && localizableAttributes[p]) {
                 comment = node.i18n;
                 logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
-                if (utils.isAndroidResource(subnode)) {
+                if (this.API.utils.isAndroidResource(subnode)) {
                     // note that this is a used resource?
                     logger.trace("Already resourcified");
-                } else if (!utils.isDNT(comment)) {
+                } else if (!this.API.utils.isDNT(comment)) {
                     logger.trace("Resourcifying");
                     var key = this.makeKey(p, subnode);
                     node[p] = "@string/" + key;
-                    var res = new ContextResourceString({
+                    var res = this.API.newResource({
+                        datatype: this.type.datatype,
+                        resType: "string",
                         key: key,
                         source: subnode,
                         pathName: this.pathName,
@@ -228,7 +227,7 @@ AndroidLayoutFile.prototype.walkLayout = function(node) {
                         project: this.project.getProjectId(),
                         autoKey: true,
                         comment: comment,
-                        dnt: utils.isDNT(comment),
+                        dnt: this.API.utils.isDNT(comment),
                         datatype: this.type.datatype,
                         flavor: this.flavor
                     });
@@ -322,7 +321,7 @@ AndroidLayoutFile.prototype.write = function() {
     if (this.contents && this.dirty && this.pathName) {
         logger.trace("Writing contents now");
         var filename = path.join(this.project.target, this.pathName);
-        utils.makeDirs(path.dirname(filename));
+        this.API.utils.makeDirs(path.dirname(filename));
         fs.writeFileSync(filename, this._getXML(), "utf-8");
     } else {
         logger.debug("Android layout file for locale " + this.locale + " file " + this.pathName + " is not dirty. Not writing.");

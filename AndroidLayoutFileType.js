@@ -20,7 +20,6 @@
 var log4js = require("log4js");
 
 var FileType = require("loctool/lib/FileType.js");
-var PseudoFactory = require("loctool/lib/PseudoFactory.js");
 
 var AndroidLayoutFile = require("./AndroidLayoutFile.js");
 
@@ -119,7 +118,7 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !PseudoFactory.isPseudoLocale(locale);
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));
 
     logger.trace("Adding resources to resource files");
