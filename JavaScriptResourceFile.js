@@ -22,9 +22,6 @@ var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
 var log4js = require("log4js");
 
-var utils = require("loctool/lib/utils.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js")
-
 var logger = log4js.getLogger("loctool.lib.JavaScriptResourceFile");
 
 /**
@@ -46,9 +43,10 @@ var JavaScriptResourceFile = function(props) {
         this.project = props.project;
         this.pathName = props.pathName;
         this.locale = new Locale(props.locale);
+        this.API = props.API;
     }
 
-    this.set = new TranslationSet(this.project && this.project.sourceLocale || "en-US");
+    this.set = props.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
 };
 
 /**
@@ -139,7 +137,7 @@ function clean(str) {
 JavaScriptResourceFile.prototype.getDefaultSpec = function() {
     if (!this.defaultSpec) {
         this.defaultSpec = this.project.settings.localeDefaults ?
-            utils.getLocaleDefault(this.locale, this.flavor, this.project.settings.localeDefaults) :
+            this.API.utils.getLocaleDefault(this.locale, this.flavor, this.project.settings.localeDefaults) :
             this.locale.getSpec();
     }
 
@@ -246,7 +244,7 @@ JavaScriptResourceFile.prototype.write = function() {
         logger.info("Writing JavaScript resources for locale " + this.locale + " to file " + this.pathName);
 
         dir = path.dirname(this.pathName);
-        utils.makeDirs(dir);
+        this.API.utils.makeDirs(dir);
 
         var js = this.getContent();
         fs.writeFileSync(this.pathName, js, "utf8");

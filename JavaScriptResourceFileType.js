@@ -20,8 +20,6 @@
 var path = require("path");
 var log4js = require("log4js");
 
-var FileType = require("loctool/lib/FileType.js");
-
 var JavaScriptResourceFile = require("./JavaScriptResourceFile.js");
 
 var logger = log4js.getLogger("loctool.lib.JavaScriptResourceFileType");
@@ -31,15 +29,19 @@ var logger = log4js.getLogger("loctool.lib.JavaScriptResourceFileType");
  *
  * @param {Project} project that this type is in
  */
-var JavaScriptResourceFileType = function(project) {
+var JavaScriptResourceFileType = function(project, API) {
     this.type = "javascript";
-    this.parent.call(this, project);
+
+    this.API = API;
+
     this.extensions = [ ".js" ];
 };
 
+/*
 JavaScriptResourceFileType.prototype = new FileType();
 JavaScriptResourceFileType.prototype.parent = FileType;
 JavaScriptResourceFileType.prototype.constructor = JavaScriptResourceFileType;
+*/
 
 /**
  * Return true if this file type handles the type of file in the
@@ -86,7 +88,8 @@ JavaScriptResourceFileType.prototype.newFile = function(pathName) {
     var file = new JavaScriptResourceFile({
         project: this.project,
         pathName: pathName,
-        type: this
+        type: this,
+        API: this.API
     });
 
     var locale = file.getLocale() || this.project.sourceLocale;
@@ -112,7 +115,8 @@ JavaScriptResourceFileType.prototype.getResourceFile = function(locale) {
     if (!resfile) {
         resfile = this.resourceFiles[key] = new JavaScriptResourceFile({
             project: this.project,
-            locale: key
+            locale: key,
+            API: this.API
         });
 
         logger.trace("Defining new resource file");
@@ -152,11 +156,13 @@ JavaScriptResourceFileType.prototype.generatePseudo = function(locale, pb) {
     }.bind(this));
 };
 
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
- */
-JavaScriptResourceFileType.prototype.registerDataTypes = function() {};
+JavaScriptFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+JavaScriptFileType.prototype.getResourceTypes = function() {
+    return {};
+};
 
 /**
  * Return the name of the node module that implements the resource file type, or
@@ -166,4 +172,38 @@ JavaScriptResourceFileType.prototype.registerDataTypes = function() {};
  */
 JavaScriptResourceFileType.prototype.getResourceFileType = function() {};
 
+/**
+ * Return the translation set containing all of the extracted
+ * resources for all instances of this type of file. This includes
+ * all new strings and all existing strings. If it was extracted
+ * from a source file, it should be returned here.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * extracted resources
+ */
+JavaScriptResourceFileType.prototype.getExtracted = function() {
+    return this.extracted;
+};
+
+/**
+ * Return the translation set containing all of the new
+ * resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * new resources
+ */
+JavaScriptResourceFileType.prototype.getNew = function() {
+    return this.newres;
+};
+
+/**
+ * Return the translation set containing all of the pseudo
+ * localized resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * pseudo localized resources
+ */
+JavaScriptResourceFileType.prototype.getPseudo = function() {
+    return this.pseudo;
+};
 module.exports = JavaScriptResourceFileType;
