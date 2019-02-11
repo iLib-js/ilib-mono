@@ -22,8 +22,6 @@ var path = require("path");
 var log4js = require("log4js");
 
 var utils = require("loctool/lib/utils.js");
-var ResourceString = require("loctool/lib/ResourceString.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js");
 
 var logger = log4js.getLogger("loctool.lib.JavaScriptFile");
 
@@ -36,11 +34,13 @@ var logger = log4js.getLogger("loctool.lib.JavaScriptFile");
  * of the project file
  * @param {FileType} type the file type of this instance
  */
-var JavaScriptFile = function(project, pathName, type) {
-    this.project = project;
-    this.pathName = pathName;
-    this.type = type;
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+var JavaScriptFile = function(props) {
+    this.project = props.project;
+    this.pathName = props.pathName;
+    this.type = props.filetype;
+    this.API = props.API;
+
+    this.set = props.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 
 /**
@@ -139,7 +139,8 @@ JavaScriptFile.prototype.parse = function(data) {
             var commentResult = reI18nComment.exec(line);
             comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
 
-            var r = new ResourceString({
+            var r = this.API.newResource({
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: JavaScriptFile.unescapeString(match),
                 sourceLocale: this.project.sourceLocale,
@@ -177,7 +178,8 @@ JavaScriptFile.prototype.parse = function(data) {
 
             logger.trace("Found string '" + match + "' with unique key " + key + ", comment: " + comment);
 
-            var r = new ResourceString({
+            var r = this.API.newResource({
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: key,
                 sourceLocale: this.project.sourceLocale,

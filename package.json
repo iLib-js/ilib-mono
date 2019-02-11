@@ -41,6 +41,12 @@
         "type": "git",
         "url": "https://github.com/iLib-js/ilib-loctool-javascript.git"
     },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "node test/testSuite.js",
+        "debug": "node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d *"
+    },
     "engines": {
         "node": ">=6.0"
     },

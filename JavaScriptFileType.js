@@ -21,30 +21,31 @@ var fs = require("fs");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
 var log4js = require("log4js");
 
-var utils = require("loctool/lib/utils.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js");
 var JavaScriptFile = require("loctool/lib/JavaScriptFile.js");
-var FileType = require("loctool/lib/FileType.js");
-var ResourceFactory = require("loctool/lib/ResourceFactory.js");
-var ResourceString = require("loctool/lib/ResourceString.js");
-var PseudoFactory = require("loctool/lib/PseudoFactory.js");
+var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
 
 var logger = log4js.getLogger("loctool.lib.JavaScriptFileType");
 
-var JavaScriptFileType = function(project) {
+var JavaScriptFileType = function(project, API) {
     this.type = "javascript";
     this.datatype = "javascript";
 
-    this.parent.call(this, project);
+    this.API = API;
+
     this.extensions = [ ".js", ".jsx", ".haml", ".html" ];
+
+    this.extracted = API.newTranslationSet(project.getSourceLocale());
+    this.newres = API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = API.newTranslationSet(project.getSourceLocale());
 };
 
+/*
 JavaScriptFileType.prototype = new FileType();
 JavaScriptFileType.prototype.parent = FileType;
 JavaScriptFileType.prototype.constructor = JavaScriptFileType;
+*/
 
 var alreadyLocJS = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.js$/);
 var alreadyLocHaml = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
@@ -106,7 +107,7 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !PseudoFactory.isPseudoLocale(locale);
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));;
 
     for (var i = 0; i < resources.length; i++) {
@@ -118,10 +119,10 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
 
             db.getResourceByCleanHashKey(res.cleanHashKeyForTranslation(locale), function(err, translated) {
                 var r = translated;
-                if (!translated || utils.cleanString(res.getSource()) !== utils.cleanString(r.getSource())) {
+                if (!translated || this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
                     if (r) {
-                        logger.trace("extracted   source: " + utils.cleanString(res.getSource()));
-                        logger.trace("translation source: " + utils.cleanString(r.getSource()));
+                        logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
+                        logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
                     }
                     var note = r && 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + r.getSource() + '"';
                     var newres = res.clone();
@@ -164,44 +165,20 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
 };
 
 JavaScriptFileType.prototype.newFile = function(path) {
-    return new JavaScriptFile(this.project, path, this);
+    return new JavaScriptFile({
+        project: this.project,
+        pathName: path,
+        fileType: this,
+        API: this.API
+    });
 };
 
-/**
- * Return all resource that do not currently exist in the given translation set.
- * This is all resources extracted from the source files minus all the
- * resources in the DB.
- *
- * @param {TranslationSet} set the set of existing resources in the DB
- * @returns {TranslationSet} the set of new or changed resources
- *
-JavaScriptFileType.prototype.findNew = function(set) {
-    var extracted = this.extracted.getAll();
-
-    for (var i = 0; i < extracted.length; i++) {
-        var resource = extracted[i];
-        logger.trace("Examining resource " + resource.getKey() + " to see if it's new.");
-
-        var existing = set.get(resource.hashKey());
-        if (!existing || !resource.equals(existing)) {
-            logger.trace("yes");
-            this.newres.add(resource);
-        } else {
-            logger.trace("no");
-        }
-    }
-
-    logger.trace("findNew Done. Returning a set with " + this.newres.size() + " resources.");
-    return this.newres;
+JavaScriptFileType.prototype.getDataType = function() {
+    return this.datatype;
 };
-*/
 
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
- */
-JavaScriptFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
+JavaScriptFileType.prototype.getResourceTypes = function() {
+    return {};
 };
 
 /**
@@ -212,6 +189,41 @@ JavaScriptFileType.prototype.registerDataTypes = function() {
  */
 JavaScriptFileType.prototype.getResourceFileType = function() {
     return JavaScriptResourceFileType;
+};
+
+/**
+ * Return the translation set containing all of the extracted
+ * resources for all instances of this type of file. This includes
+ * all new strings and all existing strings. If it was extracted
+ * from a source file, it should be returned here.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * extracted resources
+ */
+JavaScriptFileType.prototype.getExtracted = function() {
+    return this.extracted;
+};
+
+/**
+ * Return the translation set containing all of the new
+ * resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * new resources
+ */
+JavaScriptFileType.prototype.getNew = function() {
+    return this.newres;
+};
+
+/**
+ * Return the translation set containing all of the pseudo
+ * localized resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * pseudo localized resources
+ */
+JavaScriptFileType.prototype.getPseudo = function() {
+    return this.pseudo;
 };
 
 module.exports = JavaScriptFileType;
