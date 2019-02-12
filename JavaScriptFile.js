@@ -21,9 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 
-var utils = require("loctool/lib/utils.js");
-
-var logger = log4js.getLogger("loctool.lib.JavaScriptFile");
+var logger = log4js.getLogger("loctool.plugin.JavaScriptFile");
 
 /**
  * Create a new java file with the given path name and within
@@ -198,17 +196,17 @@ JavaScriptFile.prototype.parse = function(data) {
     }
 
     // now check for and report on errors in the source
-    utils.generateWarnings(data, reGetStringBogusConcatenation1,
+    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the RB.getString() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reGetStringBogusConcatenation2,
+    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the RB.getString() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reGetStringBogusParam,
+    this.API.utils.generateWarnings(data, reGetStringBogusParam,
         "Warning: non-string arguments are not allowed in the RB.getString() parameters:",
         logger,
         this.pathName);

@@ -23,10 +23,10 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var JavaScriptFile = require("loctool/lib/JavaScriptFile.js");
+var JavaScriptFile = require("./JavaScriptFile.js");
 var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
 
-var logger = log4js.getLogger("loctool.lib.JavaScriptFileType");
+var logger = log4js.getLogger("loctool.plugin.JavaScriptFileType");
 
 var JavaScriptFileType = function(project, API) {
     this.type = "javascript";
