@@ -22,7 +22,7 @@ var log4js = require("log4js");
 
 var JavaScriptResourceFile = require("./JavaScriptResourceFile.js");
 
-var logger = log4js.getLogger("loctool.lib.JavaScriptResourceFileType");
+var logger = log4js.getLogger("loctool.plugin.JavaScriptResourceFileType");
 
 /**
  * @class Manage a collection of Android resource files.
@@ -156,11 +156,11 @@ JavaScriptResourceFileType.prototype.generatePseudo = function(locale, pb) {
     }.bind(this));
 };
 
-JavaScriptFileType.prototype.getDataType = function() {
+JavaScriptResourceFileType.prototype.getDataType = function() {
     return this.datatype;
 };
 
-JavaScriptFileType.prototype.getResourceTypes = function() {
+JavaScriptResourceFileType.prototype.getResourceTypes = function() {
     return {};
 };
 

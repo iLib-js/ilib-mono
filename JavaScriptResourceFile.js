@@ -22,7 +22,7 @@ var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
 var log4js = require("log4js");
 
-var logger = log4js.getLogger("loctool.lib.JavaScriptResourceFile");
+var logger = log4js.getLogger("loctool.plugin.JavaScriptResourceFile");
 
 /**
  * @class Represents an Android resource file.
