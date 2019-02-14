@@ -226,4 +226,14 @@ JavaScriptFileType.prototype.getPseudo = function() {
     return this.pseudo;
 };
 
+/**
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
+ */
+JavaScriptFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 module.exports = JavaScriptFileType;
