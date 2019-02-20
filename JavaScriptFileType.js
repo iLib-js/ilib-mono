@@ -28,17 +28,18 @@ var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
 
 var logger = log4js.getLogger("loctool.plugin.JavaScriptFileType");
 
-var JavaScriptFileType = function(project, API) {
+var JavaScriptFileType = function(project) {
     this.type = "javascript";
     this.datatype = "javascript";
 
-    this.API = API;
+    this.project = project;
+    this.API = project.getAPI();
 
     this.extensions = [ ".js", ".jsx", ".haml", ".html" ];
 
-    this.extracted = API.newTranslationSet(project.getSourceLocale());
-    this.newres = API.newTranslationSet(project.getSourceLocale());
-    this.pseudo = API.newTranslationSet(project.getSourceLocale());
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 };
 
 /*
@@ -168,8 +169,7 @@ JavaScriptFileType.prototype.newFile = function(path) {
     return new JavaScriptFile({
         project: this.project,
         pathName: path,
-        fileType: this,
-        API: this.API
+        fileType: this
     });
 };
 

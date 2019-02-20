@@ -36,9 +36,9 @@ var JavaScriptFile = function(props) {
     this.project = props.project;
     this.pathName = props.pathName;
     this.type = props.filetype;
-    this.API = props.API;
+    this.API = props.project.getAPI();
 
-    this.set = props.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 
 /**
