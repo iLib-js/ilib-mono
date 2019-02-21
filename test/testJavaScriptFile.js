@@ -27,7 +27,7 @@ var p = new CustomProject({
     id: "app",
     plugins: ["../."],
     sourceLocale: "en-US"
-}, "./testfiles", {
+}, "./test/testfiles", {
     locales:["en-GB"]
 });
 
