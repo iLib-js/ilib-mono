@@ -205,6 +205,16 @@ JavaScriptFileType.prototype.getExtracted = function() {
 };
 
 /**
+ * Add the contents of the given translation set to the extracted resources
+ * for this file type.
+ *
+ * @param {TranslationSet} set set of resources to add to the current set
+ */
+JavaScriptFileType.prototype.addSet = function(set) {
+    this.extracted.addSet(set);
+};
+
+/**
  * Return the translation set containing all of the new
  * resources for all instances of this type of file.
  *

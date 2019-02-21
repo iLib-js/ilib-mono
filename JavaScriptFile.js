@@ -35,7 +35,7 @@ var logger = log4js.getLogger("loctool.plugin.JavaScriptFile");
 var JavaScriptFile = function(props) {
     this.project = props.project;
     this.pathName = props.pathName;
-    this.type = props.filetype;
+    this.type = props.fileType;
     this.API = props.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
