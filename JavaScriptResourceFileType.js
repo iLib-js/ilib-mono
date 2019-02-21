@@ -29,10 +29,12 @@ var logger = log4js.getLogger("loctool.plugin.JavaScriptResourceFileType");
  *
  * @param {Project} project that this type is in
  */
-var JavaScriptResourceFileType = function(project, API) {
+var JavaScriptResourceFileType = function(project) {
     this.type = "javascript";
 
-    this.API = API;
+    this.project = project;
+    this.resourceFiles = {};
+    this.API = project.getAPI();
 
     this.extensions = [ ".js" ];
 };
@@ -115,8 +117,7 @@ JavaScriptResourceFileType.prototype.getResourceFile = function(locale) {
     if (!resfile) {
         resfile = this.resourceFiles[key] = new JavaScriptResourceFile({
             project: this.project,
-            locale: key,
-            API: this.API
+            locale: key
         });
 
         logger.trace("Defining new resource file");

@@ -43,10 +43,10 @@ var JavaScriptResourceFile = function(props) {
         this.project = props.project;
         this.pathName = props.pathName;
         this.locale = new Locale(props.locale);
-        this.API = props.API;
+        this.API = props.project.getAPI();
     }
 
-    this.set = props.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
+    this.set = this.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
 };
 
 /**
