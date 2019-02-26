@@ -1,0 +1,59 @@
+{
+    "name": "ilib-loctool-properties",
+    "version": "1.0.0",
+    "main": "./JavaScriptFileType.js",
+    "description": "A loctool plugin that knows how to process ilib-loctool-properties files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+		"ilib-loctool-properties"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-loctool-properties.git"
+    },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "node test/testSuite.js",
+        "debug": "node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "ilib": "^14.1.0",
+        "log4js": "^2.11.0"
+    },
+    "devDependencies": {
+        "loctool": "^2.1.0",
+        "nodeunit": "^0.11.3"
+    }
+}
