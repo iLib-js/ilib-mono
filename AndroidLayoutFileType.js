@@ -19,31 +19,24 @@
 
 var log4js = require("log4js");
 
-// var FileType = require("loctool/lib/FileType.js");
-
 var AndroidLayoutFile = require("./AndroidLayoutFile.js");
 
 var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 
-var AndroidLayoutFileType = function(project, API) {
+var AndroidLayoutFileType = function(project) {
     this.type = "java";
     this.datatype = "x-android-resource";
 
-    this.API = API;
+    this.project = project;
+    this.API = this.project.getAPI();
 
     this.files = []; // all files of this type
     this.extensions = [ ".xml" ];
 
-    this.extracted = API.newTranslationSet(project.getSourceLocale());
-    this.newres = API.newTranslationSet(project.getSourceLocale());
-    this.pseudo = API.newTranslationSet(project.getSourceLocale());
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 };
-
-/*
-AndroidLayoutFileType.prototype = new FileType();
-AndroidLayoutFileType.prototype.parent = FileType;
-AndroidLayoutFileType.prototype.constructor = AndroidLayoutFileType;
-*/
 
 var extensionRE = new RegExp(/\.xml$/);
 var dirRE = new RegExp("^(layout|menu|xml)");

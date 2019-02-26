@@ -46,7 +46,7 @@ var AndroidLayoutFile = function(props) {
         this.pathName = props.pathName;
         this.type = props.type;
         this.locale = props.locale;
-        this.API = props.API;
+        this.API = this.project.getAPI();
     }
 
     this.sourceLocale = this.project && this.project.sourceLocale || "en-US";
