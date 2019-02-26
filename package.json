@@ -42,14 +42,20 @@
         "type": "git",
         "url": "https://github.com/iLib-js/ilib-loctool-jsx.git"
     },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "node test/testSuite.js",
+        "debug": "node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d *"
+    },
     "engines": {
         "node": ">=6.0"
     },
     "dependencies": {
         "ilib-loctool-javascript-resource": "^1.0.0",
-        "log4js": "^2.0.0"
+        "log4js": "^2.11.0"
     },
-	"peerDependencies": {
-	    "loctool": "^1.2.0"
-	}
+    "devDependencies": {
+        "loctool": "^1.2.0"
+    }
 }

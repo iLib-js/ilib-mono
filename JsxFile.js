@@ -27,18 +27,26 @@ var log4js = require("log4js");
 var logger = log4js.getLogger("loctool.lib.JsxFile");
 
 /**
- * Create a new java file with the given path name and within
- * the given project.
+ * @class Create a new java file with the given path name and within
+ * the given project. Options may contain any of the following
+ * properties:
  *
- * @param {Project} project the project object
- * @param {String} pathName path to the file relative to the root
+ * <ul>
+ * <li>project - the project object
+ * <li>pathName - to the file relative to the root
  * of the project file
- * @param {FileType} type the file type of this instance
+ * <li>type - the file type of this instance
+ * </ul>
+ *
+ * @constructor
  */
-var JsxFile = function(project, pathName, type) {
-    this.project = project;
-    this.pathName = pathName;
-    this.type = type;
+var JsxFile = function(options) {
+    options = options || {};
+
+    this.project = options.project;
+    this.pathName = options.pathName;
+    this.type = options.type;
+
     this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 

@@ -156,37 +156,12 @@ JsxFileType.prototype.write = function(translations, locales) {
 };
 
 JsxFileType.prototype.newFile = function(path) {
-    return new JsxFile(this.project, path, this);
+    return new JsxFile({
+        project: this.project,
+        pathName: path,
+        type: this
+    });
 };
-
-/**
- * Return all resource that do not currently exist in the given translation set.
- * This is all resources extracted from the source files minus all the
- * resources in the DB.
- *
- * @param {TranslationSet} set the set of existing resources in the DB
- * @returns {TranslationSet} the set of new or changed resources
- *
-JsxFileType.prototype.findNew = function(set) {
-    var extracted = this.extracted.getAll();
-
-    for (var i = 0; i < extracted.length; i++) {
-        var resource = extracted[i];
-        logger.trace("Examining resource " + resource.getKey() + " to see if it's new.");
-
-        var existing = set.get(resource.hashKey());
-        if (!existing || !resource.equals(existing)) {
-            logger.trace("yes");
-            this.newres.add(resource);
-        } else {
-            logger.trace("no");
-        }
-    }
-
-    logger.trace("findNew Done. Returning a set with " + this.newres.size() + " resources.");
-    return this.newres;
-};
-*/
 
 /**
  * Register the data types and resource class with the resource factory so that it knows which class
