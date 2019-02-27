@@ -18,19 +18,20 @@
  */
 
 if (!MarkdownFileType) {
-    var MarkdownFileType = require("../lib/MarkdownFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var MarkdownFileType = require("../MarkdownFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    sourceLocale: "en-US",
+    plugins: ["../."]
+}, "./testfiles", {
+    locales:["en-GB"]
+});
 
 module.exports.markdownfiletype = {
     testMarkdownFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new MarkdownFileType(p);
 
@@ -41,12 +42,6 @@ module.exports.markdownfiletype = {
 
     testMarkdownFileTypeHandlesMD: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);
@@ -59,12 +54,6 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesMarkdown: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new MarkdownFileType(p);
         test.ok(htf);
 
@@ -75,12 +64,6 @@ module.exports.markdownfiletype = {
 
     testMarkdownFileTypeHandlesMdown: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);
@@ -93,12 +76,6 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesMkd: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new MarkdownFileType(p);
         test.ok(htf);
 
@@ -109,12 +86,6 @@ module.exports.markdownfiletype = {
 
     testMarkdownFileTypeHandlesRst: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);
@@ -127,12 +98,6 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesRmd: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new MarkdownFileType(p);
         test.ok(htf);
 
@@ -143,12 +108,6 @@ module.exports.markdownfiletype = {
 
     testMarkdownFileTypeHandlesFalseClose: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);
@@ -161,12 +120,6 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesTrueWithDir: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new MarkdownFileType(p);
         test.ok(htf);
 
@@ -177,12 +130,6 @@ module.exports.markdownfiletype = {
 
     testMarkdownFileTypeHandlesAlreadyLocalizedGB: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);
@@ -195,12 +142,6 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new MarkdownFileType(p);
         test.ok(htf);
 
@@ -211,13 +152,6 @@ module.exports.markdownfiletype = {
 
     testMarkdownFileTypeHandlesAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);
@@ -230,13 +164,6 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandleszhHKAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
         var htf = new MarkdownFileType(p);
         test.ok(htf);
 
@@ -247,13 +174,6 @@ module.exports.markdownfiletype = {
     
     testMarkdownFileTypeHandlesSourceDirIsNotLocalized: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
 
         var htf = new MarkdownFileType(p);
         test.ok(htf);

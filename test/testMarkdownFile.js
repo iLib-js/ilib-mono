@@ -21,12 +21,10 @@ var path = require("path");
 var fs = require("fs");
 
 if (!MarkdownFile) {
-    var MarkdownFile = require("../lib/MarkdownFile.js");
-    var MarkdownFileType = require("../lib/MarkdownFileType.js");
+    var MarkdownFile = require("../MarkdownFile.js");
+    var MarkdownFileType = require("../MarkdownFileType.js");
 
-    var WebProject =  require("../lib/WebProject.js");
-    var TranslationSet =  require("../lib/TranslationSet.js");
-    var ResourceString =  require("../lib/ResourceString.js");
+    var CustomProject = require("loctool/lib/CustomProject.js");
 }
 
 function diff(a, b) {
@@ -42,9 +40,10 @@ function diff(a, b) {
     }
 }
 
-var p = new WebProject({
+var p = new CustomProject({
     name: "foo",
     id: "foo",
+    plugins: ["../."],
     sourceLocale: "en-US"
 }, "./testfiles", {
     locales:["en-GB"],
@@ -57,7 +56,9 @@ module.exports.markdown = {
     testMarkdownFileConstructor: function(test) {
         test.expect(1);
 
-        var mf = new MarkdownFile();
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         test.done();
@@ -66,7 +67,10 @@ module.exports.markdown = {
     testMarkdownFileConstructorParams: function(test) {
         test.expect(1);
 
-        var mf = new MarkdownFile(p, "./testfiles/md/test1.md");
+        var mf = new MarkdownFile({
+            project: p, 
+            pathName: "./testfiles/md/test1.md"
+        });
 
         test.ok(mf);
 
@@ -76,7 +80,9 @@ module.exports.markdown = {
     testMarkdownFileConstructorNoFile: function(test) {
         test.expect(1);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         test.done();
@@ -86,7 +92,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKey: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("This is a test"), "r654479252");
@@ -97,7 +106,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeySimpleTexts1: function(test) {
         test.expect(5);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Preferences in your profile"), "r372802078");
@@ -111,7 +123,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyUnescaped: function(test) {
         test.expect(5);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("foo \\n \\t bar"), "r206710698");
@@ -125,7 +140,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeySimpleTexts2: function(test) {
         test.expect(6);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Procedures"), "r807691021");
@@ -140,7 +158,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeySimpleTexts3: function(test) {
         test.expect(9);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Private Profile"), "r314592735");
@@ -158,7 +179,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyEscapes: function(test) {
         test.expect(3);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Can\'t find id"), "r743945592");
@@ -170,7 +194,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyPunctuation: function(test) {
         test.expect(8);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("{name}({generic_name})"), "r300446104");
@@ -187,7 +214,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeySameStringMeansSameKey: function(test) {
         test.expect(3);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("This is a test"), "r654479252");
@@ -199,7 +229,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyCompressWhiteSpace: function(test) {
         test.expect(5);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Can\'t find  id"), "r743945592");
@@ -214,7 +247,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyTrimWhiteSpace: function(test) {
         test.expect(5);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Can\'t find  id"), "r743945592");
@@ -229,7 +265,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyNewLines: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
@@ -241,7 +280,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyEscapeN: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         // \n is not a return character in MD. It is just an escaped "n"
@@ -253,7 +295,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyTabs: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("A \t B"), "r191336864");
@@ -264,7 +309,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyEscapeT: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         // \t is not a tab character in MD. It is just an escaped "t"
@@ -276,7 +324,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyQuotes: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("A \\'B\\' C"), "r935639115");
@@ -287,7 +338,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("&#x00A0; &#x0023;"), "r2293235");
@@ -298,7 +352,10 @@ module.exports.markdown = {
     testMarkdownFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
         test.expect(2);
 
-        var mdf = new MarkdownFile(p, undefined, mdft);
+        var mdf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
         test.ok(mdf);
 
         test.equal(mdf.makeKey("Talk to a support representative live 24/7 via video or &#x00a0; text&#x00a0;chat"), "r969175354");
@@ -309,7 +366,9 @@ module.exports.markdown = {
     testMarkdownFileParseSimpleGetByKey: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\nThis is a test too\n');
@@ -329,7 +388,9 @@ module.exports.markdown = {
     testMarkdownFileParseSimpleGetBySource: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\nThis is a test too\n');
@@ -348,7 +409,9 @@ module.exports.markdown = {
     testMarkdownFileParseSimpleIgnoreWhitespace: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test            \t   \t     \n\nThis is a test too\n');
@@ -367,7 +430,9 @@ module.exports.markdown = {
     testMarkdownFileParseDontExtractUnicodeWhitespace: function(test) {
         test.expect(3);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         // contains U+00A0 non-breaking space and other Unicode space characters
@@ -384,7 +449,9 @@ module.exports.markdown = {
     testMarkdownFileParseDontExtractNbspEntity: function(test) {
         test.expect(3);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('&nbsp; &#xA0; \n');
@@ -400,7 +467,9 @@ module.exports.markdown = {
     testMarkdownFileParseDoExtractOtherEntities: function(test) {
         test.expect(3);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('&uuml;\n');
@@ -416,7 +485,9 @@ module.exports.markdown = {
     testMarkdownFileParseEmpty: function(test) {
         test.expect(3);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(' \n');
@@ -431,7 +502,9 @@ module.exports.markdown = {
     testMarkdownFileParseSkipHeader: function(test) {
         test.expect(3);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n');
@@ -446,7 +519,9 @@ module.exports.markdown = {
     testMarkdownFileParseSkipHeaderAndParseRest: function(test) {
         test.expect(6);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n\nThis is a test\n');
@@ -466,7 +541,9 @@ module.exports.markdown = {
     testMarkdownFileParseNoStrings: function(test) {
         test.expect(3);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n     \n\t\t\t\n');
@@ -481,7 +558,9 @@ module.exports.markdown = {
     testMarkdownFileParseSimpleRightSize: function(test) {
         test.expect(4);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         var set = mf.getTranslationSet();
@@ -499,7 +578,9 @@ module.exports.markdown = {
     testMarkdownFileParseMultiple: function(test) {
         test.expect(8);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\n' +
@@ -524,7 +605,9 @@ module.exports.markdown = {
     testMarkdownFileParseContinuedParagraph: function(test) {
         test.expect(7);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test.\n' +
@@ -551,7 +634,9 @@ module.exports.markdown = {
     testMarkdownFileParseWithDups: function(test) {
         test.expect(6);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\n' +
@@ -574,7 +659,9 @@ module.exports.markdown = {
     testMarkdownFileParseEscapeInvalidChars: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is also a &#x3; test\n');
@@ -594,7 +681,9 @@ module.exports.markdown = {
     testMarkdownFileParseDontEscapeWhitespaceChars: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is also a &#x000C; test\n');
@@ -614,7 +703,9 @@ module.exports.markdown = {
     testMarkdownFileSkipReadmeIOBlocks: function(test) {
         test.expect(8);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n' +
@@ -658,7 +749,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingEmphasis: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a *test* of the emergency parsing system.\n');
@@ -677,7 +770,9 @@ module.exports.markdown = {
     testMarkdownFileParseNestedNonBreakingEmphasis: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This _is a *test* of the emergency parsing_ system.\n');
@@ -696,7 +791,9 @@ module.exports.markdown = {
     testMarkdownFileParseNestedAndSequentialNonBreakingEmphasis: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This _is a *test* of the_ *emergency parsing* system.\n');
@@ -715,7 +812,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingLinks: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test of the [emergency parsing](http://foo.com/bar/asdf.html) system.\n');
@@ -734,7 +833,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingInlineCode: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test of the `inline code` system.\n');
@@ -753,7 +854,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingHTMLTags: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
@@ -772,7 +875,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingHTMLTagsOutside: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('<em>This is a test of the emergency parsing system.</em>\n');
@@ -793,7 +898,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingIgnoreComplexIrrelevant: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('*_ <span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.   _*\n');
@@ -814,7 +921,9 @@ module.exports.markdown = {
     testMarkdownFileParseLists: function(test) {
         test.expect(12);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -848,7 +957,9 @@ module.exports.markdown = {
     testMarkdownFileParseListWithTextBefore: function(test) {
         test.expect(9);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -876,7 +987,9 @@ module.exports.markdown = {
     testMarkdownFileParseListWithTextAfter: function(test) {
         test.expect(9);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -904,7 +1017,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingEmphasisOutside: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('*This is a test of the emergency parsing system.*\n');
@@ -924,7 +1039,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingHTMLTagsInside: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n');
@@ -945,7 +1062,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingHTMLTagsInsideMultiple: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n');
@@ -965,7 +1084,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingTagsNotWellFormed: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n');
@@ -985,7 +1106,9 @@ module.exports.markdown = {
     testMarkdownFileParseNonBreakingTagsTagStackIsReset: function(test) {
         test.expect(5);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('<span>This is <span id="foo" class="bar"> a test of the <em>emergency parsing</em> system.</span>\n\n' +
@@ -1006,7 +1129,9 @@ module.exports.markdown = {
     testMarkdownFileParseLocalizableTitle: function(test) {
         test.expect(8);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('<div title="This value is localizable">\n\n' +
@@ -1032,7 +1157,9 @@ module.exports.markdown = {
     testMarkdownFileParseLocalizableAttributes: function(test) {
         test.expect(8);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n' +
@@ -1057,7 +1184,9 @@ module.exports.markdown = {
     testMarkdownFileParseLocalizableAttributesSkipEmpty: function(test) {
         test.expect(6);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n' +
@@ -1079,7 +1208,9 @@ module.exports.markdown = {
     testMarkdownFileParseLocalizableAttributesAndNonBreakingTags: function(test) {
         test.expect(8);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
@@ -1103,7 +1234,9 @@ module.exports.markdown = {
     testMarkdownFileParseI18NComments: function(test) {
         test.expect(10);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('<!-- i18n this describes the text below -->\n' +
@@ -1131,7 +1264,9 @@ module.exports.markdown = {
     testMarkdownFileParseIgnoreTags: function(test) {
         test.expect(6);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -1168,7 +1303,10 @@ module.exports.markdown = {
 
         var base = path.dirname(module.id);
 
-        var mf = new MarkdownFile(p, "./md/test1.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/test1.md"
+        });
         test.ok(mf);
 
         // should read the file
@@ -1206,7 +1344,10 @@ module.exports.markdown = {
 
         var base = path.dirname(module.id);
 
-        var mf = new MarkdownFile(p, "./md/test2.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/test2.md"
+        });
         test.ok(mf);
 
         // should read the file
@@ -1239,7 +1380,9 @@ module.exports.markdown = {
 
         var base = path.dirname(module.id);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         // should attempt to read the file and not fail
@@ -1257,7 +1400,10 @@ module.exports.markdown = {
 
         var base = path.dirname(module.id);
 
-        var mf = new MarkdownFile(p, "./md/bogus.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/bogus.md"
+        });
         test.ok(mf);
 
         // should attempt to read the file and not fail
@@ -1273,7 +1419,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeText: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n');
@@ -1300,7 +1448,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextPreserveWhitespace: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test    \n');
@@ -1325,7 +1475,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextMultiple: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\n' +
@@ -1361,7 +1513,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextWithDups: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\n' +
@@ -1399,7 +1553,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextSkipScript: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('<script>\n' +
@@ -1438,7 +1594,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextWithLinks: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a [test](http://www.test.com/) of the emergency parsing system.\n');
@@ -1463,7 +1621,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextWithInlineCode: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a `test` of the emergency parsing system.\n');
@@ -1488,7 +1648,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextNonBreakingTags: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
@@ -1513,7 +1675,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextNonBreakingTagsOutside: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('*This is a test of the emergency parsing system.*\n');
@@ -1538,7 +1702,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextNonBreakingTagsBeforeAndAfter: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('*_ <span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.   _*\n');
@@ -1563,7 +1729,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextNonBreakingTagsInside: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n');
@@ -1587,7 +1755,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextNonBreakingTagsInsideMultiple: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n');
@@ -1611,7 +1781,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextNonBreakingTagsNotWellFormed: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n');
@@ -1635,7 +1807,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextLocalizableTitle: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('Markdown text <div title="This value is localizable">This is a test</div>\n');
@@ -1667,7 +1841,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextLocalizableAttributes: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('![Alternate text](http://www.test.test/foo.png "title here")\n' +
@@ -1719,7 +1895,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextLocalizableAttributesAndNonBreakingTags: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
@@ -1751,7 +1929,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextI18NComments: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('<!-- i18n: this describes the text below -->\n' +
@@ -1785,7 +1965,9 @@ module.exports.markdown = {
             identify: true
         });
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse('This is a test\n\n' +
@@ -1826,7 +2008,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathSimple: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "simple.md"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/simple.md");
@@ -1837,7 +2022,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathComplex: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "./asdf/bar/simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./asdf/bar/simple.md"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple.md");
@@ -1848,7 +2036,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathRegularMarkdownFileName: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "./asdf/bar/simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./asdf/bar/simple.md"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple.md");
@@ -1859,7 +2050,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathNotEnoughParts: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "./asdf/bar/simple");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./asdf/bar/simple"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple");
@@ -1870,7 +2064,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathAlreadyHasSourceLocale: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "./en-US/asdf/bar/simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./en-US/asdf/bar/simple.md"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "./fr-FR/asdf/bar/simple.md");
@@ -1881,7 +2078,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathSourceLocaleInMidPath: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "./asdf/en-US/bar/simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./asdf/en-US/bar/simple.md"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "./asdf/fr-FR/bar/simple.md");
@@ -1892,7 +2092,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathSourceLocaleInBeginningPath: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "en-US/asdf/bar/simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "en-US/asdf/bar/simple.md"
+        });
         test.ok(mf);
 
         test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple.md");
@@ -1903,7 +2106,10 @@ module.exports.markdown = {
     testMarkdownFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p, "./asdf/pen-USing/en-US/bar/simple.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./asdf/pen-USing/en-US/bar/simple.md"
+        });
         test.ok(mf);
 
         // should leave "pen-USing" alone and only get the "en-US" path component
@@ -1917,7 +2123,10 @@ module.exports.markdown = {
 
         var base = path.dirname(module.id);
 
-        var mf = new MarkdownFile(p, "./md/test1.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/test1.md"
+        });
         test.ok(mf);
 
         // should read the file
@@ -2085,7 +2294,10 @@ module.exports.markdown = {
 
         var base = path.dirname(module.id);
 
-        var mf = new MarkdownFile(p, "./md/nostrings.md");
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/nostrings.md"
+        });
         test.ok(mf);
 
         // should read the file
@@ -2125,7 +2337,11 @@ module.exports.markdown = {
         var base = path.dirname(module.id);
 
         var t = new MarkdownFileType(p);
-        var mf = new MarkdownFile(p, "./md/mode.md", t);
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/mode.md",
+            type: t
+        });
         test.ok(mf);
 
         mf.extract();
@@ -2185,7 +2401,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextWithListAndBlockWithNoSpace: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -2240,7 +2458,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextHeaderWithNoSpace: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -2277,7 +2497,9 @@ module.exports.markdown = {
     testMarkdownFileLocalizeTextDontEscapeCode: function(test) {
         test.expect(2);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(
@@ -2329,7 +2551,9 @@ module.exports.markdown = {
     testMarkdownFileParseMultipleMDComponents: function(test) {
         test.expect(9);
 
-        var mf = new MarkdownFile(p);
+        var mf = new MarkdownFile({
+            project: p
+        });
         test.ok(mf);
 
         mf.parse(

@@ -40,10 +40,6 @@ var unistMap = require('unist-util-map');
 var unistVisit = require('unist-util-visit');
 var u = require('unist-builder');
 
-var utils = require("./utils.js");
-var ResourceString = require("./ResourceString.js");
-var TranslationSet = require("./TranslationSet.js");
-
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");
 
 // load the data for these
@@ -125,11 +121,14 @@ function escapeQuotes(str) {
  * of the project file
  * @param {FileType} type the file type instance of this file
  */
-var MarkdownFile = function(project, pathName, type) {
-    this.project = project;
-    this.pathName = pathName;
-    this.type = type;
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+var MarkdownFile = function(options) {
+    options = options || {};
+    
+    this.project = options.project;
+    this.API = this.project.getAPI();
+    this.pathName = options.pathName;
+    this.type = options.type;
+    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 
     // this.componentIndex = 0;
 };
@@ -187,14 +186,14 @@ MarkdownFile.cleanString = function(string) {
  * @returns {String} a unique key for this string
  */
 MarkdownFile.prototype.makeKey = function(source) {
-    return utils.hashKey(MarkdownFile.cleanString(source));
+    return this.API.utils.hashKey(MarkdownFile.cleanString(source));
 };
 
 var reWholeTag = /<("(\\"|[^"])*"|'(\\'|[^'])*'|[^>])*>/g;
 
 MarkdownFile.prototype._addTransUnit = function(text, comment) {
     if (text) {
-        var source = utils.escapeInvalidChars(text);
+        var source = this.API.utils.escapeInvalidChars(text);
         this.set.add(new ResourceString({
             project: this.project.getProjectId(),
             key: this.makeKey(source),
@@ -219,7 +218,7 @@ MarkdownFile.prototype._addTransUnit = function(text, comment) {
 function trim(text) {
     var i, pre = "", post = "", ret = {};
 
-    for (i = 0; i < text.length && utils.isWhite(text.charAt(i)); i++);
+    for (i = 0; i < text.length && this.API.utils.isWhite(text.charAt(i)); i++);
 
     if (i >= text.length) {
         // all white? just return it
@@ -233,7 +232,7 @@ function trim(text) {
         text = text.substring(i);
     }
 
-    for (i = text.length-1; i > -1 && utils.isWhite(text.charAt(i)); i--);
+    for (i = text.length-1; i > -1 && this.API.utils.isWhite(text.charAt(i)); i--);
 
     if (i < text.length-1) {
         ret.post = text.substring(i+1);
@@ -310,7 +309,7 @@ MarkdownFile.prototype._findAttributes = function(tagName, tag) {
     while ((match = reAttrNameAndValue.exec(tag)) !== null) {
         var name = match[1],
             value = (match[5] && match[5].trim()) || "";
-        if (value && name === "title" || (utils.localizableAttributes[tagName] && utils.localizableAttributes[tagName][name])) {
+        if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
             this._addTransUnit(value);
         }
     }
@@ -344,7 +343,7 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
     while ((match = reAttrNameAndValue.exec(tag)) !== null) {
         var name = match[1],
             value = match[5].trim();
-        if (value && name === "title" || (utils.localizableAttributes[tagName] && utils.localizableAttributes[tagName][name])) {
+        if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
             var translation = this._localizeString(value, locale, translations);
             attributes[name] = translation || value;
         } else {
@@ -471,7 +470,7 @@ MarkdownFile.prototype._walk = function(node) {
                 if (match[1] !== '/') {
                     // opening tag
                     if (this.message.getTextLength()) {
-                        if (utils.nonBreakingTags[tagName]) {
+                        if (this.API.utils.nonBreakingTags[tagName]) {
                             this.message.push({
                                 name: tagName,
                                 node: node
@@ -487,7 +486,7 @@ MarkdownFile.prototype._walk = function(node) {
                 } else {
                     // closing tag
                     if (this.message.getTextLength()) {
-                        if (utils.nonBreakingTags[tagName] && this.message.getCurrentLevel() > 0) {
+                        if (this.API.utils.nonBreakingTags[tagName] && this.message.getCurrentLevel() > 0) {
                             var tag = this.message.pop();
                             while (tag.name !== tagName && this.message.getCurrentLevel() > 0) {
                                 tag = this.message.pop();
@@ -631,7 +630,7 @@ MarkdownFile.prototype.getLocalizedPath = function(locale) {
 MarkdownFile.prototype._localizeString = function(source, locale, translations) {
     if (!source) return source;
 
-    var key = this.makeKey(utils.escapeInvalidChars(source));
+    var key = this.makeKey(this.API.utils.escapeInvalidChars(source));
     var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "markdown");
     var translatedResource = translations.get(hashkey);
     var translation;
@@ -656,9 +655,9 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
                 project: this.project.getProjectId(),
                 key: key,
                 sourceLocale: this.project.sourceLocale,
-                source: utils.escapeInvalidChars(source),
+                source: this.API.utils.escapeInvalidChars(source),
                 targetLocale: locale,
-                target: utils.escapeInvalidChars(source),
+                target: this.API.utils.escapeInvalidChars(source),
                 autoKey: true,
                 pathName: this.pathName,
                 state: "new",
@@ -781,13 +780,13 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 if (match[1] !== '/') {
                     // opening tag
                     node.value = this._localizeAttributes(tagName, node.value, locale, translations);
-                    if (node.localizable && utils.nonBreakingTags[tagName]) {
+                    if (node.localizable && this.API.utils.nonBreakingTags[tagName]) {
                         node.name = tagName;
                         message.push(node);
                     }
                 } else {
                     // closing tag
-                    if (node.localizable && utils.nonBreakingTags[tagName] && message.getCurrentLevel() > 0) {
+                    if (node.localizable && this.API.utils.nonBreakingTags[tagName] && message.getCurrentLevel() > 0) {
                         var tag = message.pop();
                         while (tag.name !== tagName && message.getCurrentLevel() > 0) {
                             tag = message.pop();
@@ -860,7 +859,7 @@ MarkdownFile.prototype._getTranslationNodes = function(locale, translations, ma)
 
     var text = ma.getMinimalString();
 
-    var key = this.makeKey(utils.escapeInvalidChars(text));
+    var key = this.makeKey(this.API.utils.escapeInvalidChars(text));
     var translation = this._localizeString(text, locale, translations);
 
     if (translation) {
@@ -1031,7 +1030,7 @@ MarkdownFile.prototype.localize = function(translations, locales) {
                 logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
-                utils.makeDirs(d);
+                this.API.utils.makeDirs(d);
 
                 fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
             }

@@ -24,25 +24,17 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var MarkdownFile = require("./MarkdownFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ResourceString = require("./ResourceString.js");
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFileType");
 
 var MarkdownFileType = function(project) {
     this.type = "md";
     this.datatype = "markdown";
-    this.parent.call(this, project);
+    this.API = project.getAPI();
+
     this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd" ];
 };
-
-MarkdownFileType.prototype = new FileType();
-MarkdownFileType.prototype.parent = FileType;
-MarkdownFileType.prototype.constructor = MarkdownFileType;
 
 var alreadyLoc = new RegExp(/(^|\/)([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\//);
 
@@ -85,7 +77,11 @@ MarkdownFileType.prototype.write = function() {
 };
 
 MarkdownFileType.prototype.newFile = function(path) {
-    return new MarkdownFile(this.project, path, this);
+    return new MarkdownFile({
+        project: this.project,
+        pathName: path,
+        type: this
+    });
 };
 
 /**
