@@ -194,7 +194,8 @@ var reWholeTag = /<("(\\"|[^"])*"|'(\\'|[^'])*'|[^>])*>/g;
 MarkdownFile.prototype._addTransUnit = function(text, comment) {
     if (text) {
         var source = this.API.utils.escapeInvalidChars(text);
-        this.set.add(new ResourceString({
+        this.set.add(this.API.newResource({
+            resType: "string",
             project: this.project.getProjectId(),
             key: this.makeKey(source),
             sourceLocale: this.project.sourceLocale,
@@ -211,14 +212,15 @@ MarkdownFile.prototype._addTransUnit = function(text, comment) {
 
 /**
  * @private
+ * @param {Object} API
  * @param {string} text
  * @returns {Object} an object containing the leading whitespace, the text,
  * and the trailing whitespace
  */
-function trim(text) {
+function trim(API, text) {
     var i, pre = "", post = "", ret = {};
 
-    for (i = 0; i < text.length && this.API.utils.isWhite(text.charAt(i)); i++);
+    for (i = 0; i < text.length && API.utils.isWhite(text.charAt(i)); i++);
 
     if (i >= text.length) {
         // all white? just return it
@@ -232,7 +234,7 @@ function trim(text) {
         text = text.substring(i);
     }
 
-    for (i = text.length-1; i > -1 && this.API.utils.isWhite(text.charAt(i)); i--);
+    for (i = text.length-1; i > -1 && API.utils.isWhite(text.charAt(i)); i--);
 
     if (i < text.length-1) {
         ret.post = text.substring(i+1);
@@ -373,7 +375,7 @@ MarkdownFile.prototype._walk = function(node) {
 
     switch (node.type) {
         case 'text':
-            var parts = trim(node.value);
+            var parts = trim(this.API, node.value);
             // only localizable if there already is some localizable text
             // or if this text contains anything that is not whitespace
             if (this.message.getTextLength() > 0 || parts.text) {
@@ -651,7 +653,8 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
             translation = this.type.pseudos[locale].getString(source);
         } else {
             logger.trace("New string found: " + source);
-            this.type.newres.add(new ResourceString({
+            this.type.newres.add(this.API.newResource({
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: key,
                 sourceLocale: this.project.sourceLocale,
@@ -686,7 +689,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
 
     switch (node.type) {
         case 'text':
-            var parts = trim(node.value);
+            var parts = trim(this.API, node.value);
             // only localizable if there already is some localizable text
             // or if this text contains anything that is not whitespace
             if (node.localizable || parts.text) {

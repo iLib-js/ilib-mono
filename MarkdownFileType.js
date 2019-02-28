@@ -31,6 +31,7 @@ var logger = log4js.getLogger("loctool.lib.MarkdownFileType");
 var MarkdownFileType = function(project) {
     this.type = "md";
     this.datatype = "markdown";
+    this.project = project;
     this.API = project.getAPI();
 
     this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd" ];

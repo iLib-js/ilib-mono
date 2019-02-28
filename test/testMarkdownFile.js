@@ -25,6 +25,8 @@ if (!MarkdownFile) {
     var MarkdownFileType = require("../MarkdownFileType.js");
 
     var CustomProject = require("loctool/lib/CustomProject.js");
+    var TranslationSet = require("loctool/lib/TranslationSet.js");
+    var ResourceString = require("loctool/lib/ResourceString.js");
 }
 
 function diff(a, b) {
@@ -51,6 +53,17 @@ var p = new CustomProject({
 });
 
 var mdft = new MarkdownFileType(p);
+
+var p2 = new CustomProject({
+    sourceLocale: "en-US",
+    id: "foo",
+    plugins: ["../."]
+}, "./testfiles", {
+    locales:["en-GB"],
+    targetDir: "testfiles",
+    identify: true
+});
+
 
 module.exports.markdown = {
     testMarkdownFileConstructor: function(test) {
@@ -1930,7 +1943,7 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p2
         });
         test.ok(mf);
 
@@ -1956,14 +1969,6 @@ module.exports.markdown = {
 
     testMarkdownFileLocalizeTextIdentifyResourceIds: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            identify: true
-        });
 
         var mf = new MarkdownFile({
             project: p
@@ -2517,7 +2522,8 @@ module.exports.markdown = {
             'test\n');
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(mf.API.newResource({
+            resType: "string",
             project: "foo",
             key: 'r852587715',
             source: 'test',
