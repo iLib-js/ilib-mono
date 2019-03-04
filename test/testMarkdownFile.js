@@ -47,7 +47,7 @@ var p = new CustomProject({
     id: "foo",
     plugins: ["../."],
     sourceLocale: "en-US"
-}, "./testfiles", {
+}, "./test/testfiles", {
     locales:["en-GB"],
     targetDir: "testfiles"
 });
@@ -58,7 +58,7 @@ var p2 = new CustomProject({
     sourceLocale: "en-US",
     id: "foo",
     plugins: ["../."]
-}, "./testfiles", {
+}, "./test/testfiles", {
     locales:["en-GB"],
     targetDir: "testfiles",
     identify: true
@@ -1943,7 +1943,7 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p2
+            project: p
         });
         test.ok(mf);
 
@@ -1971,7 +1971,7 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p2
         });
         test.ok(mf);
 

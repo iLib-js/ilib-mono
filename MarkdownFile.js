@@ -633,7 +633,15 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
     if (!source) return source;
 
     var key = this.makeKey(this.API.utils.escapeInvalidChars(source));
-    var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "markdown");
+    var tester = this.API.newResource({
+        type: "string",
+        project: this.project.getProjectId(),
+        sourceLocale: this.project.getSourceLocale(),
+        reskey: key,
+        datatype: "markdown"
+    });
+    // var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "markdown");
+    var hashkey = tester.hashKeyForTranslation(locale);
     var translatedResource = translations.get(hashkey);
     var translation;
 
@@ -646,8 +654,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
             var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
             if (sourceLocale !== this.project.sourceLocale) {
                 // translation is derived from a different locale's translation instead of from the source string
-                var sourceRes = translations.get(ResourceString.hashKey(
-                        this.project.getProjectId(), sourceLocale, this.makeKey(escapeInvalidChars(source)), "markdown"));
+                var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
                 source = sourceRes ? sourceRes.getTarget() : source;
             }
             translation = this.type.pseudos[locale].getString(source);
