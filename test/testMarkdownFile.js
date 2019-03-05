@@ -49,7 +49,7 @@ var p = new CustomProject({
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "testfiles"
+    targetDir: "./test/testfiles"
 });
 
 var mdft = new MarkdownFileType(p);
@@ -60,7 +60,7 @@ var p2 = new CustomProject({
     plugins: ["../."]
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "testfiles",
+    targetDir: "./test/testfiles",
     identify: true
 });
 
@@ -2206,10 +2206,10 @@ module.exports.markdown = {
 
         mf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, p.root, "fr-FR/md/test1.md")));
-        test.ok(fs.existsSync(path.join(base, p.root, "de-DE/md/test1.md")));
+        test.ok(fs.existsSync(path.join(p.root, "fr-FR/md/test1.md")));
+        test.ok(fs.existsSync(path.join(p.root, "de-DE/md/test1.md")));
 
-        var content = fs.readFileSync(path.join(base, p.root, "fr-FR/md/test1.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.root, "fr-FR/md/test1.md"), "utf-8");
 
         var expected =
             '---\n' +
@@ -2250,7 +2250,7 @@ module.exports.markdown = {
         diff(content, expected);
         test.equal(content, expected);
 
-        var content = fs.readFileSync(path.join(base, p.root, "de-DE/md/test1.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.root, "de-DE/md/test1.md"), "utf-8");
 
         var expected =
             '---\n' +
@@ -2329,8 +2329,8 @@ module.exports.markdown = {
         mf.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, p.root, "fr-FR/md/nostrings.md")));
-        test.ok(fs.existsSync(path.join(base, p.root, "de-DE/md/nostrings.md")));
+        test.ok(fs.existsSync(path.join(p.root, "fr-FR/md/nostrings.md")));
+        test.ok(fs.existsSync(path.join(p.root, "de-DE/md/nostrings.md")));
 
         test.done();
     },

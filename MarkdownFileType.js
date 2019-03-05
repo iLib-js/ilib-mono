@@ -35,6 +35,10 @@ var MarkdownFileType = function(project) {
     this.API = project.getAPI();
 
     this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 };
 
 var alreadyLoc = new RegExp(/(^|\/)([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\//);

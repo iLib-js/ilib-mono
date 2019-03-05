@@ -650,7 +650,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
     } else if (translatedResource) {
         translation = translatedResource.getTarget();
     } else if (this.type) {
-        if (source && this.type.pseudos[locale]) {
+        if (source && this.type.pseudos && this.type.pseudos[locale]) {
             var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
             if (sourceLocale !== this.project.sourceLocale) {
                 // translation is derived from a different locale's translation instead of from the source string
