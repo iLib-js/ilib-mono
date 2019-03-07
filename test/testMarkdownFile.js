@@ -513,45 +513,6 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseSkipHeader: function(test) {
-        test.expect(3);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n');
-
-        var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseSkipHeaderAndParseRest: function(test) {
-        test.expect(6);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n\nThis is a test\n');
-
-        var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
     testMarkdownFileParseNoStrings: function(test) {
         test.expect(3);
 
@@ -560,7 +521,7 @@ module.exports.markdown = {
         });
         test.ok(mf);
 
-        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n     \n\t\t\t\n');
+        mf.parse('\n     \n\t\t\t\n');
 
         var set = mf.getTranslationSet();
         test.ok(set);
@@ -710,52 +671,6 @@ module.exports.markdown = {
         test.ok(r);
         test.equal(r.getSource(), "This is also a \u000C test");
         test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testMarkdownFileSkipReadmeIOBlocks: function(test) {
-        test.expect(8);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse('This is a test\n' +
-                  '[block:parameters]\n' +
-                  '{\n' +
-                  '  "data": {\n' +
-                  '      "h-0": "Parameter",\n' +
-                  '      "h-1": "Description",\n' +
-                  '      "0-0": "**response_type**",\n' +
-                  '      "1-0": "**client_id**",\n' +
-                  '      "2-0": "**redirect_uri**",\n' +
-                  '      "3-0": "**state**",\n' +
-                  '      "4-0": "**scope** *optional*",\n' +
-                  '      "0-1": "String",\n' +
-                  '      "1-1": "String",\n' +
-                  '      "2-1": "URI"\n' +
-                  '  }\n' +
-                  '}\n' +
-                  '[/block]\n' +
-                  'bar\n');
-
-        var set = mf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        var r = set.getBySource("Description");
-        test.ok(!r);
-
-        var r = set.getBySource("bar");
-        test.ok(r);
-
-        test.equal(set.size(), 2);
 
         test.done();
     },
@@ -2213,37 +2128,10 @@ module.exports.markdown = {
         var content = fs.readFileSync(path.join(p.root, "fr-FR/md/test1.md"), "utf-8");
 
         var expected =
-            '---\n' +
-            'title: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself."\n' +
-            'excerpt: ""\n' +
-            '---\n' +
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
             'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            '[block:code]\n' +
-            '{\n' +
-            '  "codes": [\n' +
-            '    {\n' +
-            '      "code": "https://account.box.com/api/oauth2/authorize?response_type=code&client_id=<MY_CLIENT_ID>&redirect_uri=<MY_REDIRECT_URL>&state=<MY_SECURITY_TOKEN>",\n' +
-            '      "language": "text",\n' +
-            '      "name": "Box authorize URL"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}\n' +
-            '[/block]\n\n' +
             'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            '[block:parameters]\n' +
-            '{\n' +
-            '  "data": {\n' +
-            '    "h-0": "Parameter",\n' +
-            '    "h-1": "Description",\n' +
-            '    "0-0": "**response_type**",\n' +
-            '    "1-0": "**client_id**",\n' +
-            '  },\n' +
-            '  "cols": 3,\n' +
-            '  "rows": 5\n' +
-            '}\n' +
-            '[/block]\n\n' +
             'C\'est le dernier morceau de texte localisable.\n' +
             '\n' +
             'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
@@ -2254,37 +2142,10 @@ module.exports.markdown = {
         var content = fs.readFileSync(path.join(p.root, "de-DE/md/test1.md"), "utf-8");
 
         var expected =
-            '---\n' +
-            'title: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself."\n' +
-            'excerpt: ""\n' +
-            '---\n' +
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
             '\n' +
             'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            '[block:code]\n' +
-            '{\n' +
-            '  "codes": [\n' +
-            '    {\n' +
-            '      "code": "https://account.box.com/api/oauth2/authorize?response_type=code&client_id=<MY_CLIENT_ID>&redirect_uri=<MY_REDIRECT_URL>&state=<MY_SECURITY_TOKEN>",\n' +
-            '      "language": "text",\n' +
-            '      "name": "Box authorize URL"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}\n' +
-            '[/block]\n\n' +
             'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            '[block:parameters]\n' +
-            '{\n' +
-            '  "data": {\n' +
-            '    "h-0": "Parameter",\n' +
-            '    "h-1": "Description",\n' +
-            '    "0-0": "**response_type**",\n' +
-            '    "1-0": "**client_id**",\n' +
-            '  },\n' +
-            '  "cols": 3,\n' +
-            '  "rows": 5\n' +
-            '}\n' +
-            '[/block]\n\n' +
             'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
             '\n' +
             'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
@@ -2404,63 +2265,6 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileLocalizeTextWithListAndBlockWithNoSpace: function(test) {
-        test.expect(2);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse(
-            '* list item 1\n' +
-            '* list item 2\n' +
-            '[block:callout]\n' +
-            '{\n' +
-            '  "type": "test"\n' +
-            '}\n' +
-            '[/block]\n' +
-            '## Test Header\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r970090275',
-            source: 'list item 1',
-            target: 'article du liste No. 1',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r970155796',
-            source: 'list item 2',
-            target: 'article du liste No. 2',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r34696891',
-            source: 'Test Header',
-            target: 'Entête du Teste',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '* article du liste No. 1\n' +
-            '* article du liste No. 2\n\n' +
-            '[block:callout]\n' +
-            '{\n' +
-            '  "type": "test"\n' +
-            '}\n' +
-            '[/block]\n\n' +
-            '## Entête du Teste\n');
-
-        test.done();
-    },
-
     testMarkdownFileLocalizeTextHeaderWithNoSpace: function(test) {
         test.expect(2);
 
@@ -2496,61 +2300,6 @@ module.exports.markdown = {
             '# Entête mal\n\n' +
             '## Autre entête mal\n\n' +
             '# Entête mal\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextDontEscapeCode: function(test) {
-        test.expect(2);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse(
-            'test\n' +
-            '[block:code]\n' +
-            '{\n' +
-            '  "codes": [\n' +
-            '    {\n' +
-            '      "code": "aws cloudformation describe-stacks \\\\\\n    --stack-name boxskill \\\\\\n    --query \'Stacks[].Outputs\'\\n# Your URL should look something like this:\\n# https://[id].execute-api.us-east-1.amazonaws.com/Prod/hello/",\n' +
-            '      "language": "shell"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}\n' +
-            '[/block]\n' +
-            'test\n');
-
-        var translations = new TranslationSet();
-        translations.add(mf.API.newResource({
-            resType: "string",
-            project: "foo",
-            key: 'r852587715',
-            source: 'test',
-            target: 'Teste',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-
-        var actual = mf.localizeText(translations, "fr-FR");
-        var expected =
-            'Teste\n\n' +
-            '[block:code]\n' +
-            '{\n' +
-            '  "codes": [\n' +
-            '    {\n' +
-            '      "code": "aws cloudformation describe-stacks \\\\\\n    --stack-name boxskill \\\\\\n    --query \'Stacks[].Outputs\'\\n# Your URL should look something like this:\\n# https://[id].execute-api.us-east-1.amazonaws.com/Prod/hello/",\n' +
-            '      "language": "shell"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}\n' +
-            '[/block]\n\n' +
-            'Teste\n';
-
-        diff(actual, expected);
-
-        test.equal(actual, expected);
 
         test.done();
     },

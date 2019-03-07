@@ -371,7 +371,7 @@ var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
  * walk.
  */
 MarkdownFile.prototype._walk = function(node) {
-    var match, valid;
+    var match;
 
     switch (node.type) {
         case 'text':
@@ -388,28 +388,14 @@ MarkdownFile.prototype._walk = function(node) {
         case 'link':
         case 'emphasis':
         case 'strong':
-            // var thisComponent = this.componentIndex++;
-            // this.text += '<c' + thisComponent + '>';
             node.title && this._addTransUnit(node.title);
             if (node.children && node.children.length) {
                 this.message.push({
                     name: node.type,
                     node: node
                 });
-                valid = true;
                 node.children.forEach(function(child) {
-                    if (child.type === 'linkReference') {
-                        if (child.identifier.substring(0, 6) === "block:") {
-                            this._emitText();
-                            valid = false;
-                        } else if (child.identifier.substring(0, 6) === "/block") {
-                            valid = true;
-                            return;
-                        }
-                    }
-                    if (valid) {
-                        this._walk(child);
-                    }
+                    this._walk(child);
                 }.bind(this));
                 this.message.pop();
 
@@ -512,36 +498,8 @@ MarkdownFile.prototype._walk = function(node) {
         default:
             this._emitText();
             if (node.children && node.children.length) {
-                valid = true;
                 node.children.forEach(function(child, index, array) {
-                    if (child.type === 'linkReference') {
-                        if (child.identifier.substring(0, 6) === "block:") {
-                            this._emitText();
-                            valid = false;
-                        } else if (child.identifier.substring(0, 6) === "/block") {
-                            valid = true;
-                            return;
-                        }
-                    } else if (child.type === 'thematicBreak') {
-                        if (index+1 < array.length && array[index+1]) {
-                            var p = array[index+1];
-                            if (p.type === 'paragraph' &&
-                                p.children &&
-                                p.children.length > 0 &&
-                                p.children[0].type === "text" &&
-                                p.children[0].value.substring(0, 6) === "title:") {
-                                valid = false;
-                            } else {
-                                valid = true;
-                            }
-                        } else {
-                            valid = true;
-                        }
-                    }
-
-                    if (valid) {
-                        this._walk(child);
-                    }
+                    this._walk(child);
                 }.bind(this));
             }
             break;
@@ -692,7 +650,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
  * @private
  */
 MarkdownFile.prototype._localizeNode = function(node, message, locale, translations) {
-    var match, valid, translation;
+    var match, translation;
 
     switch (node.type) {
         case 'text':
@@ -851,9 +809,6 @@ function mapToAst(node) {
             children.push(child);
         }
     }
-    if (node.type === "code" && node.value.startsWith("[block:")) {
-        node.type = "html";
-    }
     if (node.extra) {
         node.extra.children = children;
         return node.extra;
@@ -941,39 +896,12 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
     // localizable segments that will get replaced with the translation
     var nodeArray = mapToNodes(ast).toArray();
 
-    var valid = true, start = -1, end, ma = new MessageAccumulator();
+    var start = -1, end, ma = new MessageAccumulator();
 
     for (var i = 0; i < nodeArray.length; i++) {
-        if (nodeArray[i].type === 'linkReference') {
-            if (nodeArray[i].identifier.substring(0, 6) === "block:") {
-                valid = false;
-            } else if (nodeArray[i].identifier.substring(0, 6) === "/block" && nodeArray[i].use === "end") {
-                valid = true;
-            }
-        } else if (nodeArray[i].type === 'thematicBreak') {
-            if (i+2 < nodeArray.length && nodeArray[i+1] && nodeArray[i+2]) {
-                if (nodeArray[i+1].type === 'paragraph' &&
-                        nodeArray[i+2].type === "text" &&
-                        nodeArray[i+2].value.substring(0, 6) === "title:") {
-                    // glue all the subsequent contiguous text nodes together as one
-                    var tmpStr = "";
-                    for (var j = i+2; j < nodeArray.length && nodeArray[j].type === "text"; j++) {
-                        tmpStr += nodeArray[j].value;
-                    }
-                    nodeArray[i+2].value = escapeQuotes(tmpStr);
-                    nodeArray.splice(i+2, j-i-2, nodeArray[i+2]);
-                    valid = false;
-                } else {
-                    valid = true;
-                }
-            } else {
-                valid = true;
-            }
-        }
+        this._localizeNode(nodeArray[i], ma, locale, translations);
 
-        if (valid) this._localizeNode(nodeArray[i], ma, locale, translations);
-
-        if (valid && nodeArray[i].localizable) {
+        if (nodeArray[i].localizable) {
             if (start < 0) {
                 start = i;
             }
@@ -994,7 +922,6 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
             start = -1;
             ma = new MessageAccumulator();
         }
-        if (!valid && nodeArray[i] && nodeArray[i].value) nodeArray[i].value = escapeQuotes(nodeArray[i].value);
     }
 
     // in case any is left over at the end
