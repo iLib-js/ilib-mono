@@ -39,6 +39,21 @@ var MarkdownFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
 };
 
 var alreadyLoc = new RegExp(/(^|\/)([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\//);
@@ -89,12 +104,12 @@ MarkdownFileType.prototype.newFile = function(path) {
     });
 };
 
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
- */
-MarkdownFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
+MarkdownFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+MarkdownFileType.prototype.getResourceTypes = function() {
+    return {};
 };
 
 module.exports = MarkdownFileType;

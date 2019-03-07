@@ -171,7 +171,7 @@ module.exports.markdownfiletype = {
 
         test.done();
     },
-    
+
     testMarkdownFileTypeHandlesSourceDirIsNotLocalized: function(test) {
         test.expect(2);
 

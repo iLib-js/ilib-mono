@@ -57,6 +57,7 @@ var mdft = new MarkdownFileType(p);
 var p2 = new CustomProject({
     sourceLocale: "en-US",
     id: "foo",
+    name: "foo",
     plugins: ["../."]
 }, "./test/testfiles", {
     locales:["en-GB"],
@@ -81,7 +82,7 @@ module.exports.markdown = {
         test.expect(1);
 
         var mf = new MarkdownFile({
-            project: p, 
+            project: p,
             pathName: "./testfiles/md/test1.md"
         });
 

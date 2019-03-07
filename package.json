@@ -63,7 +63,7 @@
         "unist-util-map": "^1.0.4"
     },
     "devDependencies": {
-        "loctool": "file:../open-loctool/loctool-2.1.0.tgz",
+        "loctool": "file:../loctool/loctool-2.1.0.tgz",
         "nodeunit": "^0.11.3"
     }
 }
