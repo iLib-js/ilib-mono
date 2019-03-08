@@ -21,11 +21,6 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var ResourceString = require("./ResourceString.js");
-var TranslationSet = require("./TranslationSet.js");
-var utils = require("./utils.js");
-
 var logger = log4js.getLogger("loctool.lib.CSVFile");
 
 var whiteSpaceChars = [' ', '\t', '\f', '\n', '\r', '\v'];
@@ -44,6 +39,9 @@ var CSVFile = function(options) {
 
     this.project = options.project;
     this.pathName = options.pathName;
+
+    this.datatype = "x-csv";
+    this.API = this.project.getAPI();
 
     this.rowSeparatorRegex = new RegExp(options.rowSeparatorRegex || options.rowSeparator || '[\n\r\f]+');
     this.rowSeparator = options.rowSeparator || '\n';
@@ -65,7 +63,7 @@ var CSVFile = function(options) {
     this.type = options.type;
     this.key = options.key || this.names[0];
 
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 
 /**
@@ -140,19 +138,6 @@ CSVFile.prototype.parse = function(data) {
         return json;
     }.bind(this));
 
-    /*
-        var r = new ResourceString({
-            project: this.project.getProjectId(),
-            locale: this.project.sourceLocale,
-            key: result[4],
-            source: CSVFile.cleanString(result[2]),
-            pathName: this.pathName,
-            state: "new",
-            comment: comment,
-            datatype: "CSV"
-        });
-        this.set.add(r);
-    */
 };
 
 /**
@@ -228,40 +213,54 @@ CSVFile.prototype.getLocalizedPath = function(locale) {
  */
 CSVFile.prototype.localizeText = function(translations, locale) {
     return this.names.join(this.columnSeparator) + this.rowSeparator + this.records.map(function(record) {
-        return this.names.map(function(name) {
+        return this.names.filter(function(name) {
+            return this.localizable.has(name);
+        }.bind(this)).map(function(name) {
             var text = record[name] || "",
                 translated = text;
 
+            var source = this.API.utils.escapeInvalidChars(text);
+            var key = this.makeKey(source);
+            var tester = this.API.newResource({
+                type: "string",
+                project: this.project.getProjectId(),
+                sourceLocale: this.project.getSourceLocale(),
+                reskey: key,
+                datatype: this.datatype
+            });
+            var hashkey = tester.hashKeyForTranslation(locale);
+            var translatedResource = translations.get(hashkey);
+
             if (text) {
-                if (this.localizable.has(name)) {
-                    if (this.type && locale === this.pseudoLocale && !this.project.settings.nopseudo) {
-                        translated = this.type.pseudoBundle.getStringJS(text);
-                    } else {
-                        var res = translations && translations.getClean(
-                            ResourceString.cleanHashKey(
-                                    this.project.getProjectId(), locale, this.makeKey(text), "x-csv"));
-                        if (res) {
-                            translated = res.getSource();
-                        } else {
-                            if (this.type) {
-                                logger.trace("New string found: " + text);
-                                this.type.newres.add(new ResourceString({
-                                    project: this.project.getProjectId(),
-                                    sourceLocale: this.project.sourceLocale,
-                                    source: text,
-                                    targetLocale: locale,
-                                    target: text,
-                                    key: this.makeKey(text),
-                                    autoKey: true,
-                                    pathName: this.pathName,
-                                    state: "new",
-                                    datatype: "x-csv"
-                                }));
-                                translated = this.project.settings.nopseudo && locale === this.project.pseudoLocale ? text : this.type.pseudoBundle.getStringJS(text);
-                            } else {
-                                translated = text;
-                            }
+                if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                    translated = source;
+                } else if (translatedResource) {
+                    translated = translatedResource.getTarget();
+                } else if (this.type) {
+                    if (this.type.pseudos && this.type.pseudos[locale]) {
+                        var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                        if (sourceLocale !== this.project.sourceLocale) {
+                            // translation is derived from a different locale's translation instead of from the source string
+                            var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
+                            source = sourceRes ? sourceRes.getTarget() : source;
                         }
+                        translated = this.type.pseudos[locale].getString(source);
+                    } else {
+                        logger.trace("New string found: " + source);
+                        this.type.newres.add(this.API.newResource({
+                            resType: "string",
+                            project: this.project.getProjectId(),
+                            key: key,
+                            sourceLocale: this.project.sourceLocale,
+                            source: text,
+                            targetLocale: locale,
+                            target: text,
+                            autoKey: true,
+                            pathName: this.pathName,
+                            state: "new",
+                            datatype: this.datatype
+                        }));
+                        translated = this.project.settings.nopseudo && locale === this.project.pseudoLocale ? text : this.type.pseudoBundle.getStringJS(text);
                     }
                 }
             }
@@ -291,7 +290,7 @@ CSVFile.prototype.localize = function(translations, locales) {
             logger.debug("Writing file " + pathName);
             var p = path.join(this.project.target, pathName);
             var d = path.dirname(p);
-            utils.makeDirs(d);
+            this.API.utils.makeDirs(d);
 
             fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
         }
@@ -359,7 +358,7 @@ CSVFile.prototype.write = function() {
 
     var p = path.join(this.project.target, this.pathName);
     var d = path.dirname(p);
-    utils.makeDirs(d);
+    this.API.utils.makeDirs(d);
 
     if (data) {
         fs.writeFileSync(p, data, "utf-8");
