@@ -1,8 +1,8 @@
 {
     "name": "ilib-loctool-html",
     "version": "1.0.0",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-html files",
+    "main": "./HTMLFileType.js",
+    "description": "A loctool plugin that knows how to localize static html files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -15,9 +15,8 @@
         "resources",
         "locale",
         "translation",
-        "webpack",
-        "loader",
-        "ilib-loctool-html"
+        "loctool",
+        "html"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -55,7 +54,7 @@
         "log4js": "^2.11.0"
     },
     "devDependencies": {
-        "loctool": "file:../open-loctool/loctool-2.1.0.tgz",
+        "loctool": "^2.1.0",
         "nodeunit": "^0.11.3"
     }
 }
