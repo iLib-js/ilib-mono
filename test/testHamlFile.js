@@ -47,7 +47,7 @@ function diff(a, b) {
 var p = new CustomProject({
     id: "webapp",
     sourceLocale: "en-US"
-}, "./testfiles", {
+}, "./test/testfiles", {
     nopseudo: true,
     locales: ["fr-FR", "es-US", "zh-Hans-CN", "zh-Hant-HK"]
 });
@@ -55,7 +55,7 @@ var p = new CustomProject({
 var pi = new CustomProject({
     id: "webapp",
     sourceLocale: "en-US"
-}, "./testfiles", {
+}, "./test/testfiles", {
     nopseudo: true,
     locales: ["fr-FR", "es-US", "zh-Hans-CN", "zh-Hant-HK"],
     identify: true
@@ -5240,7 +5240,7 @@ module.exports.hamlfile = {
 
         // now make sure the file was written out
 
-        test.ok(fs.existsSync("./testfiles/ruby/t2.fr-FR.html.haml"));
+        test.ok(fs.existsSync("./test/testfiles/ruby/t2.fr-FR.html.haml"));
 
         test.done();
     }

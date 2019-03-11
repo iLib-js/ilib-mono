@@ -836,11 +836,11 @@ HamlFile.prototype.localizeText = function(translations, locale) {
         if (segment.localizable) {
             var key = this.makeKey(this.API.utils.escapeInvalidChars(segment.text));
             var tester = this.API.newResource({
-                type: "string",
+                resType: "string",
                 project: this.project.getProjectId(),
                 sourceLocale: this.project.getSourceLocale(),
                 reskey: key,
-                datatype: this.datatype
+                datatype: this.type.datatype
             });
             // var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "markdown");
             var hashkey = tester.hashKeyForTranslation(locale);
@@ -866,7 +866,7 @@ HamlFile.prototype.localizeText = function(translations, locale) {
             } else {
                 var additional;
                 if (translated) {
-                    additional = translated;
+                    additional = translated.getTarget();
                     dirty |= (additional != segment.text);
                 } else {
                     if (this.type && containsActualText(segment.text)) {
