@@ -30,10 +30,6 @@ var MessageAccumulator = require("message-accumulator").default;
 var Queue = jsstl.Queue;
 var Stack = jsstl.Stack;
 
-var utils = require("./utils.js");
-var ResourceString = require("./ResourceString.js");
-var TranslationSet = require("./TranslationSet.js");
-
 var logger = log4js.getLogger("loctool.lib.HTMLFile");
 
 /**
@@ -45,11 +41,14 @@ var logger = log4js.getLogger("loctool.lib.HTMLFile");
  * of the project file
  * @param {FileType} type the file type instance of this file
  */
-var HTMLFile = function(project, pathName, type) {
-    this.project = project;
-    this.pathName = pathName;
-    this.type = type;
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+var HTMLFile = function(options) {
+    this.project = options.project;
+    this.pathName = options.pathName;
+    this.type = options.type;
+
+    this.API = this.project.getAPI();
+
+    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 
 /**
@@ -105,7 +104,7 @@ HTMLFile.cleanString = function(string) {
  * @returns {String} a unique key for this string
  */
 HTMLFile.prototype.makeKey = function(source) {
-    return utils.hashKey(HTMLFile.cleanString(source));
+    return this.API.utils.hashKey(HTMLFile.cleanString(source));
 };
 
 function nodeToString(node) {
@@ -145,22 +144,23 @@ HTMLFile.prototype._emitText = function(escape) {
     if (this.text.length) {
         this.segments.enqueue({
             localizable: true,
-            text: utils.escapeInvalidChars(this.text),
+            text: this.API.utils.escapeInvalidChars(this.text),
             escape: escape,
             message: this.message
         });
 
-        this.set.add(new ResourceString({
+        this.set.add(this.API.newResource({
+            resType: "string",
             project: this.project.getProjectId(),
-            key: this.makeKey(utils.escapeInvalidChars(this.text)),
+            key: this.makeKey(this.API.utils.escapeInvalidChars(this.text)),
             sourceLocale: this.project.sourceLocale,
-            source: utils.escapeInvalidChars(this.text),
+            source: this.API.utils.escapeInvalidChars(this.text),
             autoKey: true,
             pathName: this.pathName,
             lineNumber: this.lineNumber,
             state: "new",
             comment: this.comment,
-            datatype: "html",
+            datatype: this.type.datatype,
             index: this.resourceIndex++
         }));
     }
@@ -264,11 +264,11 @@ HTMLFile.prototype.parse = function(data) {
         openElement: function(name) {
             logger.trace('open tag: ' + name);
             lastTagName = name;
-            if (utils.ignoreTags[name]) {
+            if (this.API.utils.ignoreTags[name]) {
                 // ignore the content inside of this tag
                 this.ignore = true;
             }
-            if (!this.ignore && utils.nonBreakingTags[name] && !utils.ignoreTags[name]) {
+            if (!this.ignore && this.API.utils.nonBreakingTags[name] && !this.API.utils.ignoreTags[name]) {
                 this.tagtext += '<' + name;
             } else {
                 if (this.message.getTextLength()) {
@@ -293,7 +293,7 @@ HTMLFile.prototype.parse = function(data) {
                 this.accumulator += token;
             }
             lastTagName = undefined;
-            if (utils.nonBreakingTags[name] && !utils.ignoreTags[name]) {
+            if (this.API.utils.nonBreakingTags[name] && !this.API.utils.ignoreTags[name]) {
                 this.message.push({
                     name: name,
                     text: new String(this.tagtext)
@@ -304,11 +304,11 @@ HTMLFile.prototype.parse = function(data) {
         }.bind(this),
         closeElement: function(name) {
             logger.trace('close: %s', name);
-            if (utils.ignoreTags[name]) {
+            if (this.API.utils.ignoreTags[name]) {
                 // stop ignoring when we reach the closing tag
                 this.ignore = false;
             }
-            if (utils.nonBreakingTags[name] && this.message.getCurrentLevel() > 0) {
+            if (this.API.utils.nonBreakingTags[name] && this.message.getCurrentLevel() > 0) {
                 var tag = this.message.pop();
                 while (tag.name !== name && this.message.getCurrentLevel() > 0) {
                     tag = this.message.pop();
@@ -349,9 +349,10 @@ HTMLFile.prototype.parse = function(data) {
                 quote = '"';
             }
             value = value || "";
-            if ((name === "title" || (utils.localizableAttributes[lastTagName] && utils.localizableAttributes[lastTagName][name])) &&
+            if ((name === "title" || (this.API.utils.localizableAttributes[lastTagName] && this.API.utils.localizableAttributes[lastTagName][name])) &&
                     value.trim().length > 0 && value.substring(0,2) !== "<%") {
-                this.set.add(new ResourceString({
+                this.set.add(this.API.newResource({
+                    resType: "string",
                     project: this.project.getProjectId(),
                     key: this.makeKey(value),
                     sourceLocale: this.project.sourceLocale,
@@ -360,7 +361,7 @@ HTMLFile.prototype.parse = function(data) {
                     pathName: this.pathName,
                     state: "new",
                     comment: this.comment,
-                    datatype: "html",
+                    datatype: this.type.datatype,
                     index: this.resourceIndex++
                 }));
 
@@ -368,7 +369,7 @@ HTMLFile.prototype.parse = function(data) {
                     this.segments.enqueue({
                         localizable: true,
                         attributeSubstitution: true,
-                        text: utils.escapeQuotes(value),
+                        text: this.API.utils.escapeQuotes(value),
                         replacement: '{' + name + '}',
                         escape: true
                     });
@@ -390,9 +391,9 @@ HTMLFile.prototype.parse = function(data) {
             } else {
                 // non-localizable and values containing template tags just get added without localization
                 if (this.tagtext) {
-                    this.tagtext += " " + name + '=' + quote + utils.escapeQuotes(value) + quote;
+                    this.tagtext += " " + name + '=' + quote + this.API.utils.escapeQuotes(value) + quote;
                 } else {
-                    this.accumulator += " " + name + '=' + quote + utils.escapeQuotes(value) + quote;
+                    this.accumulator += " " + name + '=' + quote + this.API.utils.escapeQuotes(value) + quote;
                 }
             }
             this.lineNumber += countNewLines(value);
@@ -406,11 +407,11 @@ HTMLFile.prototype.parse = function(data) {
             logger.trace('text: value is "' + value + '"');
             if (this.ignore) {
                 this.accumulator += value;
-            } else if (utils.isAllWhite(value)) {
+            } else if (this.API.utils.isAllWhite(value)) {
                 if (this.tagtext) {
                     this.tagtext += value;
                 } else {
-                    this.message.addText(utils.unescapeSpaceEntities(value));
+                    this.message.addText(this.API.utils.unescapeSpaceEntities(value));
                 }
             } else {
                 if (this.accumulator) {
@@ -421,7 +422,7 @@ HTMLFile.prototype.parse = function(data) {
                     this.accumulator = "";
                 }
 
-                this.message.addText(utils.unescapeSpaceEntities(value));
+                this.message.addText(this.API.utils.unescapeSpaceEntities(value));
             }
             this.lineNumber += countNewLines(value);
         }.bind(this)
@@ -513,11 +514,19 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
     var substitution, replacement;
 
     this.resourceIndex = 0;
-    
+
     while (segment) {
         if (segment.localizable) {
             var text = (segment.message && segment.message.getMinimalString()) || segment.text;
-            var hashkey = ResourceString.cleanHashKey(this.project.getProjectId(), locale, this.makeKey(utils.escapeInvalidChars(text)), "html");
+            var key = this.makeKey(this.API.utils.escapeInvalidChars(text));
+            var tester = this.API.newResource({
+                resType: "string",
+                project: this.project.getProjectId(),
+                sourceLocale: this.project.getSourceLocale(),
+                reskey: key,
+                datatype: this.type.datatype
+            });
+            var hashkey = tester.hashKeyForTranslation(locale);
             var translated = translations.getClean(hashkey);
 
             if (segment.attributeSubstitution) {
@@ -527,8 +536,7 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
                     var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                     if (sourceLocale !== this.project.sourceLocale) {
                         // translation is derived from a different locale's translation instead of from the source string
-                        var sourceRes = translations.getClean(ResourceString.cleanHashKey(
-                                this.project.getProjectId(), sourceLocale, this.makeKey(utils.escapeInvalidChars(text)), "html"));
+                        var sourceRes = translations.getClean(tester.hashKeyForTranslation(sourceLocale));
                         source = sourceRes ? sourceRes.getTarget() : text;
                     } else {
                         source = text;
@@ -540,7 +548,7 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
 
                 replacement = segment.replacement;
 
-                substitution = utils.escapeQuotes(substitution);
+                substitution = this.API.utils.escapeQuotes(substitution);
             } else {
                 if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
                     additional = text;
@@ -549,7 +557,7 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
                     if (sourceLocale !== this.project.sourceLocale) {
                         // translation is derived from a different locale's translation instead of from the source string
                         var sourceRes = translations.getClean(ResourceString.cleanHashKey(
-                                this.project.getProjectId(), sourceLocale, this.makeKey(utils.escapeInvalidChars(text)), "html"));
+                                this.project.getProjectId(), sourceLocale, this.makeKey(this.API.utils.escapeInvalidChars(text)), this.type.datatype));
                         source = sourceRes ? sourceRes.getTarget() : text;
                     } else {
                         source = text;
@@ -560,19 +568,20 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
                     if (translated) {
                         additional = translated.getTarget();
                     } else {
-                        if (this.type && utils.containsActualText(text)) {
+                        if (this.type && this.API.utils.containsActualText(text)) {
                             logger.trace("New string found: " + text);
-                            this.type.newres.add(new ResourceString({
+                            this.type.newres.add(this.API.newResource({
+                                resType: "string",
                                 project: this.project.getProjectId(),
-                                key: this.makeKey(utils.escapeInvalidChars(text)),
+                                key: this.makeKey(this.API.utils.escapeInvalidChars(text)),
                                 sourceLocale: this.project.sourceLocale,
-                                source: utils.escapeInvalidChars(text),
+                                source: this.API.utils.escapeInvalidChars(text),
                                 targetLocale: locale,
-                                target: utils.escapeInvalidChars(text),
+                                target: this.API.utils.escapeInvalidChars(text),
                                 autoKey: true,
                                 pathName: this.pathName,
                                 state: "new",
-                                datatype: "html",
+                                datatype: this.type.datatype,
                                 index: this.resourceIndex++
                             }));
                             additional = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
@@ -594,11 +603,11 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
 
                 if (this.project.settings.identify) {
                     // make it clear what is the resource is for this string
-                    additional = '<span loclang="html" x-locid="' + utils.escapeQuotes(this.makeKey(utils.escapeInvalidChars(text))) + '">' + additional + '</span>';
+                    additional = '<span loclang="html" x-locid="' + this.API.utils.escapeQuotes(this.makeKey(this.API.utils.escapeInvalidChars(text))) + '">' + additional + '</span>';
                 }
 
                 if (segment.escape) {
-                    additional = utils.escapeQuotes(additional);
+                    additional = this.API.utils.escapeQuotes(additional);
                 }
 
                 output += additional;
@@ -634,7 +643,7 @@ HTMLFile.prototype.localize = function(translations, locales) {
                     logger.debug("Writing file " + pathName);
                     var p = path.join(this.project.target, pathName);
                     var d = path.dirname(p);
-                    utils.makeDirs(d);
+                    this.API.utils.makeDirs(d);
 
                     fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
                 }

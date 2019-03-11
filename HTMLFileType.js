@@ -20,28 +20,40 @@
 var fs = require("fs");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var HTMLFile = require("./HTMLFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ResourceString = require("./ResourceString.js");
 
 var logger = log4js.getLogger("loctool.lib.HTMLFileType");
 
 var HTMLFileType = function(project) {
     this.type = "html";
     this.datatype = "html";
-    this.parent.call(this, project);
-    this.extensions = [ ".html", ".htm" ];
-};
 
-HTMLFileType.prototype = new FileType();
-HTMLFileType.prototype.parent = FileType;
-HTMLFileType.prototype.constructor = HTMLFileType;
+    this.project = project;
+    this.API = project.getAPI();
+
+    this.extensions = [ ".html", ".htm" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html?$/);
 
@@ -83,7 +95,11 @@ HTMLFileType.prototype.write = function() {
 };
 
 HTMLFileType.prototype.newFile = function(path) {
-    return new HTMLFile(this.project, path, this);
+    return new HTMLFile({
+        project: this.project,
+        pathName: path,
+        type: this
+    });
 };
 
 /**

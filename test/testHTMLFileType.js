@@ -18,19 +18,28 @@
  */
 
 if (!HTMLFileType) {
-    var HTMLFileType = require("../lib/HTMLFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var HTMLFileType = require("../HTMLFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB"]
+});
+
+
+var p2 = new CustomProject({
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB"],
+    flavors: ["ASDF"]
+});
+
 
 module.exports.htmlfiletype = {
     testHTMLFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLFileType(p);
 
@@ -41,12 +50,6 @@ module.exports.htmlfiletype = {
 
     testHTMLFileTypeHandlesTrue: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLFileType(p);
         test.ok(htf);
@@ -59,12 +62,6 @@ module.exports.htmlfiletype = {
     testHTMLFileTypeHandlesFalseClose: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HTMLFileType(p);
         test.ok(htf);
 
@@ -75,12 +72,6 @@ module.exports.htmlfiletype = {
 
     testHTMLFileTypeHandlesTrue: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLFileType(p);
         test.ok(htf);
@@ -93,12 +84,6 @@ module.exports.htmlfiletype = {
     testHTMLFileTypeHandlesAlternateExtensionTrue: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HTMLFileType(p);
         test.ok(htf);
 
@@ -109,12 +94,6 @@ module.exports.htmlfiletype = {
 
     testHTMLFileTypeHandlesTrueWithDir: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLFileType(p);
         test.ok(htf);
@@ -127,12 +106,6 @@ module.exports.htmlfiletype = {
     testHTMLFileTypeHandlesAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HTMLFileType(p);
         test.ok(htf);
 
@@ -143,12 +116,6 @@ module.exports.htmlfiletype = {
 
     testHTMLFileTypeHandlesAlreadyLocalizedCN: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLFileType(p);
         test.ok(htf);
@@ -161,14 +128,7 @@ module.exports.htmlfiletype = {
     testHTMLFileTypeHandlesAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var htf = new HTMLFileType(p);
+        var htf = new HTMLFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("a/b/c/foo.en-ZA-ASDF.html"));
@@ -179,14 +139,7 @@ module.exports.htmlfiletype = {
     testHTMLFileTypeHandleszhHKAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var htf = new HTMLFileType(p);
+        var htf = new HTMLFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("a/b/c/foo.zh-Hant-HK-ASDF.html"));

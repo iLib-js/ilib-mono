@@ -17,7 +17,7 @@
         "translation",
         "webpack",
         "loader",
-		"ilib-loctool-html"
+        "ilib-loctool-html"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,7 +33,9 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "HTMLFile.js",
+        "HTMLFileType.js"
     ],
     "repository": {
         "type": "git",
@@ -53,7 +55,7 @@
         "log4js": "^2.11.0"
     },
     "devDependencies": {
-        "loctool": "^2.1.0",
+        "loctool": "file:../open-loctool/loctool-2.1.0.tgz",
         "nodeunit": "^0.11.3"
     }
 }
