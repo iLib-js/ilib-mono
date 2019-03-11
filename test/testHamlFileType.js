@@ -1,7 +1,7 @@
 /*
  * testHamlFileType.js - test the Haml template file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,27 @@
  */
 
 if (!HamlFileType) {
-    var HamlFileType = require("../lib/HamlFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var HamlFileType = require("../HamlFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB"]
+});
+
+var p2 = new CustomProject({
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB"],
+    flavors: ["ASDF"]
+});
+
 
 module.exports.hamlfiletype = {
     testHamlFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HamlFileType(p);
 
@@ -41,12 +49,6 @@ module.exports.hamlfiletype = {
 
     testHamlFileTypeHandlesTrue: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HamlFileType(p);
         test.ok(htf);
@@ -59,12 +61,6 @@ module.exports.hamlfiletype = {
     testHamlFileTypeHandlesFalseClose: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HamlFileType(p);
         test.ok(htf);
 
@@ -75,12 +71,6 @@ module.exports.hamlfiletype = {
 
     testHamlFileTypeHandlesFalse: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HamlFileType(p);
         test.ok(htf);
@@ -93,12 +83,6 @@ module.exports.hamlfiletype = {
     testHamlFileTypeHandlesTrueWithDir: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HamlFileType(p);
         test.ok(htf);
 
@@ -109,12 +93,6 @@ module.exports.hamlfiletype = {
 
     testHamlFileTypeHandlesAlreadyLocalizedGB: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HamlFileType(p);
         test.ok(htf);
@@ -127,12 +105,6 @@ module.exports.hamlfiletype = {
     testHamlFileTypeHandlesAlreadyLocalizedES: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HamlFileType(p);
         test.ok(htf);
 
@@ -143,12 +115,6 @@ module.exports.hamlfiletype = {
 
     testHamlFileTypeHandlesAlreadyLocalizedCN: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HamlFileType(p);
         test.ok(htf);
@@ -161,12 +127,6 @@ module.exports.hamlfiletype = {
     testHamlFileTypeHandlesAlreadyLocalizedCN2: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HamlFileType(p);
         test.ok(htf);
 
@@ -178,14 +138,7 @@ module.exports.hamlfiletype = {
     testHamlFileTypeHandlesAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var htf = new HamlFileType(p);
+        var htf = new HamlFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("a/b/c/foo.en-ZA-ASDF.html.haml"));
@@ -196,14 +149,7 @@ module.exports.hamlfiletype = {
     testHamlFileTypeHandlesAlreadyLocalizedHKWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var htf = new HamlFileType(p);
+        var htf = new HamlFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("a/b/c/foo.zh-Hant-HK-ASDF.html.haml"));

@@ -25,31 +25,40 @@ var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var HamlFile = require("./HamlFile.js");
-var YamlResourceFile = require("./YamlResourceFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ResourceString = require("./ResourceString.js");
 
 var logger = log4js.getLogger("loctool.lib.HamlFileType");
 
 var HamlFileType = function(project) {
     this.type = "ruby";
     this.datatype = "x-haml";
-
-    this.parent.call(this, project);
+    
+    this.project = project;
+    this.API = project.getAPI();
+    
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 
     this.files = [];
 
-    this.modern = new TranslationSet(project.sourceLocale);
     this.extensions = [ ".haml" ];
-};
 
-HamlFileType.prototype = new FileType();
-HamlFileType.prototype.parent = FileType;
-HamlFileType.prototype.constructor = HamlFileType;
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
 
@@ -90,9 +99,6 @@ HamlFileType.prototype.write = function() {};
 
 HamlFileType.prototype.newFile = function(pathName) {
     logger.trace("Creating new haml file for " + pathName + " len " + this.files.length);
-    if (alreadyLoc.test(pathName)) {
-
-    }
     this.files.push(pathName);
     return new HamlFile({
         project: this.project,
@@ -101,12 +107,12 @@ HamlFileType.prototype.newFile = function(pathName) {
     });
 };
 
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
- */
-HamlFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
+HamlFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+HamlFileType.prototype.getResourceTypes = function() {
+    return {};
 };
 
 module.exports = HamlFileType;

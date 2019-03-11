@@ -19,7 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var utils = require("./utils.js");
 var ilib = require("ilib");
 var IString = require("ilib/lib/IString.js");
 var isSpace = require("ilib/lib/isSpace.js");
@@ -29,9 +28,6 @@ var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var Locale = require("ilib/lib/Locale.js");
 
-var ResourceString = require("./ResourceString.js");
-var TranslationSet = require("./TranslationSet.js");
-
 var Queue = jsstl.Queue;
 
 var logger = log4js.getLogger("loctool.lib.HamlFile");
@@ -39,7 +35,7 @@ var logger = log4js.getLogger("loctool.lib.HamlFile");
 // load the locale data
 isSpace._init();
 
-var entjson = fs.readFileSync(path.join(path.dirname(module.filename), "../db/entities.json"), "utf-8");
+var entjson = fs.readFileSync(path.join(path.dirname(module.filename), "./entities.json"), "utf-8");
 var entities = JSON.parse(entjson);
 
 /**
@@ -56,7 +52,10 @@ var HamlFile = function(options) {
         this.pathName = options.pathName;
         this.type = options.type;
     }
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+
+    this.API = this.project.getAPI();
+
+    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 
 var reEscapeChar = /\\[ux]([a-fA-F0-9]+)/g;
@@ -136,7 +135,7 @@ HamlFile.cleanString = function(string) {
  * @returns {String} a unique key for this string
  */
 HamlFile.prototype.makeKey = function(source) {
-    return utils.hashKey(HamlFile.cleanString(source));
+    return this.API.utils.hashKey(HamlFile.cleanString(source));
 };
 
 var reRubySubstitution = /#{("(\\"|[^"])*"|'(\\'|[^'])*'|[^}])*}/g;
@@ -543,7 +542,8 @@ HamlFile.prototype.emitNonLocalized = function(data) {
                 original: this.originalBuffer
             });
 
-            this.set.add(new ResourceString({
+            this.set.add(this.API.newResource({
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: this.makeKey(unescaped),
                 sourceLocale: this.project.sourceLocale,
@@ -696,10 +696,10 @@ HamlFile.prototype.parse = function(data) {
                 if (line[lineIndent] === "%" && this.localizedBuffer.length > 0) {
                     var tag = this.tagName(lineIndent+1);
                     var rest = line.substring(end);
-                    if (utils.nonBreakingTags[tag] &&
+                    if (this.API.utils.nonBreakingTags[tag] &&
                             startLine === this.currentLine &&
                             lineIndent >= currentIndent &&
-                            (rest.trim() !== "" || utils.selfClosingTags[tag])) {
+                            (rest.trim() !== "" || this.API.utils.selfClosingTags[tag])) {
                         var tagWithAttrs = this.convertTag();
                         // if convertTag returns nothing then we could not convert the text
                         // into an inline tag, so we just have to treat it like a breaking tag
@@ -707,7 +707,7 @@ HamlFile.prototype.parse = function(data) {
                             this.emitLocalized(tagWithAttrs, tagWithAttrs + '\n');
                             this.emitLocalized(rest.trim(), rest + '\n', true);
                             // don't add the closing tag for a self-closed tag
-                            if (!utils.selfClosingTags[tag] && tagWithAttrs.substr(-2) !== "/>") {
+                            if (!this.API.utils.selfClosingTags[tag] && tagWithAttrs.substr(-2) !== "/>") {
                                 tagWithAttrs = "</" + tag + ">";
                                 this.emitLocalized(tagWithAttrs, tagWithAttrs + '\n', true);
                             }
@@ -799,7 +799,7 @@ HamlFile.prototype.getLocalizedPath = function(locale) {
     var fullPath = this.pathName;
     var dirName = path.dirname(fullPath);
     var fileName = path.basename(fullPath);
-    var localeName = locale; // should be utils.getLocaleDefault(locale);
+    var localeName = locale; // should be this.API.utils.getLocaleDefault(locale);
     var parts = fileName.split(".");
 
     if (parts.length > 2) {
@@ -814,157 +814,6 @@ HamlFile.prototype.getLocalizedPath = function(locale) {
         parts.splice(parts.length, 0, localeName);
     }
     return path.join(dirName, parts.join("."));
-};
-
-/**
- * Find the translation for the given segment. The segment may have a
- * new, modern translation, or a number of old translations that have
- * to be assembled together.<p>
- *
- * If the modern translation is found, it is returned. If not, this
- * method attempts to recreate the translation from the bits and pieces
- * of old translations. The old haml localizer code would break on
- * any HTML or ruby #{hash} code, and on every single line. As such,
- * the translations are fragmented. The full translation can be
- * re-assembled again by breaking the source string up in the same
- * way as the old code, and looking up the translations of each bit.
- * If the translation could be completely re-assembled, then that
- * re-assembled translation is emitted again to the re-assembled
- * translation set so that it can be added to the modern translations later.
- * If it could not be completely reassembled, then it is not returned
- * and the modern string will appear in the new strings file as normal
- * for a new translation.
- *
- * @param {Object} segment the localizable segment to assemble the translation of
- * @param {TranslationSet} translations the current set of translations
- * @param {String} locale the locale to translate to
- * @returns {String|undefined} the re-assembled translation or undefined if not all
- * of the segments of the string could be translated and assembled together
- */
-HamlFile.prototype.assembleTranslation = function(segment, translations, locale) {
-
-    var translated = translations.getClean(
-            ResourceString.cleanHashKey(
-                    this.project.getProjectId(), locale, this.makeKey(segment.text), this.type.datatype));
-
-    if (translated) {
-        // modern translation
-        return translated.getTarget();
-    }
-
-    if (this.type && this.type.pseudos[locale]) {
-        // for a pseudo locale, don't cobble together pieces that don't exist. Instead,
-        // return nothing here and allow the pseudo locale to generate the whole translation
-        return undefined;
-    }
-
-    // need to cobble together old translations
-    var text = segment.original;
-    var match, lines = [], all = true, any = false;
-
-    reHtml.lastIndex = 0;
-
-    // split on newlines and html tags
-    text.split('\n').map(function(line) {
-        return line.trim();
-    }).forEach(function(line) {
-        reHtml.lastIndex = 0;
-        while ((match = reHtml.exec(line)) !== null) {
-            if (match.index) {
-                lines.push(line.substring(0, match.index));
-            }
-            lines.push(match[0]);
-            line = line.substring(match.index + match[0].length);
-            reHtml.lastIndex = 0;
-        }
-        if (line.length) {
-            lines.push(line);
-        }
-    });
-
-    // split on html entities as well
-    var lines2 = [];
-    lines.forEach(function(line) {
-        reEntities.lastIndex = 0;
-        while ((match = reEntities.exec(line)) !== null) {
-            if (match.index) {
-                lines2.push(line.substring(0, match.index));
-            }
-            lines2.push(match[0]);
-            line = line.substring(match.index + match[0].length);
-            reEntities.lastIndex = 0;
-        }
-        if (line.length) {
-            lines2.push(line);
-        }
-    });
-
-    var translationList = lines2.map(function(line) {
-        if (line[0] === "<" || line[0] === '&') {
-            // html tag or entity, just return it unaltered
-            return line;
-        }
-        var translated = translations.getClean(
-            ResourceString.cleanHashKey(
-                this.project.getProjectId(), locale, this.makeKey(line), this.type.datatype));
-        all = all && !!translated;
-        any = any || (translated && translated.getTarget() !== line);
-        return translated && translated.getTarget();
-    }.bind(this));
-
-    // if we don't have translations for everything, just return that fact by returning undefined
-    // if (!all) return undefined;
-
-    var l = new Locale(locale).getLanguage();
-    var joinchar = (l === "zh" || l === "ja" || l === "th" || l === "km") ? "" : " ";
-
-    translated = translationList[0] || lines2[0];
-    for (var i = 1; i < translationList.length; i++) {
-        var last = translationList[i-1] || lines2[i-1];
-        var current = translationList[i] || lines2[i];
-
-        if ((last[0] !== '<' || last[1] === '/' || current.substr(-2) === "/>") &&
-                current.substring(0, 2) !== '</') {
-            translated += joinchar;
-        }
-        translated += current;
-    }
-
-    if (translated) {
-        translated = HamlFile.unescapeString(translated);
-
-        // save this as the modern translation so that it can be fixed and
-        // to speed up localization later
-        var target = new ResourceString({
-            project: this.project.getProjectId(),
-            key: this.makeKey(escapeInvalidChars(segment.text)),
-            sourceLocale: this.project.sourceLocale,
-            source: escapeInvalidChars(segment.text),
-            targetLocale: locale,
-            target: translated,
-            autoKey: true,
-            pathName: this.pathName,
-            state: "new",
-            datatype: this.type.datatype,
-            origin: "target",
-            index: this.resourceIndex++
-        });
-        if (all) {
-            this.type.modern.add(target);
-        } else {
-            if (any) {
-                target.comment = target.comment ? target.comment + " " : "";
-                target.comment += "Not all segments are completely translated. Needs an review."
-            }
-            this.type.newres.add(target);
-        }
-
-        // also save this in the translation set so that later pseudo localizations
-        // can use it as the source if necessary
-        translations.add(target);
-    }
-
-    return translated;
 };
 
 /**
@@ -985,8 +834,20 @@ HamlFile.prototype.localizeText = function(translations, locale) {
 
     while (segment) {
         if (segment.localizable) {
-            var hashkey = ResourceString.cleanHashKey(this.project.getProjectId(), locale, this.makeKey(segment.text), this.type.datatype);
-            var translated = this.assembleTranslation(segment, translations, locale);
+            var key = this.makeKey(this.API.utils.escapeInvalidChars(segment.text));
+            var tester = this.API.newResource({
+                type: "string",
+                project: this.project.getProjectId(),
+                sourceLocale: this.project.getSourceLocale(),
+                reskey: key,
+                datatype: this.datatype
+            });
+            // var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "markdown");
+            var hashkey = tester.hashKeyForTranslation(locale);
+
+            // var hashkey = ResourceString.cleanHashKey(this.project.getProjectId(), locale, this.makeKey(segment.text), this.type.datatype);
+            var translated = translations.getClean(hashkey);
+            
             if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
                 // ret[key] = segment.text;
                 additional = segment.text;
@@ -994,8 +855,7 @@ HamlFile.prototype.localizeText = function(translations, locale) {
                 var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                 if (sourceLocale !== this.project.sourceLocale) {
                     // translation is derived from a different locale's translation instead of from the source string
-                    var sourceRes = translations.getClean(ResourceString.cleanHashKey(
-                            this.project.getProjectId(), sourceLocale, this.makeKey(segment.text), this.type.datatype));
+                    var sourceRes = translations.getClean(tester.hashKeyForTranslation(sourceLocale));
                     source = sourceRes ? sourceRes.getTarget() : segment.text;
                     additional = this.type.pseudos[locale].getString(source);
                     dirty |= (sourceRes && additional !== segment.text);
@@ -1011,7 +871,8 @@ HamlFile.prototype.localizeText = function(translations, locale) {
                 } else {
                     if (this.type && containsActualText(segment.text)) {
                         logger.trace("New string found: " + segment.text);
-                        this.type.newres.add(new ResourceString({
+                        this.type.newres.add(this.API.newResource({
+                            resType: "string",
                             project: this.project.getProjectId(),
                             sourceLocale: this.project.sourceLocale,
                             source: escapeInvalidChars(segment.text),
@@ -1034,7 +895,7 @@ HamlFile.prototype.localizeText = function(translations, locale) {
             }
 
             if (this.project.settings.identify) {
-                additional = '<span loclang="haml" locid="' + utils.escapeQuotes(this.makeKey(escapeInvalidChars(segment.text))) + '">' + additional + '</span>';
+                additional = '<span loclang="haml" locid="' + this.API.utils.escapeQuotes(this.makeKey(escapeInvalidChars(segment.text))) + '">' + additional + '</span>';
             }
             output += HamlFile.escape(additional);
         } else {
@@ -1067,7 +928,7 @@ HamlFile.prototype.localize = function(translations, locales) {
                 if (localized) {
                     var p = path.join(this.project.target, pathName);
                     var d = path.dirname(p);
-                    utils.makeDirs(d);
+                    this.API.utils.makeDirs(d);
 
                     // only write out the file if there was something translated in it
                     // if not, rails will fall back to the base US English file by itself
