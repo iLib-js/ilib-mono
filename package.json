@@ -1,8 +1,8 @@
 {
-    "name": "ilib-loctool-ghfm",
+    "name": "ilib-loctool-ghfm-readmeio",
     "version": "1.0.0",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-ghfm files",
+    "main": "./MarkdownFileType.js",
+    "description": "A loctool plugin that knows how to process github-flavored markdown files with www.readme.io extensions",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -17,7 +17,9 @@
         "translation",
         "webpack",
         "loader",
-        "ilib-loctool-ghfm"
+        "github",
+        "markdown",
+        "readme.io"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,11 +35,13 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "MarkdownFile.js",
+        "MarkdownFileType.js"
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-loctool-ghfm.git"
+        "url": "https://github.com/iLib-js/ilib-loctool-ghfm-readmeio.git"
     },
     "scripts": {
         "dist": "npm pack",
@@ -63,7 +67,7 @@
         "unist-util-map": "^1.0.4"
     },
     "devDependencies": {
-        "loctool": "file:../loctool/loctool-2.1.0.tgz",
+        "loctool": "2.1.0",
         "nodeunit": "^0.11.3"
     }
 }
