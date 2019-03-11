@@ -1,8 +1,8 @@
 {
     "name": "ilib-loctool-ghfm",
-    "version": "1.0.0",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-ghfm files",
+    "version": "1.0.1",
+    "main": "./MarkdownFileType.js",
+    "description": "A loctool plugin that knows how to process github-flavored markdown files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -17,7 +17,9 @@
         "translation",
         "webpack",
         "loader",
-        "ilib-loctool-ghfm"
+        "github",
+        "flavor",
+        "markdown"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,7 +35,9 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "MarkdownFile.js",
+        "MarkdownFileType.js"
     ],
     "repository": {
         "type": "git",
@@ -63,7 +67,7 @@
         "unist-util-map": "^1.0.4"
     },
     "devDependencies": {
-        "loctool": "file:../loctool/loctool-2.1.0.tgz",
+        "loctool": "^2.1.0",
         "nodeunit": "^0.11.3"
     }
 }
