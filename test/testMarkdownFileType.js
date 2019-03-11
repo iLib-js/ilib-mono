@@ -25,8 +25,15 @@ if (!MarkdownFileType) {
 var p = new CustomProject({
     sourceLocale: "en-US",
     plugins: ["../."]
-}, "./testfiles", {
+}, "./test/testfiles", {
     locales:["en-GB"]
+});
+
+var p2 = new CustomProject({
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    flavors: ["ASDF"]
 });
 
 module.exports.markdownfiletype = {
@@ -153,7 +160,7 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var htf = new MarkdownFileType(p);
+        var htf = new MarkdownFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("en-ZA-ASDF/a/b/c/foo.md"));
@@ -164,7 +171,7 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandleszhHKAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var htf = new MarkdownFileType(p);
+        var htf = new MarkdownFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("zh-Hant-HK-ASDF/a/b/c/foo.md"));
@@ -175,12 +182,35 @@ module.exports.markdownfiletype = {
     testMarkdownFileTypeHandlesSourceDirIsNotLocalized: function(test) {
         test.expect(2);
 
-        var htf = new MarkdownFileType(p);
+        var htf = new MarkdownFileType(p2);
         test.ok(htf);
 
         test.ok(htf.handles("en-US/a/b/c/foo.md"));
 
         test.done();
-    }
+    },
 
+    testMarkdownFileTypeHandlesSourceDirNotLocalizedWithMD: function(test) {
+        test.expect(2);
+
+        var htf = new MarkdownFileType(p2);
+        test.ok(htf);
+
+        // md has the form of an iso language name, but it is not a real language
+        test.ok(htf.handles("md/a/b/c/foo.md"));
+
+        test.done();
+    },
+
+    testMarkdownFileTypeHandlesSourceDirNotLocalizedWithLocaleLookingDir: function(test) {
+        test.expect(2);
+
+        var htf = new MarkdownFileType(p2);
+        test.ok(htf);
+
+        // en-AA looks like a real locale, but it is not because XX is not a country code
+        test.ok(htf.handles("en-XX/a/b/c/foo.md"));
+
+        test.done();
+    }
 };
