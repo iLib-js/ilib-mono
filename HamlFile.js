@@ -842,7 +842,6 @@ HamlFile.prototype.localizeText = function(translations, locale) {
                 reskey: key,
                 datatype: this.type.datatype
             });
-            // var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "markdown");
             var hashkey = tester.hashKeyForTranslation(locale);
 
             // var hashkey = ResourceString.cleanHashKey(this.project.getProjectId(), locale, this.makeKey(segment.text), this.type.datatype);
