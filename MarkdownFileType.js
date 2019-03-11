@@ -56,7 +56,7 @@ var MarkdownFileType = function(project) {
     }
 };
 
-var alreadyLoc = new RegExp(/(^|\/)([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\//);
+var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-([A-Z][A-Z])(-[A-Z]+)?)?)\//);
 
 /**
  * Return true if the given path is an Markdown template file and is handled
@@ -73,7 +73,16 @@ MarkdownFileType.prototype.handles = function(pathName) {
 
     if (ret) {
         var match = alreadyLoc.exec(pathName);
-        ret = (match && match.length > 2) ? match[2] === this.project.sourceLocale : true;
+        if (match && match.length > 2) {
+            if (this.API.utils.iso639[match[3]]) {
+                if (match.length < 6 || !match[6] || !this.API.utils.iso3166[match[6]]) {
+                    return true;
+                }
+                return match[2] === this.project.sourceLocale;
+            } else {
+                return true;
+            }
+        }
     }
     logger.debug(ret ? "Yes" : "No");
     return ret;
