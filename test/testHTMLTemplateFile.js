@@ -1,7 +1,7 @@
 /*
  * testHTMLTemplateFile.js - test the HTML template file handler object.
  *
- * Copyright © 2016-2017, 2019 HealthTap, Inc.
+ * Copyright © 2019 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ var path = require("path");
 var fs = require("fs");
 
 if (!HTMLTemplateFile) {
-    var HTMLTemplateFile = require("../lib/HTMLTemplateFile.js");
-    var HTMLTemplateFileType = require("../lib/HTMLTemplateFileType.js");
+    var HTMLTemplateFile = require("../HTMLTemplateFile.js");
+    var HTMLTemplateFileType = require("../HTMLTemplateFileType.js");
 
-    var WebProject =  require("../lib/WebProject.js");
-    var TranslationSet =  require("../lib/TranslationSet.js");
-    var ResourceString =  require("../lib/ResourceString.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
+    var TranslationSet =  require("loctool/lib/TranslationSet.js");
+    var ResourceString =  require("loctool/lib/ResourceString.js");
 }
 
 function diff(a, b) {
@@ -42,11 +42,32 @@ function diff(a, b) {
     }
 }
 
+var p = new CustomProject({
+    name: "foo",
+    id: "foo",
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    targetDir: "testfiles"
+});
+
+var p2 = new CustomProject({
+    name: "foo",
+    id: "foo",
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    identify: true,
+    targetDir: "testfiles"
+});
+
+var t = new HTMLTemplateFileType(p2);
+
 module.exports.htmltemplatefile = {
     testHTMLTemplateFileConstructor: function(test) {
         test.expect(1);
 
-        var htf = new HTMLTemplateFile();
+        var htf = new HTMLFile({project: p});
         test.ok(htf);
 
         test.done();
@@ -55,13 +76,11 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileConstructorParams: function(test) {
         test.expect(1);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName: "./testfiles/html/CookieFlow.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./testfiles/tmpl/CookieFlowTemplate.tmpl.html");
 
         test.ok(htf);
 
@@ -71,13 +90,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileConstructorNoFile: function(test) {
         test.expect(1);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         test.done();
@@ -86,13 +102,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKey: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         test.equal(htf.makeKey("This is a test"), "This is a test");
@@ -103,13 +116,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKeyNoReturnChars: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         test.equal(htf.makeKey("This is\n a te\nst"), "This is a te st");
@@ -120,13 +130,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKeyCompressWhiteSpace: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         test.equal(htf.makeKey("This \t is\n \t a   test"), "This is a test");
@@ -137,13 +144,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKeyTrimWhiteSpace: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         test.equal(htf.makeKey("\n\t This \t is\n \t a   test\n\n\n"), "This is a test");
@@ -154,13 +158,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleGetByKey: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body>This is a test</body></html>');
@@ -180,13 +181,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleGetBySource: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body>This is a test</body></html>');
@@ -205,13 +203,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleIgnoreWhitespace: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -234,15 +229,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontExtractUnicodeWhitespace: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            name: "foo",
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         // contains U+00A0 non-breaking space and other Unicode space characters
@@ -259,15 +249,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontExtractNbspEntity: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            name: "foo",
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<div>&nbsp; &nnbsp; &mmsp;</div>\n');
@@ -283,15 +268,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDoExtractOtherEntities: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            name: "foo",
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<div>&uuml;</div>\n');
@@ -307,13 +287,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNoStrings: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<div class="noheader medrx"></div>');
@@ -328,13 +305,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleRightSize: function(test) {
         test.expect(4);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         var set = htf.getTranslationSet();
@@ -352,13 +326,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseMultiple: function(test) {
         test.expect(8);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -389,13 +360,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseWithDups: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -424,13 +392,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseEscapeInvalidChars: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -456,13 +421,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseIgnoreDoctypeTag: function(test) {
         test.expect(8);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -495,13 +457,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontEscapeWhitespaceChars: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -527,13 +486,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSkipTemplateEchoTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -582,13 +537,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSkipTemplateEchoEscapedTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -637,13 +588,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileSkipScript: function(test) {
         test.expect(8);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -682,13 +630,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -711,13 +656,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsOutside: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -742,13 +684,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsInside: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -773,13 +712,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsInsideMultiple: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -803,13 +739,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsNotWellFormed: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -833,13 +766,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -863,13 +793,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsTagStackIsReset: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -894,13 +820,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableTitle: function(test) {
         test.expect(8);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -930,13 +853,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableAttributes: function(test) {
         test.expect(11);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -971,13 +891,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableAttributesSkipEmpty: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1004,13 +921,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableAttributesAndNonBreakingTags: function(test) {
         test.expect(8);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1038,13 +952,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseBreakBetweenTemplateTags: function(test) {
         test.expect(8);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1076,13 +986,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontBreakBetweenTemplateEchoTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1105,13 +1011,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontIncludeStartingTemplateEchoTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1134,13 +1036,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontIncludeEndingTemplateEchoTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1163,13 +1061,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseTemplateEchoTagsInsideTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1192,13 +1086,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontBreakBetweenTemplateEchoEscapedTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1221,13 +1111,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontIncludeStartingTemplateEchoEscapedTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1250,13 +1136,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontIncludeEndingTemplateEchoTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1279,13 +1161,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseTemplateEchoEscapedTagsInsideTags: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1308,13 +1186,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseI18NComments: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1339,14 +1213,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseIgnoreScriptTags: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body>\n' +
@@ -1374,14 +1243,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseIgnoreStyleTags: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body>\n' +
@@ -1412,14 +1276,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseIgnoreCodeTags: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body>\n' +
@@ -1448,13 +1307,10 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./tmpl/CookieFlowTemplate.tmpl.html"
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/CookieFlowTemplate.tmpl.html");
         test.ok(htf);
 
         // should read the file
@@ -1492,14 +1348,10 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./tmpl/topic_navigation_main.tmpl.html"
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/topic_navigation_main.tmpl.html");
         test.ok(htf);
 
         // should read the file
@@ -1542,13 +1394,9 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         // should attempt to read the file and not fail
@@ -1566,13 +1414,10 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./tmpl/bogus.tmpl.html"
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/bogus.tmpl.html");
         test.ok(htf);
 
         // should attempt to read the file and not fail
@@ -1588,15 +1433,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeText: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            name: "foo",
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body>This is a test</body></html>\n');
@@ -1623,15 +1462,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextPreserveWhitespace: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            name: "foo",
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1664,15 +1497,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextPreserveSelfClosingTags: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            name: "foo",
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1707,14 +1534,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextMultiple: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1762,14 +1584,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextWithDups: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1819,14 +1636,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextWithDoctypeTag: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -1877,14 +1689,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextSkipScript: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1933,14 +1740,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonBreakingTags: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -1973,14 +1775,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonBreakingTagsOutside: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2013,14 +1810,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonBreakingTagsInside: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2052,14 +1844,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonBreakingTagsInsideMultiple: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2091,14 +1878,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonBreakingTagsNotWellFormed: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2130,14 +1912,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2169,14 +1946,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextLocalizableTitle: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2220,14 +1992,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextLocalizableAttributes: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2279,14 +2046,9 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextLocalizableAttributesAndNonBreakingTags: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2326,14 +2088,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextBreakBetweenTemplateTags: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2381,14 +2139,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextDontBreakBetweenTemplateEchoTags: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2420,14 +2174,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextDontBreakBetweenTemplateEchoEscapedTags: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2459,14 +2209,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextI18NComments: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2500,15 +2246,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIdentifyResourceIds: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            identify: true
+        var htf = new HTMLFile({
+            project: p2,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2561,15 +2302,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIdentifyResourceIdsWithAttributes: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            identify: true
+        var htf = new HTMLFile({
+            project: p2,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2628,15 +2364,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIdentifyResourceIdsWithEmbeddedAttributes: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            identify: true
+        var htf = new HTMLFile({
+            project: p2,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -2696,14 +2427,11 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileGetLocalizedPathSimple: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "simple.tmpl.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "simple.tmpl.html");
         test.ok(htf);
 
         test.equal(htf.getLocalizedPath("fr-FR"), "simple.fr-FR.tmpl.html");
@@ -2714,14 +2442,11 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileGetLocalizedPathComplex: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./asdf/bar/simple.tmpl.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./asdf/bar/simple.tmpl.html");
         test.ok(htf);
 
         test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.tmpl.html");
@@ -2732,14 +2457,11 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileGetLocalizedPathRegularHTMLFileName: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./asdf/bar/simple.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./asdf/bar/simple.html");
         test.ok(htf);
 
         test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.html");
@@ -2750,14 +2472,11 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileGetLocalizedPathNotEnoughParts: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName: "./asdf/bar/simple",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./asdf/bar/simple");
         test.ok(htf);
 
         test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR");
@@ -2768,14 +2487,11 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileGetLocalizedSourceLocale: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName: "./asdf/bar/simple.en-US.tmpl.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./asdf/bar/simple.en-US.tmpl.html");
         test.ok(htf);
 
         test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.tmpl.html");
@@ -2788,15 +2504,11 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"],
-            targetDir: "testfiles"
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./tmpl/CookieFlowTemplate.tmpl.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/CookieFlowTemplate.tmpl.html");
         test.ok(htf);
 
         // should read the file
@@ -2804,7 +2516,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Get insurance quotes for free!',
             source: 'Get insurance quotes for free!',
             target: 'Obtenez des devis d\'assurance gratuitement!',
@@ -2812,7 +2524,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Talk',
             source: 'Talk',
             target: 'Consultee',
@@ -2820,7 +2532,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Ask',
             source: 'Ask',
             target: 'Poser un question',
@@ -2828,7 +2540,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Send question',
             source: 'Send question',
             target: 'Envoyer la question',
@@ -2837,7 +2549,7 @@ module.exports.htmltemplatefile = {
         }));
 
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Get insurance quotes for free!',
             source: 'Get insurance quotes for free!',
             target: 'Kostenlosen Versicherungs-Angebote erhalten!',
@@ -2845,7 +2557,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Talk',
             source: 'Talk',
             target: 'Beratung',
@@ -2853,7 +2565,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Ask',
             source: 'Ask',
             target: 'Eine Frage stellen',
@@ -2861,7 +2573,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Send question',
             source: 'Send question',
             target: 'Frage abschicken',
@@ -2964,15 +2676,11 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"],
-            targetDir: "testfiles"
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName: "./html/nostrings.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/nostrings.tmpl.html");
         test.ok(htf);
 
         // should read the file
@@ -2980,7 +2688,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Get insurance quotes for free!',
             source: 'Get insurance quotes for free!',
             target: 'Obtenez des devis d\'assurance gratuitement!',
@@ -2988,7 +2696,7 @@ module.exports.htmltemplatefile = {
             datatype: "html"
         }));
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Get insurance quotes for free!',
             source: 'Get insurance quotes for free!',
             target: 'Kostenlosen Versicherungs-Angebote erhalten!',
@@ -3008,14 +2716,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -3055,14 +2759,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextNonTemplateTagsInsideTags: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html>\n' +
@@ -3105,14 +2805,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags2: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3147,14 +2843,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags3: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3191,14 +2883,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags4: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3235,14 +2923,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags5: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<a class="specialist-name" href=<%= val.specialist.url%>>foo</a>\n');
@@ -3274,14 +2958,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags5a: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<a class="specialist-name" href=<%- val.specialist.url%>>foo</a>\n');
@@ -3313,14 +2993,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags6: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3404,14 +3080,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags7: function(test) {
         test.expect(6);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<div class="select-wrap select-country left additional-field <%= version ? "new-version" : ""%>">\nfoo\n</div>');
@@ -3443,14 +3115,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags8: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<div class="star <%= (score > 30) ? "filled-star" : (score > 20) ? "half-star" : "empty-star"%>">foo</div>');
@@ -3477,14 +3145,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextTemplateTagsInsideTags9: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3530,14 +3194,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextEscapeDoubleQuotes: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('  <span class="foo" onclick=\'javascript:var a = "foo", b = "bar";\'>foo</span>');
@@ -3547,7 +3207,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3567,14 +3227,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextEscapeDoubleQuotesButNotInTemplateTags: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('  <span class="foo" foo=\'asdf <% if (state === "selected") { %>selected<% } %>\'>foo</span>');
@@ -3604,14 +3260,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextEscapeDoubleQuotesButNotInTemplateTagsWithPercentInThem: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('  <span class="foo" foo=\'asdf <% if (string === "20%") { %>selected<% } %>\'>foo</span>');
@@ -3641,14 +3293,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIgnoreScriptTags: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body><script type="javascript">\n' +
@@ -3663,7 +3311,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3689,14 +3337,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIgnoreStyleTags: function(test) {
         test.expect(3);
 
-        var p = new WebProject({
-            id: "webapp",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse('<html><body><style>\n' +
@@ -3711,7 +3355,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3737,14 +3381,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextWithEmbeddedTemplateTag: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: taz
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3826,13 +3466,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseWithHTMLInTheTemplateTag: function(test) {
         test.expect(11);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3882,14 +3519,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextWithEmbeddedTemplateTag: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -3977,14 +3610,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextBug1: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            id: "foo"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -4028,14 +3657,10 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextBug2: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            id: "foo",
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p);
         test.ok(htf);
 
         htf.parse(
@@ -4122,13 +3747,11 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./tmpl/meeting_panel.tmpl.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/meeting_panel.tmpl.html");
         test.ok(htf);
 
         // should read the file
@@ -4171,13 +3794,11 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName:  "./tmpl/mode.tmpl.html",
+            type: t
         });
-
-        var htf = new HTMLTemplateFile(p, "./tmpl/mode.tmpl.html");
         test.ok(htf);
 
         // should read the file
@@ -4205,16 +3826,13 @@ module.exports.htmltemplatefile = {
 
         var base = path.dirname(module.id);
 
-        var p = new WebProject({
-            id: "foo",
-            sourceLocale: "en-US"
-        }, path.join(base, "testfiles"), {
-            locales:["en-GB"]
-        });
-
         var t = new HTMLTemplateFileType(p);
 
-        var htf = new HTMLTemplateFile(p, "./tmpl/mode.tmpl.html", t);
+        var htf = new HTMLTemplateFile({
+            project: p,
+            pathName: "./tmpl/mode.tmpl.html",
+            type: t
+        });
         test.ok(htf);
 
         htf.extract();
@@ -4291,11 +3909,19 @@ module.exports.htmltemplatefile = {
         r = set.getBySource("Test phrase");
         test.ok(r);
         test.equal(resources[0].getKey(), "Test phrase");
-        test.equal(resources[0].getSource(), "Test phrase");
+        test.equal(resources[0].getSousrce(), "Test phrase");
         test.equal(resources[0].getSourceLocale(), "en-US");
         test.equal(resources[0].getTarget(), "Test phrase");
         test.equal(resources[0].getTargetLocale(), "fr-FR");
 
+        r = set.getBySource("In Person Mode");
+        test.ok(r);
+        test.equal(resources[1].getKey(), "r251839517");
+        test.equal(resources[1].getSource(), "In Person Mode");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        test.equal(resources[1].getTarget(), "In Person Mode");
+        test.equal(resources[1].getTargetLocale(), "fr-FR");
+																	
         test.done();
     }
 };

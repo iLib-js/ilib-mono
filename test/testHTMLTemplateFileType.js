@@ -1,7 +1,7 @@
 /*
  * testHTMLTemplateFileType.js - test the HTML template file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,26 @@
  */
 
 if (!HTMLTemplateFileType) {
-    var HTMLTemplateFileType = require("../lib/HTMLTemplateFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var HTMLTemplateFileType = require("../HTMLTemplateFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB"]
+});
+
+var p2 = new CustomProject({
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB"],
+    flavors: ["ASDF"]
+});
 
 module.exports.htmltemplatefiletype = {
     testHTMLTemplateFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLTemplateFileType(p);
 
@@ -41,12 +48,6 @@ module.exports.htmltemplatefiletype = {
 
     testHTMLTemplateFileTypeHandlesTrue: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
@@ -59,12 +60,6 @@ module.exports.htmltemplatefiletype = {
     testHTMLTemplateFileTypeHandlesFalseClose: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
 
@@ -76,12 +71,6 @@ module.exports.htmltemplatefiletype = {
     testHTMLTemplateFileTypeHandlesFalse: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
 
@@ -90,14 +79,19 @@ module.exports.htmltemplatefiletype = {
         test.done();
     },
 
-    testHTMLTemplateFileTypeHandlesTrueWithDir: function(test) {
+    testHTMLTemplateFileTypeHandlesAlternateExtensionTrue: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var htf = new HTMLTemplateFileType(p);
+        test.ok(htf);
+
+        test.ok(htf.handles("foo.htm"));
+
+        test.done();
+    },
+
+    testHTMLTemplateFileTypeHandlesTrueWithDir: function(test) {
+        test.expect(2);
 
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
@@ -110,12 +104,6 @@ module.exports.htmltemplatefiletype = {
     testHTMLTemplateFileTypeHandlesAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
 
@@ -126,12 +114,6 @@ module.exports.htmltemplatefiletype = {
 
     testHTMLTemplateFileTypeHandlesAlreadyLocalizedCN: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
@@ -144,14 +126,7 @@ module.exports.htmltemplatefiletype = {
     testHTMLTemplateFileTypeHandlesAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var htf = new HTMLTemplateFileType(p);
+        var htf = new HTMLTemplateFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("a/b/c/foo.en-ZA-ASDF.tmpl.html"));
@@ -162,14 +137,7 @@ module.exports.htmltemplatefiletype = {
     testHTMLTemplateFileTypeHandleszhHKAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var htf = new HTMLTemplateFileType(p);
+        var htf = new HTMLTemplateFileType(p2);
         test.ok(htf);
 
         test.ok(!htf.handles("a/b/c/foo.zh-Hant-HK-ASDF.tmpl.html"));

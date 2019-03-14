@@ -2,7 +2,7 @@
     "name": "ilib-loctool-jst",
     "version": "1.0.0",
     "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-jst files",
+    "description": "A loctool plugin that knows how to process Javascript Template (JST) files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -15,9 +15,9 @@
         "resources",
         "locale",
         "translation",
-        "webpack",
-        "loader",
-		"ilib-loctool-jst"
+        "html",
+        "javascript",
+        "template"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,7 +33,9 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "HTMLTemplateFileType.js",
+        "HTMLTemplateFile.js"
     ],
     "repository": {
         "type": "git",
@@ -49,7 +51,10 @@
         "node": ">=6.0"
     },
     "dependencies": {
+        "he": "^1.2.0",
+        "html-parser": "^0.11.0",
         "ilib": "^14.1.0",
+        "js-stl": ">=0.0.6",
         "log4js": "^2.11.0"
     },
     "devDependencies": {
