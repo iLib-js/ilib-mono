@@ -548,7 +548,7 @@ HTMLTemplateFile.prototype.localizeText = function(translations, locale) {
 
                 if (this.project.settings.identify) {
                     // make it clear what is the resource is for this string
-                    substitution = '<span loclang="html" locid="' + this.makeKey(this.API.utils.escapeInvalidChars(	text)) + '">' + substitution + '</span>';
+                    substitution = '<span loclang="html" x-locid="' + this.makeKey(this.API.utils.escapeInvalidChars(	text)) + '">' + substitution + '</span>';
                 }
 
                 substitution = this.API.utils.escapeQuotes(substitution);

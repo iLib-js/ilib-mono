@@ -85,7 +85,7 @@ module.exports.htmltemplatefiletype = {
         var htf = new HTMLTemplateFileType(p);
         test.ok(htf);
 
-        test.ok(htf.handles("foo.htm"));
+        test.ok(!htf.handles("foo.htm"));
 
         test.done();
     },

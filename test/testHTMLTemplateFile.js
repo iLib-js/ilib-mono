@@ -67,7 +67,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileConstructor: function(test) {
         test.expect(1);
 
-        var htf = new HTMLFile({project: p});
+        var htf = new HTMLTemplateFile({project: p});
         test.ok(htf);
 
         test.done();
@@ -90,7 +90,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileConstructorNoFile: function(test) {
         test.expect(1);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -102,7 +102,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKey: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -116,7 +116,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKeyNoReturnChars: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -130,7 +130,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKeyCompressWhiteSpace: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -144,7 +144,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileMakeKeyTrimWhiteSpace: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -158,7 +158,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleGetByKey: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -181,7 +181,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleGetBySource: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -203,7 +203,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleIgnoreWhitespace: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -229,7 +229,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontExtractUnicodeWhitespace: function(test) {
         test.expect(3);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -249,7 +249,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontExtractNbspEntity: function(test) {
         test.expect(3);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -268,7 +268,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDoExtractOtherEntities: function(test) {
         test.expect(3);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -287,7 +287,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNoStrings: function(test) {
         test.expect(3);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -305,7 +305,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseSimpleRightSize: function(test) {
         test.expect(4);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -326,7 +326,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseMultiple: function(test) {
         test.expect(8);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -360,7 +360,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseWithDups: function(test) {
         test.expect(6);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -392,7 +392,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseEscapeInvalidChars: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -419,9 +419,9 @@ module.exports.htmltemplatefile = {
     },
 
     testHTMLTemplateFileParseIgnoreDoctypeTag: function(test) {
-        test.expect(8);
+        test.expect(9);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -435,11 +435,14 @@ module.exports.htmltemplatefile = {
             '       <div id="foo">\n' +
             '           This is also a test\n' +
             '       </div>\n' +
+            '       This is a test\n' +
             '   </body>\n' +
             '</html>\n');
 
         var set = htf.getTranslationSet();
         test.ok(set);
+
+        test.equal(set.size(), 2);
 
         var r = set.getBySource("This is a test");
         test.ok(r);
@@ -457,7 +460,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseDontEscapeWhitespaceChars: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -487,7 +490,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -538,7 +542,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -588,7 +593,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileSkipScript: function(test) {
         test.expect(8);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -630,7 +635,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTags: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -656,7 +661,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsOutside: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -684,7 +689,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsInside: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -712,7 +717,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsInsideMultiple: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -739,7 +744,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsNotWellFormed: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -766,7 +771,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
         test.expect(5);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -794,7 +799,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -820,7 +826,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableTitle: function(test) {
         test.expect(8);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -853,7 +859,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableAttributes: function(test) {
         test.expect(11);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -891,7 +897,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableAttributesSkipEmpty: function(test) {
         test.expect(6);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -921,7 +927,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileParseLocalizableAttributesAndNonBreakingTags: function(test) {
         test.expect(8);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p,
             type: t
         });
@@ -953,7 +959,8 @@ module.exports.htmltemplatefile = {
         test.expect(8);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -987,7 +994,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1012,7 +1020,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1037,7 +1046,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1062,7 +1072,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1087,7 +1098,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1112,7 +1124,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1137,7 +1150,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1162,7 +1176,8 @@ module.exports.htmltemplatefile = {
         test.expect(5);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1187,7 +1202,8 @@ module.exports.htmltemplatefile = {
         test.expect(6);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1214,7 +1230,8 @@ module.exports.htmltemplatefile = {
         test.expect(6);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1244,7 +1261,8 @@ module.exports.htmltemplatefile = {
         test.expect(6);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1277,7 +1295,8 @@ module.exports.htmltemplatefile = {
         test.expect(6);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1395,7 +1414,8 @@ module.exports.htmltemplatefile = {
         var base = path.dirname(module.id);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1434,7 +1454,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1463,7 +1484,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1498,7 +1520,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1535,7 +1558,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1585,7 +1609,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1637,7 +1662,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1690,7 +1716,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1741,7 +1768,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1776,7 +1804,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1811,7 +1840,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1845,7 +1875,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1879,7 +1910,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1913,7 +1945,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1947,7 +1980,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -1993,7 +2027,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -2047,7 +2082,8 @@ module.exports.htmltemplatefile = {
         test.expect(2);
 
         var htf = new HTMLTemplateFile({
-            project: p
+            project: p,
+            type: t
         });
         test.ok(htf);
 
@@ -2246,7 +2282,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIdentifyResourceIds: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p2,
             type: t
         });
@@ -2285,11 +2321,11 @@ module.exports.htmltemplatefile = {
         var expected =
             '<html>\n' +
             '   <body>\n' +
-            '       <span loclang="html" locid="This is a test">Ceci est un essai</span>\n' +
+            '       <span loclang="html" x-locid="This is a test">Ceci est un essai</span>\n' +
             '       <div id="foo">\n' +
-            '           <span loclang="html" locid="This is also a test">Ceci est aussi un essai</span>\n' +
+            '           <span loclang="html" x-locid="This is also a test">Ceci est aussi un essai</span>\n' +
             '       </div>\n' +
-            '       <span loclang="html" locid="This is a test">Ceci est un essai</span>\n' +
+            '       <span loclang="html" x-locid="This is a test">Ceci est un essai</span>\n' +
             '   </body>\n' +
             '</html>\n';
            var actual = htf.localizeText(translations, "fr-FR");
@@ -2302,7 +2338,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIdentifyResourceIdsWithAttributes: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p2,
             type: t
         });
@@ -2348,9 +2384,9 @@ module.exports.htmltemplatefile = {
         var expected =
             '<html>\n' +
             '   <body>\n' +
-            '       <area alt="&lt;span loclang=&quot;html&quot; locid=&quot;placeholder text&quot;&gt;Texte de l&apos;espace réservé&lt;/span&gt;"><span loclang="html" locid="This is a test">Ceci est un essai</span></area>\n' +
+            '       <area alt="&lt;span loclang=&quot;html&quot; x-locid=&quot;placeholder text&quot;&gt;Texte de l&apos;espace réservé&lt;/span&gt;"><span loclang="html" x-locid="This is a test">Ceci est un essai</span></area>\n' +
             '       <div id="foo">\n' +
-            '           <span loclang="html" locid="This is also a test">Ceci est aussi un essai</span>\n' +
+            '           <span loclang="html" x-locid="This is also a test">Ceci est aussi un essai</span>\n' +
             '       </div>\n' +
             '   </body>\n' +
             '</html>\n';
@@ -2364,7 +2400,7 @@ module.exports.htmltemplatefile = {
     testHTMLTemplateFileLocalizeTextIdentifyResourceIdsWithEmbeddedAttributes: function(test) {
         test.expect(2);
 
-        var htf = new HTMLFile({
+        var htf = new HTMLTemplateFile({
             project: p2,
             type: t
         });
@@ -2411,9 +2447,9 @@ module.exports.htmltemplatefile = {
         var expected =
             '<html>\n' +
             '   <body>\n' +
-            '       <span loclang="html" locid="This&lt;span title=&quot;{title}&quot;&gt;is a test&lt;/span&gt;">Ceci <span title="&lt;span loclang=&quot;html&quot; locid=&quot;placeholder text&quot;&gt;Texte de l&apos;espace réservé&lt;/span&gt;">est un essai</span></span>\n' +
+            '       <span loclang="html" x-locid="This&lt;span title=&quot;{title}&quot;&gt;is a test&lt;/span&gt;">Ceci <span title="&lt;span loclang=&quot;html&quot; x-locid=&quot;placeholder text&quot;&gt;Texte de l&apos;espace réservé&lt;/span&gt;">est un essai</span></span>\n' +
             '       <div id="foo">\n' +
-            '           <span loclang="html" locid="This is also a test">Ceci est aussi un essai</span>\n' +
+            '           <span loclang="html" x-locid="This is also a test">Ceci est aussi un essai</span>\n' +
             '       </div>\n' +
             '   </body>\n' +
             '</html>\n';
@@ -3822,7 +3858,7 @@ module.exports.htmltemplatefile = {
     },
 
     testHTMLTemplateFileExtractFileNewResources: function(test) {
-        test.expect(10);
+        test.expect(11);
 
         var base = path.dirname(module.id);
 
@@ -3909,14 +3945,14 @@ module.exports.htmltemplatefile = {
         r = set.getBySource("Test phrase");
         test.ok(r);
         test.equal(resources[0].getKey(), "Test phrase");
-        test.equal(resources[0].getSousrce(), "Test phrase");
+        test.equal(resources[0].getSource(), "Test phrase");
         test.equal(resources[0].getSourceLocale(), "en-US");
         test.equal(resources[0].getTarget(), "Test phrase");
         test.equal(resources[0].getTargetLocale(), "fr-FR");
 
         r = set.getBySource("In Person Mode");
         test.ok(r);
-        test.equal(resources[1].getKey(), "r251839517");
+        test.equal(resources[1].getKey(), "In Person Mode");
         test.equal(resources[1].getSource(), "In Person Mode");
         test.equal(resources[1].getSourceLocale(), "en-US");
         test.equal(resources[1].getTarget(), "In Person Mode");
