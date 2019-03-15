@@ -48,7 +48,8 @@ var p = new CustomProject({
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "testfiles"
+    targetDir: "testfiles",
+    nopseudo: true
 });
 
 var p2 = new CustomProject({
@@ -169,7 +170,7 @@ module.exports.htmltemplatefile = {
         var set = htf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey(undefined, "en-US", "This is a test", "html"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "This is a test", "html"));
         test.ok(r);
 
         test.equal(r.getSource(), "This is a test");
@@ -529,7 +530,7 @@ module.exports.htmltemplatefile = {
         var set = htf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey(undefined, "en-US", "Uploaded", "html"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "Uploaded", "html"));
         test.ok(r);
 
         test.equal(r.getSource(), "Uploaded");
@@ -581,7 +582,7 @@ module.exports.htmltemplatefile = {
         var set = htf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey(undefined, "en-US", "Uploaded", "html"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "Uploaded", "html"));
         test.ok(r);
 
         test.equal(r.getSource(), "Uploaded");
@@ -1328,7 +1329,8 @@ module.exports.htmltemplatefile = {
 
         var htf = new HTMLTemplateFile({
             project: p,
-            pathName:  "./tmpl/CookieFlowTemplate.tmpl.html"
+            pathName: "./tmpl/CookieFlowTemplate.tmpl.html",
+            type: t
         });
         test.ok(htf);
 
@@ -1369,7 +1371,8 @@ module.exports.htmltemplatefile = {
 
         var htf = new HTMLTemplateFile({
             project: p,
-            pathName:  "./tmpl/topic_navigation_main.tmpl.html"
+            pathName:  "./tmpl/topic_navigation_main.tmpl.html",
+            type: t
         });
         test.ok(htf);
 
@@ -2774,7 +2777,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Mr. <%= family_name %> is not available.',
             source: 'Mr. <%= family_name %> is not available.',
             target: 'Mssr. <%= family_name %> n\'est pas disponible.',
@@ -2817,7 +2820,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Mr. <%= family_name %> is not available.',
             source: 'Mr. <%= family_name %> is not available.',
             target: 'Mssr. <%= family_name %> n\'est pas disponible.',
@@ -2861,7 +2864,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'Group',
             source: 'Group',
             target: 'Groupe',
@@ -2900,7 +2903,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -2940,7 +2943,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -2977,7 +2980,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3012,7 +3015,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3072,7 +3075,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3134,7 +3137,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3164,7 +3167,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3200,7 +3203,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3276,7 +3279,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3309,7 +3312,7 @@ module.exports.htmltemplatefile = {
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
-            project: "webapp",
+            project: "foo",
             key: 'foo',
             source: 'foo',
             target: 'asdf',
@@ -3858,16 +3861,24 @@ module.exports.htmltemplatefile = {
     },
 
     testHTMLTemplateFileExtractFileNewResources: function(test) {
-        test.expect(11);
+        test.expect(10);
 
         var base = path.dirname(module.id);
 
-        var t = new HTMLTemplateFileType(p);
+        var p3 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US"
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: "testfiles"
+        });
 
+        var t2 = new HTMLTemplateFileType(p3);
         var htf = new HTMLTemplateFile({
-            project: p,
+            project: p3,
             pathName: "./tmpl/mode.tmpl.html",
-            type: t
+            type: t2
         });
         test.ok(htf);
 
@@ -3934,7 +3945,7 @@ module.exports.htmltemplatefile = {
         diff(actual, expected);
         test.equal(actual, expected);
 
-        var set = t.newres;
+        var set = t2.newres;
         var resources = set.getAll();
 
         test.equal(resources.length, 1);
@@ -3950,14 +3961,6 @@ module.exports.htmltemplatefile = {
         test.equal(resources[0].getTarget(), "Test phrase");
         test.equal(resources[0].getTargetLocale(), "fr-FR");
 
-        r = set.getBySource("In Person Mode");
-        test.ok(r);
-        test.equal(resources[1].getKey(), "In Person Mode");
-        test.equal(resources[1].getSource(), "In Person Mode");
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.equal(resources[1].getTarget(), "In Person Mode");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
-																	
         test.done();
     }
 };
