@@ -6,7 +6,7 @@
  * writing out a parallel yml file with the same structure, but translated
  * content.
  *
- * Copyright © 2016-2018, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,6 @@ var jsyaml = require("js-yaml");
 
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var ContextResourceString = require("./ContextResourceString.js");
-var ResourceArray = require("./ResourceArray.js");
-var ResourcePlural = require("./ResourcePlural.js");
-var Set = require("./Set.js");
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js")
 var log4js = require("log4js");
 
 var logger = log4js.getLogger("loctool.lib.YamlFile");
@@ -60,9 +54,11 @@ var YamlFile = function(props) {
         this.flavor = props.flavor;
     }
 
+    this.API = this.project.getAPI();
+    
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
-    this.set = new TranslationSet(this.locale);
+    this.set = this.API.newTranslationSet(this.locale);
 
     if (this.pathName && this.project && this.project.flavors) {
         var filename = path.basename(this.pathName, ".yml");
@@ -201,6 +197,7 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
             if (this._isTranslatable(resource)) {
                 logger.trace("Adding string resource " + JSON.stringify(resource) + " locale " + this.getLocale());
                 var params = {
+                    resType: "string",
                     project: this.project.getProjectId(),
                     key: key,
                     autoKey: true,
@@ -219,7 +216,7 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
                     params.target = resource;
                     params.targetLocale = locale;
                 }
-                var res = new ContextResourceString(params);
+                var res = this.API.newResource(params);
 
                 set.add(res);
             }
@@ -545,8 +542,17 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
         } else if (localize && this.getExcludedKeysFromSchema().indexOf(key) === -1) {
             var resource = obj[key];
             if (this._isTranslatable(resource)) {
+                var tester = this.API.newResource({
+                    resType: "string",
+                    project: this.project.getProjectId(),
+                    sourceLocale: this.project.getSourceLocale(),
+                    reskey: key,
+                    context: prefix,
+                    datatype: this.type.datatype
+                });
+                var hashkey = tester.hashKeyForTranslation(locale);
+
                 logger.trace("Localizing string resource " + JSON.stringify(resource) + " locale " + locale);
-                var hashkey = ContextResourceString.hashKey(this.project.getProjectId(), prefix, locale, key, this.type.datatype);
                 var res = translations.get(hashkey);
                 if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
                     ret[key] = obj[key].toString();
@@ -554,7 +560,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                     var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                     if (sourceLocale !== this.project.sourceLocale) {
                         // translation is derived from a different locale's translation instead of from the source string
-                        var sourceRes = translations.get(ContextResourceString.hashKey(this.project.getProjectId(), prefix, sourceLocale, key, this.type.datatype));
+                        var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
                         source = sourceRes ? sourceRes.getTarget() : obj[key].toString();
                         ret[key] = this.type.pseudos[locale].getString(source);
                         this.dirty |= (sourceRes && ret[key] !== source);
@@ -564,14 +570,15 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                         this.dirty |= (ret[key] !== source);
                     }
                 } else {
-                    if (res && utils.cleanString(res.getSource()) === utils.cleanString(obj[key].toString())) {
+                    if (res && this.API.utils.cleanString(res.getSource()) === this.API.utils.cleanString(obj[key].toString())) {
                         logger.trace("Translation: " + res.getTarget());
                         ret[key] = res.getTarget();
                         this.dirty |= (ret[key] !== res.getSource());
                     } else {
                         var note = res ? 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + res.getSource() + '"' : undefined;
                         if (this.type) {
-                            this.type.newres.add(new ContextResourceString({
+                            this.type.newres.add(this.API.newResource({
+                                resType: "string",
                                 project: this.project.getProjectId(),
                                 key: key,
                                 source: obj[key],
@@ -668,7 +675,7 @@ YamlFile.prototype.localize = function(translations, locales) {
             logger.debug("Writing file " + pathName);
             p = path.join(this.project.target, pathName);
             var dir = path.dirname(p);
-            utils.makeDirs(dir);
+            this.API.utils.makeDirs(dir);
             fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
         }
     } else {

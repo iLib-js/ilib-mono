@@ -18,12 +18,12 @@
  */
 
 if (!YamlFile) {
-    var YamlFile = require("../lib/YamlFile.js");
-    var YamlFileType = require("../lib/YamlFileType.js");
-    var ContextResourceString = require("../lib/ContextResourceString.js");
-    var ResourcePlural = require("../lib/ResourcePlural.js");
-    var WebProject =  require("../lib/WebProject.js");
-    var TranslationSet =  require("../lib/TranslationSet.js");
+    var YamlFile = require("../YamlFile.js");
+    var YamlFileType = require("../YamlFileType.js");
+    var ContextResourceString = require("loctool/lib/ContextResourceString.js");
+    var ResourcePlural = require("loctool/lib/ResourcePlural.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
+    var TranslationSet =  require("loctool/lib/TranslationSet.js");
 }
 
 function diff(a, b) {
@@ -39,7 +39,7 @@ function diff(a, b) {
     }
 }
 
-var p = new WebProject({
+var p = new CustomProject({
     id: "webapp",
     sourceLocale: "en-US",
     resourceDirs: {
@@ -1052,7 +1052,7 @@ module.exports.yamlfile = {
     testYamlFileRealContent: function(test) {
         test.expect(5);
 
-        var p = new WebProject({
+        var p = new CustomProject({
             id: "webapp",
             sourceLocale: "en-US",
             resourceDirs: {

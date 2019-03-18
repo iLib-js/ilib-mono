@@ -18,22 +18,32 @@
  */
 
 if (!YamlFileType) {
-    var YamlFileType = require("../lib/YamlFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var YamlFileType = require("../YamlFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "yml": "config/locales"
+    }
+}, "./test/testfiles", {
+    locales:["en-GB"]
+});
+
+var p2 = new CustomProject({
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "yml": "config/locales"
+    }
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    flavors: ["ASDF"]
+});
 
 module.exports.yamlfiletype = {
     testYamlFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
 
@@ -45,15 +55,6 @@ module.exports.yamlfiletype = {
     testYamlFileTypeHandlesYml: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var yft = new YamlFileType(p);
         test.ok(yft);
 
@@ -64,15 +65,6 @@ module.exports.yamlfiletype = {
 
     testYamlFileTypeHandlesAnythingFalse: function(test) {
         test.expect(4);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
         test.ok(yft);
@@ -87,15 +79,6 @@ module.exports.yamlfiletype = {
     testYamlFileTypeHandlesNoResourceFiles: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var yft = new YamlFileType(p);
         test.ok(yft);
 
@@ -106,15 +89,6 @@ module.exports.yamlfiletype = {
 
     testYamlFileTypeHandlesNoFilesNamedForALocale: function(test) {
         test.expect(4);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
         test.ok(yft);
@@ -129,17 +103,7 @@ module.exports.yamlfiletype = {
     testYamlFileTypeHandlesNoFilesNamedForALocaleWithFlavor: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var yft = new YamlFileType(p);
+        var yft = new YamlFileType(p2);
         test.ok(yft);
 
         test.ok(!yft.handles("en-ZA-ASDF.yml"));
@@ -149,15 +113,6 @@ module.exports.yamlfiletype = {
 
     testYamlFileTypeHandlesNoFilesNamedForALocaleInASubdir: function(test) {
         test.expect(4);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
         test.ok(yft);
@@ -172,17 +127,7 @@ module.exports.yamlfiletype = {
     testYamlFileTypeHandlesNoFilesNamedForALocaleWithFlavorInASubdir: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var yft = new YamlFileType(p);
+        var yft = new YamlFileType(p2);
         test.ok(yft);
 
         test.ok(!yft.handles("a/b/en-ZA-ASDF.yml"));
@@ -192,15 +137,6 @@ module.exports.yamlfiletype = {
 
     testYamlFileTypeHandlesFilesAlmostNamedForALocale: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
         test.ok(yft);
@@ -213,15 +149,6 @@ module.exports.yamlfiletype = {
     testYamlFileTypeHandlesNoResourceFilesInSubdirs: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var yft = new YamlFileType(p);
         test.ok(yft);
 
@@ -233,17 +160,7 @@ module.exports.yamlfiletype = {
     testYamlFileTypeHandlesNoResourceFilesInSubdirsWithFlavors: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
-
-        var yft = new YamlFileType(p);
+        var yft = new YamlFileType(p2);
         test.ok(yft);
 
         test.ok(!yft.handles("config/locales/auto/en-ZA-ASDF.yml"));
@@ -253,15 +170,6 @@ module.exports.yamlfiletype = {
 
     testYamlFileTypeHandlesNoBaseResourceFiles: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
         test.ok(yft);
@@ -273,15 +181,6 @@ module.exports.yamlfiletype = {
 
     testYamlFileTypeHandlesIncludeFiles: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US",
-            resourceDirs: {
-                "yml": "config/locales"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yft = new YamlFileType(p);
         test.ok(yft);

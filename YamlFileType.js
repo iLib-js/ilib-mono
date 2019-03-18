@@ -24,12 +24,7 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var YamlFile = require("./YamlFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ContextResourceString = require("./ContextResourceString.js");
 
 var logger = log4js.getLogger("loctool.lib.YamlFileType");
 
@@ -41,15 +36,33 @@ var logger = log4js.getLogger("loctool.lib.YamlFileType");
 var YamlFileType = function(project) {
     this.type = "ruby";
     this.datatype = "x-yaml";
-    this.parent.call(this, project);
 
     this.resourceFiles = {};
-    this.extensions = [ ".yml", ".yaml" ];
-};
+    
+    this.project = project;
+    this.API = project.getAPI();
 
-YamlFileType.prototype = new FileType();
-YamlFileType.prototype.parent = FileType;
-YamlFileType.prototype.constructor = YamlFileType;
+    this.extensions = [ ".yml", ".yaml" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.yml$/);
 
@@ -77,7 +90,7 @@ YamlFileType.prototype.handles = function(pathName) {
                 locale = new Locale(locale.language, locale.region, undefined, locale.script);
                 spec = locale.getSpec();
             }
-            ret = !utils.iso639[match[3]] && spec !== this.project.sourceLocale;
+            ret = !this.API.utils.iso639[match[3]] && spec !== this.project.sourceLocale;
         }
     }
 
@@ -116,34 +129,16 @@ YamlFileType.prototype.newFile = function(pathName) {
     });
 };
 
-/**
- * Return all resource that do not currently exist in the given translation set.
- * This is all resources extracted from the source files minus all the
- * resources in the DB.
- *
- * @param {TranslationSet} set the set of existing resources in the DB
- * @returns {TranslationSet} the set of new or changed resources
- *
-YamlFileType.prototype.findNew = function(set) {
-    var extracted = this.extracted.getAll();
-
-    for (var i = 0; i < extracted.length; i++) {
-        var resource = extracted[i];
-        logger.trace("Examining resource " + resource.getKey() + " to see if it's new.");
-
-        var existing = set.get(resource.hashKey());
-        if (!existing || !resource.equals(existing)) {
-            logger.trace("yes");
-            this.newres.add(resource);
-        } else {
-            logger.trace("no");
-        }
-    }
-
-    logger.trace("findNew Done. Returning a set with " + this.newres.size() + " resources.");
-    return this.newres;
+YamlFileType.prototype.getDataType = function() {
+    return this.datatype;
 };
-*/
+
+YamlFileType.prototype.getResourceTypes = function() {
+    return {
+        "string": "context-string"
+    };
+};
+
 
 /**
  * Register the data types and resource class with the resource factory so that it knows which class
