@@ -1,7 +1,7 @@
 /*
  * YamlResourceFile.js - represents a yaml resource file
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,10 @@ var jsyaml = require("js-yaml");
 
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var ContextResourceString = require("./ContextResourceString.js");
-var ResourceArray = require("./ResourceArray.js");
-var ResourcePlural = require("./ResourcePlural.js");
-var Set = require("./Set.js");
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js")
+
 var log4js = require("log4js");
 
-var logger = log4js.getLogger("loctool.lib.YamlResourceFile");
+var logger = log4js.getLogger("loctool.plugin.YamlResourceFile");
 
 /**
  * @class Represents a yaml resource file.
@@ -56,10 +51,14 @@ var YamlResourceFile = function(props) {
         this.flavor = props.flavor;
     }
 
+    this.API = this.project.getAPI();
+
     // update the locale from the path name if necessary
     this._parsePath();
 
-    this.set = new TranslationSet(this.locale);
+    this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+
+    this.set = this.API.newTranslationSet(this.locale);
 };
 
 /**
@@ -74,6 +73,7 @@ YamlResourceFile.prototype._parseResources = function(prefix, obj, set) {
             var resource = obj[key];
             logger.trace("Adding string resource " + JSON.stringify(resource) + " locale " + this.getLocale());
             var params = {
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: key,
                 autoKey: true,
@@ -92,7 +92,7 @@ YamlResourceFile.prototype._parseResources = function(prefix, obj, set) {
                 params.target = resource;
                 params.targetLocale = this.getLocale();
             }
-            var res = new ContextResourceString(params);
+            var res = this.API.newResource(params);
 
             set.add(res);
         }
@@ -128,7 +128,7 @@ YamlResourceFile.prototype._handleResourcePlural = function(resource, object) {
         if (plurals &&
                 plurals.one &&
                 plurals.other &&
-                !utils.objectEquals(resource.getSourcePlurals(), plurals)) {
+                !this.API.utils.objectEquals(resource.getSourcePlurals(), plurals)) {
             logger.trace("writing plurals " + resource.getKey() + " with " + JSON.stringify(plurals));
             var key = resource.getKey();
             object[key] = plurals;
@@ -338,7 +338,7 @@ YamlResourceFile.prototype.getContent = function() {
 
     if (this.set.isDirty()) {
         var resources = this.set.getAll();
-        var defaultLoc = utils.getLocaleDefault(this.locale, this.flavor);
+        var defaultLoc = this.API.utils.getLocaleDefault(this.locale, this.flavor);
         if (resources.length) {
             json[defaultLoc] = {};
         }
@@ -375,7 +375,7 @@ YamlResourceFile.prototype.getContent = function() {
  * given project, context, and locale.
  */
 YamlResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
-    var localeDir, dir, newPath, spec = utils.getLocaleDefault(locale, flavor);
+    var localeDir, dir, newPath, spec = this.API.utils.getLocaleDefault(locale, flavor);
 
     var filename = spec + ".yml";
 
@@ -405,7 +405,7 @@ YamlResourceFile.prototype.write = function() {
 
         logger.info("Writing resources for locale " + this.locale + " to file " + this.pathName);
 
-        utils.makeDirs(dir);
+        this.API.utils.makeDirs(dir);
 
         var yml = this.getContent();
         fs.writeFileSync(this.pathName, yml, "utf8");

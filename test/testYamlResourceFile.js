@@ -1,7 +1,7 @@
 /*
- * testYaml.js - test the Yaml resource file object.
+ * testYamlResourceFile.js - test the Yaml resource file object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,14 @@
  */
 
 if (!YamlResourceFile) {
-    var YamlResourceFile = require("../lib/YamlResourceFile.js");
-    var YamlResourceFileType = require("../lib/YamlResourceFileType.js");
-    var ContextResourceString = require("../lib/ContextResourceString.js");
-    var ResourcePlural = require("../lib/ResourcePlural.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var YamlResourceFile = require("../YamlResourceFile.js");
+    var YamlResourceFileType = require("../YamlResourceFileType.js");
+    var ContextResourceString = require("loctool/lib/ContextResourceString.js");
+    var ResourcePlural = require("loctool/lib/ResourcePlural.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var path = require("path");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -38,23 +40,35 @@ function diff(a, b) {
     }
 }
 
-var p = new WebProject({
+var p = new CustomProject({
     id: "webapp",
     sourceLocale: "en-US",
     resourceDirs: {
         "yml": "a/b"
-    }
-}, "./testfiles", {
+    },
+    plugins: [
+        path.join(process.cwd(), "YamlResourceFileType")
+    ]
+}, "./test/testfiles", {
     locales:["en-GB"]
 });
 
 var yft = new YamlResourceFileType(p);
 
 module.exports.yamlresourcefile = {
+    testYamlInit: function(test) {
+        p.init(function() {
+            test.done();
+        });
+    },
+
     testYamlConstructorEmpty: function(test) {
         test.expect(1);
 
-        var y = new YamlResourceFile();
+        var y = new YamlResourceFile({
+            project: p,
+            type: yft
+        });
         test.ok(y);
 
         test.done();

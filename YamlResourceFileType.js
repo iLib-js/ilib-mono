@@ -1,7 +1,7 @@
 /*
  * YamlResourceFileType.js - manages a collection of yaml resource files
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,7 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var YamlResourceFile = require("./YamlResourceFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ContextResourceString = require("./ContextResourceString.js");
-var PseudoFactory = require("./PseudoFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.YamlResourceFileType");
 
@@ -43,15 +37,32 @@ var YamlResourceFileType = function(project) {
     this.type = "ruby";
     this.datatype = "x-yaml";
 
-    this.parent.call(this, project);
-
     this.resourceFiles = {};
-    this.extensions = [ ".yml", ".yaml" ];
-};
 
-YamlResourceFileType.prototype = new FileType();
-YamlResourceFileType.prototype.parent = FileType;
-YamlResourceFileType.prototype.constructor = YamlResourceFileType;
+    this.project = project;
+    this.API = project.getAPI();
+
+    this.extensions = [ ".yml", ".yaml" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 /**
  * Return true if this file type handles the type of file in the
@@ -281,12 +292,24 @@ YamlResourceFileType.prototype.generatePseudo = function(locale, pb) {
     }.bind(this));
 };
 
+YamlResourceFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+YamlResourceFileType.prototype.getResourceTypes = function() {
+    return {
+        "string": "ContextResourceString"
+    };
+};
+
 /**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
  */
-YamlResourceFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ContextResourceString);
+YamlResourceFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = YamlResourceFileType;
