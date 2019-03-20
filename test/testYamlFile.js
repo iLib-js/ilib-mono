@@ -26,6 +26,8 @@ if (!YamlFile) {
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
 }
 
+var path = require("path");
+
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
 
@@ -44,8 +46,11 @@ var p = new CustomProject({
     sourceLocale: "en-US",
     resourceDirs: {
         yml: "a/b"
-    }
-}, "./testfiles", {
+    },
+    plugins: [
+        path.join(process.cwd(), "YamlFileType")
+    ]
+}, "./test/testfiles", {
     locales:["en-GB"],
     nopseudo: true,
     targetDir: "testfiles",
@@ -55,10 +60,19 @@ var p = new CustomProject({
 var yft = new YamlFileType(p);
 
 module.exports.yamlfile = {
+    testYamlInit: function(test) {
+        p.init(function() {
+            test.done();
+        });
+    },
+
     testYamlConstructorEmpty: function(test) {
         test.expect(1);
 
-        var y = new YamlFile();
+        var y = new YamlFile({
+            project: p,
+            type: yft
+        });
         test.ok(y);
 
         test.done();
@@ -67,7 +81,10 @@ module.exports.yamlfile = {
     testYamlConstructorEmptyNoFlavor: function(test) {
         test.expect(2);
 
-        var y = new YamlFile();
+        var y = new YamlFile({
+            project: p,
+            type: yft
+        });
         test.ok(y);
         test.ok(!y.getFlavor());
 
@@ -1051,16 +1068,6 @@ module.exports.yamlfile = {
 
     testYamlFileRealContent: function(test) {
         test.expect(5);
-
-        var p = new CustomProject({
-            id: "webapp",
-            sourceLocale: "en-US",
-            resourceDirs: {
-                yml: "a/b"
-            }
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var yml = new YamlFile({
             project: p,

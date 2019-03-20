@@ -135,17 +135,18 @@ YamlFileType.prototype.getDataType = function() {
 
 YamlFileType.prototype.getResourceTypes = function() {
     return {
-        "string": "context-string"
+        "string": "ContextResourceString"
     };
 };
 
-
 /**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
  */
-YamlFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType("x-yaml", "string", ContextResourceString);
+YamlFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = YamlFileType;
