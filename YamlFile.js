@@ -30,7 +30,7 @@ var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var log4js = require("log4js");
 
-var logger = log4js.getLogger("loctool.lib.YamlFile");
+var logger = log4js.getLogger("loctool.plugin.YamlFile");
 
 /**
  * @class Represents a yaml source file.
@@ -55,7 +55,7 @@ var YamlFile = function(props) {
     }
 
     this.API = this.project.getAPI();
-    
+
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
