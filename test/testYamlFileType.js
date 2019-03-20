@@ -22,11 +22,16 @@ if (!YamlFileType) {
     var CustomProject =  require("loctool/lib/CustomProject.js");
 }
 
+var path = require("path");
+
 var p = new CustomProject({
     sourceLocale: "en-US",
     resourceDirs: {
         "yml": "config/locales"
-    }
+    },
+    plugins: [
+        path.join(process.cwd(), "YamlFileType")
+    ]
 }, "./test/testfiles", {
     locales:["en-GB"]
 });
