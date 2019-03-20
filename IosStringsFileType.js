@@ -1,7 +1,7 @@
 /*
  * IosStringsFileType.js - manages a collection of iOS strings resource files
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,9 @@ var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
 var IosStringsFile = require("./IosStringsFile.js");
-var TranslationSet = require("./TranslationSet.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var IosLayoutResourceString = require("./IosLayoutResourceString.js");
-var PseudoFactory = require("./PseudoFactory.js");
 
-var logger = log4js.getLogger("loctool.lib.IosStringsFileType");
+var logger = log4js.getLogger("loctool.plugin.IosStringsFileType");
 
 /**
  * @class Manage a collection of iOS strings resource files.
@@ -42,15 +36,9 @@ var IosStringsFileType = function(project) {
     this.type = "xib";
     this.datatype = "x-xib";
 
-    this.parent.call(this, project);
-
     this.resourceFiles = {};
     this.extensions = [ ".strings" ];
 };
-
-IosStringsFileType.prototype = new FileType();
-IosStringsFileType.prototype.parent = FileType;
-IosStringsFileType.prototype.constructor = IosStringsFileType;
 
 /**
  * Return true if this file type handles the type of file in the
@@ -102,7 +90,7 @@ IosStringsFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !PseudoFactory.isPseudoLocale(locale);
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));
 
     logger.trace("There are " + resources.length + " resources to add.");

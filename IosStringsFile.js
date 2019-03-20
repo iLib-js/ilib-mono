@@ -19,21 +19,11 @@
 
 var fs = require("fs");
 var path = require("path");
-var xml2json = require('xml2json');
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var PrettyData = require("pretty-data").pd;
 var log4js = require("log4js");
 
-var ResourceString = require("./ResourceString.js");
-var ResourceArray = require("./ResourceArray.js");
-var ResourcePlural = require("./ResourcePlural.js");
-var IosLayoutResourceString = require("./IosLayoutResourceString.js");
-var Set = require("./Set.js");
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js")
-
-var logger = log4js.getLogger("loctool.lib.IosStringsFile");
+var logger = log4js.getLogger("loctool.plugin.IosStringsFile");
 
 /**
  * @class Represents an iOS strings resource file.
@@ -61,7 +51,7 @@ var IosStringsFile = function(props) {
         this._parsePath();
     }
 
-    this.set = new TranslationSet(this.project && this.project.sourceLocale || "en-US");
+    this.set = this.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
 };
 
 var commentRE = new RegExp(/\/\*\s*(([^*]|\*[^\/])*)\s*\*\//);
@@ -92,6 +82,7 @@ IosStringsFile.prototype.parse = function(str) {
             if (match && match.length > 3 && match[3] && match[3].trim().length > 0) {
                 logger.trace("Found resource string: " + match[1] + " = " + match[3]);
                 var params = {
+                    resType: "string",
                     project: this.project.getProjectId(),
                     key: match[1],
                     pathName: this.sourcePath,
@@ -108,7 +99,7 @@ IosStringsFile.prototype.parse = function(str) {
                     params.target = match[3];
                     params.targetLocale = this.locale;
                 }
-                var res = new IosLayoutResourceString(params);
+                var res = this.API.newResource(params);
                 comment = "";
 
                 this.set.add(res);
@@ -386,7 +377,7 @@ IosStringsFile.prototype.write = function() {
 
         var content = this.getContent();
 
-        utils.makeDirs(dir);
+        this.API.utils.makeDirs(dir);
 
         fs.writeFileSync(p, content, "utf8");
         logger.debug("Wrote string translations to file " + this.pathName);

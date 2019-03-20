@@ -1,7 +1,7 @@
 /*
- * testIosStringsFile.js - test the Objective C file handler object.
+ * testIosStringsFile.js - test the iOS strings file handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,42 @@
  */
 
 if (!IosStringsFile) {
-    var IosStringsFile = require("../lib/IosStringsFile.js");
-    var IosStringsFileType = require("../lib/IosStringsFileType.js");
-    var ObjectiveCProject =  require("../lib/ObjectiveCProject.js");
-    var ResourceString =  require("../lib/ResourceString.js");
+    var IosStringsFile = require("../IosStringsFile.js");
+    var IosStringsFileType = require("../IosStringsFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
+    var ResourceString =  require("loctool/lib/ResourceString.js");
 }
 
-var p = new ObjectiveCProject({
+var path = require("path");
+
+var p = new CustomProject({
     id: "iosapp",
-    sourceLocale: "en-US"
-}, "./testfiles", {
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "IosStringsFileType")
+    ]
+}, "./test/testfiles", {
     locales:["en-GB"],
+    nopseudo: true,
     flavors: ["chocolate", "vanilla"]
 });
 
 var isft = new IosStringsFileType(p);
 
 module.exports.stringsfile = {
+    testIosStringsInit: function(test) {
+        p.init(function() {
+            test.done();
+        });
+    },
+
     testIosStringsFileConstructor: function(test) {
         test.expect(1);
 
-        var strings = new IosStringsFile();
+        var strings = new IosStringsFile({
+            project: p,
+            type: isft
+        });
         test.ok(strings);
 
         test.done();
