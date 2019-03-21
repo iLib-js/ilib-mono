@@ -37,7 +37,30 @@ var IosStringsFileType = function(project) {
     this.datatype = "x-xib";
 
     this.resourceFiles = {};
+
+    this.project = project;
+    this.API = project.getAPI();
+
     this.extensions = [ ".strings" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
 };
 
 /**
@@ -260,12 +283,24 @@ IosStringsFileType.prototype.clear = function() {
     this.resourceFiles = {};
 };
 
+IosStringsFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+IosStringsFileType.prototype.getResourceTypes = function() {
+    return {
+        "string": "IosLayoutResourceString"
+    };
+};
+
 /**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
  */
-IosStringsFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", IosLayoutResourceString);
+IosStringsFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = IosStringsFileType;

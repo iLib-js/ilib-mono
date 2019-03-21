@@ -51,7 +51,11 @@ var IosStringsFile = function(props) {
         this._parsePath();
     }
 
-    this.set = this.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
+    this.API = this.project.getAPI();
+
+    this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+
+    this.set = this.API.newTranslationSet(this.locale);
 };
 
 var commentRE = new RegExp(/\/\*\s*(([^*]|\*[^\/])*)\s*\*\//);

@@ -26,9 +26,11 @@ if (!IosStringsFileType) {
 var path = require("path");
 
 var p = new CustomProject({
+    id: "iosapp",
+    name: "iosapp",
     sourceLocale: "en-US",
     resourceDirs: {
-        "objc": "feelgood"
+        "objc": "foo"
     },
     plugins: [
         path.join(process.cwd(), "IosStringsFileType")
@@ -38,6 +40,8 @@ var p = new CustomProject({
 });
 
 var p2 = new CustomProject({
+    id: "iosapp",
+    name: "iosapp",
     sourceLocale: "en-US",
     "resourceDirs": {
         "objc": "foo"
