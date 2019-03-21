@@ -18,6 +18,6 @@
  */
 
 module.exports.files = [
-    "testJavaScriptFile.js",
-    "testJavaScriptFileType.js"
+    "testSwiftFile.js",
+    "testSwiftFileType.js"
 ];

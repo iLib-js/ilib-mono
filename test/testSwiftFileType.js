@@ -1,7 +1,7 @@
 /*
  * testSwiftFileTypeType.js - test the Swift file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,30 @@
  */
 
 if (!SwiftFileType) {
-    var SwiftFileType = require("../lib/SwiftFileType.js");
-    var SwiftProject =  require("../lib/SwiftProject.js");
+    var SwiftFileType = require("../SwiftFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var path = require("path");
+
+var p = new CustomProject({
+    id: "iosapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        swift: "a/b"
+    },
+    plugins: [
+        path.join(process.cwd(), "SwiftFileType")
+    ]
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    nopseudo: true,
+    targetDir: "testfiles"
+});
 
 module.exports.swiftfiletype = {
     testSwiftFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new SwiftProject({
-            sourceLocale: "en-US"
-        }, "./testfiles");
 
         var stf = new SwiftFileType(p);
 
@@ -39,10 +52,6 @@ module.exports.swiftfiletype = {
 
     testSwiftFileTypeHandlesTrue: function(test) {
         test.expect(2);
-
-        var p = new SwiftProject({
-            sourceLocale: "en-US"
-        }, "./testfiles");
 
         var stf = new SwiftFileType(p);
         test.ok(stf);
@@ -55,10 +64,6 @@ module.exports.swiftfiletype = {
     testSwiftFileTypeHandlesHeaderFileTrue: function(test) {
         test.expect(2);
 
-        var p = new SwiftProject({
-            sourceLocale: "en-US"
-        }, "./testfiles");
-
         var stf = new SwiftFileType(p);
         test.ok(stf);
 
@@ -69,10 +74,6 @@ module.exports.swiftfiletype = {
 
     testSwiftFileTypeHandlesFalseClose: function(test) {
         test.expect(2);
-
-        var p = new SwiftProject({
-            sourceLocale: "en-US"
-        }, "./testfiles");
 
         var stf = new SwiftFileType(p);
         test.ok(stf);
@@ -85,10 +86,6 @@ module.exports.swiftfiletype = {
     testSwiftFileTypeHandlesFalse: function(test) {
         test.expect(2);
 
-        var p = new SwiftProject({
-            sourceLocale: "en-US"
-        }, "./testfiles");
-
         var stf = new SwiftFileType(p);
         test.ok(stf);
 
@@ -99,10 +96,6 @@ module.exports.swiftfiletype = {
 
     testSwiftFileTypeHandlesTrueWithDir: function(test) {
         test.expect(2);
-
-        var p = new SwiftProject({
-            sourceLocale: "en-US"
-        }, "./testfiles");
 
         var stf = new SwiftFileType(p);
         test.ok(stf);

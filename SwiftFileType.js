@@ -23,26 +23,38 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var SwiftFile = require("./SwiftFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ResourceString = require("./ResourceString.js");
 
-var logger = log4js.getLogger("loctool.lib.SwiftFileType");
+var logger = log4js.getLogger("loctool.plugin.SwiftFileType");
 
 var SwiftFileType = function(project) {
     this.type = "swift";
     this.datatype = "x-swift";
 
-    this.parent.call(this, project);
-    this.extensions = [ ".swift", ".h" ];
-};
+    this.project = project;
+    this.API = project.getAPI();
 
-SwiftFileType.prototype = new FileType();
-SwiftFileType.prototype.parent = FileType;
-SwiftFileType.prototype.constructor = SwiftFileType;
+    this.extensions = [ ".swift", ".h" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 /**
  * Return true if the given path is an objective C file and is handled
@@ -132,44 +144,29 @@ SwiftFileType.prototype.write = function(translations, locales) {
 };
 
 SwiftFileType.prototype.newFile = function(path) {
-    return new SwiftFile(this.project, path, this);
+    return new SwiftFile({
+        project: this.project,
+        pathName: path,
+        type: this
+    });
+};
+
+SwiftFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+SwiftFileType.prototype.getResourceTypes = function() {
+    return {};
 };
 
 /**
- * Return all resource that do not currently exist in the given translation set.
- * This is all resources extracted from the source files minus all the
- * resources in the DB.
+ * Return the list of file name extensions that this plugin can
+ * process.
  *
- * @param {TranslationSet} set the set of existing resources in the DB
- * @returns {TranslationSet} the set of new or changed resources
- *
-SwiftFileType.prototype.findNew = function(set) {
-    var extracted = this.extracted.getAll();
-
-    for (var i = 0; i < extracted.length; i++) {
-        var resource = extracted[i];
-        logger.trace("Examining resource " + resource.getKey() + " to see if it's new.");
-
-        var existing = set.get(resource.hashKey());
-        if (!existing || !resource.equals(existing)) {
-            logger.trace("yes");
-            this.newres.add(resource);
-        } else {
-            logger.trace("no");
-        }
-    }
-
-    logger.trace("findNew Done. Returning a set with " + this.newres.size() + " resources.");
-    return this.newres;
-};
-*/
-
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * @returns {Array.<string>} the list of file name extensions
  */
-SwiftFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
+SwiftFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = SwiftFileType;

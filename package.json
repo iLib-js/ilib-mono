@@ -1,8 +1,8 @@
 {
     "name": "ilib-loctool-swift",
     "version": "1.0.0",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-swift files",
+    "main": "./SwiftFileType.js",
+    "description": "A loctool plugin that knows how to extract strings from swift files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -15,9 +15,8 @@
         "resources",
         "locale",
         "translation",
-        "webpack",
-        "loader",
-		"ilib-loctool-swift"
+        "ios",
+        "swift"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,7 +32,9 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "SwiftFile.js",
+        "SwiftFileType.js"
     ],
     "repository": {
         "type": "git",
@@ -53,7 +54,7 @@
         "log4js": "^2.11.0"
     },
     "devDependencies": {
-        "loctool": "^2.1.0",
+        "loctool": "file:../loctool/loctool-2.1.0.tgz",
         "nodeunit": "^0.11.3"
     }
 }

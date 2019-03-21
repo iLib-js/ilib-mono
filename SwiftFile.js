@@ -19,13 +19,11 @@
 
 var fs = require("fs");
 var path = require("path");
-var utils = require("./utils.js");
-var ResourceString = require("./ResourceString.js");
-var TranslationSet = require("./TranslationSet.js");
+
 var log4js = require("log4js");
 var IString = require("ilib/lib/IString.js");
 
-var logger = log4js.getLogger("loctool.lib.SwiftFile");
+var logger = log4js.getLogger("loctool.plugin.SwiftFile");
 
 /**
  * Create a new java file with the given path name and within
@@ -36,12 +34,16 @@ var logger = log4js.getLogger("loctool.lib.SwiftFile");
  * of the project
  * file
  */
-var SwiftFile = function(project, pathName, type) {
-    this.project = project;
-    this.pathName = pathName;
-    this.type = type;
+var SwiftFile = function(options) {
+    this.project = options.project;
+    this.pathName = options.pathName;
+    this.type = options.type;
 
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.API = this.project.getAPI();
+
+    this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+
+    this.set = this.API.newTranslationSet(this.locale);
 };
 
 var reUnicodeChar = /\\u\{([a-fA-F0-9]{1,5})\}/g;
@@ -147,7 +149,8 @@ SwiftFile.prototype.parse = function(data) {
         var commentResult = reNSLocalizedStringComment.exec(line);
         comment = (commentResult && commentResult.length > 2) ? commentResult[2] : undefined;
 
-        var r = new ResourceString({
+        var r = this.API.newResource({
+            resType: "string",
             project: this.project.getProjectId(),
             key: this.makeKey(result[2]),
             sourceLocale: this.project.sourceLocale,
@@ -164,17 +167,17 @@ SwiftFile.prototype.parse = function(data) {
     }
 
     // now check for and report on errors in the source
-    utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation1,
+    this.API.utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the NSLocalizedString() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation2,
+    this.API.utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the NSLocalizedString() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reNSLocalizedStringBogusParam,
+    this.API.utils.generateWarnings(data, reNSLocalizedStringBogusParam,
         "Warning: non-string arguments are not allowed in the NSLocalizedString() parameters:",
         logger,
         this.pathName);
