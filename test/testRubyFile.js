@@ -1,7 +1,7 @@
 /*
  * testRubyFile.js - test the Ruby file handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,17 @@
  */
 
 if (!RubyFile) {
-    var RubyFile = require("../lib/RubyFile.js");
-    var RubyFileType = require("../lib/RubyFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
-    var ResourceString =  require("../lib/ResourceString.js");
+    var RubyFile = require("../RubyFile.js");
+    var RubyFileType = require("../RubyFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
+    var ResourceString =  require("loctool/lib/ResourceString.js");
 }
 
-var p = new WebProject({
+var p = new CustomProject({
     id: "webapp",
+    name: "webapp",
     sourceLocale: "en-US"
-}, "./testfiles", {
+}, "./test/testfiles", {
     locales:["en-GB"]
 });
 
@@ -37,7 +38,10 @@ module.exports.rubyfile = {
     testRubyFileConstructor: function(test) {
         test.expect(1);
 
-        var rf = new RubyFile();
+        var rf = new RubyFile({
+            project: p,
+            type: rft
+        });
         test.ok(rf);
 
         test.done();
@@ -46,7 +50,11 @@ module.exports.rubyfile = {
     testRubyFileConstructorParams: function(test) {
         test.expect(1);
 
-        var rf = new RubyFile(p, "./ruby/external_user_metric.rb");
+        var rf = new RubyFile({
+            project: p,
+            pathName: "./ruby/external_user_metric.rb",
+            type: rft
+        });
 
         test.ok(rf);
 

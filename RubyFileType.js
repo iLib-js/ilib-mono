@@ -1,7 +1,7 @@
 /*
  * RubyFileType.js - Represents a collection of Ruby files
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,28 +23,38 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var RubyFile = require("./RubyFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ResourceString = require("./ResourceString.js");
-var ResourcePlural = require("./ResourcePlural.js");
-var PseudoFactory = require("./PseudoFactory.js");
 
-var logger = log4js.getLogger("loctool.lib.RubyFileType");
+var logger = log4js.getLogger("loctool.plugin.RubyFileType");
 
 var RubyFileType = function(project) {
     this.type = "ruby";
     this.datatype = "ruby";
 
-    this.parent.call(this, project);
-    this.extensions = [ ".rb", ".rabl", ".haml" ];
-};
+    this.project = project;
+    this.API = project.getAPI();
 
-RubyFileType.prototype = new FileType();
-RubyFileType.prototype.parent = FileType;
-RubyFileType.prototype.constructor = RubyFileType;
+    this.extensions = [ ".rb", ".rabl", ".haml" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
 
@@ -135,7 +145,7 @@ RubyFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !PseudoFactory.isPseudoLocale(locale);
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));
 
     for (var i = 0; i < resources.length; i++) {
@@ -215,42 +225,22 @@ RubyFileType.prototype.newFile = function(path) {
     });
 };
 
-/**
- * Return all resource that do not currently exist in the given translation set.
- * This is all resources extracted from the source files minus all the
- * resources in the DB.
- *
- * @param {TranslationSet} set the set of existing resources in the DB
- * @returns {TranslationSet} the set of new or changed resources
- *
-RubyFileType.prototype.findNew = function(set) {
-    var extracted = this.extracted.getAll();
-
-    for (var i = 0; i < extracted.length; i++) {
-        var resource = extracted[i];
-        logger.trace("Examining resource " + resource.getKey() + " to see if it's new.");
-
-        var existing = set.get(resource.hashKey());
-        if (!existing || !resource.equals(existing)) {
-            logger.trace("yes");
-            this.newres.add(resource);
-        } else {
-            logger.trace("no");
-        }
-    }
-
-    logger.trace("findNew Done. Returning a set with " + this.newres.size() + " resources.");
-    return this.newres;
+RubyFileType.prototype.getDataType = function() {
+    return this.datatype;
 };
-*/
+
+RubyFileType.prototype.getResourceTypes = function() {
+    return {};
+};
 
 /**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
  */
-RubyFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
-    ResourceFactory.registerDataType(this.datatype, "plural", ResourcePlural);
+RubyFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = RubyFileType;

@@ -1,7 +1,7 @@
 /*
  * RubyFile.js - plugin to extract resources from a Ruby source code file
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,7 @@ var path = require("path");
 var log4js = require("log4js");
 var IString = require("ilib/lib/IString.js");
 
-var utils = require("./utils.js");
-var ResourceString = require("./ResourceString.js");
-var ResourcePlural = require("./ResourcePlural.js");
-var TranslationSet = require("./TranslationSet.js");
-
-var logger = log4js.getLogger("loctool.lib.RubyFile");
+var logger = log4js.getLogger("loctool.plugin.RubyFile");
 
 /**
  * Create a new Ruby file with the given path name and within
@@ -44,7 +39,11 @@ var RubyFile = function(options) {
         this.pathName = options.pathName;
         this.type = options.type;
     }
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.API = this.project.getAPI();
+
+    this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+
+    this.set = this.API.newTranslationSet(this.locale);
 };
 
 var reEscapeChar = /\\[ux]([a-fA-F0-9]+)/g;
@@ -128,7 +127,7 @@ RubyFile.cleanString = function(string) {
  * @returns {String} a unique key for this string
  */
 RubyFile.prototype.makeKey = function(source) {
-    return utils.hashKey(RubyFile.cleanString(source));
+    return this.API.utils.hashKey(RubyFile.cleanString(source));
 };
 
 /**
@@ -156,7 +155,7 @@ RubyFile.prototype.makeKeyUnescaped = function(source) {
         replace(/([^\\])\\([dghijklmopqwyz])/g, '$1$2').
         replace(/\s+/g, " ").trim();
 
-    return utils.hashKey(unescaped);
+    return this.API.utils.hashKey(unescaped);
 };
 
 var reGetStringBogusConcatenation1 = new RegExp(/(^R|\WR)b\.t\s*\(\s*("[^"]*"|'[^']')\s*\+/g);
@@ -204,11 +203,12 @@ RubyFile.prototype.parse = function(data) {
 
             var key = result[9] || result[11] || this.makeKey(str);
 
-            var r = new ResourceString({
+            var r = this.API.newResource({
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: key,
                 sourceLocale: this.project.sourceLocale,
-                source: utils.trimEscaped(RubyFile.unescapeString(str)),
+                source: this.API.utils.trimEscaped(RubyFile.unescapeString(str)),
                 autoKey: true,
                 pathName: this.pathName,
                 state: "new",
@@ -243,11 +243,12 @@ RubyFile.prototype.parse = function(data) {
                 logger.warn(str);
             }
 
-            var r = new ResourceString({
+            var r = this.API.newResource({
+                resType: "string",
                 project: this.project.getProjectId(),
                 key: this.makeKeyUnescaped(str),
                 sourceLocale: this.project.sourceLocale,
-                source: utils.trimEscaped(RubyFile.unescapeString(str)),
+                source: this.API.utils.trimEscaped(RubyFile.unescapeString(str)),
                 autoKey: true,
                 pathName: this.pathName,
                 state: "new",
@@ -280,7 +281,8 @@ RubyFile.prototype.parse = function(data) {
             extraction = reGetStringPluralSingle.exec(result[2]);
         }
         if (preResource['one']){
-            var r = new ResourcePlural({
+            var r = this.API.newResource({
+                resType: "plural",
                 project: this.project.getProjectId(),
                 key: this.makeKey(preResource['one']),
                 sourceLocale: this.project.sourceLocale,
@@ -292,7 +294,7 @@ RubyFile.prototype.parse = function(data) {
                 index: this.resourceIndex++
             });
             for (var quantity in preResource) {
-                if (ResourcePlural.validPluralClasses.indexOf(quantity) > -1) {
+                if (r.getAllValidCategories().indexOf(quantity) > -1) {
                     var tmp = reWrongReplacementType.exec(preResource[quantity]);
                     if (tmp) {
                         logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
@@ -314,17 +316,17 @@ RubyFile.prototype.parse = function(data) {
     }
 
     // now check for and report on errors in the source
-    utils.generateWarnings(data, reGetStringBogusConcatenation1,
+    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the RB.t() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reGetStringBogusConcatenation2,
+    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the RB.t() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reGetStringBogusParam,
+    this.API.utils.generateWarnings(data, reGetStringBogusParam,
         "Warning: non-string arguments are not allowed in the RB.t() parameters:",
         logger,
         this.pathName);

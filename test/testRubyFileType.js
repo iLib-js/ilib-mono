@@ -1,7 +1,7 @@
 /*
- * testRubyFileType.js - test the HTML template file type handler object.
+ * testRubyFileType.js - test the Ruby file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,21 @@
  */
 
 if (!RubyFileType) {
-    var RubyFileType = require("../lib/RubyFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
+    var RubyFileType = require("../RubyFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"]
+});
+
 
 module.exports.rubyfiletype = {
     testRubyFileTypeConstructor: function(test) {
         test.expect(1);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var rf = new RubyFileType(p);
 
@@ -41,12 +43,6 @@ module.exports.rubyfiletype = {
 
     testRubyFileTypeHandlesJSTrue: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var rf = new RubyFileType(p);
         test.ok(rf);
@@ -59,12 +55,6 @@ module.exports.rubyfiletype = {
     testRubyFileTypeHandlesHamlTrue: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var rf = new RubyFileType(p);
         test.ok(rf);
 
@@ -75,12 +65,6 @@ module.exports.rubyfiletype = {
 
     testRubyFileTypeHandlesJSFalseClose: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var rf = new RubyFileType(p);
         test.ok(rf);
@@ -93,12 +77,6 @@ module.exports.rubyfiletype = {
     testRubyFileTypeHandlesHamlFalseClose: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var rf = new RubyFileType(p);
         test.ok(rf);
 
@@ -109,12 +87,6 @@ module.exports.rubyfiletype = {
 
     testRubyFileTypeHandlesFalse: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var rf = new RubyFileType(p);
         test.ok(rf);
@@ -127,12 +99,6 @@ module.exports.rubyfiletype = {
     testRubyFileTypeHandlesJSTrueWithDir: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var rf = new RubyFileType(p);
         test.ok(rf);
 
@@ -143,12 +109,6 @@ module.exports.rubyfiletype = {
 
     testRubyFileTypeHandlesHamlTrueWithDir: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var rf = new RubyFileType(p);
         test.ok(rf);
@@ -161,12 +121,6 @@ module.exports.rubyfiletype = {
     testRubyFileTypeHandlesAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var rf = new RubyFileType(p);
         test.ok(rf);
 
@@ -177,12 +131,6 @@ module.exports.rubyfiletype = {
 
     testRubyFileTypeHandlesAlreadyLocalizedES: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
 
         var rf = new RubyFileType(p);
         test.ok(rf);
@@ -195,12 +143,6 @@ module.exports.rubyfiletype = {
     testRubyFileTypeHandlesAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var rf = new RubyFileType(p);
         test.ok(rf);
 
@@ -212,12 +154,6 @@ module.exports.rubyfiletype = {
     testRubyFileTypeHandlesAlreadyLocalizedCN2: function(test) {
         test.expect(2);
 
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
-
         var rf = new RubyFileType(p);
         test.ok(rf);
 
@@ -228,13 +164,6 @@ module.exports.rubyfiletype = {
 
     testRubyFileTypeHandlesAlreadyLocalizedWithFlavor: function(test) {
         test.expect(2);
-
-        var p = new WebProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"],
-            flavors: ["ASDF"]
-        });
 
         var rf = new RubyFileType(p);
         test.ok(rf);
