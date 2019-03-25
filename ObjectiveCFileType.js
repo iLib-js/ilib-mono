@@ -23,13 +23,7 @@ var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
-var utils = require("./utils.js");
-var TranslationSet = require("./TranslationSet.js");
 var ObjectiveCFile = require("./ObjectiveCFile.js");
-var FileType = require("./FileType.js");
-var ResourceFactory = require("./ResourceFactory.js");
-var ResourceString = require("./ResourceString.js");
-var PseudoFactory = require("./PseudoFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.ObjectiveCFileType");
 
@@ -37,13 +31,30 @@ var ObjectiveCFileType = function(project) {
     this.type = "objc";
     this.datatype = "x-objective-c";
 
-    this.parent.call(this, project);
-    this.extensions = [ ".m", ".h" ];
-};
+    this.project = project;
+    this.API = project.getAPI();
 
-ObjectiveCFileType.prototype = new FileType();
-ObjectiveCFileType.prototype.parent = FileType;
-ObjectiveCFileType.prototype.constructor = ObjectiveCFileType;
+    this.extensions = [ ".m", ".h" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+};
 
 /**
  * Return true if the given path is an objective C file and is handled
@@ -84,7 +95,7 @@ ObjectiveCFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !PseudoFactory.isPseudoLocale(locale);
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));
 
     for (var i = 0; i < resources.length; i++) {
@@ -132,44 +143,29 @@ ObjectiveCFileType.prototype.write = function(translations, locales) {
 };
 
 ObjectiveCFileType.prototype.newFile = function(path) {
-    return new ObjectiveCFile(this.project, path, this);
+    return new ObjectiveCFile({
+        project: this.project,
+        pathName: path,
+        type: this
+    });
+};
+
+ObjectiveCFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+ObjectiveCFileType.prototype.getResourceTypes = function() {
+    return {};
 };
 
 /**
- * Return all resource that do not currently exist in the given translation set.
- * This is all resources extracted from the source files minus all the
- * resources in the DB.
+ * Return the list of file name extensions that this plugin can
+ * process.
  *
- * @param {TranslationSet} set the set of existing resources in the DB
- * @returns {TranslationSet} the set of new or changed resources
- *
-ObjectiveCFileType.prototype.findNew = function(set) {
-    var extracted = this.extracted.getAll();
-
-    for (var i = 0; i < extracted.length; i++) {
-        var resource = extracted[i];
-        logger.trace("Examining resource " + resource.getKey() + " to see if it's new.");
-
-        var existing = set.get(resource.hashKey());
-        if (!existing || !resource.equals(existing)) {
-            logger.trace("yes");
-            this.newres.add(resource);
-        } else {
-            logger.trace("no");
-        }
-    }
-
-    logger.trace("findNew Done. Returning a set with " + this.newres.size() + " resources.");
-    return this.newres;
-};
-*/
-
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * @returns {Array.<string>} the list of file name extensions
  */
-ObjectiveCFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
+ObjectiveCFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = ObjectiveCFileType;

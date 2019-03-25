@@ -18,15 +18,15 @@
  */
 
 if (!ObjectiveCFile) {
-    var ObjectiveCFile = require("../lib/ObjectiveCFile.js");
-    var ObjectiveCFileType = require("../lib/ObjectiveCFileType.js");
-    var ObjectiveCProject =  require("../lib/ObjectiveCProject.js");
+    var ObjectiveCFile = require("../ObjectiveCFile.js");
+    var ObjectiveCFileType = require("../ObjectiveCFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
 
-var p = new ObjectiveCProject({
+var p = new CustomProject({
     id: "ios",
     sourceLocale: "en-US"
-}, "./testfiles", {
+}, "./test/testfiles", {
     locales:["en-GB"]
 });
 
@@ -36,7 +36,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileConstructor: function(test) {
         test.expect(1);
 
-        var j = new ObjectiveCFile();
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         test.done();
@@ -45,7 +48,11 @@ module.exports.objectivecfile = {
     testObjectiveCFileConstructorParams: function(test) {
         test.expect(1);
 
-        var j = new ObjectiveCFile(p, "./testfiles/objc/t1.m", ocft, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            pathName: "./testfiles/objc/t1.m",
+            type: ocft
+        });
 
         test.ok(j);
 
@@ -55,7 +62,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileConstructorNoFile: function(test) {
         test.expect(1);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         test.done();
@@ -64,7 +74,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileMakeKey: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         test.equal(j.makeKey("This is a test"), "This is a test");
@@ -75,7 +88,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileMakeKeyNewLines: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         test.equal(j.makeKey("This is a\\ntest"), "This is a\\ntest");
@@ -86,7 +102,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseSimpleGetByKey: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", @"translator\'s comment")');
@@ -109,7 +128,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseSimpleGetBySource: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", @"translator\'s comment");');
@@ -130,7 +152,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseIgnoreEmptyString: function(test) {
         test.expect(3);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"", @"translator\'s comment");');
@@ -146,7 +171,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseNoComment: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", nil);');
@@ -167,7 +195,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseSimpleIgnoreWhitespace: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('   NSLocalizedString  (  @"This is a test"  ,     @"translator\'s comment"   )         ');
@@ -188,7 +219,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseSimpleRightSize: function(test) {
         test.expect(4);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         var set = j.getTranslationSet();
@@ -206,7 +240,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseWithHTLocalizedString: function(test) {
         test.expect(7);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         var set = j.getTranslationSet();
@@ -230,7 +267,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseMultiple: function(test) {
         test.expect(10);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", @"translator\'s comment")\n\ta.parse("This is another test.");\n\t\tNSLocalizedString(@"This is also a test", @"translator\'s comment 2")');
@@ -256,7 +296,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseMultipleSameLine: function(test) {
         test.expect(10);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", @"translator\'s comment"); a.parse("This is another test."); NSLocalizedString(@"This is also a test", @"translator\'s comment 2")');
@@ -282,7 +325,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseWithDups: function(test) {
         test.expect(7);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", @"translator\'s comment")\n\ta.parse("This is another test.");\n\t\tNSLocalizedString(@"This is a test", @"translator\'s comment")');
@@ -304,7 +350,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseBogusConcatenation: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test" + @" and this isnt", @"translator\'s comment")');
@@ -319,7 +368,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseBogusConcatenation2: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test" + foobar, @"translator\'s comment")');
@@ -333,7 +385,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseBogusNonStringParam: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(foobar, @"translator\'s comment")');
@@ -347,7 +402,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseNonNilComment: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", foobar)');
@@ -367,7 +425,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseZeroComment: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is a test", 0)');
@@ -387,7 +448,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseEmptyParams: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString()');
@@ -401,7 +465,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseWholeWord: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('BANSLocalizedString(@"This is a test", @"translator\'s comment")');
@@ -415,7 +482,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseSubobject: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('App.NSLocalizedString(@"This is a test", @"translator\'s comment")');
@@ -429,7 +499,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParseEscapedQuotes: function(test) {
         test.expect(7);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This \\\'is\\\' a \\\"test\\\"", @"translator\'s \\\'comment\\\'")');
@@ -451,7 +524,11 @@ module.exports.objectivecfile = {
     testObjectiveCFileExtractFile: function(test) {
         test.expect(34);
 
-        var j = new ObjectiveCFile(p, "./objc/t1.m", ocft, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            pathName: "./objc/t1.m",
+            type: ocft
+        }, ocft);
         test.ok(j);
 
         // should read the file
@@ -515,7 +592,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileExtractUndefinedFile: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         // should attempt to read the file and not fail
@@ -531,7 +611,11 @@ module.exports.objectivecfile = {
     testObjectiveCFileExtractBogusFile: function(test) {
         test.expect(2);
 
-        var j = new ObjectiveCFile(p, "./objc/foo.m", ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            pathName: "./objc/foo.m",
+            type: ocft
+        });
         test.ok(j);
 
         // should attempt to read the file and not fail
@@ -547,7 +631,10 @@ module.exports.objectivecfile = {
     testObjectiveCFileParsePreserveNewlineChars: function(test) {
         test.expect(6);
 
-        var j = new ObjectiveCFile(p, undefined, ocft);
+        var j = new ObjectiveCFile({
+            project: p,
+            type: ocft
+        });
         test.ok(j);
 
         j.parse('NSLocalizedString(@"This is\\na test", @"translator\'s comment");');

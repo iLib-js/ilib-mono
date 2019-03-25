@@ -1,7 +1,7 @@
 /*
  * ObjectiveCFile.js - plugin to extract resources from a Objective C source code file
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,30 @@
 
 var fs = require("fs");
 var path = require("path");
-var utils = require("./utils.js");
-var ResourceString = require("./ResourceString.js");
-var TranslationSet = require("./TranslationSet.js");
+
 var log4js = require("log4js");
 
-var logger = log4js.getLogger("loctool.lib.ObjectiveCFile");
+var logger = log4js.getLogger("loctool.plugin.ObjectiveCFile");
 
 /**
  * Create a new java file with the given path name and within
  * the given project.
  *
- * @param {Project} project the project object
+ * @param {Object} properties to initialize this instance with
  * @param {String} pathName path to the file relative to the root
  * of the project
  * file
  */
-var ObjectiveCFile = function(project, pathName, type) {
-    this.project = project;
-    this.pathName = pathName;
-    this.type = type;
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+var ObjectiveCFile = function(options) {
+    this.project = options.project;
+    this.pathName = options.pathName;
+    this.type = options.type;
+
+    this.API = this.project.getAPI();
+
+    this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+
+    this.set = this.API.newTranslationSet(this.locale);
 };
 
 /**
@@ -111,7 +114,8 @@ ObjectiveCFile.prototype.parse = function(data) {
         var commentResult = reNSLocalizedStringComment.exec(line);
         comment = (commentResult && commentResult.length > 2) ? commentResult[2] : undefined;
 
-        var r = new ResourceString({
+        var r = this.API.newResource({
+            resType: "string",
             project: this.project.getProjectId(),
             key: this.makeKey(result[2]),
             sourceLocale: this.project.sourceLocale,
@@ -128,17 +132,17 @@ ObjectiveCFile.prototype.parse = function(data) {
     }
 
     // now check for and report on errors in the source
-    utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation1,
+    this.API.utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the NSLocalizedString() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation2,
+    this.API.utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the NSLocalizedString() parameters:",
         logger,
         this.pathName);
 
-    utils.generateWarnings(data, reNSLocalizedStringBogusParam,
+    this.API.utils.generateWarnings(data, reNSLocalizedStringBogusParam,
         "Warning: non-string arguments are not allowed in the NSLocalizedString() parameters:",
         logger,
         this.pathName);

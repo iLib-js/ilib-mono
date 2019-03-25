@@ -1,8 +1,8 @@
 {
     "name": "ilib-loctool-objectivec",
     "version": "1.0.0",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-objectivec files",
+    "main": "./ObjectiveCFileType.js",
+    "description": "A loctool plugin that knows how to extract localizable strings from Objective-C files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -15,9 +15,7 @@
         "resources",
         "locale",
         "translation",
-        "webpack",
-        "loader",
-		"ilib-loctool-objectivec"
+        "objective-c"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,7 +31,9 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "ObjectiveCFile.js",
+        "ObjectiveCFileType.js"
     ],
     "repository": {
         "type": "git",
@@ -53,7 +53,7 @@
         "log4js": "^2.11.0"
     },
     "devDependencies": {
-        "loctool": "^2.1.0",
+        "loctool": "file:../loctool/loctool-2.1.0.tgz",
         "nodeunit": "^0.11.3"
     }
 }

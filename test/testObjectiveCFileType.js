@@ -1,7 +1,7 @@
 /*
- * testObjectiveCFileTypeType.js - test the Objective C file type handler object.
+ * testObjectiveCFileType.js - test the Objective C file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,24 @@
  */
 
 if (!ObjectiveCFileType) {
-    var ObjectiveCFileType = require("../lib/ObjectiveCFileType.js");
-    var ObjectiveCProject =  require("../lib/ObjectiveCProject.js");
+    var ObjectiveCFileType = require("../ObjectiveCFileType.js");
+    var CustomProject =  require("loctool/lib/CustomProject.js");
 }
+
+var p = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"]
+});
 
 module.exports.objectivecfiletype = {
     testObjectiveCFileTypeConstructor: function(test) {
         test.expect(1);
 
-        var p = new ObjectiveCProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var ocft = new ObjectiveCFileType(p);
 
-        var htf = new ObjectiveCFileType(p);
-
-        test.ok(htf);
+        test.ok(ocft);
 
         test.done();
     },
@@ -42,16 +43,10 @@ module.exports.objectivecfiletype = {
     testObjectiveCFileTypeHandlesTrue: function(test) {
         test.expect(2);
 
-        var p = new ObjectiveCProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var ocft = new ObjectiveCFileType(p);
+        test.ok(ocft);
 
-        var htf = new ObjectiveCFileType(p);
-        test.ok(htf);
-
-        test.ok(htf.handles("foo.m"));
+        test.ok(ocft.handles("foo.m"));
 
         test.done();
     },
@@ -59,16 +54,10 @@ module.exports.objectivecfiletype = {
     testObjectiveCFileTypeHandlesHeaderFileTrue: function(test) {
         test.expect(2);
 
-        var p = new ObjectiveCProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var ocft = new ObjectiveCFileType(p);
+        test.ok(ocft);
 
-        var htf = new ObjectiveCFileType(p);
-        test.ok(htf);
-
-        test.ok(htf.handles("foo.h"));
+        test.ok(ocft.handles("foo.h"));
 
         test.done();
     },
@@ -76,16 +65,10 @@ module.exports.objectivecfiletype = {
     testObjectiveCFileTypeHandlesFalseClose: function(test) {
         test.expect(2);
 
-        var p = new ObjectiveCProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var ocft = new ObjectiveCFileType(p);
+        test.ok(ocft);
 
-        var htf = new ObjectiveCFileType(p);
-        test.ok(htf);
-
-        test.ok(!htf.handles("foo.cm"));
+        test.ok(!ocft.handles("foo.cm"));
 
         test.done();
     },
@@ -93,16 +76,10 @@ module.exports.objectivecfiletype = {
     testObjectiveCFileTypeHandlesFalse: function(test) {
         test.expect(2);
 
-        var p = new ObjectiveCProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var ocft = new ObjectiveCFileType(p);
+        test.ok(ocft);
 
-        var htf = new ObjectiveCFileType(p);
-        test.ok(htf);
-
-        test.ok(!htf.handles("foo.html"));
+        test.ok(!ocft.handles("foo.html"));
 
         test.done();
     },
@@ -110,16 +87,10 @@ module.exports.objectivecfiletype = {
     testObjectiveCFileTypeHandlesTrueWithDir: function(test) {
         test.expect(2);
 
-        var p = new ObjectiveCProject({
-            sourceLocale: "en-US"
-        }, "./testfiles", {
-            locales:["en-GB"]
-        });
+        var ocft = new ObjectiveCFileType(p);
+        test.ok(ocft);
 
-        var htf = new ObjectiveCFileType(p);
-        test.ok(htf);
-
-        test.ok(htf.handles("a/b/c/foo.m"));
+        test.ok(ocft.handles("a/b/c/foo.m"));
 
         test.done();
     }
