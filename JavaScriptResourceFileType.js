@@ -166,6 +166,16 @@ JavaScriptResourceFileType.prototype.getResourceTypes = function() {
 };
 
 /**
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
+ */
+JavaScriptResourceFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
+/**
  * Return the name of the node module that implements the resource file type, or
  * the path to a javascript file that implements the resource filetype.
  * @returns {Function|undefined} node module name or path, or undefined if this file type does not
