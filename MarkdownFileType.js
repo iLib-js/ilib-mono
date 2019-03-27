@@ -121,4 +121,8 @@ MarkdownFileType.prototype.getResourceTypes = function() {
     return {};
 };
 
+MarkdownFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 module.exports = MarkdownFileType;
