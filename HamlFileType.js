@@ -115,5 +115,9 @@ HamlFileType.prototype.getResourceTypes = function() {
     return {};
 };
 
+HamlFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 module.exports = HamlFileType;
 
