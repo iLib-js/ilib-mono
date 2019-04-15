@@ -248,6 +248,28 @@ function trim(API, text) {
     return ret;
 }
 
+// schemes are registered in the IANA list
+var reUrl = /^(https?|github|ftps?|mailto|file|data|irc):\/\/[\S]+$/;
+
+/**
+ * Return true if the given string contains translatable text,
+ * and false otherwise. For example, a string extracted with only
+ * punctuation or only an URL in it is not translatable.
+ *
+ * @param {string} str the string to test
+ * @returns {boolean} true if the given string contains translatable text,
+ * and false otherwise.
+ */
+MarkdownFile.prototype.isTranslatable = function(str) {
+    if (!str || !str.length || !str.trim().length) return false;
+
+    reUrl.startIndex = 0;
+    var match = reUrl.exec(str);
+    if (match && match.length) return false;
+
+    return this.API.utils.containsActualText(str);
+}
+
 /**
  * @param {boolean} escape true if you want the translated
  * text to be escaped for attribute values
@@ -260,7 +282,7 @@ MarkdownFile.prototype._emitText = function(escape) {
 
     logger.trace('text using message accumulator is: ' + text);
 
-    if (text.length) {
+    if (this.isTranslatable(text)) {
         this._addTransUnit(text, this.comment);
     }
     var prefixes = this.message.getPrefix();
@@ -271,16 +293,6 @@ MarkdownFile.prototype._emitText = function(escape) {
             end.localizable = false;
         }
     });
-
-    /*
-    var parts = trim(text);
-
-    logger.trace('text using message accumulator is: ' + text);
-
-    if (parts.text.length) {
-        this._addTransUnit(parts.text, this.comment);
-    }
-    */
 
     this.comment = undefined;
     this.message = new MessageAccumulator();
@@ -445,8 +457,9 @@ MarkdownFile.prototype._walk = function(node) {
             this._emitText();
             break;
 
+        case 'linkReference':
         case 'inlineCode':
-            // inline code nodes are non-breaking and self-closing
+            // inline code nodes and link references are non-breaking and self-closing
             if (this.message.getTextLength()) {
                 node.localizable = true;
                 this.message.push(node);
@@ -521,6 +534,14 @@ MarkdownFile.prototype._walk = function(node) {
                         } else if (child.identifier.substring(0, 6) === "/block") {
                             valid = true;
                             return;
+                        } else if (child.children &&
+                                child.children.length &&
+                                child.children[0].type === "text") {
+                            // Don't need to localize the text nodes inside of linkReferences
+                            // because that text should correspond with the text in the
+                            // references below. So just avoid it and recreate it later during
+                            // the localization step if necessary
+                            child.children = [];
                         }
                     } else if (child.type === 'thematicBreak') {
                         if (index+1 < array.length && array[index+1]) {
@@ -735,6 +756,17 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             }
             break;
 
+        case 'linkReference':
+            if (node.localizable) {
+                node.add(new Node({
+                    type: 'text',
+                    value: node.label
+                }));
+                message.push(node);
+                message.pop();
+            }
+            break;
+
         case 'inlineCode':
             // inline code is a non-breaking, self-closing node
             if (node.localizable) {
@@ -842,6 +874,14 @@ function flattenHtml(node) {
 
 function mapToAst(node) {
     var children = [];
+
+    if (node.type === "linkReference") {
+        node.add(new Node({
+            type: 'text',
+            value: node.label
+        }));
+    }
+
     for (var i = 0; i < node.children.length; i++) {
         var child = mapToAst(node.children[i]);
         if (child.type === "html") {
@@ -855,7 +895,9 @@ function mapToAst(node) {
         node.type = "html";
     }
     if (node.extra) {
-        node.extra.children = children;
+        if (children.length) {
+            node.extra.children = node.extra.children ? node.extra.children.concat(children) : children;
+        }
         return node.extra;
     }
     return u(node.type, node, children);
@@ -979,7 +1021,7 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
             }
             end = i;
         } else if (start > -1) {
-            if (ma.getTextLength()) {
+            if (this.isTranslatable(ma.getMinimalString())) {
                 var nodes = this._getTranslationNodes(locale, translations, ma);
                 if (nodes) {
                     // replace the source nodes with the translation nodes
