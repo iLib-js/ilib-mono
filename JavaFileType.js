@@ -156,4 +156,8 @@ JavaFileType.prototype.getResourceTypes = function() {
     };
 };
 
+JavaFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 module.exports = JavaFileType;
