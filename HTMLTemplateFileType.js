@@ -109,4 +109,14 @@ HTMLTemplateFileType.prototype.getResourceTypes = function() {
     return {};
 };
 
+/**
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
+ */
+HTMLTemplateFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 module.exports = HTMLTemplateFileType;
