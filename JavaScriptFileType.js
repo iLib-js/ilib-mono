@@ -42,12 +42,6 @@ var JavaScriptFileType = function(project) {
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 };
 
-/*
-JavaScriptFileType.prototype = new FileType();
-JavaScriptFileType.prototype.parent = FileType;
-JavaScriptFileType.prototype.constructor = JavaScriptFileType;
-*/
-
 var alreadyLocJS = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.js$/);
 var alreadyLocHaml = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
 var alreadyLocTmpl = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.tmpl\.html$/);

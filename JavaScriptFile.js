@@ -35,7 +35,7 @@ var logger = log4js.getLogger("loctool.plugin.JavaScriptFile");
 var JavaScriptFile = function(props) {
     this.project = props.project;
     this.pathName = props.pathName;
-    this.type = props.fileType;
+    this.type = props.type;
     this.API = props.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
@@ -119,6 +119,7 @@ var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
  */
 JavaScriptFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
+    this.resourceIndex = 0;
 
     var comment, match, key;
 
@@ -147,7 +148,8 @@ JavaScriptFile.prototype.parse = function(data) {
                 pathName: this.pathName,
                 state: "new",
                 comment: comment,
-                datatype: this.type.datatype
+                datatype: this.type.datatype,
+                index: this.resourceIndex++
             });
             this.set.add(r);
         } else {
@@ -185,7 +187,8 @@ JavaScriptFile.prototype.parse = function(data) {
                 pathName: this.pathName,
                 state: "new",
                 comment: comment,
-                datatype: this.type.datatype
+                datatype: this.type.datatype,
+                index: this.resourceIndex++
             });
             this.set.add(r);
         } else {

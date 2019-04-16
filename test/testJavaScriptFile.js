@@ -49,7 +49,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: "./testfiles/js/t1.js",
-            filetype: jsft
+            type: jsft
         });
 
         test.ok(j);
@@ -63,7 +63,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -76,7 +76,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -91,7 +91,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -117,7 +117,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -140,7 +140,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -163,7 +163,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -186,7 +186,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -209,7 +209,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -232,7 +232,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -255,7 +255,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -278,7 +278,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -300,7 +300,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -324,7 +324,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -348,7 +348,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -376,7 +376,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -404,7 +404,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -430,7 +430,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -455,7 +455,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -480,7 +480,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -505,7 +505,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -530,7 +530,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -551,7 +551,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -579,7 +579,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -613,7 +613,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -648,7 +648,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -678,7 +678,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -712,7 +712,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -737,7 +737,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -767,7 +767,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -786,7 +786,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -804,7 +804,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -822,7 +822,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -840,7 +840,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -858,7 +858,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -876,7 +876,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -914,7 +914,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -934,7 +934,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: "./js/t1.js",
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -966,7 +966,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: "./tmpl/topic_types.tmpl.html",
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -1001,7 +1001,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
@@ -1021,7 +1021,7 @@ module.exports.javascriptfile = {
         var j = new JavaScriptFile({
             project: p,
             pathName: "./java/foo.js",
-            filetype: jsft
+            type: jsft
         });
         test.ok(j);
 
