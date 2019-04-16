@@ -1,5 +1,5 @@
 /*
-	 * testHTMLFile.js - test the HTML file handler object.
+ * testHTMLFile.js - test the HTML file handler object.
  *
  * Copyright © 2018-2019, Box, Inc.
  *
@@ -22,7 +22,7 @@ var fs = require("fs");
 
 if (!HTMLFile) {
     var HTMLFile = require("../HTMLFile.js");
-    var HTMLTemplateFileType = require("../HTMLTemplateFileType.js");
+    var HTMLFileType = require("../HTMLFileType.js");
 
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
@@ -48,7 +48,8 @@ var p = new CustomProject({
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "testfiles"
+    targetDir: "testfiles",
+    nopseudo: true
 });
 
 var p2 = new CustomProject({
@@ -1761,7 +1762,7 @@ module.exports.htmlfile = {
         test.equal(htf.localizeText(translations, "fr-FR"),
                 '<html>\n' +
                 '   <body>\n' +
-                '       <div>Ceci est <span id="foo" class="bar"> un essai du système <em>d\'analyse syntaxique </em></span></div> šÿšţëm.3210\n' +
+                '       <div>Ceci est <span id="foo" class="bar"> un essai du système <em>d\'analyse syntaxique </em></span></div> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
 
@@ -2647,10 +2648,20 @@ module.exports.htmlfile = {
 
         var base = path.dirname(module.id);
 
+        var p3 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US"
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: "testfiles"
+        });
+
+        var t2 = new HTMLFileType(p3);
         var htf = new HTMLFile({
-            project: p,
+            project: p3,
             pathName: "./html/mode.html",
-            type: t
+            type: t2
         });
         test.ok(htf);
 
@@ -2700,7 +2711,7 @@ module.exports.htmlfile = {
         diff(actual, expected);
         test.equal(actual, expected);
 
-        var set = t.newres;
+        var set = t2.newres;
         var resources = set.getAll();
 
         test.equal(resources.length, 2);
