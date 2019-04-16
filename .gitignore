@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+test/testfiles/html/*.de-DE.html
+test/testfiles/html/*.fr-FR.html
+

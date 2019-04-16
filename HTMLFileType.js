@@ -1,7 +1,7 @@
 /*
  * HTMLFileType.js - Represents a collection of HTML files
  *
- * Copyright © 2018, Box, Inc.
+ * Copyright © 2019, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ var log4js = require("log4js");
 
 var HTMLFile = require("./HTMLFile.js");
 
-var logger = log4js.getLogger("loctool.lib.HTMLFileType");
+var logger = log4js.getLogger("loctool.plugin.HTMLFileType");
 
 var HTMLFileType = function(project) {
     this.type = "html";
@@ -102,12 +102,16 @@ HTMLFileType.prototype.newFile = function(path) {
     });
 };
 
-/**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
- */
-HTMLFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ResourceString);
+HTMLFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+HTMLFileType.prototype.getResourceTypes = function() {
+    return {};
+};
+
+HTMLFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 module.exports = HTMLFileType;

@@ -1,5 +1,5 @@
 /*
- * testHTMLFile.js - test the HTML file handler object.
+	 * testHTMLFile.js - test the HTML file handler object.
  *
  * Copyright © 2018-2019, Box, Inc.
  *
@@ -22,7 +22,7 @@ var fs = require("fs");
 
 if (!HTMLFile) {
     var HTMLFile = require("../HTMLFile.js");
-    var HTMLFileType = require("../HTMLFileType.js");
+    var HTMLTemplateFileType = require("../HTMLTemplateFileType.js");
 
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
@@ -47,7 +47,8 @@ var p = new CustomProject({
     id: "foo",
     sourceLocale: "en-US"
 }, "./test/testfiles", {
-    locales:["en-GB"]
+    locales:["en-GB"],
+    targetDir: "testfiles"
 });
 
 var p2 = new CustomProject({
@@ -56,7 +57,8 @@ var p2 = new CustomProject({
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"],
-    identify: true
+    identify: true,
+    targetDir: "testfiles"
 });
 
 var t = new HTMLFileType(p2);
@@ -416,8 +418,8 @@ module.exports.htmlfile = {
         test.done();
     },
 
-    testHTMLFileParseIgnoreDoctypeTag: function(test) {
-        test.expect(6);
+    testHTMLTemplateFileParseIgnoreDoctypeTag: function(test) {
+        test.expect(9);
 
         var htf = new HTMLFile({
             project: p,
@@ -440,12 +442,17 @@ module.exports.htmlfile = {
         var set = htf.getTranslationSet();
         test.ok(set);
 
+        test.equal(set.size(), 2);
+
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
 
-        test.equal(set.size(), 2);
+        r = set.getBySource("This is also a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is also a test");
+        test.equal(r.getKey(), "r999080996");
 
         test.done();
     },
@@ -2640,7 +2647,6 @@ module.exports.htmlfile = {
 
         var base = path.dirname(module.id);
 
-        var t = new HTMLFileType(p2);
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/mode.html",

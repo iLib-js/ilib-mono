@@ -30,7 +30,7 @@ var MessageAccumulator = require("message-accumulator").default;
 var Queue = jsstl.Queue;
 var Stack = jsstl.Stack;
 
-var logger = log4js.getLogger("loctool.lib.HTMLFile");
+var logger = log4js.getLogger("loctool.plugin.HTMLFile");
 
 /**
  * Create a new HTML file with the given path name and within
