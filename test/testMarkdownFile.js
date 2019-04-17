@@ -1127,6 +1127,37 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseListWithTextAfter2: function(test) {
+        test.expect(9);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:\n\n' +
+            '* **https://cloud.app.box.com/viewer/{FileID}?options**\n\n' +
+            'The File ID can be obtained from the API or from the web application user interface.\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+
+        var r = set.getBySource("The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
+        test.ok(r);
+        test.equal(r.getSource(), "The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
+        test.equal(r.getKey(), "r220720707");
+
+        var r = set.getBySource("The File ID can be obtained from the API or from the web application user interface.");
+        test.ok(r);
+        test.equal(r.getSource(), "The File ID can be obtained from the API or from the web application user interface.");
+        test.equal(r.getKey(), "r198589153");
+
+        test.done();
+    },
+
     testMarkdownFileParseNonBreakingEmphasisOutside: function(test) {
         test.expect(5);
 
@@ -1758,6 +1789,35 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeTextWithInlineCodeAtTheEnd: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('Delete the file with this command: `git rm filename`\n');
+
+        // should not optimize out inline code at the end of strings so that it can be
+        // part of the text that is translated
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r66239583",
+            source: "Delete the file with this command: <c0/>",
+            sourceLocale: "en-US",
+            target: "Avec cette commande <c0/>, vous pouvez supprimer le fichier.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        test.equal(mf.localizeText(translations, "fr-FR"),
+            'Avec cette commande `git rm filename`, vous pouvez supprimer le fichier.\n');
+
+        test.done();
+    },
+
     testMarkdownFileLocalizeTextWithLinkReference: function(test) {
         test.expect(2);
 
@@ -1967,6 +2027,64 @@ module.exports.markdown = {
 
         test.equal(mf.localizeText(translations, "fr-FR"),
                 'Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n');
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextMismatchedNumberOfComponents: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
+
+        var translations = new TranslationSet();
+        // there is no c1 in the source, so this better not throw an exception
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r306365966",
+            source: "This is a <c0>test</c0> of the emergency parsing system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un <c0>essai</c0> du système d'analyse <c1>syntaxique</c1> de l'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        // Should ignore the c1 as if it weren't there
+        test.equal(mf.localizeText(translations, "fr-FR"),
+            'Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextMismatchedNumberOfComponentsSelfClosing: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
+
+        var translations = new TranslationSet();
+        // there is no c1 in the source, so this better not throw an exception
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r306365966",
+            source: "This is a <c0>test</c0> of the emergency parsing system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un <c0>essai</c0> du système d'analyse <c1/> syntaxique de l'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        // Should ignore the c1 as if it weren't there
+        test.equal(mf.localizeText(translations, "fr-FR"),
+            'Ceci est un <em>essai</em> du système d\'analyse  syntaxique de l\'urgence.\n');
 
         test.done();
     },
