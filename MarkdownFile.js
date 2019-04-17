@@ -284,15 +284,15 @@ MarkdownFile.prototype._emitText = function(escape) {
 
     if (this.isTranslatable(text)) {
         this._addTransUnit(text, this.comment);
-    }
-    var prefixes = this.message.getPrefix();
-    var suffixes = this.message.getSuffix();
+        var prefixes = this.message.getPrefix();
+        var suffixes = this.message.getSuffix();
 
-    prefixes.concat(suffixes).forEach(function(end) {
-        if (typeof(end) === "object") {
-            end.localizable = false;
-        }
-    });
+        prefixes.concat(suffixes).forEach(function(end) {
+            if (typeof(end) === "object") {
+                end.localizable = false;
+            }
+        });
+    }
 
     this.comment = undefined;
     this.message = new MessageAccumulator();
@@ -460,9 +460,10 @@ MarkdownFile.prototype._walk = function(node) {
         case 'linkReference':
         case 'inlineCode':
             // inline code nodes and link references are non-breaking and self-closing
+            // Also, pass true to the push so that this node is never optimized out of a string.
             if (this.message.getTextLength()) {
                 node.localizable = true;
-                this.message.push(node);
+                this.message.push(node, true);
                 this.message.pop();
             }
             break;
@@ -762,7 +763,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     type: 'text',
                     value: node.label
                 }));
-                message.push(node);
+                message.push(node, true);
                 message.pop();
             }
             break;
@@ -770,7 +771,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
         case 'inlineCode':
             // inline code is a non-breaking, self-closing node
             if (node.localizable) {
-                message.push(node);
+                message.push(node, true);
                 message.pop();
             }
             break;
@@ -919,6 +920,21 @@ MarkdownFile.prototype._getTranslationNodes = function(locale, translations, ma)
         var nodes = transMa.root.toArray();
         // don't return the "root" start and end nodes
         nodes = nodes.slice(1, -1);
+
+        // warn about components in the target that don't exist in the source,
+        // and remove them from the node array as if they didn't exist
+        var maxIndex = Object.keys(ma.getMapping()).length;
+        var mismatch = false;
+
+        for (i = 0; i < nodes.length; i++) {
+           if (nodes[i].type == 'component' && (!nodes[i].extra || nodes[i].index > maxIndex)) {
+               nodes.splice(i, 1);
+               mismatch = true;
+           }
+        }
+        if (mismatch) {
+            logger.warn("Warning! Translation of\n'" + text + "' (key: " + key + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
+        }
 
         if (this.project.settings.identify) {
             var tmp = [];
