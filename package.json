@@ -32,6 +32,8 @@
         }
     ],
     "files": [
+        "PropertiesFile.js",
+        "PropertiesFileType.js",
         "README.md",
         "LICENSE"
     ],
