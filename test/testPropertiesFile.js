@@ -32,7 +32,7 @@ var p = new CustomProject({
     locales:["en-GB"]
 });
 
-var jft = new PropertiesFileType(p);
+var pft = new PropertiesFileType(p);
 
 module.exports.propertiesfile = {
     testPropertiesFileConstructor: function(test) {
@@ -52,7 +52,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: "./testfiles/java/t1.properties",
-            type: jft
+            type: pft
         });
 
         test.ok(j);
@@ -66,7 +66,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -79,7 +79,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -103,7 +103,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -120,13 +120,13 @@ module.exports.propertiesfile = {
         test.done();
     },
 
-    testPropertiesFileParseSimpleColon: function(test) {
+    testPropertiesFileParseWithColon: function(test) {
         test.expect(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -144,13 +144,37 @@ module.exports.propertiesfile = {
         test.done();
     },
 
+    testPropertiesFileParseWithNonLetterKeys: function(test) {
+        test.expect(5);
+
+        var j = new PropertiesFile({
+            project: p,
+            pathName: undefined,
+            type: pft
+        });
+        test.ok(j);
+
+        j.parse('test1.foo.bar: This is a test\n');
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "test1.foo.bar", "properties"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "test1.foo.bar");
+
+        test.done();
+    },
+
     testPropertiesFileParseIgnoreEmpty: function(test) {
         test.expect(3);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -170,7 +194,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -193,7 +217,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -217,19 +241,19 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('\tRB.getString("This is a \\\"test\\\".");');
+        j.parse('test1 = This is a \\\"test\\\"\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a \"test\".");
+        var r = set.getBySource("This is a \"test\"");
         test.ok(r);
-        test.equal(r.getSource(), "This is a \"test\".");
-        test.equal(r.getKey(), "r446151779");
+        test.equal(r.getSource(), "This is a \"test\"");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
@@ -240,19 +264,19 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('\tRB.getString("This is a \\\'test\\\'.");');
+        j.parse('test1 = This is a \\\'test\\\'\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a 'test'.");
+        var r = set.getBySource("This is a 'test'");
         test.ok(r);
-        test.equal(r.getSource(), "This is a 'test'.");
-        test.equal(r.getKey(), "r531222461");
+        test.equal(r.getSource(), "This is a 'test'");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
@@ -263,86 +287,42 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('\tRB.getString("This is a \'test\'.");');
+        j.parse('test1 = This is a \'test\'\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a 'test'.");
+        var r = set.getBySource("This is a 'test'");
         test.ok(r);
-        test.equal(r.getSource(), "This is a 'test'.");
-        test.equal(r.getKey(), "r531222461");
+        test.equal(r.getSource(), "This is a 'test'");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
 
-    testPropertiesFileParseWithKey: function(test) {
+    testPropertiesFileParseWithEmbeddedUnicodeEscape: function(test) {
         test.expect(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test", "unique_id")');
+        j.parse('test1 = This is a t\\u011Bst\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("webapp", "en-US", "unique_id", "java"));
+        var r = set.getBySource("This is a těst");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "unique_id");
-
-        test.done();
-    },
-
-    testPropertiesFileParseWithKeyIgnoreWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("   \t\n This is a test       ", "unique_id")');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.get(ResourceString.hashKey("webapp", "en-US", "unique_id", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "unique_id");
-
-        test.done();
-    },
-
-    testPropertiesFileParseWithKeyCantGetBySource: function(test) {
-        test.expect(3);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test", "unique_id")');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(!r);
+        test.equal(r.getSource(), "This is a těst");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
@@ -353,11 +333,11 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");');
+        j.parse('test1 = This is a test\ntest2 = This is another test\n\t\ttest3 = This is also a test\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
@@ -365,70 +345,12 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
 
         r = set.getBySource("This is also a test");
         test.ok(r);
         test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testPropertiesFileParseMultipleWithKey: function(test) {
-        test.expect(10);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test", "x");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "y");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.get(ResourceString.hashKey("webapp", "en-US", "x", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.ok(!r.getAutoKey());
-        test.equal(r.getKey(), "x");
-
-        r = set.get(ResourceString.hashKey("webapp", "en-US", "y", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.ok(!r.getAutoKey());
-        test.equal(r.getKey(), "y");
-
-        test.done();
-    },
-
-    testPropertiesFileParseMultipleOnSameLine: function(test) {
-        test.expect(8);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test");  a.parse("This is another test."); RB.getString("This is another test");\n');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.ok(r.getAutoKey());
-
-        r = set.getBySource("This is another test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is another test");
-        test.ok(r.getAutoKey());
+        test.equal(r.getKey(), "test3");
 
         test.done();
     },
@@ -439,11 +361,41 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");\t// i18n: bar');
+        j.parse('test1 = This is a test # i18n: foo\n\ttest2 = This is another test\n\t\ttest3 = This is also a test# i18n: bar\n');
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test ");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test ");
+        test.equal(r.getKey(), "test1");
+        test.equal(r.getComment(), "foo");
+
+        r = set.getBySource("This is also a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is also a test");
+        test.equal(r.getKey(), "test3");
+        test.equal(r.getComment(), "bar");
+
+        test.done();
+    },
+
+    testPropertiesFileParseMultipleWithCommentsOnLineBefore: function(test) {
+        test.expect(10);
+
+        var j = new PropertiesFile({
+            project: p,
+            pathName: undefined,
+            type: pft
+        });
+        test.ok(j);
+
+        j.parse('# i18n: foo\ntest1 = This is a test\n\ttest2 = This is another test\n\n# i18n: bar\n\n\t\ttest3 = This is also a test\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
@@ -451,43 +403,13 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
         test.equal(r.getComment(), "foo");
 
         r = set.getBySource("This is also a test");
         test.ok(r);
         test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-        test.equal(r.getComment(), "bar");
-
-        test.done();
-    },
-
-    testPropertiesFileParseMultipleWithUniqueIdsAndComments: function(test) {
-        test.expect(10);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test", "asdf");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test", "kdkdkd");\t// i18n: bar');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.get(ResourceString.hashKey("webapp", "en-US", "asdf", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "asdf");
-        test.equal(r.getComment(), "foo");
-
-        r = set.get(ResourceString.hashKey("webapp", "en-US", "kdkdkd", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "kdkdkd");
+        test.equal(r.getKey(), "test3");
         test.equal(r.getComment(), "bar");
 
         test.done();
@@ -499,11 +421,11 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test");');
+        j.parse('test1 = This is a test\n\ttest2 = This is another test.\n\t\ttest1 = This is a test\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
@@ -511,9 +433,9 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
 
-        test.equal(set.size(), 1);
+        test.equal(set.size(), 2);
 
         test.done();
     },
@@ -524,11 +446,11 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "unique_id");');
+        j.parse('test1 = This is a test\n\ttest2 = This is another test\n\t\ttest3 = This is a test\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
@@ -536,121 +458,30 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
 
-        r = set.get(ResourceString.hashKey("webapp", "en-US", "unique_id", "java"));
+        r = set.get(ResourceString.hashKey("webapp", "en-US", "test3", "properties"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "unique_id");
+        test.equal(r.getKey(), "test3");
 
         test.done();
     },
 
-    testPropertiesFileParseBogusConcatenation: function(test) {
+    testPropertiesFileParseEmptyKey: function(test) {
         test.expect(2);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test" + " and this isnt");');
-
-        var set = j.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testPropertiesFileParseBogusConcatenation2: function(test) {
-        test.expect(2);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test" + foobar);');
+        j.parse('= This is a test\n');
 
         var set = j.getTranslationSet();
         test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testPropertiesFileParseBogusNonStringParam: function(test) {
-        test.expect(2);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString(foobar);');
-
-        var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testPropertiesFileParseEmptyParams: function(test) {
-        test.expect(2);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString();');
-
-        var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testPropertiesFileParseWholeWord: function(test) {
-        test.expect(2);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('EPIRB.getString("This is a test");');
-
-        var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testPropertiesFileParseSubobject: function(test) {
-        test.expect(2);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('App.RB.getString("This is a test");');
-
-        var set = j.getTranslationSet();
-        test.equal(set.size(), 1);
 
         test.done();
     },
@@ -660,8 +491,8 @@ module.exports.propertiesfile = {
 
         var j = new PropertiesFile({
             project: p,
-            pathName: "./java/t1.java",
-            type: jft
+            pathName: "./java/t1.properties",
+            type: pft
         });
         test.ok(j);
 
@@ -675,9 +506,9 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
 
-        var r = set.get(ResourceString.hashKey("webapp", "en-US", "id1", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "id1", "properties"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test with a unique id");
         test.equal(r.getKey(), "id1");
@@ -691,7 +522,7 @@ module.exports.propertiesfile = {
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: pft
         });
         test.ok(j);
 
@@ -710,8 +541,8 @@ module.exports.propertiesfile = {
 
         var j = new PropertiesFile({
             project: p,
-            pathName: "./java/foo.java",
-            type: jft
+            pathName: "./java/foo.properties",
+            type: pft
         });
         test.ok(j);
 
@@ -726,12 +557,12 @@ module.exports.propertiesfile = {
     },
 
     testPropertiesFileExtractFile2: function(test) {
-        test.expect(11);
+        test.expect(14);
 
         var j = new PropertiesFile({
             project: p,
-            pathName: "./java/AskPickerSearchFragment.java",
-            type: jft
+            pathName: "./java/t2.properties",
+            type: pft
         });
         test.ok(j);
 
@@ -745,17 +576,20 @@ module.exports.propertiesfile = {
         var r = set.getBySource("Can't find a group?");
         test.ok(r);
         test.equal(r.getSource(), "Can't find a group?");
-        test.equal(r.getKey(), "r315749545");
+        test.equal(r.getKey(), "group.question1");
+        test.equal(r.getComment(), "used on the home page");
 
         r = set.getBySource("Can't find a friend?");
         test.ok(r);
         test.equal(r.getSource(), "Can't find a friend?");
-        test.equal(r.getKey(), "r23431269");
+        test.equal(r.getKey(), "friend.question1");
+        test.ok(!r.getComment());
 
         r = set.getBySource("Invite them to Myproduct");
         test.ok(r);
         test.equal(r.getSource(), "Invite them to Myproduct");
-        test.equal(r.getKey(), "r245047512");
+        test.equal(r.getKey(), "call-to-action");
+        test.ok(!r.getComment());
 
         test.done();
     }
