@@ -22,7 +22,6 @@ if (!PropertiesFile) {
     var PropertiesFileType = require("../PropertiesFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var ResourceString =  require("loctool/lib/ResourceString.js");
-    var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
 }
 
 var p = new CustomProject({
@@ -39,7 +38,9 @@ module.exports.propertiesfile = {
     testPropertiesFileConstructor: function(test) {
         test.expect(1);
 
-        var j = new PropertiesFile(p);
+        var j = new PropertiesFile({
+            project: p
+        });
         test.ok(j);
 
         test.done();
@@ -50,7 +51,7 @@ module.exports.propertiesfile = {
 
         var j = new PropertiesFile({
             project: p,
-            pathName: "./testfiles/java/t1.java",
+            pathName: "./testfiles/java/t1.properties",
             type: jft
         });
 
@@ -72,312 +73,6 @@ module.exports.propertiesfile = {
         test.done();
     },
 
-    testPropertiesFileMakeKey: function(test) {
-        test.expect(2);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equal(j.makeKey("This is a test"), "r654479252");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeySimpleTexts1: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equals(j.makeKey("Preferences in your profile"), "r372802078");
-        test.equals(j.makeKey("All settings"), "r725930887");
-        test.equals(j.makeKey("Colour scheme"), "r734599412");
-        test.equals(j.makeKey("Experts"), "r343852585");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyUnescaped: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equals(j.makeKey("foo \\n \\t bar"), "r1056543475");
-        test.equals(j.makeKey("\\n \\t bar"), "r755240053");
-        test.equals(j.makeKey("The \\'Dude\\' played by Jeff Bridges"), "r600298088");
-        test.equals(j.makeKey("\\'Dude\\'"), "r6259609");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeySimpleTexts2: function(test) {
-        test.expect(6);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equals(j.makeKey("Procedures"), "r807691021");
-        test.equals(j.makeKey("Mobile Apps"), "r898923204");
-        test.equals(j.makeKey("Settings in your profile"), "r618035987");
-        test.equals(j.makeKey("Product Reviews"), "r175350918");
-        test.equals(j.makeKey("Answers"), "r221604632");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeySimpleTexts3: function(test) {
-        test.expect(9);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equals(j.makeKey("Private Profile"), "r314592735");
-        test.equals(j.makeKey("People you are connected to"), "r711926199");
-        test.equals(j.makeKey("Notifications"), "r284964820");
-        test.equals(j.makeKey("News"), "r613036745");
-        test.equals(j.makeKey("More Tips"), "r216617786");
-        test.equals(j.makeKey("Filters"), "r81370429");
-        test.equals(j.makeKey("Referral Link"), "r140625167");
-        test.equals(j.makeKey("Questions"), "r256277957");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyEscapes: function(test) {
-        test.expect(3);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equals(j.makeKey("Can\'t find id"), "r743945592");
-        test.equals(j.makeKey("Can\'t find an application for SMS"), "r909283218");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyPunctuation: function(test) {
-        test.expect(8);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equals(j.makeKey("{name}({generic_name})"), "r300446104");
-        test.equals(j.makeKey("{name}, {sharer_name} {start}found this interesting{end}"), "r8321889");
-        test.equals(j.makeKey("{sharer_name} {start}found this interesting{end}"), "r639868344");
-        test.equals(j.makeKey("Grow your Network"), "r895214324");
-        test.equals(j.makeKey("Failed to send connection request!"), "r1015770123");
-        test.equals(j.makeKey("{goal_name} Goals"), "r993422001");
-        test.equals(j.makeKey("Connection link copied!"), "r180897411");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeySameStringMeansSameKey: function(test) {
-        test.expect(3);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equal(j.makeKey("This is a test"), "r654479252");
-        test.equal(j.makeKey("This is a test"), "r654479252");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyCompressWhiteSpace: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equal(j.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(j.makeKey("Can\'t    find               id"), "r743945592");
-
-        test.equal(j.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(j.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS"), "r909283218");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyTrimWhiteSpace: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        test.equal(j.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(j.makeKey("      Can\'t find  id "), "r743945592");
-
-        test.equal(j.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(j.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r"), "r909283218");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyNewLines: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equals(jf.makeKey("A \n B"), "r191336864");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyEscapeN: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equals(jf.makeKey("A \\n B"), "r191336864");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyTabs: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("A \t B"), "r191336864");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyEscapeT: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("A \\t B"), "r191336864");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyQuotes: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("A \\'B\\' C"), "r935639115");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("\\u00A0 \\u0023"), "r2293235");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat"), "r969175354");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyInterpretEscapedOctalChars: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("A \\40 \\011 B"), "r191336864");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyJavaEscapeSequences: function(test) {
-        test.expect(2);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("A \\b\\t\\n\\f\\r B"), "r191336864");
-
-        test.done();
-    },
-
-    testPropertiesFileMakeKeyCheckRubyCompatibility: function(test) {
-        test.expect(13);
-
-        var jf = new PropertiesFile(p);
-        test.ok(jf);
-
-        test.equals(jf.makeKey("This has \\\"double quotes\\\" in it."), "r487572481");
-        test.equals(jf.makeKey('This has \\\"double quotes\\\" in it.'), "r487572481");
-        test.equals(jf.makeKey("This has \\\'single quotes\\\' in it."), "r900797640");
-        test.equals(jf.makeKey('This has \\\'single quotes\\\' in it.'), "r900797640");
-        test.equals(jf.makeKey("This is a double quoted string"), "r494590307");
-        test.equals(jf.makeKey('This is a single quoted string'), "r683276274");
-        test.equals(jf.makeKey("This is a double quoted string with \\\"quotes\\\" in it."), "r246354917");
-        test.equals(jf.makeKey('This is a single quoted string with \\\'quotes\\\' in it.'), "r248819747");
-        test.equals(jf.makeKey("This is a double quoted string with \\n return chars in it"), "r1001831480");
-        test.equals(jf.makeKey('This is a single quoted string with \\n return chars in it'), "r147719125");
-        test.equals(jf.makeKey("This is a double quoted string with \\t tab chars in it"), "r276797171");
-        test.equals(jf.makeKey('This is a single quoted string with \\t tab chars in it'), "r303137748");
-
-        test.done();
-    },
-
     testPropertiesFileParseSimpleGetByKey: function(test) {
         test.expect(5);
 
@@ -388,16 +83,16 @@ module.exports.propertiesfile = {
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test")');
+        j.parse('test1=This is a test\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "r654479252", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "test1", "properties"));
         test.ok(r);
 
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
@@ -412,7 +107,7 @@ module.exports.propertiesfile = {
         });
         test.ok(j);
 
-        j.parse('RB.getString("This is a test")');
+        j.parse('test1=This is a test\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
@@ -420,7 +115,31 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getKey(), "test1");
+
+        test.done();
+    },
+
+    testPropertiesFileParseSimpleColon: function(test) {
+        test.expect(5);
+
+        var j = new PropertiesFile({
+            project: p,
+            pathName: undefined,
+            type: jft
+        });
+        test.ok(j);
+
+        j.parse('test1: This is a test\n');
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "test1", "properties"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
@@ -435,7 +154,7 @@ module.exports.propertiesfile = {
         });
         test.ok(j);
 
-        j.parse('RB.getString("")');
+        j.parse('\n\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
@@ -455,107 +174,15 @@ module.exports.propertiesfile = {
         });
         test.ok(j);
 
-        j.parse('   RB.getString  (    \t "This is a test"    );  ');
+        j.parse('  \t test1  \t\t  =   This is a test     \n  ');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBySource("This is a test     ");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testPropertiesFileParseIgnoreLeadingAndTrailingWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("  \t \n  This is a test\n\n\t   ");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testPropertiesFileParseDoubleEscapedWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('ssb.append(RB.getString("\\\\nTry a Virtual Consult ›"));');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("Try a Virtual Consult ›");
-        test.ok(r);
-        test.equal(r.getSource(), "Try a Virtual Consult ›");
-        test.equal(r.getKey(), "r682432029");
-
-        test.done();
-    },
-
-    testPropertiesFileParseIgnoreEscapedLeadingAndTrailingWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("  \\t \\n  This is a test\\n\\n\\t   ");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-
-    testPropertiesFileParseSimpleRightSize: function(test) {
-        test.expect(4);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        j.parse('RB.getString("This is a test")');
-
-        test.ok(set);
-
-        test.equal(set.size(), 1);
+        test.equal(r.getSource(), "This is a test     ");
+        test.equal(r.getKey(), "test1");
 
         test.done();
     },
@@ -570,39 +197,15 @@ module.exports.propertiesfile = {
         });
         test.ok(j);
 
-        j.parse('\tRB.getString("This is a test"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
+        j.parse('test1 = This is a test # i18n: this is a translator\'s comment\n\t# This is not\n');
 
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBySource("This is a test ");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-        test.equal(r.getComment(), "this is a translator's comment");
-
-        test.done();
-    },
-
-    testPropertiesFileParseSimpleWithUniqueIdAndTranslatorComment: function(test) {
-        test.expect(6);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('\tRB.getString("This is a test", "foobar"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "foobar", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "foobar");
+        test.equal(r.getSource(), "This is a test ");
+        test.equal(r.getKey(), "test1");
         test.equal(r.getComment(), "this is a translator's comment");
 
         test.done();
@@ -692,7 +295,7 @@ module.exports.propertiesfile = {
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "unique_id", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "unique_id", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "unique_id");
@@ -715,7 +318,7 @@ module.exports.propertiesfile = {
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "unique_id", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "unique_id", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "unique_id");
@@ -787,13 +390,13 @@ module.exports.propertiesfile = {
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "x", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "x", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.ok(!r.getAutoKey());
         test.equal(r.getKey(), "x");
 
-        r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "y", "java"));
+        r = set.get(ResourceString.hashKey("webapp", "en-US", "y", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.ok(!r.getAutoKey());
@@ -875,13 +478,13 @@ module.exports.propertiesfile = {
         var set = j.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "asdf", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "asdf", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "asdf");
         test.equal(r.getComment(), "foo");
 
-        r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "kdkdkd", "java"));
+        r = set.get(ResourceString.hashKey("webapp", "en-US", "kdkdkd", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is also a test");
         test.equal(r.getKey(), "kdkdkd");
@@ -935,7 +538,7 @@ module.exports.propertiesfile = {
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
 
-        r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "unique_id", "java"));
+        r = set.get(ResourceString.hashKey("webapp", "en-US", "unique_id", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "unique_id");
@@ -1074,7 +677,7 @@ module.exports.propertiesfile = {
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "id1", "java"));
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "id1", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test with a unique id");
         test.equal(r.getKey(), "id1");

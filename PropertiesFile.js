@@ -19,7 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var isWhite = require("ilib/lib/isWhite.js");
+var isSpace = require("ilib/lib/isSpace.js");
 var Locale = require("ilib/lib/Locale.js");
 var log4js = require("log4js");
 
@@ -86,11 +86,12 @@ PropertiesFile.unescapeString = function(string) {
 };
 
 var singleLineRe = /^\s*(\w+)\s*[=:]\s*(.*)$/;
+var commentRe = /#(\s*i18n:)?(.*)$/;
 
 function skipLine(line) {
     if (!line || !line.length) return true;
     var i = 0;
-    while (isWhite(line[i]) && i < line.length) i++;
+    while (isSpace(line[i]) && i < line.length) i++;
     if (i >= line.length || line[i] === '#' || line[i] === "!") return true;
     return false;
 }
@@ -101,19 +102,28 @@ function skipLine(line) {
  * @param {String} data the string to parse
  */
 PropertiesFile.prototype.parse = function(data) {
-    var match, lines = data.split(/\n/g);
+    var match, match2, source, comment, lines = data.split(/\n/g);
     
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (!skipLine(line)) {
+            singleLineRe.lastIndex = 0;
             match = singleLineRe.exec(line);
+            source = match[2];
+            comment = undefined;
+            commentRe.lastIndex = 0;
+            match2 = commentRe.exec(source);
+            if (match2 && match[2]) {
+                comment = match[2];
+                source = source.substring(0, match2.index);
+            }
             if (match) {
                 this.set.add(this.API.newResource({
                     resType: "string",
                     project: this.project.getProjectId(),
-                    key: this.makeKey(match[1]),
+                    key: match[1],
                     sourceLocale: this.project.sourceLocale,
-                    source: PropertiesFile.unescapeString(match[2]),
+                    source: PropertiesFile.unescapeString(source),
                     autoKey: true,
                     pathName: this.pathName,
                     state: "new",

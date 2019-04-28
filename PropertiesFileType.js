@@ -19,6 +19,7 @@
 
 var path = require("path");
 var log4js = require("log4js");
+var Locale = require("ilib/lib/Locale.js");
 
 var PropertiesFile = require("./PropertiesFile.js");
 
@@ -31,19 +32,35 @@ var logger = log4js.getLogger("loctool.plugin.PropertiesFileType");
  */
 var PropertiesFileType = function(project) {
     this.type = "properties";
+    this.datatype = "properties";
 
     this.project = project;
     this.resourceFiles = {};
     this.API = project.getAPI();
 
     this.extensions = [ ".properties" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
 };
 
-/*
-PropertiesFileType.prototype = new FileType();
-PropertiesFileType.prototype.parent = FileType;
-PropertiesFileType.prototype.constructor = PropertiesFileType;
-*/
+var alreadyLoc = new RegExp(/(^|\/)\w+_(([a-z][a-z])(_([A-Z][a-z][a-z][a-z]))?(_([A-Z][A-Z])(_([A-Z]+))?)?).properties/);
 
 /**
  * Return true if this file type handles the type of file in the
@@ -53,11 +70,20 @@ PropertiesFileType.prototype.constructor = PropertiesFileType;
  * false otherwise
  */
 PropertiesFileType.prototype.handles = function(pathName) {
-    // js resource files are only generated. Existing ones are never read in.
     logger.debug("PropertiesFileType handles " + pathName + "?");
 
-    logger.debug("No");
-    return false;
+    var extension = path.extname(pathName).toLowerCase();
+    var ret = (this.extensions.indexOf(extension) > -1);
+
+    if (ret) {
+        var match = alreadyLoc.exec(pathName);
+        if (match && match.length > 2) {
+            var locale = new Locale(match[3], match[7], match[9], match[5]);
+            return locale.getSpec() === this.project.sourceLocale;
+        }
+    }
+    logger.debug(ret ? "Yes" : "No");
+    return ret;
 };
 
 /**

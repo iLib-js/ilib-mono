@@ -86,7 +86,7 @@ module.exports.propertiesfiletype = {
     },
 
     testPropertiesFileTypeHandlesAlreadyLocalized: function(test) {
-        test.expect(2);
+        test.expect(3);
 
         var htf = new PropertiesFileType(p);
         test.ok(htf);
@@ -128,5 +128,17 @@ module.exports.propertiesfiletype = {
         test.ok(htf.handles("a/b/c/foo.properties"));
 
         test.done();
+    },
+    
+    testPropertiesFileTypeHandlesPropertiesAlreadyLocalizeWithDir: function(test) {
+        test.expect(2);
+
+        var htf = new PropertiesFileType(p);
+        test.ok(htf);
+
+        test.ok(!htf.handles("a/b/c/foo_de_DE.properties"));
+
+        test.done();
     }
+
 };
