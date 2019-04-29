@@ -415,31 +415,6 @@ module.exports.propertiesfile = {
         test.done();
     },
 
-    testPropertiesFileParseWithDups: function(test) {
-        test.expect(6);
-
-        var j = new PropertiesFile({
-            project: p,
-            pathName: undefined,
-            type: pft
-        });
-        test.ok(j);
-
-        j.parse('test1 = This is a test\n\ttest2 = This is another test.\n\t\ttest1 = This is a test\n');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
-
-        test.equal(set.size(), 2);
-
-        test.done();
-    },
-
     testPropertiesFileParseDupsDifferingByKeyOnly: function(test) {
         test.expect(8);
 
@@ -458,12 +433,29 @@ module.exports.propertiesfile = {
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
+        test.equal(r.getKey(), "test3");
 
         r = set.get(ResourceString.hashKey("webapp", "en-US", "test3", "properties"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "test3");
+
+        test.done();
+    },
+
+    testPropertiesFileParseDupsDifferingByValue: function(test) {
+        test.expect(2);
+
+        var j = new PropertiesFile({
+            project: p,
+            pathName: undefined,
+            type: pft
+        });
+        test.ok(j);
+
+        test.throws(function() {
+            j.parse('test1 = This is a test\n\ttest2 = This is another test\n\t\ttest1 = Alternate source\n');
+        });
 
         test.done();
     },

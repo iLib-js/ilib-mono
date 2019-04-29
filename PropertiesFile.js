@@ -30,7 +30,7 @@ var logger = log4js.getLogger("loctool.plugin.PropertiesFile");
  * @class Represents a Java properties file in the traditional format.
  * If you need a new style xml properties file, you should use
  * ilib-loctool-properties-xml.<p>
- * 
+ *
  * The props may contain any of the following properties:
  *
  * <ul>
@@ -104,7 +104,7 @@ function skipLine(line) {
  */
 PropertiesFile.prototype.parse = function(data) {
     var match, match2, source, comment = undefined, lines = data.split(/\n/g);
-    
+
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (skipLine(line)) {
@@ -125,7 +125,7 @@ PropertiesFile.prototype.parse = function(data) {
                     comment = match2[2];
                     source = source.substring(0, match2.index);
                 }
-                this.set.add(this.API.newResource({
+                var res = this.API.newResource({
                     resType: "string",
                     project: this.project.getProjectId(),
                     key: match[1],
@@ -137,7 +137,11 @@ PropertiesFile.prototype.parse = function(data) {
                     comment: comment,
                     datatype: this.type.datatype,
                     flavor: this.flavor
-                }));
+                });
+                if (this.set.get(res.hashKey())) {
+                    throw this.pathName + ":" + i + " Syntax error. Duplicate key " + match[1] + " found.";
+                }
+                this.set.add(res);
                 comment = undefined; // reset for the next one
             }
         }

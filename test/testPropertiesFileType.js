@@ -129,7 +129,7 @@ module.exports.propertiesfiletype = {
 
         test.done();
     },
-    
+
     testPropertiesFileTypeHandlesPropertiesAlreadyLocalizeWithDir: function(test) {
         test.expect(2);
 
