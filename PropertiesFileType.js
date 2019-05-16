@@ -153,6 +153,79 @@ PropertiesFileType.prototype.getResourceFile = function(locale) {
 };
 
 /**
+ * Find the path for the resource file for the given project, context,
+ * and locale.
+ *
+ * @param {String} locale the name of the locale in which the resource
+ * file will reside
+ * @param {String} pathName path name of the resource being added.
+ * @param {String} type one of "objc" or "xib" strings from each source
+ * file type go into different types of resource files
+ * @param {String|undefined} flavor the name of the flavor if any
+ * @return {String} the ios strings resource file path that serves the
+ * given project, context, and locale.
+ */
+PropertiesFileType.prototype.getResourceFilePath = function(locale, pathName, type, flavor) {
+    var l = new Locale(locale || this.project.sourceLocale);
+    var localeSpec, dir, newPath;
+
+    if (l.getSpec() === this.project.sourceLocale) {
+        localeSpec = "";
+    } else {
+        localeSpec = this.API.utils.getLocaleDefault(locale);
+        logger.trace("Getting resource file path for locale " + locale + ": " + localeSpec);
+        localeSpec = "_" + localeSpec.replace(/-/g, "_");
+
+        if (flavor) {
+            localeSpec += "_" + flavor.toUpperCase();
+        }
+    }
+
+    var base = path.basename(pathName, ".properties");
+
+    // this is the parent dir
+    var parent = path.dirname(pathName);
+    newPath = path.join(parent, base + localeSpec + ".properties");
+
+    return newPath;
+};
+
+/**
+ * Find or create the resource file object for the given project, context,
+ * and locale.
+ *
+ * @param {Resource} res resource to find the resource file for
+ * @return {PropertiesFileType} the Android resource file that serves the
+ * given project, context, and locale.
+ */
+PropertiesFileType.prototype.getResourceFile = function(res) {
+    var locale = res.getTargetLocale() || res.getSourceLocale(),
+        pathName = res.getPath(),
+        type = res.getDataType(),
+        flavor = res.getFlavor && res.getFlavor();
+    var newPath = this.getResourceFilePath(locale, pathName, type, flavor);
+
+    logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
+
+    var resfile = this.resourceFiles && this.resourceFiles[newPath];
+
+    if (!resfile) {
+        resfile = this.resourceFiles[newPath] = new PropertiesFile({
+            project: this.project,
+            locale: locale || this.project.sourceLocale,
+            pathName: newPath,
+            type: this
+        });
+
+        logger.trace("Defining new resource file");
+    } else {
+        logger.trace("Returning existing resource file");
+    }
+
+    return resfile;
+};
+
+/**
  * Return all resource files known to this file type instance.
  *
  * @returns {Array.<PropertiesFile>} an array of resource files
