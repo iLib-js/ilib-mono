@@ -322,7 +322,7 @@ MarkdownFile.prototype._findAttributes = function(tagName, tag) {
     reAttrNameAndValue.lastIndex = 0;
     while ((match = reAttrNameAndValue.exec(tag)) !== null) {
         var name = match[1],
-            value = (match[5] && match[5].trim()) || "";
+            value = (match[3] && match[3].trim()) || (match[5] && match[5].trim()) || "";
         if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
             this._addTransUnit(value);
         }
@@ -356,7 +356,7 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
     reAttrNameAndValue.lastIndex = 0;
     while ((match = reAttrNameAndValue.exec(tag)) !== null) {
         var name = match[1],
-            value = match[5].trim();
+            value = (match[3] && match[3].trim()) || (match[5] && match[5].trim());
         if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
             var translation = this._localizeString(value, locale, translations);
             attributes[name] = translation || value;
