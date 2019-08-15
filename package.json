@@ -54,24 +54,24 @@
     },
     "dependencies": {
         "he": "^1.2.0",
-        "ilib": "^14.1.0",
-        "ilib-tree-node": "^1.1.0",
+        "ilib": "^14.3.0",
         "log4js": "^2.11.0",
         "message-accumulator": "^2.2.0",
-        "rehype-raw": "^4.0.0",
-        "remark-highlight.js": "^5.1.0",
-        "remark-html": "^9.0.0",
+        "ilib-tree-node": "^1.2.2",
+        "rehype-raw": "^4.0.1",
+        "remark-highlight.js": "^5.1.1",
+        "remark-html": "^9.0.1",
         "remark-parse": "^6.0.3",
-        "remark-rehype": "^4.0.0",
+        "remark-rehype": "^4.0.1",
         "remark-stringify": "^6.0.4",
         "unified": "^7.1.0",
-        "unist-builder": "^1.0.3",
-        "unist-util-filter": "^1.0.0",
-        "unist-util-map": "^1.0.4",
-        "unist-util-visit": "^1.4.0"
+        "unist-builder": "^1.0.4",
+        "unist-util-filter": "^1.0.2",
+        "unist-util-map": "^1.0.5",
+        "unist-util-visit": "^1.4.1"
     },
     "devDependencies": {
-        "loctool": "^2.1.0",
+        "loctool": "^2.2.0",
         "nodeunit": "^0.11.3"
     }
 }
