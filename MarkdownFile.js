@@ -34,6 +34,7 @@ var remark2rehype = require('remark-rehype');
 var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
+var frontmatter = require('remark-frontmatter');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var unistMap = require('unist-util-map');
@@ -51,6 +52,7 @@ var mdparser = unified().
         commonmark: true,
         gfm: true
     }).
+    use(frontmatter, ['yaml']).
     use(highlight).
     use(remark2rehype).
     use(raw);
@@ -63,7 +65,8 @@ var mdstringify = unified().
         ruleSpaces: false,
         bullet: '*',
         listItemIndent: 1
-    })();
+    }).
+    use(frontmatter, ['yaml'])();
 
 function escapeQuotes(str) {
     var ret = "";
