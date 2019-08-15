@@ -1298,6 +1298,34 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseLocalizableTitleWithSingleQuotes: function(test) {
+        test.expect(8);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse("<div title='This value is localizable'>\n\n" +
+                'This is a test\n\n' +
+                '</div>\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "r654479252");
+
+        r = set.getBySource("This value is localizable");
+        test.ok(r);
+        test.equal(r.getSource(), "This value is localizable");
+        test.equal(r.getKey(), "r922503175");
+
+        test.done();
+    },
+
     testMarkdownFileParseLocalizableAttributes: function(test) {
         test.expect(8);
 
