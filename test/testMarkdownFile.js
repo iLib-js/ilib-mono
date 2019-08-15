@@ -1385,6 +1385,45 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseWithFrontMatter: function(test) {
+        test.expect(10);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'test: This is a test of the front matter\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "r654479252");
+
+        r = set.getBySource("This is also a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is also a test");
+        test.equal(r.getKey(), "r999080996");
+
+        // the front matter should be ignored
+        r = set.getBySource("This is a test of the front matter");
+        test.ok(!r);
+
+        r = set.getBySource("test: This is a test of the front matter");
+        test.ok(!r);
+
+        test.done();
+    },
+
+
     testMarkdownFileExtractFile: function(test) {
         test.expect(14);
 
@@ -2225,6 +2264,57 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeTextIgnoreFrontMatter: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'test: This is a test\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n\n' +
+            'This is a test\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r654479252",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r999080996",
+            source: "This is also a test",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        // should ignore the front matter and leave it unlocalized
+        var expected =
+            '---\n' +
+            'test: This is a test\n' +
+            '---\n' +
+            'Ceci est un essai\n\n' +
+            'Ceci est aussi un essai\n\n' +
+            'Ceci est un essai\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
     testMarkdownFileGetLocalizedPathSimple: function(test) {
         test.expect(2);
 
@@ -2441,6 +2531,131 @@ module.exports.markdown = {
         var content = fs.readFileSync(path.join(p.root, "de-DE/md/test1.md"), "utf-8");
 
         var expected =
+            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
+            '\n' +
+            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
+            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
+            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
+            '\n' +
+            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFileWithFrontMatter: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        var mf = new MarkdownFile({
+            project: p,
+            pathName: "./md/test3.md"
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'C\'est le dernier morceau de texte localisable.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        mf.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(p.root, "fr-FR/md/test3.md")));
+        test.ok(fs.existsSync(path.join(p.root, "de-DE/md/test3.md")));
+
+        var content = fs.readFileSync(path.join(p.root, "fr-FR/md/test3.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
+            'status: this front matter should remain unlocalized\n' +
+            '---\n' +
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
+            'C\'est le dernier morceau de texte localisable.\n' +
+            '\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        var content = fs.readFileSync(path.join(p.root, "de-DE/md/test3.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
+            'status: this front matter should remain unlocalized\n' +
+            '---\n' +
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
             '\n' +
             'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
