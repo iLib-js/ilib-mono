@@ -137,7 +137,7 @@ IosStringsFile.prototype.extract = function() {
 
             logger.trace("origin is " + this.origin + " and sourcePath is " + this.sourcePath);
 
-            var buffer = new Buffer(2);
+            var buffer = Buffer.alloc(2);
             buffer.fill(0);
 
             var fd = fs.openSync(p, 'r');
