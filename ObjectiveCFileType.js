@@ -168,4 +168,59 @@ ObjectiveCFileType.prototype.getExtensions = function() {
     return this.extensions;
 };
 
+/**
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
+ */
+ObjectiveCFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
+/**
+ * Return the translation set containing all of the extracted
+ * resources for all instances of this type of file. This includes
+ * all new strings and all existing strings. If it was extracted
+ * from a source file, it should be returned here.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * extracted resources
+ */
+ObjectiveCFileType.prototype.getExtracted = function() {
+    return this.extracted;
+};
+
+/**
+ * Add the contents of the given translation set to the extracted resources
+ * for this file type.
+ *
+ * @param {TranslationSet} set set of resources to add to the current set
+ */
+ObjectiveCFileType.prototype.addSet = function(set) {
+    this.extracted.addSet(set);
+};
+
+/**
+ * Return the translation set containing all of the new
+ * resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * new resources
+ */
+ObjectiveCFileType.prototype.getNew = function() {
+    return this.newres;
+};
+
+/**
+ * Return the translation set containing all of the pseudo
+ * localized resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * pseudo localized resources
+ */
+ObjectiveCFileType.prototype.getPseudo = function() {
+    return this.pseudo;
+};
+
 module.exports = ObjectiveCFileType;
