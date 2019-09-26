@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-strings",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "main": "./IosStringsFileType.js",
     "description": "A loctool plugin that knows how to process iOS .strings files",
     "license": "Apache-2.0",
