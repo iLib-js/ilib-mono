@@ -113,7 +113,7 @@ IosStringsFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
         }.bind(this));
 
     logger.trace("There are " + resources.length + " resources to add.");
