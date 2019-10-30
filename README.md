@@ -5,6 +5,10 @@ allows it to read and localize javascript files.
 
 ## Release Notes
 
+v1.0.4
+
+Updated dependencies to avoid security problems
+
 v1.0.3
 
 Fixed so that JavaScriptFileType.write passes the right name when asking for the resource
