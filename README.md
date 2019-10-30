@@ -3,6 +3,17 @@
 ilib-loctool-javascript-resource is a plugin for the loctool that
 allows it to read and localize javascript resource files.
 
+## Release Notes
+
+v1.0.1
+
+Fixed bug where JavscriptResourceFileType.getExtracted and getNew and getPseudo were returning
+undefined instead of an empty translation set.
+
+v1.0.0
+
+Initial release
+
 ## License
 
 Copyright © 2019, JEDLSoft

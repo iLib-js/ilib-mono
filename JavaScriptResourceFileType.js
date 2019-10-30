@@ -37,6 +37,10 @@ var JavaScriptResourceFileType = function(project) {
     this.API = project.getAPI();
 
     this.extensions = [ ".js" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 };
 
 /*
