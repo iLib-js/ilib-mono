@@ -5,6 +5,11 @@ allows it to read and localize javascript files.
 
 ## Release Notes
 
+v1.0.3
+
+Fixed so that JavaScriptFileType.write passes the right name when asking for the resource
+file type for javascript files.
+
 v1.0.2
 
 Fixed so that JavaScriptFileType passes the right props to
