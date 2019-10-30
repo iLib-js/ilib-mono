@@ -163,7 +163,7 @@ JavaScriptFileType.prototype.newFile = function(path) {
     return new JavaScriptFile({
         project: this.project,
         pathName: path,
-        fileType: this
+        type: this
     });
 };
 
