@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-javascript",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "main": "./JavaScriptFileType.js",
     "description": "A loctool plugin that knows how to process JS files",
     "license": "Apache-2.0",
@@ -51,12 +51,12 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.1.0",
-        "ilib-loctool-javascript-resource": "^1.0.0",
+        "ilib": "^14.4.0",
+        "ilib-loctool-javascript-resource": "^1.0.1",
         "log4js": "^5.0.0"
     },
     "devDependencies": {
-        "loctool": "^2.1.0",
+        "loctool": "^2.2.0",
         "nodeunit": "^0.11.3"
     }
 }
