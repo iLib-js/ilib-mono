@@ -3,6 +3,13 @@
 ilib-loctool-javascript is a plugin for the loctool that
 allows it to read and localize javascript files.
 
+## Release Notes
+
+v1.0.2
+
+Fixed so that JavaScriptFileType passes the right props to
+the JavaScriptFile constructor.
+
 ## License
 
 Copyright © 2019, JEDLSoft
