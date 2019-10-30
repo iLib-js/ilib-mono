@@ -97,7 +97,7 @@ JavaScriptFileType.prototype.name = function() {
 JavaScriptFileType.prototype.write = function(translations, locales) {
     // distribute all the resources to their resource files
     // and then let them write themselves out
-    var resFileType = this.project.getResourceFileType("js");
+    var resFileType = this.project.getResourceFileType(this.type);
     var res, file,
         resources = this.extracted.getAll(),
         db = this.project.db,
