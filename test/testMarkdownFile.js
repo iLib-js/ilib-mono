@@ -2846,5 +2846,38 @@ module.exports.markdown = {
         test.equal(r.getKey(), "r663481768");
 
         test.done();
+    },
+
+    testMarkdownFileParseWithLinkReferences: function(test) {
+        test.expect(9);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'For developer support, please reach out to us via one of our channels:\n' +
+            '\n' +
+            '- [Twitter][twitter]: For general questions and support.\n' +
+            '\n' +
+            '[twitter]: https://twitter.com/OurPlatform\n'
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+
+        var resources = set.getAll();
+
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "For developer support, please reach out to us via one of our channels:");
+
+        test.equal(resources[1].getSource(), "<c0>Twitter</c0>: For general questions and support.");
+
+        test.done();
     }
+
 };
