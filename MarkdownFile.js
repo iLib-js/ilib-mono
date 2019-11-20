@@ -452,15 +452,18 @@ MarkdownFile.prototype._walk = function(node) {
             if (this.message.getTextLength() || (node.children && node.children.length)) {
                 node.localizable = true;
                 this.message.push(node, true);
-                if (node.children && 
-                        node.children.length && 
-                        node.children[0].type === "text" && 
+                if (node.children &&
+                        node.children.length &&
+                        node.children[0].type === "text" &&
                         node.children[0].value !== node.label) {
                     // only record the text children when the text is different than the label
                     // of this reference
                     node.children.forEach(function(child) {
                         this._walk(child);
                     }.bind(this));
+                } else {
+                    // don't need the children where the text is the same as the label
+                    node.children = [];
                 }
                 this.message.pop();
             }
@@ -723,6 +726,13 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node, true);
+                } else if (node.use === "startend") {
+                    node.add(new Node({
+                        type: 'text',
+                        value: node.label
+                    }));
+                    message.push(node, true);
+                    message.pop();
                 } else {
                     message.pop();
                 }
@@ -836,13 +846,6 @@ function flattenHtml(node) {
 
 function mapToAst(node) {
     var children = [];
-
-    if (node.type === "linkReference") {
-        node.add(new Node({
-            type: 'text',
-            value: node.label
-        }));
-    }
 
     for (var i = 0; i < node.children.length; i++) {
         var child = mapToAst(node.children[i]);

@@ -853,7 +853,7 @@ module.exports.markdown = {
         r = set.getBySource("<c0/>: As referenced before.");
         test.ok(r);
         test.equal(r.getSource(), "<c0/>: As referenced before.");
-        test.equal(r.getKey(), "r335185216");
+        test.equal(r.getKey(), "r650576171");
 
         test.done();
     },
@@ -1849,7 +1849,7 @@ module.exports.markdown = {
         }));
 
         test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [R1] de l\'urgence [C1].\n\n[C1]: <https://www.box.com/test1>\n[R1]: <http://www.box.com/about.html>\n');
+            'Ceci est un test du système d\'analyse syntaxique [R1] de l\'urgence [C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
 
         test.done();
     },
@@ -2848,8 +2848,8 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseWithLinkReferencesWithText: function(test) {
-        test.expect(9);
+    testMarkdownFileParseWithLinkReferenceWithText: function(test) {
+        test.expect(6);
 
         var mf = new MarkdownFile({
             project: p
@@ -2876,6 +2876,43 @@ module.exports.markdown = {
         test.equal(resources[0].getSource(), "For developer support, please reach out to us via one of our channels:");
 
         test.equal(resources[1].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithMultipleLinkReferenceWithText: function(test) {
+        test.expect(8);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'For developer support, please reach out to us via one of our channels:\n' +
+            '\n' +
+            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
+            '- [Ask in email][email]: For specific questions and support.\n' +
+            '- [Ask on stack overflow][so]: For community answers and support.\n' +
+            '\n' +
+            '[twitter]: https://twitter.com/OurPlatform\n' +
+            '[email]: mailto:support@ourplatform\n' +
+            '[so]: http://ourplatform.stackoverflow.com/'
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+
+        var resources = set.getAll();
+
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getSource(), "For developer support, please reach out to us via one of our channels:");
+        test.equal(resources[1].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
+        test.equal(resources[2].getSource(), "<c0>Ask in email</c0>: For specific questions and support.");
+        test.equal(resources[3].getSource(), "<c0>Ask on stack overflow</c0>: For community answers and support.");
 
         test.done();
     }
