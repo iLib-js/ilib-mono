@@ -818,7 +818,7 @@ module.exports.markdown = {
         test.ok(mf);
 
         mf.parse('This is a test of the emergency parsing [C1] system.\n\n' +
-                '[C1] http://www.box.com/foobar\n');
+                '[C1]: http://www.box.com/foobar\n');
 
         var set = mf.getTranslationSet();
         test.ok(set);
@@ -840,7 +840,7 @@ module.exports.markdown = {
         test.ok(mf);
 
         mf.parse('This is a test of the emergency parsing system.\n\n' +
-                '[C1] As referenced before.\n');
+                '[C1]: As referenced before.\n');
 
         var set = mf.getTranslationSet();
         test.ok(set);
@@ -850,9 +850,9 @@ module.exports.markdown = {
         test.equal(r.getSource(), "This is a test of the emergency parsing system.");
         test.equal(r.getKey(), "r699762575");
 
-        r = set.getBySource("As referenced before.");
+        r = set.getBySource("<c0/>: As referenced before.");
         test.ok(r);
-        test.equal(r.getSource(), "As referenced before.");
+        test.equal(r.getSource(), "<c0/>: As referenced before.");
         test.equal(r.getKey(), "r335185216");
 
         test.done();
@@ -1835,7 +1835,7 @@ module.exports.markdown = {
         });
         test.ok(mf);
 
-        mf.parse('This is a test of the emergency [C1] parsing system [R1].\n\n[C1] https://www.box.com/test1\n[R1] http://www.box.com/about.html\n');
+        mf.parse('This is a test of the emergency [C1] parsing system [R1].\n\n[C1]: https://www.box.com/test1\n[R1]: http://www.box.com/about.html\n');
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -1849,7 +1849,7 @@ module.exports.markdown = {
         }));
 
         test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [R1] de l\'urgence [C1].\n\n[C1] <https://www.box.com/test1>\n[R1] <http://www.box.com/about.html>\n');
+            'Ceci est un test du système d\'analyse syntaxique [R1] de l\'urgence [C1].\n\n[C1]: <https://www.box.com/test1>\n[R1]: <http://www.box.com/about.html>\n');
 
         test.done();
     },
@@ -2848,7 +2848,7 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseWithLinkReferences: function(test) {
+    testMarkdownFileParseWithLinkReferencesWithText: function(test) {
         test.expect(9);
 
         var mf = new MarkdownFile({
@@ -2859,7 +2859,7 @@ module.exports.markdown = {
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
-            '- [Twitter][twitter]: For general questions and support.\n' +
+            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
             '\n' +
             '[twitter]: https://twitter.com/OurPlatform\n'
         );
@@ -2875,7 +2875,7 @@ module.exports.markdown = {
 
         test.equal(resources[0].getSource(), "For developer support, please reach out to us via one of our channels:");
 
-        test.equal(resources[1].getSource(), "<c0>Twitter</c0>: For general questions and support.");
+        test.equal(resources[1].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
 
         test.done();
     }
