@@ -2915,6 +2915,58 @@ module.exports.markdown = {
         test.equal(resources[3].getSource(), "<c0>Ask on stack overflow</c0>: For community answers and support.");
 
         test.done();
-    }
+    },
+    
+    testMarkdownFileLocalizeWithReferenceLinks: function(test) {
+        test.expect(3);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'For developer support, please reach out to us via one of our channels:\n' +
+            '\n' +
+            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
+            '\n' +
+            '[twitter]: https://twitter.com/OurPlatform\n'
+        );
+        test.ok(mf);
+
+        var translations = new TranslationSet();
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r816306377',
+            source: 'For developer support, please reach out to us via one of our channels:',
+            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r293599939',
+            source: '<c0>Ask on Twitter</c0>: For general questions and support.',
+            target: '<c0>Auf Twitter stellen</c0>: Für allgemeine Fragen und Unterstützung.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        var actual = mf.localizeText(translations, "de-DE");
+
+        var expected =
+            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
+            '\n' +
+            '* [Auf Twitter stellen][twitter]: Für allgemeine Fragen und Unterstützung.\n' +
+            '\n' +
+            '[twitter]: https://twitter.com/OurPlatform\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
 
 };
