@@ -434,7 +434,6 @@ MarkdownFile.prototype._walk = function(node) {
             break;
 
         case 'definition':
-            node.label && this._addTransUnit(node.label);
             node.title && this._addTransUnit(node.title);
             // definitions are breaking nodes
             this._emitText();
@@ -450,9 +449,22 @@ MarkdownFile.prototype._walk = function(node) {
         case 'inlineCode':
             // inline code nodes and link references are non-breaking and self-closing
             // Also, pass true to the push so that this node is never optimized out of a string.
-            if (this.message.getTextLength()) {
+            if (this.message.getTextLength() || (node.children && node.children.length)) {
                 node.localizable = true;
                 this.message.push(node, true);
+                if (node.children &&
+                        node.children.length &&
+                        node.children[0].type === "text" &&
+                        node.children[0].value !== node.label) {
+                    // only record the text children when the text is different than the label
+                    // of this reference
+                    node.children.forEach(function(child) {
+                        this._walk(child);
+                    }.bind(this));
+                } else {
+                    // don't need the children where the text is the same as the label
+                    node.children = [];
+                }
                 this.message.pop();
             }
             break;
@@ -516,16 +528,6 @@ MarkdownFile.prototype._walk = function(node) {
             this._emitText();
             if (node.children && node.children.length) {
                 node.children.forEach(function(child, index, array) {
-                    if (child.type === 'linkReference' &&
-                            child.children &&
-                            child.children.length &&
-                            child.children[0].type === "text") {
-                            // Don't need to localize the text nodes inside of linkReferences
-                            // because that text should correspond with the text in the
-                            // references below. So just avoid it and recreate it later during
-                            // the localization step if necessary
-                            child.children = [];
-                    }
                     this._walk(child);
                 }.bind(this));
             }
@@ -722,12 +724,18 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
 
         case 'linkReference':
             if (node.localizable) {
-                node.add(new Node({
-                    type: 'text',
-                    value: node.label
-                }));
-                message.push(node, true);
-                message.pop();
+                if (node.use === "start") {
+                    message.push(node, true);
+                } else if (node.use === "startend") {
+                    node.add(new Node({
+                        type: 'text',
+                        value: node.label
+                    }));
+                    message.push(node, true);
+                    message.pop();
+                } else {
+                    message.pop();
+                }
             }
             break;
 
@@ -838,13 +846,6 @@ function flattenHtml(node) {
 
 function mapToAst(node) {
     var children = [];
-
-    if (node.type === "linkReference") {
-        node.add(new Node({
-            type: 'text',
-            value: node.label
-        }));
-    }
 
     for (var i = 0; i < node.children.length; i++) {
         var child = mapToAst(node.children[i]);
