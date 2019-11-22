@@ -2968,5 +2968,51 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseHTMLComments: function(test) {
+        test.expect(5);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a <!-- comment -->test of the emergency parsing system.\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test of the emergency parsing system.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
+        test.equal(r.getKey(), "r699762575");
+
+        test.done();
+    },
+
+    testMarkdownFileParseHTMLCommentsWithIndent: function(test) {
+        test.expect(8);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a test of the emergency parsing system.\n  <!-- comment -->\nA second string\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test of the emergency parsing system.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
+        test.equal(r.getKey(), "r699762575");
+
+        var r = set.getBySource("A second string");
+        test.ok(r);
+        test.equal(r.getSource(), "A second string");
+        test.equal(r.getKey(), "r772298159");
+
+        test.done();
+    },
 
 };
