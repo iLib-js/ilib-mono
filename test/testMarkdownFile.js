@@ -3015,4 +3015,44 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeHTMLCommentsWithIndent: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a test of the emergency parsing system.\n  <!-- comment -->\nA second string\n');
+
+        var translations = new TranslationSet();
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r699762575',
+            source: 'This is a test of the emergency parsing system.',
+            target: 'This is a test of the emergency parsing system... in GERMAN!',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r772298159',
+            source: 'A second string',
+            target: 'A second string... in GERMAN!',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        var actual = mf.localizeText(translations, "de-DE");
+
+        var expected =
+            'This is a test of the emergency parsing system... in GERMAN!\n\n  <!-- comment -->\n\nA second string... in GERMAN!\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
 };
