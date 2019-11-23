@@ -778,7 +778,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
 
         case 'html':
             reTagName.lastIndex = 0;
-            if (node.value.substring(0, 4) === '<!--') {
+            if (node.value.trim().substring(0, 4) === '<!--') {
                 reL10NComment.lastIndex = 0;
                 match = reL10NComment.exec(node.value);
                 if (match) {
