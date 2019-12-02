@@ -4,6 +4,10 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.2.5
+
+- Handle valueless HTML attributes properly
+
 ### 1.2.4
 
 - The previous fix where HTML comments were not recognized and skipped properly 
