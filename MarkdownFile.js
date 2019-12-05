@@ -452,8 +452,21 @@ MarkdownFile.prototype._walk = function(node) {
             // Also, pass true to the push so that this node is never optimized out of a string,
             // even at the beginning or end.
             node.localizable = true;
+            if (node.referenceType === "shortcut") {
+                // convert to a full reference with a text child
+                // so that we can have a separate label and translated title
+                if (!node.children || !node.children.length) {
+                    var child = new Node({
+                        type: "text",
+                        value: node.label,
+                        children: []
+                    });
+                    node.children.push(child);
+                }
+                node.referenceType = "full";
+            }
             this.message.push(node, true);
-            if (node.children) {
+            if (node.children && node.children.length) {
                 node.children.forEach(function(child) {
                     this._walk(child);
                 }.bind(this));
@@ -722,7 +735,6 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
 
         case 'linkReference':
             if (node.localizable) {
-                console.dir(node);
                 if (node.use === "start") {
                     message.push(node, true);
                 } else if (node.use === "startend") {

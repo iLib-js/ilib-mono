@@ -1862,7 +1862,7 @@ module.exports.markdown = {
         }));
 
         test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1].\n');
+            'Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n');
 
         test.done();
     },
@@ -1883,13 +1883,13 @@ module.exports.markdown = {
             key: "r817759238",
             source: "This is a test of the emergency <c0>C1</c0> parsing system <c1>R1</c1>.",
             sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique <c1>R1</c1> de l'urgence <c0>C1</c0>.",
+            target: "Ceci est un test du système d'analyse syntaxique <c1>Reponse1</c1> de l'urgence <c0>teste</c0>.",
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
 
         test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [R1] de l\'urgence [C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
+            'Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
 
         test.done();
     },
@@ -3069,7 +3069,7 @@ module.exports.markdown = {
             project: "foo",
             key: 'r1030328207',
             source: '<c0>Ask on Twitter</c0> For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> Für allgemeine Fragen und Unterstützung.',
+            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
@@ -3080,7 +3080,7 @@ module.exports.markdown = {
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
             '\n' +
-            '* [Auf Twitter stellen][Ask on Twitter] Für allgemeine Fragen und Unterstützung.\n' +
+            '* [Auf Twitter stellen][Ask on Twitter] für allgemeine Fragen und Unterstützung.\n' +
             '\n' +
             '[Ask on Twitter]: https://twitter.com/OurPlatform\n';
 
