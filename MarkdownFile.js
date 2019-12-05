@@ -438,39 +438,46 @@ MarkdownFile.prototype._walk = function(node) {
             break;
 
         case 'definition':
-            node.title && this._addTransUnit(node.title);
             // definitions are breaking nodes
             this._emitText();
             break;
 
         case 'footnoteDefinition':
-            node.label && this._addTransUnit(node.label);
             // definitions are breaking nodes
             this._emitText();
             break;
 
         case 'linkReference':
-        case 'inlineCode':
-            // inline code nodes and link references are non-breaking and self-closing
-            // Also, pass true to the push so that this node is never optimized out of a string.
-            if (this.message.getTextLength() || (node.children && node.children.length)) {
-                node.localizable = true;
-                this.message.push(node, true);
-                if (node.children &&
-                        node.children.length &&
-                        node.children[0].type === "text" &&
-                        node.children[0].value !== node.label) {
-                    // only record the text children when the text is different than the label
-                    // of this reference
-                    node.children.forEach(function(child) {
-                        this._walk(child);
-                    }.bind(this));
-                } else {
-                    // don't need the children where the text is the same as the label
-                    node.children = [];
+            // inline code nodes and link references are non-breaking
+            // Also, pass true to the push so that this node is never optimized out of a string,
+            // even at the beginning or end.
+            node.localizable = true;
+            if (node.referenceType === "shortcut") {
+                // convert to a full reference with a text child
+                // so that we can have a separate label and translated title
+                if (!node.children || !node.children.length) {
+                    var child = new Node({
+                        type: "text",
+                        value: node.label,
+                        children: []
+                    });
+                    node.children.push(child);
                 }
-                this.message.pop();
+                node.referenceType = "full";
             }
+            this.message.push(node, true);
+            if (node.children && node.children.length) {
+                node.children.forEach(function(child) {
+                    this._walk(child);
+                }.bind(this));
+            }
+            this.message.pop();
+            break;
+
+        case 'inlineCode':
+            node.localizable = true;
+            this.message.push(node, true);
+            this.message.pop();
             break;
 
         case 'html':
@@ -731,10 +738,6 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 if (node.use === "start") {
                     message.push(node, true);
                 } else if (node.use === "startend") {
-                    node.add(new Node({
-                        type: 'text',
-                        value: node.label
-                    }));
                     message.push(node, true);
                     message.pop();
                 } else {
@@ -752,12 +755,6 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             break;
 
         case 'definition':
-            if (node.label) {
-                node.label = this._localizeString(node.label, locale, translations);
-            }
-            if (node.title) {
-                node.title = this._localizeString(node.title, locale, translations);
-            }
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node);
@@ -768,9 +765,6 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             break;
 
         case 'footnoteDefinition':
-            if (node.label) {
-                node.label = this._localizeString(node.label, locale, translations);
-            }
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node);
