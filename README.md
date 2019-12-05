@@ -4,6 +4,13 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.2.6
+
+- Add support for shortcut and full link references
+    - Shortcut references are converted back to full so that the title of the
+      reference can be translated to something different than the [possibly]
+      English label of the shortcut.
+
 ### 1.2.5
 
 - Handle valueless HTML attributes properly
