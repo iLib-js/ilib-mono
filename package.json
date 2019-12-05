@@ -72,7 +72,7 @@
         "unist-util-visit": "^1.4.1"
     },
     "devDependencies": {
-        "loctool": "^2.2.0",
+        "loctool": "^2.3.2",
         "nodeunit": "^0.11.3"
     }
 }
