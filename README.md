@@ -4,6 +4,11 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.3.0
+
+- The plugin now adds a translator comment/note for inline code so that the
+  translator can know what the text of the self-closing components is.
+
 ### 1.2.6
 
 - Add support for shortcut and full link references
