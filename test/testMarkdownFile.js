@@ -3101,6 +3101,38 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseWithLinkReferenceWithLinkTitle: function(test) {
+        test.expect(7);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'Regular service will be [available][exception].\n' +
+            '\n' +
+            '<!-- i18n-enable localize-links -->\n' +
+            '[exception]: http://a.com/ "link title"\n' +
+            '<!-- i18n-disable localize-links -->'
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 3);
+
+        var resources = set.getAll();
+
+        test.equal(resources.length, 3);
+
+        test.equal(resources[0].getSource(), "Regular service will be <c0>available</c0>.");
+        test.equal(resources[1].getSource(), "link title");
+        test.equal(resources[2].getSource(), "http://a.com/");
+
+        test.done();
+    },
+
     testMarkdownFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff: function(test) {
         test.expect(7);
 
@@ -3172,7 +3204,7 @@ module.exports.markdown = {
         test.done();
     },
     
-    testMarkdownFileLocalizeReferenceLinksWithTitle: function(test) {
+    testMarkdownFileLocalizeReferenceLinksWithLinkId: function(test) {
         test.expect(3);
 
         var mf = new MarkdownFile({
@@ -3223,7 +3255,7 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileLocalizeReferenceLinksWithoutTitle: function(test) {
+    testMarkdownFileLocalizeReferenceLinksWithoutLinkId: function(test) {
         test.expect(3);
 
         var mf = new MarkdownFile({
@@ -3268,6 +3300,78 @@ module.exports.markdown = {
             '* [Auf Twitter stellen][Ask on Twitter] für allgemeine Fragen und Unterstützung.\n' +
             '\n' +
             '[Ask on Twitter]: https://twitter.com/OurPlatform\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeReferenceLinksWithLinkTitle: function(test) {
+        test.expect(3);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'For developer support, please reach out to us via one of our channels:\n' +
+            '\n' +
+            '- [Ask on Twitter][twitter] For general questions and support.\n' +
+            '\n' +
+            '<!-- i18n-enable localize-links -->\n' +
+            '[twitter]: https://twitter.com/OurPlatform "Our Platform"\n' +
+            '<!-- i18n-disable localize-links -->\n'
+        );
+        test.ok(mf);
+
+        var translations = new TranslationSet();
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r816306377',
+            source: 'For developer support, please reach out to us via one of our channels:',
+            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r1030328207',
+            source: '<c0>Ask on Twitter</c0> For general questions and support.',
+            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r85880207',
+            source: 'https://twitter.com/OurPlatform',
+            target: 'https://de.twitter.com/OurPlatform',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r504251007',
+            source: 'Our Platform',
+            target: 'Unsere Platformen',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        var actual = mf.localizeText(translations, "de-DE");
+
+        // DON'T localize the label. Instead, add a title that is translated
+        var expected =
+            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
+            '\n' +
+            '* [Auf Twitter stellen][twitter] für allgemeine Fragen und Unterstützung.\n' +
+            '\n' +
+            '<!-- i18n-enable localize-links -->\n\n' +
+            '[twitter]: https://de.twitter.com/OurPlatform "Unsere Platformen"\n\n' +
+            '<!-- i18n-disable localize-links -->\n';
 
         diff(actual, expected);
         test.equal(actual, expected);

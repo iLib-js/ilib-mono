@@ -445,8 +445,8 @@ MarkdownFile.prototype._walk = function(node) {
         case 'definition':
             // definitions are breaking nodes
             this._emitText();
-            if (node.text || (node.url && this.localizeLinks)) {
-                var value = node.text || node.url;
+            if (node.url && this.localizeLinks) {
+                var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
                 // or if this text contains anything that is not whitespace
@@ -455,6 +455,7 @@ MarkdownFile.prototype._walk = function(node) {
                     this.message.isTranslatable = this.localizeLinks;
                     node.localizable = true;
                 }
+                node.title && this._addTransUnit(node.title);
             }
             break;
 
@@ -801,8 +802,8 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 if (node.url) {
                     node.url = this._localizeString(node.url, locale, translations);
                 }
-                if (node.text) {
-                    node.text = this._localizeString(node.text, locale, translations);
+                if (node.title) {
+                    node.title = this._localizeString(node.title, locale, translations);
                 }
             }
             break;
