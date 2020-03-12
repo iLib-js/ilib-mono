@@ -2973,6 +2973,38 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseWithLinkReferenceToExtractedURL: function(test) {
+        test.expect(6);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
+            '- [Ask on Facebook][facebook]: For general questions and support.\n' +
+            '\n' +
+            '<!-- i18n: extract-urls -->\n' +
+            '[twitter]: https://twitter.com/OurPlatform\n' +
+            '<!-- i18n: no-extract-urls -->'
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+
+        var resources = set.getAll();
+
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
+        test.equal(resources[1].getSource(), "https://twitter.com/OurPlatform");
+
+        test.done();
+    },
+
     testMarkdownFileParseWithMultipleLinkReferenceWithText: function(test) {
         test.expect(8);
 
