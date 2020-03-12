@@ -797,6 +797,13 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 } else {
                     message.pop();
                 }
+                
+                if (node.url) {
+                    node.url = this._localizeString(node.url, locale, translations);
+                }
+                if (node.text) {
+                    node.text = this._localizeString(node.text, locale, translations);
+                }
             }
             break;
 

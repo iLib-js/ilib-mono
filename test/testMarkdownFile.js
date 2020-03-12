@@ -833,7 +833,7 @@ module.exports.markdown = {
     },
 
     testMarkdownFileParseTurnOnURLOnlyLinks: function(test) {
-        test.expect(7);
+        test.expect(12);
 
         var mf = new MarkdownFile({
             project: p
@@ -3067,7 +3067,7 @@ module.exports.markdown = {
     },
 
     testMarkdownFileParseWithLinkReferenceToExtractedURL: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         var mf = new MarkdownFile({
             project: p
@@ -3102,7 +3102,7 @@ module.exports.markdown = {
     },
 
     testMarkdownFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff: function(test) {
-        test.expect(6);
+        test.expect(7);
 
         var mf = new MarkdownFile({
             project: p
