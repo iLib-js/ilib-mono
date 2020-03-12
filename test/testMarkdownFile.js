@@ -856,7 +856,7 @@ module.exports.markdown = {
         test.equal(r.getSource(), "Here are some links:");
         test.equal(r.getKey(), "r539503678");
 
-        // the URLs should not be extracted if they are the only thing in the string
+        // the URLs should be extracted because we turned on link localization
         r = set.getBySource("http://www.box.com/foobar");
         test.ok(r);
         test.equal(r.getSource(), "http://www.box.com/foobar");
