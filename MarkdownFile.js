@@ -132,7 +132,7 @@ var MarkdownFile = function(options) {
     this.pathName = options.pathName;
     this.type = options.type;
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
-
+    this.localizeLinks = false;
     // this.componentIndex = 0;
 };
 
@@ -266,9 +266,11 @@ var reUrl = /^(https?|github|ftps?|mailto|file|data|irc):\/\/[\S]+$/;
 MarkdownFile.prototype.isTranslatable = function(str) {
     if (!str || !str.length || !str.trim().length) return false;
 
-    reUrl.startIndex = 0;
-    var match = reUrl.exec(str);
-    if (match && match.length) return false;
+    if (!this.localizeLinks) {
+        reUrl.startIndex = 0;
+        var match = reUrl.exec(str);
+        if (match && match.length) return false;
+    }
 
     return this.API.utils.containsActualText(str);
 }
@@ -285,7 +287,7 @@ MarkdownFile.prototype._emitText = function(escape) {
 
     logger.trace('text using message accumulator is: ' + text);
 
-    if (this.isTranslatable(text)) {
+    if (this.message.isTranslatable || this.isTranslatable(text)) {
         this._addTransUnit(text, this.comment);
         var prefixes = this.message.getPrefix();
         var suffixes = this.message.getSuffix();
@@ -383,6 +385,8 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
 var reTagName = /<(\/?)\s*(\w+)(\s|>)/;
 var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
 
+var reDirectiveComment = /<!--\s*i18n-(en|dis)able\s+(\S*)\s*-->/;
+
 /**
  * @private
  * Walk the tree looking for localizable text.
@@ -399,6 +403,7 @@ MarkdownFile.prototype._walk = function(node) {
             // or if this text contains anything that is not whitespace
             if (this.message.getTextLength() > 0 || parts.text) {
                 this.message.addText(node.value);
+                this.message.isTranslatable = this.localizeLinks;
                 node.localizable = true;
             }
             break;
@@ -440,6 +445,17 @@ MarkdownFile.prototype._walk = function(node) {
         case 'definition':
             // definitions are breaking nodes
             this._emitText();
+            if (node.text || (node.url && this.localizeLinks)) {
+                var value = node.text || node.url;
+                var parts = trim(this.API, value);
+                // only localizable if there already is some localizable text
+                // or if this text contains anything that is not whitespace
+                if (parts.text) {
+                    this.message.addText(value);
+                    this.message.isTranslatable = this.localizeLinks;
+                    node.localizable = true;
+                }
+            }
             break;
 
         case 'footnoteDefinition':
@@ -484,10 +500,18 @@ MarkdownFile.prototype._walk = function(node) {
         case 'html':
             reTagName.lastIndex = 0;
             if (node.value.trim().substring(0, 4) === '<!--') {
-                reL10NComment.lastIndex = 0;
-                match = reL10NComment.exec(node.value);
+                reDirectiveComment.lastIndex = 0;
+                match = reDirectiveComment.exec(node.value);
                 if (match) {
-                    this._addComment(match[1].trim());
+                    if (match[2] === "localize-links") {
+                        this.localizeLinks = (match[1] === "en");
+                    }
+                } else {
+                    reL10NComment.lastIndex = 0;
+                    match = reL10NComment.exec(node.value);
+                    if (match) {
+                        this._addComment(match[1].trim());
+                    }
                 }
                 // ignore HTML comments
                 break;

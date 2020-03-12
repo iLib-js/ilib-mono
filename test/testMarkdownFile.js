@@ -842,10 +842,10 @@ module.exports.markdown = {
 
         mf.parse(
             'Here are some links:\n\n' +
-            '<-- i18n-enable localize-links -->\n' +
+            '<!-- i18n-enable localize-links -->\n' +
             '* [http://www.box.com/foobar](http://www.box.com/foobar)\n' +
             '* [http://www.box.com/asdf](http://www.box.com/asdf)\n' +
-            '<-- i18n-disable localize-links -->\n');
+            '<!-- i18n-disable localize-links -->\n');
 
         var set = mf.getTranslationSet();
         test.ok(set);
@@ -3087,15 +3087,16 @@ module.exports.markdown = {
         var set = mf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 3);
+        test.equal(set.size(), 4);
 
         var resources = set.getAll();
 
-        test.equal(resources.length, 3);
+        test.equal(resources.length, 4);
 
         test.equal(resources[0].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
-        test.equal(resources[1].getSource(), "https://twitter.com/OurPlatform");
-        test.equal(resources[2].getSource(), "http://www.facebook.com/OurPlatform");
+        test.equal(resources[1].getSource(), "<c0>Ask on Facebook</c0>: For general questions and support.");
+        test.equal(resources[2].getSource(), "https://twitter.com/OurPlatform");
+        test.equal(resources[3].getSource(), "http://www.facebook.com/OurPlatform");
 
         test.done();
     },
@@ -3121,14 +3122,15 @@ module.exports.markdown = {
         var set = mf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 2);
+        test.equal(set.size(), 3);
 
         var resources = set.getAll();
 
-        test.equal(resources.length, 2);
+        test.equal(resources.length, 3);
 
         test.equal(resources[0].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
-        test.equal(resources[1].getSource(), "https://twitter.com/OurPlatform");
+        test.equal(resources[1].getSource(), "<c0>Ask on Facebook</c0>: For general questions and support.");
+        test.equal(resources[2].getSource(), "https://twitter.com/OurPlatform");
 
         test.done();
     },
