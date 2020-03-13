@@ -222,6 +222,11 @@ MarkdownFile.prototype._addTransUnit = function(text, comment) {
  */
 function trim(API, text) {
     var i, pre = "", post = "", ret = {};
+    if (!text) {
+        return {
+            pre: ""
+        };
+    }
 
     for (i = 0; i < text.length && API.utils.isWhite(text.charAt(i)); i++);
 
@@ -451,8 +456,7 @@ MarkdownFile.prototype._walk = function(node) {
                 // only localizable if there already is some localizable text
                 // or if this text contains anything that is not whitespace
                 if (parts.text) {
-                    this.message.addText(value);
-                    this.message.isTranslatable = this.localizeLinks;
+                    this._addTransUnit(node.url);
                     node.localizable = true;
                 }
                 node.title && this._addTransUnit(node.title);
@@ -798,7 +802,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 } else {
                     message.pop();
                 }
-                
+
                 if (node.url) {
                     node.url = this._localizeString(node.url, locale, translations);
                 }

@@ -2261,6 +2261,40 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeTextLocalizableTitleSingleQuotes: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse("Markdown text <div title='This value is localizable'>This is a test</div>\n");
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            key: 'r922503175',
+            project: "foo",
+            source: 'This value is localizable',
+            target: 'Cette valeur est localisable',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r654479252',
+            source: 'This is a test',
+            target: 'Ceci est un essai',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        test.equal(mf.localizeText(translations, "fr-FR"),
+            'Markdown text <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+
+        test.done();
+    },
+
     testMarkdownFileLocalizeTextLocalizableAttributes: function(test) {
         test.expect(2);
 
@@ -3127,8 +3161,8 @@ module.exports.markdown = {
         test.equal(resources.length, 3);
 
         test.equal(resources[0].getSource(), "Regular service will be <c0>available</c0>.");
-        test.equal(resources[1].getSource(), "link title");
-        test.equal(resources[2].getSource(), "http://a.com/");
+        test.equal(resources[1].getSource(), "http://a.com/");
+        test.equal(resources[2].getSource(), "link title");
 
         test.done();
     },
@@ -3363,7 +3397,6 @@ module.exports.markdown = {
 
         var actual = mf.localizeText(translations, "de-DE");
 
-        // DON'T localize the label. Instead, add a title that is translated
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
             '\n' +
