@@ -388,6 +388,7 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
 }
 
 var reTagName = /<(\/?)\s*(\w+)(\s|>)/;
+var reSelfClosingTag = /<\s*(\w+)\/>/;
 var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
 
 var reDirectiveComment = /<!--\s*i18n-(en|dis)able\s+(\S*)\s*-->/;
@@ -399,7 +400,7 @@ var reDirectiveComment = /<!--\s*i18n-(en|dis)able\s+(\S*)\s*-->/;
  * walk.
  */
 MarkdownFile.prototype._walk = function(node) {
-    var match;
+    var match, tagName;
 
     switch (node.type) {
         case 'text':
@@ -504,7 +505,8 @@ MarkdownFile.prototype._walk = function(node) {
 
         case 'html':
             reTagName.lastIndex = 0;
-            if (node.value.trim().substring(0, 4) === '<!--') {
+            var trimmed = node.value.trim();
+            if (trimmed.substring(0, 4) === '<!--') {
                 reDirectiveComment.lastIndex = 0;
                 match = reDirectiveComment.exec(node.value);
                 if (match) {
@@ -521,47 +523,68 @@ MarkdownFile.prototype._walk = function(node) {
                 // ignore HTML comments
                 break;
             }
-            match = reTagName.exec(node.value);
-
+            reSelfClosingTag.lastIndex = 0;
+            match = reSelfClosingTag.exec(trimmed);
             if (match) {
-                var tagName = match[2];
-                if (match[1] !== '/') {
-                    // opening tag
-                    if (this.message.getTextLength()) {
-                        if (this.API.utils.nonBreakingTags[tagName]) {
-                            this.message.push({
-                                name: tagName,
-                                node: node
-                            });
-                            node.localizable = true;
-                        } else {
-                            // it's a breaking tag, so emit any text
-                            // we have accumulated so far
-                            this._emitText();
-                        }
-                    }
-                    this._findAttributes(tagName, node.value);
+                tagName = match[1];
+                if (this.API.utils.nonBreakingTags[tagName]) {
+                    this.message.push({
+                        name: tagName,
+                        node: node
+                    });
+                    node.localizable = true;
+                    this.message.pop();
                 } else {
-                    // closing tag
-                    if (this.message.getTextLength()) {
-                        if (this.API.utils.nonBreakingTags[tagName] && this.message.getCurrentLevel() > 0) {
-                            var tag = this.message.pop();
-                            while (tag.name !== tagName && this.message.getCurrentLevel() > 0) {
-                                tag = this.message.pop();
-                            }
-                            if (tag.name !== tagName) {
-                                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                                    node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
-                            }
-                            node.localizable = true;
-                        } else {
-                            this._emitText();
-                        }
-                    }
+                    // it's a breaking tag, so emit any text
+                    // we have accumulated so far
+                    this._emitText();
                 }
             } else {
-                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                    node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                match = reTagName.exec(node.value);
+
+                if (match) {
+                    tagName = match[2];
+                    if (match[1] !== '/') {
+                        // opening tag
+                        if (this.message.getTextLength()) {
+                            if (this.API.utils.nonBreakingTags[tagName]) {
+                                this.message.push({
+                                    name: tagName,
+                                    node: node
+                                });
+                                node.localizable = true;
+                                if (this.API.utils.selfClosingTags[tagName]) {
+                                    this.message.pop();
+                                }
+                            } else {
+                                // it's a breaking tag, so emit any text
+                                // we have accumulated so far
+                                this._emitText();
+                            }
+                        }
+                        this._findAttributes(tagName, node.value);
+                    } else {
+                        // closing tag
+                        if (this.message.getTextLength()) {
+                            if (this.API.utils.nonBreakingTags[tagName] && this.message.getCurrentLevel() > 0) {
+                                var tag = this.message.pop();
+                                while (tag.name !== tagName && this.message.getCurrentLevel() > 0) {
+                                    tag = this.message.pop();
+                                }
+                                if (tag.name !== tagName) {
+                                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                                        node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
+                                }
+                                node.localizable = true;
+                            } else {
+                                this._emitText();
+                            }
+                        }
+                    }
+                } else {
+                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                }
             }
             break;
 
