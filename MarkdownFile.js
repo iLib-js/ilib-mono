@@ -754,7 +754,7 @@ MarkdownFile.prototype._addComment = function(comment) {
  * @private
  */
 MarkdownFile.prototype._localizeNode = function(node, message, locale, translations) {
-    var match, translation;
+    var match, translation, trimmed;
 
     switch (node.type) {
         case 'text':
@@ -847,7 +847,8 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
 
         case 'html':
             reTagName.lastIndex = 0;
-            if (node.value.trim().substring(0, 4) === '<!--') {
+            trimmed = node.value.trim();
+            if (trimmed.substring(0, 4) === '<!--') {
                 reL10NComment.lastIndex = 0;
                 match = reL10NComment.exec(node.value);
                 if (match) {
@@ -856,33 +857,46 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 // ignore HTML comments
                 break;
             }
-            match = reTagName.exec(node.value);
-
+            reSelfClosingTag.lastIndex = 0;
+            match = reSelfClosingTag.exec(trimmed);
             if (match) {
-                var tagName = match[2];
-                if (match[1] !== '/') {
-                    // opening tag
-                    node.value = this._localizeAttributes(tagName, node.value, locale, translations);
-                    if (node.localizable && this.API.utils.nonBreakingTags[tagName]) {
-                        node.name = tagName;
-                        message.push(node);
-                    }
-                } else {
-                    // closing tag
-                    if (node.localizable && this.API.utils.nonBreakingTags[tagName] && message.getCurrentLevel() > 0) {
-                        var tag = message.pop();
-                        while (tag.name !== tagName && message.getCurrentLevel() > 0) {
-                            tag = message.pop();
-                        }
-                        if (tag.name !== tagName) {
-                            throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                                node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
-                        }
-                    }
+                tagName = match[1];
+                if (node.localizable) {
+                    message.push(node);
+                    message.pop();
                 }
             } else {
-                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                    node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                match = reTagName.exec(node.value);
+
+                if (match) {
+                    var tagName = match[2];
+                    if (match[1] !== '/') {
+                        // opening tag
+                        node.value = this._localizeAttributes(tagName, node.value, locale, translations);
+                        if (node.localizable && this.API.utils.nonBreakingTags[tagName]) {
+                            node.name = tagName;
+                            message.push(node);
+                            if (node.selfclosing || this.API.utils.selfClosingTags[tagName]) {
+                                message.pop();
+                            }
+                        }
+                    } else {
+                        // closing tag
+                        if (node.localizable && this.API.utils.nonBreakingTags[tagName] && message.getCurrentLevel() > 0) {
+                            var tag = message.pop();
+                            while (tag.name !== tagName && message.getCurrentLevel() > 0) {
+                                tag = message.pop();
+                            }
+                            if (tag.name !== tagName) {
+                                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                                    node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
+                            }
+                        }
+                    }
+                } else {
+                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                }
             }
             break;
 
