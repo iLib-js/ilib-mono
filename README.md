@@ -4,6 +4,11 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.4.1
+
+* Fixed a bug where self-closed tags like <br/> in markdown files were not handled properly,
+causing exceptions that complained about syntax errors
+
 ### 1.4.0
 
 - Add support for localizing links and link references.
