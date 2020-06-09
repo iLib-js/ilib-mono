@@ -1,7 +1,7 @@
 /*
  * MarkdownFile.js - plugin to extract resources from an Markdown file
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,11 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 var MessageAccumulator = require("message-accumulator").default;
-var Node = require("ilib-tree-node").default;
-var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
-var IString = require("ilib/lib/IString.js");
 var unified = require("unified");
 var markdown = require("remark-parse");
-var html = require("remark-html");
 var remark2rehype = require('remark-rehype');
 var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
@@ -37,8 +33,6 @@ var stringify = require('remark-stringify');
 var frontmatter = require('remark-frontmatter');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
-var unistMap = require('unist-util-map');
-var unistVisit = require('unist-util-visit');
 var u = require('unist-builder');
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");

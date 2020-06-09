@@ -1,7 +1,7 @@
 /*
  * MarkdownFileType.js - Represents a collection of Markdown files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,7 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
-var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
-var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
 var MarkdownFile = require("./MarkdownFile.js");
