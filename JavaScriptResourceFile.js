@@ -216,7 +216,7 @@ JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) 
 
     var filename = defaultSpec + ".js";
 
-    dir = this.project.getResourceDirs("js")[0] || ".";
+    dir = path.join(this.project.target, this.project.getResourceDirs("js")[0] || ".");
     newPath = path.join(dir, filename);
 
     logger.trace("Getting resource file path for locale " + locale + ": " + newPath);
