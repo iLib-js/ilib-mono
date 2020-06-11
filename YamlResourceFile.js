@@ -379,7 +379,7 @@ YamlResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
 
     var filename = spec + ".yml";
 
-    dir = this.project.getResourceDirs("yml")[0] || ".";
+    dir = path.join(this.project.target, this.project.getResourceDirs("yml")[0] || ".");
     newPath = path.join(dir, filename);
 
     logger.trace("Getting resource file path for locale " + locale + ": " + newPath);
