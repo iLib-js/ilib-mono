@@ -280,7 +280,10 @@ MarkdownFile.prototype.isTranslatable = function(str) {
  * @private
  */
 MarkdownFile.prototype._emitText = function(escape) {
-    if (!this.message.getTextLength()) return;
+    if (!this.message.getTextLength()) {
+        this.message = new MessageAccumulator();
+        return;
+    }
 
     var text = this.message.getMinimalString();
 
