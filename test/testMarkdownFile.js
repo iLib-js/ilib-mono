@@ -513,45 +513,6 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseSkipHeader: function(test) {
-        test.expect(3);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n');
-
-        var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseSkipHeaderAndParseRest: function(test) {
-        test.expect(6);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n\nThis is a test\n');
-
-        var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
     testMarkdownFileParseNoStrings: function(test) {
         test.expect(3);
 
@@ -710,52 +671,6 @@ module.exports.markdown = {
         test.ok(r);
         test.equal(r.getSource(), "This is also a \u000C test");
         test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testMarkdownFileSkipReadmeIOBlocks: function(test) {
-        test.expect(8);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse('This is a test\n' +
-                  '[block:parameters]\n' +
-                  '{\n' +
-                  '  "data": {\n' +
-                  '      "h-0": "Parameter",\n' +
-                  '      "h-1": "Description",\n' +
-                  '      "0-0": "**response_type**",\n' +
-                  '      "1-0": "**client_id**",\n' +
-                  '      "2-0": "**redirect_uri**",\n' +
-                  '      "3-0": "**state**",\n' +
-                  '      "4-0": "**scope** *optional*",\n' +
-                  '      "0-1": "String",\n' +
-                  '      "1-1": "String",\n' +
-                  '      "2-1": "URI"\n' +
-                  '  }\n' +
-                  '}\n' +
-                  '[/block]\n' +
-                  'bar\n');
-
-        var set = mf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        var r = set.getBySource("Description");
-        test.ok(!r);
-
-        var r = set.getBySource("bar");
-        test.ok(r);
-
-        test.equal(set.size(), 2);
 
         test.done();
     },
@@ -3472,63 +3387,6 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileLocalizeTextWithListAndBlockWithNoSpace: function(test) {
-        test.expect(2);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse(
-            '* list item 1\n' +
-            '* list item 2\n' +
-            '[block:callout]\n' +
-            '{\n' +
-            '  "type": "test"\n' +
-            '}\n' +
-            '[/block]\n' +
-            '## Test Header\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r970090275',
-            source: 'list item 1',
-            target: 'article du liste No. 1',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r970155796',
-            source: 'list item 2',
-            target: 'article du liste No. 2',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r34696891',
-            source: 'Test Header',
-            target: 'Entête du Teste',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '* article du liste No. 1\n' +
-            '* article du liste No. 2\n\n' +
-            '[block:callout]\n' +
-            '{\n' +
-            '  "type": "test"\n' +
-            '}\n' +
-            '[/block]\n\n' +
-            '## Entête du Teste\n');
-
-        test.done();
-    },
-
     testMarkdownFileLocalizeTextHeaderWithNoSpace: function(test) {
         test.expect(2);
 
@@ -3564,60 +3422,6 @@ module.exports.markdown = {
             '# Entête mal\n\n' +
             '## Autre entête mal\n\n' +
             '# Entête mal\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextDontEscapeCode: function(test) {
-        test.expect(2);
-
-        var mf = new MarkdownFile({
-            project: p
-        });
-        test.ok(mf);
-
-        mf.parse(
-            'test\n' +
-            '[block:code]\n' +
-            '{\n' +
-            '  "codes": [\n' +
-            '    {\n' +
-            '      "code": "aws cloudformation describe-stacks \\\\\\n    --stack-name boxskill \\\\\\n    --query \'Stacks[].Outputs\'\\n# Your URL should look something like this:\\n# https://[id].execute-api.us-east-1.amazonaws.com/Prod/hello/",\n' +
-            '      "language": "shell"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}\n' +
-            '[/block]\n' +
-            'test\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r852587715',
-            source: 'test',
-            target: 'Teste',
-            targetLocale: "fr-FR",
-            datatype: "markdown"
-        }));
-
-        var actual = mf.localizeText(translations, "fr-FR");
-        var expected =
-            'Teste\n\n' +
-            '[block:code]\n' +
-            '{\n' +
-            '  "codes": [\n' +
-            '    {\n' +
-            '      "code": "aws cloudformation describe-stacks \\\\\\n    --stack-name boxskill \\\\\\n    --query \'Stacks[].Outputs\'\\n# Your URL should look something like this:\\n# https://[id].execute-api.us-east-1.amazonaws.com/Prod/hello/",\n' +
-            '      "language": "shell"\n' +
-            '    }\n' +
-            '  ]\n' +
-            '}\n' +
-            '[/block]\n\n' +
-            'Teste\n';
-
-        diff(actual, expected);
-
-        test.equal(actual, expected);
 
         test.done();
     },
