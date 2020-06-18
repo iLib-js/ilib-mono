@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 
@@ -49,6 +50,11 @@ var MarkdownFileType = function(project) {
     // for use with missing strings
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
+
+    this.fileInfo = {
+        translated: [],
+        untranslated: []
     }
 };
 
@@ -164,6 +170,19 @@ MarkdownFileType.prototype.getNew = function() {
  */
 MarkdownFileType.prototype.getPseudo = function() {
     return this.pseudo;
+};
+
+MarkdownFileType.prototype.addTranslationStatus = function(fileInfo) {
+    if (fileInfo.fullyTranslated) {
+        this.fileInfo.translated.push(fileInfo.path);
+    } else {
+        this.fileInfo.untranslated.push(fileInfo.path);
+    }
+};
+
+MarkdownFileType.prototype.projectClose = function() {
+    var fileName = path.join(this.project.root, "translation-status.json");
+    fs.writeFileSync(fileName, JSON.stringify(this.fileInfo, undefined, 4), "utf-8");
 };
 
 module.exports = MarkdownFileType;

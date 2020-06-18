@@ -4,6 +4,14 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.5.0
+
+- added a "fullyTranslated" setting for the markdown code. This makes sure
+  that if a file does not have all of its translations, then that file is
+  produced in the source language.
+    - Also produces a file in the project root called `translation-status.json`
+      that details which files were fully translated and which were not
+
 ### 1.4.2
 
 * Fixed a bug where markdown tables were not handled properly

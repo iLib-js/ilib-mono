@@ -1,7 +1,7 @@
 /*
  * testMarkdownFile.js - test the Markdown file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ if (!MarkdownFile) {
     var MarkdownFileType = require("../MarkdownFileType.js");
 
     var CustomProject = require("loctool/lib/CustomProject.js");
+    var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
     var TranslationSet = require("loctool/lib/TranslationSet.js");
     var ResourceString = require("loctool/lib/ResourceString.js");
 }
@@ -53,6 +54,7 @@ var p = new CustomProject({
 });
 
 var mdft = new MarkdownFileType(p);
+var base = path.dirname(module.id);
 
 var p2 = new CustomProject({
     sourceLocale: "en-US",
@@ -509,6 +511,45 @@ module.exports.markdown = {
         var set = mf.getTranslationSet();
         test.ok(set);
         test.equal(set.size(), 0);
+
+        test.done();
+    },
+
+    testMarkdownFileParseSkipHeader: function(test) {
+        test.expect(3);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 0);
+
+        test.done();
+    },
+
+    testMarkdownFileParseSkipHeaderAndParseRest: function(test) {
+        test.expect(6);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n\nThis is a test\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 1);
+
+        var r = set.getBySource("This is a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "r654479252");
 
         test.done();
     },
@@ -1646,6 +1687,59 @@ module.exports.markdown = {
 
         r = set.getBySource("test: This is a test of the front matter");
         test.ok(!r);
+
+        test.done();
+    },
+
+    testMarkdownFileParseTable: function(test) {
+        test.expect(21);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "|                   |                 |\n" +
+            "|-------------------|-----------------|\n" +
+            "| Query description | Returns column  |\n" +
+            "| asdf              | fdsa            |\n" +
+            "| foo               | bar             |\n");
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 6);
+
+        r = set.getBySource("Query description");
+        test.ok(r);
+        test.equal(r.getSource(), "Query description");
+        test.equal(r.getKey(), "r744039504");
+
+        r = set.getBySource("Returns column");
+        test.ok(r);
+        test.equal(r.getSource(), "Returns column");
+        test.equal(r.getKey(), "r595024848");
+
+        var r = set.getBySource("asdf");
+        test.ok(r);
+        test.equal(r.getSource(), "asdf");
+        test.equal(r.getKey(), "r976104267");
+
+        r = set.getBySource("fdsa");
+        test.ok(r);
+        test.equal(r.getSource(), "fdsa");
+        test.equal(r.getKey(), "r486555110");
+
+        var r = set.getBySource("foo");
+        test.ok(r);
+        test.equal(r.getSource(), "foo");
+        test.equal(r.getKey(), "r941132140");
+
+        r = set.getBySource("bar");
+        test.ok(r);
+        test.equal(r.getSource(), "bar");
+        test.equal(r.getKey(), "r755240053");
 
         test.done();
     },
@@ -3043,7 +3137,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./md/test1.md"
+            pathName: "./md/test1.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -3160,7 +3255,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./md/test3.md"
+            pathName: "./md/test3.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -3285,7 +3381,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./md/nostrings.md"
+            pathName: "./md/nostrings.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -4083,6 +4180,168 @@ module.exports.markdown = {
 
         diff(actual, expected);
         test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFileFullyTranslatedFlag: function(test) {
+        test.expect(3);
+
+        // this subproject has the "fullyTranslated" flag set to true
+        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./notrans.md",
+            type: mdft2
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'C\'est le dernier morceau de texte localisable.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        mf.localize(translations, ["fr-FR"]);
+
+        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
+
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
+
+        var expected =
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
+            'C\'est le dernier morceau de texte localisable.\n\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFileFullyTranslatedFlagNoTranslations: function(test) {
+        test.expect(3);
+
+        // this subproject has the "fullyTranslated" flag set to true
+        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./notrans.md",
+            type: mdft2
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+
+        mf.localize(translations, ["fr-FR"]);
+
+        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
+
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
+
+        // should not be translated because we didn't have translations for any strings
+        var expected =
+            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is some text. This is more text. Pretty, pretty text.\n\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is the last bit of localizable text.\n\n' +
+            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFileFullyTranslatedFlagNotFullyTranslated: function(test) {
+        test.expect(3);
+
+        // this subproject has the "fullyTranslated" flag set to true
+        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./notrans.md",
+            type: mdft2
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        mf.localize(translations, ["fr-FR"]);
+
+        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
+
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
+
+        // should not be translated because we didn't have translations for all strings
+        var expected =
+            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is some text. This is more text. Pretty, pretty text.\n\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is the last bit of localizable text.\n\n' +
+            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
 
         test.done();
     }
