@@ -1,7 +1,7 @@
 /*
  * testJavaScriptResourceFile.js - test the JavaScript file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -379,7 +379,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/de.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de.js");
         test.done();
     },
 
@@ -393,7 +393,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/de-DE.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-DE.js");
         test.done();
     },
 
@@ -407,7 +407,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/de-AT.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-AT.js");
         test.done();
     },
 
@@ -421,7 +421,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/de-DE-ASDF.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-DE-ASDF.js");
         test.done();
     },
 
@@ -435,7 +435,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/de-AT-ASDF.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-AT-ASDF.js");
         test.done();
     },
 
@@ -449,7 +449,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/zh.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh.js");
         test.done();
     },
 
@@ -463,7 +463,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/zh-Hans-CN.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hans-CN.js");
         test.done();
     },
 
@@ -477,7 +477,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/zh-Hant.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hant.js");
         test.done();
     },
 
@@ -491,7 +491,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/zh-Hans-SG.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hans-SG.js");
         test.done();
     },
 
@@ -505,7 +505,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/zh-Hant-TW.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hant-TW.js");
         test.done();
     },
 
@@ -519,7 +519,7 @@ module.exports.javascriptresourcefile = {
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/en.js");
+        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/en.js");
         test.done();
     },
 
@@ -529,12 +529,12 @@ module.exports.javascriptresourcefile = {
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-AT",
-            pathName: "localized_js/foo.js"
+            pathName: "path/to/foo.js"
         });
 
         test.ok(jsrf);
 
-        test.equal(jsrf.getResourceFilePath(), "localized_js/foo.js");
+        test.equal(jsrf.getResourceFilePath(), "path/to/foo.js");
         test.done();
     },
 
