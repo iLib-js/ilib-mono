@@ -1,7 +1,7 @@
 /*
  * JsxFileType.js - Represents a collection of jsx files
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019-2020, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,7 @@
 var path = require("path");
 var log4js = require("log4js");
 
-var utils = require("loctool/lib/utils.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js");
-var JsxFile = require("loctool/lib/JsxFile.js");
-var FileType = require("loctool/lib/FileType.js");
-var ResourceFactory = require("loctool/lib/ResourceFactory.js");
-var ResourceString = require("loctool/lib/ResourceString.js");
-var PseudoFactory = require("loctool/lib/PseudoFactory.js");
+var JsxFile = require("./JsxFile.js");
 
 var logger = log4js.getLogger("loctool.lib.JsxFileType");
 
@@ -34,13 +28,15 @@ var JsxFileType = function(project) {
     this.type = "javascript";
     this.datatype = "javascript";
 
-    this.parent.call(this, project);
-    this.extensions = [ ".jsx", ".js" ];
-};
+    this.project = project;
+    this.API = project.getAPI();
 
-JsxFileType.prototype = new FileType();
-JsxFileType.prototype.parent = FileType;
-JsxFileType.prototype.constructor = JsxFileType;
+    this.extensions = [ ".jsx", ".js" ];
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+};
 
 var alreadyLocJS = new RegExp(/^([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z])(-[A-Z]+)?)?\.jsx?$/);
 
@@ -65,9 +61,9 @@ JsxFileType.prototype.handles = function(pathName) {
         var fileName = path.basename(pathName);
         var match = alreadyLocJS.exec(fileName);
         ret = (match && match.length &&
-                match[1] && utils.iso639[match[1]] &&
-                (!match[5] || utils.iso3166[match[5]]) &&
-                (!match[3] || utils.iso15924[match[3]])) ?
+                match[1] && this.API.utils.iso639[match[1]] &&
+                (!match[5] || this.API.utils.iso3166[match[5]]) &&
+                (!match[3] || this.API.utils.iso15924[match[3]])) ?
             match[1] === this.project.sourceLocale : true;
     }
 
@@ -98,7 +94,7 @@ JsxFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));;
 
     for (var i = 0; i < resources.length; i++) {
@@ -110,10 +106,10 @@ JsxFileType.prototype.write = function(translations, locales) {
 
             db.getResourceByCleanHashKey(res.cleanHashKeyForTranslation(locale), function(err, translated) {
                 var r = translated;
-                if (!translated || utils.cleanString(res.getSource()) !== utils.cleanString(r.getSource())) {
+                if (!translated || this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
                     if (r) {
-                        logger.trace("extracted   source: " + utils.cleanString(res.getSource()));
-                        logger.trace("translation source: " + utils.cleanString(r.getSource()));
+                        logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
+                        logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
                     }
                     var note = r && 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + r.getSource() + '"';
                     var newres = res.clone();
