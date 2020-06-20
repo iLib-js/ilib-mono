@@ -1,7 +1,7 @@
 /*
  * testJavaFile.js - test the Java file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,22 @@
  * limitations under the License.
  */
 
+var path = require("path");
+
 if (!JavaFile) {
     var JavaFile = require("../JavaFile.js");
     var JavaFileType = require("../JavaFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
-    var ResourceString =  require("loctool/lib/ResourceString.js");
     var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
 }
 
 var p = new CustomProject({
     id: "webapp",
     sourceLocale: "en-US",
-    pseudoLocale: "de-DE"
+    pseudoLocale: "de-DE",
+    plugins: [
+        path.join(process.cwd(), "JavaFileType")
+    ]
 }, "./test/testfiles", {
     locales:["en-GB"]
 });
@@ -36,10 +40,20 @@ var p = new CustomProject({
 var jft = new JavaFileType(p);
 
 module.exports.javafile = {
+    // make sure to initialize the file types so that the tests below can use
+    // a ContextResourceString instead of a regular ResourceString
+    testJavaInit: function(test) {
+        p.init(function() {
+            test.done();
+        });
+    },
+
     testJavaFileConstructor: function(test) {
         test.expect(1);
 
-        var j = new JavaFile(p);
+        var j = new JavaFile({
+            project: p
+        });
         test.ok(j);
 
         test.done();
@@ -258,7 +272,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyNewLines: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
@@ -270,7 +284,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyEscapeN: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
@@ -282,7 +296,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyTabs: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("A \t B"), "r191336864");
@@ -293,7 +307,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyEscapeT: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("A \\t B"), "r191336864");
@@ -304,7 +318,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyQuotes: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("A \\'B\\' C"), "r935639115");
@@ -315,7 +329,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("\\u00A0 \\u0023"), "r2293235");
@@ -326,7 +340,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat"), "r969175354");
@@ -337,7 +351,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyInterpretEscapedOctalChars: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("A \\40 \\011 B"), "r191336864");
@@ -348,7 +362,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyJavaEscapeSequences: function(test) {
         test.expect(2);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("A \\b\\t\\n\\f\\r B"), "r191336864");
@@ -359,7 +373,7 @@ module.exports.javafile = {
     testJavaFileMakeKeyCheckRubyCompatibility: function(test) {
         test.expect(13);
 
-        var jf = new JavaFile(p);
+        var jf = new JavaFile({project: p});
         test.ok(jf);
 
         test.equals(jf.makeKey("This has \\\"double quotes\\\" in it."), "r487572481");
