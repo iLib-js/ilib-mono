@@ -1,7 +1,7 @@
 /*
  * YamlResourceFile.js - represents a yaml resource file
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

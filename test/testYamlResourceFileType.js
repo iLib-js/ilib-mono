@@ -1,7 +1,7 @@
 /*
  * testYamlResourceFileType.js - test the HTML template file type handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ module.exports.yamlresourcefiletype = {
         var yrft = new YamlResourceFileType(p);
         test.ok(yrft);
 
-        test.ok(yrft.handles("config/locales/en-US.yml"));
+        test.ok(yrft.handles("test/testfiles/config/locales/en-US.yml"));
 
         test.done();
     },
@@ -105,7 +105,7 @@ module.exports.yamlresourcefiletype = {
         var yrft = new YamlResourceFileType(p);
         test.ok(yrft);
 
-        test.ok(yrft.handles("config/locales/en.yml"));
+        test.ok(yrft.handles("test/testfiles/config/locales/en.yml"));
 
         test.done();
     },
@@ -116,7 +116,7 @@ module.exports.yamlresourcefiletype = {
         var yrft = new YamlResourceFileType(p);
         test.ok(yrft);
 
-        test.ok(yrft.handles("config/locales/en-US.yml"));
+        test.ok(yrft.handles("test/testfiles/config/locales/en-US.yml"));
 
         test.done();
     },
@@ -127,7 +127,7 @@ module.exports.yamlresourcefiletype = {
         var yrft = new YamlResourceFileType(p);
         test.ok(yrft);
 
-        test.ok(!yrft.handles("config/locales/zh-Hans-CN.yml"));
+        test.ok(!yrft.handles("test/testfiles/config/locales/zh-Hans-CN.yml"));
 
         test.done();
     },
@@ -138,7 +138,7 @@ module.exports.yamlresourcefiletype = {
         var yrft = new YamlResourceFileType(p);
         test.ok(yrft);
 
-        test.ok(!yrft.handles("config/qaconfig.yml"));
+        test.ok(!yrft.handles("test/testfiles/config/qaconfig.yml"));
 
         test.done();
     },
@@ -149,7 +149,7 @@ module.exports.yamlresourcefiletype = {
         var yrft = new YamlResourceFileType(p);
         test.ok(yrft);
 
-        test.ok(!yrft.handles("config/nofications.yml"));
+        test.ok(!yrft.handles("test/testfiles/config/nofications.yml"));
 
         test.done();
     },
@@ -176,7 +176,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("fr-FR");
 
         test.equal(yrf.getLocale(), "fr-FR");
-        test.equal(yrf.getPath(), "config/locales/fr.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/fr.yml");
 
         test.done();
     },
@@ -190,7 +190,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("zh-Hans-CN");
 
         test.equal(yrf.getLocale(), "zh-Hans-CN");
-        test.equal(yrf.getPath(), "config/locales/zh.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/zh.yml");
 
         test.done();
     },
@@ -204,7 +204,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("zh-Hant-HK");
 
         test.equal(yrf.getLocale(), "zh-Hant-HK");
-        test.equal(yrf.getPath(), "config/locales/zh-Hant.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/zh-Hant.yml");
 
         test.done();
     },
@@ -218,7 +218,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("es-US");
 
         test.equal(yrf.getLocale(), "es-US");
-        test.equal(yrf.getPath(), "config/locales/es.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/es.yml");
 
         test.done();
     },
@@ -232,7 +232,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("es-ES");
 
         test.equal(yrf.getLocale(), "es-ES");
-        test.equal(yrf.getPath(), "config/locales/es-ES.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/es-ES.yml");
 
         test.done();
     },
@@ -246,7 +246,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("en-US");
 
         test.equal(yrf.getLocale(), "en-US");
-        test.equal(yrf.getPath(), "config/locales/en.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/en-US.yml");
 
         test.done();
     },
@@ -260,7 +260,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("en-GB");
 
         test.equal(yrf.getLocale(), "en-GB");
-        test.equal(yrf.getPath(), "config/locales/en-GB.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/en.yml");
 
         test.done();
     },
@@ -274,7 +274,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("ja-JP");
 
         test.equal(yrf.getLocale(), "ja-JP");
-        test.equal(yrf.getPath(), "config/locales/ja.yml"); // should default to just the language tag
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/ja.yml"); // should default to just the language tag
 
         test.done();
     },
@@ -305,7 +305,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("fr-FR", "CHOCOLATE");
 
         test.equal(yrf.getLocale(), "fr-FR");
-        test.equal(yrf.getPath(), "config/locales/fr-FR-CHOCOLATE.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/fr-FR-CHOCOLATE.yml");
 
         test.done();
     },
@@ -319,7 +319,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("en-US", "CHOCOLATE");
 
         test.equal(yrf.getLocale(), "en-US");
-        test.equal(yrf.getPath(), "config/locales/en-US-CHOCOLATE.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/en-US-CHOCOLATE.yml");
 
         test.done();
     },
@@ -333,7 +333,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("en-HK", "CHOCOLATE");
 
         test.equal(yrf.getLocale(), "en-HK");
-        test.equal(yrf.getPath(), "config/locales/en-HK-CHOCOLATE.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/en-HK-CHOCOLATE.yml");
 
         test.done();
     },
@@ -347,7 +347,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("zh-Hant-HK", "CHOCOLATE");
 
         test.equal(yrf.getLocale(), "zh-Hant-HK");
-        test.equal(yrf.getPath(), "config/locales/zh-Hant-HK-CHOCOLATE.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/zh-Hant-HK-CHOCOLATE.yml");
 
         test.done();
     },
@@ -361,7 +361,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("zh-Hans-CN", "CHOCOLATE");
 
         test.equal(yrf.getLocale(), "zh-Hans-CN");
-        test.equal(yrf.getPath(), "config/locales/zh-Hans-CN-CHOCOLATE.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/zh-Hans-CN-CHOCOLATE.yml");
 
         test.done();
     },
@@ -375,7 +375,7 @@ module.exports.yamlresourcefiletype = {
         var yrf = yrft.getResourceFile("fr-FR");
 
         test.equal(yrf.getLocale(), "fr-FR");
-        test.equal(yrf.getPath(), "config/locales/fr.yml");
+        test.equal(yrf.getPath(), "test/testfiles/config/locales/fr.yml");
 
         test.done();
     }

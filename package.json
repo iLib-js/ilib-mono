@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-yaml-resource",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "main": "./YamlResourceFileType.js",
     "description": "A loctool plugin that knows how to process yaml files used as resource files",
     "license": "Apache-2.0",
@@ -50,11 +50,11 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.1.0",
+        "ilib": "^14.6.0",
         "log4js": "^2.11.0"
     },
     "devDependencies": {
-        "loctool": "^2.1.0",
+        "loctool": "^2.7.2",
         "nodeunit": "^0.11.3"
     }
 }
