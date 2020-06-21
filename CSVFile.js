@@ -1,7 +1,7 @@
 /*
  * CSVFile.js - plugin to extract resources from a CSV source code file
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2020 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,9 @@ CSVFile.prototype.parse = function(data) {
         return;
     }
 
-    var lines = data.split(this.rowSeparatorRegex);
+    var lines = data.split(this.rowSeparatorRegex).filter(function(line) {
+        return line && line.trim().length > 0;
+    });
 
     // assume the first record has the names of the columns in it
     var names = this._splitIt(lines[0]);
@@ -137,7 +139,6 @@ CSVFile.prototype.parse = function(data) {
 
         return json;
     }.bind(this));
-
 };
 
 /**
@@ -213,9 +214,7 @@ CSVFile.prototype.getLocalizedPath = function(locale) {
  */
 CSVFile.prototype.localizeText = function(translations, locale) {
     return this.names.join(this.columnSeparator) + this.rowSeparator + this.records.map(function(record) {
-        return this.names.filter(function(name) {
-            return this.localizable.has(name);
-        }.bind(this)).map(function(name) {
+        return this.names.map(function(name) {
             var text = record[name] || "",
                 translated = text;
 
