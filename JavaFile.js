@@ -43,7 +43,7 @@ var JavaFile = function(options) {
     
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 
-    this.flavor = this.project && this.project.flavors.getFlavorForPath(this.pathName);
+    this.flavor = this.project && this.project.flavors && this.project.flavors.getFlavorForPath(this.pathName);
     if (this.flavor === "main") {
         this.flavor = undefined;
     }
