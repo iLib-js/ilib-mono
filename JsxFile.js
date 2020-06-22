@@ -1,7 +1,7 @@
 /*
  * JsxFile.js - plugin to extract resources from a React jsx files
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019-2020, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,13 @@
 
 var fs = require("fs");
 var path = require("path");
-var utils = require("loctool/lib/utils.js");
-var ResourceString = require("loctool/lib/ResourceString.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js");
 var log4js = require("log4js");
 
 var logger = log4js.getLogger("loctool.lib.JsxFile");
 
 /**
  * @class Create a new java file with the given path name and within
- * the given project. Options may contain any of the following
+ * the given project. Props may contain any of the following
  * properties:
  *
  * <ul>
@@ -40,14 +37,15 @@ var logger = log4js.getLogger("loctool.lib.JsxFile");
  *
  * @constructor
  */
-var JsxFile = function(options) {
-    options = options || {};
+var JsxFile = function(props) {
+    props = props || {};
 
-    this.project = options.project;
-    this.pathName = options.pathName;
-    this.type = options.type;
+    this.project = props.project;
+    this.pathName = props.pathName;
+    this.type = props.type;
+    this.API = props.project.getAPI();
 
-    this.set = new TranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 };
 
 /**
@@ -162,7 +160,7 @@ JsxFile.prototype.parse = function(data) {
                 reAttributes.lastIndex = 0;
                 while ((result2 = reAttributes.exec(result[1])) != null) {
                     if (result2.length > 2) {
-                        var value = utils.stripQuotes(result2[2]);
+                        var value = this.API.utils.stripQuotes(result2[2]);
                         if (result2[1] === "key") {
                             key = value;
                             autoKey = false;
@@ -188,7 +186,8 @@ JsxFile.prototype.parse = function(data) {
                 comment = (commentResult && commentResult.length > 1) ? commentResult[1].trim() : undefined;
             }
 
-            var r = new ResourceString({
+            var r = this.API.newResource({
+                type: "string",
                 project: this.project.getProjectId(),
                 key: key,
                 sourceLocale: this.project.sourceLocale,
