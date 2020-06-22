@@ -1,7 +1,7 @@
 /*
  * testCSVFile.js - test the CSV file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -440,8 +440,8 @@ module.exports.csvfile = {
         test.done();
     },
 
-    testCSVFileParseMissingValuesWithTabs: function(test) {
-        test.expect(6);
+    testCSVFileParseMissingValuesWithTabsRightLength: function(test) {
+        test.expect(2);
 
         var j = new CSVFile({
             project: p,
@@ -450,11 +450,34 @@ module.exports.csvfile = {
         test.ok(j);
 
         j.parse(
-            'id    name    description    comments    user\n' +
-            '32342            comments1    \n' +
-            '754432    name2    description2 that has an escaped\\     comma in it\n' +
-            '26234345         "name with quotes"           "description with quotes"   \n' +
-            '2345642     "quoted name with, comma in it"     "description with, comma in it"\n'
+            'id\tname\tdescription\tcomments\tuser\n' +
+            '32342\t\t\tcomments1\t\n' +
+            '754432\tname2\tdescription2 that has an escaped\\t     tab in it\t\t\n' +
+            '26234345\t"name with quotes"\t"description with quotes"\t\t\n' +
+            '2345642\t"quoted name with, comma in it"\t"description with, comma in it"\t\t\n'
+        );
+
+        // 4 records and a header... the header doesn't count
+        test.equal(j.records.length, 4);
+
+        test.done();
+    },
+
+    testCSVFileParseMissingValuesWithTabs: function(test) {
+        test.expect(21);
+
+        var j = new CSVFile({
+            project: p,
+            columnSeparator: '\t'
+        });
+        test.ok(j);
+
+        j.parse(
+            'id\tname\tdescription\tcomments\tuser\n' +
+            '32342\t\t\tcomments1\t\n' +
+            '754432\tname2\tdescription2 that has an escaped\\t     tab in it\t\t\n' +
+            '26234345\t"name with quotes"\t"description with quotes"\t\t\n' +
+            '2345642\t"quoted name with, comma in it"\t"description with, comma in it"\t\t\n'
         );
 
         var record = j.records[0];
@@ -463,6 +486,30 @@ module.exports.csvfile = {
         test.equal(record.name, "");
         test.equal(record.description, "");
         test.equal(record.comments, "comments1");
+        test.equal(record.user, "");
+        
+        record = j.records[1];
+
+        test.equal(record.id, "754432");
+        test.equal(record.name, "name2");
+        test.equal(record.description, "description2 that has an escaped\\t     tab in it");
+        test.equal(record.comments, "");
+        test.equal(record.user, "");
+
+        record = j.records[2];
+
+        test.equal(record.id, "26234345");
+        test.equal(record.name, "name with quotes");
+        test.equal(record.description, "description with quotes");
+        test.equal(record.comments, "");
+        test.equal(record.user, "");
+        
+        record = j.records[3];
+
+        test.equal(record.id, "2345642");
+        test.equal(record.name, "quoted name with, comma in it");
+        test.equal(record.description, "description with, comma in it");
+        test.equal(record.comments, "");
         test.equal(record.user, "");
 
         test.done();
@@ -826,10 +873,10 @@ module.exports.csvfile = {
         var text = j.localizeText(translations, "en-US");
 
         test.equal(text,
-            "id    name    description:" +
-            "foo    bar    asdf:" +
-            "foo2    bar2    asdf2:" +
-            "foo3    bar3    asdf3"
+            "id\tname\tdescription:" +
+            "foo\tbar\tasdf:" +
+            "foo2\tbar2\tasdf2:" +
+            "foo3\tbar3\tasdf3"
         );
 
         test.done();
@@ -907,10 +954,10 @@ module.exports.csvfile = {
         var text = j.localizeText(translations, "en-US");
 
         test.equal(text,
-            "id    name    type    description\n" +
-            "foo            asdf\n" +
-            "foo2    bar2        asdf2\n" +
-            "foo3    bar3    noun    asdf3"
+            "id\tname\ttype\tdescription\n" +
+            "foo\t\t\tasdf\n" +
+            "foo2\tbar2\t\tasdf2\n" +
+            "foo3\tbar3\tnoun\tasdf3"
         );
 
         test.done();

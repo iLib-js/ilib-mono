@@ -1,7 +1,7 @@
 /*
  * CSVFileType.js - Represents a collection of CSV files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019-2020, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,6 +110,51 @@ CSVFileType.prototype.getDataType = function() {
 
 CSVFileType.prototype.getResourceTypes = function() {
     return {};
+};
+
+/**
+ * Return the translation set containing all of the extracted
+ * resources for all instances of this type of file. This includes
+ * all new strings and all existing strings. If it was extracted
+ * from a source file, it should be returned here.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * extracted resources
+ */
+CSVFileType.prototype.getExtracted = function() {
+    return this.extracted;
+};
+
+/**
+ * Add the contents of the given translation set to the extracted resources
+ * for this file type.
+ *
+ * @param {TranslationSet} set set of resources to add to the current set
+ */
+CSVFileType.prototype.addSet = function(set) {
+    this.extracted.addSet(set);
+};
+
+/**
+ * Return the translation set containing all of the new
+ * resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * new resources
+ */
+CSVFileType.prototype.getNew = function() {
+    return this.newres;
+};
+
+/**
+ * Return the translation set containing all of the pseudo
+ * localized resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * pseudo localized resources
+ */
+CSVFileType.prototype.getPseudo = function() {
+    return this.pseudo;
 };
 
 module.exports = CSVFileType;
