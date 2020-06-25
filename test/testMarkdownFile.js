@@ -4188,7 +4188,11 @@ module.exports.markdown = {
         test.expect(3);
 
         // this subproject has the "fullyTranslated" flag set to true
-        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
         var mdft2 = new MarkdownFileType(p2);
         var mf = new MarkdownFile({
             project: p2,
@@ -4258,7 +4262,11 @@ module.exports.markdown = {
         test.expect(3);
 
         // this subproject has the "fullyTranslated" flag set to true
-        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
         var mdft2 = new MarkdownFileType(p2);
         var mf = new MarkdownFile({
             project: p2,
@@ -4296,7 +4304,11 @@ module.exports.markdown = {
         test.expect(3);
 
         // this subproject has the "fullyTranslated" flag set to true
-        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
         var mdft2 = new MarkdownFileType(p2);
         var mf = new MarkdownFile({
             project: p2,

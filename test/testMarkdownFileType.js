@@ -36,7 +36,10 @@ var p2 = new CustomProject({
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"],
-    flavors: ["ASDF"]
+    flavors: ["ASDF"],
+    markdown: {
+        fullyTranslated: true
+    }
 });
 
 module.exports.markdownfiletype = {
@@ -217,10 +220,14 @@ module.exports.markdownfiletype = {
         test.done();
     },
 
-    testMarkdownFileTypeProjectClose: function(test) {
+    testMarkdownFileTypeProjectCloseFullyTranslatedOn: function(test) {
         test.expect(3);
 
-        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
 
         var mdft = new MarkdownFileType(p2);
         test.ok(mdft);
@@ -258,6 +265,37 @@ module.exports.markdownfiletype = {
         };
 
         test.deepEqual(actual, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileTypeProjectCloseFullyTranslatedOff: function(test) {
+        test.expect(3);
+
+        // clean up first
+        fs.unlinkSync("./test/testfiles/subproject/translation-status.json");
+        test.ok(!fs.existsSync("./test/testfiles/subproject/translation-status.json"));
+
+        var p2 = ProjectFactory("./test/testfiles/subproject", {});
+
+        var mdft = new MarkdownFileType(p2);
+        test.ok(mdft);
+
+        var statii = [
+            {path: "fr-FR/a/b/c.md", locale: "fr-FR", fullyTranslated: false},
+            {path: "de-DE/a/b/c.md", locale: "de-DE", fullyTranslated: true},
+            {path: "ja-JP/a/b/c.md", locale: "ja-JP", fullyTranslated: false},
+            {path: "fr-FR/x/y.md", locale: "fr-FR", fullyTranslated: true},
+            {path: "de-DE/x/y.md", locale: "de-DE", fullyTranslated: false},
+            {path: "ja-JP/x/y.md", locale: "ja-JP", fullyTranslated: true}
+        ];
+        statii.forEach(function(status) {
+            mdft.addTranslationStatus(status);
+        });
+
+        mdft.projectClose();
+
+        test.ok(!fs.existsSync("./test/testfiles/subproject/translation-status.json"));
 
         test.done();
     }

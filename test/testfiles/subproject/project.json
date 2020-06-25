@@ -14,9 +14,6 @@
         "config/notifications.yml"
     ],
     "settings": {
-        "locales": ["en-GB", "es-US", "zh-Hans-CN"],
-        "markdown": {
-            "fullyTranslated": true
-        }
+        "locales": ["en-GB", "es-US", "zh-Hans-CN"]
     }
 }
