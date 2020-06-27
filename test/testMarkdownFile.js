@@ -3214,10 +3214,10 @@ module.exports.markdown = {
 
         mf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(p.root, "fr-FR/md/test1.md")));
-        test.ok(fs.existsSync(path.join(p.root, "de-DE/md/test1.md")));
+        test.ok(fs.existsSync(path.join(p.target, "fr-FR/md/test1.md")));
+        test.ok(fs.existsSync(path.join(p.target, "de-DE/md/test1.md")));
 
-        var content = fs.readFileSync(path.join(p.root, "fr-FR/md/test1.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test1.md"), "utf-8");
 
         var expected =
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
@@ -3231,7 +3231,7 @@ module.exports.markdown = {
         diff(content, expected);
         test.equal(content, expected);
 
-        var content = fs.readFileSync(path.join(p.root, "de-DE/md/test1.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "de-DE/md/test1.md"), "utf-8");
 
         var expected =
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
@@ -3332,10 +3332,10 @@ module.exports.markdown = {
 
         mf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(p.root, "fr-FR/md/test3.md")));
-        test.ok(fs.existsSync(path.join(p.root, "de-DE/md/test3.md")));
+        test.ok(fs.existsSync(path.join(p.target, "fr-FR/md/test3.md")));
+        test.ok(fs.existsSync(path.join(p.target, "de-DE/md/test3.md")));
 
-        var content = fs.readFileSync(path.join(p.root, "fr-FR/md/test3.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test3.md"), "utf-8");
 
         var expected =
             '---\n' +
@@ -3353,7 +3353,7 @@ module.exports.markdown = {
         diff(content, expected);
         test.equal(content, expected);
 
-        var content = fs.readFileSync(path.join(p.root, "de-DE/md/test3.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "de-DE/md/test3.md"), "utf-8");
 
         var expected =
             '---\n' +
@@ -3410,8 +3410,8 @@ module.exports.markdown = {
         mf.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(p.root, "fr-FR/md/nostrings.md")));
-        test.ok(fs.existsSync(path.join(p.root, "de-DE/md/nostrings.md")));
+        test.ok(fs.existsSync(path.join(p.target, "fr-FR/md/nostrings.md")));
+        test.ok(fs.existsSync(path.join(p.target, "de-DE/md/nostrings.md")));
 
         test.done();
     },
