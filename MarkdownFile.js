@@ -21,6 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 var MessageAccumulator = require("message-accumulator").default;
+var Node = require("ilib-tree-node").default;
 var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
