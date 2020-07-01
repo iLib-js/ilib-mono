@@ -1,7 +1,7 @@
 /*
  * AndroidResourceFileType.js - manages a collection of android resource files
  *
- * Copyright © 2019 JEDLSoft
+ * Copyright © 2020 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,9 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
-var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
-
-var utils = require("loctool/lib/utils.js");
-var TranslationSet = require("loctool/lib/TranslationSet.js");
-var FileType = require("loctool/lib/FileType.js");
-var ResourceFactory = require("loctool/lib/ResourceFactory.js");
-var PseudoFactory = require("loctool/lib/PseudoFactory.js");
-var ContextResourceString = require("loctool/lib/ContextResourceString.js");
-var ResourcePlural = require("loctool/lib/ResourcePlural.js");
-var ResourceArray = require("loctool/lib/ResourceArray.js");
 
 var AndroidResourceFile = require("./AndroidResourceFile.js");
 
@@ -46,16 +34,17 @@ var AndroidResourceFileType = function(project) {
     this.type = "java";
     this.datatype = "x-android-resource";
 
-    this.parent.call(this, project);
-
     this.resourceFiles = {};
     this.inputFiles = {};
     this.extensions = [ ".xml" ];
-};
 
-AndroidResourceFileType.prototype = new FileType();
-AndroidResourceFileType.prototype.parent = FileType;
-AndroidResourceFileType.prototype.constructor = AndroidResourceFileType;
+    this.project = project;
+    this.API = project.getAPI();
+
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+};
 
 var extensionRE = new RegExp(/\.xml$/);
 var dirRE = new RegExp("^value");
@@ -99,13 +88,13 @@ AndroidResourceFileType.prototype.handles = function(pathName) {
     var parts = dir.split("-");
 
     for (var i = parts.length-1; i > 0; i--) {
-        if (reg.test(parts[i]) && utils.iso3166[parts[i]]) {
+        if (reg.test(parts[i]) && this.API.utils.iso3166[parts[i]]) {
             // already localized dir
             logger.debug("No");
             return false;
         }
 
-        if (lang.test(parts[i]) && utils.iso639[parts[i]]) {
+        if (lang.test(parts[i]) && this.API.utils.iso639[parts[i]]) {
             // already localized dir
             logger.debug("No");
             return false;
@@ -222,9 +211,9 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
                         }
                     } else {
                         // string
-                        if (utils.cleanString(res.getSource()) !== utils.cleanString(r.getSource())) {
-                            logger.trace("extracted   source: " + utils.cleanString(res.getSource()));
-                            logger.trace("translation source: " + utils.cleanString(r.getSource()));
+                        if (this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
+                            logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
+                            logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
                             var newres = res.clone();
                             newres.setTargetLocale(locale);
                             newres.setTarget(r.getTarget());
@@ -410,14 +399,63 @@ AndroidResourceFileType.prototype.generatePseudo = function(locale, pb) {
     }.bind(this));
 };
 
+AndroidResourceFileType.prototype.getDataType = function() {
+    return this.datatype;
+};
+
+AndroidResourceFileType.prototype.getResourceTypes = function() {
+    return {
+        "string": "ContextResourceString"
+    };
+};
+
+AndroidResourceFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 /**
- * Register the data types and resource class with the resource factory so that it knows which class
- * to use when deserializing instances of resource entities.
+ * Return the translation set containing all of the extracted
+ * resources for all instances of this type of file. This includes
+ * all new strings and all existing strings. If it was extracted
+ * from a source file, it should be returned here.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * extracted resources
  */
-AndroidResourceFileType.prototype.registerDataTypes = function() {
-    ResourceFactory.registerDataType(this.datatype, "string", ContextResourceString);
-    ResourceFactory.registerDataType(this.datatype, "plural", ResourcePlural);
-    ResourceFactory.registerDataType(this.datatype, "array", ResourceArray);
+AndroidResourceFileType.prototype.getExtracted = function() {
+    return this.extracted;
+};
+
+/**
+ * Add the contents of the given translation set to the extracted resources
+ * for this file type.
+ *
+ * @param {TranslationSet} set set of resources to add to the current set
+ */
+AndroidResourceFileType.prototype.addSet = function(set) {
+    this.extracted.addSet(set);
+};
+
+/**
+ * Return the translation set containing all of the new
+ * resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * new resources
+ */
+AndroidResourceFileType.prototype.getNew = function() {
+    return this.newres;
+};
+
+/**
+ * Return the translation set containing all of the pseudo
+ * localized resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * pseudo localized resources
+ */
+AndroidResourceFileType.prototype.getPseudo = function() {
+    return this.pseudo;
 };
 
 /**
@@ -427,5 +465,6 @@ AndroidResourceFileType.prototype.registerDataTypes = function() {
  * need resource files
  */
 AndroidResourceFileType.prototype.getResourceFileType = function() {};
+
 
 module.exports = AndroidResourceFileType;
