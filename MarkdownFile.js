@@ -129,6 +129,10 @@ var MarkdownFile = function(options) {
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.localizeLinks = false;
     // this.componentIndex = 0;
+    // if this is set, only produce fully translated markdown files. Otherwise if they
+    // are not fully translated, just output the original source text.
+    this.fullyTranslated = this.project && this.project.settings && this.project.settings.markdown && this.project.settings.markdown.fullyTranslated;
+    this.translationStatus = {};
 };
 
 /**
@@ -723,6 +727,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
                 datatype: "markdown",
                 index: this.resourceIndex++
             }));
+            this.translationStatus[locale] = false; // mark this file as not fully translated in this locale
 
             translation = source;
 
@@ -732,6 +737,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
         }
     } else {
         translation = source;
+        this.translationStatus[locale] = false; // mark this file as not fully translated in this locale
     }
 
     return translation;
@@ -820,6 +826,9 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node);
+                } else if (node.use === "startend") {
+                    message.push(node, true);
+                    message.pop();
                 } else {
                     message.pop();
                 }
@@ -1043,6 +1052,8 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
 
     var start = -1, end, ma = new MessageAccumulator();
 
+    this.translationStatus[locale] = true;
+
     for (var i = 0; i < nodeArray.length; i++) {
         this._localizeNode(nodeArray[i], ma, locale, translations);
 
@@ -1083,7 +1094,7 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
     // convert to a tree again
     ast = mapToAst(Node.fromArray(nodeArray));
 
-    var str = mdstringify.stringify(ast);
+    var str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
 
     // make sure the thematic breaks don't have blank lines after them and they
     // don't erroneously escape the backslash chars
@@ -1103,12 +1114,14 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
  * @param {Array.<String>} locales array of locales to translate to
  */
 MarkdownFile.prototype.localize = function(translations, locales) {
+    var pathName;
     for (var i = 0; i < locales.length; i++) {
         if (!this.project.isSourceLocale(locales[i])) {
             // skip variants for now until we can handle them properly
             var l = new Locale(locales[i]);
+            pathName = "";
             if (!l.getVariant()) {
-                var pathName = this.getLocalizedPath(locales[i]);
+                pathName = this.getLocalizedPath(locales[i]);
                 logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
@@ -1116,6 +1129,12 @@ MarkdownFile.prototype.localize = function(translations, locales) {
 
                 fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
             }
+
+            this.type.addTranslationStatus({
+                path: pathName,
+                locale: locales[i],
+                fullyTranslated: this.translationStatus[locales[i]]
+            });
         }
     }
 };
