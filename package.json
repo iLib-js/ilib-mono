@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-ghfm",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "main": "./MarkdownFileType.js",
     "description": "A loctool plugin that knows how to process github-flavored markdown files",
     "license": "Apache-2.0",
@@ -47,7 +47,7 @@
         "dist": "npm pack",
         "test": "node test/testSuite.js",
         "debug": "node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d *"
+        "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE"
     },
     "engines": {
         "node": ">=6.0"
@@ -69,7 +69,7 @@
         "unist-util-filter": "^1.0.2"
     },
     "devDependencies": {
-        "loctool": "^2.4.0",
+        "loctool": "^2.7.1",
         "nodeunit": "^0.11.3"
     }
 }

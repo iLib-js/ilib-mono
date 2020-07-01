@@ -2,7 +2,15 @@
 
 Ilib loctool plugin to parse and localize github-flavored markdown
 
+
 ## Release Notes
+
+### 1.4.2
+
+* Fixed a bug where markdown tables were not handled properly
+* Fixed a bug where inline code was not handled properly if it was the
+only thing in the localizable segment. Inline code should only be
+localized if it is in the middle of or adjacent to localizable text.
 
 ### 1.4.1
 
