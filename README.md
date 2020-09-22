@@ -5,6 +5,12 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.6.0
+
+* Added support for the "fullyTranslated" setting in the frontmatter if
+the fullyTranslated setting is turned on in the loctool and the current
+file has all of its strings fully translated.
+
 ### 1.5.1
 
 * Updated dependencies so that this plugin can work on nodejs v6 still
