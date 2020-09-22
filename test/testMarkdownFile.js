@@ -3374,6 +3374,384 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeFileWithFrontMatterNotFullyTranslated: function(test) {
+        test.expect(5);
+
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./notrans2.md",
+            type: mdft2
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'C\'est le dernier morceau de texte localisable.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        mf.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md")));
+        test.ok(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md")));
+
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'frontmatter: true\n' +
+            'other: "asdf"\n' +
+            '---\n' +
+            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
+            '\n' +
+            'This is some text. This is more text. Pretty, pretty text.\n' +
+            '\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
+            '\n' +
+            'This is the last bit of localizable text.\n' +
+            '\n' +
+            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'frontmatter: true\n' +
+            'other: "asdf"\n' +
+            '---\n' +
+            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
+            '\n' +
+            'This is some text. This is more text. Pretty, pretty text.\n' +
+            '\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
+            '\n' +
+            'This is the last bit of localizable text.\n' +
+            '\n' +
+            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFileWithFrontMatterFullyTranslated: function(test) {
+        test.expect(5);
+
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./notrans2.md",
+            type: mdft2
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'C\'est le dernier morceau de texte localisable.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        mf.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md")));
+        test.ok(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md")));
+
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'frontmatter: true\n' +
+            'other: "asdf"\n' +
+            'fullyTranslated: true\n' +
+            '---\n' +
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
+            'C\'est le dernier morceau de texte localisable.\n' +
+            '\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'frontmatter: true\n' +
+            'other: "asdf"\n' +
+            'fullyTranslated: true\n' +
+            '---\n' +
+            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
+            '\n' +
+            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
+            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
+            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
+            '\n' +
+            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated: function(test) {
+        test.expect(5);
+
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./notrans.md",
+            type: mdft2
+        });
+        test.ok(mf);
+
+        // should read the file
+        mf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'C\'est le dernier morceau de texte localisable.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+           project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        mf.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
+        test.ok(fs.existsSync(path.join(p2.target, "de-DE/notrans.md")));
+
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'fullyTranslated: true\n' +
+            '---\n' +
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
+            'C\'est le dernier morceau de texte localisable.\n' +
+            '\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans.md"), "utf-8");
+
+        var expected =
+            '---\n' +
+            'fullyTranslated: true\n' +
+            '---\n' +
+            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
+            '\n' +
+            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
+            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
+            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
+            '\n' +
+            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
     testMarkdownFileLocalizeNoStrings: function(test) {
         test.expect(3);
 
@@ -4245,6 +4623,9 @@ module.exports.markdown = {
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
 
         var expected =
+            '---\n' +
+            'fullyTranslated: true\n' +
+            '---\n' +
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
             'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
