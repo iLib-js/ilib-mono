@@ -18,12 +18,14 @@
  */
 
 var fs = require("fs");
+var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
 
 var MetaXmlFile = require("./MetaXmlFile.js");
+var sfLocales = require("./sflocales.json");
 
 var logger = log4js.getLogger("loctool.lib.MetaXmlFileType");
 
@@ -34,14 +36,14 @@ var MetaXmlFileType = function(project) {
     this.project = project;
     this.API = this.project.getAPI();
 
-    this.extensions = [ ".java", ".jav" ];
+    this.extensions = [ ".xml" ];
 
     this.extracted = this.API.newTranslationSet(this.project.getSourceLocale());
     this.newres = this.API.newTranslationSet(this.project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(this.project.getSourceLocale());
 };
 
-var extensionRE = new RegExp(/\.java$/);
+var filenameRE = new RegExp(/([\w\.]+)\.(\w+)-meta.xml$/);
 
 /**
  * Return true if the given path is a java file and is handled
@@ -53,7 +55,7 @@ var extensionRE = new RegExp(/\.java$/);
  */
 MetaXmlFileType.prototype.handles = function(pathName) {
     logger.debug("MetaXmlFileType handles " + pathName + "?");
-    var ret = extensionRE.test(pathName);
+    var ret = filenameRE.test(pathName);
     logger.debug(ret ? "Yes" : "No");
     return ret;
 };
@@ -218,35 +220,41 @@ MetaXmlFileType.prototype.getPseudo = function() {
  * @return {String} the ios strings resource file path that serves the
  * given project, context, and locale.
  */
-MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName, type) {
-    var l = new Locale(locale || this.project.sourceLocale);
-    var localeDir, dir, newPath;
-
-    var localeMapping = {
-        "en-GB": "en-001.lproj",
-        "es-ES": "es-ES.lproj",
-        "ps-DO": "ps.lproj",
-        "zh-Hans-CN": "zh-Hans.lproj",
-        "zh-Hant-HK": "zh-Hant.lproj",
-        "zh-Hant-TW": "zh-Hant-TW.lproj"
-    };
-
-    localeDir = localeMapping[locale] || (l.language === "en" ? l.getSpec() : l.language) + ".lproj";
-    logger.trace("Getting resource file path for locale " + locale + ": " + localeDir);
-
-    if (type === "x-xib" && !flavor) {
-        // strings from xib files go into the xib's localized strings file instead of the main project strings file
-        var base = path.basename(pathName, ".xib");
-
-        // this is the parent dir
-        var parent = path.dirname(path.dirname(pathName));
-        newPath = path.join(parent, localeDir, base + ".strings");
-    } else {
-        var filename = (flavor || "Localizable") + ".strings";
-        dir = this.project.getResourceDirs("objc")[0] || ".";
-        newPath = path.join(dir, localeDir, filename);
+MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName) {
+    var spec = locale || this.project.sourceLocale;
+    if (sfLocales[spec]) {
+        spec = sfLocales[spec];
     }
-    return newPath;
+    spec = spec.replace(/-/g, "_");
+
+    var root = path.dirname(pathName).split(/\//g);
+    var filename = path.basename(pathName);
+    var subpath = "";
+
+    var parts = root;
+    for (var i = 0; i < parts.length; i++) {
+        if (parts[i] === "objects") {
+            root = parts.slice(0, i);
+            subpath = parts.slice(i+1);
+        }
+    }
+
+    var target = root.concat(["objectTranslations"]);
+    var match = filenameRE.exec(filename);
+    if (subpath && subpath.length) {
+        target.push(subpath[0] + "-" + spec);
+        if (match) {
+            filename = match[1] + '.' + match[2] + "Translation-meta.xml";
+        }
+    } else {
+        if (match) {
+            filename = match[1] + "-" + spec + '.' + match[2] + "Translation-meta.xml";
+        }
+    }
+
+    target.push(filename);
+
+    return target.join("/");
 };
 
 module.exports = MetaXmlFileType;
