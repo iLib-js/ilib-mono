@@ -220,6 +220,18 @@ module.exports.markdownfiletype = {
         test.done();
     },
 
+    testMarkdownFileTypeHandlesSourceDirIsNotLocalizedAtEnd: function(test) {
+        test.expect(3);
+
+        var mdft = new MarkdownFileType(p2);
+        test.ok(mdft);
+
+        test.ok(mdft.handles("a/b/c/en-US/foo.md"));
+        test.ok(mdft.handles("a/b/c/en/foo.md"));
+
+        test.done();
+    },
+
     testMarkdownFileTypeProjectCloseFullyTranslatedOn: function(test) {
         test.expect(3);
 
