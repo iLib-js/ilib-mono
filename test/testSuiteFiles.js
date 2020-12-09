@@ -18,6 +18,6 @@
  */
 
 module.exports.files = [
-    //"testMetaXmlFile.js",
+    "testMetaXmlFile.js",
     "testMetaXmlFileType.js"
 ];

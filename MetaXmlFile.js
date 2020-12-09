@@ -20,7 +20,8 @@
 var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
-var IString = require("ilib/lib/IString.js");
+var xml2json = require("xml2json");
+var IString = require("ilib/lib/IString");
 
 var logger = log4js.getLogger("loctool.lib.MetaXmlFile");
 
@@ -42,11 +43,6 @@ var MetaXmlFile = function(options) {
     this.API = this.project.getAPI();
     
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
-
-    this.flavor = this.project && this.project.flavors && this.project.flavors.getFlavorForPath(this.pathName);
-    if (this.flavor === "main") {
-        this.flavor = undefined;
-    }
 };
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
@@ -127,6 +123,7 @@ MetaXmlFile.prototype.makeKey = function(source) {
     return this.API.utils.hashKey(MetaXmlFile.cleanString(source));
 };
 
+/*
 var reGetStringBogusConcatenation1 = new RegExp(/(^R|\WR)B\.getString\s*\(\s*"((\\"|[^"])*)"\s*\+/g);
 var reGetStringBogusConcatenation2 = new RegExp(/(^R|\WR)B\.getString\s*\([^\)]*\+\s*"((\\"|[^"])*)"\s*\)/g);
 var reGetStringBogusParam = new RegExp(/(^R|\WR)B\.getString\s*\([^"\)]*\)/g);
@@ -135,6 +132,56 @@ var reGetString = new RegExp(/(^R|\WR)B\.getString\s*\(\s*"((\\"|[^"])*)"\s*\)/g
 var reGetStringWithId = new RegExp(/(^R|\WR)B\.getString\("((\\"|[^"])*)"\s*,\s*"((\\"|[^"])*)"\)/g);
 
 var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
+*/
+
+/**
+ * Walk the node tree looking for properties that have localizable values, then extract
+ * them and resourcify them.
+ * @private
+ */
+MetaXmlFile.prototype.walkLayout = function(node) {
+    var comment;
+    for (var p in node) {
+        var subnode = node[p];
+        if (typeof(subnode) === "object") {
+            this.walkLayout(subnode);
+        } else if (typeof(subnode) === "string") {
+            if (subnode.length && localizableAttributes[p]) {
+                comment = node.i18n;
+                logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
+                if (!this.API.utils.isDNT(comment)) {
+                    logger.trace("Resourcifying");
+                    var key = this.makeKey(p, subnode);
+                    node[p] = "@string/" + key;
+                    var res = this.API.newResource({
+                        datatype: this.type.datatype,
+                        resType: "string",
+                        key: key,
+                        source: subnode,
+                        pathName: this.pathName,
+                        sourceLocale: this.locale || this.sourceLocale,
+                        context: this.context || undefined,
+                        project: this.project.getProjectId(),
+                        autoKey: true,
+                        comment: comment,
+                        dnt: this.API.utils.isDNT(comment),
+                        datatype: this.type.datatype,
+                        flavor: this.flavor,
+                        index: this.resourceIndex++
+                    });
+                    this.set.add(res);
+                    this.dirty = true;
+                    this.replacements[reEscape(p + '="' + subnode + '"')] = p + '="' + node[p] + '"';
+                    logger.trace("Recording replacement " + p + '="' + subnode + '" to ' + p + '="' + node[p] + '"');
+                }
+            }
+        } else if (ilib.isArray(subnode)) {
+            for (var i = 0; i < subnode.length; i++) {
+                this.walkLayout(subnode[i]);
+            }
+        }
+    }
+};
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -143,6 +190,14 @@ var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
  */
 MetaXmlFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
+
+    this.xml = data;
+    this.contents = xml2json.toJson(data, {object: true});
+    this.resourceIndex = 0;
+
+    this.walkLayout(this.contents);
+
+    /*
     this.resourceIndex = 0;
 
     reGetString.lastIndex = 0; // for safety
@@ -227,6 +282,7 @@ MetaXmlFile.prototype.parse = function(data) {
         "Warning: non-string arguments are not allowed in the RB.getString() parameters:",
         logger,
         this.pathName);
+    */
 };
 
 /**

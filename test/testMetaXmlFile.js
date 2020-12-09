@@ -23,11 +23,11 @@ if (!MetaXmlFile) {
     var MetaXmlFile = require("../MetaXmlFile.js");
     var MetaXmlFileType = require("../MetaXmlFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
-    var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
+    var ResourceString =  require("loctool/lib/ResourceString.js");
 }
 
 var p = new CustomProject({
-    id: "webapp",
+    id: "forceapp",
     sourceLocale: "en-US",
     pseudoLocale: "de-DE",
     plugins: [
@@ -37,11 +37,11 @@ var p = new CustomProject({
     locales:["en-GB"]
 });
 
-var jft = new MetaXmlFileType(p);
+var mxft = new MetaXmlFileType(p);
 
-module.exports.javafile = {
+module.exports.metaxmlfile = {
     // make sure to initialize the file types so that the tests below can use
-    // a ContextResourceString instead of a regular ResourceString
+    // a ResourceString instead of a regular ResourceString
     testMetaXmlInit: function(test) {
         p.init(function() {
             test.done();
@@ -51,10 +51,10 @@ module.exports.javafile = {
     testMetaXmlFileConstructor: function(test) {
         test.expect(1);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p
         });
-        test.ok(j);
+        test.ok(mxf);
 
         test.done();
     },
@@ -62,13 +62,13 @@ module.exports.javafile = {
     testMetaXmlFileConstructorParams: function(test) {
         test.expect(1);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: "./testfiles/force-app/main/default/object/Utils.object-meta.xml",
-            type: jft
+            type: mxft
         });
 
-        test.ok(j);
+        test.ok(mxf);
 
         test.done();
     },
@@ -76,12 +76,12 @@ module.exports.javafile = {
     testMetaXmlFileConstructorNoFile: function(test) {
         test.expect(1);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
         test.done();
     },
@@ -89,14 +89,14 @@ module.exports.javafile = {
     testMetaXmlFileMakeKey: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equal(j.makeKey("This is a test"), "r654479252");
+        test.equal(mxf.makeKey("This is a test"), "r654479252");
 
         test.done();
     },
@@ -104,17 +104,17 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeySimpleTexts1: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equals(j.makeKey("Preferences in your profile"), "r372802078");
-        test.equals(j.makeKey("All settings"), "r725930887");
-        test.equals(j.makeKey("Colour scheme"), "r734599412");
-        test.equals(j.makeKey("Experts"), "r343852585");
+        test.equals(mxf.makeKey("Preferences in your profile"), "r372802078");
+        test.equals(mxf.makeKey("All settings"), "r725930887");
+        test.equals(mxf.makeKey("Colour scheme"), "r734599412");
+        test.equals(mxf.makeKey("Experts"), "r343852585");
 
         test.done();
     },
@@ -122,17 +122,17 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyUnescaped: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equals(j.makeKey("foo \\n \\t bar"), "r1056543475");
-        test.equals(j.makeKey("\\n \\t bar"), "r755240053");
-        test.equals(j.makeKey("The \\'Dude\\' played by Jeff Bridges"), "r600298088");
-        test.equals(j.makeKey("\\'Dude\\'"), "r6259609");
+        test.equals(mxf.makeKey("foo \\n \\t bar"), "r1056543475");
+        test.equals(mxf.makeKey("\\n \\t bar"), "r755240053");
+        test.equals(mxf.makeKey("The \\'Dude\\' played by Jeff Bridges"), "r600298088");
+        test.equals(mxf.makeKey("\\'Dude\\'"), "r6259609");
 
         test.done();
     },
@@ -140,18 +140,18 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeySimpleTexts2: function(test) {
         test.expect(6);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equals(j.makeKey("Procedures"), "r807691021");
-        test.equals(j.makeKey("Mobile Apps"), "r898923204");
-        test.equals(j.makeKey("Settings in your profile"), "r618035987");
-        test.equals(j.makeKey("Product Reviews"), "r175350918");
-        test.equals(j.makeKey("Answers"), "r221604632");
+        test.equals(mxf.makeKey("Procedures"), "r807691021");
+        test.equals(mxf.makeKey("Mobile Apps"), "r898923204");
+        test.equals(mxf.makeKey("Settings in your profile"), "r618035987");
+        test.equals(mxf.makeKey("Product Reviews"), "r175350918");
+        test.equals(mxf.makeKey("Answers"), "r221604632");
 
         test.done();
     },
@@ -159,21 +159,21 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeySimpleTexts3: function(test) {
         test.expect(9);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equals(j.makeKey("Private Profile"), "r314592735");
-        test.equals(j.makeKey("People you are connected to"), "r711926199");
-        test.equals(j.makeKey("Notifications"), "r284964820");
-        test.equals(j.makeKey("News"), "r613036745");
-        test.equals(j.makeKey("More Tips"), "r216617786");
-        test.equals(j.makeKey("Filters"), "r81370429");
-        test.equals(j.makeKey("Referral Link"), "r140625167");
-        test.equals(j.makeKey("Questions"), "r256277957");
+        test.equals(mxf.makeKey("Private Profile"), "r314592735");
+        test.equals(mxf.makeKey("People you are connected to"), "r711926199");
+        test.equals(mxf.makeKey("Notifications"), "r284964820");
+        test.equals(mxf.makeKey("News"), "r613036745");
+        test.equals(mxf.makeKey("More Tips"), "r216617786");
+        test.equals(mxf.makeKey("Filters"), "r81370429");
+        test.equals(mxf.makeKey("Referral Link"), "r140625167");
+        test.equals(mxf.makeKey("Questions"), "r256277957");
 
         test.done();
     },
@@ -181,15 +181,15 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyEscapes: function(test) {
         test.expect(3);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equals(j.makeKey("Can\'t find id"), "r743945592");
-        test.equals(j.makeKey("Can\'t find an application for SMS"), "r909283218");
+        test.equals(mxf.makeKey("Can\'t find id"), "r743945592");
+        test.equals(mxf.makeKey("Can\'t find an application for SMS"), "r909283218");
 
         test.done();
     },
@@ -197,20 +197,20 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyPunctuation: function(test) {
         test.expect(8);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equals(j.makeKey("{name}({generic_name})"), "r300446104");
-        test.equals(j.makeKey("{name}, {sharer_name} {start}found this interesting{end}"), "r8321889");
-        test.equals(j.makeKey("{sharer_name} {start}found this interesting{end}"), "r639868344");
-        test.equals(j.makeKey("Grow your Network"), "r895214324");
-        test.equals(j.makeKey("Failed to send connection request!"), "r1015770123");
-        test.equals(j.makeKey("{goal_name} Goals"), "r993422001");
-        test.equals(j.makeKey("Connection link copied!"), "r180897411");
+        test.equals(mxf.makeKey("{name}({generic_name})"), "r300446104");
+        test.equals(mxf.makeKey("{name}, {sharer_name} {start}found this interesting{end}"), "r8321889");
+        test.equals(mxf.makeKey("{sharer_name} {start}found this interesting{end}"), "r639868344");
+        test.equals(mxf.makeKey("Grow your Network"), "r895214324");
+        test.equals(mxf.makeKey("Failed to send connection request!"), "r1015770123");
+        test.equals(mxf.makeKey("{goal_name} Goals"), "r993422001");
+        test.equals(mxf.makeKey("Connection link copied!"), "r180897411");
 
         test.done();
     },
@@ -218,15 +218,15 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeySameStringMeansSameKey: function(test) {
         test.expect(3);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equal(j.makeKey("This is a test"), "r654479252");
-        test.equal(j.makeKey("This is a test"), "r654479252");
+        test.equal(mxf.makeKey("This is a test"), "r654479252");
+        test.equal(mxf.makeKey("This is a test"), "r654479252");
 
         test.done();
     },
@@ -234,18 +234,18 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyCompressWhiteSpace: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equal(j.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(j.makeKey("Can\'t    find               id"), "r743945592");
+        test.equal(mxf.makeKey("Can\'t find  id"), "r743945592");
+        test.equal(mxf.makeKey("Can\'t    find               id"), "r743945592");
 
-        test.equal(j.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(j.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS"), "r909283218");
+        test.equal(mxf.makeKey("Can\'t find an application for SMS"), "r909283218");
+        test.equal(mxf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS"), "r909283218");
 
         test.done();
     },
@@ -253,18 +253,18 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyTrimWhiteSpace: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        test.equal(j.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(j.makeKey("      Can\'t find  id "), "r743945592");
+        test.equal(mxf.makeKey("Can\'t find  id"), "r743945592");
+        test.equal(mxf.makeKey("      Can\'t find  id "), "r743945592");
 
-        test.equal(j.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(j.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r"), "r909283218");
+        test.equal(mxf.makeKey("Can\'t find an application for SMS"), "r909283218");
+        test.equal(mxf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r"), "r909283218");
 
         test.done();
     },
@@ -272,11 +272,11 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyNewLines: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equals(jf.makeKey("A \n B"), "r191336864");
+        test.equals(mxf.makeKey("A \n B"), "r191336864");
 
         test.done();
     },
@@ -284,11 +284,11 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyEscapeN: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equals(jf.makeKey("A \\n B"), "r191336864");
+        test.equals(mxf.makeKey("A \\n B"), "r191336864");
 
         test.done();
     },
@@ -296,10 +296,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyTabs: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("A \t B"), "r191336864");
+        test.equals(mxf.makeKey("A \t B"), "r191336864");
 
         test.done();
     },
@@ -307,10 +307,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyEscapeT: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("A \\t B"), "r191336864");
+        test.equals(mxf.makeKey("A \\t B"), "r191336864");
 
         test.done();
     },
@@ -318,10 +318,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyQuotes: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("A \\'B\\' C"), "r935639115");
+        test.equals(mxf.makeKey("A \\'B\\' C"), "r935639115");
 
         test.done();
     },
@@ -329,10 +329,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("\\u00A0 \\u0023"), "r2293235");
+        test.equals(mxf.makeKey("\\u00A0 \\u0023"), "r2293235");
 
         test.done();
     },
@@ -340,10 +340,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat"), "r969175354");
+        test.equals(mxf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat"), "r969175354");
 
         test.done();
     },
@@ -351,10 +351,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyInterpretEscapedOctalChars: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("A \\40 \\011 B"), "r191336864");
+        test.equals(mxf.makeKey("A \\40 \\011 B"), "r191336864");
 
         test.done();
     },
@@ -362,10 +362,10 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyMetaXmlEscapeSequences: function(test) {
         test.expect(2);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("A \\b\\t\\n\\f\\r B"), "r191336864");
+        test.equals(mxf.makeKey("A \\b\\t\\n\\f\\r B"), "r191336864");
 
         test.done();
     },
@@ -373,21 +373,21 @@ module.exports.javafile = {
     testMetaXmlFileMakeKeyCheckRubyCompatibility: function(test) {
         test.expect(13);
 
-        var jf = new MetaXmlFile({project: p});
-        test.ok(jf);
+        var mxf = new MetaXmlFile({project: p});
+        test.ok(mxf);
 
-        test.equals(jf.makeKey("This has \\\"double quotes\\\" in it."), "r487572481");
-        test.equals(jf.makeKey('This has \\\"double quotes\\\" in it.'), "r487572481");
-        test.equals(jf.makeKey("This has \\\'single quotes\\\' in it."), "r900797640");
-        test.equals(jf.makeKey('This has \\\'single quotes\\\' in it.'), "r900797640");
-        test.equals(jf.makeKey("This is a double quoted string"), "r494590307");
-        test.equals(jf.makeKey('This is a single quoted string'), "r683276274");
-        test.equals(jf.makeKey("This is a double quoted string with \\\"quotes\\\" in it."), "r246354917");
-        test.equals(jf.makeKey('This is a single quoted string with \\\'quotes\\\' in it.'), "r248819747");
-        test.equals(jf.makeKey("This is a double quoted string with \\n return chars in it"), "r1001831480");
-        test.equals(jf.makeKey('This is a single quoted string with \\n return chars in it'), "r147719125");
-        test.equals(jf.makeKey("This is a double quoted string with \\t tab chars in it"), "r276797171");
-        test.equals(jf.makeKey('This is a single quoted string with \\t tab chars in it'), "r303137748");
+        test.equals(mxf.makeKey("This has \\\"double quotes\\\" in it."), "r487572481");
+        test.equals(mxf.makeKey('This has \\\"double quotes\\\" in it.'), "r487572481");
+        test.equals(mxf.makeKey("This has \\\'single quotes\\\' in it."), "r900797640");
+        test.equals(mxf.makeKey('This has \\\'single quotes\\\' in it.'), "r900797640");
+        test.equals(mxf.makeKey("This is a double quoted string"), "r494590307");
+        test.equals(mxf.makeKey('This is a single quoted string'), "r683276274");
+        test.equals(mxf.makeKey("This is a double quoted string with \\\"quotes\\\" in it."), "r246354917");
+        test.equals(mxf.makeKey('This is a single quoted string with \\\'quotes\\\' in it.'), "r248819747");
+        test.equals(mxf.makeKey("This is a double quoted string with \\n return chars in it"), "r1001831480");
+        test.equals(mxf.makeKey('This is a single quoted string with \\n return chars in it'), "r147719125");
+        test.equals(mxf.makeKey("This is a double quoted string with \\t tab chars in it"), "r276797171");
+        test.equals(mxf.makeKey('This is a single quoted string with \\t tab chars in it'), "r303137748");
 
         test.done();
     },
@@ -395,23 +395,35 @@ module.exports.javafile = {
     testMetaXmlFileParseSimpleGetByKey: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test")');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Password</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "r654479252", "java"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "r92231204", "apex"));
         test.ok(r);
 
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "r92231204");
 
         test.done();
     },
@@ -419,22 +431,34 @@ module.exports.javafile = {
     testMetaXmlFileParseSimpleGetBySource: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test")');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Password</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBySource("Password");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "r92231204");
 
         test.done();
     },
@@ -442,16 +466,28 @@ module.exports.javafile = {
     testMetaXmlFileParseIgnoreEmpty: function(test) {
         test.expect(3);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("")');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label></label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 0);
@@ -462,16 +498,28 @@ module.exports.javafile = {
     testMetaXmlFileParseSimpleIgnoreWhitespace: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('   RB.getString  (    \t "This is a test"    );  ');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>  \n   This is a test      \n\r\t\t</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
         var r = set.getBySource("This is a test");
@@ -481,91 +529,33 @@ module.exports.javafile = {
 
         test.done();
     },
-
-    testMetaXmlFileParseIgnoreLeadingAndTrailingWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("  \t \n  This is a test\n\n\t   ");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseDoubleEscapedWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('ssb.append(RB.getString("\\\\nTry a Virtual Consult ›"));');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("Try a Virtual Consult ›");
-        test.ok(r);
-        test.equal(r.getSource(), "Try a Virtual Consult ›");
-        test.equal(r.getKey(), "r682432029");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseIgnoreEscapedLeadingAndTrailingWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("  \\t \\n  This is a test\\n\\n\\t   ");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
 
     testMetaXmlFileParseSimpleRightSize: function(test) {
         test.expect(4);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
 
-        j.parse('RB.getString("This is a test")');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>This is a test</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
         test.ok(set);
 
@@ -577,16 +567,28 @@ module.exports.javafile = {
     testMetaXmlFileParseSimpleWithTranslatorComment: function(test) {
         test.expect(6);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('\tRB.getString("This is a test"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label x-i18n="this is a translator\'s comment">This is a test</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
         var r = set.getBySource("This is a test");
@@ -601,19 +603,31 @@ module.exports.javafile = {
     testMetaXmlFileParseSimpleWithUniqueIdAndTranslatorComment: function(test) {
         test.expect(6);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('\tRB.getString("This is a test", "foobar"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label x-id="foobar" x-i18n="this is a translator\'s comment">This is a test</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "foobar", "java"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "foobar", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "foobar");
@@ -622,138 +636,37 @@ module.exports.javafile = {
         test.done();
     },
 
-    testMetaXmlFileParseWithEmbeddedDoubleQuotes: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('\tRB.getString("This is a \\\"test\\\".");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a \"test\".");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a \"test\".");
-        test.equal(r.getKey(), "r446151779");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseWithEmbeddedEscapedSingleQuotes: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('\tRB.getString("This is a \\\'test\\\'.");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a 'test'.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a 'test'.");
-        test.equal(r.getKey(), "r531222461");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseWithEmbeddedUnescapedSingleQuotes: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('\tRB.getString("This is a \'test\'.");');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a 'test'.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a 'test'.");
-        test.equal(r.getKey(), "r531222461");
-
-        test.done();
-    },
-
     testMetaXmlFileParseWithKey: function(test) {
         test.expect(5);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test", "unique_id")');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Password__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label x-id="unique_id">This is a test</label>\n' +
+            '    <length>255</length>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Text</type>\n' +
+            '    <unique>false</unique>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "unique_id", "java"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "unique_id", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "unique_id");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseWithKeyIgnoreWhitespace: function(test) {
-        test.expect(5);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("   \t\n This is a test       ", "unique_id")');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "unique_id", "java"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "unique_id");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseWithKeyCantGetBySource: function(test) {
-        test.expect(3);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test", "unique_id")');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(!r);
 
         test.done();
     },
@@ -761,27 +674,53 @@ module.exports.javafile = {
     testMetaXmlFileParseMultiple: function(test) {
         test.expect(8);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>Allocate</label>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>Assigned</label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBySource("Allocate");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getSource(), "Allocate");
+        test.equal(r.getKey(), "r228180217");
 
-        r = set.getBySource("This is also a test");
+        r = set.getBySource("Assigned");
         test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
+        test.equal(r.getSource(), "Assigned");
+        test.equal(r.getKey(), "r762953066");
 
         test.done();
     },
@@ -789,57 +728,58 @@ module.exports.javafile = {
     testMetaXmlFileParseMultipleWithKey: function(test) {
         test.expect(10);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test", "x");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "y");');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-id="x">Allocate</label>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-id="y">Assigned</label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "x", "java"));
+        var r = set.getBySource("Allocate");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
+
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "x", "apex"));
+        test.ok(r);
+        test.equal(r.getSource(), "Allocate");
         test.ok(!r.getAutoKey());
         test.equal(r.getKey(), "x");
 
-        r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "y", "java"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "y", "apex"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getSource(), "Assigned");
         test.ok(!r.getAutoKey());
         test.equal(r.getKey(), "y");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseMultipleOnSameLine: function(test) {
-        test.expect(8);
-
-        var j = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: jft
-        });
-        test.ok(j);
-
-        j.parse('RB.getString("This is a test");  a.parse("This is another test."); RB.getString("This is another test");\n');
-
-        var set = j.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.ok(r.getAutoKey());
-
-        r = set.getBySource("This is another test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is another test");
-        test.ok(r.getAutoKey());
 
         test.done();
     },
@@ -847,28 +787,54 @@ module.exports.javafile = {
     testMetaXmlFileParseMultipleWithComments: function(test) {
         test.expect(10);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");\t// i18n: bar');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-i18n="foo">Allocate</label>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-i18n="bar">Assigned</label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBySource("Allocate");
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getSource(), "Allocate");
+        test.equal(r.getKey(), "r228180217");
         test.equal(r.getComment(), "foo");
 
-        r = set.getBySource("This is also a test");
+        r = set.getBySource("Assigned");
         test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
+        test.equal(r.getSource(), "Assigned");
+        test.equal(r.getKey(), "r762953066");
         test.equal(r.getComment(), "bar");
 
         test.done();
@@ -877,25 +843,25 @@ module.exports.javafile = {
     testMetaXmlFileParseMultipleWithUniqueIdsAndComments: function(test) {
         test.expect(10);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test", "asdf");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test", "kdkdkd");\t// i18n: bar');
+        mxf.parse('RB.getString("This is a test", "asdf");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test", "kdkdkd");\t// i18n: bar');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "asdf", "java"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "asdf", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "asdf");
         test.equal(r.getComment(), "foo");
 
-        r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "kdkdkd", "java"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "kdkdkd", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is also a test");
         test.equal(r.getKey(), "kdkdkd");
@@ -907,16 +873,16 @@ module.exports.javafile = {
     testMetaXmlFileParseWithDups: function(test) {
         test.expect(6);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test");');
+        mxf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test");');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
         var r = set.getBySource("This is a test");
@@ -932,16 +898,16 @@ module.exports.javafile = {
     testMetaXmlFileParseDupsDifferingByKeyOnly: function(test) {
         test.expect(8);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "unique_id");');
+        mxf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "unique_id");');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.ok(set);
 
         var r = set.getBySource("This is a test");
@@ -949,7 +915,7 @@ module.exports.javafile = {
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
 
-        r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "unique_id", "java"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "unique_id", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "unique_id");
@@ -960,16 +926,16 @@ module.exports.javafile = {
     testMetaXmlFileParseBogusConcatenation: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test" + " and this isnt");');
+        mxf.parse('RB.getString("This is a test" + " and this isnt");');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 0);
 
@@ -979,16 +945,16 @@ module.exports.javafile = {
     testMetaXmlFileParseBogusConcatenation2: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString("This is a test" + foobar);');
+        mxf.parse('RB.getString("This is a test" + foobar);');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
 
         test.done();
@@ -997,16 +963,16 @@ module.exports.javafile = {
     testMetaXmlFileParseBogusNonStringParam: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString(foobar);');
+        mxf.parse('RB.getString(foobar);');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
 
         test.done();
@@ -1015,16 +981,16 @@ module.exports.javafile = {
     testMetaXmlFileParseEmptyParams: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('RB.getString();');
+        mxf.parse('RB.getString();');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
 
         test.done();
@@ -1033,16 +999,16 @@ module.exports.javafile = {
     testMetaXmlFileParseWholeWord: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('EPIRB.getString("This is a test");');
+        mxf.parse('EPIRB.getString("This is a test");');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
 
         test.done();
@@ -1051,16 +1017,16 @@ module.exports.javafile = {
     testMetaXmlFileParseSubobject: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
-        j.parse('App.RB.getString("This is a test");');
+        mxf.parse('App.RB.getString("This is a test");');
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
         test.equal(set.size(), 1);
 
         test.done();
@@ -1069,17 +1035,17 @@ module.exports.javafile = {
     testMetaXmlFileExtractFile: function(test) {
         test.expect(8);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: "./java/t1.java",
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
         // should read the file
-        j.extract();
+        mxf.extract();
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 2);
 
@@ -1088,7 +1054,7 @@ module.exports.javafile = {
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "id1", "java"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "id1", "java"));
         test.ok(r);
         test.equal(r.getSource(), "This is a test with a unique id");
         test.equal(r.getKey(), "id1");
@@ -1099,17 +1065,17 @@ module.exports.javafile = {
     testMetaXmlFileExtractUndefinedFile: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
         // should attempt to read the file and not fail
-        j.extract();
+        mxf.extract();
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 0);
 
@@ -1119,17 +1085,17 @@ module.exports.javafile = {
     testMetaXmlFileExtractBogusFile: function(test) {
         test.expect(2);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: "./java/foo.java",
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
         // should attempt to read the file and not fail
-        j.extract();
+        mxf.extract();
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 0);
 
@@ -1139,17 +1105,17 @@ module.exports.javafile = {
     testMetaXmlFileExtractFile2: function(test) {
         test.expect(11);
 
-        var j = new MetaXmlFile({
+        var mxf = new MetaXmlFile({
             project: p,
             pathName: "./java/AskPickerSearchFragment.java",
-            type: jft
+            type: mxft
         });
-        test.ok(j);
+        test.ok(mxf);
 
         // should read the file
-        j.extract();
+        mxf.extract();
 
-        var set = j.getTranslationSet();
+        var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 3);
 
