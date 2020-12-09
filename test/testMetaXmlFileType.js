@@ -31,7 +31,7 @@ var p = new CustomProject({
 });
 
 
-module.exports.javafiletype = {
+module.exports.metaxmlfiletype = {
     testMetaXmlFileTypeConstructor: function(test) {
         test.expect(1);
 
@@ -126,6 +126,72 @@ module.exports.javafiletype = {
         test.ok(mxft);
 
         test.ok(mxft.handles("force-app/main/default/classes/Utils.cls-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedClassFiles: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-de.cls-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFiles: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-de.object-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesFullLocale: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-de_AT.object-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesEnglishLocale: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-en_US.object-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesWithSubdir: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Account-de/Utils-de.object-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesWithSubdirFullLocale: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Account-de_AT/Utils-de_AT.object-meta.xml"));
 
         test.done();
     },
