@@ -30,8 +30,8 @@ var sfLocales = require("./sflocales.json");
 var logger = log4js.getLogger("loctool.lib.MetaXmlFileType");
 
 var MetaXmlFileType = function(project) {
-    this.type = "java";
-    this.datatype = "java";
+    this.type = "metaxml";
+    this.datatype = "metaxml";
 
     this.project = project;
     this.API = this.project.getAPI();
@@ -166,11 +166,7 @@ MetaXmlFileType.prototype.getDataType = function() {
     return this.datatype;
 };
 
-MetaXmlFileType.prototype.getResourceTypes = function() {
-    return {
-        "string": "ContextResourceString"
-    };
-};
+MetaXmlFileType.prototype.getResourceTypes = function() {};
 
 MetaXmlFileType.prototype.getExtensions = function() {
     return this.extensions;

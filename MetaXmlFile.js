@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+var ilib = require("ilib");
 var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
-var xml2json = require("xml2json");
+var xmljs = require("xml-js");
 var IString = require("ilib/lib/IString");
 
 var logger = log4js.getLogger("loctool.lib.MetaXmlFile");
@@ -134,51 +135,60 @@ var reGetStringWithId = new RegExp(/(^R|\WR)B\.getString\("((\\"|[^"])*)"\s*,\s*
 var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
 */
 
+var skipProperties = {
+    "_attributes": true,
+    "_declaration": true
+};
+
+var localizableElements = {
+    "label": true
+};
+
 /**
  * Walk the node tree looking for properties that have localizable values, then extract
  * them and resourcify them.
  * @private
  */
 MetaXmlFile.prototype.walkLayout = function(node) {
-    var comment;
+    var comment, id, subnodes, subnode, text;
+
     for (var p in node) {
-        var subnode = node[p];
-        if (typeof(subnode) === "object") {
-            this.walkLayout(subnode);
-        } else if (typeof(subnode) === "string") {
-            if (subnode.length && localizableAttributes[p]) {
-                comment = node.i18n;
-                logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
-                if (!this.API.utils.isDNT(comment)) {
-                    logger.trace("Resourcifying");
-                    var key = this.makeKey(p, subnode);
-                    node[p] = "@string/" + key;
-                    var res = this.API.newResource({
-                        datatype: this.type.datatype,
-                        resType: "string",
-                        key: key,
-                        source: subnode,
-                        pathName: this.pathName,
-                        sourceLocale: this.locale || this.sourceLocale,
-                        context: this.context || undefined,
-                        project: this.project.getProjectId(),
-                        autoKey: true,
-                        comment: comment,
-                        dnt: this.API.utils.isDNT(comment),
-                        datatype: this.type.datatype,
-                        flavor: this.flavor,
-                        index: this.resourceIndex++
-                    });
-                    this.set.add(res);
-                    this.dirty = true;
-                    this.replacements[reEscape(p + '="' + subnode + '"')] = p + '="' + node[p] + '"';
-                    logger.trace("Recording replacement " + p + '="' + subnode + '" to ' + p + '="' + node[p] + '"');
+        if (p in localizableElements) {
+            subnodes = ilib.isArray(node[p]) ? node[p] : [ node[p] ];
+            for (var i = 0; i < subnodes.length; i++) {
+                subnode = subnodes[i];
+                if (subnode._text) {
+                    text = subnode._text;
+                    if (subnode._attributes) {
+                        comment = node._attributes["x-i18n"];
+                        id = node._attributes["x-id"];
+                    }
+                    logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
+                    if (!this.API.utils.isDNT(comment)) {
+                        var key = id || this.makeKey(text);
+                        var res = this.API.newResource({
+                            datatype: this.type.datatype,
+                            resType: "string",
+                            key: key,
+                            source: text,
+                            pathName: this.pathName,
+                            sourceLocale: this.locale || this.sourceLocale,
+                            project: this.project.getProjectId(),
+                            autoKey: true,
+                            comment: comment,
+                            dnt: this.API.utils.isDNT(comment),
+                            datatype: this.type.datatype,
+                            index: this.resourceIndex++
+                        });
+                        this.set.add(res);
+                        this.dirty = true;
+                    }
+                } else {
+                    this.walkLayout(subnode);
                 }
             }
-        } else if (ilib.isArray(subnode)) {
-            for (var i = 0; i < subnode.length; i++) {
-                this.walkLayout(subnode[i]);
-            }
+        } else if (typeof(node[p]) === "object" && !(p in skipProperties)) {
+            this.walkLayout(node[p]);
         }
     }
 };
@@ -192,101 +202,18 @@ MetaXmlFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
 
     this.xml = data;
-    this.contents = xml2json.toJson(data, {object: true});
+    this.contents = xmljs.xml2js(data, {
+        trim: false,
+        nativeTypeAttribute: true,
+        compact: true
+    });
     this.resourceIndex = 0;
 
     this.walkLayout(this.contents);
-
-    /*
-    this.resourceIndex = 0;
-
-    reGetString.lastIndex = 0; // for safety
-    var result = reGetString.exec(data);
-    while (result && result.length > 1 && result[2]) {
-        logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2] + "', comment: " + (result.length > 4 ? result[4] : undefined));
-        if (result[2] && result[2].length) {
-
-            var last = data.indexOf('\n', reGetString.lastIndex);
-            last = (last === -1) ? data.length : last;
-            var line = data.substring(reGetString.lastIndex, last);
-            var commentResult = reI18nComment.exec(line);
-            comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
-
-            var r = this.API.newResource({
-                resType: "string",
-                project: this.project.getProjectId(),
-                key: this.makeKey(result[2]),
-                sourceLocale: this.project.sourceLocale,
-                source: this.API.utils.trimEscaped(MetaXmlFile.unescapeString(result[2])),
-                autoKey: true,
-                pathName: this.pathName,
-                state: "new",
-                comment: comment,
-                datatype: this.type.datatype,
-                flavor: this.flavor,
-                index: this.resourceIndex++
-            });
-            this.set.add(r);
-        } else {
-            logger.warn("Warning: Bogus empty string in get string call: ");
-            logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
-        }
-        result = reGetString.exec(data);
-    }
-
-    reGetStringWithId.lastIndex = 0; // for safety
-    result = reGetStringWithId.exec(data);
-    while (result && result.length > 2 && result[2] && result[4]) {
-        logger.trace("Found string '" + result[2] + "' with unique key " + result[4] + ", comment: " + (result.length > 4 ? result[4] : undefined));
-        if (result[2] && result[4] && result[2].length && result[4].length) {
-
-            var last = data.indexOf('\n', reGetStringWithId.lastIndex);
-            last = (last === -1) ? data.length : last;
-            var line = data.substring(reGetStringWithId.lastIndex, last);
-            var commentResult = reI18nComment.exec(line);
-            comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
-
-            var r = this.API.newResource({
-                resType: "string",
-                project: this.project.getProjectId(),
-                key: result[4],
-                sourceLocale: this.project.sourceLocale,
-                source: MetaXmlFile.cleanString(result[2]),
-                pathName: this.pathName,
-                state: "new",
-                comment: comment,
-                datatype: this.type.datatype,
-                flavor: this.flavor,
-                index: this.resourceIndex++
-            });
-            this.set.add(r);
-        } else {
-            logger.warn("Warning: Bogus empty string in get string call: ");
-            logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
-        }
-        result = reGetStringWithId.exec(data);
-    }
-
-    // now check for and report on errors in the source
-    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation1,
-        "Warning: string concatenation is not allowed in the RB.getString() parameters:",
-        logger,
-        this.pathName);
-
-    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation2,
-        "Warning: string concatenation is not allowed in the RB.getString() parameters:",
-        logger,
-        this.pathName);
-
-    this.API.utils.generateWarnings(data, reGetStringBogusParam,
-        "Warning: non-string arguments are not allowed in the RB.getString() parameters:",
-        logger,
-        this.pathName);
-    */
 };
 
 /**
- * Extract all the localizable strings from the java file and add them to the
+ * Extract all the localizable strings from the meta xml file and add them to the
  * project's translation set.
  */
 MetaXmlFile.prototype.extract = function() {
@@ -315,7 +242,7 @@ MetaXmlFile.prototype.getTranslationSet = function() {
     return this.set;
 }
 
-//we don't localize or write java source files
+//we don't localize or write metaxml source files
 MetaXmlFile.prototype.localize = function() {};
 MetaXmlFile.prototype.write = function() {};
 
