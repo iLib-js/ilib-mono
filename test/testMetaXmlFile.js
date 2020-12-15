@@ -726,7 +726,7 @@ module.exports.metaxmlfile = {
     },
 
     testMetaXmlFileParseMultipleWithKey: function(test) {
-        test.expect(10);
+        test.expect(11);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -766,7 +766,7 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("Allocate");
+        var r = set.getBySource("Allocation status");
         test.ok(r);
 
         var r = set.get(ResourceString.hashKey("forceapp", "en-US", "x", "metaxml"));
@@ -840,9 +840,8 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
-/*
     testMetaXmlFileParseMultipleWithUniqueIdsAndComments: function(test) {
-        test.expect(10);
+        test.expect(13);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -851,10 +850,41 @@ module.exports.metaxmlfile = {
         });
         test.ok(mxf);
 
-        mxf.parse('RB.getString("This is a test", "asdf");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test", "kdkdkd");\t// i18n: bar');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-i18n="foo" x-id="asdf">This is a test</label>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-i18n="bar" x-id="kdkdkd">This is also a test</label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
+
+        var r = set.getBySource("Allocation status");
+        test.ok(r);
+        test.equal(r.getSource(), "Allocation status");
+        test.equal(r.getKey(), "r1055575289");
 
         var r = set.get(ResourceString.hashKey("forceapp", "en-US", "asdf", "metaxml"));
         test.ok(r);
@@ -871,6 +901,85 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
+    testMetaXmlFileParseMultipleWithPluralLabel: function(test) {
+        test.expect(21);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: undefined,
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <pluralLabel>Allocation statuses</pluralLabel>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>This is a test</label>\n' +
+            '                <pluralLabel>These are tests</pluralLabel>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>This is also a test</label>\n' +
+            '                <pluralLabel>These are also tests</pluralLabel>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 6);
+
+        var r = set.getBySource("Allocation status");
+        test.ok(r);
+        test.equal(r.getSource(), "Allocation status");
+        test.equal(r.getKey(), "r1055575289");
+
+        var r = set.getBySource("Allocation statuses");
+        test.ok(r);
+        test.equal(r.getSource(), "Allocation statuses");
+        test.equal(r.getKey(), "r539868427");
+
+        var r = set.getBySource("This is a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "r654479252");
+
+        var r = set.getBySource("These are tests");
+        test.ok(r);
+        test.equal(r.getSource(), "These are tests");
+        test.equal(r.getKey(), "r1030275358");
+
+        var r = set.getBySource("This is also a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is also a test");
+        test.equal(r.getKey(), "r999080996");
+
+        var r = set.getBySource("These are also tests");
+        test.ok(r);
+        test.equal(r.getSource(), "These are also tests");
+        test.equal(r.getKey(), "r678670786");
+
+        test.done();
+    },
+
     testMetaXmlFileParseWithDups: function(test) {
         test.expect(6);
 
@@ -881,7 +990,33 @@ module.exports.metaxmlfile = {
         });
         test.ok(mxf);
 
-        mxf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test");');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>This is a test</label>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>This is a test</label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
@@ -906,7 +1041,33 @@ module.exports.metaxmlfile = {
         });
         test.ok(mxf);
 
-        mxf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "unique_id");');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label x-id="unique_id">This is a test</label>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label>This is a test</label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
@@ -924,7 +1085,7 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
-    testMetaXmlFileParseBogusConcatenation: function(test) {
+    testMetaXmlFileParseEmptyElement: function(test) {
         test.expect(2);
 
         var mxf = new MetaXmlFile({
@@ -934,44 +1095,28 @@ module.exports.metaxmlfile = {
         });
         test.ok(mxf);
 
-        mxf.parse('RB.getString("This is a test" + " and this isnt");');
-
-        var set = mxf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMetaXmlFileParseBogusConcatenation2: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse('RB.getString("This is a test" + foobar);');
-
-        var set = mxf.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMetaXmlFileParseBogusNonStringParam: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse('RB.getString(foobar);');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <label></label>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
         var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
@@ -979,7 +1124,7 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
-    testMetaXmlFileParseEmptyParams: function(test) {
+    testMetaXmlFileParseWholeElementName: function(test) {
         test.expect(2);
 
         var mxf = new MetaXmlFile({
@@ -989,46 +1134,36 @@ module.exports.metaxmlfile = {
         });
         test.ok(mxf);
 
-        mxf.parse('RB.getString();');
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <fullName>Allocation_status__c</fullName>\n' +
+            '    <externalId>false</externalId>\n' +
+            '    <label>Allocation status</label>\n' +
+            '    <required>false</required>\n' +
+            '    <trackHistory>false</trackHistory>\n' +
+            '    <type>Picklist</type>\n' +
+            '    <valueSet>\n' +
+            '        <restricted>true</restricted>\n' +
+            '        <valueSetDefinition>\n' +
+            '            <sorted>false</sorted>\n' +
+            '            <value>\n' +
+            '                <fullName>Allocate</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <valuelabel>This is a test</valuelabel>\n' +
+            '            </value>\n' +
+            '            <value>\n' +
+            '                <fullName>Assigned</fullName>\n' +
+            '                <default>false</default>\n' +
+            '                <valuelabel>This is also a test</valuelabel>\n' +
+            '            </value>\n' +
+            '        </valueSetDefinition>\n' +
+            '    </valueSet>\n' +
+            '</CustomField>\n'
+        );
 
         var set = mxf.getTranslationSet();
         test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMetaXmlFileParseWholeWord: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse('EPIRB.getString("This is a test");');
-
-        var set = mxf.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMetaXmlFileParseSubobject: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse('App.RB.getString("This is a test");');
-
-        var set = mxf.getTranslationSet();
-        test.equal(set.size(), 1);
 
         test.done();
     },
@@ -1038,7 +1173,7 @@ module.exports.metaxmlfile = {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./java/t1.java",
+            pathName: "./IpList-field-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -1057,7 +1192,7 @@ module.exports.metaxmlfile = {
 
         var r = set.get(ResourceString.hashKey("forceapp", "en-US", "id1", "metaxml"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test with a unique id");
+        test.equal(r.getSource(), "This is also a test");
         test.equal(r.getKey(), "id1");
 
         test.done();
@@ -1088,7 +1223,7 @@ module.exports.metaxmlfile = {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./java/foo.java",
+            pathName: "./foo.cls-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -1108,7 +1243,7 @@ module.exports.metaxmlfile = {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./java/AskPickerSearchFragment.java",
+            pathName: "./Deployment.object-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -1120,22 +1255,21 @@ module.exports.metaxmlfile = {
 
         test.equal(set.size(), 3);
 
-        var r = set.getBySource("Can't find a group?");
+        var r = set.getBySource("Feature");
         test.ok(r);
-        test.equal(r.getSource(), "Can't find a group?");
-        test.equal(r.getKey(), "r315749545");
+        test.equal(r.getSource(), "Feature");
+        test.equal(r.getKey(), "r874930805");
 
-        r = set.getBySource("Can't find a friend?");
+        r = set.getBySource("Features");
         test.ok(r);
-        test.equal(r.getSource(), "Can't find a friend?");
-        test.equal(r.getKey(), "r23431269");
+        test.equal(r.getSource(), "Features");
+        test.equal(r.getKey(), "r348436399");
 
-        r = set.getBySource("Invite them to Myproduct");
+        r = set.getBySource("Feature Name");
         test.ok(r);
-        test.equal(r.getSource(), "Invite them to Myproduct");
-        test.equal(r.getKey(), "r245047512");
+        test.equal(r.getSource(), "Feature Name");
+        test.equal(r.getKey(), "r426235655");
 
         test.done();
     }
-    */
 };

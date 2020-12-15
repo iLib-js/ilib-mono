@@ -141,7 +141,8 @@ var skipProperties = {
 };
 
 var localizableElements = {
-    "label": true
+    "label": true,
+    "pluralLabel": true
 };
 
 /**
@@ -150,7 +151,7 @@ var localizableElements = {
  * @private
  */
 MetaXmlFile.prototype.walkLayout = function(node) {
-    var comment, id, subnodes, subnode, text;
+    var comment, id, subnodes, subnode, text, autoKey;
 
     for (var p in node) {
         if (p in localizableElements) {
@@ -158,14 +159,19 @@ MetaXmlFile.prototype.walkLayout = function(node) {
             for (var i = 0; i < subnodes.length; i++) {
                 subnode = subnodes[i];
                 if (subnode._text) {
-                    text = subnode._text;
+                    text = subnode._text.trim();
                     if (subnode._attributes) {
-                        comment = node._attributes["x-i18n"];
-                        id = node._attributes["x-id"];
+                        comment = subnode._attributes["x-i18n"];
+                        id = subnode._attributes["x-id"];
                     }
                     logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
                     if (!this.API.utils.isDNT(comment)) {
-                        var key = id || this.makeKey(text);
+                        var key = id;
+                        autoKey = false;
+                        if (!key) {
+                            key = this.makeKey(text);
+                            autoKey = true;
+                        }
                         var res = this.API.newResource({
                             datatype: this.type.datatype,
                             resType: "string",
@@ -174,7 +180,7 @@ MetaXmlFile.prototype.walkLayout = function(node) {
                             pathName: this.pathName,
                             sourceLocale: this.locale || this.sourceLocale,
                             project: this.project.getProjectId(),
-                            autoKey: true,
+                            autoKey: autoKey,
                             comment: comment,
                             dnt: this.API.utils.isDNT(comment),
                             datatype: this.type.datatype,
