@@ -1026,7 +1026,7 @@ module.exports.metaxmlfile = {
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
 
-        test.equal(set.size(), 1);
+        test.equal(set.size(), 2);
 
         test.done();
     },
@@ -1100,7 +1100,6 @@ module.exports.metaxmlfile = {
             '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <fullName>Allocation_status__c</fullName>\n' +
             '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
             '    <required>false</required>\n' +
             '    <trackHistory>false</trackHistory>\n' +
             '    <type>Picklist</type>\n' +
@@ -1139,7 +1138,6 @@ module.exports.metaxmlfile = {
             '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <fullName>Allocation_status__c</fullName>\n' +
             '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
             '    <required>false</required>\n' +
             '    <trackHistory>false</trackHistory>\n' +
             '    <type>Picklist</type>\n' +
@@ -1169,11 +1167,11 @@ module.exports.metaxmlfile = {
     },
 
     testMetaXmlFileExtractFile: function(test) {
-        test.expect(8);
+        test.expect(11);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./IpList-field-meta.xml",
+            pathName: "./IpList.field-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -1183,12 +1181,17 @@ module.exports.metaxmlfile = {
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        test.equal(set.size(), 3);
 
         var r = set.getBySource("This is a test");
         test.ok(r);
         test.equal(r.getSource(), "This is a test");
         test.equal(r.getKey(), "r654479252");
+        
+        r = set.getBySource("Allocation status");
+        test.ok(r);
+        test.equal(r.getSource(), "Allocation status");
+        test.equal(r.getKey(), "r1055575289");
 
         var r = set.get(ResourceString.hashKey("forceapp", "en-US", "id1", "metaxml"));
         test.ok(r);

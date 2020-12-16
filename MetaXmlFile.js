@@ -160,34 +160,36 @@ MetaXmlFile.prototype.walkLayout = function(node) {
                 subnode = subnodes[i];
                 if (subnode._text) {
                     text = subnode._text.trim();
-                    if (subnode._attributes) {
-                        comment = subnode._attributes["x-i18n"];
-                        id = subnode._attributes["x-id"];
-                    }
-                    logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
-                    if (!this.API.utils.isDNT(comment)) {
-                        var key = id;
-                        autoKey = false;
-                        if (!key) {
-                            key = this.makeKey(text);
-                            autoKey = true;
+                    if (text.length) {
+                        if (subnode._attributes) {
+                            comment = subnode._attributes["x-i18n"];
+                            id = subnode._attributes["x-id"];
                         }
-                        var res = this.API.newResource({
-                            datatype: this.type.datatype,
-                            resType: "string",
-                            key: key,
-                            source: text,
-                            pathName: this.pathName,
-                            sourceLocale: this.locale || this.sourceLocale,
-                            project: this.project.getProjectId(),
-                            autoKey: autoKey,
-                            comment: comment,
-                            dnt: this.API.utils.isDNT(comment),
-                            datatype: this.type.datatype,
-                            index: this.resourceIndex++
-                        });
-                        this.set.add(res);
-                        this.dirty = true;
+                        logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
+                        if (!this.API.utils.isDNT(comment)) {
+                            var key = id;
+                            autoKey = false;
+                            if (!key) {
+                                key = this.makeKey(text);
+                                autoKey = true;
+                            }
+                            var res = this.API.newResource({
+                                datatype: this.type.datatype,
+                                resType: "string",
+                                key: key,
+                                source: text,
+                                pathName: this.pathName,
+                                sourceLocale: this.locale || this.sourceLocale,
+                                project: this.project.getProjectId(),
+                                autoKey: autoKey,
+                                comment: comment,
+                                dnt: this.API.utils.isDNT(comment),
+                                datatype: this.type.datatype,
+                                index: this.resourceIndex++
+                            });
+                            this.set.add(res);
+                            this.dirty = true;
+                        }
                     }
                 } else {
                     this.walkLayout(subnode);
