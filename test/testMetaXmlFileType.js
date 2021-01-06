@@ -48,51 +48,18 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(mxft.handles("x.foo-meta.xml"));
+        test.ok(mxft.handles("en_US.translation-meta.xml"));
 
         test.done();
     },
 
-    testMetaXmlFileTypeHandlesFieldsMetaXmlTrue: function(test) {
+    testMetaXmlFileTypeHandlesMetaXmlFalseNotENUS: function(test) {
         test.expect(2);
 
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(mxft.handles("foo.field-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesClassMetaXmlTrue: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(mxft.handles("foo.cls-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesObjectMetaXmlTrue: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(mxft.handles("foo.object-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesAnythingMetaXmlTrue: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(mxft.handles("foo.anything-meta.xml"));
+        test.ok(!mxft.handles("en.translation-meta.xml"));
 
         test.done();
     },
@@ -103,7 +70,18 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("foometa.xml"));
+        test.ok(!mxft.handles("foo.translation-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlFalseClose2: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("en_US.field-meta.xml"));
 
         test.done();
     },
@@ -125,73 +103,18 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(mxft.handles("force-app/main/default/classes/Utils.cls-meta.xml"));
+        test.ok(mxft.handles("force-app/main/default/translations/en_US.translation-meta.xml"));
 
         test.done();
     },
 
-    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedClassFiles: function(test) {
+    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedFiles: function(test) {
         test.expect(2);
 
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-de.cls-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFiles: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-de.object-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesFullLocale: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-de_AT.object-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesEnglishLocale: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Utils-en_US.object-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesWithSubdir: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Account-de/Utils-de.object-meta.xml"));
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeHandlesMetaXmlDontTranslateAlreadyTranslatedObjectFilesWithSubdirFullLocale: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.ok(!mxft.handles("force-app/main/default/objectTranslations/Account-de_AT/Utils-de_AT.object-meta.xml"));
+        test.ok(!mxft.handles("force-app/main/default/translations/de.translation-meta.xml"));
 
         test.done();
     },
@@ -202,7 +125,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/objects/SourceFile.object-meta.xml"), "force-app/main/default/objectTranslations/SourceFile-de.objectTranslation-meta.xml");
+        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/translation/en_US.translation-meta.xml"), "force-app/main/default/translations/de.translation-meta.xml");
 
         test.done();
     },
@@ -213,42 +136,8 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.equal(mxft.getResourceFilePath("de-AT", "force-app/main/default/objects/SourceFile.object-meta.xml"), "force-app/main/default/objectTranslations/SourceFile-de_AT.objectTranslation-meta.xml");
+        test.equal(mxft.getResourceFilePath("de-AT", "force-app/main/default/translation/en_US.translation-meta.xml"), "force-app/main/default/translations/de_AT.translation-meta.xml");
 
         test.done();
     },
-
-    testMetaXmlFileTypeGetResourceFilePathObjectWithSubdir: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/objects/Account/SourceFile.object-meta.xml"), "force-app/main/default/objectTranslations/Account-de/SourceFile.objectTranslation-meta.xml");
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeGetResourceFilePathFieldWithSubdir: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/objects/Account/fields/field1__c.field-meta.xml"), "force-app/main/default/objectTranslations/Account-de/field1__c.fieldTranslation-meta.xml");
-
-        test.done();
-    },
-
-    testMetaXmlFileTypeGetResourceFilePathListviewWithSubdir: function(test) {
-        test.expect(2);
-
-        var mxft = new MetaXmlFileType(p);
-        test.ok(mxft);
-
-        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/objects/Account/listViews/All.listView-meta.xml"), "force-app/main/default/objectTranslations/Account-de/All.listViewTranslation-meta.xml");
-
-        test.done();
-    },
-
 };
