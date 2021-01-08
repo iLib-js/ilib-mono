@@ -677,14 +677,14 @@ module.exports.metaxmlfile = {
 
         test.equal(r.getSource(), "Screen Flows");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getFlavor(), "quickActions");
+        test.equal(r.getFlavor(), "reportTypes");
 
-        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "metaxml", "reportTypes.sections"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml", "reportTypes.sections"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Test1");
-        test.equal(r.getFlavor(), "quickActions.sections");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test1");
+        test.equal(r.getFlavor(), "reportTypes.sections");
 
         test.done();
     },
@@ -726,21 +726,21 @@ module.exports.metaxmlfile = {
 
         test.equal(r.getSource(), "Screen Flows");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getFlavor(), "quickActions");
+        test.equal(r.getFlavor(), "reportTypes");
 
         r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml", "reportTypes.sections"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Test1");
-        test.equal(r.getFlavor(), "quickActions.sections");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test1");
+        test.equal(r.getFlavor(), "reportTypes.sections");
 
         r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test2", "metaxml", "reportTypes.sections"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Logs");
-        test.equal(r.getKey(), "Test2");
-        test.equal(r.getFlavor(), "quickActions.sections");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test2");
+        test.equal(r.getFlavor(), "reportTypes.sections");
 
         test.done();
     },
@@ -777,7 +777,7 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 3);
+        test.equal(set.size(), 4);
 
         test.done();
     },
@@ -815,27 +815,27 @@ module.exports.metaxmlfile = {
 
         test.equal(r.getSource(), "Screen Flows");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getFlavor(), "quickActions");
+        test.equal(r.getFlavor(), "reportTypes");
 
         r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.description", "metaxml", "reportTypes"));
         test.ok(r);
 
         test.equal(r.getSource(), "Screen Flows Description");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt.description");
-        test.equal(r.getFlavor(), "quickActions");
+        test.equal(r.getFlavor(), "reportTypes");
 
         r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml", "reportTypes.sections"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Test1");
-        test.equal(r.getFlavor(), "quickActions.sections");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test1");
+        test.equal(r.getFlavor(), "reportTypes.sections");
 
         test.done();
     },
 
     testMetaXmlFileParseWithDups: function(test) {
-        test.expect(6);
+        test.expect(7);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -934,24 +934,24 @@ module.exports.metaxmlfile = {
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 8);
+        test.equal(set.size(), 9);
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customLabels"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customApplications"));
         test.ok(r);
         test.equal(r.getSource(), "Test");
         test.equal(r.getKey(), "Test");
         test.equal(r.getFlavor(), "customApplications");
 
-        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Force.com", "metaxml", "customLabels"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Force_com", "metaxml", "customApplications"));
         test.ok(r);
         test.equal(r.getSource(), "Force.com");
-        test.equal(r.getKey(), "Force.com");
+        test.equal(r.getKey(), "Force_com");
         test.equal(r.getFlavor(), "customApplications");
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Flow Interview Log Entries", "metaxml", "customLabels"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Flow Interview Log Entries", "metaxml", "reportTypes.sections"));
         test.ok(r);
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Flow Interview Log Entries");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Flow Interview Log Entries");
         test.equal(r.getFlavor(), "reportTypes.sections");
 
         test.done();

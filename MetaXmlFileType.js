@@ -57,7 +57,7 @@ MetaXmlFileType.prototype.handles = function(pathName) {
         logger.debug("No");
         return false;
     }
-    
+
     // check the path too
     var ret = true;
     var filename = path.basename(pathName);
@@ -155,8 +155,8 @@ MetaXmlFileType.prototype.write = function(translations, locales) {
 
 MetaXmlFileType.prototype.newFile = function(path) {
     return new MetaXmlFile({
-        project: this.project, 
-        pathName: path, 
+        project: this.project,
+        pathName: path,
         type: this
     });
 };

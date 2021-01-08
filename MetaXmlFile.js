@@ -40,9 +40,9 @@ var MetaXmlFile = function(options) {
     this.project = options.project;
     this.pathName = options.pathName;
     this.type = options.type;
-    
+
     this.API = this.project.getAPI();
-    
+
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.resourceIndex = 0;
 };
@@ -166,19 +166,22 @@ MetaXmlFile.prototype.addResource = function(key, text, comment, autoKey, flavor
     }
 };
 
+function textOrComment(node) {
+    return (node._text && node._text.trim()) || (node._comment && node._comment.trim());
+}
+
 MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
-    var key, comment, autoKey;
+    var text, key, comment, autoKey;
 
     if (subnode.name && subnode.name._text) {
         key = subnode.name._text.trim();
         autoKey = false;
     }
 
-    comment = subnode._comment;
+    comment = subnode._comment && subnode._comment.trim();
 
     if (subnode.label) {
-        var text = (subnode.label && subnode.label._text && subnode.label._text.trim()) || 
-            (subnode.label._comment && subnode.label._comment.trim());
+        text = textOrComment(subnode.label);
         if (text && text.length) {
             if (subnode._attributes) {
                 comment = subnode._attributes["x-i18n"];
@@ -189,8 +192,7 @@ MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
     }
 
     if (subnode.description) {
-        var text = (subnode.description && subnode.description._text && subnode.description._text.trim()) || 
-            (subnode.description._comment && subnode.description._comment.trim());
+        text = textOrComment(subnode.description);
         if (text && text.length) {
             if (subnode._attributes) {
                 comment = subnode._attributes["x-i18n"];
@@ -199,10 +201,55 @@ MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
             this.addResource(key + ".description", text, comment, autoKey, flavor);
         }
     }
-    
 }
 
-MetaXmlFile.prototype.handleReportTypes = function(node) {
+MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
+    var text, key, comment, autoKey;
+
+    if (subnode.name && subnode.name._text) {
+        key = subnode.name._text.trim();
+        autoKey = false;
+    }
+
+    comment = subnode._comment;
+
+    if (subnode.label) {
+        text = textOrComment(subnode.label);
+        if (text && text.length) {
+            if (subnode._attributes) {
+                comment = subnode._attributes["x-i18n"];
+            }
+            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
+            this.addResource(key, text, comment, autoKey, flavor);
+        }
+    }
+
+    if (subnode.description) {
+        text = textOrComment(subnode.description);
+        if (text && text.length) {
+            if (subnode._attributes) {
+                comment = subnode._attributes["x-i18n"];
+            }
+            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
+            this.addResource(key + ".description", text, comment, autoKey, flavor);
+        }
+    }
+
+    if (subnode.sections) {
+        var sections = ilib.isArray(subnode.sections) ? subnode.sections : [ subnode.sections ];
+        for (var i = 0; i < sections.length; i++) {
+            autoKey = false;
+            var section = sections[i];
+            var label = textOrComment(section.label);
+            var subkey = textOrComment(section.name);
+            if (!subkey) {
+                subkey = this.makeKey(label);
+                autoKey = true;
+            }
+            subkey = [key, subkey].join('.'); 
+            this.addResource(subkey, label, comment, autoKey, flavor + ".sections");
+        }
+    }
 }
 
 var localizableElements = {
