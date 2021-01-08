@@ -1,7 +1,7 @@
 /*
  * testMetaXmlFileType.js - test the MetaXml file type handler object.
  *
- * Copyright © 2020, Box, Inc.
+ * Copyright © 2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,18 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(mxft.handles("en_US.translation-meta.xml"));
+        test.ok(mxft.handles("translations/en_US.translation-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesMetaXmlNotInTranslationsDir: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("foo/en_US.translation-meta.xml"));
 
         test.done();
     },
@@ -59,7 +70,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("en.translation-meta.xml"));
+        test.ok(!mxft.handles("translations/en.translation-meta.xml"));
 
         test.done();
     },
@@ -70,7 +81,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("foo.translation-meta.xml"));
+        test.ok(!mxft.handles("translations/foo.translation-meta.xml"));
 
         test.done();
     },
@@ -81,7 +92,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("en_US.field-meta.xml"));
+        test.ok(!mxft.handles("translations/en_US.field-meta.xml"));
 
         test.done();
     },
@@ -92,7 +103,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("foo.html"));
+        test.ok(!mxft.handles("translations/foo.html"));
 
         test.done();
     },
@@ -125,7 +136,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/translation/en_US.translation-meta.xml"), "force-app/main/default/translations/de.translation-meta.xml");
+        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/translations/en_US.translation-meta.xml"), "force-app/main/default/translations/de.translation-meta.xml");
 
         test.done();
     },
@@ -136,7 +147,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.equal(mxft.getResourceFilePath("de-AT", "force-app/main/default/translation/en_US.translation-meta.xml"), "force-app/main/default/translations/de_AT.translation-meta.xml");
+        test.equal(mxft.getResourceFilePath("de-AT", "force-app/main/default/translations/en_US.translation-meta.xml"), "force-app/main/default/translations/de_AT.translation-meta.xml");
 
         test.done();
     },

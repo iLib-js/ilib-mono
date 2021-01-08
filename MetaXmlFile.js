@@ -1,7 +1,7 @@
 /*
  * MetaXmlFile.js - plugin to extract resources from a MetaXml source code file
  *
- * Copyright © 2020, Box, Inc.
+ * Copyright © 2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ var MetaXmlFile = function(options) {
     this.API = this.project.getAPI();
     
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.resourceIndex = 0;
 };
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
@@ -140,9 +141,76 @@ var skipProperties = {
     "_declaration": true
 };
 
+MetaXmlFile.prototype.addResource = function(key, text, comment, autoKey, flavor) {
+    if (!this.API.utils.isDNT(comment)) {
+        if (!key) {
+            key = this.makeKey(text);
+            autoKey = true;
+        }
+        var res = this.API.newResource({
+            datatype: this.type.datatype,
+            resType: "string",
+            key: key,
+            source: text,
+            pathName: this.pathName,
+            sourceLocale: this.locale || this.sourceLocale,
+            project: this.project.getProjectId(),
+            autoKey: autoKey,
+            comment: comment,
+            dnt: this.API.utils.isDNT(comment),
+            index: this.resourceIndex++,
+            flavor: flavor
+        });
+        this.set.add(res);
+        this.dirty = true;
+    }
+};
+
+MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
+    var key, comment, autoKey;
+
+    if (subnode.name && subnode.name._text) {
+        key = subnode.name._text.trim();
+        autoKey = false;
+    }
+
+    comment = subnode._comment;
+
+    if (subnode.label) {
+        var text = (subnode.label && subnode.label._text && subnode.label._text.trim()) || 
+            (subnode.label._comment && subnode.label._comment.trim());
+        if (text && text.length) {
+            if (subnode._attributes) {
+                comment = subnode._attributes["x-i18n"];
+            }
+            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
+            this.addResource(key, text, comment, autoKey, flavor);
+        }
+    }
+
+    if (subnode.description) {
+        var text = (subnode.description && subnode.description._text && subnode.description._text.trim()) || 
+            (subnode.description._comment && subnode.description._comment.trim());
+        if (text && text.length) {
+            if (subnode._attributes) {
+                comment = subnode._attributes["x-i18n"];
+            }
+            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
+            this.addResource(key + ".description", text, comment, autoKey, flavor);
+        }
+    }
+    
+}
+
+MetaXmlFile.prototype.handleReportTypes = function(node) {
+}
+
 var localizableElements = {
-    "label": true,
-    "pluralLabel": true
+    "customApplications": true,
+    "customLabels": true,
+    "customTabs": true,
+    "quickActions": true,
+    "reportTypes": true
 };
 
 /**
@@ -158,41 +226,10 @@ MetaXmlFile.prototype.walkLayout = function(node) {
             subnodes = ilib.isArray(node[p]) ? node[p] : [ node[p] ];
             for (var i = 0; i < subnodes.length; i++) {
                 subnode = subnodes[i];
-                if (subnode._text) {
-                    text = subnode._text.trim();
-                    if (text.length) {
-                        if (subnode._attributes) {
-                            comment = subnode._attributes["x-i18n"];
-                            id = subnode._attributes["x-id"];
-                        }
-                        logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
-                        if (!this.API.utils.isDNT(comment)) {
-                            var key = id;
-                            autoKey = false;
-                            if (!key) {
-                                key = this.makeKey(text);
-                                autoKey = true;
-                            }
-                            var res = this.API.newResource({
-                                datatype: this.type.datatype,
-                                resType: "string",
-                                key: key,
-                                source: text,
-                                pathName: this.pathName,
-                                sourceLocale: this.locale || this.sourceLocale,
-                                project: this.project.getProjectId(),
-                                autoKey: autoKey,
-                                comment: comment,
-                                dnt: this.API.utils.isDNT(comment),
-                                datatype: this.type.datatype,
-                                index: this.resourceIndex++
-                            });
-                            this.set.add(res);
-                            this.dirty = true;
-                        }
-                    }
+                if (p === "reportTypes") {
+                    this.handleReportTypes(p, subnode);
                 } else {
-                    this.walkLayout(subnode);
+                    this.handleCustom(p, subnode);
                 }
             }
         } else if (typeof(node[p]) === "object" && !(p in skipProperties)) {

@@ -1,7 +1,7 @@
 /*
  * testMetaXmlFile.js - test the MetaXml file handler object.
  *
- * Copyright © 2020, Box, Inc.
+ * Copyright © 2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ module.exports.metaxmlfile = {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./testfiles/force-app/main/default/object/Utils.object-meta.xml",
+            pathName: "./testfiles/force-app/main/default/translations/en_US.translation-meta.xml",
             type: mxft
         });
 
@@ -404,61 +404,22 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Password</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "r92231204", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customApplications"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "r92231204");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse(
-            '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Password</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
-        );
-
-        var set = mxf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("Password");
-        test.ok(r);
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "r92231204");
+        test.equal(r.getKey(), "Test");
 
         test.done();
     },
@@ -475,16 +436,12 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label></label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
@@ -507,25 +464,21 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>  \n   This is a test      \n\r\t\t</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!--    Enter Your Password \r \n  --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customApplications"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getSource(), "Enter Your Password");
+        test.equal(r.getKey(), "Test");
 
         test.done();
     },
@@ -545,16 +498,12 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>This is a test</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
         );
 
         test.ok(set);
@@ -564,7 +513,7 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
-    testMetaXmlFileParseSimpleWithTranslatorComment: function(test) {
+    testMetaXmlFileParseCustomApplications: function(test) {
         test.expect(6);
 
         var mxf = new MetaXmlFile({
@@ -576,31 +525,28 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label x-i18n="this is a translator\'s comment">This is a test</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customApplications"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-        test.equal(r.getComment(), "this is a translator's comment");
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test");
+        test.equal(r.getFlavor(), "customApplications");
 
         test.done();
     },
 
-    testMetaXmlFileParseSimpleWithUniqueIdAndTranslatorComment: function(test) {
+    testMetaXmlFileParseCustomLabels: function(test) {
         test.expect(6);
 
         var mxf = new MetaXmlFile({
@@ -612,32 +558,29 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label x-id="foobar" x-i18n="this is a translator\'s comment">This is a test</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customLabels>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customLabels>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "foobar", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customLabels"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "foobar");
-        test.equal(r.getComment(), "this is a translator's comment");
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test");
+        test.equal(r.getFlavor(), "customLabels");
 
         test.done();
     },
 
-    testMetaXmlFileParseWithKey: function(test) {
-        test.expect(5);
+    testMetaXmlFileParseCustomTabs: function(test) {
+        test.expect(6);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -648,31 +591,29 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Password__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label x-id="unique_id">This is a test</label>\n' +
-            '    <length>255</length>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Text</type>\n' +
-            '    <unique>false</unique>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customTabs>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customTabs>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "unique_id", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customTabs"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "unique_id");
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test");
+        test.equal(r.getFlavor(), "customTabs");
 
         test.done();
     },
 
-    testMetaXmlFileParseMultiple: function(test) {
-        test.expect(8);
+    testMetaXmlFileParseQuickActions: function(test) {
+        test.expect(6);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -683,108 +624,28 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>Allocate</label>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>Assigned</label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <quickActions>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </quickActions>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("Allocate");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "quickActions"));
         test.ok(r);
-        test.equal(r.getSource(), "Allocate");
-        test.equal(r.getKey(), "r228180217");
 
-        r = set.getBySource("Assigned");
-        test.ok(r);
-        test.equal(r.getSource(), "Assigned");
-        test.equal(r.getKey(), "r762953066");
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test");
+        test.equal(r.getFlavor(), "quickActions");
 
         test.done();
     },
 
-    testMetaXmlFileParseMultipleWithKey: function(test) {
-        test.expect(11);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse(
-            '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-id="x">Allocate</label>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-id="y">Assigned</label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
-        );
-
-        var set = mxf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("Allocation status");
-        test.ok(r);
-
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "x", "metaxml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Allocate");
-        test.ok(!r.getAutoKey());
-        test.equal(r.getKey(), "x");
-
-        r = set.get(ResourceString.hashKey("forceapp", "en-US", "y", "metaxml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Assigned");
-        test.ok(!r.getAutoKey());
-        test.equal(r.getKey(), "y");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseMultipleWithComments: function(test) {
+    testMetaXmlFileParseReportTypes: function(test) {
         test.expect(10);
 
         var mxf = new MetaXmlFile({
@@ -796,52 +657,40 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-i18n="foo">Allocate</label>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-i18n="bar">Assigned</label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <reportTypes>\n' +
+            '        <label><!-- Screen Flows --></label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <name>Test1</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("Allocate");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt", "metaxml", "reportTypes"));
         test.ok(r);
-        test.equal(r.getSource(), "Allocate");
-        test.equal(r.getKey(), "r228180217");
-        test.equal(r.getComment(), "foo");
 
-        r = set.getBySource("Assigned");
+        test.equal(r.getSource(), "Screen Flows");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt");
+        test.equal(r.getFlavor(), "quickActions");
+
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "metaxml", "reportTypes.sections"));
         test.ok(r);
-        test.equal(r.getSource(), "Assigned");
-        test.equal(r.getKey(), "r762953066");
-        test.equal(r.getComment(), "bar");
+
+        test.equal(r.getSource(), "Flow Interview Log Entries");
+        test.equal(r.getKey(), "Test1");
+        test.equal(r.getFlavor(), "quickActions.sections");
 
         test.done();
     },
 
-    testMetaXmlFileParseMultipleWithUniqueIdsAndComments: function(test) {
-        test.expect(13);
+    testMetaXmlFileParseReportTypesMultiple: function(test) {
+        test.expect(14);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -852,57 +701,52 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-i18n="foo" x-id="asdf">This is a test</label>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-i18n="bar" x-id="kdkdkd">This is also a test</label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <reportTypes>\n' +
+            '        <description><!-- Screen Flows --></description>\n' +
+            '        <label><!-- Screen Flows --></label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <name>Test1</name>\n' +
+            '        </sections>\n' +
+            '        <sections>\n' +
+            '            <label><!-- Flow Interview Logs --></label>\n' +
+            '            <name>Test2</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("Allocation status");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt", "metaxml", "reportTypes"));
         test.ok(r);
-        test.equal(r.getSource(), "Allocation status");
-        test.equal(r.getKey(), "r1055575289");
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "asdf", "metaxml"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "asdf");
-        test.equal(r.getComment(), "foo");
+        test.equal(r.getSource(), "Screen Flows");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt");
+        test.equal(r.getFlavor(), "quickActions");
 
-        r = set.get(ResourceString.hashKey("forceapp", "en-US", "kdkdkd", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml", "reportTypes.sections"));
         test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "kdkdkd");
-        test.equal(r.getComment(), "bar");
+
+        test.equal(r.getSource(), "Flow Interview Log Entries");
+        test.equal(r.getKey(), "Test1");
+        test.equal(r.getFlavor(), "quickActions.sections");
+
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test2", "metaxml", "reportTypes.sections"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Flow Interview Logs");
+        test.equal(r.getKey(), "Test2");
+        test.equal(r.getFlavor(), "quickActions.sections");
 
         test.done();
     },
 
-    testMetaXmlFileParseMultipleWithPluralLabel: function(test) {
-        test.expect(21);
+    testMetaXmlFileParseReportTypesRightSize: function(test) {
+        test.expect(3);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -913,69 +757,79 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <pluralLabel>Allocation statuses</pluralLabel>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>This is a test</label>\n' +
-            '                <pluralLabel>These are tests</pluralLabel>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>This is also a test</label>\n' +
-            '                <pluralLabel>These are also tests</pluralLabel>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <reportTypes>\n' +
+            '        <description><!-- Screen Flows --></description>\n' +
+            '        <label><!-- Screen Flows --></label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <name>Test1</name>\n' +
+            '        </sections>\n' +
+            '        <sections>\n' +
+            '            <label><!-- Flow Interview Logs --></label>\n' +
+            '            <name>Test2</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 6);
+        test.equal(set.size(), 3);
 
-        var r = set.getBySource("Allocation status");
-        test.ok(r);
-        test.equal(r.getSource(), "Allocation status");
-        test.equal(r.getKey(), "r1055575289");
+        test.done();
+    },
 
-        var r = set.getBySource("Allocation statuses");
-        test.ok(r);
-        test.equal(r.getSource(), "Allocation statuses");
-        test.equal(r.getKey(), "r539868427");
+    testMetaXmlFileParseReportTypesWithDescription: function(test) {
+        test.expect(14);
 
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: undefined,
+            type: mxft
+        });
+        test.ok(mxf);
 
-        var r = set.getBySource("These are tests");
-        test.ok(r);
-        test.equal(r.getSource(), "These are tests");
-        test.equal(r.getKey(), "r1030275358");
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <reportTypes>\n' +
+            '        <description><!-- Screen Flows Description --></description>\n' +
+            '        <label><!-- Screen Flows --></label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <name>Test1</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n'
+        );
 
-        var r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
+        var set = mxf.getTranslationSet();
+        test.ok(set);
 
-        var r = set.getBySource("These are also tests");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt", "metaxml", "reportTypes"));
         test.ok(r);
-        test.equal(r.getSource(), "These are also tests");
-        test.equal(r.getKey(), "r678670786");
+
+        test.equal(r.getSource(), "Screen Flows");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt");
+        test.equal(r.getFlavor(), "quickActions");
+
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.description", "metaxml", "reportTypes"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Screen Flows Description");
+        test.equal(r.getKey(), "screen_flows_prebuilt_crt.description");
+        test.equal(r.getFlavor(), "quickActions");
+
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml", "reportTypes.sections"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Flow Interview Log Entries");
+        test.equal(r.getKey(), "Test1");
+        test.equal(r.getFlavor(), "quickActions.sections");
 
         test.done();
     },
@@ -992,186 +846,85 @@ module.exports.metaxmlfile = {
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>This is a test</label>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>This is a test</label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customLabels>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customLabels>\n' +
+            '    <customLabels>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customLabels>\n' +
+            '</Translations>\n'
         );
 
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customLabels"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test");
+        test.equal(r.getFlavor(), "customLabels");
+
+        test.equal(set.size(), 1);
+
+        test.done();
+    },
+
+    testMetaXmlFileParseWithDupsWithDifferentKeys: function(test) {
+        test.expect(11);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: undefined,
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customLabels>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test1</name>\n' +
+            '    </customLabels>\n' +
+            '    <customLabels>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test2</name>\n' +
+            '    </customLabels>\n' +
+            '</Translations>\n'
+        );
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "metaxml", "customLabels"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test1");
+        test.equal(r.getFlavor(), "customLabels");
+
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test2", "metaxml", "customLabels"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test2");
+        test.equal(r.getFlavor(), "customLabels");
 
         test.equal(set.size(), 2);
 
         test.done();
     },
 
-    testMetaXmlFileParseDupsDifferingByKeyOnly: function(test) {
-        test.expect(8);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse(
-            '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <label>Allocation status</label>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label x-id="unique_id">This is a test</label>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label>This is a test</label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
-        );
-
-        var set = mxf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        r = set.get(ResourceString.hashKey("forceapp", "en-US", "unique_id", "metaxml"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "unique_id");
-
-        test.done();
-    },
-
-    testMetaXmlFileParseEmptyElement: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse(
-            '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <label></label>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
-        );
-
-        var set = mxf.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMetaXmlFileParseWholeElementName: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: undefined,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        mxf.parse(
-            '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <fullName>Allocation_status__c</fullName>\n' +
-            '    <externalId>false</externalId>\n' +
-            '    <required>false</required>\n' +
-            '    <trackHistory>false</trackHistory>\n' +
-            '    <type>Picklist</type>\n' +
-            '    <valueSet>\n' +
-            '        <restricted>true</restricted>\n' +
-            '        <valueSetDefinition>\n' +
-            '            <sorted>false</sorted>\n' +
-            '            <value>\n' +
-            '                <fullName>Allocate</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <valuelabel>This is a test</valuelabel>\n' +
-            '            </value>\n' +
-            '            <value>\n' +
-            '                <fullName>Assigned</fullName>\n' +
-            '                <default>false</default>\n' +
-            '                <valuelabel>This is also a test</valuelabel>\n' +
-            '            </value>\n' +
-            '        </valueSetDefinition>\n' +
-            '    </valueSet>\n' +
-            '</CustomField>\n'
-        );
-
-        var set = mxf.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
     testMetaXmlFileExtractFile: function(test) {
-        test.expect(11);
+        test.expect(14);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./IpList.field-meta.xml",
+            pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -1181,22 +934,25 @@ module.exports.metaxmlfile = {
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 3);
+        test.equal(set.size(), 8);
 
-        var r = set.getBySource("This is a test");
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "metaxml", "customLabels"));
         test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-        
-        r = set.getBySource("Allocation status");
-        test.ok(r);
-        test.equal(r.getSource(), "Allocation status");
-        test.equal(r.getKey(), "r1055575289");
+        test.equal(r.getSource(), "Test");
+        test.equal(r.getKey(), "Test");
+        test.equal(r.getFlavor(), "customApplications");
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "id1", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Force.com", "metaxml", "customLabels"));
         test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "id1");
+        test.equal(r.getSource(), "Force.com");
+        test.equal(r.getKey(), "Force.com");
+        test.equal(r.getFlavor(), "customApplications");
+
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Flow Interview Log Entries", "metaxml", "customLabels"));
+        test.ok(r);
+        test.equal(r.getSource(), "Flow Interview Log Entries");
+        test.equal(r.getKey(), "Flow Interview Log Entries");
+        test.equal(r.getFlavor(), "reportTypes.sections");
 
         test.done();
     },
@@ -1226,7 +982,7 @@ module.exports.metaxmlfile = {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./foo.cls-meta.xml",
+            pathName: "./en_US.translations-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -1237,41 +993,6 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMetaXmlFileExtractFile2: function(test) {
-        test.expect(11);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: "./Deployment.object-meta.xml",
-            type: mxft
-        });
-        test.ok(mxf);
-
-        // should read the file
-        mxf.extract();
-
-        var set = mxf.getTranslationSet();
-
-        test.equal(set.size(), 3);
-
-        var r = set.getBySource("Feature");
-        test.ok(r);
-        test.equal(r.getSource(), "Feature");
-        test.equal(r.getKey(), "r874930805");
-
-        r = set.getBySource("Features");
-        test.ok(r);
-        test.equal(r.getSource(), "Features");
-        test.equal(r.getKey(), "r348436399");
-
-        r = set.getBySource("Feature Name");
-        test.ok(r);
-        test.equal(r.getSource(), "Feature Name");
-        test.equal(r.getKey(), "r426235655");
 
         test.done();
     }

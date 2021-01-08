@@ -1,7 +1,7 @@
 /*
  * MetaXmlFileType.js - Represents a collection of java files
  *
- * Copyright © 2020, Box, Inc.
+ * Copyright © 2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,6 @@ var MetaXmlFileType = function(project) {
     this.pseudo = this.API.newTranslationSet(this.project.getSourceLocale());
 };
 
-var filenameRE = new RegExp(/([\w\.]+)\.(\w+)-meta.xml$/);
-
 /**
  * Return true if the given path is a java file and is handled
  * by the current file type.
@@ -55,19 +53,20 @@ var filenameRE = new RegExp(/([\w\.]+)\.(\w+)-meta.xml$/);
  */
 MetaXmlFileType.prototype.handles = function(pathName) {
     logger.debug("MetaXmlFileType handles " + pathName + "?");
-    var ret = filenameRE.test(pathName);
-    if (ret) {
-        // check the path too
+    if (!pathName || !pathName.length) {
+        logger.debug("No");
+        return false;
+    }
+    
+    // check the path too
+    var ret = true;
+    var filename = path.basename(pathName);
+    if (filename !== "en_US.translation-meta.xml") {
+        ret = false;
+    } else {
         var parts = path.dirname(pathName).split(/\//g);
-        var i = 0;
-        while (i < parts.length && parts[i] !== "main") {
-            i++;
-        }
-        if (parts[i] === "main" && i + 2 < parts.length && parts[i+1] === "default") {
-            var type = parts[i+2];
-            if (type.endsWith("Translations")) {
-                ret = false;
-            }
+        if (parts[parts.length-1] !== "translations") {
+            ret = false;
         }
     }
     logger.debug(ret ? "Yes" : "No");
@@ -237,34 +236,10 @@ MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName) {
     }
     spec = spec.replace(/-/g, "_");
 
-    var root = path.dirname(pathName).split(/\//g);
     var filename = path.basename(pathName);
-    var subpath = "";
+    var dirname = path.dirname(pathName);
 
-    var parts = root;
-    for (var i = 0; i < parts.length; i++) {
-        if (parts[i] === "objects") {
-            root = parts.slice(0, i);
-            subpath = parts.slice(i+1);
-        }
-    }
-
-    var target = root.concat(["objectTranslations"]);
-    var match = filenameRE.exec(filename);
-    if (subpath && subpath.length) {
-        target.push(subpath[0] + "-" + spec);
-        if (match) {
-            filename = match[1] + '.' + match[2] + "Translation-meta.xml";
-        }
-    } else {
-        if (match) {
-            filename = match[1] + "-" + spec + '.' + match[2] + "Translation-meta.xml";
-        }
-    }
-
-    target.push(filename);
-
-    return target.join("/");
+    return path.join(dirname, spec + ".translation-meta.xml");
 };
 
 /**
