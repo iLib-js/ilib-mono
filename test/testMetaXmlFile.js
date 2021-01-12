@@ -18,12 +18,27 @@
  */
 
 var path = require("path");
+var fs = require("fs");
 
 if (!MetaXmlFile) {
     var MetaXmlFile = require("../MetaXmlFile.js");
     var MetaXmlFileType = require("../MetaXmlFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var ResourceString =  require("loctool/lib/ResourceString.js");
+    var TranslationSet =  require("loctool/lib/TranslationSet.js");
+}
+
+function diff(a, b) {
+    var min = Math.min(a.length, b.length);
+
+    for (var i = 0; i < min; i++) {
+        if (a[i] !== b[i]) {
+            console.log("Found difference at character " + i);
+            console.log("a: " + a.substring(i));
+            console.log("b: " + b.substring(i));
+            break;
+        }
+    }
 }
 
 var p = new CustomProject({
@@ -39,12 +54,29 @@ var p = new CustomProject({
 
 var mxft = new MetaXmlFileType(p);
 
+var p2 = new CustomProject({
+    name: "forceapp",
+    id: "forceapp",
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "MetaXmlFileType")
+    ]
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    identify: true,
+    targetDir: "testfiles"
+});
+
+var t = new MetaXmlFileType(p2);
+
 module.exports.metaxmlfile = {
     // make sure to initialize the file types so that the tests below can use
     // a ResourceString instead of a regular ResourceString
     testMetaXmlInit: function(test) {
         p.init(function() {
-            test.done();
+            p2.init(function() {
+                test.done();
+            });
         });
     },
 
@@ -993,6 +1025,643 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
 
         test.equal(set.size(), 0);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeSimple: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: 'Password',
+            target: 'Passwort',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+
+        content = mxf.localizeText(translations, "de-DE");
+
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Passwort</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeTextEscapeXmlSyntax: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password <name> &uuml; --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: 'Password <name> &uuml;',
+            target: 'Passwort <name> &uuml;',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+
+        content = mxf.localizeText(translations, "de-DE");
+
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Passwort &lt;name&gt; &amp;uuml;</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeReportTypes: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <reportTypes>\n' +
+            '        <description><!-- Screen Flows Description --></description>\n' +
+            '        <label>Coule d\'écran</label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label>Entrées de journal pour coule de entretien</label>\n' +
+            '            <name>Flow Interview Log Entries</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt',
+            source: 'Screen Flows',
+            target: "Coule d'écran",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.description',
+            source: 'Screen Flows Description',
+            target: "Description de coule d'écran",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.Flow Interview Log Entries',
+            source: 'Flow Interview Log Entries',
+            target: "Entrées de journal pour coule de entretien",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes.sections"
+        }));
+
+        content = mxf.localizeText(translations, "fr-FR");
+
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <reportTypes>\n' +
+            '        <description>Description de coule d\'écran</description>\n' +
+            '        <label>Coule d\'écran</label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label>Entrées de journal pour coule de entretien</label>\n' +
+            '            <name>Flow Interview Log Entries</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalize: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        // should read the file
+        mxf.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: 'Test',
+            target: 'Testez',
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Force_com',
+            source: 'Force.com',
+            target: 'Force.fr',
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Account',
+            source: 'Text Account',
+            target: 'Compte de texte',
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "customLabels"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Files2',
+            source: 'Files online',
+            target: 'Fichiers en ligne',
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "customTabs"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'LogACall',
+            source: 'LogACall',
+            target: 'EnregistrerUnAppel',
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "quickActions"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt',
+            source: 'Screen Flows',
+            target: "Coule d'écran",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.description',
+            source: 'Screen Flows Description',
+            target: "Description de coule d'écran",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.Flow Interview Log Entries',
+            source: 'Flow Interview Log Entries',
+            target: "Entrées de journal pour coule de entretien",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes.sections"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.Flow Interview Logs',
+            source: 'Flow Interview Logs',
+            target: "Journals pour coule de entretien",
+            targetLocale: "fr-FR",
+            datatype: "metaxml",
+            flavor: "reportTypes.sections"
+        }));
+
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: 'Test',
+            target: 'Testen',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Force_com',
+            source: 'Force.com',
+            target: 'Force.de',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Account',
+            source: 'Text Account',
+            target: 'Texteskonto',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customLabels"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Files2',
+            source: 'Files online',
+            target: 'Dateien online',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customTabs"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'LogACall',
+            source: 'LogACall',
+            target: 'EinenAnrufProtokollieren',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "quickActions"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt',
+            source: 'Screen Flows',
+            target: "Bildschirmsflussen",
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "reportTypes"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.description',
+            source: 'Screen Flows Description',
+            target: "Beschreibung des Bildschirmsflussen",
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "reportTypes"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.Flow Interview Log Entries',
+            source: 'Flow Interview Log Entries',
+            target: "Protokolleinträge von Flussinterviews",
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "reportTypes.sections"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'screen_flows_prebuilt_crt.Flow Interview Logs',
+            source: 'Flow Interview Logs',
+            target: "Protokollen von Flussinterviews",
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "reportTypes.sections"
+        }));
+
+        mxf.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml")));
+
+        var content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"), "UTF-8");
+
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Testez</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label>Force.fr</label>\n' +
+            '        <name>Force_com</name>\n' +
+            '    </customApplications>\n' +
+            '    <customLabels>\n' +
+            '        <label>Compte de texte</label>\n' +
+            '        <name>Account</name>\n' +
+            '    </customLabels>\n' +
+            '    <customTabs>\n' +
+            '        <label>Fichiers en ligne</label>\n' +
+            '        <name>Files2</name>\n' +
+            '    </customTabs>\n' +
+            '    <quickActions>\n' +
+            '        <label>EnregistrerUnAppel</label>\n' +
+            '        <name>LogACall</name>\n' +
+            '    </quickActions>\n' +
+            '    <reportTypes>\n' +
+            '        <description>Description de coule d\'écran</description>\n' +
+            '        <label>Coule d\'écran</label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label>Entrées de journal pour coule de entretien</label>\n' +
+            '            <name>Flow Interview Log Entries</name>\n' +
+            '        </sections>\n' +
+            '        <sections>\n' +
+            '            <label>Journals pour coule de entretien</label>\n' +
+            '            <name>Flow Interview Logs</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"), "UTF-8");
+
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Testen</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label>Force.de</label>\n' +
+            '        <name>Force_com</name>\n' +
+            '    </customApplications>\n' +
+            '    <customLabels>\n' +
+            '        <label>Texteskonto</label>\n' +
+            '        <name>Account</name>\n' +
+            '    </customLabels>\n' +
+            '    <customTabs>\n' +
+            '        <label>Dateien online</label>\n' +
+            '        <name>Files2</name>\n' +
+            '    </customTabs>\n' +
+            '    <quickActions>\n' +
+            '        <label>EinenAnrufProtokollieren</label>\n' +
+            '        <name>LogACall</name>\n' +
+            '    </quickActions>\n' +
+            '    <reportTypes>\n' +
+            '        <description>Beschreibung des Bildschirmsflussen</description>\n' +
+            '        <label>Bildschirmsflussen</label>\n' +
+            '        <name>screen_flows_prebuilt_crt</name>\n' +
+            '        <sections>\n' +
+            '            <label>Protokolleinträge von Flussinterviews</label>\n' +
+            '            <name>Flow Interview Log Entries</name>\n' +
+            '        </sections>\n' +
+            '        <sections>\n' +
+            '            <label>Protokollen von Flussinterviews</label>\n' +
+            '            <name>Flow Interview Logs</name>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeNoStrings: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./html/nostrings.html",
+            type: t
+        });
+        test.ok(mxf);
+
+        // set up
+        if (fs.existsSync(path.join(base, "./testfiles/html/de.translation-meta.xml"))) {
+            fs.unlinkSync(path.join(base, "./testfiles/html/de.translation-meta.xml"));
+        }
+        if (fs.existsSync(path.join(base, "./testfiles/html/fr.translation-meta.xml"))) {
+            fs.unlinkSync(path.join(base, "./testfiles/html/fr.translation-meta.xml"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "./testfiles/html/de.translation-meta.xml")));
+        test.ok(!fs.existsSync(path.join(base, "./testfiles/html/fr.translation-meta.xml")));
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'r308704783',
+            source: 'Get insurance quotes for free!',
+            target: 'Obtenez des devis d\'assurance gratuitement!',
+            targetLocale: "fr-FR",
+            datatype: "metaxml"
+        }));
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'r308704783',
+            source: 'Get insurance quotes for free!',
+            target: 'Kostenlosen Versicherungs-Angebote erhalten!',
+            targetLocale: "de-DE",
+            datatype: "metaxml"
+        }));
+
+        mxf.localize(translations, ["fr-FR", "de-DE"]);
+
+        // should produce the files, even if there is nothing to localize in them
+        test.ok(fs.existsSync(path.join(base, "./testfiles/html/de.translation-meta.xml")));
+        test.ok(fs.existsSync(path.join(base, "./testfiles/html/fr.translation-meta.xml")));
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeRightNewStrings: function(test) {
+        test.expect(8);
+
+        var base = path.dirname(module.id);
+
+        var mxft2 = new MetaXmlFileType(p);
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
+            type: mxft2
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'foo',
+            source: 'bar',
+            target: 'asdf',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customApplications"
+        }));
+
+        content = mxf.localizeText(translations, "de-DE");
+
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Password</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        var newSet = mxft2.getNew();
+
+        test.equal(newSet.size(), 1);
+        var res = newSet.getAll();
+        test.equal(res[0].reskey, "Test");
+        test.equal(res[0].source, "Password");
+        test.equal(res[0].sourceLocale, "en-US");
+        test.equal(res[0].targetLocale, "de-DE");
+        test.equal(res[0].state, "new");
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeWithPseudo: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var p3 = new CustomProject({
+            name: "forceapp",
+            id: "forceapp",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "MetaXmlFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: "testfiles"
+        });
+
+        var t2 = new MetaXmlFileType(p3);
+        var mxf = new MetaXmlFile({
+            project: p3,
+            pathName: "./html/en.translation-meta.xml",
+            type: t2
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'foo',
+            source: 'bar',
+            target: 'asdf',
+            targetLocale: "de-DE",
+            datatype: "metaxml",
+            flavor: "customLabels"
+        }));
+
+        content = mxf.localizeText(translations, "de-DE");
+
+        // missing translations replaced with pseudo!
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Pàššŵõŕð3210</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
 
         test.done();
     }

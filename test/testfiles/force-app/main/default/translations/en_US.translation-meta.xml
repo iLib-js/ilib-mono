@@ -21,7 +21,7 @@
         <name>LogACall</name>
     </quickActions>
     <reportTypes>
-        <description><!-- Screen Flows --></description>
+        <description><!-- Screen Flows Description --></description>
         <label><!-- Screen Flows --></label>
         <name>screen_flows_prebuilt_crt</name>
         <sections>

@@ -23,6 +23,8 @@ var path = require("path");
 var log4js = require("log4js");
 var xmljs = require("xml-js");
 var IString = require("ilib/lib/IString");
+var Locale = require("ilib/lib/Locale");
+var sfLocales = require("./sflocales.json");
 
 var logger = log4js.getLogger("loctool.lib.MetaXmlFile");
 
@@ -213,17 +215,6 @@ MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
 
     comment = subnode._comment;
 
-    if (subnode.label) {
-        text = textOrComment(subnode.label);
-        if (text && text.length) {
-            if (subnode._attributes) {
-                comment = subnode._attributes["x-i18n"];
-            }
-            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
-            this.addResource(key, text, comment, autoKey, flavor);
-        }
-    }
-
     if (subnode.description) {
         text = textOrComment(subnode.description);
         if (text && text.length) {
@@ -232,6 +223,17 @@ MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
             }
             logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
             this.addResource(key + ".description", text, comment, autoKey, flavor);
+        }
+    }
+
+    if (subnode.label) {
+        text = textOrComment(subnode.label);
+        if (text && text.length) {
+            if (subnode._attributes) {
+                comment = subnode._attributes["x-i18n"];
+            }
+            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
+            this.addResource(key, text, comment, autoKey, flavor);
         }
     }
 
@@ -246,7 +248,7 @@ MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
                 subkey = this.makeKey(label);
                 autoKey = true;
             }
-            subkey = [key, subkey].join('.'); 
+            subkey = [key, subkey].join('.');
             this.addResource(subkey, label, comment, autoKey, flavor + ".sections");
         }
     }
@@ -334,8 +336,170 @@ MetaXmlFile.prototype.getTranslationSet = function() {
     return this.set;
 }
 
-//we don't localize or write metaxml source files
-MetaXmlFile.prototype.localize = function() {};
+/**
+ * Return the location on disk where the version of this file localized
+ * for the given locale should be written.
+ * @param {String] locale the locale spec for the target locale
+ * @returns {String} the localized path name
+ */
+MetaXmlFile.prototype.getLocalizedPath = function(locale) {
+    var spec = locale || this.project.sourceLocale;
+    if (sfLocales[spec]) {
+        spec = sfLocales[spec];
+    }
+    spec = spec.replace(/-/g, "_");
+
+    var filename = path.basename(this.pathName);
+    var dirname = path.dirname(this.pathName);
+
+    return path.join(dirname, spec + ".translation-meta.xml");
+};
+
+/**
+ * Localize the text of the current file to the given locale and return
+ * the results.
+ *
+ * @param {TranslationSet} translations the current set of translations
+ * @param {String} locale the locale to translate to
+ * @returns {String} the localized text of this file
+ */
+MetaXmlFile.prototype.localizeText = function(translations, locale) {
+    var output = {
+        _declaration: {
+            _attributes: {
+                version: "1.0",
+                encoding: "UTF-8"
+            }
+        },
+        Translations: {
+            _attributes: {
+                 xmlns: "http://soap.sforce.com/2006/04/metadata"
+            }
+        }
+    };
+    var resources = this.set.getAll();
+    var reportTypes = {}, key, type;
+
+    for (var i = 0; i < resources.length; i++) {
+        var resource = resources[i];
+        var hashkey = resource.hashKeyForTranslation(locale);
+        var translated = translations.getClean(hashkey);
+        if (!translated) {
+            // new string
+            var translated = this.API.newResource(resource);
+            translated.target = translated.source;
+            translated.targetLocale = locale;
+            translated.state = "new";
+            translated.index = this.resourceIndex++;
+            this.type.newres.add(translated);
+            if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
+                translated = this.API.newResource(translated);
+                translated.target = this.type.missingPseudo.getString(resource.source);
+            }
+        }
+
+        if (typeof output.Translations[translated.flavor] === 'undefined') {
+            output.Translations[translated.flavor] = [];
+        }
+        if (translated.flavor.startsWith("reportTypes")) {
+            if (translated.flavor === "reportTypes") {
+                if (translated.reskey.endsWith(".description")) {
+                    key = translated.reskey.substring(0, translated.reskey.length - 12);
+                    if (!reportTypes[key]) {
+                        reportTypes[key] = {};
+                    }
+                    type = reportTypes[key];
+                    type.description = {
+                        _text: translated.target
+                    };
+                } else {
+                    key = translated.reskey;
+                    if (!reportTypes[key]) {
+                        reportTypes[key] = {};
+                    }
+                    type = reportTypes[key];
+                    type.label = {
+                        _text: translated.target
+                    };
+                    type.name = {
+                        _text: translated.reskey
+                    };
+                }
+            } else {
+                var parts = translated.reskey.split(/\./g);
+                mainkey = parts[0];
+                key = parts[1];
+
+                if (!reportTypes[mainkey]) {
+                    reportTypes[mainkey] = {};
+                }
+                type = reportTypes[mainkey];
+                if (!type.sections) {
+                    type.sections = [];
+                }
+
+                type.sections.push({
+                    label: {
+                        _text: translated.target
+                    },
+                    name: {
+                        _text: key
+                    }
+                });
+            }
+        } else {
+            output.Translations[translated.flavor].push({
+                label: {
+                    _text: translated.target
+                },
+                name: {
+                    _text: translated.reskey
+                }
+            });
+        }
+    }
+    var types = Object.keys(reportTypes);
+    types.forEach(function(type) {
+        output.Translations.reportTypes.push(reportTypes[type]);
+    });
+
+    return xmljs.json2xml(output, {
+        spaces: 4,
+        compact: true
+    }) + '\n';
+};
+
+/**
+ * Localize the contents of this HTML file and write out the
+ * localized HTML file to a different file path.
+ *
+ * @param {TranslationSet} translations the current set of
+ * translations
+ * @param {Array.<String>} locales array of locales to translate to
+ */
+MetaXmlFile.prototype.localize = function(translations, locales) {
+    // don't localize if there is no text
+    if (this.set.size() > 0 && translations && translations.size() > 0 && locales && locales.length > 0) {
+        for (var i = 0; i < locales.length; i++) {
+            if (!this.project.isSourceLocale(locales[i])) {
+                // skip variants for now until we can handle them properly
+                var l = new Locale(locales[i]);
+                if (!l.getVariant()) {
+                    var pathName = this.getLocalizedPath(locales[i]);
+                    logger.debug("Writing file " + pathName);
+                    var p = path.join(this.project.target, pathName);
+                    var d = path.dirname(p);
+                    this.API.utils.makeDirs(d);
+
+                    fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
+                }
+            }
+        }
+    } else {
+        logger.debug(this.pathName + ": No strings, no localize");
+    }
+};
+
 MetaXmlFile.prototype.write = function() {};
 
 module.exports = MetaXmlFile;

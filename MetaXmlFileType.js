@@ -41,6 +41,21 @@ var MetaXmlFileType = function(project) {
     this.extracted = this.API.newTranslationSet(this.project.getSourceLocale());
     this.newres = this.API.newTranslationSet(this.project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(this.project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.locales && project.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
 };
 
 /**
@@ -89,68 +104,8 @@ MetaXmlFileType.prototype.name = function() {
  * @param {Array.<String>} locales the list of locales to localize to
  */
 MetaXmlFileType.prototype.write = function(translations, locales) {
-    // distribute all the resources to their resource files
-    // and then let them write themselves out
-    var resFileType = this.project.getResourceFileType();
-    var res, file,
-        resources = this.extracted.getAll(),
-        db = this.project.db,
-        translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
-        }.bind(this));
-
-    for (var i = 0; i < resources.length; i++) {
-        res = resources[i];
-        // have to store the base English string or else there will be nothing to override in the translations
-        file = resFileType.getResourceFile(res.context, res.getSourceLocale(), res.resType + "s", res.pathName);
-        file.addResource(res);
-
-        // for each extracted string, write out the translations of it
-        translationLocales.forEach(function(locale) {
-            logger.trace("Localizing MetaXml strings to " + locale);
-
-            db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
-                var r = translated;
-                if (res.dnt) {
-                    logger.trace("Resource " + res.reskey + " is set to 'do not translate'");
-                } else if (!r || this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
-                    if (r) {
-                        logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
-                        logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
-                    }
-                    var note = r && 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + r.getSource() + '"';
-                    var newres = res.clone();
-                    newres.setTargetLocale(locale);
-                    newres.setTarget((r && r.getTarget()) || res.getSource());
-                    newres.setState("new");
-                    newres.setComment(note);
-
-                    this.newres.add(newres);
-
-                    // skip because the fallbacks will go to the English resources anyways
-                    logger.trace("No translation for " + res.reskey + " to " + locale);
-                } else if (r.getTarget() !== res.getSource()) {
-                    file = resFileType.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
-                    file.addResource(r);
-                    logger.trace("Added " + r.reskey + " to " + file.pathName);
-                }
-            }.bind(this));
-        }.bind(this));
-    }
-
-    resources = this.pseudo.getAll().filter(function(resource) {
-        return resource.datatype === this.datatype;
-    }.bind(this));
-
-    for (var i = 0; i < resources.length; i++) {
-        res = resources[i];
-        // only need to add the resource if it is different from the source text
-        if (res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
-            file.addResource(res);
-            logger.trace("Added " + res.reskey + " to " + file.pathName);
-        }
-    }
+    // metaxml files are localized individually, so we don't have to
+    // write out the resources
 };
 
 MetaXmlFileType.prototype.newFile = function(path) {
@@ -240,39 +195,6 @@ MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName) {
     var dirname = path.dirname(pathName);
 
     return path.join(dirname, spec + ".translation-meta.xml");
-};
-
-/**
- * Find or create the resource file object for the given project, context,
- * and locale.
- *
- * @param {Resource} res resource to find the resource file for
- * @return {IosStringsFile} the Android resource file that serves the
- * given project, context, and locale.
- */
-MetaXmlFileType.prototype.getResourceFile = function(res) {
-    var locale = res.getTargetLocale() || res.getSourceLocale(),
-        pathName = res.getPath();
-    var newPath = this.getResourceFilePath(locale, pathName);
-
-    logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
-
-    var resfile = this.resourceFiles && this.resourceFiles[newPath];
-
-    if (!resfile) {
-        resfile = this.resourceFiles[newPath] = new MetaXmlFile({
-            project: this.project,
-            locale: locale || this.project.sourceLocale,
-            pathName: newPath,
-            type: this
-        });
-
-        logger.trace("Defining new resource file");
-    } else {
-        logger.trace("Returning existing resource file");
-    }
-
-    return resfile;
 };
 
 module.exports = MetaXmlFileType;
