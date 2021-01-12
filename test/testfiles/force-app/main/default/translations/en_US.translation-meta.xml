@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label><!-- Test --></label>
+        <name>Test</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- Force.com --></label>
+        <name>Force_com</name>
+    </customApplications>
+    <customLabels>
+        <label><!-- Text Account --></label>
+        <name>Account</name>
+    </customLabels>
+    <customTabs>
+        <label><!-- Files online --></label>
+        <name>Files2</name>
+    </customTabs>
+    <quickActions>
+        <label><!-- LogACall --></label>
+        <name>LogACall</name>
+    </quickActions>
+    <reportTypes>
+        <description><!-- Screen Flows Description --></description>
+        <label><!-- Screen Flows --></label>
+        <name>screen_flows_prebuilt_crt</name>
+        <sections>
+            <label><!-- Flow Interview Log Entries --></label>
+            <name>Flow Interview Log Entries</name>
+        </sections>
+        <sections>
+            <label><!-- Flow Interview Logs --></label>
+            <name>Flow Interview Logs</name>
+        </sections>
+    </reportTypes>
+</Translations>
