@@ -143,7 +143,7 @@ var skipProperties = {
     "_declaration": true
 };
 
-MetaXmlFile.prototype.addResource = function(key, text, comment, autoKey, flavor) {
+MetaXmlFile.prototype.addResource = function(key, text, comment, autoKey, context) {
     if (!this.API.utils.isDNT(comment)) {
         if (!key) {
             key = this.makeKey(text);
@@ -161,7 +161,7 @@ MetaXmlFile.prototype.addResource = function(key, text, comment, autoKey, flavor
             comment: comment,
             dnt: this.API.utils.isDNT(comment),
             index: this.resourceIndex++,
-            flavor: flavor
+            context: context
         });
         this.set.add(res);
         this.dirty = true;
@@ -172,7 +172,7 @@ function textOrComment(node) {
     return (node._text && node._text.trim()) || (node._comment && node._comment.trim());
 }
 
-MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
+MetaXmlFile.prototype.handleCustom = function(context, subnode) {
     var text, key, comment, autoKey;
 
     if (subnode.name && subnode.name._text) {
@@ -188,8 +188,8 @@ MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
             if (subnode._attributes) {
                 comment = subnode._attributes["x-i18n"];
             }
-            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
-            this.addResource(key, text, comment, autoKey, flavor);
+            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
+            this.addResource(key, text, comment, autoKey, context);
         }
     }
 
@@ -199,13 +199,13 @@ MetaXmlFile.prototype.handleCustom = function(flavor, subnode) {
             if (subnode._attributes) {
                 comment = subnode._attributes["x-i18n"];
             }
-            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
-            this.addResource(key + ".description", text, comment, autoKey, flavor);
+            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
+            this.addResource(key + ".description", text, comment, autoKey, context);
         }
     }
 }
 
-MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
+MetaXmlFile.prototype.handleReportTypes = function(context, subnode) {
     var text, key, comment, autoKey;
 
     if (subnode.name && subnode.name._text) {
@@ -221,8 +221,8 @@ MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
             if (subnode._attributes) {
                 comment = subnode._attributes["x-i18n"];
             }
-            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
-            this.addResource(key + ".description", text, comment, autoKey, flavor);
+            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
+            this.addResource(key + ".description", text, comment, autoKey, context);
         }
     }
 
@@ -232,8 +232,8 @@ MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
             if (subnode._attributes) {
                 comment = subnode._attributes["x-i18n"];
             }
-            logger.trace("Found resource type " + flavor + " with string " + text + " and comment " + comment);
-            this.addResource(key, text, comment, autoKey, flavor);
+            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
+            this.addResource(key, text, comment, autoKey, context);
         }
     }
 
@@ -249,7 +249,7 @@ MetaXmlFile.prototype.handleReportTypes = function(flavor, subnode) {
                 autoKey = true;
             }
             subkey = [key, subkey].join('.');
-            this.addResource(subkey, label, comment, autoKey, flavor + ".sections");
+            this.addResource(subkey, label, comment, autoKey, context + ".sections");
         }
     }
 }
@@ -398,11 +398,11 @@ MetaXmlFile.prototype.localizeText = function(translations, locale) {
             }
         }
 
-        if (typeof output.Translations[translated.flavor] === 'undefined') {
-            output.Translations[translated.flavor] = [];
+        if (typeof output.Translations[translated.context] === 'undefined') {
+            output.Translations[translated.context] = [];
         }
-        if (translated.flavor.startsWith("reportTypes")) {
-            if (translated.flavor === "reportTypes") {
+        if (translated.context.startsWith("reportTypes")) {
+            if (translated.context === "reportTypes") {
                 if (translated.reskey.endsWith(".description")) {
                     key = translated.reskey.substring(0, translated.reskey.length - 12);
                     if (!reportTypes[key]) {
@@ -448,7 +448,7 @@ MetaXmlFile.prototype.localizeText = function(translations, locale) {
                 });
             }
         } else {
-            output.Translations[translated.flavor].push({
+            output.Translations[translated.context].push({
                 label: {
                     _text: translated.target
                 },
