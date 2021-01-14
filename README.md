@@ -10,6 +10,10 @@ underscore, because that is what Salesforce is expecting to find.
 
 ## Release Notes
 
+### 1.0.2
+
+- add the sflocales.json config file to the package
+
 ### 1.0.1
 
 - Fixed a problem in the package.json where it was pointing to the wrong main file name
