@@ -37,7 +37,8 @@
         "README.md",
         "LICENSE",
         "MetaXmlFileType.js",
-        "MetaXmlFile.js"
+        "MetaXmlFile.js",
+        "sflocales.json"
     ],
     "repository": {
         "type": "git",
