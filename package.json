@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-salesforce-metaxml",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./MetaXmlFileType.js",
     "description": "A loctool plugin that knows how to process Salesforce *-meta.xml files",
     "license": "Apache-2.0",
@@ -37,7 +37,8 @@
         "README.md",
         "LICENSE",
         "MetaXmlFileType.js",
-        "MetaXmlFile.js"
+        "MetaXmlFile.js",
+        "sflocales.json"
     ],
     "repository": {
         "type": "git",
