@@ -120,7 +120,11 @@ MetaXmlFileType.prototype.getDataType = function() {
     return this.datatype;
 };
 
-MetaXmlFileType.prototype.getResourceTypes = function() {};
+MetaXmlFileType.prototype.getResourceTypes = function() {
+    return {
+        "string": "ContextResourceString"
+    };
+};
 
 MetaXmlFileType.prototype.getExtensions = function() {
     return this.extensions;
