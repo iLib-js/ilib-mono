@@ -60,10 +60,10 @@ var YamlFile = function(props) {
 
     this.set = this.API.newTranslationSet(this.locale);
 
-    if (this.pathName && this.project && this.project.flavors) {
+    if (this.pathName && this.project && this.project.flavorList) {
         var filename = path.basename(this.pathName, ".yml");
         var l = new Locale(filename);
-        if (l.getVariant() && this.project.flavors.indexOf(l.getVariant()) > -1) {
+        if (l.getVariant() && this.project.flavorList.indexOf(l.getVariant()) > -1) {
             this.flavor = l.getVariant();
         }
     }
