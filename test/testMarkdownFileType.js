@@ -311,5 +311,5 @@ module.exports.markdownfiletype = {
 
         test.done();
     }
-
 };
+
