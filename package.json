@@ -56,7 +56,7 @@
         "log4js": "^5.0.0"
     },
     "devDependencies": {
-        "loctool": "^2.2.0",
+        "loctool": "^2.10.1",
         "nodeunit": "^0.11.3"
     }
 }
