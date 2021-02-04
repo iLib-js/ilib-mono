@@ -1127,6 +1127,21 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
+    testMetaXmlFileGetLocalizedPathSpecialMappingPortugueseNoDefault: function(test) {
+        test.expect(3);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("pt_PT"), "pt_PT.translation-meta.xml");
+        test.equal(mxf.getLocalizedPath("pt_BR"), "pt_BR.translation-meta.xml");
+        test.done();
+    },
+
     testMetaXmlFileLocalizeSimple: function(test) {
         test.expect(2);
 
