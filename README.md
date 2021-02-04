@@ -10,6 +10,17 @@ underscore, because that is what Salesforce is expecting to find.
 
 ## Release Notes
 
+### 1.0.4
+
+- Apparently in Salesforce Portuguese has no default. This fix makes sure that
+  both pt-PT and pt-BR are fully specified with neither of them being the default
+  for "pt" by itself
+
+### 1.0.3
+
+- Fixed a problem with nb-NO and es-419 which Salesforce do not support
+    - mapped to "no" and "es-MX" respectively
+
 ### 1.0.2
 
 - add the sflocales.json config file to the package
