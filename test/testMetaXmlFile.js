@@ -1028,6 +1028,105 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
+    testMetaXmlFileGetLocalizedPathSimple: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("de-DE"), "de.translation-meta.xml");
+        test.done();
+    },
+
+    testMetaXmlFileGetLocalizedPathWithPath: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "src/translations/en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("de-DE"), "src/translations/de.translation-meta.xml");
+        test.done();
+    },
+
+    testMetaXmlFileGetLocalizedPathNonDefault: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("de-AT"), "de_AT.translation-meta.xml");
+        test.done();
+    },
+
+
+    testMetaXmlFileGetLocalizedPathSpecialMappingNB: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("nb-NO"), "no.translation-meta.xml");
+        test.done();
+    },
+
+    testMetaXmlFileGetLocalizedPathSpecialMappingChinese: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("zh-Hans-CN"), "zh_CN.translation-meta.xml");
+        test.done();
+    },
+
+    testMetaXmlFileGetLocalizedPathSpecialMappingOldHebrew: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("he-IL"), "iw.translation-meta.xml");
+        test.done();
+    },
+
+    testMetaXmlFileGetLocalizedPathSpecialMappingLatAmSpanish: function(test) {
+        test.expect(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        test.equal(mxf.getLocalizedPath("es-419"), "es_MX.translation-meta.xml");
+        test.done();
+    },
+
     testMetaXmlFileLocalizeSimple: function(test) {
         test.expect(2);
 
