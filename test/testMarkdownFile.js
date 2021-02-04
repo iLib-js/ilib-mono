@@ -2865,6 +2865,40 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeTextLocalizableValuelessAttributes: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is <a href="foo.html" checked title="localizable title">a test</a> of non-breaking tags.\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r1063253939',
+            source: 'This is <c0>a test</c0> of non-breaking tags.',
+            target: 'Ceci est <c0>un essai</c0> des balises non-ruptures.',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r160369622',
+            source: 'localizable title',
+            target: 'titre localisable',
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        test.equal(mf.localizeText(translations, "fr-FR"),
+                'Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n');
+
+        test.done();
+    },
+
     testMarkdownFileLocalizeTextI18NComments: function(test) {
         test.expect(2);
 
