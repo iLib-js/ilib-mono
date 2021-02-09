@@ -45,11 +45,11 @@ the localized properties appear.
 
     ```json
     {
-        "prop": [
+        "prop": {
             "en": "English example",
             "fr": "Example française",
             "de": "Deutsche Beispiel"
-        ]
+        }
     }
     ```
 
@@ -72,11 +72,11 @@ the localized properties appear.
                 "value": "English example"
             },
             {
-                "locale": "fr": ,
+                "locale": "fr",
                 "value": "Example française"
             },
             {
-                "locale": "de": ,
+                "locale": "de",
                 "value": "Deutsche Beispiel"
             }
         ]
@@ -145,7 +145,7 @@ used within the json property:
   The matchers are
   a [minimatch-style string](https://www.npmjs.com/package/minimatch),
   similar to the the `includes` and `excludes` section of a
-  `project.json` file. The value of tha mapping in an object that
+  `project.json` file. The value of that mapping in an object that
   can contain the following properties:
     - schema: schema to use with that matcher. The schema is 
       specified using the `$id` of one of the schemas loaded in the
@@ -216,6 +216,10 @@ Example configuration:
 }
 ```
 
+This plugin will throw an exception when a template is specified if the file
+name that the template produces for a localized file is the same as the
+source file name.
+
 ## Extensions to JSON Schema
 
 In regular JSON Schemas, there is no built-in way to indicate that any value
@@ -265,7 +269,7 @@ and a few non-localizable strings:
             "description": "The name of the locality (town, city , etc.) in the local language"
         },
         "residence": {
-            "type": "boolean"
+            "type": "boolean",
             "localizable": true,
             "description": "Whether the address is a residence. true = reside, false = business"
         }
@@ -311,7 +315,7 @@ schema.json:
 
 x/y/file.json:
 
-```json
+```json5
 {
     "a": "this string has no comment",
     // i18n: this is the translator's note
