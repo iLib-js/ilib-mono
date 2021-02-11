@@ -121,7 +121,7 @@ the following jsonschema:
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://github.com/ilib-js/LocalizableJson",
     "type": "object",
-    "description": "A collection of properties with localizable values",
+    "description": "A flat object of properties with localizable values",
     "additionalProperties": {
         "type": "string",
         "localizable": true
@@ -136,9 +136,10 @@ of your `project.json` file. The following settings are
 used within the json property:
 
 - schemas: a string naming a directory full of json schema files, or
-  an array of strings naming some json schema files. If the json file
+  an array of strings naming some json schema files or directories. If
+  the json file
   does not fit any of the schema (ie. it does not validate according to
-  the schema), then that file will be skipped and not localized.
+  any one of the schema), then that file will be skipped and not localized.
 - mappings: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
   json files within the project to be localized in different ways.
@@ -233,45 +234,81 @@ This plugin recognizes the new `localizable` keyword as an extension. The
 `localizable` keyword specifies that the value of a property should be
 localized by the methods provided above. By default, values are not
 localizable unless explicitly specified using the `localizable` keyword.
-The `localizable` keyword only makes sense for string, boolean, and
-number value types. For all other types, it is ignored.
 
-Example json schema file with localizable strings, booleans, and numbers
-and a few non-localizable strings:
+The `localizable` keyword is ignored for null or undefined values. For
+the primitive types string, integer, number, or boolean values, the value
+is directly localizable. Each property will result in a translation unit
+that the translators may localize.
+
+When the `localizable` keyword is given for arrays,
+every item in the array is localizable and must be of a primitive type
+(string, integer, number, or boolean). If any array entries are not of
+a primitive type, an exception will be thrown and the localization will
+be halted. 
+
+When the `localizable` keyword
+is given for an object type, that object encodes a plural string. The
+subproperties allowed in that object are those defined in the [Unicode
+plural rules](http://cldr.unicode.org/index/cldr-spec/plural-rules):
+
+- zero
+- one
+- two
+- few
+- many
+- other
+
+The "one" and the "other" property are required for source files in English.
+Other languages will have different combinations of plural categories.
+
+Example json schema file:
 
 ```json
 {
     "$id": "",
-    "title": "an address data file",
+    "title": "an location data",
     "properties": {
         "name": {
             "type": "string",
-            "description": "the name of this address, like 'work' or 'home'. This string is not localized"
+            "description": "the name of this address, like 'work' or 'home'. This string is not localized",
+            "$comment": "note that this is not localizable"
         },
         "country": {
             "type": "string",
             "localizable": true,
             "description": "the name of the country localized the the current language"
         },
-        "houseNumber": {
+        "latitude": {
             "type": "number",
             "localizable": true,
-            "descripton": "This may be rewritten in the local language's system of digits"
+            "description": "an example of a localizable number"
         },
-        "streetAddress": {
-            "type": "string",
-            "localizable": false,
-            "description": "This one is explicitly set to `false` which is already the default."
-        },
-        "locality": {
-            "type": "string",
+        "places": {
+            "type": "array",
             "localizable": true,
-            "description": "The name of the locality (town, city , etc.) in the local language"
+            "items": {
+                "type": "string"
+            }
         },
-        "residence": {
-            "type": "boolean",
-            "localizable": true,
-            "description": "Whether the address is a residence. true = reside, false = business"
+        "plural": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "localizable": true,
+                "required": [
+                    "one",
+                    "other"
+                ],
+                "properties": {
+                    "zero":  {"type": "string"},
+                    "one":   {"type": "string"},
+                    "two":   {"type": "string"},
+                    "few":   {"type": "string"},
+                    "many":  {"type": "string"},
+                    "other": {"type": "string"}
+                },
+                "additionalProperties": false
+            }
         }
     }
 }
@@ -334,6 +371,13 @@ Strings extracted are:
 | a    | this string has no comment  | an 'a' string' | from the schema.json |
 | b    | this string does have a json5 comment  | this is the translator's comment | from the file.json |
 
+## Not a Validator
+
+Please note that this plugin is *not* a json schema validator, though it
+works in similar ways. If the json being parsed does not conform to
+the given schema, no errors or exceptions will be thrown, but it will
+print some warnings to the output. The strings will merely not be
+extracted/localized as expected.
 
 ## License
 

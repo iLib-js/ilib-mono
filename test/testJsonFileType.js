@@ -355,6 +355,47 @@ module.exports.jsonfiletype = {
         test.done();
     },
 
+     testJsonFileTypeGetMapping1: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.deepEqual(jft.getMapping("x/y/messages.json"), {
+            "schema": "http://www.lge.com/json/messages",
+            "method": "copy",
+            "template": "resources/[localeDir]/messages.json"
+        });
+
+        test.done();
+    },
+
+     testJsonFileTypeGetMapping2: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.deepEqual(jft.getMapping("resources/en/US/strings.json"), {
+            "schema": "http://www.lge.com/json/strings",
+            "method": "copy",
+            "template": "resources/[localeDir]/strings.json"
+        });
+
+        test.done();
+    },
+
+     testJsonFileTypeGetMappingNoMatch: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.ok(!jft.getMapping("x/y/msg.jso"));
+
+        test.done();
+    },
+
     testJsonFileTypeHandlesExtensionTrue: function(test) {
         test.expect(2);
 

@@ -18,5 +18,6 @@
  */
 
 module.exports.files = [
-    "testJsonFileType.js"
+    "testJsonFileType.js",
+    "testJsonFile.js"
 ];

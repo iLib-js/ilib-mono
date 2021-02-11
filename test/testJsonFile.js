@@ -51,18 +51,26 @@ var p = new CustomProject({
     targetDir: "testfiles",
     nopseudo: true,
     json: {
-        "resources/en/US/strings.json": {
-            "schema": "http://www.lge.com/json/strings",
-            "method": "copy",
-            "template": "resources/[localeDir]/strings.json"
-        },
-        "**/messages.json": {
-            "schema": "http://www.lge.com/json/messages",
-            "method": "copy",
-            "template": "resources/[localeDir]/messages.json"
+        schemas: [
+            "./test/testfiles/schemas"
+        ],
+        mappings: {
+	        "resources/en/US/strings.json": {
+	            "schema": "./testfiles/schema/strings-schema.json",
+	            "method": "copy",
+	            "template": "resources/[localeDir]/strings.json"
+	        },
+	        "**/messages.json": {
+	            "schema": "./testfiles/schema/messages-schema.json",
+	            "method": "copy",
+	            "template": "resources/[localeDir]/messages.json"
+	        }
         }
     }
 });
+var t = new JsonFileType(p);
+
+
 
 var p2 = new CustomProject({
     name: "foo",
@@ -74,13 +82,13 @@ var p2 = new CustomProject({
     targetDir: "testfiles"
 });
 
-var t = new JsonFileType(p2);
+var t2 = new JsonFileType(p2);
 
 module.exports.jsonfile = {
     testJsonFileConstructor: function(test) {
         test.expect(1);
 
-        var jf = new JsonFile({project: p});
+        var jf = new JsonFile({project: p, type: t});
         test.ok(jf);
 
         test.done();
@@ -91,7 +99,7 @@ module.exports.jsonfile = {
 
         var jf = new JsonFile({
             project: p,
-            pathName: "./testfiles/json/CookieFlow.json",
+            pathName: "./testfiles/json/test1.json",
             type: t
         });
 
@@ -112,61 +120,6 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileMakeKey: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.makeKey("This is a test"), "r654479252");
-
-        test.done();
-    },
-
-    testJsonFileMakeKeyNoReturnChars: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.makeKey("This is\n a te\nst"), "r1055138400");
-
-        test.done();
-    },
-
-    testJsonFileMakeKeyCompressWhiteSpace: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.makeKey("This \t is\n \t a   test"), "r654479252");
-
-        test.done();
-    },
-
-    testJsonFileMakeKeyTrimWhiteSpace: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.makeKey("\n\t This \t is\n \t a   test\n\n\n"), "r654479252");
-
-        test.done();
-    },
 
     testJsonFileParseSimpleGetByKey: function(test) {
         test.expect(5);
@@ -177,22 +130,26 @@ module.exports.jsonfile = {
         });
         test.ok(jf);
 
-        jf.parse('<json><body>This is a test</body></json>');
+        jf.parse(
+	       '{\n' +
+	       '    "string 1": "this is string one",\n' +
+	       '    "string 2": "this is string two"\n' +
+	       '}\n');
 
         var set = jf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "r654479252", "json"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "json"));
         test.ok(r);
 
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(r.getSource(), "this is string one");
+        test.equal(r.getKey(), "string 1");
 
         test.done();
     },
 
-    testJsonFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
+    testJsonFileParseSimpleRightStrings: function(test) {
+        test.expect(8);
 
         var jf = new JsonFile({
             project: p,
@@ -200,19 +157,28 @@ module.exports.jsonfile = {
         });
         test.ok(jf);
 
-        jf.parse('<json><body>This is a test</body></json>');
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
 
         var set = jf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+
+        test.equal(resources[1].getSource(), "this is string two");
+        test.equal(resources[1].getKey(), "string 2");
 
         test.done();
     },
-
+/*
     testJsonFileParseSimpleIgnoreWhitespace: function(test) {
         test.expect(5);
 
@@ -2768,4 +2734,5 @@ module.exports.jsonfile = {
 
         test.done();
     }
+    */
 };

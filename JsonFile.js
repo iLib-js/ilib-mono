@@ -24,11 +24,6 @@ var JSON5 = require("json5");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 
-var MessageAccumulator = function() {};
-
-var Queue = function() {};
-var Stack = function() {};
-
 var logger = log4js.getLogger("loctool.plugin.JsonFile");
 
 /**
@@ -42,12 +37,15 @@ var logger = log4js.getLogger("loctool.plugin.JsonFile");
  */
 var JsonFile = function(options) {
     this.project = options.project;
-    this.pathName = options.pathName;
+    this.pathName = options.pathName || "";
     this.type = options.type;
 
     this.API = this.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.mapping = this.type.getMapping(this.pathName);
+    this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
+    this.resourceIndex = 0;
 };
 
 /**
@@ -94,129 +92,149 @@ JsonFile.cleanString = function(string) {
     return unescaped;
 };
 
-/**
- * Make a new key for the given string.
- *
- * @private
- * @param {String} source the source string to make a resource
- * key for
- * @returns {String} a unique key for this string
- */
-JsonFile.prototype.makeKey = function(source) {
-    return this.API.utils.hashKey(JsonFile.cleanString(source));
+
+JsonFile.prototype.escapeProp = function(prop) {
+    return prop.
+        replace(/~/g, "~0").
+        replace(/\//g, "~1");
 };
 
-function nodeToString(node) {
-    if (node.type === "root") {
-        return "";
-    } else if (node.type === "text") {
-        return node.value;
-    } else if (node.use === "start") {
-        return node.extra.text;
-    } else if (node.use === "startend") {
-        return node.extra.text + "</" + node.extra.name + ">";
-    } else {
-        return "</" + node.extra.name + ">";
-    }
-}
-
-/**
- * @param {boolean} escape true if you want the translated
- * text to be escaped for attribute values
- * @private
- */
-JsonFile.prototype._emitText = function(escape) {
-    this.text = this.message.getMinimalString();
-    logger.debug("_emitText: message accumulator minimal string is: " + this.text);
-
-    var pre = this.message.getPrefix().map(nodeToString).join('');
-    var post = this.message.getSuffix().map(nodeToString).join('');
-
-    this.accumulator += pre;
-    this.segments.enqueue({
-        localizable: false,
-        text: this.accumulator
-    });
-
-    logger.debug('text: pre is "' + pre + '" value is "' + this.text + '" and post is "' + post + '"');
-
-    if (this.text.length) {
-        this.segments.enqueue({
-            localizable: true,
-            text: this.API.utils.escapeInvalidChars(this.text),
-            escape: escape,
-            message: this.message
-        });
-
-        this.set.add(this.API.newResource({
-            resType: "string",
-            project: this.project.getProjectId(),
-            key: this.makeKey(this.API.utils.escapeInvalidChars(this.text)),
-            sourceLocale: this.project.sourceLocale,
-            source: this.API.utils.escapeInvalidChars(this.text),
-            autoKey: true,
-            pathName: this.pathName,
-            lineNumber: this.lineNumber,
-            state: "new",
-            comment: this.comment,
-            datatype: this.type.datatype,
-            index: this.resourceIndex++
-        }));
-    }
-
-    this.accumulator = post;
-
-    this.tagtext = "";
-    this.comment = undefined;
-
-    this.message = new MessageAccumulator();
+JsonFile.prototype.unescapeProp = function(prop) {
+    return prop.
+        replace(/~1/g, "/").
+        replace(/~0/g, "~");
 };
 
-var reNewLine = /\n/g;
+JsonFile.prototype.escapeRef = function(prop) {
+    return this.escapeProp(prop).
+        replace(/%/g, "%25").
+        replace(/^/g, "%5E").
+        replace(/|/g, "%7C").
+        replace(/\\/g, "%5C").
+        replace(/"/g, "%22").
+        replace(/ /g, "%20");
+};
 
-/**
- * Return the number of new lines in this text.
- * @private
- * @param {string} text text to search
- * @returns {number} the
- */
-function countNewLines(text) {
-    var count = 0;
+JsonFile.prototype.unescapeRef = function(prop) {
+    return this.unescapeProp(prop.
+        replace(/%5E/g, "^").
+        replace(/%7C/g, "|").
+        replace(/%5C/g, "\\").
+        replace(/%22/g, "\"").
+        replace(/%20/g, " ").
+        replace(/%25/g, "%"));
+};
 
-    reNewLine.lastIndex = 0;
-    while (reNewLine.exec(text) !== null) {
-        count++;
-    }
-
-    return count;
+JsonFile.prototype.isPrimitive = function(type) {
+    return ["boolean", "number", "integer", "string"].indexOf(type) > -1;
 }
 
-function originalText(node) {
-    var ret = "";
-    if (node.type !== "root") {
-        if (node.type === "text") {
-            ret += node.value;
-        } else {
-            ret += node.extra.text;
+JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
+    if (!json || !schema) return;
+
+    localizable |= schema.localizable;
+
+    if (schema.type) {
+        switch (schema.type) {
+        case "boolean":
+        case "number":
+        case "integer":
+        case "string":
+            if (localizable) {
+                // extract this value
+                if (this.isPrimitive(typeof(json))) {
+                    this.set.add(this.API.newResource({
+                        resType: "string",
+                        project: this.project.getProjectId(),
+                        key: name,
+                        sourceLocale: this.project.sourceLocale,
+                        source: String(json),
+                        pathName: this.pathName,
+                        state: "new",
+                        comment: this.comment,
+                        datatype: this.type.datatype,
+                        index: this.resourceIndex++
+                    }));
+                } else {
+                    // no way to parse the additional items beyond the end of the array, 
+                    // so just ignore them
+                    logger.warn(path.join(this.pathName, ref) + ": value should be type " + schema.type + " but found " + typeof(json));
+                }
+            }
+            break;
+
+        case "array":
+            if (!ilib.isArray(json)) {
+               logger.warn(path.join(this.pathName, ref) + " is a " +
+                   typeof(json) + " but should be an array according to the schema... skipping.");
+                return;
+            }
+            if (ilib.isArray(schema.items)) {
+                // each item has a specific type
+                json.forEach(function(item, index) {
+                    if (index >= schema.items.length) {
+                        if (schema.additionalItems) {
+                            this.parseObj(
+                                item, 
+                                schema.additionalItems, 
+                                path.join(ref, this.escapeRef(name)),
+                                name + "-" + index,
+                                localizable);
+                        } else {
+                            // no way to parse the additional items beyond the end of the array, 
+                            // so just ignore them
+                            logger.warn(path.join(this.pathName, this.escapeRef(prop + "-" + index)) + ": no schema definition for this array entry");
+                        }
+                    } else {
+                        this.parseObj(
+                            item,
+                            schema.items[index],
+                            path.join(ref, this.escapeRef(name)),
+                            name + "-" + index,
+                            localizable);
+                    }
+                }.bind(this));
+            } else if (schema.items.type) {
+                // all items have the same type
+                json.forEach(function(item) {
+                    this.parseObj(
+                        item,
+                        schema.items,
+                        path.join(ref, this.escapeRef(name)),
+                        name + "-" + index,
+                        localizable);
+                }.bind(this));
+            }
+            break;
+
+        case "object":
+            if (typeof(json) !== "object") {
+               logger.warn(path.join(this.pathName, ref) + " is a " +
+                   typeof(json) + " but should be an object according to the schema...  skipping.");
+                return;
+            }
+            var props = Object.keys(json);
+            props.forEach(function(prop) {
+                if (schema.properties && schema.properties[prop]) {
+                    this.parseObj(
+                        json[prop],
+                        schema.properties[prop],
+                        path.join(ref, this.escapeRef(prop)),
+                        prop,
+                        localizable);
+                } else if (schema.additionalProperties) {
+                    this.parseObj(
+                        json[prop],
+                        schema.additionalProperties,
+                        path.join(ref, this.escapeRef(prop)),
+                        prop,
+                        localizable);
+                }
+            }.bind(this));
+            break;
         }
     }
-
-    if (node.children) {
-        node.children.forEach(function(child) {
-            ret += originalText(child);
-        });
-    }
-
-    if (node.type !== "text" && node.closed) {
-        ret += "</" + node.extra.name + ">";
-    }
-
-    return ret;
-}
-
-function getOriginalText(message) {
-    return originalText(message.root);
-}
+};
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -226,218 +244,10 @@ function getOriginalText(message) {
 JsonFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
 
-    // accumulates characters in non-text segments
-    this.accumulator = "";
-
-    // accumulates characters in text segments
-    this.message = new MessageAccumulator();
-
-    // Each resource is given a serial number to indicate its position within
-    // the source file. This can be used later to make sure trans-units appear
-    // in the xliff files in the same order as the source strings appear in the
-    // source file.
-    this.resourceIndex = 0;
-
-    // Whether or not to ignore this text for localization.
-    // This is turned on by Json tags where the content of
-    // those tags should not be localized.
-    this.ignore = false;
-
-    // accumulates characters of non-breaking tags that may
-    // eventually be part of a text segment if it is surrounded
-    // on both sides by non-whitespace text
-    this.tagtext = "";
-
-    this.segments = new Queue();
-
-    var lastTagName;
-
-    // keep track of the line where this resource came from
-    this.lineNumber = 0;
-
-    // stack of non-breaking opened tags that have to be closed eventually
-    // This does not include self-closing tags like <p> or <br>
-    var tagStack = new Stack();
-
-    var x = JSON5.parse(data, {
-        openElement: function(name) {
-            logger.trace('open tag: ' + name);
-            lastTagName = name;
-            if (this.API.utils.ignoreTags[name]) {
-                // ignore the content inside of this tag
-                this.ignore = true;
-            }
-            if (!this.ignore && this.API.utils.nonBreakingTags[name] && !this.API.utils.ignoreTags[name]) {
-                this.tagtext += '<' + name;
-            } else {
-                if (this.message.getTextLength()) {
-                    this._emitText();
-                } else {
-                    // The Json developer put a breaking tag inside of a non-breaking tag
-                    // which is not allowed in Json5, but hey, they did it anyways and we
-                    // have to deal with it. In order to make sure the tags are balanced,
-                    // just add the already collected non-breaking tags to the non-message
-                    // accumulator and start with a fresh message accumulator.
-                    this.accumulator += getOriginalText(this.message);
-                    this.message = new MessageAccumulator();
-                }
-                this.accumulator += '<' + name;
-            }
-        }.bind(this),
-        closeOpenedElement: function(name, token, unary) {
-            logger.trace('close opened tag: ' + name + ", token: " + token + ', unary: ' + unary);
-            if (this.tagtext) {
-                this.tagtext += token;
-            } else {
-                this.accumulator += token;
-            }
-            lastTagName = undefined;
-            if (this.API.utils.nonBreakingTags[name] && !this.API.utils.ignoreTags[name]) {
-                this.message.push({
-                    name: name,
-                    text: new String(this.tagtext)
-                });
-                this.tagtext = "";
-            }
-            this.lineNumber += countNewLines(token);
-        }.bind(this),
-        closeElement: function(name) {
-            logger.trace('close: %s', name);
-            if (this.API.utils.ignoreTags[name]) {
-                // stop ignoring when we reach the closing tag
-                this.ignore = false;
-            }
-            if (this.API.utils.nonBreakingTags[name] && this.message.getCurrentLevel() > 0) {
-                var tag = this.message.pop();
-                while (tag.name !== name && this.message.getCurrentLevel() > 0) {
-                    tag = this.message.pop();
-                }
-                if (tag.name !== name) {
-                    throw new Error("Syntax error in Json file " + this.pathName + " line " +
-                        this.lineNumber + ". Unbalanced Json tags.");
-                }
-                return;
-            } else {
-                this._emitText();
-            }
-
-            this.accumulator += '</' + name + '>';
-        }.bind(this),
-        comment: function(value) {
-            logger.trace('comment: %s', value);
-            // strip comments from the output, but keep i18n comments
-            // for the resources
-            value = value.trim();
-            if (value.substring(0, 5) === "i18n:") {
-                this.comment = value.substring(5).trim();
-            }
-            this.lineNumber += countNewLines(value);
-        }.bind(this),
-        cdata: function(value) {
-            logger.trace('cdata: %s', value);
-            if (this.tagtext) {
-                this._emitText();
-            }
-            this.accumulator += value;
-            this.lineNumber += countNewLines(value);
-        }.bind(this),
-        attribute: function(name, value, quote) {
-            logger.trace('attribute: %s=%s%s%s', name, quote, value, quote);
-            if (!value && !quote) {
-                // make sure there are at least empty quotes
-                quote = '"';
-            }
-            value = value || "";
-            if ((name === "title" || (this.API.utils.localizableAttributes[lastTagName] && this.API.utils.localizableAttributes[lastTagName][name])) &&
-                    value.trim().length > 0 && value.substring(0,2) !== "<%") {
-                this.set.add(this.API.newResource({
-                    resType: "string",
-                    project: this.project.getProjectId(),
-                    key: this.makeKey(value),
-                    sourceLocale: this.project.sourceLocale,
-                    source: value,
-                    autoKey: true,
-                    pathName: this.pathName,
-                    state: "new",
-                    comment: this.comment,
-                    datatype: this.type.datatype,
-                    index: this.resourceIndex++
-                }));
-
-                if (this.tagtext) {
-                    this.segments.enqueue({
-                        localizable: true,
-                        attributeSubstitution: true,
-                        text: this.API.utils.escapeQuotes(value),
-                        replacement: '{' + name + '}',
-                        escape: true
-                    });
-
-                    this.tagtext += " " + name + '=' + quote + '{' + name + '}' + quote;
-                } else {
-                    this.accumulator += " " + name + '=' + quote;
-
-                    this._emitText(true);
-
-                    this.segments.enqueue({
-                        localizable: true,
-                        text: value,
-                        escape: true
-                    });
-
-                    this.accumulator += quote; // trailing quote same as opening quote
-                }
-            } else {
-                // non-localizable and values containing template tags just get added without localization
-                if (this.tagtext) {
-                    this.tagtext += " " + name + '=' + quote + this.API.utils.escapeQuotes(value) + quote;
-                } else {
-                    this.accumulator += " " + name + '=' + quote + this.API.utils.escapeQuotes(value) + quote;
-                }
-            }
-            this.lineNumber += countNewLines(value);
-        }.bind(this),
-        docType: function(value) {
-            logger.trace('doctype: %s', value);
-            this.accumulator += "<!DOCTYPE " + value + ">";
-            this.lineNumber += countNewLines(value);
-        }.bind(this),
-        text: function(value) {
-            logger.trace('text: value is "' + value + '"');
-            if (this.ignore) {
-                this.accumulator += value;
-            } else if (this.API.utils.isAllWhite(value)) {
-                if (this.tagtext) {
-                    this.tagtext += value;
-                } else {
-                    this.message.addText(this.API.utils.unescapeSpaceEntities(value));
-                }
-            } else {
-                if (this.accumulator) {
-                    this.segments.enqueue({
-                        localizable: false,
-                        text: this.accumulator
-                    });
-                    this.accumulator = "";
-                }
-
-                this.message.addText(this.API.utils.unescapeSpaceEntities(value));
-            }
-            this.lineNumber += countNewLines(value);
-        }.bind(this)
-    });
-
-    if (this.tagtext || this.message.getString()) {
-        this._emitText();
-    }
-
-    if (this.accumulator.length) {
-        this.segments.enqueue({
-            localizable: false,
-            text: this.accumulator
-        });
-        this.accumulator = "";
-    }
+    var json = JSON5.parse(data);
+    
+    // "#" is the root reference
+    this.parseObj(json, this.schema, "#", "root", false);
 };
 
 /**
@@ -480,22 +290,7 @@ JsonFile.prototype.write = function() {};
  * @returns {String} the localized path name
  */
 JsonFile.prototype.getLocalizedPath = function(locale) {
-    var fullPath = this.pathName;
-    var dirName = path.dirname(fullPath);
-    var fileName = path.basename(fullPath);
-
-    var parts = fileName.split(".");
-
-    if (parts.length > 2) {
-        if (parts[parts.length-2] === this.project.sourceLocale) {
-            parts.splice(parts.length-2, 1, locale);
-        }
-    } else if (parts.length > 1) {
-        parts.splice(parts.length-1, 0, locale);
-    } else {
-        parts.splice(parts.length, 0, locale);
-    }
-    return path.join(dirName, parts.join("."));
+    return this.type.getLocalizedPath(this.mapping.template, this.pathName, this.locale);
 };
 
 /**
@@ -649,7 +444,7 @@ JsonFile.prototype.localize = function(translations, locales) {
             }
         }
     } else {
-        logger.debug(this.pathName + ": No segments/no strings, no localize");
+        logger.debug(this.pathName + ": No strings, no localize");
     }
 };
 

@@ -54,7 +54,191 @@ var JsonFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+
+    this.schemas = {};
+    this.refs = {};
+    this.loadSchemas(".");
 };
+
+JsonFileType.prototype.loadSchemaFile = function(pathName) {
+    var schema = fs.readFileSync(pathName, "utf-8");
+    var schemaObj = JSON.parse(schema);
+    this.schemas[pathName] = schemaObj;
+    this.refs[schemaObj["$id"]] = schemaObj;
+};
+
+JsonFileType.prototype.loadSchemaDir = function(pathName) {
+    var files = fs.readdirSync(pathName);
+    if (files) {
+        files.forEach(function(file) {
+            var full = path.join(pathName, file);
+            this.loadSchemaDirOrFile(full);
+        }.bind(this));
+    }
+};
+
+JsonFileType.prototype.loadSchemaDirOrFile = function(pathName) {
+    var stats = fs.statSync(pathName);
+    if (!stats) return;
+    if (stats.isDirectory()) {
+       this.loadSchemaDir(pathName);
+    } else {
+       this.loadSchemaFile(pathName);
+    }
+};
+
+var keywords = {
+    "$id": true,
+    "$schema": true,
+    "$comment": true,
+    "$vocabulary": true,
+    "$anchor": true,
+    "$ref": true,
+    "$recursiveRef": true,
+    "$recursiveAnchor": true,
+    "$defs": true,
+    "title": true,
+    "description": true,
+    "type": true,
+    "properties": true,
+    "propertyNames": true,
+    "patternProperties": true,
+    "additionalProperties": true,
+    "unevaluatedProperties": true,
+    "maxLength": true,
+    "minLength": true,
+    "items": true,
+    "additionalItems": true,
+    "unevaluatedItems": true,
+    "contains": true,
+    "allOf": true,
+    "anyOf": true,
+    "oneOf": true,
+    "not": true,
+    "if": true,
+    "then": true,
+    "else": true,
+    "instanceLocation": true,
+    "required": true,
+    "minItems": true,
+    "maxItems": true,
+    "valid": true,
+    "keywordLocation": true,
+    "errors": true,
+    "absoluteKeywordLocation": true,
+    "localizable": true,
+    "default": true,
+    "definitions": true
+};
+
+JsonFileType.prototype.findRefs = function(schema, ref) {
+    if (typeof(schema) !== 'object') return;
+    for (var prop in schema) {
+        var subschema = schema[prop];
+
+        // recurse through everything -- if it is not a
+        // schema object, that's okay -- it won't have the
+        // $id or $anchor in it
+        if (prop == '$id' || prop == '$anchor') {
+            this.refs[path.join(ref, prop)] = schema;
+        } else {
+            if (Array.isArray(subschema)) {
+                subschema.forEach(function(element, index) {
+                    this.findRefs(element, path.join(ref, prop, index));
+                }.bind(this));
+            } else if (typeof(subschema) === 'object') {
+                this.findRefs(subschema, path.join(ref, prop));
+            }
+        }
+    }
+};
+
+/**
+ * Return the default schema for json files.
+ * @returns {Object} the default schema
+ */
+JsonFileType.prototype.getDefaultSchema = function() {
+    return {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "strings-schema",
+        "type": "object",
+        "description": "A flat object of properties with localizable values",
+        "additionalProperties": {
+            "type": "string",
+            "localizable": true
+        }
+    };
+};
+
+/**
+ * Load all the schema files into memory.
+ */
+JsonFileType.prototype.loadSchemas = function(pathName) {
+    var jsonSettings = this.project.settings.json;
+
+    if (jsonSettings) {
+        var schemas = jsonSettings.schemas;
+        if (schemas) {
+            schemas.forEach(function(schema) {
+                var full = path.join(pathName, schema);
+                this.loadSchemaDirOrFile(full);
+            }.bind(this));
+        }
+    } else {
+        // default schema for all json files with key/value pairs
+        this.schemas = {
+            "default": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "$id": "http://github.com/ilib-js/LocalizableJson",
+                "type": "object",
+                "description": "A collection of properties with localizable values",
+                "additionalProperties": {
+                    "type": "string",
+                    "localizable": true
+                }
+            }
+        }
+        this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
+    }
+
+    // now find all the refs
+    for (var file in this.schemas) {
+        var schema = this.schemas[schema];
+        this.findRefs(schema);
+    }
+    // connect the mappings to the schemas
+};
+
+/**
+ * Return the mapping corresponding to this path.
+ * @param {String} pathName the path to check
+ * @returns {Object} the mapping object corresponding to the
+ * path or undefined if none of the mappings match
+ */
+JsonFileType.prototype.getMapping = function(pathName) {
+    if (typeof(pathName) === "undefined") {
+        return undefined;
+    }
+    var jsonSettings = this.project.settings.json;
+    var defaultMappings = {
+        "**/*.json": {
+            schema: "http://github.com/ilib-js/defaultJson",
+            method: "copy",
+            template: "[dir]/[localeDir]/strings.json"
+        }
+    };
+    var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
+    var patterns = Object.keys(mappings);
+    var normalized = pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
+        pathName.substring(0, pathName.length - 4) + ".json" :
+        pathName;
+
+    var match = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern) || mm.isMatch(normalized, pattern);
+    });
+
+    return match && mappings[match];
+}
 
 /**
  * Return true if the given path is an Json template file and is handled
