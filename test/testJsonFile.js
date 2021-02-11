@@ -120,6 +120,117 @@ module.exports.jsonfile = {
         test.done();
     },
 
+    testJsonFileEscapeProp: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.escapeProp("escape/tilde~tilde"), "escape~0tilde~1tilde");
+
+        test.done();
+    },
+
+    testJsonFileEscapePropNoChange: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.escapeProp("permissions"), "permissions");
+
+        test.done();
+    },
+
+    testJsonFileEscapePropDontEscapeOthers: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.escapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+
+        test.done();
+    },
+
+    testJsonFileUnescapeProp: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeProp("escape~0tilde~1tilde"), "escape/tilde~tilde");
+
+        test.done();
+    },
+
+    testJsonFileUnescapePropTricky: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeProp("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
+
+        test.done();
+    },
+
+    testJsonFileUnescapePropNoChange: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeProp("permissions"), "permissions");
+
+        test.done();
+    },
+
+    testJsonFileUnescapePropDontEscapeOthers: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+
+        test.done();
+    },
+
+    testJsonFileEscapeRef: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.escapeRef("escape/tilde~tilde"), "escape~0tilde~1tilde");
+
+        test.done();
+    },
+
+    testJsonFileEscapeRefNoChange: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.escapeRef("permissions"), "permissions");
+
+        test.done();
+    },
+
+    testJsonFileEscapeRefDontEscapeOthers: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.escapeRef("permissions% \" ^ | \\"), "permissions%25%20%22%20%5E%20%7C%20%5C");
+
+        test.done();
+    },
+
+    testJsonFileUnescapeRef: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeRef("escape~0tilde~1tilde"), "escape/tilde~tilde");
+
+        test.done();
+    },
+
+    testJsonFileUnescapeRefTricky: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeRef("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
+
+        test.done();
+    },
+
+    testJsonFileUnescapeRefNoChange: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeRef("permissions"), "permissions");
+
+        test.done();
+    },
+
+    testJsonFileUnescapeRefDontEscapeOthers: function(test) {
+        test.expect(1);
+
+        test.ok(JsonFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C"), "permissions% \" ^ | \\");
+
+        test.done();
+    },
 
     testJsonFileParseSimpleGetByKey: function(test) {
         test.expect(5);
@@ -178,9 +289,9 @@ module.exports.jsonfile = {
 
         test.done();
     },
-/*
-    testJsonFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(5);
+
+    testJsonFileParseSimpleDontExtractEmpty: function(test) {
+        test.expect(6);
 
         var jf = new JsonFile({
             project: p,
@@ -188,121 +299,26 @@ module.exports.jsonfile = {
         });
         test.ok(jf);
 
-        jf.parse('<json>\n' +
-                '<body>\n' +
-                '     This is a test    \n' +
-                '</body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testJsonFileParseDontExtractUnicodeWhitespace: function(test) {
-        test.expect(3);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        // contains U+00A0 non-breaking space and other Unicode space characters
-        jf.parse('<div>            ​‌‍ ⁠</div>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testJsonFileParseDontExtractNbspEntity: function(test) {
-        test.expect(3);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<div>&nbsp; &nnbsp; &mmsp;</div>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testJsonFileParseDoExtractOtherEntities: function(test) {
-        test.expect(3);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<div>&uuml;</div>\n');
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": ""\n' +
+           '}\n');
 
         var set = jf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
 
         test.done();
     },
 
-    testJsonFileParseNoStrings: function(test) {
-        test.expect(3);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<div class="noheader medrx"></div>');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testJsonFileParseSimpleRightSize: function(test) {
-        test.expect(4);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        var set = jf.getTranslationSet();
-        test.equal(set.size(), 0);
-
-        jf.parse('<json><body>This is a test</body></json>');
-
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testJsonFileParseMultiple: function(test) {
+    testJsonFileParseEscapeStringKeys: function(test) {
         test.expect(8);
 
         var jf = new JsonFile({
@@ -311,30 +327,29 @@ module.exports.jsonfile = {
         });
         test.ok(jf);
 
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
+        jf.parse(
+           '{\n' +
+           '    "/user": "this is string one",\n' +
+           '    "~tilde": "this is string two"\n' +
+           '}\n');
 
         var set = jf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
 
-        r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "~1user");
+
+        test.equal(resources[1].getSource(), "this is string two");
+        test.equal(resources[1].getKey(), "~0tilde");
 
         test.done();
     },
+
+/*
 
     testJsonFileParseWithDups: function(test) {
         test.expect(6);

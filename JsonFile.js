@@ -93,30 +93,30 @@ JsonFile.cleanString = function(string) {
 };
 
 
-JsonFile.prototype.escapeProp = function(prop) {
+JsonFile.escapeProp = function(prop) {
     return prop.
         replace(/~/g, "~0").
         replace(/\//g, "~1");
 };
 
-JsonFile.prototype.unescapeProp = function(prop) {
+JsonFile.unescapeProp = function(prop) {
     return prop.
         replace(/~1/g, "/").
         replace(/~0/g, "~");
 };
 
-JsonFile.prototype.escapeRef = function(prop) {
-    return this.escapeProp(prop).
+JsonFile.escapeRef = function(prop) {
+    return JsonFile.escapeProp(prop).
         replace(/%/g, "%25").
-        replace(/^/g, "%5E").
-        replace(/|/g, "%7C").
+        replace(/\^/g, "%5E").
+        replace(/\|/g, "%7C").
         replace(/\\/g, "%5C").
         replace(/"/g, "%22").
         replace(/ /g, "%20");
 };
 
-JsonFile.prototype.unescapeRef = function(prop) {
-    return this.unescapeProp(prop.
+JsonFile.unescapeRef = function(prop) {
+    return JsonFile.unescapeProp(prop.
         replace(/%5E/g, "^").
         replace(/%7C/g, "|").
         replace(/%5C/g, "\\").
@@ -146,7 +146,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                     this.set.add(this.API.newResource({
                         resType: "string",
                         project: this.project.getProjectId(),
-                        key: name,
+                        key: JsonFile.escapeProp(name),
                         sourceLocale: this.project.sourceLocale,
                         source: String(json),
                         pathName: this.pathName,
@@ -177,19 +177,19 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                             this.parseObj(
                                 item, 
                                 schema.additionalItems, 
-                                path.join(ref, this.escapeRef(name)),
+                                path.join(ref, JsonFile.escapeRef(name)),
                                 name + "-" + index,
                                 localizable);
                         } else {
                             // no way to parse the additional items beyond the end of the array, 
                             // so just ignore them
-                            logger.warn(path.join(this.pathName, this.escapeRef(prop + "-" + index)) + ": no schema definition for this array entry");
+                            logger.warn(path.join(this.pathName, JsonFile.escapeRef(prop + "-" + index)) + ": no schema definition for this array entry");
                         }
                     } else {
                         this.parseObj(
                             item,
                             schema.items[index],
-                            path.join(ref, this.escapeRef(name)),
+                            path.join(ref, JsonFile.escapeRef(name)),
                             name + "-" + index,
                             localizable);
                     }
@@ -200,7 +200,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                     this.parseObj(
                         item,
                         schema.items,
-                        path.join(ref, this.escapeRef(name)),
+                        path.join(ref, JsonFile.escapeRef(name)),
                         name + "-" + index,
                         localizable);
                 }.bind(this));
@@ -219,14 +219,14 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                     this.parseObj(
                         json[prop],
                         schema.properties[prop],
-                        path.join(ref, this.escapeRef(prop)),
+                        path.join(ref, JsonFile.escapeRef(prop)),
                         prop,
                         localizable);
                 } else if (schema.additionalProperties) {
                     this.parseObj(
                         json[prop],
                         schema.additionalProperties,
-                        path.join(ref, this.escapeRef(prop)),
+                        path.join(ref, JsonFile.escapeRef(prop)),
                         prop,
                         localizable);
                 }
