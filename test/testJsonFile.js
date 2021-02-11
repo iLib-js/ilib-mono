@@ -55,16 +55,16 @@ var p = new CustomProject({
             "./test/testfiles/schemas"
         ],
         mappings: {
-	        "resources/en/US/strings.json": {
-	            "schema": "./testfiles/schema/strings-schema.json",
-	            "method": "copy",
-	            "template": "resources/[localeDir]/strings.json"
-	        },
-	        "**/messages.json": {
-	            "schema": "./testfiles/schema/messages-schema.json",
-	            "method": "copy",
-	            "template": "resources/[localeDir]/messages.json"
-	        }
+            "resources/en/US/strings.json": {
+                "schema": "./testfiles/schema/strings-schema.json",
+                "method": "copy",
+                "template": "resources/[localeDir]/strings.json"
+            },
+            "**/messages.json": {
+                "schema": "./testfiles/schema/messages-schema.json",
+                "method": "copy",
+                "template": "resources/[localeDir]/messages.json"
+            }
         }
     }
 });
@@ -242,10 +242,10 @@ module.exports.jsonfile = {
         test.ok(jf);
 
         jf.parse(
-	       '{\n' +
-	       '    "string 1": "this is string one",\n' +
-	       '    "string 2": "this is string two"\n' +
-	       '}\n');
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
 
         var set = jf.getTranslationSet();
         test.ok(set);

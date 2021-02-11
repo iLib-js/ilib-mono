@@ -156,7 +156,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                         index: this.resourceIndex++
                     }));
                 } else {
-                    // no way to parse the additional items beyond the end of the array, 
+                    // no way to parse the additional items beyond the end of the array,
                     // so just ignore them
                     logger.warn(path.join(this.pathName, ref) + ": value should be type " + schema.type + " but found " + typeof(json));
                 }
@@ -175,13 +175,13 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                     if (index >= schema.items.length) {
                         if (schema.additionalItems) {
                             this.parseObj(
-                                item, 
-                                schema.additionalItems, 
+                                item,
+                                schema.additionalItems,
                                 path.join(ref, JsonFile.escapeRef(name)),
                                 name + "-" + index,
                                 localizable);
                         } else {
-                            // no way to parse the additional items beyond the end of the array, 
+                            // no way to parse the additional items beyond the end of the array,
                             // so just ignore them
                             logger.warn(path.join(this.pathName, JsonFile.escapeRef(prop + "-" + index)) + ": no schema definition for this array entry");
                         }
@@ -245,7 +245,7 @@ JsonFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
 
     var json = JSON5.parse(data);
-    
+
     // "#" is the root reference
     this.parseObj(json, this.schema, "#", "root", false);
 };
