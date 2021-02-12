@@ -171,6 +171,16 @@ JsonFileType.prototype.getDefaultSchema = function() {
 };
 
 /**
+ * Get the schema associated with the given URI
+ * @param {String} uri the uri identifying the schema
+ * @returns {Object} the schema associated with the URI, or undefined if
+ * that schema is not defined
+ */
+JsonFileType.prototype.getSchema = function(uri) {
+    return this.refs[uri];
+};
+
+/**
  * Load all the schema files into memory.
  */
 JsonFileType.prototype.loadSchemas = function(pathName) {

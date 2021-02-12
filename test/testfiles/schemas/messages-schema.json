@@ -1,0 +1,87 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://github.com/ilib-js/messages.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "properties": {
+        "plurals": {
+            "type": "object",
+            "title": "The plurals schema",
+            "description": "Handle plurals.",
+            "additionalProperties": {
+                "type": "object",
+                "required": [
+                    "one",
+                    "other"
+                ],
+                "properties": {
+                    "zero": {
+                        "type": "string",
+                        "description": "Handle the zero string.",
+                        "localizable": true
+                    },
+                    "one": {
+                        "type": "string",
+                        "description": "Handle the singular string.",
+                        "localizable": true
+                    },
+                    "two": {
+                        "type": "string",
+                        "description": "Handle the dual string.",
+                        "localizable": true
+                    },
+                    "few": {
+                        "type": "string",
+                        "description": "Handle the few plural string.",
+                        "localizable": true
+                    },
+                    "many": {
+                        "type": "string",
+                        "description": "Handle the many plural string.",
+                        "localizable": true
+                    },
+                    "other": {
+                        "type": "string",
+                        "description": "Handle any string not covered by the other plurals.",
+                        "localizable": true
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "arrays": {
+            "$id": "#/properties/arrays",
+            "type": "object",
+            "title": "The arrays schema",
+            "description": "An explanation about the purpose of this instance.",
+            "additionalProperties": {
+                "type": "array",
+                "localizable": true,
+                "items": {
+                    "anyOf": [
+                        {"type": "string"},
+                        {"type": "number"},
+                        {"type": "boolean"},
+                        {"type": "integer"}
+                    ]
+                }
+            }
+        },
+        "strings": {
+            "$id": "#/properties/strings",
+            "type": "object",
+            "title": "The strings schema",
+            "description": "An explanation about the purpose of this instance.",
+            "additionalProperties": {
+                "anyOf": [
+                    {"type": "string"},
+                    {"type": "number"},
+                    {"type": "boolean"},
+                    {"type": "integer"}
+                ],
+                "localizable": true
+            }
+        }
+    }
+}

@@ -61,7 +61,7 @@ var p = new CustomProject({
                 "template": "resources/[localeDir]/strings.json"
             },
             "**/messages.json": {
-                "schema": "./testfiles/schema/messages-schema.json",
+                "schema": "http://github.com/ilib-js/messages.json",
                 "method": "copy",
                 "template": "resources/[localeDir]/messages.json"
             }
@@ -345,6 +345,115 @@ module.exports.jsonfile = {
 
         test.equal(resources[1].getSource(), "this is string two");
         test.equal(resources[1].getKey(), "~0tilde");
+
+        test.done();
+    },
+
+    testJsonFileParseComplexRightSize: function(test) {
+        test.expect(3);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/messages.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '   "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singular",\n' +
+           '            "many": "many",\n' +
+           '            "other": "plural"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b",\n' +
+           '        "c": "d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "string 1",\n' +
+           '            "string 2",\n' +
+           '            "string 3"\n' +
+           '        ]\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        test.done();
+    },
+
+    testJsonFileParseComplexRightStrings: function(test) {
+        test.expect(24);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/messages.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '   "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singular",\n' +
+           '            "many": "many",\n' +
+           '            "other": "plural"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b",\n' +
+           '        "c": "d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "string 1",\n' +
+           '            "string 2",\n' +
+           '            "string 3"\n' +
+           '        ]\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "plural");
+        var pluralStrings = resources[0].getSourcePlurals();
+        test.ok(pluralStrings);
+        test.equal(pluralStrings.one, "singular");
+        test.equal(pluralStrings.many, "many");
+        test.equal(pluralStrings.other, "plural");
+        test.ok(!pluralStrings.zero);
+        test.ok(!pluralStrings.two);
+        test.ok(!pluralStrings.few);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "b");
+        test.equal(resources[1].getKey(), "a");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "d");
+        test.equal(resources[2].getKey(), "c");
+
+        test.equal(resources[3].getType(), "array");
+        var arrayStrings = resources[3].getSourceArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings.length, 3);
+        test.equal(arrayStrings[0], "string 1");
+        test.equal(arrayStrings[1], "string 2");
+        test.equal(arrayStrings[2], "string 3");
 
         test.done();
     },
