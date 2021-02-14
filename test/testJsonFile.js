@@ -64,6 +64,11 @@ var p = new CustomProject({
                 "schema": "http://github.com/ilib-js/messages.json",
                 "method": "copy",
                 "template": "resources/[localeDir]/messages.json"
+            },
+            "**/deep.json": {
+                "schema": "http://github.com/ilib-js/deep.json",
+                "method": "copy",
+                "template": "resources/deep_[locale].json"
             }
         }
     }
@@ -349,6 +354,36 @@ module.exports.jsonfile = {
         test.done();
     },
 
+    testJsonFileParseSimpleRejectThingsThatAreNotInTheSchema: function(test) {
+        test.expect(6);
+
+        var jf = new JsonFile({
+            project: p,
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": {\n' +
+           '        "asdf": "asdf"\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+
+        test.done();
+    },
+
     testJsonFileParseComplexRightSize: function(test) {
         test.expect(3);
 
@@ -454,6 +489,109 @@ module.exports.jsonfile = {
         test.equal(arrayStrings[0], "string 1");
         test.equal(arrayStrings[1], "string 2");
         test.equal(arrayStrings[2], "string 3");
+
+        test.done();
+    },
+
+    testJsonFileParseDeepRightSize: function(test) {
+        test.expect(3);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/deep.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "x": {\n' +
+           '        "y": {\n' +
+           '            "plurals": {\n' +
+           '                "bar": {\n' +
+           '                    "one": "singular",\n' +
+           '                    "many": "many",\n' +
+           '                    "other": "plural"\n' +
+           '                 }\n' +
+           '            }\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "a": {\n' +
+           '        "b": {\n' +
+           '            "strings": {\n' +
+           '                "a": "b",\n' +
+           '                "c": "d"\n' +
+           '            }\n' +
+           '        }\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 3);
+        test.done();
+    },
+
+    testJsonFileParseDeepRightStrings: function(test) {
+        test.expect(18);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/deep.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "x": {\n' +
+           '        "y": {\n' +
+           '            "plurals": {\n' +
+           '                "bar": {\n' +
+           '                    "one": "singular",\n' +
+           '                    "many": "many",\n' +
+           '                    "other": "plural"\n' +
+           '                 }\n' +
+           '            }\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "a": {\n' +
+           '        "b": {\n' +
+           '            "strings": {\n' +
+           '                "a": "b",\n' +
+           '                "c": "d"\n' +
+           '            }\n' +
+           '        }\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 3);
+        var resources = set.getAll();
+        test.equal(resources.length, 3);
+
+        test.equal(resources[0].getType(), "plural");
+        var pluralStrings = resources[0].getSourcePlurals();
+        test.ok(pluralStrings);
+        test.equal(pluralStrings.one, "singular");
+        test.equal(pluralStrings.many, "many");
+        test.equal(pluralStrings.other, "plural");
+        test.ok(!pluralStrings.zero);
+        test.ok(!pluralStrings.two);
+        test.ok(!pluralStrings.few);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "b");
+        test.equal(resources[1].getKey(), "a");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "d");
+        test.equal(resources[2].getKey(), "c");
 
         test.done();
     },
@@ -585,413 +723,6 @@ module.exports.jsonfile = {
         test.ok(r);
         test.equal(r.getSource(), "This is also a \u000C test");
         test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testJsonFileSkipScript: function(test) {
-        test.expect(8);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <head>\n' +
-                '   <script>\n' +
-                '// comment text\n' +
-                'if (locales.contains[thisLocale]) {\n' +
-                '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
-                '}\n' +
-                '   </head>\n' +
-                '   </script>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        var r = set.getBySource("// comment text");
-        test.ok(!r);
-
-        var r = set.getBySource("bar");
-        test.ok(!r);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTags: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a <em>test</em> of the emergency parsing system.  \n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a <c0>test</c0> of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0>test</c0> of the emergency parsing system.");
-        test.equal(r.getKey(), "r306365966");
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsOutside: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <span id="foo" class="bar">This is a test of the emergency parsing system.</span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should not pick up the span tag because there is no localizable text
-        // before it or after it
-        var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsOutsideTrimWhitespace: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <span id="foo" class="bar"> \t\t \r  This is a test of the emergency parsing system.   \t \n  </span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should trim the whitespace before and after the string
-        var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsInside: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should pick up the span tag because there is localizable text
-        // before it and after it
-        var r = set.getBySource('This is <c0> a test of the emergency parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the emergency parsing </c0> system.');
-        test.equal(r.getKey(), 'r124733470');
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsAtStartOfString: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <span id="foo" class="bar">This is a test of the emergency parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should pick up the span tag because there is localizable text
-        // after the close
-        var r = set.getBySource('<c0>This is a test of the emergency parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), '<c0>This is a test of the emergency parsing </c0> system.');
-        test.equal(r.getKey(), 'r580926060');
-
-        test.done();
-    },
-
-    testJsonFileParseMultipleNonBreakingTagsAtStartOfString: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <span id="foo" class="bar"><b>This</b> is a test of the emergency parsing system.</span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should pick up the b tag because there is localizable text
-        // after the close, but not the span tag
-        var r = set.getBySource('<c0>This</c0> is a test of the emergency parsing system.');
-
-        test.ok(r);
-        test.equal(r.getSource(), '<c0>This</c0> is a test of the emergency parsing system.');
-        test.equal(r.getKey(), 'r501987849');
-
-        test.done();
-    },
-
-    testJsonFileParseMultipleNonBreakingTagsAsOuterTags: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <span id="foo" class="bar"><b>This is a test of the emergency parsing system.</b></span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should not pick up the span and b tags because there is no localizable text
-        // before or after them
-        var r = set.getBySource('This is a test of the emergency parsing system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is a test of the emergency parsing system.');
-        test.equal(r.getKey(), 'r699762575');
-
-        test.done();
-    },
-
-    testJsonFileParseMultipleNonBreakingTagsAtEndOfString: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a test of the emergency parsing system.<span id="foo" class="bar">  </span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should pick up the span tag because there is localizable text
-        // inside it or after the close
-        var r = set.getBySource('This is a test of the emergency parsing system.');
-
-        test.ok(r);
-        test.equal(r.getSource(), 'This is a test of the emergency parsing system.');
-        test.equal(r.getKey(), 'r699762575');
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsInsideMultiple: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // tags should be nestable
-        var r = set.getBySource('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        test.equal(r.getKey(), 'r772812508');
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsNotWellFormed: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // the end span tag should automatically end the em tag
-        var r = set.getBySource('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
-        test.equal(r.getKey(), 'r417724998');
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div>This is <span id="foo"> a test of the <em>emergency parsing</div> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // the end div tag ends all the other tags
-        var r = set.getBySource('This is <c0> a test of the <c1>emergency parsing</c1></c0>');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency parsing</c1></c0>');
-        test.equal(r.getKey(), 'r713898724');
-
-        test.done();
-    },
-
-    testJsonFileParseNonBreakingTagsTagStackIsReset: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div>This is <span id="foo" class="bar"> a test of the <em>emergency parsing</em> system.</div>\n' +
-                '       <div>This is <b>another test</b> of the emergency parsing </span> system.</div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // the end div tag ends all the other tags
-        var r = set.getBySource('This is <c0>another test</c0> of the emergency parsing');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0>another test</c0> of the emergency parsing');
-        test.equal(r.getKey(), 'r2117084');
-
-        test.done();
-    },
-
-    testJsonFileParseLocalizableTitle: function(test) {
-        test.expect(8);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div title="This value is localizable">\n' +
-                '           This is a test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        r = set.getBySource("This value is localizable");
-        test.ok(r);
-        test.equal(r.getSource(), "This value is localizable");
-        test.equal(r.getKey(), "r922503175");
 
         test.done();
     },
