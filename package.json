@@ -33,7 +33,10 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "JsonFile.js",
+        "JsonFileType.js",
+        "log4js.json"
     ],
     "repository": {
         "type": "git",

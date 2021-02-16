@@ -61,10 +61,15 @@ var JsonFileType = function(project) {
 };
 
 JsonFileType.prototype.loadSchemaFile = function(pathName) {
-    var schema = fs.readFileSync(pathName, "utf-8");
-    var schemaObj = JSON.parse(schema);
-    this.schemas[pathName] = schemaObj;
-    this.refs[schemaObj["$id"]] = schemaObj;
+    try {
+        var schema = fs.readFileSync(pathName, "utf-8");
+        var schemaObj = JSON.parse(schema);
+        this.schemas[pathName] = schemaObj;
+        this.refs[schemaObj["$id"]] = schemaObj;
+    } catch (e) {
+        logger.fatal("Error while parsing file " + pathName);
+        // throw e;
+    }
 };
 
 JsonFileType.prototype.loadSchemaDir = function(pathName) {

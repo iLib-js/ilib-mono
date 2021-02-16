@@ -69,6 +69,11 @@ var p = new CustomProject({
                 "schema": "http://github.com/ilib-js/deep.json",
                 "method": "copy",
                 "template": "resources/deep_[locale].json"
+            },
+            "**/invalid.json": {
+                "schema": "http://github.com/ilib-js/invalid.json",
+                "method": "copy",
+                "template": "resources/invalid_[locale].json"
             }
         }
     }
@@ -612,6 +617,45 @@ module.exports.jsonfile = {
                '{\n' +
                '    "x": {\n' +
                '        "y": {,@#\n' +
+               '            "plurals": {\n' +
+               '                "bar": {\n' +
+               '                    "one": "singular",\n' +
+               '                    "many": "many",\n' +
+               '                    "other": "plural"\n' +
+               '                 }\n' +
+               '            }\n' +
+               '        }\n' +
+               '    },\n' +
+               '    "a": {\n' +
+               '        "b": {\n' +
+               '            "strings": {\n' +
+               '                "a": "b",\n' +
+               '                "c": "d"\n' +
+               '            }\n' +
+               '        }\n' +
+               '    }\n' +
+               '}\n');
+        });
+
+        test.done();
+    },
+
+    testJsonFileParseTestInvalidSchema: function(test) {
+        test.expect(2);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/deep.json",
+            type: t
+        });
+        test.ok(jf);
+
+        test.throws(function(test) {
+            jf.parse(
+               '{\n' +
+               '    "x": {\n' +
+               '        "y": {\n' +
                '            "plurals": {\n' +
                '                "bar": {\n' +
                '                    "one": "singular",\n' +
