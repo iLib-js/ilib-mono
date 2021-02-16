@@ -70,6 +70,11 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/deep_[locale].json"
             },
+            "**/refs.json": {
+                "schema": "http://github.com/ilib-js/refs.json",
+                "method": "copy",
+                "template": "resources/[locale]/refs.json"
+            },
             "**/invalid.json": {
                 "schema": "http://github.com/ilib-js/invalid.json",
                 "method": "copy",
@@ -675,6 +680,107 @@ module.exports.jsonfile = {
                '    }\n' +
                '}\n');
         });
+
+        test.done();
+    },
+
+    testJsonFileParseRefsRightSize: function(test) {
+        test.expect(3);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/deep.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "owner": {\n' +
+           '        "name": "Foo Bar",\n' +
+           '        "phone": {\n' +
+           '            "number": "1-555-555-1212",\n' +
+           '            "type": "Mobile"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "customer1": {\n' +
+           '        "name": "Customer One",\n' +
+           '        "phone": {\n' +
+           '            "number": "1-555-555-1212",\n' +
+           '            "type": "Home"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "customer2": {\n' +
+           '        "name": "Customer Two",\n' +
+           '        "phone": {\n' +
+           '            "number": "1-555-555-1212",\n' +
+           '            "type": "Work"\n' +
+           '        }\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 3);
+        test.done();
+    },
+
+    testJsonFileParseRefsRightStrings: function(test) {
+        test.expect(13);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/refs.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "owner": {\n' +
+           '        "name": "Foo Bar",\n' +
+           '        "phone": {\n' +
+           '            "number": "1-555-555-1212",\n' +
+           '            "type": "Mobile"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "customer1": {\n' +
+           '        "name": "Customer One",\n' +
+           '        "phone": {\n' +
+           '            "number": "1-555-555-1212",\n' +
+           '            "type": "Home"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "customer2": {\n' +
+           '        "name": "Customer Two",\n' +
+           '        "phone": {\n' +
+           '            "number": "1-555-555-1212",\n' +
+           '            "type": "Work"\n' +
+           '        }\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 3);
+        var resources = set.getAll();
+        test.equal(resources.length, 3);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "Mobile");
+        test.equal(resources[0].getKey(), "#/owner/phone/type");
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "Home");
+        test.equal(resources[1].getKey(), "#/customer1/phone/type");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "Work");
+        test.equal(resources[2].getKey(), "#/customer2/phone/type");
 
         test.done();
     },
