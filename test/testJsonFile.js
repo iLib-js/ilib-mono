@@ -74,18 +74,11 @@ var p = new CustomProject({
                 "schema": "http://github.com/ilib-js/refs.json",
                 "method": "copy",
                 "template": "resources/[locale]/refs.json"
-            },
-            "**/invalid.json": {
-                "schema": "http://github.com/ilib-js/invalid.json",
-                "method": "copy",
-                "template": "resources/invalid_[locale].json"
             }
         }
     }
 });
 var t = new JsonFileType(p);
-
-
 
 var p2 = new CustomProject({
     name: "foo",
@@ -356,10 +349,10 @@ module.exports.jsonfile = {
         test.equal(resources.length, 2);
 
         test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "~1user");
+        test.equal(resources[0].getKey(), "/user");
 
         test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "~0tilde");
+        test.equal(resources[1].getKey(), "~tilde");
 
         test.done();
     },
@@ -435,7 +428,7 @@ module.exports.jsonfile = {
     },
 
     testJsonFileParseComplexRightStrings: function(test) {
-        test.expect(24);
+        test.expect(26);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -475,6 +468,7 @@ module.exports.jsonfile = {
         test.equal(resources.length, 4);
 
         test.equal(resources[0].getType(), "plural");
+        test.equal(resources[0].getKey(), "plurals/bar");
         var pluralStrings = resources[0].getSourcePlurals();
         test.ok(pluralStrings);
         test.equal(pluralStrings.one, "singular");
@@ -486,13 +480,14 @@ module.exports.jsonfile = {
 
         test.equal(resources[1].getType(), "string");
         test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a");
+        test.equal(resources[1].getKey(), "strings/a");
 
         test.equal(resources[2].getType(), "string");
         test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "c");
+        test.equal(resources[2].getKey(), "strings/c");
 
         test.equal(resources[3].getType(), "array");
+        test.equal(resources[3].getKey(), "arrays/asdf");
         var arrayStrings = resources[3].getSourceArray();
         test.ok(arrayStrings);
         test.equal(arrayStrings.length, 3);
@@ -545,7 +540,7 @@ module.exports.jsonfile = {
     },
 
     testJsonFileParseDeepRightStrings: function(test) {
-        test.expect(18);
+        test.expect(19);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -586,6 +581,7 @@ module.exports.jsonfile = {
         test.equal(resources.length, 3);
 
         test.equal(resources[0].getType(), "plural");
+        test.equal(resources[0].getKey(), "x/y/plurals/bar");
         var pluralStrings = resources[0].getSourcePlurals();
         test.ok(pluralStrings);
         test.equal(pluralStrings.one, "singular");
@@ -597,11 +593,11 @@ module.exports.jsonfile = {
 
         test.equal(resources[1].getType(), "string");
         test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a");
+        test.equal(resources[1].getKey(), "a/b/strings/a");
 
         test.equal(resources[2].getType(), "string");
         test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "c");
+        test.equal(resources[2].getKey(), "a/b/strings/c");
 
         test.done();
     },
@@ -645,52 +641,13 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseTestInvalidSchema: function(test) {
-        test.expect(2);
-
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
-            project: p,
-            pathName: "i18n/deep.json",
-            type: t
-        });
-        test.ok(jf);
-
-        test.throws(function(test) {
-            jf.parse(
-               '{\n' +
-               '    "x": {\n' +
-               '        "y": {\n' +
-               '            "plurals": {\n' +
-               '                "bar": {\n' +
-               '                    "one": "singular",\n' +
-               '                    "many": "many",\n' +
-               '                    "other": "plural"\n' +
-               '                 }\n' +
-               '            }\n' +
-               '        }\n' +
-               '    },\n' +
-               '    "a": {\n' +
-               '        "b": {\n' +
-               '            "strings": {\n' +
-               '                "a": "b",\n' +
-               '                "c": "d"\n' +
-               '            }\n' +
-               '        }\n' +
-               '    }\n' +
-               '}\n');
-        });
-
-        test.done();
-    },
-
     testJsonFileParseRefsRightSize: function(test) {
         test.expect(3);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
             project: p,
-            pathName: "i18n/deep.json",
+            pathName: "i18n/refs.json",
             type: t
         });
         test.ok(jf);
@@ -772,15 +729,15 @@ module.exports.jsonfile = {
 
         test.equal(resources[0].getType(), "string");
         test.equal(resources[0].getSource(), "Mobile");
-        test.equal(resources[0].getKey(), "#/owner/phone/type");
+        test.equal(resources[0].getKey(), "owner/phone/type");
 
         test.equal(resources[1].getType(), "string");
         test.equal(resources[1].getSource(), "Home");
-        test.equal(resources[1].getKey(), "#/customer1/phone/type");
+        test.equal(resources[1].getKey(), "customer1/phone/type");
 
         test.equal(resources[2].getType(), "string");
         test.equal(resources[2].getSource(), "Work");
-        test.equal(resources[2].getKey(), "#/customer2/phone/type");
+        test.equal(resources[2].getKey(), "customer2/phone/type");
 
         test.done();
     },

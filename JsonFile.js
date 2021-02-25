@@ -151,39 +151,24 @@ function isPlural(node) {
     });
 }
 
-var typeKeywords = [
-    "type",
-    "contains",
-    "allOf",
-    "anyOf",
-    "oneOf",
-    "not"
-];
-
-/**
- * Return true if the schema has a type. The type could be indicated by
- * the presence of any of the following fields:
- * - type
- * - contains
- * - allOf
- * - anyOf
- * - oneOf
- * - not
- * @param {Object} schema the schema to check
- * @returns {boolean} true if the schema contains a type, false otherwise
- */
-function hasType(schema) {
-    return typeKeywords.find(function(keyword) {
-        return typeof(schema[keyword]) !== 'undefined';
-    });
-}
-
-JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
+JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable) {
     if (!json || !schema) return;
+
+    if (typeof(schema["$ref"]) !== 'undefined') {
+        // substitute the referenced schema for this one
+        var refname = schema["$ref"];
+        var otherschema = root["$$refs"][refname];
+        if (!otherschema) {
+            console.log("Unknown reference " + refname + " while parsing " +
+                this.pathName + " with schema " + root["$id"]);
+            return;
+        }
+        schema = otherschema;
+    }
 
     localizable |= schema.localizable;
 
-    if (hasType(schema)) {
+    if (this.type.hasType(schema)) {
         var type = schema.type || typeof(json);
         switch (type) {
         case "boolean":
@@ -196,7 +181,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                     this.set.add(this.API.newResource({
                         resType: "string",
                         project: this.project.getProjectId(),
-                        key: JsonFile.escapeProp(name),
+                        key: JsonFile.unescapeRef(ref).substring(2),  // strip off the #/ part
                         sourceLocale: this.project.sourceLocale,
                         source: String(json),
                         pathName: this.pathName,
@@ -208,14 +193,14 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                 } else {
                     // no way to parse the additional items beyond the end of the array,
                     // so just ignore them
-                    logger.warn(path.join(this.pathName, ref) + ": value should be type " + type + " but found " + typeof(json));
+                    logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
                 }
             }
             break;
 
         case "array":
             if (!ilib.isArray(json)) {
-               logger.warn(path.join(this.pathName, ref) + " is a " +
+               logger.warn(this.pathName + '/' + ref + " is a " +
                    typeof(json) + " but should be an array according to the schema... skipping.");
                 return;
             }
@@ -227,7 +212,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
             this.set.add(this.API.newResource({
                 resType: "array",
                 project: this.project.getProjectId(),
-                key: JsonFile.escapeProp(name),
+                key: JsonFile.unescapeRef(ref).substring(2),
                 sourceLocale: this.project.sourceLocale,
                 sourceArray: sourceArray,
                 pathName: this.pathName,
@@ -240,7 +225,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
 
         case "object":
             if (typeof(json) !== "object") {
-               logger.warn(path.join(this.pathName, ref) + " is a " +
+               logger.warn(this.pathName + '/' + ref + " is a " +
                    typeof(json) + " but should be an object according to the schema...  skipping.");
                 return;
             }
@@ -250,7 +235,7 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
                 this.set.add(this.API.newResource({
                     resType: "plural",
                     project: this.project.getProjectId(),
-                    key: JsonFile.escapeProp(name),
+                    key: JsonFile.unescapeRef(ref).substring(2),
                     sourceLocale: this.project.sourceLocale,
                     sourceStrings: json,
                     pathName: this.pathName,
@@ -265,15 +250,17 @@ JsonFile.prototype.parseObj = function(json, schema, ref, name, localizable) {
 	                if (schema.properties && schema.properties[prop]) {
 	                    this.parseObj(
 	                        json[prop],
+	                        root,
 	                        schema.properties[prop],
-	                        path.join(ref, JsonFile.escapeRef(prop)),
+	                        ref + '/' + JsonFile.escapeRef(prop),
 	                        prop,
 	                        localizable);
 	                } else if (schema.additionalProperties) {
 	                    this.parseObj(
 	                        json[prop],
+	                        root,
 	                        schema.additionalProperties,
-	                        path.join(ref, JsonFile.escapeRef(prop)),
+	                        ref + '/' + JsonFile.escapeRef(prop),
 	                        prop,
 	                        localizable);
 	                }
@@ -295,7 +282,7 @@ JsonFile.prototype.parse = function(data) {
     var json = JSON5.parse(data);
 
     // "#" is the root reference
-    this.parseObj(json, this.schema, "#", "root", false);
+    this.parseObj(json, this.schema, this.schema, "#", "root", false);
 };
 
 /**

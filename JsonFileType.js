@@ -67,8 +67,9 @@ JsonFileType.prototype.loadSchemaFile = function(pathName) {
         this.schemas[pathName] = schemaObj;
         this.refs[schemaObj["$id"]] = schemaObj;
     } catch (e) {
-        logger.fatal("Error while parsing file " + pathName);
-        // throw e;
+        logger.fatal("Error while parsing schema file " + pathName);
+        console.log("Error while parsing schema file " + pathName);
+        throw e;
     }
 };
 
@@ -136,23 +137,64 @@ var keywords = {
     "definitions": true
 };
 
-JsonFileType.prototype.findRefs = function(schema, ref) {
+var typeKeywords = [
+    "type",
+    "contains",
+    "allOf",
+    "anyOf",
+    "oneOf",
+    "not",
+    "$ref"
+];
+
+/**
+ * Return true if the schema has a type. The type could be indicated by
+ * the presence of any of the following fields:
+ * - type
+ * - contains
+ * - allOf
+ * - anyOf
+ * - oneOf
+ * - not
+ * - $ref
+ * @param {Object} schema the schema to check
+ * @returns {boolean} true if the schema contains a type, false otherwise
+ */
+JsonFileType.prototype.hasType = function(schema) {
+    return typeKeywords.find(function(keyword) {
+        return typeof(schema[keyword]) !== 'undefined';
+    });
+};
+
+JsonFileType.prototype.findRefs = function(root, schema, ref) {
     if (typeof(schema) !== 'object') return;
+
+    if (typeof(root["$$refs"]) === 'undefined') {
+        root["$$refs"] = {};
+    }
+
+    root["$$refs"][ref] = schema;    
+
+    // currently for simplicity, we only handle intra-schema
+    // references so far. We'll have to implement the extra-schema
+    // references later
     for (var prop in schema) {
         var subschema = schema[prop];
 
         // recurse through everything -- if it is not a
         // schema object, that's okay -- it won't have the
-        // $id or $anchor in it
-        if (prop == '$id' || prop == '$anchor') {
-            this.refs[path.join(ref, prop)] = schema;
-        } else {
+        // $anchor in it
+        if (prop === '$anchor') {
+            root["$$refs"]["#" + subschema] = schema;
+        } else if (prop !== '$$refs') {
+            var newref = ref + '/' + prop;
             if (Array.isArray(subschema)) {
                 subschema.forEach(function(element, index) {
-                    this.findRefs(element, path.join(ref, prop, index));
+                    var arrayref = newref + '[' + index + ']';
+                    this.findRefs(element, arrayref);
                 }.bind(this));
             } else if (typeof(subschema) === 'object') {
-                this.findRefs(subschema, path.join(ref, prop));
+                this.findRefs(root, subschema, newref);
             }
         }
     }
@@ -164,7 +206,7 @@ JsonFileType.prototype.findRefs = function(schema, ref) {
  */
 JsonFileType.prototype.getDefaultSchema = function() {
     return {
-        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$schema": "http://json-schema.org/draft-07/schema",
         "$id": "strings-schema",
         "type": "object",
         "description": "A flat object of properties with localizable values",
@@ -203,7 +245,7 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
         // default schema for all json files with key/value pairs
         this.schemas = {
             "default": {
-                "$schema": "http://json-schema.org/draft-07/schema#",
+                "$schema": "http://json-schema.org/draft-07/schema",
                 "$id": "http://github.com/ilib-js/LocalizableJson",
                 "type": "object",
                 "description": "A collection of properties with localizable values",
@@ -218,8 +260,8 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
 
     // now find all the refs
     for (var file in this.schemas) {
-        var schema = this.schemas[schema];
-        this.findRefs(schema);
+        var schema = this.schemas[file];
+        this.findRefs(schema, schema, "#");
     }
     // connect the mappings to the schemas
 };

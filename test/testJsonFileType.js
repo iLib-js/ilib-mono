@@ -524,5 +524,38 @@ module.exports.jsonfiletype = {
         test.ok(jft.handles("resources/en/US/messages.json"));
 
         test.done();
+    },
+
+    testJsonFileTypeRejectInvalidSchema: function(test) {
+        test.expect(1);
+
+        test.throws(function(test) {
+            var mockproject = {
+                getAPI: p.getAPI.bind(p),
+                getSourceLocale: p.getSourceLocale.bind(p),
+                settings: {
+                    locales:["en-GB"],
+                    targetDir: "testfiles",
+                    nopseudo: true,
+                    json: {
+                        schemas: [
+                            "./test/testfiles/invalid.json"
+                        ],
+                        mappings: {
+                            "**/invalid.json": {
+                                "schema": "http://github.com/ilib-js/invalid.json",
+                                "method": "copy",
+                                "template": "resources/invalid_[locale].json"
+                            }
+                        }
+                    }
+                }
+            };
+    
+            // should throw an exception while trying to parse the invalid.json
+            var jft = new JsonFileType(mockproject);
+        });
+
+        test.done();
     }
 };

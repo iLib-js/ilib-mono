@@ -19,6 +19,36 @@
                     "localizable": true
                 }
             }
+        },
+        "address": {
+            "$anchor": "address",
+            "title": "Address",
+            "type": "object",
+            "properties": {
+                "streetAddress": {
+                    "title": "Street Address",
+                    "type": "string"
+                },
+                "region": {
+                    "title": "Street Address",
+                    "type": "string",
+                    "localizable": true
+                },
+                "city": {
+                    "title": "Street Address",
+                    "type": "string",
+                    "localizable": true
+                },
+                "postalCode": {
+                    "title": "Street Address",
+                    "type": "string"
+                },
+                "country": {
+                    "title": "Street Address",
+                    "type": "string",
+                    "localizable": true
+                }
+            }
         }
     },
     "properties": {
@@ -32,6 +62,9 @@
                 },
                 "phone": {
                     "$ref": "#/$defs/phonenumber"
+                },
+                "address": {
+                    "$ref": "#address"
                 }
             }
         }
