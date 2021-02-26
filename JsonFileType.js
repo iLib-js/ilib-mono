@@ -173,7 +173,7 @@ JsonFileType.prototype.findRefs = function(root, schema, ref) {
         root["$$refs"] = {};
     }
 
-    root["$$refs"][ref] = schema;    
+    root["$$refs"][ref] = schema;
 
     // currently for simplicity, we only handle intra-schema
     // references so far. We'll have to implement the extra-schema
@@ -387,6 +387,10 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
                 case 'filename':
                     regex += path.basename(pathname);
                     break;
+                case 'extension':
+                    var base = path.basename(pathname);
+                    regex += base.substring(base.lastIndexOf('.')+1);
+                    break;
                 case 'basename':
                     regex += path.basename(pathname, ".json");
                     break;
@@ -438,6 +442,10 @@ JsonFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
                     break;
                 case 'filename':
                     output += path.basename(pathname);
+                    break;
+                case 'extension':
+                    var base = path.basename(pathname);
+                    output += base.substring(base.lastIndexOf('.')+1);
                     break;
                 case 'basename':
                     output += path.basename(pathname, ".json");

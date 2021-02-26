@@ -113,13 +113,24 @@ module.exports.jsonfiletype = {
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathFileename: function(test) {
+    testJsonFileTypeGetLocalizedPathFilename: function(test) {
         test.expect(2);
 
         var jft = new JsonFileType(p);
         test.ok(jft);
 
         test.equals(jft.getLocalizedPath('[localeDir]/tr-[filename]', "x/y/strings.json", "de-DE"), "de/DE/tr-strings.json");
+
+        test.done();
+    },
+
+    testJsonFileTypeGetLocalizedPathExtension: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
 
         test.done();
     },
@@ -551,7 +562,7 @@ module.exports.jsonfiletype = {
                     }
                 }
             };
-    
+
             // should throw an exception while trying to parse the invalid.json
             var jft = new JsonFileType(mockproject);
         });
