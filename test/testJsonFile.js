@@ -27,6 +27,8 @@ if (!JsonFile) {
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
     var ResourceString =  require("loctool/lib/ResourceString.js");
+    var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
+    var ResourceArray =  require("loctool/lib/ResourceArray.js");
 }
 
 function diff(a, b) {
@@ -881,7 +883,7 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeText: function(test) {
+    testJsonFileLocalizeTextSimple: function(test) {
         test.expect(2);
 
         var jf = new JsonFile({
@@ -912,7 +914,121 @@ module.exports.jsonfile = {
            '{\n' +
            '    "string 1": "C\'est la chaîne numéro 1",\n' +
            '    "string 2": "this is string two"\n' +
-           '}\n'
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testJsonFileLocalizeTextWithSchema: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "./json/messages.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '   "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singular",\n' +
+           '            "many": "many",\n' +
+           '            "other": "plural"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b",\n' +
+           '        "c": "d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "string 1",\n' +
+           '            "string 2",\n' +
+           '            "string 3"\n' +
+           '        ]\n' +
+           '    }\n' +
+           '}\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "plurals/bar",
+            sourceStrings: {
+                "one": "singular",
+                "many": "many",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "singulaire",
+                "many": "plupart",
+                "other": "autres"
+            },
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "strings/a",
+            source: "b",
+            sourceLocale: "en-US",
+            target: "la b",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "strings/c",
+            source: "d",
+            sourceLocale: "en-US",
+            target: "la d",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "arrays/asdf",
+            sourceArray: [
+                "string 1",
+                "string 2",
+                "string 3"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "chaîne 1",
+                "chaîne 2",
+                "chaîne 3"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+           '{\n' +
+           '    "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singulaire",\n' +
+           '            "many": "plupart",\n' +
+           '            "other": "autres"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "la b",\n' +
+           '        "c": "la d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "chaîne 1",\n' +
+           '            "chaîne 2",\n' +
+           '            "chaîne 3"\n' +
+           '        ]\n' +
+           '    }\n' +
+           '}\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
