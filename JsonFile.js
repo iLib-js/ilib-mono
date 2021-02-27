@@ -151,7 +151,7 @@ function isPlural(node) {
     });
 }
 
-JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable) {
+JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable, translations, locale) {
     if (!json || !schema) return;
 
     if (typeof(schema["$ref"]) !== 'undefined') {
@@ -166,6 +166,8 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
         schema = otherschema;
     }
 
+    var returnValue;
+
     localizable |= schema.localizable;
 
     if (this.type.hasType(schema)) {
@@ -176,25 +178,99 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
         case "integer":
         case "string":
             if (localizable) {
-                // extract this value
                 if (this.isPrimitive(typeof(json))) {
-                    this.set.add(this.API.newResource({
-                        resType: "string",
-                        project: this.project.getProjectId(),
-                        key: JsonFile.unescapeRef(ref).substring(2),  // strip off the #/ part
-                        sourceLocale: this.project.sourceLocale,
-                        source: String(json),
-                        pathName: this.pathName,
-                        state: "new",
-                        comment: this.comment,
-                        datatype: this.type.datatype,
-                        index: this.resourceIndex++
-                    }));
+                    var text = String(json);
+                    var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+                    if (translations) {
+                        // localize it
+                        var tester = this.API.newResource({
+                            resType: "string",
+                            project: this.project.getProjectId(),
+                            sourceLocale: this.project.getSourceLocale(),
+                            reskey: key,
+                            datatype: this.type.datatype
+                        });
+                        var hashkey = tester.hashKeyForTranslation(locale);
+                        var translated = translations.getClean(hashkey);
+                        var translatedText;
+                        if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                            translatedText = text;
+                        } else if (!translated && this.type && this.type.pseudos[locale]) {
+                            var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                            if (sourceLocale !== this.project.sourceLocale) {
+                                // translation is derived from a different locale's translation instead of from the source string
+                                var sourceRes = translations.getClean(
+                                    tester.cleanHashKey(),
+                                    this.type.datatype);
+                                source = sourceRes ? sourceRes.getTarget() : text;
+                            } else {
+                                source = text;
+                            }
+                            translatedText = this.type.pseudos[locale].getString(source);
+                        } else {
+                            if (translated) {
+                                translatedText = translated.getTarget();
+                            } else {
+                                if (this.type && this.API.utils.containsActualText(text)) {
+                                    logger.trace("New string found: " + text);
+                                    this.type.newres.add(this.API.newResource({
+                                        resType: "string",
+                                        project: this.project.getProjectId(),
+                                        key: key,
+                                        sourceLocale: this.project.sourceLocale,
+                                        source: text,
+                                        targetLocale: locale,
+                                        target: text,
+                                        pathName: this.pathName,
+                                        state: "new",
+                                        datatype: this.type.datatype,
+                                        index: this.resourceIndex++
+                                    }));
+                                    translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
+                                            this.type.missingPseudo.getString(text) : text;
+                                } else {
+                                    translatedText = text;
+                                }
+                            }
+                        }
+                        switch (type) {
+                        case "boolean":
+                            returnValue = (translatedText === "true");
+                            break;
+                        case "number":
+                            returnValue = Number.parseFloat(translatedText);
+                            break;
+                        case "integer":
+                            returnValue = Number.parseInt(translatedText);
+                            break;
+                        default:
+                            returnValue = translatedText;
+                            break;
+                        }
+                    } else {
+                        // extract this value
+                        this.set.add(this.API.newResource({
+                            resType: "string",
+                            project: this.project.getProjectId(),
+                            key: key,
+                            sourceLocale: this.project.sourceLocale,
+                            source: text,
+                            pathName: this.pathName,
+                            state: "new",
+                            comment: this.comment,
+                            datatype: this.type.datatype,
+                            index: this.resourceIndex++
+                        }));
+                        returnValue = json;
+                    }
                 } else {
                     // no way to parse the additional items beyond the end of the array,
                     // so just ignore them
                     logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
+                    returnValue = json;
                 }
+            } else {
+                returnValue = json;
             }
             break;
 
@@ -202,7 +278,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
             if (!ilib.isArray(json)) {
                logger.warn(this.pathName + '/' + ref + " is a " +
                    typeof(json) + " but should be an array according to the schema... skipping.");
-                return;
+                return null;
             }
             // Convert all items to Strings so we can process them properly
             var sourceArray = json.map(function(item) {
@@ -221,6 +297,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                 datatype: this.type.datatype,
                 index: this.resourceIndex++
             }));
+            returnValue = sourceArray;
             break;
 
         case "object":
@@ -244,31 +321,39 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                     datatype: this.type.datatype,
                     index: this.resourceIndex++
                 }));
+                returnValue = json;
             } else {
-	            var props = Object.keys(json);
-	            props.forEach(function(prop) {
-	                if (schema.properties && schema.properties[prop]) {
-	                    this.parseObj(
-	                        json[prop],
-	                        root,
-	                        schema.properties[prop],
-	                        ref + '/' + JsonFile.escapeRef(prop),
-	                        prop,
-	                        localizable);
-	                } else if (schema.additionalProperties) {
-	                    this.parseObj(
-	                        json[prop],
-	                        root,
-	                        schema.additionalProperties,
-	                        ref + '/' + JsonFile.escapeRef(prop),
-	                        prop,
-	                        localizable);
-	                }
-	            }.bind(this));
+                returnValue = {};
+                var props = Object.keys(json);
+                props.forEach(function(prop) {
+                    if (schema.properties && schema.properties[prop]) {
+                        returnValue[prop] = this.parseObj(
+                            json[prop],
+                            root,
+                            schema.properties[prop],
+                            ref + '/' + JsonFile.escapeRef(prop),
+                            prop,
+                            localizable,
+                            translations,
+                            locale);
+                    } else if (schema.additionalProperties) {
+                        returnValue[prop] = this.parseObj(
+                            json[prop],
+                            root,
+                            schema.additionalProperties,
+                            ref + '/' + JsonFile.escapeRef(prop),
+                            prop,
+                            localizable,
+                            translations,
+                            locale);
+                    }
+                }.bind(this));
             }
             break;
         }
     }
+
+    return returnValue;
 };
 
 /**
@@ -279,10 +364,10 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
 JsonFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
 
-    var json = JSON5.parse(data);
+    this.json = JSON5.parse(data);
 
     // "#" is the root reference
-    this.parseObj(json, this.schema, this.schema, "#", "root", false);
+    this.parseObj(this.json, this.schema, this.schema, "#", "root", false);
 };
 
 /**
@@ -337,119 +422,9 @@ JsonFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 JsonFile.prototype.localizeText = function(translations, locale) {
-    this.segments.rewind();
-    var segment = this.segments.current();
-    var output = "";
-    var substitution, replacement;
-
-    this.resourceIndex = 0;
-
-    while (segment) {
-        if (segment.localizable) {
-            var text = (segment.message && segment.message.getMinimalString()) || segment.text;
-            var key = this.makeKey(this.API.utils.escapeInvalidChars(text));
-            var tester = this.API.newResource({
-                resType: "string",
-                project: this.project.getProjectId(),
-                sourceLocale: this.project.getSourceLocale(),
-                reskey: key,
-                datatype: this.type.datatype
-            });
-            var hashkey = tester.hashKeyForTranslation(locale);
-            var translated = translations.getClean(hashkey);
-
-            if (segment.attributeSubstitution) {
-                if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                    substitution = text;
-                } else if (!translated && this.type && this.type.pseudos[locale]) {
-                    var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                    if (sourceLocale !== this.project.sourceLocale) {
-                        // translation is derived from a different locale's translation instead of from the source string
-                        var sourceRes = translations.getClean(tester.hashKeyForTranslation(sourceLocale));
-                        source = sourceRes ? sourceRes.getTarget() : text;
-                    } else {
-                        source = text;
-                    }
-                    substitution = this.type.pseudos[locale].getString(source);
-                } else {
-                    substitution = translated ? translated.getTarget() : text;
-                }
-
-                replacement = segment.replacement;
-
-                substitution = this.API.utils.escapeQuotes(substitution);
-            } else {
-                if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                    additional = text;
-                } else if (!translated && this.type && this.type.pseudos[locale]) {
-                    var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                    if (sourceLocale !== this.project.sourceLocale) {
-                        // translation is derived from a different locale's translation instead of from the source string
-                        var sourceRes = translations.getClean(ResourceString.cleanHashKey(
-                                this.project.getProjectId(), sourceLocale, this.makeKey(this.API.utils.escapeInvalidChars(text)), this.type.datatype));
-                        source = sourceRes ? sourceRes.getTarget() : text;
-                    } else {
-                        source = text;
-                    }
-                    additional = this.type.pseudos[locale].getString(source);
-                } else {
-                    var additional;
-                    if (translated) {
-                        additional = translated.getTarget();
-                    } else {
-                        if (this.type && this.API.utils.containsActualText(text)) {
-                            logger.trace("New string found: " + text);
-                            this.type.newres.add(this.API.newResource({
-                                resType: "string",
-                                project: this.project.getProjectId(),
-                                key: this.makeKey(this.API.utils.escapeInvalidChars(text)),
-                                sourceLocale: this.project.sourceLocale,
-                                source: this.API.utils.escapeInvalidChars(text),
-                                targetLocale: locale,
-                                target: this.API.utils.escapeInvalidChars(text),
-                                autoKey: true,
-                                pathName: this.pathName,
-                                state: "new",
-                                datatype: this.type.datatype,
-                                index: this.resourceIndex++
-                            }));
-                            additional = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
-                                    this.type.missingPseudo.getString(text) : text;
-                        } else {
-                            additional = text;
-                        }
-                    }
-                }
-
-                var ma = MessageAccumulator.create(additional, segment.message);
-                additional = ma.root.toArray().map(nodeToString).join('');
-
-                if (substitution) {
-                    additional = additional.replace(replacement, substitution);
-                    substitution = undefined;
-                    replacement = undefined;
-                }
-
-                if (this.project.settings.identify) {
-                    // make it clear what is the resource is for this string
-                    additional = '<span loclang="json" x-locid="' + this.API.utils.escapeQuotes(this.makeKey(this.API.utils.escapeInvalidChars(text))) + '">' + additional + '</span>';
-                }
-
-                if (segment.escape) {
-                    additional = this.API.utils.escapeQuotes(additional);
-                }
-
-                output += additional;
-            }
-        } else {
-            output += segment.text;
-        }
-
-        this.segments.next();
-        segment = this.segments.current();
-    }
-
-    return output;
+        // "#" is the root reference
+    var returnValue = this.parseObj(this.json, this.schema, this.schema, "#", "root", false, translations, locale);
+    return JSON.stringify(returnValue, undefined, 4) + '\n';
 };
 
 /**

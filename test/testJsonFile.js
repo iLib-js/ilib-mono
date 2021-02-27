@@ -107,7 +107,7 @@ module.exports.jsonfile = {
 
         var jf = new JsonFile({
             project: p,
-            pathName: "./testfiles/json/test1.json",
+            pathName: "./testfiles/json/messages.json",
             type: t
         });
 
@@ -741,207 +741,10 @@ module.exports.jsonfile = {
 
         test.done();
     },
-
 /*
+    can't do comments yet
 
-    testJsonFileParseWithDups: function(test) {
-        test.expect(6);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '       This is a test\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.equal(set.size(), 2);
-
-        test.done();
-    },
-
-    testJsonFileParseEscapeInvalidChars: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div id="foo">\n' +
-                '           This is also a \u0003 test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // should use json entities to represent the invalid control chars
-        var r = set.getBySource("This is also a &#3; test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a &#3; test");
-        test.equal(r.getKey(), "r1041204778");
-
-        test.done();
-    },
-
-    testJsonTemplateFileParseIgnoreDoctypeTag: function(test) {
-        test.expect(9);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse(
-            '<!DOCTYPE json PUBLIC "-//W3C//DTD XJson 1.0 Strict//EN" "http://www.w3.org/TR/xjson1/DTD/xjson1-strict.dtd">\n' +
-            '<json>\n' +
-            '   <body>\n' +
-            '       This is a test\n' +
-            '       <div id="foo">\n' +
-            '           This is also a test\n' +
-            '       </div>\n' +
-            '       This is a test\n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testJsonFileParseDontEscapeWhitespaceChars: function(test) {
-        test.expect(5);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div id="foo">\n' +
-                '           This is also a \u000C test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        // leave the whitespace control chars alone
-        var r = set.getBySource("This is also a \u000C test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a \u000C test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testJsonFileParseLocalizableAttributes: function(test) {
-        test.expect(11);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <img src="http://www.test.test/foo.png" alt="Alternate text">\n' +
-                '       This is a test\n' +
-                '       <input type="text" placeholder="localizable placeholder here">\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        r = set.getBySource("Alternate text");
-        test.ok(r);
-        test.equal(r.getSource(), "Alternate text");
-        test.equal(r.getKey(), "r1051764073");
-
-        r = set.getBySource("localizable placeholder here");
-        test.ok(r);
-        test.equal(r.getSource(), "localizable placeholder here");
-        test.equal(r.getKey(), "r734414247");
-
-        test.done();
-    },
-
-    testJsonFileParseLocalizableAttributesSkipEmpty: function(test) {
-        test.expect(6);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <img src="http://www.test.test/foo.png" alt="">\n' +
-                '       This is a test\n' +
-                '       <input type="text" placeholder="">\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testJsonFileParseLocalizableAttributesAndNonBreakingTags: function(test) {
+    testJsonFileParseExtractComments: function(test) {
         test.expect(8);
 
         var jf = new JsonFile({
@@ -950,196 +753,41 @@ module.exports.jsonfile = {
         });
         test.ok(jf);
 
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <a href="foo.json" title="localizable title">a test</a> of non-breaking tags.\n' +
-                '   </body>\n' +
-                '</json>\n');
+        jf.parse(
+           '{\n' +
+           '    // comment for string 1\,' +
+           '    "string 1": "this is string one",\n' +
+           '    // comment for string 2\,' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
 
         var set = jf.getTranslationSet();
         test.ok(set);
 
-        var r = set.getBySource('This is <c0>a test</c0> of non-breaking tags.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0>a test</c0> of non-breaking tags.');
-        test.equal(r.getKey(), 'r1063253939');
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
 
-        r = set.getBySource("localizable title");
-        test.ok(r);
-        test.equal(r.getSource(), "localizable title");
-        test.equal(r.getKey(), "r160369622");
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getNote(), "comment for string 1");
 
-        test.done();
-    },
-
-    testJsonFileParseI18NComments: function(test) {
-        test.expect(6);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <!-- i18n: this describes the text below -->\n' +
-                '       This is a test of the emergency parsing system.  \n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-        test.equal(r.getComment(), "this describes the text below");
+        test.equal(resources[1].getSource(), "this is string two");
+        test.equal(resources[1].getKey(), "string 2");
 
         test.done();
     },
 
-    testJsonFileParseIgnoreScriptTags: function(test) {
-        test.expect(6);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json><body>\n' +
-            '<script type="javascript">\n' +
-            'if (window) {\n' +
-            '  $(".foo").class("asdf");\n' +
-            '}\n' +
-            '</script>\n' +
-            '<span class="foo">foo</span>\n' +
-            '</body></json>');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
-
-    testJsonFileParseIgnoreStyleTags: function(test) {
-        test.expect(6);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json><body>\n' +
-            '<style>\n' +
-            '  .activity_title{\n' +
-            '    font-size: 18px;\n' +
-            '    font-weight: 300;\n' +
-            '    color: #777;\n' +
-            '    line-height: 40px;\n' +
-            '  }\n' +
-            '</style>\n' +
-            '<span class="foo">foo</span>\n' +
-            '</body></json>');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
-
-    testJsonFileParseIgnoreCodeTags: function(test) {
-        test.expect(6);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json><body>\n' +
-            '<span class="foo">foo</span>\n' +
-            '<code>\n' +
-            '  var js = new ResBundle();\n' +
-            '  var str = js.getString("Test String");\n' +
-            '</code>\n' +
-            '</body></json>');
-
-        var set = jf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
+*/
 
     testJsonFileExtractFile: function(test) {
-        test.expect(11);
+        test.expect(28);
 
         var base = path.dirname(module.id);
 
         var jf = new JsonFile({
             project: p,
-            pathName: "./json/CookieFlow.json",
-            type: t
-        });
-        test.ok(jf);
-
-        // should read the file
-        jf.extract();
-
-        var set = jf.getTranslationSet();
-
-        test.equal(set.size(), 3);
-
-        var r = set.getBySource("Get insurance quotes for free!");
-        test.ok(r);
-        test.equal(r.getSource(), "Get insurance quotes for free!");
-        test.equal(r.getKey(), "r308704783");
-
-        r = set.getBySource("Send question");
-        test.ok(r);
-        test.equal(r.getSource(), "Send question");
-        test.equal(r.getKey(), "r458583963");
-
-        r = set.getBySource("Ask");
-        test.ok(r);
-        test.equal(r.getSource(), "Ask");
-        test.equal(r.getKey(), "r30868880");
-
-        test.done();
-    },
-
-    testJsonFileExtractFile2: function(test) {
-        test.expect(17);
-
-        var base = path.dirname(module.id);
-
-        var jf = new JsonFile({
-            project: p,
-            pathName: "./json/topic_navigation_main.json",
+            pathName: "./json/messages.json",
             type: t
         });
         test.ok(jf);
@@ -1151,30 +799,41 @@ module.exports.jsonfile = {
 
         test.equal(set.size(), 5);
 
-        var r = set.getBySource("Description");
-        test.ok(r);
-        test.equal(r.getSource(), "Description");
-        test.equal(r.getKey(), "r398698468");
+        var resources = set.getAll();
+        test.equal(resources.length, 5);
 
-        r = set.getBySource('Authored by <c0>John Smith</c0>');
-        test.ok(r);
-        test.equal(r.getSource(), 'Authored by <c0>John Smith</c0>');
-        test.equal(r.getKey(), 'r389685457');
+        test.equal(resources[0].getType(), "plural");
+        var categories = resources[0].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one");
+        test.equal(categories.other, "other");
+        test.equal(resources[0].getKey(), "plurals/bar");
 
-        r = set.getBySource('Agreed');
-        test.ok(r);
-        test.equal(r.getSource(), 'Agreed');
-        test.equal(r.getKey(), 'r906242212');
+        test.equal(resources[1].getType(), "array");
+        var arr = resources[1].getSourceArray();
+        test.ok(arr);
+        test.equal(arr.length, 3);
+        test.equal(arr[0], "value 1");
+        test.equal(arr[1], "value 2");
+        test.equal(arr[2], "value 3");
+        test.equal(resources[1].getKey(), "arrays/asdf");
 
-        r = set.getBySource('and <c0><c1>8</c1> of your friends agree</c0>');
-        test.ok(r);
-        test.equal(r.getSource(), 'and <c0><c1>8</c1> of your friends agree</c0>');
-        test.equal(r.getKey(), 'r997712256');
+        test.equal(resources[2].getType(), "array");
+        var arr = resources[2].getSourceArray();
+        test.ok(arr);
+        test.equal(arr.length, 3);
+        test.equal(arr[0], "1");
+        test.equal(arr[1], "2");
+        test.equal(arr[2], "3");
+        test.equal(resources[2].getKey(), "arrays/asdfasdf");
 
-        r = set.getBySource("Write a better description &raquo;");
-        test.ok(r);
-        test.equal(r.getSource(), "Write a better description &raquo;");
-        test.equal(r.getKey(), "r291101881");
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "b");
+        test.equal(resources[3].getKey(), "strings/a");
+
+        test.equal(resources[4].getType(), "string");
+        test.equal(resources[4].getSource(), "d");
+        test.equal(resources[4].getKey(), "strings/c");
 
         test.done();
     },
@@ -1231,27 +890,36 @@ module.exports.jsonfile = {
         });
         test.ok(jf);
 
-        jf.parse('<json><body>This is a test</body></json>\n');
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: "r654479252",
-            source: "This is a test",
+            key: "string 1",
+            source: "this is string one",
             sourceLocale: "en-US",
-            target: "Ceci est un essai",
+            target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
             datatype: "json"
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected = '<json><body>Ceci est un essai</body></json>\n';
+        var expected =
+           '{\n' +
+           '    "string 1": "C\'est la chaîne numéro 1",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n'
 
         diff(actual, expected);
         test.equal(actual, expected);
         test.done();
     },
 
+/*
     testJsonFileLocalizeTextPreserveWhitespace: function(test) {
         test.expect(2);
 

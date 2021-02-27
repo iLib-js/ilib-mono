@@ -14,7 +14,8 @@ of Json5, so Json5 is the most flexible standard to
 process.
 
 This means you can put comments in the json
-file itself if you like. Some of these comments are
+file itself or have trailing commas, etc.
+Some of these comments are
 processed along with string values to add optional
 translator comments to the strings. The localized
 output files will conform to older versions of json
@@ -24,16 +25,19 @@ output files will conform to older versions of json
 Json files are localized in one of three different
 methods:
 
-1. By making a copy of the entire source file
-and replacing values in the copy with translations. The
-copy can be put into the directory of your choice and
-named after the locale. This is the default method that
+1. copy. Make a copy of the entire source file
+and replace values of certain properties in the
+copy with translations. The copy can be sent to
+any output desired directory using a template.
+Copy is the default method with which
 localized json files are handled.
-1. By making a copy of the source file where only
-the localized properties appear.
-1. By replacing a string value in the source file
-   with an object that maps the name
-   of the locale to the translation of that string:
+1. copySparse. Make a copy of the source file where only
+the localized properties appear. The copy has the same
+structure as the original json file, but only properties
+where the value is localized appear in the output.
+1. spreadSmall. Update values in the source json file
+with an object that maps from locale names to
+translations of the original string:
 
     ```json
     {
@@ -53,7 +57,7 @@ the localized properties appear.
     }
     ```
 
-1. By replacing a string value in the source file with
+1. spreadBig. Replace a string value in the source file with
    an array of objects that describe the translations:
 
     ```json
@@ -86,20 +90,21 @@ the localized properties appear.
 The first method, localizing the entire file, has the
 advantage that you don't need to change your code in
 order to read the translated file. You just need to pick
-the file for the right locale.
+the righ file for the current locale.
 
 The second method is similar to the
 first method above, except that it can save space
-because all of the non-localizable data is not duplicated.
+because all of the non-localizable data in the original
+json file is not duplicated.
 In this case, you would need to load in the English file
 first, then mix-in the localized file to override all
 the localizable strings.
 
 ## Key/Value Pairs
 
-Since this method is easier, we will describe this one
-first. In the absence of any other information, this
-plugin will assume the json file is a simple object
+In the absence of any schema information, a default
+schema will be applied. The
+plugin will assume thjat the json file is a simple object
 where the property names are the keys and the property
 values are the strings to translate.
 
@@ -136,26 +141,26 @@ of your `project.json` file. The following settings are
 used within the json property:
 
 - schemas: a string naming a directory full of json schema files, or
-  an array of strings naming some json schema files or directories. If
-  the json file
+  an array of strings naming some json schema files or directories to
+  load. If the json file
   does not fit any of the schema (ie. it does not validate according to
   any one of the schema), then that file will be skipped and not localized.
 - mappings: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
-  json files within the project to be localized in different ways.
+  json files within the project to be processed with different schema.
   The matchers are
-  a [minimatch-style string](https://www.npmjs.com/package/minimatch),
+  a [micromatch-style string](https://www.npmjs.com/package/micromatch),
   similar to the the `includes` and `excludes` section of a
-  `project.json` file. The value of that mapping in an object that
+  `project.json` file. The value of that mapping is an object that
   can contain the following properties:
     - schema: schema to use with that matcher. The schema is 
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above.
-    - method: one of "copy", "stringsOnly", "spreadSmall",
+    - method: one of "copy", "copySparse", "spreadSmall",
       or "spreadBig".
         - copy: make a copy of the source file and localize the
           string contents
-        - stringsOnly: make a copy of the source file but only
+        - copySparse: make a copy of the source file but only
           include localized strings
         - spreadSmall: replace each localizable string in the
           source file with an object that maps locale names to
@@ -163,13 +168,14 @@ used within the json property:
         - spreadBig: replace each localizable string in the source
           file with an array of objects that give the translations
           of the strings
-    - template: a file name template to use to name the translated
+    - template: a path template to use to generate the path to
+      the translated
       output files. The template replaces strings in square brackets
       with special values, and keeps any characters intact that are
       not in square brackets. If the method is set to "spreadSmall"
       or "spreadBig", the template is not required because this plugin
       will modify the source file directly. The plugin recognizes
-      and replaces the following things in template strings:
+      and replaces the following strings in template strings:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.json" -> "foo/bar"
@@ -177,6 +183,8 @@ used within the json property:
           eg. "foo/bar/strings.json" -> "strings.json"
         - [basename] the basename of the matching file without any extension
           eg. "foo/bar/strings.json" -> "strings"
+        - [extension] the extension part of the file name of the source file.
+          etc. "foo/bar/strings.json" -> "json"
         - [locale] the full BCP-47 locale specification for the target locale
           eg. "zh-Hans-CN" -> "zh-Hans-CN"
         - [language] the language portion of the full locale
