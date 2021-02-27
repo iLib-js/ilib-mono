@@ -67,6 +67,16 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[localeDir]/messages.json"
             },
+            "**/sparse.json": {
+                "schema": "strings-schema",
+                "method": "sparse",
+                "template": "resources/[localeDir]/sparse.json"
+            },
+            "**/sparse2.json": {
+                "schema": "http://github.com/ilib-js/messages.json",
+                "method": "sparse",
+                "template": "resources/[localeDir]/sparse2.json"
+            },
             "**/deep.json": {
                 "schema": "http://github.com/ilib-js/deep.json",
                 "method": "copy",
@@ -1035,940 +1045,125 @@ module.exports.jsonfile = {
         test.done();
     },
 
-/*
-    testJsonFileLocalizeTextPreserveWhitespace: function(test) {
+    testJsonFileLocalizeTextMethodSparse: function(test) {
         test.expect(2);
 
         var jf = new JsonFile({
             project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '<body>\n' +
-                '     This is a test    \n' +
-                '</body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '<body>\n' +
-            '     Ceci est un essai    \n' +
-            '</body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextPreserveSelfClosingTags: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '<body>\n' +
-                '     <div class="foo"/>\n' +
-                '     This is a test    \n' +
-                '</body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '<body>\n' +
-            '     <div class="foo"/>\n' +
-            '     Ceci est un essai    \n' +
-            '</body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextMultiple: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       Ceci est un essai\n' +
-                '       <div id="foo">\n' +
-                '           Ceci est aussi un essai\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextWithDups: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '       This is a test\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       Ceci est un essai\n' +
-                '       <div id="foo">\n' +
-                '           Ceci est aussi un essai\n' +
-                '       </div>\n' +
-                '       Ceci est un essai\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextWithDoctypeTag: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
+            pathName: "./json/sparse.json",
             type: t
         });
         test.ok(jf);
 
         jf.parse(
-            '<!DOCTYPE json PUBLIC "-//W3C//DTD XJson 1.0 Strict//EN" "http://www.w3.org/TR/xjson1/DTD/xjson1-strict.dtd">\n' +
-            '<json>\n' +
-            '   <body>\n' +
-            '       This is a test\n' +
-            '       <div id="foo">\n' +
-            '           This is also a test\n' +
-            '       </div>\n' +
-            '   </body>\n' +
-            '</json>\n');
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
 
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: "r654479252",
-            source: "This is a test",
+            key: "string 1",
+            source: "this is string one",
             sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
+            target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
             datatype: "json"
         }));
 
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<!DOCTYPE json PUBLIC "-//W3C//DTD XJson 1.0 Strict//EN" "http://www.w3.org/TR/xjson1/DTD/xjson1-strict.dtd">\n' +
-            '<json>\n' +
-            '   <body>\n' +
-            '       Ceci est un essai\n' +
-            '       <div id="foo">\n' +
-            '           Ceci est aussi un essai\n' +
-            '       </div>\n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextSkipScript: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <head>\n' +
-                '   <script>\n' +
-                '// comment text\n' +
-                'if (locales.contains[thisLocale]) {\n' +
-                '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
-                '}\n' +
-                '   </head>\n' +
-                '   </script>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '   <head>\n' +
-            '   <script>\n' +
-            '// comment text\n' +
-            'if (locales.contains[thisLocale]) {\n' +
-            '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
-            '}\n' +
-            '   </head>\n' +
-            '   </script>\n' +
-            '   <body>\n' +
-            '       Ceci est un essai\n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextNonBreakingTags: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a <em>test</em> of the emergency parsing system.  \n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '   <body>\n' +
-            '       Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.  \n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextNonBreakingTagsOutside: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <span id="foo" class="bar">  This is a test of the emergency parsing system.  </span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '   <body>\n' +
-            '       <span id="foo" class="bar">  Ceci est un essai du système d\'analyse syntaxique de l\'urgence.  </span>\n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextNonBreakingTagsInside: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r124733470',
-            source: 'This is <c0> a test of the emergency parsing </c0> system.',
-            target: 'Ceci est <c0> un essai du système d\'analyse syntaxique de l\'urgence.</c0>',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '   <body>\n' +
-            '       Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence.</span>\n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextNonBreakingTagsInsideMultiple: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r772812508',
-            source: 'This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.',
-            target: 'Ceci est <c0> un essai du système d\'analyse syntaxique de <c1>l\'urgence</c1>.</c0>',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-            '<json>\n' +
-            '   <body>\n' +
-            '       Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n' +
-            '   </body>\n' +
-            '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextNonBreakingTagsNotWellFormed: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r417724998',
-            source: 'This is <c0> a test of the <c1>emergency parsing </c1></c0> system.',
-            target: 'Ceci est <c0> un essai du système d\'analyse syntaxique de <c1>l\'urgence.</c1></c0>',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div>This is <span id="foo" class="bar"> a test of the <em>emergency parsing </div> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r215850552',
-            source: 'This is <c0> a test of the <c1>emergency parsing </c1></c0>',
-            target: 'Ceci est <c0> un essai du système <c1>d\'analyse syntaxique </c1></c0>',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       <div>Ceci est <span id="foo" class="bar"> un essai du système <em>d\'analyse syntaxique </em></span></div> system.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextLocalizableTitle: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <div title="This value is localizable">\n' +
-                '           This is a test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r922503175',
-            source: 'This value is localizable',
-            target: 'Cette valeur est localisable',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       <div title="Cette valeur est localisable">\n' +
-                '           Ceci est un essai\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextLocalizableAttributes: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <img src="http://www.test.test/foo.png" alt="Alternate text">\n' +
-                '       This is a test\n' +
-                '       <input type="text" placeholder="localizable placeholder here">\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1051764073',
-            source: 'Alternate text',
-            target: 'Texte alternative',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r734414247',
-            source: 'localizable placeholder here',
-            target: 'espace réservé localisable ici',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       <img src="http://www.test.test/foo.png" alt="Texte alternative">\n' +
-                '       Ceci est un essai\n' +
-                '       <input type="text" placeholder="espace réservé localisable ici">\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextLocalizableAttributesAndNonBreakingTags: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is <a href="foo.json" title="localizable title">a test</a> of non-breaking tags.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1063253939',
-            source: 'This is <c0>a test</c0> of non-breaking tags.',
-            target: 'Ceci est <c0>un essai</c0> des balises non-ruptures.',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r160369622',
-            source: 'localizable title',
-            target: 'titre localisable',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       Ceci est <a href="foo.json" title="titre localisable">un essai</a> des balises non-ruptures.\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextI18NComments: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <!-- i18n: this describes the text below -->\n' +
-                '       This is a test of the emergency parsing system.  \n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r699762575',
-            source: 'This is a test of the emergency parsing system.',
-            target: 'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        test.equal(jf.localizeText(translations, "fr-FR"),
-                '<json>\n' +
-                '   <body>\n' +
-                '       \n' +
-                '       Ceci est un essai du système d\'analyse syntaxique de l\'urgence.  \n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        test.done();
-    },
-
-    testJsonFileLocalizeTextIdentifyResourceIds: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p2,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This is a test\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '       This is a test\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
+        var actual = jf.localizeText(translations, "fr-FR");
         var expected =
-            '<json>\n' +
-            '   <body>\n' +
-            '       <span loclang="json" x-locid="r654479252">Ceci est un essai</span>\n' +
-            '       <div id="foo">\n' +
-            '           <span loclang="json" x-locid="r999080996">Ceci est aussi un essai</span>\n' +
-            '       </div>\n' +
-            '       <span loclang="json" x-locid="r654479252">Ceci est un essai</span>\n' +
-            '   </body>\n' +
-            '</json>\n';
-           var actual = jf.localizeText(translations, "fr-FR");
+           '{\n' +
+           '    "string 1": "C\'est la chaîne numéro 1"\n' +
+           '}\n';
 
-           diff(actual, expected);
+        diff(actual, expected);
         test.equal(actual, expected);
         test.done();
     },
 
-    testJsonFileLocalizeTextIdentifyResourceIdsWithAttributes: function(test) {
+    testJsonFileLocalizeTextWithSchemaSparseComplex: function(test) {
         test.expect(2);
 
         var jf = new JsonFile({
-            project: p2,
+            project: p,
+            pathName: "./json/sparse2.json",
             type: t
         });
         test.ok(jf);
 
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       <area alt="placeholder text">This is a test</area>\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
+        jf.parse(
+           '{\n' +
+           '   "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singular",\n' +
+           '            "many": "many",\n' +
+           '            "other": "plural"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b",\n' +
+           '        "c": "d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "string 1",\n' +
+           '            "string 2",\n' +
+           '            "string 3"\n' +
+           '        ]\n' +
+           '    }\n' +
+           '}\n');
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ResourcePlural({
             project: "foo",
-            key: "r561033628",
-            source: "placeholder text",
+            key: "plurals/bar",
+            sourceStrings: {
+                "one": "singular",
+                "many": "many",
+                "other": "plural"
+            },
             sourceLocale: "en-US",
-            target: "Texte de l'espace réservé",
+            targetStrings: {
+                "one": "singulaire",
+                "many": "plupart",
+                "other": "autres"
+            },
             targetLocale: "fr-FR",
             datatype: "json"
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
+            key: "strings/a",
+            source: "b",
             sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
+            target: "la b",
             targetLocale: "fr-FR",
             datatype: "json"
         }));
 
+        var actual = jf.localizeText(translations, "fr-FR");
         var expected =
-            '<json>\n' +
-            '   <body>\n' +
-            '       <area alt="&lt;span loclang=&quot;json&quot; x-locid=&quot;r561033628&quot;&gt;Texte de l&apos;espace réservé&lt;/span&gt;"><span loclang="json" x-locid="r654479252">Ceci est un essai</span></area>\n' +
-            '       <div id="foo">\n' +
-            '           <span loclang="json" x-locid="r999080996">Ceci est aussi un essai</span>\n' +
-            '       </div>\n' +
-            '   </body>\n' +
-            '</json>\n';
-           var actual = jf.localizeText(translations, "fr-FR");
+           '{\n' +
+           '    "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singulaire",\n' +
+           '            "many": "plupart",\n' +
+           '            "other": "autres"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "la b"\n' +
+           '    }\n' +
+           '}\n';
 
-           diff(actual, expected);
+        diff(actual, expected);
         test.equal(actual, expected);
         test.done();
     },
 
-    testJsonFileLocalizeTextIdentifyResourceIdsWithEmbeddedAttributes: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p2,
-            type: t
-        });
-        test.ok(jf);
-
-        jf.parse('<json>\n' +
-                '   <body>\n' +
-                '       This <span title="placeholder text">is a test</span>\n' +
-                '       <div id="foo">\n' +
-                '           This is also a test\n' +
-                '       </div>\n' +
-                '   </body>\n' +
-                '</json>\n');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r561033628",
-            source: "placeholder text",
-            sourceLocale: "en-US",
-            target: "Texte de l'espace réservé",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r325440473',
-            source: 'This <c0>is a test</c0>',
-            sourceLocale: "en-US",
-            target: 'Ceci <c0>est un essai</c0>',
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        var expected =
-            '<json>\n' +
-            '   <body>\n' +
-            '       <span loclang="json" x-locid="r325440473">Ceci <span title="Texte de l&apos;espace réservé">est un essai</span></span>\n' +
-            '       <div id="foo">\n' +
-            '           <span loclang="json" x-locid="r999080996">Ceci est aussi un essai</span>\n' +
-            '       </div>\n' +
-            '   </body>\n' +
-            '</json>\n';
-           var actual = jf.localizeText(translations, "fr-FR");
-
-           diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testJsonFileGetLocalizedPathSimple: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            pathName: "simple.json",
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.getLocalizedPath("fr-FR"), "simple.fr-FR.json");
-
-        test.done();
-    },
-
-    testJsonFileGetLocalizedPathComplex: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            pathName: "./asdf/bar/simple.json",
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.json");
-
-        test.done();
-    },
-
-    testJsonFileGetLocalizedPathRegularJsonFileName: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            pathName: "./asdf/bar/simple.json",
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.json");
-
-        test.done();
-    },
-
-    testJsonFileGetLocalizedPathNotEnoughParts: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            pathName: "./asdf/bar/simple",
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR");
-
-        test.done();
-    },
-
-    testJsonFileGetLocalizedSourceLocale: function(test) {
-        test.expect(2);
-
-        var jf = new JsonFile({
-            project: p,
-            pathName: "./asdf/bar/simple.en-US.json",
-            type: t
-        });
-        test.ok(jf);
-
-        test.equal(jf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.json");
-
-        test.done();
-    },
+/*
 
     testJsonFileLocalize: function(test) {
         test.expect(7);

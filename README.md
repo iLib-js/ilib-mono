@@ -31,7 +31,7 @@ copy with translations. The copy can be sent to
 any output desired directory using a template.
 Copy is the default method with which
 localized json files are handled.
-1. copySparse. Make a copy of the source file where only
+1. sparse. Make a copy of the source file where only
 the localized properties appear. The copy has the same
 structure as the original json file, but only properties
 where the value is localized appear in the output.
@@ -156,11 +156,11 @@ used within the json property:
     - schema: schema to use with that matcher. The schema is 
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above.
-    - method: one of "copy", "copySparse", "spreadSmall",
+    - method: one of "copy", "sparse", "spreadSmall",
       or "spreadBig".
         - copy: make a copy of the source file and localize the
           string contents
-        - copySparse: make a copy of the source file but only
+        - sparse: make a copy of the source file but only
           include localized strings
         - spreadSmall: replace each localizable string in the
           source file with an object that maps locale names to

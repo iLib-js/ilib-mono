@@ -151,6 +151,23 @@ function isPlural(node) {
     });
 }
 
+function isNotEmpty(obj) {
+    if (!obj) {
+        return false;
+    } else if (isPrimitive(typeof(obj))) {
+        return typeof(obj) !== 'undefined';
+    } else if (ilib.isArray(obj)) {
+        return obj.length > 0;
+    } else {
+        for (var prop in obj) {
+            if (isNotEmpty(obj[prop])) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 /**
  * Recursively visit every node in an object and call the visitor on any
  * primitive values.
@@ -176,6 +193,10 @@ function objectMap(object, visitor) {
         return ret;
     }
 }
+
+JsonFile.prototype.sparseValue = function(value) {
+    return (!this.mapping || !this.mapping.method || this.mapping.method !== "sparse") ? value : undefined;
+};
 
 JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable, translations, locale) {
     if (!json || !schema) return;
@@ -220,7 +241,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                         var translated = translations.getClean(hashkey);
                         var translatedText;
                         if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                            translatedText = text;
+                            translatedText = this.sparseValue(text);
                         } else if (!translated && this.type && this.type.pseudos[locale]) {
                             var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                             if (sourceLocale !== this.project.sourceLocale) {
@@ -254,24 +275,27 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                     }));
                                     translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
                                             this.type.missingPseudo.getString(text) : text;
+                                    translatedText = this.sparseValue(translatedText);
                                 } else {
-                                    translatedText = text;
+                                    translatedText = this.sparseValue(text);
                                 }
                             }
                         }
-                        switch (type) {
-                        case "boolean":
-                            returnValue = (translatedText === "true");
-                            break;
-                        case "number":
-                            returnValue = Number.parseFloat(translatedText);
-                            break;
-                        case "integer":
-                            returnValue = Number.parseInt(translatedText);
-                            break;
-                        default:
-                            returnValue = translatedText;
-                            break;
+                        if (translatedText) {
+	                        switch (type) {
+	                        case "boolean":
+	                            returnValue = (translatedText === "true");
+	                            break;
+	                        case "number":
+	                            returnValue = Number.parseFloat(translatedText);
+	                            break;
+	                        case "integer":
+	                            returnValue = Number.parseInt(translatedText);
+	                            break;
+	                        default:
+	                            returnValue = translatedText;
+	                            break;
+	                        }
                         }
                     } else {
                         // extract this value
@@ -287,16 +311,16 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                             datatype: this.type.datatype,
                             index: this.resourceIndex++
                         }));
-                        returnValue = json;
+                        returnValue = this.sparseValue(text);
                     }
                 } else {
                     // no way to parse the additional items beyond the end of the array,
                     // so just ignore them
                     logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
-                    returnValue = json;
+                    returnValue = this.sparseValue(json);
                 }
             } else {
-                returnValue = json;
+                returnValue = this.sparseValue(json);
             }
             break;
 
@@ -326,7 +350,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                     var translated = translations.getClean(hashkey);
                     var translatedArray;
                     if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                        translatedArray = sourceArray;
+                        translatedArray = this.sparseValue(sourceArray);
                     } else if (!translated && this.type && this.type.pseudos[locale]) {
                         var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                         if (sourceLocale !== this.project.sourceLocale) {
@@ -364,11 +388,12 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                     translatedArray = sourceArray.map(function(item) {
                                         return this.type.missingPseudo.getString(item);
                                     }.bind(this));
+                                    translatedArray = this.sparseValue(translatedArray);
                                 } else {
-                                    translatedArray = sourceArray;
+                                    translatedArray = this.sparseValue(sourceArray);
                                 }
                             } else {
-                                translatedArray = sourceArray;
+                                translatedArray = this.sparseValue(sourceArray);
                             }
                         }
                     }
@@ -387,10 +412,10 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                         datatype: this.type.datatype,
                         index: this.resourceIndex++
                     }));
-                    returnValue = sourceArray;
+                    returnValue = this.sparseValue(sourceArray);
                 }
             } else {
-                returnValue = sourceArray;
+                returnValue = this.sparseValue(sourceArray);
             }
             break;
 
@@ -419,7 +444,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                         var translated = translations.getClean(hashkey);
                         var translatedPlurals;
                         if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                            translatedPlurals = sourcePlurals;
+                            translatedPlurals = this.sparseValue(sourcePlurals);
                         } else if (!translated && this.type && this.type.pseudos[locale]) {
                             var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                             if (sourceLocale !== this.project.sourceLocale) {
@@ -457,11 +482,12 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                         translatedPlurals = objectMap(sourcePlurals, function(item) {
                                             return this.type.missingPseudo.getString(item);
                                         }.bind(this));
+                                        translatedPlurals = this.sparseValue(translatedPlurals);
                                     } else {
-                                        translatedPlurals = sourcePlurals;
+                                        translatedPlurals = this.sparseValue(sourcePlurals);
                                     }
                                 } else {
-                                    translatedPlurals = sourcePlurals;
+                                    translatedPlurals = this.sparseValue(sourcePlurals);
                                 }
                             }
                         }
@@ -480,10 +506,10 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                             datatype: this.type.datatype,
                             index: this.resourceIndex++
                         }));
-                        returnValue = sourcePlurals;
+                        returnValue = this.sparseValue(sourcePlurals);
                     }
                 } else {
-                    returnValue = sourcePlurals;
+                    returnValue = this.sparseValue(sourcePlurals);
                 }
             } else {
                 returnValue = {};
@@ -516,7 +542,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
         }
     }
 
-    return returnValue;
+    return isNotEmpty(returnValue) ? returnValue : undefined;
 };
 
 /**
