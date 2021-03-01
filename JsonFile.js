@@ -599,7 +599,7 @@ JsonFile.prototype.write = function() {};
  * @returns {String} the localized path name
  */
 JsonFile.prototype.getLocalizedPath = function(locale) {
-    return this.type.getLocalizedPath(this.mapping.template, this.pathName, this.locale);
+    return this.type.getLocalizedPath(this.mapping.template, this.pathName, locale);
 };
 
 /**
@@ -626,24 +626,20 @@ JsonFile.prototype.localizeText = function(translations, locale) {
  */
 JsonFile.prototype.localize = function(translations, locales) {
     // don't localize if there is no text
-    if (this.segments) {
-        for (var i = 0; i < locales.length; i++) {
-            if (!this.project.isSourceLocale(locales[i])) {
-                // skip variants for now until we can handle them properly
-                var l = new Locale(locales[i]);
-                if (!l.getVariant()) {
-                    var pathName = this.getLocalizedPath(locales[i]);
-                    logger.debug("Writing file " + pathName);
-                    var p = path.join(this.project.target, pathName);
-                    var d = path.dirname(p);
-                    this.API.utils.makeDirs(d);
+    for (var i = 0; i < locales.length; i++) {
+        if (!this.project.isSourceLocale(locales[i])) {
+            // skip variants for now until we can handle them properly
+            var l = new Locale(locales[i]);
+            if (!l.getVariant()) {
+                var pathName = this.getLocalizedPath(locales[i]);
+                logger.debug("Writing file " + pathName);
+                var p = path.join(this.project.target, pathName);
+                var d = path.dirname(p);
+                this.API.utils.makeDirs(d);
 
-                    fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
-                }
+                fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
             }
         }
-    } else {
-        logger.debug(this.pathName + ": No strings, no localize");
     }
 };
 

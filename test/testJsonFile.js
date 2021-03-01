@@ -50,7 +50,7 @@ var p = new CustomProject({
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "testfiles",
+    targetDir: ".",
     nopseudo: true,
     json: {
         schemas: [
@@ -76,6 +76,11 @@ var p = new CustomProject({
                 "schema": "http://github.com/ilib-js/messages.json",
                 "method": "sparse",
                 "template": "resources/[localeDir]/sparse2.json"
+            },
+            "**/spread.json": {
+                "schema": "strings-schema",
+                "method": "spread",
+                "template": "resources/[localeDir]/spread.json"
             },
             "**/deep.json": {
                 "schema": "http://github.com/ilib-js/deep.json",
@@ -1164,25 +1169,151 @@ module.exports.jsonfile = {
     },
 
 /*
+    not implemented yet
+
+    testJsonFileLocalizeTextMethodSpread: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "./json/spread.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "this is string two",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+           '{\n' +
+           '    "string 1": {\n' +
+           '        "fr-FR": "C\'est la chaîne numéro 1",\n' +
+           '    },\n' +
+           '    "string 2": {\n' +
+           '        "fr-FR": "C\'est la chaîne numéro 2"\n' +
+           '    },\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testJsonFileLocalizeTextMethodSpreadMultilingual: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "./json/spread.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "this is string two",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "Dies ist die Zeichenfolge 1",
+            targetLocale: "de",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "this is string two",
+            sourceLocale: "en-US",
+            target: "Dies ist die Zeichenfolge 2",
+            targetLocale: "de",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, ["fr-FR", "de"]);
+        var expected =
+           '{\n' +
+           '    "string 1": {\n' +
+           '        "fr-FR": "C\'est la chaîne numéro 1",\n' +
+           '        "de": "Dies ist die Zeichenfolge 1",\n' +
+           '    },\n' +
+           '    "string 2": {\n' +
+           '        "fr-FR": "C\'est la chaîne numéro 2"\n' +
+           '        "de": "Dies ist die Zeichenfolge 2"\n' +
+           '    },\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+*/
 
     testJsonFileLocalize: function(test) {
         test.expect(7);
 
         var base = path.dirname(module.id);
 
-        if (fs.existsSync(path.join(base, "testfiles/testfiles/json/CookieFlow.fr-FR.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/testfiles/json/CookieFlow.fr-FR.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/messages.json"));
         }
-        if (fs.existsSync(path.join(base, "testfiles/testfiles/json/CookieFlow.de-DE.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/testfiles/json/CookieFlow.de-DE.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/json/CookieFlow.fr-FR.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/json/CookieFlow.de-DE.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
 
         var jf = new JsonFile({
             project: p,
-            pathName: "./json/CookieFlow.json",
+            pathName: "./json/messages.json",
             type: t
         });
         test.ok(jf);
@@ -1191,132 +1322,184 @@ module.exports.jsonfile = {
         jf.extract();
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ResourcePlural({
             project: "foo",
-            key: 'r308704783',
-            source: 'Get insurance quotes for free!',
-            target: 'Obtenez des devis d\'assurance gratuitement!',
+            key: "plurals/bar",
+            sourceStrings: {
+                "one": "singular",
+                "many": "many",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "singulaire",
+                "many": "plupart",
+                "other": "autres"
+            },
             targetLocale: "fr-FR",
             datatype: "json"
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r400586044',
-            source: 'Talk',
-            target: 'Consultee',
+            key: "strings/a",
+            source: "b",
+            sourceLocale: "en-US",
+            target: "la b",
             targetLocale: "fr-FR",
             datatype: "json"
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r30868880',
-            source: 'Ask',
-            target: 'Poser un question',
+            key: "strings/c",
+            source: "d",
+            sourceLocale: "en-US",
+            target: "la d",
             targetLocale: "fr-FR",
             datatype: "json"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ResourceArray({
             project: "foo",
-            key: 'r458583963',
-            source: 'Send question',
-            target: 'Envoyer la question',
+            key: "arrays/asdf",
+            sourceArray: [
+                "string 1",
+                "string 2",
+                "string 3"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "chaîne 1",
+                "chaîne 2",
+                "chaîne 3"
+            ],
             targetLocale: "fr-FR",
             datatype: "json"
         }));
 
-        translations.add(new ResourceString({
+        translations.add(new ResourcePlural({
             project: "foo",
-            key: 'r308704783',
-            source: 'Get insurance quotes for free!',
-            target: 'Kostenlosen Versicherungs-Angebote erhalten!',
+            key: "plurals/bar",
+            sourceStrings: {
+                "one": "singular",
+                "many": "many",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "einslige",
+                "many": "mehrere",
+                "other": "andere"
+            },
             targetLocale: "de-DE",
             datatype: "json"
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r400586044',
-            source: 'Talk',
-            target: 'Beratung',
+            key: "strings/a",
+            source: "b",
+            sourceLocale: "en-US",
+            target: "Die b",
             targetLocale: "de-DE",
             datatype: "json"
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r30868880',
-            source: 'Ask',
-            target: 'Eine Frage stellen',
+            key: "strings/c",
+            source: "d",
+            sourceLocale: "en-US",
+            target: "Der d",
             targetLocale: "de-DE",
             datatype: "json"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ResourceArray({
             project: "foo",
-            key: 'r458583963',
-            source: 'Send question',
-            target: 'Frage abschicken',
+            key: "arrays/asdf",
+            sourceArray: [
+                "string 1",
+                "string 2",
+                "string 3"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "Zeichenfolge 1",
+                "Zeichenfolge 2",
+                "Zeichenfolge 3"
+            ],
             targetLocale: "de-DE",
             datatype: "json"
         }));
 
         jf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/json/CookieFlow.fr-FR.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/json/CookieFlow.de-DE.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
 
-        var content = fs.readFileSync(path.join(base, "testfiles/testfiles/json/CookieFlow.fr-FR.json"), "utf-8");
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.json"), "utf-8");
 
         var expected =
-            '<div class="upsell-ad-item clearfix">  \n' +
-            '    <div class="modal_x"></div>\n' +
-            '    <div class="upsell-ad-content">\n' +
-            '      <div class="upsell-ad-header">\n' +
-            '        <div class="big cookie-flow"></div>\n' +
-            '        <span class="upsell-header-bold"></span>\n' +
-            '        Obtenez des devis d\'assurance gratuitement!\n' +
-            '      </div>\n' +
-            '      <div class="upsell-ad-wrapper" style="padding-left: 0">\n' +
-            '        <a class="specialist-avatar" href="/specialists/234" style="background-image: url(http://foo.com/bar.png);"></a>\n' +
-            '        <input class="askInputArea-cookie desktop" maxlength="150">\n' +
-            '        <span class="askSendArea-cookie">\n' +
-            '          <a class="askSendBtn-cookie" href="/message?from_seo=1">\n' +
-            '            <div class="desktop-btn">Envoyer la question</div>\n' +
-            '            <div class="mobile-btn">Poser un question</div>\n' +
-            '          </a>\n' +
-            '        </span>\n' +
-            '      </div>\n' +
-            '    </div>\n' +
-            '</div>';
+           '{\n' +
+           '    "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singulaire",\n' +
+           '            "many": "plupart",\n' +
+           '            "other": "autres"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "chaîne 1",\n' +
+           '            "chaîne 2",\n' +
+           '            "chaîne 3"\n' +
+           '        ],\n' +
+           '        "asdfasdf": [\n' +
+           '            "1",\n' +
+           '            "2",\n' +
+           '            "3"\n' +
+           '        ]\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "la b",\n' +
+           '        "c": "la d"\n' +
+           '    }\n' +
+           '}\n';
 
         diff(content, expected);
         test.equal(content, expected);
 
-        content = fs.readFileSync(path.join(base, "testfiles/testfiles/json/CookieFlow.de-DE.json"), "utf-8");
+        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.json"), "utf-8");
 
-        test.equal(content,
-            '<div class="upsell-ad-item clearfix">  \n' +
-            '    <div class="modal_x"></div>\n' +
-            '    <div class="upsell-ad-content">\n' +
-            '      <div class="upsell-ad-header">\n' +
-            '        <div class="big cookie-flow"></div>\n' +
-            '        <span class="upsell-header-bold"></span>\n' +
-            '        Kostenlosen Versicherungs-Angebote erhalten!\n' +
-            '      </div>\n' +
-            '      <div class="upsell-ad-wrapper" style="padding-left: 0">\n' +
-            '        <a class="specialist-avatar" href="/specialists/234" style="background-image: url(http://foo.com/bar.png);"></a>\n' +
-            '        <input class="askInputArea-cookie desktop" maxlength="150">\n' +
-            '        <span class="askSendArea-cookie">\n' +
-            '          <a class="askSendBtn-cookie" href="/message?from_seo=1">\n' +
-            '            <div class="desktop-btn">Frage abschicken</div>\n' +
-            '            <div class="mobile-btn">Eine Frage stellen</div>\n' +
-            '          </a>\n' +
-            '        </span>\n' +
-            '      </div>\n' +
-            '    </div>\n' +
-            '</div>'
-        );
+        var expected =
+           '{\n' +
+           '    "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "einslige",\n' +
+           '            "many": "mehrere",\n' +
+           '            "other": "andere"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "Zeichenfolge 1",\n' +
+           '            "Zeichenfolge 2",\n' +
+           '            "Zeichenfolge 3"\n' +
+           '        ],\n' +
+           '        "asdfasdf": [\n' +
+           '            "1",\n' +
+           '            "2",\n' +
+           '            "3"\n' +
+           '        ]\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "Die b",\n' +
+           '        "c": "Der d"\n' +
+           '    }\n' +
+           '}\n';
+        diff(content, expected);
+        test.equal(content, expected);
 
         test.done();
     },
 
+/*
     testJsonFileLocalizeNoStrings: function(test) {
         test.expect(5);
 
