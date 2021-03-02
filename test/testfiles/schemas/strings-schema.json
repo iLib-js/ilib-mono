@@ -1,0 +1,8 @@
+{
+    "$id": "strings-schema",
+    "type": "object",
+    "additionalProperties": {
+        "type": "string",
+        "localizable": true
+    }
+}

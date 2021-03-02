@@ -1,0 +1,25 @@
+{
+    "plurals": {
+        "foo": "asdf",
+        "bar": {
+            "one": "one",
+            "other": "other"
+        }
+    },
+    "arrays": {
+        "asdf": [
+            "value 1",
+            "value 2",
+            "value 3"
+        ],
+        "asdfasdf": [
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "strings": {
+        "a": "b",
+        "c": "d"
+    }
+}
