@@ -1792,5 +1792,41 @@ module.exports.jsonfile = {
         test.equal(resources[2].getTargetLocale(), "fr-FR");
 
         test.done();
+    },
+    
+    testJsonFileLocalizeTemplate: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/deep_fr-FR.json"));
+        }
+        if (fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/deep_de-DE.json"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "./json/deep.json",
+            type: t
+        });
+        test.ok(jf);
+
+        // should read the file
+        jf.extract();
+
+        // only translate some of the strings
+        var translations = new TranslationSet();
+
+        jf.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+
+        test.done();
     }
 };
