@@ -1793,8 +1793,8 @@ module.exports.jsonfile = {
 
         test.done();
     },
-    
-    testJsonFileLocalizeTemplate: function(test) {
+
+    testJsonFileLocalizeWithAlternateFileNameTemplate: function(test) {
         test.expect(5);
 
         var base = path.dirname(module.id);
