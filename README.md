@@ -9,7 +9,8 @@ defaulting to a list of key/value pairs.
 ## Style of JSON
 
 By default, this plugin assumes that the json file
-conforms to the Json5 spec. Earlier forms of json are subsets
+conforms to the J[son5 spec](http://json5.org). Earlier
+forms of json are subsets
 of Json5, so Json5 is the most flexible standard to
 process.
 
@@ -22,7 +23,7 @@ output files will conform to older versions of json
 
 ## Methods of Localizing
 
-Json files are localized in one of three different
+Json files are localized in one of the following
 methods:
 
 1. copy. Make a copy of the entire source file
@@ -35,62 +36,11 @@ localized json files are handled.
 the localized properties appear. The copy has the same
 structure as the original json file, but only properties
 where the value is localized appear in the output.
-1. spreadSmall. Update values in the source json file
-with an object that maps from locale names to
-translations of the original string:
-
-    ```json
-    {
-        "prop": "English example"
-    }
-    ```
-
-   becomes:
-
-    ```json
-    {
-        "prop": {
-            "en": "English example",
-            "fr": "Example française",
-            "de": "Deutsche Beispiel"
-        }
-    }
-    ```
-
-1. spreadBig. Replace a string value in the source file with
-   an array of objects that describe the translations:
-
-    ```json
-    {
-        "prop": "English example"
-    }
-    ```
-
-   becomes:
-
-    ```json
-    {
-        "prop": [
-            {
-                "locale": "en",
-                "value": "English example"
-            },
-            {
-                "locale": "fr",
-                "value": "Example française"
-            },
-            {
-                "locale": "de",
-                "value": "Deutsche Beispiel"
-            }
-        ]
-    }
-    ```
 
 The first method, localizing the entire file, has the
 advantage that you don't need to change your code in
 order to read the translated file. You just need to pick
-the righ file for the current locale.
+the right file for the current locale.
 
 The second method is similar to the
 first method above, except that it can save space
@@ -98,13 +48,14 @@ because all of the non-localizable data in the original
 json file is not duplicated.
 In this case, you would need to load in the English file
 first, then mix-in the localized file to override all
-the localizable strings.
+the localizable strings in order to create the full
+data with localized data embedded in it.
 
 ## Key/Value Pairs
 
 In the absence of any schema information, a default
 schema will be applied. The
-plugin will assume thjat the json file is a simple object
+plugin will assume that the json file is a simple object
 where the property names are the keys and the property
 values are the strings to translate.
 
@@ -119,7 +70,7 @@ Example:
 ```
 
 Essentially, this means that we assume that the file has
-the following jsonschema:
+the following json schema:
 
 ```json
 {
@@ -156,25 +107,16 @@ used within the json property:
     - schema: schema to use with that matcher. The schema is 
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above.
-    - method: one of "copy", "sparse", "spreadSmall",
-      or "spreadBig".
+    - method: one of "copy" or "sparse"
         - copy: make a copy of the source file and localize the
           string contents
         - sparse: make a copy of the source file but only
           include localized strings
-        - spreadSmall: replace each localizable string in the
-          source file with an object that maps locale names to
-          translated strings
-        - spreadBig: replace each localizable string in the source
-          file with an array of objects that give the translations
-          of the strings
     - template: a path template to use to generate the path to
       the translated
       output files. The template replaces strings in square brackets
       with special values, and keeps any characters intact that are
-      not in square brackets. If the method is set to "spreadSmall"
-      or "spreadBig", the template is not required because this plugin
-      will modify the source file directly. The plugin recognizes
+      not in square brackets. The plugin recognizes
       and replaces the following strings in template strings:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
@@ -211,7 +153,7 @@ Example configuration:
             "mappings": {
                 "**/appinfo.json": {
                     "schema": "http://www.lge.com/json/appinfo",
-                    "method": "stringsOnly",
+                    "method": "sparse",
                     "template": "resources/[localeDir]/appinfo.json"
                 },
                 "src/**/strings.json": {
@@ -225,9 +167,22 @@ Example configuration:
 }
 ```
 
-This plugin will throw an exception when a template is specified if the file
-name that the template produces for a localized file is the same as the
-source file name.
+In the above example, any file named `appinfo.json` will be parsed with the
+`http://www.lge.com/json/appinfo` schema. Because the method is `sparse`,
+only the parts of the json file that have translated strings in them will
+appear in the output. The output file name is sent to the `resources` directory.
+
+In the second part of the example, any `strings.json` file that appears in
+the `src` directory will be parsed with the schema `http://www.lge.com/json/strings`
+and a full copy of the file, including the parts that were not localized,
+will be sent to the same directory as the source file. However, the
+localized file name will also contain the name of the locale to distinguish
+it from the source file.
+
+If the name of the localized file that the template produces is the same as
+the source file name, this plugin will throw an exception, the file will not
+be localized, and the loctool will continue on to the next file.
+
 
 ## Extensions to JSON Schema
 
@@ -326,58 +281,8 @@ The `localizable` keyword is also ignored for `const` value types, as the
 value is supposed to remain constant.
 
 For strings that have an `enum` keyword, each of the values in the `enum` will
-not be translated as well, as the code is explicitly expecting one of the given
-values.
-
-### The `$comment` Keyword
-
-If a string has a `$comment` keyword in the schema, then that comment will be
-included with the string when it is sent to the translators. If the json file
-itself includes a Json5 style i18n comment, that will take precedence, as that is
-more specific to that particular string.
-
-Here is an example of a schema and a json file, and how the comments are extracted.
-
-schema.json:
-
-```json
-{
-    "title": "a json schema",
-    "properties": {
-        "a": {
-            "type": "string",
-            "localizable": true,
-            "$comment": "i18n: an 'a' string"
-        },
-        "b": {
-            "type": "string",
-            "localizable": true,
-            "$comment": "i18n: an 'b' string"
-        }
-    }
-}
-```
-
-x/y/file.json:
-
-```json5
-{
-    "a": "this string has no comment",
-    // i18n: this is the translator's note
-    "b": "this string does have a json5 comment"
-}
-```
-
-Note that the comment needs to start with the string "i18n: "
-in order to be extracted. Any other comments will be ignored.
-
-Strings extracted are:
-
-
-| id   | string   | translator's note  | where from  |
-| :----  | :--------  | :-------  | :------  |
-| a    | this string has no comment  | an 'a' string' | from the schema.json |
-| b    | this string does have a json5 comment  | this is the translator's comment | from the file.json |
+not be translated as well, as the code that reads this json file is explicitly
+expecting one of the given fixed values.
 
 ## Not a Validator
 
