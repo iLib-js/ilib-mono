@@ -91,7 +91,8 @@ var p = new CustomProject({
                 "schema": "http://github.com/ilib-js/refs.json",
                 "method": "copy",
                 "template": "resources/[locale]/refs.json"
-            }
+            },
+            "**/str.json": {}
         }
     }
 });
@@ -758,6 +759,35 @@ module.exports.jsonfile = {
 
         test.done();
     },
+
+    testJsonFileParseDefaultSchema: function(test) {
+        test.expect(5);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "a/b/c/str.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "json"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "this is string one");
+        test.equal(r.getKey(), "string 1");
+
+        test.done();
+    },
+
 /*
     can't do comments yet
 
@@ -1826,6 +1856,61 @@ module.exports.jsonfile = {
 
         test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
         test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+
+        test.done();
+    },
+
+    testJsonFileLocalizeDefaultMethodAndTemplate: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "x/y/str.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '    "string 1": "this is string one",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        // default template is resources/[localeDir]/[filename]
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/str.json"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json")));
+
+        jf.localize(translations, ["fr-FR"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json")));
+
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/str.json"), "utf-8");
+
+        // default method is copy so this should be the whole file
+        var expected =
+           '{\n' +
+           '    "string 1": "C\'est la chaîne numéro 1",\n' +
+           '    "string 2": "this is string two"\n' +
+           '}\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
 
         test.done();
     }
