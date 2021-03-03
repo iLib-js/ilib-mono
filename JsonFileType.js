@@ -356,13 +356,58 @@ JsonFileType.prototype.name = function() {
 };
 
 var matchExprs = {
-    "dir": ".*?",
-    "locale": "(?<language>[a-z][a-z][a-z]?)(-(?<script>[A-Z][a-z][a-z][a-z]))?(-(?<region>[A-Z][A-Z]|[0-9][0-9][0-9]))?",
-    "language": "(?<language>[a-z][a-z][a-z]?)",
-    "script": "(?<script>[A-Z][a-z][a-z][a-z])",
-    "region": "(?<region>[A-Z][A-Z]|[0-9][0-9][0-9])",
-    "localeDir": "(?<language>[a-z][a-z][a-z]?)(/(?<script>[A-Z][a-z][a-z][a-z]))?(/(?<region>[A-Z][A-Z]|[0-9][0-9][0-9]))?",
-    "localeUnder": "(?<language>[a-z][a-z][a-z]?)(_(?<script>[A-Z][a-z][a-z][a-z]))?(_(?<region>[A-Z][A-Z]|[0-9][0-9][0-9]))?",
+    "dir": {
+        regex: ".*?",
+        brackets: 0,
+    },
+    "locale": {
+        regex: "([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?",
+        brackets: 5,
+        groups: {
+            language: 1,
+            script: 3,
+            region: 5
+        }
+    },
+    "language": {
+        regex: "([a-z][a-z][a-z]?)",
+        brackets: 1,
+        groups: {
+            language: 1
+        }
+    },
+    "script": {
+        regex: "([A-Z][a-z][a-z][a-z])",
+        brackets: 1,
+        groups: {
+            script: 1
+        }
+    },
+    "region": {
+        regex: "([A-Z][A-Z]|[0-9][0-9][0-9])",
+        brackets: 1,
+        groups: {
+            region: 1
+        }
+    },
+    "localeDir": {
+        regex: "([a-z][a-z][a-z]?)(/([A-Z][a-z][a-z][a-z]))?(/([A-Z][A-Z]|[0-9][0-9][0-9]))?",
+        brackets: 5,
+        groups: {
+            language: 1,
+            script: 3,
+            region: 5
+        }
+    },
+    "localeUnder": {
+        regex: "([a-z][a-z][a-z]?)(_([A-Z][a-z][a-z][a-z]))?(_([A-Z][A-Z]|[0-9][0-9][0-9]))?",
+        brackets: 5,
+        groups: {
+            language: 1,
+            script: 3,
+            region: 5
+        }
+    },
 };
 
 /**
@@ -373,6 +418,8 @@ var matchExprs = {
  */
 JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
     var regex = "";
+    var matchGroups = {};
+    var totalBrackets = 0;
 
     for (var i = 0; i < template.length; i++) {
         if ( template[i] !== '[' ) {
@@ -395,7 +442,11 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
                     regex += path.basename(pathname, ".json");
                     break;
                 default:
-                    regex += matchExprs[keyword];
+                    regex += matchExprs[keyword].regex;
+                    for (var prop in matchExprs[keyword].groups) {
+                        matchGroups[prop] = totalBrackets + matchExprs[keyword].groups[prop];
+                    }
+                    totalBrackets += matchExprs[keyword].brackets;
                     break;
             }
         }
@@ -405,8 +456,15 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
     var match;
 
     if ((match = re.exec(pathname)) !== null) {
-        var groups = match.groups;
-        if (groups) {
+        var groups = {};
+        var found = false;
+        for (var groupName in matchGroups) {
+            if (match[matchGroups[groupName]]) {
+                groups[groupName] = match[matchGroups[groupName]];
+                found = true;
+            }
+        }
+        if (found) {
             var l = new Locale(groups.language, groups.region, undefined, groups.script);
             return l.getSpec();
         }
