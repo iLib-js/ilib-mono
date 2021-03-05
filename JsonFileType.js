@@ -93,50 +93,6 @@ JsonFileType.prototype.loadSchemaDirOrFile = function(pathName) {
     }
 };
 
-var keywords = {
-    "$id": true,
-    "$schema": true,
-    "$comment": true,
-    "$vocabulary": true,
-    "$anchor": true,
-    "$ref": true,
-    "$recursiveRef": true,
-    "$recursiveAnchor": true,
-    "$defs": true,
-    "title": true,
-    "description": true,
-    "type": true,
-    "properties": true,
-    "propertyNames": true,
-    "patternProperties": true,
-    "additionalProperties": true,
-    "unevaluatedProperties": true,
-    "maxLength": true,
-    "minLength": true,
-    "items": true,
-    "additionalItems": true,
-    "unevaluatedItems": true,
-    "contains": true,
-    "allOf": true,
-    "anyOf": true,
-    "oneOf": true,
-    "not": true,
-    "if": true,
-    "then": true,
-    "else": true,
-    "instanceLocation": true,
-    "required": true,
-    "minItems": true,
-    "maxItems": true,
-    "valid": true,
-    "keywordLocation": true,
-    "errors": true,
-    "absoluteKeywordLocation": true,
-    "localizable": true,
-    "default": true,
-    "definitions": true
-};
-
 var typeKeywords = [
     "type",
     "contains",
@@ -224,7 +180,7 @@ JsonFileType.prototype.getDefaultSchema = function() {
  * that schema is not defined
  */
 JsonFileType.prototype.getSchema = function(uri) {
-    return this.refs[uri];
+    return this.refs[uri] || this.getDefaultSchema();
 };
 
 /**
@@ -246,7 +202,7 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
         this.schemas = {
             "default": {
                 "$schema": "http://json-schema.org/draft-07/schema",
-                "$id": "http://github.com/ilib-js/LocalizableJson",
+                "$id": "strings-schema",
                 "type": "object",
                 "description": "A collection of properties with localizable values",
                 "additionalProperties": {
@@ -266,6 +222,14 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
     // connect the mappings to the schemas
 };
 
+var defaultMappings = {
+    "**/*.json": {
+        schema: "strings-schema",
+        method: "copy",
+        template: "resources/[localeDir]/[filename]"
+    }
+};
+
 /**
  * Return the mapping corresponding to this path.
  * @param {String} pathName the path to check
@@ -277,13 +241,6 @@ JsonFileType.prototype.getMapping = function(pathName) {
         return undefined;
     }
     var jsonSettings = this.project.settings.json;
-    var defaultMappings = {
-        "**/*.json": {
-            schema: "http://github.com/ilib-js/defaultJson",
-            method: "copy",
-            template: "[dir]/[localeDir]/strings.json"
-        }
-    };
     var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
     var normalized = pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
@@ -326,11 +283,6 @@ JsonFileType.prototype.handles = function(pathName) {
         ret = false;
         // first check if it is a source file
         var jsonSettings = this.project.settings.json;
-        var defaultMappings = {
-            "**/*.json": {
-                template: "[dir]/[localeDir]/strings.json"
-            }
-        };
         var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
         var patterns = Object.keys(mappings);
         ret = mm.isMatch(pathName, patterns) || mm.isMatch(normalized, patterns);
@@ -421,6 +373,10 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
     var matchGroups = {};
     var totalBrackets = 0;
 
+    if (!template) {
+        template = defaultMappings["**/*.json"].template;
+    }
+
     for (var i = 0; i < template.length; i++) {
         if ( template[i] !== '[' ) {
             regex += template[i];
@@ -484,6 +440,10 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
 JsonFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
     var output = "";
     var l = new Locale(locale);
+
+    if (!template) {
+        template = defaultMappings["**/*.json"].template;
+    }
 
     for (var i = 0; i < template.length; i++) {
         if ( template[i] !== '[' ) {

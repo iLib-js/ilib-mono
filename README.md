@@ -75,7 +75,7 @@ the following json schema:
 ```json
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://github.com/ilib-js/LocalizableJson",
+    "$id": "strings-schema",
     "type": "object",
     "description": "A flat object of properties with localizable values",
     "additionalProperties": {
@@ -106,17 +106,20 @@ used within the json property:
   can contain the following properties:
     - schema: schema to use with that matcher. The schema is 
       specified using the `$id` of one of the schemas loaded in the
-      `schemas` property above.
+      `schemas` property above. The default schema is "strings-schema"
+      which is given in the previous section.
     - method: one of "copy" or "sparse"
         - copy: make a copy of the source file and localize the
-          string contents
+          string contents. (This is the default method if not specified
+          explicitly.)
         - sparse: make a copy of the source file but only
           include localized strings
     - template: a path template to use to generate the path to
       the translated
       output files. The template replaces strings in square brackets
       with special values, and keeps any characters intact that are
-      not in square brackets. The plugin recognizes
+      not in square brackets. The default template, if not specified is
+      "resources/[localeDir]/[filename]". The plugin recognizes
       and replaces the following strings in template strings:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
