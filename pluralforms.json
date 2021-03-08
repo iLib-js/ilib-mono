@@ -1,0 +1,167 @@
+{
+    "ja": [
+        "other"
+    ],
+    "zh": [
+        "other"
+    ],
+    "ko": [
+        "other"
+    ],
+    "th": [
+        "other"
+    ],
+    "en": [
+        "one",
+        "other"
+    ],
+    "de": [
+        "one",
+        "other"
+    ],
+    "nl": [
+        "one",
+        "other"
+    ],
+    "sv": [
+        "one",
+        "other"
+    ],
+    "da": [
+        "one",
+        "other"
+    ],
+    "no": [
+        "one",
+        "other"
+    ],
+    "fo": [
+        "one",
+        "other"
+    ],
+    "es": [
+        "one",
+        "other"
+    ],
+    "pt": [
+        "one",
+        "other"
+    ],
+    "it": [
+        "one",
+        "other"
+    ],
+    "el": [
+        "one",
+        "other"
+    ],
+    "bg": [
+        "one",
+        "other"
+    ],
+    "fi": [
+        "one",
+        "other"
+    ],
+    "et": [
+        "one",
+        "other"
+    ],
+    "he": [
+        "one",
+        "other"
+    ],
+    "id": [
+        "one",
+        "other"
+    ],
+    "eo": [
+        "one",
+        "other"
+    ],
+    "hu": [
+        "one",
+        "other"
+    ],
+    "tr": [
+        "one",
+        "other"
+    ],
+    "fr": [
+        "one",
+        "other"
+    ],
+    "lv": [
+        "zero",
+        "one",
+        "other"
+    ],
+    "ga": [
+        "one",
+        "two",
+        "other"
+    ],
+    "ro": [
+        "one",
+        "few",
+        "other"
+    ],
+    "lt": [
+        "one",
+        "few",
+        "other"
+    ],
+    "ru": [
+        "one",
+        "few",
+        "other"
+    ],
+    "uk": [
+        "one",
+        "few",
+        "other"
+    ],
+    "be": [
+        "one",
+        "few",
+        "other"
+    ],
+    "sr": [
+        "one",
+        "few",
+        "other"
+    ],
+    "hr": [
+        "one",
+        "few",
+        "other"
+    ],
+    "cs": [
+        "one",
+        "few",
+        "other"
+    ],
+    "sk": [
+        "one",
+        "few",
+        "other"
+    ],
+    "pl": [
+        "one",
+        "few",
+        "other"
+    ],
+    "sl": [
+        "one",
+        "two",
+        "other"
+    ],
+    "ar": [
+        "zero",
+        "one",
+        "two",
+        "few",
+        "many",
+        "other"
+    ]
+}
