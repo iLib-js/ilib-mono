@@ -302,6 +302,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.1
+
+- fixed a bug where plural strings resources were not extracted to the new
+  strings file properly
+
 ### v1.0.0
 
 - initial version

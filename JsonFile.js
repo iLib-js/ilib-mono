@@ -466,7 +466,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                 if (this.type) {
                                     logger.trace("New string found: " + text);
                                     this.type.newres.add(this.API.newResource({
-                                        resType: "array",
+                                        resType: "plural",
                                         project: this.project.getProjectId(),
                                         key: key,
                                         sourceLocale: this.project.sourceLocale,
