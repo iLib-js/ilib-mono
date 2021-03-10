@@ -29,20 +29,22 @@ var p = new CustomProject({
     po: {
         "mappings": {
             "en.pot": {
-                "method": "copy",
                 "template": "[dir]/[locale].po"
             },
             "resources/en/US/strings.po": {
-                "method": "copy",
                 "template": "resources/[localeDir]/strings.po"
             },
             "**/messages.po": {
-                "method": "copy",
                 "template": "resources/[localeDir]/messages.po"
             },
-            "**/test/str.jsn": {
-                "method": "copy",
+            "**/test/str.pot": {
                 "template": "[dir]/[localeDir]/str.po"
+            },
+            "*.po": {
+                "template": "[dir]/[locale].po"
+            },
+            "**/*.pot": {
+                "template": "[dir]/[locale].po"
             }
         }
     }
@@ -368,7 +370,6 @@ module.exports.pofiletype = {
         test.ok(jft);
 
         test.deepEqual(jft.getMapping("x/y/messages.po"), {
-            "method": "copy",
             "template": "resources/[localeDir]/messages.po"
         });
 
@@ -382,7 +383,6 @@ module.exports.pofiletype = {
         test.ok(jft);
 
         test.deepEqual(jft.getMapping("resources/en/US/strings.po"), {
-            "method": "copy",
             "template": "resources/[localeDir]/strings.po"
         });
 
@@ -466,18 +466,18 @@ module.exports.pofiletype = {
         test.done();
     },
 
-    testPOFileTypeHandlesFalseWrongDir: function(test) {
+    testPOFileTypeHandlesWrongDir: function(test) {
         test.expect(2);
 
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.ok(!jft.handles("x/y/z/str.pot"));
+        test.ok(!jft.handles("x/y/z/test/de-DE.pot"));
 
         test.done();
     },
 
-    testPOFileTypeHandlesFalseRightDir: function(test) {
+    testPOFileTypeHandlesRightDir: function(test) {
         test.expect(2);
 
         var jft = new POFileType(p);

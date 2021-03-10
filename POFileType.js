@@ -34,7 +34,7 @@ var POFileType = function(project) {
     this.project = project;
     this.API = project.getAPI();
 
-    this.extensions = [ ".po", ".jso", ".jsn" ];
+    this.extensions = [ ".po", ".pot" ];
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
@@ -54,179 +54,17 @@ var POFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
-
-    this.schemas = {};
-    this.refs = {};
-    this.loadSchemas(".");
-};
-
-POFileType.prototype.loadSchemaFile = function(pathName) {
-    try {
-        var schema = fs.readFileSync(pathName, "utf-8");
-        var schemaObj = JSON.parse(schema);
-        this.schemas[pathName] = schemaObj;
-        this.refs[schemaObj["$id"]] = schemaObj;
-    } catch (e) {
-        logger.fatal("Error while parsing schema file " + pathName);
-        console.log("Error while parsing schema file " + pathName);
-        throw e;
-    }
-};
-
-POFileType.prototype.loadSchemaDir = function(pathName) {
-    var files = fs.readdirSync(pathName);
-    if (files) {
-        files.forEach(function(file) {
-            var full = path.join(pathName, file);
-            this.loadSchemaDirOrFile(full);
-        }.bind(this));
-    }
-};
-
-POFileType.prototype.loadSchemaDirOrFile = function(pathName) {
-    var stats = fs.statSync(pathName);
-    if (!stats) return;
-    if (stats.isDirectory()) {
-       this.loadSchemaDir(pathName);
-    } else {
-       this.loadSchemaFile(pathName);
-    }
-};
-
-var typeKeywords = [
-    "type",
-    "contains",
-    "allOf",
-    "anyOf",
-    "oneOf",
-    "not",
-    "$ref"
-];
-
-/**
- * Return true if the schema has a type. The type could be indicated by
- * the presence of any of the following fields:
- * - type
- * - contains
- * - allOf
- * - anyOf
- * - oneOf
- * - not
- * - $ref
- * @param {Object} schema the schema to check
- * @returns {boolean} true if the schema contains a type, false otherwise
- */
-POFileType.prototype.hasType = function(schema) {
-    return typeKeywords.find(function(keyword) {
-        return typeof(schema[keyword]) !== 'undefined';
-    });
-};
-
-POFileType.prototype.findRefs = function(root, schema, ref) {
-    if (typeof(schema) !== 'object') return;
-
-    if (typeof(root["$$refs"]) === 'undefined') {
-        root["$$refs"] = {};
-    }
-
-    root["$$refs"][ref] = schema;
-
-    // currently for simplicity, we only handle intra-schema
-    // references so far. We'll have to implement the extra-schema
-    // references later
-    for (var prop in schema) {
-        var subschema = schema[prop];
-
-        // recurse through everything -- if it is not a
-        // schema object, that's okay -- it won't have the
-        // $anchor in it
-        if (prop === '$anchor') {
-            root["$$refs"]["#" + subschema] = schema;
-        } else if (prop !== '$$refs') {
-            var newref = ref + '/' + prop;
-            if (Array.isArray(subschema)) {
-                subschema.forEach(function(element, index) {
-                    var arrayref = newref + '[' + index + ']';
-                    this.findRefs(element, arrayref);
-                }.bind(this));
-            } else if (typeof(subschema) === 'object') {
-                this.findRefs(root, subschema, newref);
-            }
-        }
-    }
-};
-
-/**
- * Return the default schema for po files.
- * @returns {Object} the default schema
- */
-POFileType.prototype.getDefaultSchema = function() {
-    return {
-        "$schema": "http://po-schema.org/draft-07/schema",
-        "$id": "strings-schema",
-        "type": "object",
-        "description": "A flat object of properties with localizable values",
-        "additionalProperties": {
-            "type": "string",
-            "localizable": true
-        }
-    };
-};
-
-/**
- * Get the schema associated with the given URI
- * @param {String} uri the uri identifying the schema
- * @returns {Object} the schema associated with the URI, or undefined if
- * that schema is not defined
- */
-POFileType.prototype.getSchema = function(uri) {
-    return this.refs[uri] || this.getDefaultSchema();
-};
-
-/**
- * Load all the schema files into memory.
- */
-POFileType.prototype.loadSchemas = function(pathName) {
-    var poSettings = this.project.settings.po;
-
-    if (poSettings) {
-        var schemas = poSettings.schemas;
-        if (schemas) {
-            schemas.forEach(function(schema) {
-                var full = path.join(pathName, schema);
-                this.loadSchemaDirOrFile(full);
-            }.bind(this));
-        }
-    } else {
-        // default schema for all po files with key/value pairs
-        this.schemas = {
-            "default": {
-                "$schema": "http://po-schema.org/draft-07/schema",
-                "$id": "strings-schema",
-                "type": "object",
-                "description": "A collection of properties with localizable values",
-                "additionalProperties": {
-                    "type": "string",
-                    "localizable": true
-                }
-            }
-        }
-        this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
-    }
-
-    // now find all the refs
-    for (var file in this.schemas) {
-        var schema = this.schemas[file];
-        this.findRefs(schema, schema, "#");
-    }
-    // connect the mappings to the schemas
 };
 
 var defaultMappings = {
-    "**/*.po": {
-        schema: "strings-schema",
-        method: "copy",
-        template: "resources/[localeDir]/[filename]"
+    "**/en.po": {
+        template: "[dir]/[locale].po"
+    },
+    "**/en-*.po": {
+        template: "[dir]/[locale].po"
+    },
+    "**/*.pot": {
+        template: "[dir]/[locale].po"
     }
 };
 
@@ -243,15 +81,25 @@ POFileType.prototype.getMapping = function(pathName) {
     var poSettings = this.project.settings.po;
     var mappings = (poSettings && poSettings.mappings) ? poSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
-    var normalized = pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
-        pathName.substring(0, pathName.length - 4) + ".po" :
-        pathName;
 
     var match = patterns.find(function(pattern) {
-        return mm.isMatch(pathName, pattern) || mm.isMatch(normalized, pattern);
+        return mm.isMatch(pathName, pattern);
     });
 
     return match && mappings[match];
+}
+
+POFileType.prototype.isValidLocale = function(locale) {
+    if (!locale) return false;
+
+    var l = new Locale(locale);
+    var lang = l.getLanguage();
+    var region = l.getRegion();
+    var script = l.getScript();
+
+    return (!lang || lang in this.API.utils.iso639) &&
+        (!region || region in this.API.utils.iso3166) &&
+        (!script || script in this.API.utils.iso15924);
 }
 
 /**
@@ -267,15 +115,8 @@ POFileType.prototype.handles = function(pathName) {
     var ret = false;
     var normalized = pathName;
 
-    if (pathName.length > 4 &&
-        (pathName.substring(pathName.length - 4) === ".jso" || pathName.substring(pathName.length - 4) === ".jsn")) {
-        ret = true;
-        // normalize the extension so the matching below can work
-        normalized = pathName.substring(0, pathName.length - 4) + ".po";
-    }
-
     if (!ret) {
-        ret = pathName.length > 5 && pathName.substring(pathName.length - 5) === ".po";
+        ret = pathName.endsWith(".po") || pathName.endsWith(".pot");
     }
 
     // now match at least one of the mapping patterns
@@ -285,14 +126,14 @@ POFileType.prototype.handles = function(pathName) {
         var poSettings = this.project.settings.po;
         var mappings = (poSettings && poSettings.mappings) ? poSettings.mappings : defaultMappings;
         var patterns = Object.keys(mappings);
-        ret = mm.isMatch(pathName, patterns) || mm.isMatch(normalized, patterns);
+        ret = mm.isMatch(pathName, patterns);
 
         // now check if it is an already-localized file, and if it has a different locale than the
         // source locale, then we don't need to extract those strings
         if (ret) {
             for (var i = 0; i < patterns.length; i++) {
-                var locale = this.getLocaleFromPath(mappings[patterns[i]].template, pathName);
-                if (locale && locale !== this.project.sourceLocale) {
+                var locale = this.getLocaleFromPath(mappings[patterns[i]].template, "./" + pathName);
+                if (locale && this.isValidLocale(locale) && locale !== this.project.sourceLocale) {
                     ret = false;
                     break;
                 }
@@ -520,7 +361,9 @@ POFileType.prototype.getDataType = function() {
 };
 
 POFileType.prototype.getResourceTypes = function() {
-    return {};
+    return {
+        "string": "contextString"
+    };
 };
 
 POFileType.prototype.getExtensions = function() {
