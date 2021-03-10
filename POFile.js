@@ -42,7 +42,6 @@ var POFile = function(options) {
     this.project = options.project;
     this.pathName = options.pathName || "";
     this.type = options.type;
-    this.locale = new Locale(this.localeSpec);
 
     this.API = this.project.getAPI();
 
@@ -50,6 +49,7 @@ var POFile = function(options) {
     this.mapping = this.type.getMapping(this.pathName);
 
     this.localeSpec = options.locale || (this.mapping && this.type.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
+    this.locale = new Locale(this.localeSpec);
 
     this.resourceIndex = 0;
 };
@@ -242,6 +242,13 @@ POFile.prototype.getToken = function() {
             this.index++;
         }
         value = this.data.substring(start, this.index);
+        if (value.length > 6 && value.startsWith("msgstr[")) {
+            value = Number.parseInt(value.substring(7));
+            return {
+                type: tokens.PLURAL,
+                category: value
+            };
+        }
         switch (value) {
             case 'msgid':
                 return {
@@ -259,13 +266,6 @@ POFile.prototype.getToken = function() {
                 return {
                     type: tokens.MSGCTXT
                 };
-        }
-        if (value.length > 6 && value.startsWith("msgstr")) {
-            value = Number.parseInt(value.substring(8));
-            return {
-                type: tokens.PLURAL,
-                category: value
-            };
         }
     } else {
         return {
@@ -335,7 +335,7 @@ POFile.prototype.parse = function(data) {
                         if (token.value[0] === ':') {
                             original = token.value.substring(2);
                         } else {
-                            comment[commentTypeMap[token.value[0]]] = token.value.substring(2);
+                            comment[commentTypeMap[token.value[0]]] = token.value.substring((token.value[0] === ' ') ? 1 : 2);
                         }
                         break;
                     case tokens.PLURAL:
@@ -343,7 +343,7 @@ POFile.prototype.parse = function(data) {
                         var forms = pluralForms[language] || pluralForms.en;
                         if (token.category >= forms.length) {
                             console.log("Error: " + this.pathName + ": invalid plural category " + token.category + " for plural " + source);
-                            reset();
+                            restart();
                         } else {
                             category = forms[token.category];
                             state = states.PLURALSTR;
@@ -361,7 +361,7 @@ POFile.prototype.parse = function(data) {
                                     key: source,
                                     sourceLocale: this.project.sourceLocale,
                                     sourceStrings: sourcePlurals,
-                                    pathName: this.pathName,
+                                    pathName: original,
                                     state: "new",
                                     comment: comment && JSON.stringify(comment),
                                     datatype: this.type.datatype,
@@ -379,7 +379,7 @@ POFile.prototype.parse = function(data) {
                                     key: source,
                                     sourceLocale: this.project.sourceLocale,
                                     source: source,
-                                    pathName: this.pathName,
+                                    pathName: original,
                                     state: "new",
                                     comment: comment && JSON.stringify(comment),
                                     datatype: this.type.datatype,
@@ -401,7 +401,7 @@ POFile.prototype.parse = function(data) {
                         break;
                     case tokens.UNKNOWN:
                         console.log("Error: " + this.pathName + ": syntax error");
-                        state = states.END;
+                        throw new "Error: " + this.pathName + ": syntax error";
                         break;
                 }
                 break;
@@ -586,7 +586,28 @@ POFile.prototype.localizeText = function(translations, locale) {
         for (var i = 0; i < resources.length; i++) {
             var r = resources[i];
             var key = r.getKey();
-            output += '\nmsgid "' + key + '"\n';
+            output += '\n';
+            var c = r.getComment() ? JSON.parse(r.getComment()) : {};
+
+            if (c.translator) {
+                output += '# ' + c.translator + '\n';
+            }
+            if (c.extracted) {
+                output += '#. ' + c.extracted + '\n';
+            }
+            if (r.getPath()) {
+                output += '#: ' + r.getPath() + '\n';
+            }
+            if (c.flags) {
+                output += '#, ' + c.flags + '\n';
+            }
+            if (c.previous) {
+                output += '#| ' + c.previous + '\n';
+            }
+            output += 'msgid "' + key + '"\n';
+            if (r.getContext()) {
+                output += 'msgctxt "' + r.getContext() + '"\n';
+            }
             if (r.getType() === "string") {
                 var text = r.getSource();
                 if (translations) {
@@ -658,7 +679,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                 output += 'msgstr "' + translatedText + '"\n';
             } else {
                 // plural string
-                var sourcePlurals = r.getSourceStrings();
+                var sourcePlurals = r.getSourcePlurals();
                 if (translations) {
                     // localize it
                     var hashkey = r.hashKeyForTranslation(locale);

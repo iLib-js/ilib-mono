@@ -330,11 +330,11 @@ module.exports.pofile = {
         test.equal(resources.length, 1);
 
         test.equal(resources[0].getType(), "plural");
-        var strings = resources[0].getSourceStrings();
+        var strings = resources[0].getSourcePlurals();
         test.equal(strings.one, "one object");
         test.equal(strings.other, "{$count} objects");
         test.equal(resources[0].getKey(), "one object");
-        test.ok(!resources[0].getTargetStrings());
+        test.ok(!resources[0].getTargetPlurals());
 
         test.done();
     },
@@ -364,15 +364,15 @@ module.exports.pofile = {
         test.equal(resources.length, 1);
 
         test.equal(resources[0].getType(), "plural");
-        var strings = resources[0].getSourceStrings();
+        var strings = resources[0].getSourcePlurals();
         test.equal(strings.one, "one object");
         test.equal(strings.other, "{$count} objects");
         test.equal(resources[0].getKey(), "one object");
         test.equal(resources[0].getSourceLocale(), "en-US");
-        strings = resources[0].getTargetStrings();
+        strings = resources[0].getTargetPlurals();
         test.equal(strings.one, "Ein Objekt");
         test.equal(strings.other, "{$count} Objekten");
-        test.equal(resources[0].getSourceLocale(), "de-DE");
+        test.equal(resources[0].getTargetLocale(), "de-DE");
 
         test.done();
     },
@@ -403,16 +403,16 @@ module.exports.pofile = {
         test.equal(resources.length, 1);
 
         test.equal(resources[0].getType(), "plural");
-        var strings = resources[0].getSourceStrings();
+        var strings = resources[0].getSourcePlurals();
         test.equal(strings.one, "one object");
         test.equal(strings.other, "{$count} objects");
         test.equal(resources[0].getKey(), "one object");
         test.equal(resources[0].getSourceLocale(), "en-US");
-        strings = resources[0].getTargetStrings();
+        strings = resources[0].getTargetPlurals();
         test.equal(strings.one, "{$count} объект");
         test.equal(strings.few, "{$count} объекта");
         test.equal(strings.other, "{$count} объектов");
-        test.equal(resources[0].getSourceLocale(), "ru-RU");
+        test.equal(resources[0].getTargetLocale(), "ru-RU");
 
         test.done();
     },
@@ -690,7 +690,7 @@ module.exports.pofile = {
     },
 
     testPOFileParseExtractComments: function(test) {
-        test.expect(9);
+        test.expect(12);
 
         var pof = new POFile({
             project: p,
@@ -723,29 +723,29 @@ module.exports.pofile = {
         var resources = set.getAll();
         test.equal(resources.length, 2);
 
-        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getSource(), "string 1");
         test.equal(resources[0].getKey(), "string 1");
         test.equal(resources[0].getComment(),
-            '{"translators":"translator\'s comments",' +
+            '{"translator":"translator\'s comments",' +
              '"extracted":"This is comments from the engineer to the translator for string 1.",' +
              '"flags":"c-format",' +
              '"previous":"str 1"}');
-        test.equal(resources[0].getOriginal(), "src/foo.html:32");
+        test.equal(resources[0].getPath(), "src/foo.html:32");
 
-        test.equal(resources[1].getSource(), "this is string two");
+        test.equal(resources[1].getSource(), "string 2");
         test.equal(resources[1].getKey(), "string 2");
         test.equal(resources[1].getComment(),
-            '{"translators":"translator\'s comments 2",' +
+            '{"translator":"translator\'s comments 2",' +
              '"extracted":"This is comments from the engineer to the translator for string 2.",' +
              '"flags":"javascript-format,gcc-internal-format",' +
              '"previous":"str 2"}');
-        test.equal(resources[1].getOriginal(), "src/bar.html:644");
+        test.equal(resources[1].getPath(), "src/bar.html:644");
 
         test.done();
     },
 
     testPOFileExtractFile: function(test) {
-        test.expect(28);
+        test.expect(17);
 
         var base = path.dirname(module.id);
 
@@ -836,6 +836,7 @@ module.exports.pofile = {
 
         var pof = new POFile({
             project: p,
+            pathName: "./po/messages.po",
             type: t
         });
         test.ok(pof);
@@ -885,6 +886,7 @@ module.exports.pofile = {
 
         var pof = new POFile({
             project: p,
+            pathName: "./po/messages.po",
             type: t
         });
         test.ok(pof);
@@ -943,6 +945,7 @@ module.exports.pofile = {
 
         var pof = new POFile({
             project: p,
+            pathName: "./po/messages.po",
             type: t
         });
         test.ok(pof);
@@ -993,11 +996,11 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             '# note for translators\n' +
-            '#: src/a/b/c.js:32\n' +
             '#. extracted comment\n' +
+            '#: src/a/b/c.js:32\n' +
             '#, c-format\n' +
             'msgid "string 2"\n' +
-            'msgstr "chaîne numéro 2"\n';
+            'msgstr "chaîne numéro 2"\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -1009,6 +1012,7 @@ module.exports.pofile = {
 
         var pof = new POFile({
             project: p,
+            pathName: "./po/messages.po",
             type: t
         });
         test.ok(pof);
@@ -1061,7 +1065,7 @@ module.exports.pofile = {
             '\n' +
             'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
-            'msgstr "chaîne numéro 2 contexte 2"\n';
+            'msgstr "chaîne numéro 2 contexte 2"\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -1106,7 +1110,7 @@ module.exports.pofile = {
         translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
-            source: "d",
+            source: "string 2",
             sourceLocale: "en-US",
             target: "chaîne 2",
             targetLocale: "fr-FR",
@@ -1114,7 +1118,7 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "string one",
             sourceStrings: {
                 "one": "string one",
                 "other": "{$count} strings"
@@ -1130,7 +1134,7 @@ module.exports.pofile = {
         translations.add(new ContextResourceString({
             project: "foo",
             key: "string 3 and 4",
-            source: "d",
+            source: "string 3 and 4",
             sourceLocale: "en-US",
             target: "chaîne 3 et 4",
             targetLocale: "fr-FR",
@@ -1149,7 +1153,7 @@ module.exports.pofile = {
         translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
-            source: "d",
+            source: "string 2",
             sourceLocale: "en-US",
             target: "Zeichenfolge 2",
             targetLocale: "de-DE",
@@ -1157,14 +1161,14 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "string one",
             sourceStrings: {
                 "one": "string one",
                 "other": "{$count} strings"
             },
             sourceLocale: "en-US",
             targetStrings: {
-                "one": "Zeichenfolge un",
+                "one": "Zeichenfolge eins",
                 "other": "Zeichenfolge {$count}"
             },
             targetLocale: "de-DE",
@@ -1173,7 +1177,7 @@ module.exports.pofile = {
         translations.add(new ContextResourceString({
             project: "foo",
             key: "string 3 and 4",
-            source: "d",
+            source: "string 3 and 4",
             sourceLocale: "en-US",
             target: "Zeichenfolge 3 und 4",
             targetLocale: "de-DE",
@@ -1212,7 +1216,7 @@ module.exports.pofile = {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "chaîne 3 et 4"\n';
+            'msgstr "chaîne 3 et 4"\n\n';
 
         diff(content, expected);
         test.equal(content, expected);
@@ -1235,7 +1239,7 @@ module.exports.pofile = {
             '# a plural string\n' +
             'msgid "one string"\n' +
             'msgid_plural "{$count} strings"\n' +
-            'msgstr[0] "Zeichenfolge un"\n' +
+            'msgstr[0] "Zeichenfolge eins"\n' +
             'msgstr[1] "Zeichenfolge {$count}"\n' +
             '\n' +
             '# another string\n' +
@@ -1244,7 +1248,7 @@ module.exports.pofile = {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "Zeichenfolge 3 und 4"\n';
+            'msgstr "Zeichenfolge 3 und 4"\n\n';
 
         diff(content, expected);
         test.equal(content, expected);
@@ -1330,7 +1334,7 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "string one",
             sourceStrings: {
                 "one": "string one",
                 "other": "{$count} strings"
@@ -1355,7 +1359,7 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "string one",
             sourceStrings: {
                 "one": "string one",
                 "other": "{$count} strings"
@@ -1489,7 +1493,7 @@ module.exports.pofile = {
             'msgid "string 1"\n' +
             'msgstr "C\'est la chaîne numéro 1"\n' +
             '\n' +
-            'msgid "string 2"\n';
+            'msgid "string 2"\n\n';
 
         diff(content, expected);
         test.equal(content, expected);
