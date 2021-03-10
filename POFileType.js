@@ -362,7 +362,7 @@ POFileType.prototype.getDataType = function() {
 
 POFileType.prototype.getResourceTypes = function() {
     return {
-        "string": "contextString"
+        "string": "ContextResourceString"
     };
 };
 

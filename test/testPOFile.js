@@ -26,7 +26,7 @@ if (!POFile) {
 
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
-    var ResourceString =  require("loctool/lib/ResourceString.js");
+    var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
     var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
     var ResourceArray =  require("loctool/lib/ResourceArray.js");
 }
@@ -47,7 +47,10 @@ function diff(a, b) {
 var p = new CustomProject({
     name: "foo",
     id: "foo",
-    sourceLocale: "en-US"
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "POFileType")
+    ]
 }, "./test/testfiles", {
     locales:["en-GB"],
     targetDir: ".",
@@ -74,7 +77,10 @@ var t = new POFileType(p);
 var p2 = new CustomProject({
     name: "foo",
     id: "foo",
-    sourceLocale: "en-US"
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "POFileType")
+    ]
 }, "./test/testfiles", {
     locales:["en-GB"],
     identify: true,
@@ -84,6 +90,12 @@ var p2 = new CustomProject({
 var t2 = new POFileType(p2);
 
 module.exports.pofile = {
+    testPOInit: function(test) {
+        p.init(function() {
+            test.done();
+        });
+    },
+
     testPOFileConstructor: function(test) {
         test.expect(1);
 
@@ -128,7 +140,7 @@ module.exports.pofile = {
             type: t
         });
         test.ok(pof);
-        
+
         test.equal(pof.getSourceLocale(), "en-US");
 
         test.done();
@@ -142,7 +154,7 @@ module.exports.pofile = {
             type: t
         });
         test.ok(pof);
-        
+
         test.equal(pof.getSourceLocale(), "en-US");
 
         test.done();
@@ -153,11 +165,11 @@ module.exports.pofile = {
 
         var pof = new POFile({
             project: p,
-            sourceLocale: "de-DE",
+            locale: "de-DE",
             type: t
         });
         test.ok(pof);
-        
+
         test.equal(pof.getTargetLocale(), "de-DE");
 
         test.done();
@@ -172,7 +184,7 @@ module.exports.pofile = {
             type: t
         });
         test.ok(pof);
-        
+
         test.equal(pof.getTargetLocale(), "de-DE");
 
         test.done();
@@ -193,7 +205,7 @@ module.exports.pofile = {
         var set = pof.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "po"));
+        var r = set.get(ContextResourceString.hashKey("foo", "", "en-US", "string 1", "po"));
         test.ok(r);
 
         test.equal(r.getSource(), "string 1");
@@ -220,7 +232,7 @@ module.exports.pofile = {
         var set = pof.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "po"));
+        var r = set.get(ContextResourceString.hashKey("foo", "context 1", "en-US", "string 1", "po"));
         test.ok(r);
 
         test.equal(r.getSource(), "string 1");
@@ -248,7 +260,7 @@ module.exports.pofile = {
         var set = pof.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "po"));
+        var r = set.get(ContextResourceString.hashKey("foo", "", "de-DE", "string 1", "po"));
         test.ok(r);
 
         test.equal(r.getSource(), "string 1");
@@ -262,7 +274,7 @@ module.exports.pofile = {
     },
 
     testPOFileParseSimpleRightStrings: function(test) {
-        test.expect(8);
+        test.expect(10);
 
         var pof = new POFile({
             project: p,
@@ -297,7 +309,7 @@ module.exports.pofile = {
     },
 
     testPOFileParsePluralString: function(test) {
-        test.expect(8);
+        test.expect(9);
 
         var pof = new POFile({
             project: p,
@@ -328,7 +340,7 @@ module.exports.pofile = {
     },
 
     testPOFileParsePluralStringWithTranslations: function(test) {
-        test.expect(8);
+        test.expect(12);
 
         var pof = new POFile({
             project: p,
@@ -366,7 +378,7 @@ module.exports.pofile = {
     },
 
     testPOFileParsePluralStringWithTranslationsRussian: function(test) {
-        test.expect(8);
+        test.expect(13);
 
         var pof = new POFile({
             project: p,
@@ -446,10 +458,10 @@ module.exports.pofile = {
         test.ok(pof);
 
         pof.parse(
-            'msgid ""\n' + 
+            'msgid ""\n' +
             '"string 1"\n' +
             '" and more string 1"\n' +
-            'msgstr ""\n' + 
+            'msgstr ""\n' +
             '"this is string one "\n' +
             '"or the translation thereof. "\n' +
             '"Next line."\n'
@@ -713,7 +725,7 @@ module.exports.pofile = {
 
         test.equal(resources[0].getSource(), "this is string one");
         test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getNote(),
+        test.equal(resources[0].getComment(),
             '{"translators":"translator\'s comments",' +
              '"extracted":"This is comments from the engineer to the translator for string 1.",' +
              '"flags":"c-format",' +
@@ -722,7 +734,7 @@ module.exports.pofile = {
 
         test.equal(resources[1].getSource(), "this is string two");
         test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getNote(), 
+        test.equal(resources[1].getComment(),
             '{"translators":"translator\'s comments 2",' +
              '"extracted":"This is comments from the engineer to the translator for string 2.",' +
              '"flags":"javascript-format,gcc-internal-format",' +
@@ -837,7 +849,7 @@ module.exports.pofile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -849,6 +861,14 @@ module.exports.pofile = {
 
         var actual = pof.localizeText(translations, "fr-FR");
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
@@ -878,7 +898,7 @@ module.exports.pofile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -887,7 +907,7 @@ module.exports.pofile = {
             targetLocale: "fr-FR",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "string 2",
@@ -899,6 +919,14 @@ module.exports.pofile = {
 
         var actual = pof.localizeText(translations, "fr-FR");
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
@@ -932,7 +960,7 @@ module.exports.pofile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -941,7 +969,7 @@ module.exports.pofile = {
             targetLocale: "fr-FR",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "string 2",
@@ -953,6 +981,14 @@ module.exports.pofile = {
 
         var actual = pof.localizeText(translations, "fr-FR");
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
@@ -988,7 +1024,7 @@ module.exports.pofile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -998,7 +1034,7 @@ module.exports.pofile = {
             targetLocale: "fr-FR",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1011,6 +1047,14 @@ module.exports.pofile = {
 
         var actual = pof.localizeText(translations, "fr-FR");
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
             'msgstr "chaîne numéro 1 contexte 1"\n' +
@@ -1050,7 +1094,7 @@ module.exports.pofile = {
         pof.extract();
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1059,7 +1103,7 @@ module.exports.pofile = {
             targetLocale: "fr-FR",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "d",
@@ -1083,7 +1127,7 @@ module.exports.pofile = {
             targetLocale: "fr-FR",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 3 and 4",
             source: "d",
@@ -1093,7 +1137,7 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1102,7 +1146,7 @@ module.exports.pofile = {
             targetLocale: "de-DE",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "d",
@@ -1126,7 +1170,7 @@ module.exports.pofile = {
             targetLocale: "de-DE",
             datatype: "po"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 3 and 4",
             source: "d",
@@ -1144,6 +1188,14 @@ module.exports.pofile = {
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr-FR.po"), "utf-8");
 
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne 1"\n' +
@@ -1168,6 +1220,14 @@ module.exports.pofile = {
         content = fs.readFileSync(path.join(base, "testfiles/resources/de-DE.po"), "utf-8");
 
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
             'msgstr "Zeichenfolge 1"\n' +
@@ -1259,7 +1319,7 @@ module.exports.pofile = {
 
         // only translate some of the strings
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1284,7 +1344,7 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1394,7 +1454,7 @@ module.exports.pofile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1418,6 +1478,14 @@ module.exports.pofile = {
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr-FR.po"), "utf-8");
 
         var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '\n' +
             'msgid "string 1"\n' +
             'msgstr "C\'est la chaîne numéro 1"\n' +
             '\n' +
