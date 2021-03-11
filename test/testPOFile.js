@@ -377,6 +377,42 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileParsePluralStringWithEmptyTranslations: function(test) {
+        test.expect(11);
+
+        var pof = new POFile({
+            project: p,
+            locale: "de-DE",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getType(), "plural");
+        var strings = resources[0].getSourcePlurals();
+        test.equal(strings.one, "one object");
+        test.equal(strings.other, "{$count} objects");
+        test.equal(resources[0].getKey(), "one object");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.ok(!resources[0].getTargetPlurals());
+        test.equal(resources[0].getTargetLocale(), "de-DE");
+
+        test.done();
+    },
+
     testPOFileParsePluralStringWithTranslationsRussian: function(test) {
         test.expect(13);
 

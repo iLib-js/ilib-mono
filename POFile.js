@@ -280,10 +280,10 @@ POFile.prototype.parse = function(data) {
                                     comment: comment && JSON.stringify(comment),
                                     datatype: this.type.datatype,
                                     context: context,
-                                    index: this.resourceIndex++
+                                    index: this.resourceIndex++,
+                                    targetLocale: this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
                                 };
                                 if (translationPlurals) {
-                                    options.targetLocale = this.localeSpec;
                                     options.targetStrings = translationPlurals;
                                 }
                             } else {
@@ -298,10 +298,10 @@ POFile.prototype.parse = function(data) {
                                     comment: comment && JSON.stringify(comment),
                                     datatype: this.type.datatype,
                                     context: context,
-                                    index: this.resourceIndex++
+                                    index: this.resourceIndex++,
+                                    targetLocale: this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
                                 };
                                 if (translation) {
-                                    options.targetLocale = this.localeSpec;
                                     options.target = translation;
                                 }
                             }
