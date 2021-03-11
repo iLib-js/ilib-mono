@@ -54,100 +54,6 @@ var POFile = function(options) {
     this.resourceIndex = 0;
 };
 
-/**
- * Unescape the string to make the same string that would be
- * in memory in the target programming language. This includes
- * unescaping both special and Unicode characters.
- *
- * @static
- * @param {String} string the string to unescape
- * @returns {String} the unescaped string
- */
-POFile.unescapeString = function(string) {
-    var unescaped = string;
-
-    unescaped = he.decode(unescaped);
-
-    unescaped = unescaped.
-        replace(/^\\\\/g, "\\").
-        replace(/([^\\])\\\\/g, "$1\\").
-        replace(/\\(.)/g, "$1");
-
-    return unescaped;
-};
-
-/**
- * Clean the string to make a source string. This means
- * removing leading and trailing white space, compressing
- * whitespaces, and unescaping characters. This changes
- * the string from what it looks like in the source
- * code, but it increases the matching between strings
- * that only differ in ways that don't matter.
- *
- * @static
- * @param {String} string the string to clean
- * @returns {String} the cleaned string
- */
-POFile.cleanString = function(string) {
-    var unescaped = POFile.unescapeString(string);
-
-    unescaped = unescaped.
-        replace(/[ \n\t\r\f]+/g, " ").
-        trim();
-
-    return unescaped;
-};
-
-
-POFile.escapeProp = function(prop) {
-    return prop.
-        replace(/~/g, "~0").
-        replace(/\//g, "~1");
-};
-
-POFile.unescapeProp = function(prop) {
-    return prop.
-        replace(/~1/g, "/").
-        replace(/~0/g, "~");
-};
-
-POFile.escapeRef = function(prop) {
-    return POFile.escapeProp(prop).
-        replace(/%/g, "%25").
-        replace(/\^/g, "%5E").
-        replace(/\|/g, "%7C").
-        replace(/\\/g, "%5C").
-        replace(/"/g, "%22").
-        replace(/ /g, "%20");
-};
-
-POFile.unescapeRef = function(prop) {
-    return POFile.unescapeProp(prop.
-        replace(/%5E/g, "^").
-        replace(/%7C/g, "|").
-        replace(/%5C/g, "\\").
-        replace(/%22/g, "\"").
-        replace(/%20/g, " ").
-        replace(/%25/g, "%"));
-};
-
-function isNotEmpty(obj) {
-    if (!obj) {
-        return false;
-    } else if (isPrimitive(typeof(obj))) {
-        return typeof(obj) !== 'undefined';
-    } else if (ilib.isArray(obj)) {
-        return obj.length > 0;
-    } else {
-        for (var prop in obj) {
-            if (isNotEmpty(obj[prop])) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
-
 var tokens = {
     START: 0,
     END: 1,
@@ -329,18 +235,26 @@ POFile.prototype.parse = function(data) {
                         state = states.MSGSTR;
                         break;
                     case tokens.COMMENT:
-                        if (!comment) {
-                            comment = {};
-                        }
-                        if (token.value[0] === ':') {
-                            original = token.value.substring(2);
+                        var type = token.value[0];
+                        if (type === ':') {
+                            if (original) {
+                                original += " " + token.value.substring(2);
+                            } else {
+                                original = token.value.substring(2);
+                            }
                         } else {
-                            comment[commentTypeMap[token.value[0]]] = token.value.substring((token.value[0] === ' ') ? 1 : 2);
+                            if (!comment) {
+                                comment = {};
+                            }
+                            if (!comment[commentTypeMap[type]]) {
+                               comment[commentTypeMap[type]] = [];
+                            }
+                            comment[commentTypeMap[type]].push(token.value.substring((type === ' ') ? 1 : 2));
                         }
                         break;
                     case tokens.PLURAL:
                         var language = this.locale.getLanguage();
-                        var forms = pluralForms[language] || pluralForms.en;
+                        var forms = pluralForms[language].categories || pluralForms.en.categories;
                         if (token.category >= forms.length) {
                             console.log("Error: " + this.pathName + ": invalid plural category " + token.category + " for plural " + source);
                             restart();
@@ -570,7 +484,8 @@ POFile.prototype.getTargetLocale = function() {
  */
 POFile.prototype.localizeText = function(translations, locale) {
     var l = new Locale(locale);
-    var pluralCategories = pluralForms[l.getLanguage()] || pluralForms.en;
+    var plurals = pluralForms[l.getLanguage()] || pluralForms.en;
+    var pluralCategories = plurals.categories;
 
     var resources = this.set.getAll();
     var output =
@@ -580,7 +495,9 @@ POFile.prototype.localizeText = function(translations, locale) {
         '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
         '"Content-Transfer-Encoding: 8bit\\n"\n' +
         '"Generated-By: loctool\\n"\n' +
-        '"Project-Id-Version: 1\\n"\n';
+        '"Project-Id-Version: 1\\n"\n' +
+        '"Language: ' + locale + '\\n"\n' +
+        '"Plural-Forms: ' + plurals.rules + '\\n"\n';
 
     if (resources) {
         for (var i = 0; i < resources.length; i++) {
@@ -589,20 +506,28 @@ POFile.prototype.localizeText = function(translations, locale) {
             output += '\n';
             var c = r.getComment() ? JSON.parse(r.getComment()) : {};
 
-            if (c.translator) {
-                output += '# ' + c.translator + '\n';
+            if (c.translator && c.translator.length) {
+                c.translator.forEach(function(str) {
+                    output += '# ' + str + '\n';
+                });
             }
             if (c.extracted) {
-                output += '#. ' + c.extracted + '\n';
+                c.extracted.forEach(function(str) {
+                    output += '#. ' + str + '\n';
+                });
             }
             if (r.getPath()) {
                 output += '#: ' + r.getPath() + '\n';
             }
             if (c.flags) {
-                output += '#, ' + c.flags + '\n';
+                c.flags.forEach(function(str) {
+                    output += '#, ' + str + '\n';
+                });
             }
             if (c.previous) {
-                output += '#| ' + c.previous + '\n';
+                c.previous.forEach(function(str) {
+                    output += '#| ' + str + '\n';
+                });
             }
             output += 'msgid "' + key + '"\n';
             if (r.getContext()) {

@@ -726,19 +726,19 @@ module.exports.pofile = {
         test.equal(resources[0].getSource(), "string 1");
         test.equal(resources[0].getKey(), "string 1");
         test.equal(resources[0].getComment(),
-            '{"translator":"translator\'s comments",' +
-             '"extracted":"This is comments from the engineer to the translator for string 1.",' +
-             '"flags":"c-format",' +
-             '"previous":"str 1"}');
+            '{"translator":["translator\'s comments"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
         test.equal(resources[0].getPath(), "src/foo.html:32");
 
         test.equal(resources[1].getSource(), "string 2");
         test.equal(resources[1].getKey(), "string 2");
         test.equal(resources[1].getComment(),
-            '{"translator":"translator\'s comments 2",' +
-             '"extracted":"This is comments from the engineer to the translator for string 2.",' +
-             '"flags":"javascript-format,gcc-internal-format",' +
-             '"previous":"str 2"}');
+            '{"translator":["translator\'s comments 2"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 2."],' +
+             '"flags":["javascript-format,gcc-internal-format"],' +
+             '"previous":["str 2"]}');
         test.equal(resources[1].getPath(), "src/bar.html:644");
 
         test.done();
@@ -776,10 +776,10 @@ module.exports.pofile = {
         test.equal(resources[0].getSource(), "string 1");
         test.equal(resources[0].getKey(), "string 1");
         test.equal(resources[0].getComment(),
-            '{"translator":"translator\'s comments",' +
-             '"extracted":"This is comments from the engineer to the translator for string 1.",' +
-             '"flags":"c-format",' +
-             '"previous":"str 1"}');
+            '{"translator":["translator\'s comments"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
         test.equal(resources[0].getPath(), "src/foo.html:32");
 
         // comments for string 1 should not carry over to string 2
@@ -787,6 +787,83 @@ module.exports.pofile = {
         test.equal(resources[1].getKey(), "string 2");
         test.ok(!resources[1].getComment());
         test.ok(!resources[1].getPath());
+
+        test.done();
+    },
+
+    testPOFileParseExtractMultiplePaths: function(test) {
+        test.expect(8);
+
+        var pof = new POFile({
+            project: p,
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            '#: src/foo.html:32\n' +
+            '#: src/bar.html:32\n' +
+            '#: src/asdf.html:32\n' +
+            '#: src/xyz.html:32\n' +
+            '#: src/abc.html:32\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.ok(!resources[0].getComment());
+        test.equal(resources[0].getPath(), "src/foo.html:32 src/bar.html:32 src/asdf.html:32 src/xyz.html:32 src/abc.html:32");
+
+        test.done();
+    },
+
+    testPOFileParseExtractMultipleComments: function(test) {
+        test.expect(7);
+
+        var pof = new POFile({
+            project: p,
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            '# translator\'s comments 1\n' +
+            '# translator\'s comments 2\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#. This is more comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str 1\n' +
+            '#| str 2\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getComment(),
+            '{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1.",'+
+             '"This is more comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format","javascript-format"],' +
+             '"previous":["str 1","str 2"]}');
 
         test.done();
     },
@@ -916,6 +993,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -975,6 +1054,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -1038,6 +1119,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -1046,6 +1129,86 @@ module.exports.pofile = {
             '#. extracted comment\n' +
             '#: src/a/b/c.js:32\n' +
             '#, c-format\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne numéro 2"\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextPreserveMultipleComments: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            '# note for translators 1\n' +
+            '# note for translators 2\n' +
+            '#: src/a/b/c.js:32\n' +
+            '#: src/a/b/x.js:32\n' +
+            '#. extracted comment 1\n' +
+            '#. extracted comment 2\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str2\n' +
+            '#| string2\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            '# note for translators 1\n' +
+            '# note for translators 2\n' +
+            '#. extracted comment 1\n' +
+            '#. extracted comment 2\n' +
+            '#: src/a/b/c.js:32 src/a/b/x.js:32\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str2\n' +
+            '#| string2\n' +
             'msgid "string 2"\n' +
             'msgstr "chaîne numéro 2"\n\n';
 
@@ -1105,6 +1268,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
@@ -1246,6 +1411,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -1278,6 +1445,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: de-DE\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -1536,6 +1705,8 @@ module.exports.pofile = {
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "C\'est la chaîne numéro 1"\n' +
