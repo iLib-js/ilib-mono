@@ -744,6 +744,53 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileParseClearComments: function(test) {
+        test.expect(12);
+
+        var pof = new POFile({
+            project: p,
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            '# translator\'s comments\n' +
+            '#: src/foo.html:32\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#| str 1\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getComment(),
+            '{"translator":"translator\'s comments",' +
+             '"extracted":"This is comments from the engineer to the translator for string 1.",' +
+             '"flags":"c-format",' +
+             '"previous":"str 1"}');
+        test.equal(resources[0].getPath(), "src/foo.html:32");
+
+        // comments for string 1 should not carry over to string 2
+        test.equal(resources[1].getSource(), "string 2");
+        test.equal(resources[1].getKey(), "string 2");
+        test.ok(!resources[1].getComment());
+        test.ok(!resources[1].getPath());
+
+        test.done();
+    },
+
     testPOFileExtractFile: function(test) {
         test.expect(17);
 
@@ -874,7 +921,7 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n';
+            'msgstr ""\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -933,7 +980,7 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr "chaîne numéro 2"\n';
+            'msgstr "chaîne numéro 2"\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -1118,9 +1165,9 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "string one",
+            key: "one string",
             sourceStrings: {
-                "one": "string one",
+                "one": "one string",
                 "other": "{$count} strings"
             },
             sourceLocale: "en-US",
@@ -1161,9 +1208,9 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "string one",
+            key: "one string",
             sourceStrings: {
-                "one": "string one",
+                "one": "one string",
                 "other": "{$count} strings"
             },
             sourceLocale: "en-US",
@@ -1293,7 +1340,7 @@ module.exports.pofile = {
     },
 
     testPOFileLocalizeExtractNewStrings: function(test) {
-        test.expect(34);
+        test.expect(20);
 
         var base = path.dirname(module.id);
 
@@ -1334,9 +1381,9 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "string one",
+            key: "one string",
             sourceStrings: {
-                "one": "string one",
+                "one": "one string",
                 "other": "{$count} strings"
             },
             sourceLocale: "en-US",
@@ -1359,9 +1406,9 @@ module.exports.pofile = {
         }));
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "string one",
+            key: "one string",
             sourceStrings: {
-                "one": "string one",
+                "one": "one string",
                 "other": "{$count} strings"
             },
             sourceLocale: "en-US",
@@ -1446,7 +1493,7 @@ module.exports.pofile = {
 
         var pof = new POFile({
             project: p,
-            pathName: "x/y/str.po",
+            pathName: "./po/messages.po",
             type: t
         });
         test.ok(pof);
@@ -1493,7 +1540,8 @@ module.exports.pofile = {
             'msgid "string 1"\n' +
             'msgstr "C\'est la chaîne numéro 1"\n' +
             '\n' +
-            'msgid "string 2"\n\n';
+            'msgid "string 2"\n' +
+            'msgstr ""\n\n';
 
         diff(content, expected);
         test.equal(content, expected);

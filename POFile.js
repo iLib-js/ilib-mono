@@ -307,7 +307,7 @@ POFile.prototype.parse = function(data) {
     var comment, context, source, translation, original, sourcePlurals, translationPlurals, category;
 
     function restart() {
-        comment = context = source = translation = orignal = sourcePlurals = translationPlurals = category = undefined;
+        comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
         state = states.START;
     }
 
@@ -614,16 +614,13 @@ POFile.prototype.localizeText = function(translations, locale) {
                     // localize it
                     var hashkey = r.hashKeyForTranslation(locale);
                     var translated = translations.getClean(hashkey);
-                    var source, translatedText;
-                    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                        translatedText = text;
-                    } else if (!translated && this.type && this.type.pseudos[locale]) {
+                    var source, translatedText = "";
+                    if ((locale !== this.project.pseudoLocale || !this.project.settings.nopseudo) &&
+                        (!translated && this.type && this.type.pseudos[locale])) {
                         var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                         if (sourceLocale !== this.project.sourceLocale) {
                             // translation is derived from a different locale's translation instead of from the source string
-                            var sourceRes = translations.getClean(
-                                r.cleanHashKey(),
-                                this.type.datatype);
+                            var sourceRes = translations.getClean(r.cleanHashKey(), this.type.datatype);
                             source = sourceRes ? sourceRes.getTarget() : text;
                         } else {
                             source = text;
@@ -651,10 +648,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                     index: this.resourceIndex++
                                 }));
                                 translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
-                                        this.type.missingPseudo.getString(text) : text;
-                                translatedText = translatedText;
-                            } else {
-                                translatedText = text;
+                                        this.type.missingPseudo.getString(text) : "";
                             }
                         }
                     }
@@ -673,7 +667,6 @@ POFile.prototype.localizeText = function(translations, locale) {
                         context: r.getContext(),
                         index: this.resourceIndex++
                     }));
-                    translatedText = text;
                 }
 
                 output += 'msgstr "' + translatedText + '"\n';
@@ -685,9 +678,8 @@ POFile.prototype.localizeText = function(translations, locale) {
                     var hashkey = r.hashKeyForTranslation(locale);
                     var translated = translations.getClean(hashkey);
                     var translatedPlurals;
-                    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                        translatedPlurals = sourcePlurals;
-                    } else if (!translated && this.type && this.type.pseudos[locale]) {
+                    if ((locale !== this.project.pseudoLocale || !this.project.settings.nopseudo) &&
+                        (!translated && this.type && this.type.pseudos[locale])) {
                         var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                         if (sourceLocale !== this.project.sourceLocale) {
                             // translation is derived from a different locale's translation instead of from the source string
@@ -725,12 +717,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                     translatedPlurals = objectMap(sourcePlurals, function(item) {
                                         return this.type.missingPseudo.getString(item);
                                     }.bind(this));
-                                    translatedPlurals = translatedPlurals;
-                                } else {
-                                    translatedPlurals = sourcePlurals;
                                 }
-                            } else {
-                                translatedPlurals = sourcePlurals;
                             }
                         }
                     }
@@ -749,16 +736,13 @@ POFile.prototype.localizeText = function(translations, locale) {
                         context: r.getContext(),
                         index: this.resourceIndex++
                     }));
-                    translatedPlurals = sourcePlurals;
                 }
 
+                output += 'msgid_plural "' + sourcePlurals.other  + '"\n';
                 if (translatedPlurals) {
-                    output += 'msgstr_plural "' + (translatedPlurals.other || sourcePlurals.other)  + '"\n';
-                    for (var i = 0; i < pluralCategories.length; i++) {
-                        output += 'msgstr[' + i + '] "' + translatedPlurals[pluralCategories[i]] + '"\n';
+                    for (var j = 0; j < pluralCategories.length; j++) {
+                        output += 'msgstr[' + j + '] "' + translatedPlurals[pluralCategories[j]] + '"\n';
                     }
-                } else {
-                    output += 'msgstr_plural "' + sourcePlurals.other  + '"\n';
                 }
             }
         }
