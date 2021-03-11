@@ -29,6 +29,14 @@ var pluralForms = require("./pluralforms.json");
 
 var logger = log4js.getLogger("loctool.plugin.POFile");
 
+function escapeQuotes(str) {
+    return str ? str.replace(/"/g, '\\"') : str;
+}
+
+function unescapeQuotes(str) {
+    return str ? str.replace(/\\"/g, '"') : str;
+}
+
 /**
  * Create a new PO file with the given path name and within
  * the given project.
@@ -122,7 +130,7 @@ POFile.prototype.getToken = function() {
 
         return {
             type: tokens.STRING,
-            value: value
+            value: unescapeQuotes(value)
         };
     } else if (isSpace(this.data[this.index])) {
         if (this.data[this.index] === '\n' && this.index < this.data.length && this.data[this.index+1] === '\n') {
@@ -529,9 +537,9 @@ POFile.prototype.localizeText = function(translations, locale) {
                     output += '#| ' + str + '\n';
                 });
             }
-            output += 'msgid "' + key + '"\n';
+            output += 'msgid "' + escapeQuotes(key) + '"\n';
             if (r.getContext()) {
-                output += 'msgctxt "' + r.getContext() + '"\n';
+                output += 'msgctxt "' + escapeQuotes(r.getContext()) + '"\n';
             }
             if (r.getType() === "string") {
                 var text = r.getSource();
@@ -594,7 +602,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                     }));
                 }
 
-                output += 'msgstr "' + translatedText + '"\n';
+                output += 'msgstr "' + escapeQuotes(translatedText) + '"\n';
             } else {
                 // plural string
                 var sourcePlurals = r.getSourcePlurals();
@@ -663,10 +671,10 @@ POFile.prototype.localizeText = function(translations, locale) {
                     }));
                 }
 
-                output += 'msgid_plural "' + sourcePlurals.other  + '"\n';
+                output += 'msgid_plural "' + escapeQuotes(sourcePlurals.other)  + '"\n';
                 if (translatedPlurals) {
                     for (var j = 0; j < pluralCategories.length; j++) {
-                        output += 'msgstr[' + j + '] "' + translatedPlurals[pluralCategories[j]] + '"\n';
+                        output += 'msgstr[' + j + '] "' + escapeQuotes(translatedPlurals[pluralCategories[j]]) + '"\n';
                     }
                 }
             }

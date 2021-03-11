@@ -517,6 +517,31 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileParseEscapedQuotes: function(test) {
+        test.expect(6);
+
+        var pof = new POFile({
+            project: p,
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string \\"quoted\\" 1"\n');
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ContextResourceString.hashKey("foo", "", "en-US", 'string "quoted" 1', "po"));
+        test.ok(r);
+
+        test.equal(r.getSource(), 'string "quoted" 1');
+        test.equal(r.getKey(), 'string "quoted" 1');
+        test.equal(r.getType(), 'string');
+
+        test.done();
+    },
+
     testPOFileParseEmptyTranslation: function(test) {
         test.expect(12);
 
@@ -1247,6 +1272,52 @@ module.exports.pofile = {
             '#| string2\n' +
             'msgid "string 2"\n' +
             'msgstr "chaîne numéro 2"\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextWithEscapedQuotes: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string \\"quoted\\" 1"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: 'string "quoted" 1',
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: 'chaîne "numéro" 1',
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string \\"quoted\\" 1"\n' +
+            'msgstr "chaîne \\"numéro\\" 1"\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
