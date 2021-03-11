@@ -1693,7 +1693,7 @@ module.exports.jsonfile = {
     },
 
     testJsonFileLocalizeExtractNewStrings: function(test) {
-        test.expect(34);
+        test.expect(43);
 
         var base = path.dirname(module.id);
 
@@ -1723,23 +1723,6 @@ module.exports.jsonfile = {
 
         // only translate some of the strings
         var translations = new TranslationSet();
-        translations.add(new ResourcePlural({
-            project: "foo",
-            key: "plurals/bar",
-            sourceStrings: {
-                "one": "singular",
-                "many": "many",
-                "other": "plural"
-            },
-            sourceLocale: "en-US",
-            targetStrings: {
-                "one": "singulaire",
-                "many": "plupart",
-                "other": "autres"
-            },
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
         translations.add(new ResourceString({
             project: "foo",
             key: "strings/a",
@@ -1784,42 +1767,54 @@ module.exports.jsonfile = {
 
         // now verify that the strings which did not have translations show up in the
         // new strings translation set
-        test.equal(t.newres.size(), 6);
+        test.equal(t.newres.size(), 7);
         var resources = t.newres.getAll();
-        test.equal(resources.length, 6);
+        test.equal(resources.length, 7);
 
-        test.equal(resources[0].getType(), "array");
-        test.equal(resources[0].getKey(), "arrays/asdf");
+        test.equal(resources[0].getType(), "plural");
+        test.equal(resources[0].getKey(), "plurals/bar");
         test.equal(resources[0].getTargetLocale(), "fr-FR");
-        var arrayStrings = resources[0].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
-        arrayStrings = resources[0].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        var pluralStrings = resources[0].getSourcePlurals();
+        test.ok(pluralStrings);
+        test.equal(pluralStrings.one, "one");
+        test.equal(pluralStrings.other, "other");
+        pluralStrings = resources[0].getTargetPlurals();
+        test.ok(pluralStrings);
+        test.equal(pluralStrings.one, "one");
+        test.equal(pluralStrings.other, "other");
 
         test.equal(resources[1].getType(), "array");
-        test.equal(resources[1].getKey(), "arrays/asdfasdf");
+        test.equal(resources[1].getKey(), "arrays/asdf");
         test.equal(resources[1].getTargetLocale(), "fr-FR");
         var arrayStrings = resources[1].getSourceArray();
         test.ok(arrayStrings);
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
+        arrayStrings = resources[1].getTargetArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
+
+        test.equal(resources[2].getType(), "array");
+        test.equal(resources[2].getKey(), "arrays/asdfasdf");
+        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        var arrayStrings = resources[2].getSourceArray();
+        test.ok(arrayStrings);
         test.equal(arrayStrings[0], "1");
         test.equal(arrayStrings[1], "2");
         test.equal(arrayStrings[2], "3");
-        arrayStrings = resources[1].getTargetArray();
+        arrayStrings = resources[2].getTargetArray();
         test.ok(arrayStrings);
         test.equal(arrayStrings[0], "1");
         test.equal(arrayStrings[1], "2");
         test.equal(arrayStrings[2], "3");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "strings/c");
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "d");
+        test.equal(resources[3].getKey(), "strings/c");
+        test.equal(resources[3].getTargetLocale(), "fr-FR");
 
         test.done();
     },
