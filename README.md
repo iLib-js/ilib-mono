@@ -487,3 +487,4 @@ This plugin assumes that any language not explicitly listed below has only the
 | number | category |
 | ---- | ---- |
 | 0 | other |
+
