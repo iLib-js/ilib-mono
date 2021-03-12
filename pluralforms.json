@@ -5,25 +5,25 @@
             "other"
         ]
     },
-    "zh":  {
+    "zh": {
         "rules": "nplurals=1; plural=0;",
         "categories": [
             "other"
         ]
     },
-    "ko":  {
+    "ko": {
         "rules": "nplurals=1; plural=0;",
         "categories": [
             "other"
         ]
     },
-    "th":  {
+    "th": {
         "rules": "nplurals=1; plural=0;",
         "categories": [
             "other"
         ]
     },
-    "en":  {
+    "en": {
         "rules": "nplurals=2; plural=n != 1;",
         "categories": [
             "one",
