@@ -38,7 +38,7 @@
         "LICENSE",
         "POFile.js",
         "POFileType.js",
-		"pluralforms.json"
+        "pluralforms.json"
     ],
     "repository": {
         "type": "git",
