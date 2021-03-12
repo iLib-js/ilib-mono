@@ -610,7 +610,14 @@ POFile.prototype.localizeText = function(translations, locale) {
                     // localize it
                     var hashkey = r.hashKeyForTranslation(locale);
                     var translated = translations.getClean(hashkey);
-                    var translatedPlurals;
+                    var translatedPlurals = {};
+                    pluralCategories.forEach(function(category) {
+                        if (category === "one") {
+                            translatedPlurals.one = sourcePlurals.one;
+                        } else {
+                            translatedPlurals[category] = sourcePlurals.other;
+                        }
+                    });
                     if ((locale !== this.project.pseudoLocale || !this.project.settings.nopseudo) &&
                         (!translated && this.type && this.type.pseudos[locale])) {
                         var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
@@ -619,9 +626,9 @@ POFile.prototype.localizeText = function(translations, locale) {
                             var sourceRes = translations.getClean(
                                 r.cleanHashKey(),
                                 this.type.datatype);
-                            source = sourceRes ? sourceRes.getTargetPlurals() : sourcePlurals;
+                            source = sourceRes ? sourceRes.getTargetPlurals() : translatedPlurals;
                         } else {
-                            source = sourcePlurals;
+                            source = translatedPlurals;
                         }
                         translatedPlurals = objectMap(source, function(item) {
                             return this.type.pseudos[locale].getString(item);
@@ -639,7 +646,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                     sourceLocale: r.getSourceLocale(),
                                     sourceStrings: sourcePlurals,
                                     targetLocale: locale,
-                                    targetStrings: sourcePlurals,
+                                    targetStrings: translatedPlurals,
                                     pathName: r.getPath(),
                                     state: "new",
                                     datatype: r.getDataType(),
@@ -647,7 +654,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                     index: this.resourceIndex++
                                 }));
                                 if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                                    translatedPlurals = objectMap(sourcePlurals, function(item) {
+                                    translatedPlurals = objectMap(translatedPlurals, function(item) {
                                         return this.type.missingPseudo.getString(item);
                                     }.bind(this));
                                 }
