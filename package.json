@@ -37,7 +37,8 @@
         "README.md",
         "LICENSE",
         "POFile.js",
-        "POFileType.js"
+        "POFileType.js",
+		"pluralforms.json"
     ],
     "repository": {
         "type": "git",
