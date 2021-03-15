@@ -1,8 +1,8 @@
 {
     "name": "ilib-loctool-po",
     "version": "1.0.0",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-po files",
+    "main": "./POFileType.js",
+    "description": "A loctool plugin that knows how to localize GNU po and pot files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -17,7 +17,9 @@
         "translation",
         "webpack",
         "loader",
-        "ilib-loctool-po"
+        "po",
+        "pot",
+        "gettext"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -33,7 +35,10 @@
     ],
     "files": [
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "POFile.js",
+        "POFileType.js",
+        "pluralforms.json"
     ],
     "repository": {
         "type": "git",
@@ -43,17 +48,18 @@
         "dist": "npm pack",
         "test": "node test/testSuite.js",
         "debug": "node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d *"
+        "clean": "git clean -f -d test"
     },
     "engines": {
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.1.0",
+        "ilib": "^14.7.0",
         "log4js": "^2.11.0"
     },
     "devDependencies": {
-        "loctool": "^2.10.1",
+        "assertextras": "^1.1.0",
+        "loctool": "^2.11.0",
         "nodeunit": "^0.11.3"
     }
 }
