@@ -1825,5 +1825,620 @@ module.exports.pofile = {
         test.equal(content, expected);
 
         test.done();
-    }
+    },
+
+    testPOFileExtractLocalizedFiles: function(test) {
+        test.expect(65);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr-FR.po"));
+        }
+        if (fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/de-DE.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "chaîne 2",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "chaîne un",
+                "other": "chaîne {$count}"
+            },
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "chaîne 3 et 4",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "Zeichenfolge 1",
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "Zeichenfolge 2",
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "Zeichenfolge eins",
+                "other": "Zeichenfolge {$count}"
+            },
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "Zeichenfolge 3 und 4",
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+
+        pof.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+
+        pof = new POFile({
+            project: p,
+            pathName: "./resources/fr-FR.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        // now verify that the resources it created have the right target locale
+        // based on the file name
+
+        var set = pof.getTranslationSet();
+
+        test.equal(set.size(), 4);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTarget(), "chaîne 1");
+        test.equal(resources[0].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[1].getType(), "plural");
+        var categories = resources[1].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one string");
+        test.equal(categories.other, "{$count} strings");
+        test.equal(resources[1].getKey(), "one string");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        categories = resources[1].getTargetPlurals();
+        test.equal(categories.one, "chaîne un");
+        test.equal(categories.other, "chaîne {$count}");
+        test.equal(resources[1].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "string 2");
+        test.equal(resources[2].getKey(), "string 2");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTarget(), "chaîne 2");
+        test.equal(resources[2].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "string 3 and 4");
+        test.equal(resources[3].getKey(), "string 3 and 4");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTarget(), "chaîne 3 et 4");
+        test.equal(resources[3].getTargetLocale(), "fr-FR");
+
+        pof = new POFile({
+            project: p,
+            pathName: "./resources/de-DE.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        // now verify that the resources it created have the right target locale
+        // based on the file name
+
+        var set = pof.getTranslationSet();
+
+        test.equal(set.size(), 4);
+
+        resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTarget(), "Zeichenfolge 1");
+        test.equal(resources[0].getTargetLocale(), "de-DE");
+
+        test.equal(resources[1].getType(), "plural");
+        var categories = resources[1].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one string");
+        test.equal(categories.other, "{$count} strings");
+        test.equal(resources[1].getKey(), "one string");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        categories = resources[1].getTargetPlurals();
+        test.equal(categories.one, "Zeichenfolge eins");
+        test.equal(categories.other, "Zeichenfolge {$count}");
+        test.equal(resources[1].getTargetLocale(), "de-DE");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "string 2");
+        test.equal(resources[2].getKey(), "string 2");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTarget(), "Zeichenfolge 2");
+        test.equal(resources[2].getTargetLocale(), "de-DE");
+
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "string 3 and 4");
+        test.equal(resources[3].getKey(), "string 3 and 4");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTarget(), "Zeichenfolge 3 und 4");
+        test.equal(resources[3].getTargetLocale(), "de-DE");
+
+        test.done();
+    },
+
+    testPOFileExtractLocalizedFilesNoMappings: function(test) {
+        test.expect(67);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/fr-FR.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/fr-FR.po"));
+        }
+        if (fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/de-DE.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/fr-FR.po")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+
+        // custom project with no mappings should force it to use the default
+        // mappings to get the target locale
+        var p2 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "POFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: ".",
+        });
+        var t2 = new POFileType(p2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/messages.po",
+            type: t2
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "chaîne 2",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "chaîne un",
+                "other": "chaîne {$count}"
+            },
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "chaîne 3 et 4",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "Zeichenfolge 1",
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "Zeichenfolge 2",
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "Zeichenfolge eins",
+                "other": "Zeichenfolge {$count}"
+            },
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "Zeichenfolge 3 und 4",
+            targetLocale: "de-DE",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/fr-FR.po")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+
+        pof.localize(translations, ["fr-FR", "de-DE"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/fr-FR.po")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+
+        pof = new POFile({
+            project: p,
+            pathName: "./po/fr-FR.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        // now verify that the resources it created have the right target locale
+        // based on the file name
+
+        var set = pof.getTranslationSet();
+
+        test.equal(set.size(), 4);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTarget(), "chaîne 1");
+        test.equal(resources[0].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[1].getType(), "plural");
+        var categories = resources[1].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one string");
+        test.equal(categories.other, "{$count} strings");
+        test.equal(resources[1].getKey(), "one string");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        categories = resources[1].getTargetPlurals();
+        test.equal(categories.one, "chaîne un");
+        test.equal(categories.other, "chaîne {$count}");
+        test.equal(resources[1].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "string 2");
+        test.equal(resources[2].getKey(), "string 2");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTarget(), "chaîne 2");
+        test.equal(resources[2].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "string 3 and 4");
+        test.equal(resources[3].getKey(), "string 3 and 4");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTarget(), "chaîne 3 et 4");
+        test.equal(resources[3].getTargetLocale(), "fr-FR");
+
+        pof = new POFile({
+            project: p,
+            pathName: "./po/de-DE.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        // now verify that the resources it created have the right target locale
+        // based on the file name
+
+        var set = pof.getTranslationSet();
+
+        test.equal(set.size(), 4);
+
+        resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTarget(), "Zeichenfolge 1");
+        test.equal(resources[0].getTargetLocale(), "de-DE");
+
+        test.equal(resources[1].getType(), "plural");
+        var categories = resources[1].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one string");
+        test.equal(categories.other, "{$count} strings");
+        test.equal(resources[1].getKey(), "one string");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        categories = resources[1].getTargetPlurals();
+        test.equal(categories.one, "Zeichenfolge eins");
+        test.equal(categories.other, "Zeichenfolge {$count}");
+        test.equal(resources[1].getTargetLocale(), "de-DE");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "string 2");
+        test.equal(resources[2].getKey(), "string 2");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTarget(), "Zeichenfolge 2");
+        test.equal(resources[2].getTargetLocale(), "de-DE");
+
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "string 3 and 4");
+        test.equal(resources[3].getKey(), "string 3 and 4");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTarget(), "Zeichenfolge 3 und 4");
+        test.equal(resources[3].getTargetLocale(), "de-DE");
+
+        test.done();
+    },
+
+    testPOFileExtractLocalizedFilesNoMappingsRussian: function(test) {
+        test.expect(35);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        // custom project with no mappings should force it to use the default
+        // mappings to get the target locale
+        var p2 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "POFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: ".",
+        });
+        var t2 = new POFileType(p2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/messages.po",
+            type: t2
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "строка 1",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "строка 2",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "{$count} струна",
+                "few": "{$count} струны",
+                "other": "{$count} струн"
+            },
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "строка 3 и 4",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        pof.localize(translations, ["ru-RU"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        pof = new POFile({
+            project: p,
+            pathName: "./po/ru-RU.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        // now verify that the resources it created have the right target locale
+        // based on the file name
+
+        var set = pof.getTranslationSet();
+
+        test.equal(set.size(), 4);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTarget(), "строка 1");
+        test.equal(resources[0].getTargetLocale(), "ru-RU");
+
+        test.equal(resources[1].getType(), "plural");
+        var categories = resources[1].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one string");
+        test.equal(categories.other, "{$count} strings");
+        test.equal(resources[1].getKey(), "one string");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        categories = resources[1].getTargetPlurals();
+        test.equal(categories.one, "{$count} струна");
+        test.equal(categories.few, "{$count} струны");
+        test.equal(categories.other, "{$count} струн");
+        test.equal(resources[1].getTargetLocale(), "ru-RU");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSource(), "string 2");
+        test.equal(resources[2].getKey(), "string 2");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTarget(), "строка 2");
+        test.equal(resources[2].getTargetLocale(), "ru-RU");
+
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getSource(), "string 3 and 4");
+        test.equal(resources[3].getKey(), "string 3 and 4");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTarget(), "строка 3 и 4");
+        test.equal(resources[3].getTargetLocale(), "ru-RU");
+
+        test.done();
+    },
+
 };
