@@ -196,6 +196,16 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.1
+
+- Make this plugin able to read already-localized po files
+  The output file name template is used to construct a regular expression to 
+  recognize already localized files and what the locale of that file is. 
+  Without the template, the locale was never extracted and the source and 
+  target were both en-US which is not correct. This was a bigger problem
+  for those languages where the plural resources have more plural categories
+  than in English, such as Russian or Polish.
+
 ### v1.0.0
 
 - initial version
