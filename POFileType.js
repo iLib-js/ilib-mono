@@ -57,10 +57,7 @@ var POFileType = function(project) {
 };
 
 var defaultMappings = {
-    "**/en.po": {
-        template: "[dir]/[locale].po"
-    },
-    "**/en-*.po": {
+    "**/*.po": {
         template: "[dir]/[locale].po"
     },
     "**/*.pot": {
