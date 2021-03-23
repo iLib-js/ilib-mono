@@ -196,6 +196,18 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.0
+
+- Added the ability to use po files as output resource files by adding a write
+  method. This means it can also be used as an output format for the new
+  convert action.
+    - if resources are added where the target locale
+      does not match the locale of the PO file, then those resources
+      will be added as source-only resources
+    - handles resources with missing translations and puts a placeholder
+      entry into the PO file
+    - handles missing plural strings as well, depending on the language
+
 ### v1.0.1
 
 - Make this plugin able to read already-localized po files
