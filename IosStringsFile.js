@@ -220,11 +220,11 @@ IosStringsFile.prototype._parsePath = function() {
         }
         logger.trace("_parsePath: locale is " + this.locale);
 
-        if (this.project.flavors) {
+        if (this.project.settings.flavors) {
             var filename = path.basename(this.pathName, ".strings");
-            var i = this.project.flavors.indexOf(filename);
+            var i = this.project.settings.flavors.indexOf(filename);
             if (i > -1) {
-                this.flavor = this.project.flavors[i];
+                this.flavor = this.project.settings.flavors[i];
             }
         }
     }
