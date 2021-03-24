@@ -1,7 +1,7 @@
 /*
  * testAndroidResourceFileType.js - test the Android resource file type handler object.
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020-2021, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeConstructor: function(test) {
         test.expect(1);
 
-        var alf = new AndroidResourceFileType(p);
+        var arft = new AndroidResourceFileType(p);
 
-        test.ok(alf);
+        test.ok(arft);
 
         test.done();
     },
@@ -64,10 +64,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesXmlFalse: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("foo.xml"));
+        test.ok(!arft.handles("foo.xml"));
 
         test.done();
     },
@@ -75,10 +75,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesResfileTrue: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(alf.handles("android/res/values/strings.xml"));
+        test.ok(arft.handles("android/res/values/strings.xml"));
 
         test.done();
     },
@@ -86,10 +86,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesMenuFalse: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/menu/strings.xml"));
+        test.ok(!arft.handles("android/res/menu/strings.xml"));
 
         test.done();
     },
@@ -97,10 +97,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesXmlDirFalse: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/xml/strings.xml"));
+        test.ok(!arft.handles("android/res/xml/strings.xml"));
 
         test.done();
     },
@@ -108,10 +108,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesOtherTypeFalse: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values/strings.html"));
+        test.ok(!arft.handles("android/res/values/strings.html"));
 
         test.done();
     },
@@ -119,10 +119,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesResfileAlreadyLocalizedES: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-es/strings.xml"));
+        test.ok(!arft.handles("android/res/values-es/strings.xml"));
 
         test.done();
     },
@@ -130,10 +130,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesResfileAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-zh/strings.xml"));
+        test.ok(!arft.handles("android/res/values-zh/strings.xml"));
 
         test.done();
     },
@@ -141,10 +141,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesResfileAlreadyLocalizedENGB: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-en-rGB/strings.xml"));
+        test.ok(!arft.handles("android/res/values-en-rGB/strings.xml"));
 
         test.done();
     },
@@ -152,10 +152,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesResfileAlreadyLocalizedModernFullLocale: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-b+zh+Hans+CN/strings.xml"));
+        test.ok(!arft.handles("android/res/values-b+zh+Hans+CN/strings.xml"));
 
         test.done();
     },
@@ -163,10 +163,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandlesResfileAlreadyLocalizedModernFullLocaleWithContext: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-b+zh+Hans+CN-hdmi/strings.xml"));
+        test.ok(!arft.handles("android/res/values-b+zh+Hans+CN-hdmi/strings.xml"));
 
         test.done();
     },
@@ -174,10 +174,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandleContext: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(alf.handles("android/res/values-foo/strings.xml"));
+        test.ok(arft.handles("android/res/values-foo/strings.xml"));
 
         test.done();
     },
@@ -185,10 +185,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandleContextLocalizedES: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-es-foo/strings.xml"));
+        test.ok(!arft.handles("android/res/values-es-foo/strings.xml"));
 
         test.done();
     },
@@ -196,10 +196,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandleContextLocalizeCN: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-zh-foo/strings.xml"));
+        test.ok(!arft.handles("android/res/values-zh-foo/strings.xml"));
 
         test.done();
     },
@@ -207,10 +207,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeHandleContextLocalizedENGB: function(test) {
         test.expect(2);
 
-        var alf = new AndroidResourceFileType(p);
-        test.ok(alf);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        test.ok(!alf.handles("android/res/values-en-rGB-foo/strings.xml"));
+        test.ok(!arft.handles("android/res/values-en-rGB-foo/strings.xml"));
 
         test.done();
     },
@@ -218,10 +218,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileStrings: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "es-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "es-US", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-es/strings.xml")
@@ -232,10 +232,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFilePlurals: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "es-US", "plurals", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "es-US", "plurals", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-es/plurals.xml")
@@ -246,10 +246,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileArray: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "es-US", "arrays", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "es-US", "arrays", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-es/arrays.xml")
@@ -260,10 +260,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileEnglishUS: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "en-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "en-US", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values/strings.xml")
@@ -274,10 +274,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileEnglishHK: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "en-HK", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "en-HK", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-en-rHK/strings.xml")
@@ -288,10 +288,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileEnglishGB: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "en-GB", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "en-GB", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-en-rGB/strings.xml")
@@ -302,10 +302,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileChineseSimp: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "zh-Hans-CN", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "zh-Hans-CN", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-zh/strings.xml")
@@ -316,10 +316,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileChineseTrad: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "zh-Hant-HK", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "zh-Hant-HK", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-zh-rHK/strings.xml")
@@ -330,10 +330,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileNotDefaultLocale: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "es-ES", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "es-ES", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-es-rES/strings.xml")
@@ -344,10 +344,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileNoDefaultForLanguage: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("", "ko-KR", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("", "ko-KR", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-ko/strings.xml")
@@ -358,10 +358,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileEnglishWithContext: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("context", "en-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("context", "en-US", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-context/strings.xml")
@@ -372,10 +372,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileSpanishWithContext: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("context", "es-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("context", "es-US", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-es-context/strings.xml")
@@ -386,10 +386,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileChineseTradWithContext: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("context", "zh-Hant-HK", "strings", "src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("context", "zh-Hant-HK", "strings", "src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values-zh-rHK-context/strings.xml")
@@ -400,10 +400,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileInFlavorA: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/a/src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/a/src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "flavors/a/res/values/strings.xml")
@@ -414,10 +414,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileInFlavorB: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/bproj/src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/bproj/src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "flavors/bproj/res/values/strings.xml")
@@ -428,10 +428,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileInFlavorC: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/xXx/src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/xXx/src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "flavors/xXx/res/values/strings.xml")
@@ -442,10 +442,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileInFlavorALayout: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/a/res/layouts/testlayout.xml");
+        var rf = arft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/a/res/layouts/testlayout.xml");
         test.ok(rf);
 
         test.equal(rf.getPath(), "flavors/a/res/values/strings.xml")
@@ -456,10 +456,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileNotInFlavorA: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/d/src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/d/src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "android/res/values/strings.xml")
@@ -470,10 +470,10 @@ module.exports.androidresourcefiletype = {
     testAndroidResourceFileTypeGetResourceFileInFlavorAWithContextChineseTrad: function(test) {
         test.expect(3);
 
-        var alft = new AndroidResourceFileType(p);
-        test.ok(alft);
+        var arft = new AndroidResourceFileType(p);
+        test.ok(arft);
 
-        var rf = alft.getResourceFile("context", "zh-Hant-HK", "strings", "test/testfiles/flavors/a/src/java/com/myproduct/Test.java");
+        var rf = arft.getResourceFile("context", "zh-Hant-HK", "strings", "test/testfiles/flavors/a/src/java/com/myproduct/Test.java");
         test.ok(rf);
 
         test.equal(rf.getPath(), "flavors/a/res/values-zh-rHK-context/strings.xml")
