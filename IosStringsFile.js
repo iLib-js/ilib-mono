@@ -42,7 +42,7 @@ var IosStringsFile = function(props) {
         this.project = props.project;
         this.pathName = props.pathName;
         this.type = props.type;
-        this.locale = this.iosLocale = props.locale;
+        this.locale = this.iosLocale = props.locale || this.project.settings.targetLocale;
         this.context = props.context || undefined;
         this.flavor = props.flavor;
     }
@@ -290,11 +290,28 @@ function localeContains(parent, child) {
  */
 IosStringsFile.prototype.addResource = function(res) {
     logger.trace("IosStringsFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + res.getTargetLocale());
-    if (res &&
-            res.getProject() === this.project.getProjectId() &&
-            localeContains(this.locale, res.getTargetLocale())) {
-        logger.trace("correct project and locale. Adding.");
-        this.set.add(res);
+    if (res && res.getProject() === this.project.getProjectId()) {
+        if (localeContains(this.locale, res.getTargetLocale())) {
+            logger.trace("correct project and locale. Adding.");
+            this.set.add(res);
+        } else {
+            logger.trace("correct project, wrong locale. Adding as a source-only resource.");
+            // This one is not the right locale, so add it as a source-only resource
+            // so that it can be a placeholder for the real translation later on
+            this.set.add(this.API.newResource({
+                resType: res.getType(),
+                source: res.getSource(),
+                sourceLocale: res.getSourceLocale(),
+                project: res.getProject(),
+                key: res.getKey(),
+                pathName: res.getPath(),
+                state: "new",
+                comment: res.getComment(),
+                datatype: this.type.datatype,
+                context: res.getContext(),
+                index: this.resourceIndex++
+            }));
+        }
     } else {
         if (res) {
             if (res.getProject() !== this.project.getProjectId()) {

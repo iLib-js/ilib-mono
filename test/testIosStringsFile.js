@@ -1,7 +1,7 @@
 /*
  * testIosStringsFile.js - test the iOS strings file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019,2021 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -639,6 +639,127 @@ module.exports.stringsfile = {
         test.equal(r[1].getComment(), 'Class = "UILabel"; text = "Are you a friend?"; ObjectID = "MFI-qx-pQf";');
         test.equal(r[1].getFlavor(), "chocolate");
         test.equal(r[1].getPath(), "./objc/en-US.lproj/chocolate.strings");
+
+        test.done();
+    },
+
+    testIosStringsFileFindTargetLocaleInSettings: function(test) {
+        test.expect(2);
+
+        var p2 = new CustomProject({
+            id: "iosapp",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "IosStringsFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            nopseudo: true,
+            flavors: ["chocolate", "vanilla"],
+            targetLocale: "de-DE"
+        });
+
+        var strings = new IosStringsFile({
+            project: p2,
+            type: isft,
+            pathName: "./objc/asdf.strings"
+        });
+        test.ok(strings);
+
+        [
+            new ResourceString({
+                project: "iosapp",
+                key: "source text",
+                source: "source text",
+                sourceLocale: "en-US",
+                target: "Quellen\"text",
+                targetLocale: "de-DE",
+                comment: "foo"
+            }),
+            new ResourceString({
+                project: "iosapp",
+                key: "more source text",
+                source: "more source text",
+                sourceLocale: "en-US",
+                target: "mehr Quellen\"text",
+                targetLocale: "de-DE",
+                comment: "bar"
+            }),
+            new ResourceString({  // should be added as a source-only resource
+                project: "iosapp",
+                key: "third source text",
+                source: "third source text",
+                sourceLocale: "en-US",
+                target: "troisieme texte\"text",
+                targetLocale: "fr-FR",
+                comment: "asdf"
+            })
+        ].forEach(function(res) {
+            strings.addResource(res);
+        });
+
+        test.equal(strings.getContent(),
+            '/* bar */\n' +
+            '"more source text" = "mehr Quellen\\"text";\n\n' +
+            '/* foo */\n' +
+            '"source text" = "Quellen\\"text";\n\n' +
+            '/* asdf */\n' +
+            '"third source text" = "third source text";\n'
+        );
+
+        test.done();
+    },
+
+    testIosStringsFileFindTargetLocaleFromPath: function(test) {
+        test.expect(2);
+
+        var strings = new IosStringsFile({
+            project: p,
+            type: isft,
+            pathName: "./objc/de-DE.lproj/asdf.strings"
+        });
+        test.ok(strings);
+
+        [
+            new ResourceString({
+                project: "iosapp",
+                key: "source text",
+                source: "source text",
+                sourceLocale: "en-US",
+                target: "Quellen\"text",
+                targetLocale: "de-DE",
+                comment: "foo"
+            }),
+            new ResourceString({
+                project: "iosapp",
+                key: "more source text",
+                source: "more source text",
+                sourceLocale: "en-US",
+                target: "mehr Quellen\"text",
+                targetLocale: "de-DE",
+                comment: "bar"
+            }),
+            new ResourceString({  // should be added as a source-only resource
+                project: "iosapp",
+                key: "third source text",
+                source: "third source text",
+                sourceLocale: "en-US",
+                target: "troisieme texte\"text",
+                targetLocale: "fr-FR",
+                comment: "asdf"
+            })
+        ].forEach(function(res) {
+            strings.addResource(res);
+        });
+
+        test.equal(strings.getContent(),
+            '/* bar */\n' +
+            '"more source text" = "mehr Quellen\\"text";\n\n' +
+            '/* foo */\n' +
+            '"source text" = "Quellen\\"text";\n\n' +
+            '/* asdf */\n' +
+            '"third source text" = "third source text";\n'
+        );
 
         test.done();
     }
