@@ -47,7 +47,7 @@ var IosStringsFile = function(props) {
         this.flavor = props.flavor;
     }
 
-    if (this.pathName && !this.locale) {
+    if (this.pathName) {
         this._parsePath();
     }
 
