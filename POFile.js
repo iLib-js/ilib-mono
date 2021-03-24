@@ -486,7 +486,7 @@ POFile.prototype.addResource = function(res) {
             // so that it can be a placeholder for the real translation later on
             this.set.add(this.API.newResource({
                 resType: res.getType(),
-                sourcePlurals: (res.getType() === "plural") ? res.getSourcePlurals() : undefined,
+                sourceStrings: (res.getType() === "plural") ? res.getSourcePlurals() : undefined,
                 source: (res.getType() === "string") ? res.getSource() : undefined,
                 sourceLocale: res.getSourceLocale(),
                 project: res.getProject(),
