@@ -30,10 +30,12 @@ var pluralForms = require("./pluralforms.json");
 var logger = log4js.getLogger("loctool.plugin.POFile");
 
 function escapeQuotes(str) {
+    if (!str) return "";
     return str ? str.replace(/"/g, '\\"') : str;
 }
 
 function unescapeQuotes(str) {
+    if (!str) return "";
     return str ? str.replace(/\\"/g, '"') : str;
 }
 
@@ -453,8 +455,75 @@ POFile.prototype.getTranslationSet = function() {
     return this.set;
 }
 
-//we don't write PO source files
-POFile.prototype.write = function() {};
+/**
+ * Write the resource file out to disk again.
+ */
+POFile.prototype.write = function() {
+    var pathName = this.pathName || this.getLocalizedPath(this.localeSpec);
+    logger.debug("Writing file " + pathName);
+    var p = path.join(this.project.target, pathName);
+    var d = path.dirname(p);
+    this.API.utils.makeDirs(d);
+
+    fs.writeFileSync(p, this.localizeText(undefined, this.localeSpec), "utf-8");
+};
+
+/**
+ * Add a resource to this file. The locale of the resource
+ * should correspond to the locale of the file, and the
+ * context of the resource should match the context of
+ * the file.
+ *
+ * @param {Resource} res a resource to add to this file
+ */
+POFile.prototype.addResource = function(res) {
+    logger.trace("POFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    var resLocale = res.getTargetLocale();
+    if (res && res.getProject() === this.project.getProjectId()) {
+        logger.trace("correct project. Adding.");
+        if (resLocale && resLocale !== this.localeSpec) {
+            // This one is not the right locale, so add it as a source-only resource
+            // so that it can be a placeholder for the real translation later on
+            this.set.add(this.API.newResource({
+                resType: res.getType(),
+                sourceStrings: (res.getType() === "plural") ? res.getSourcePlurals() : undefined,
+                source: (res.getType() === "string") ? res.getSource() : undefined,
+                sourceLocale: res.getSourceLocale(),
+                project: res.getProject(),
+                key: res.getKey(),
+                pathName: res.getPath(),
+                state: "new",
+                comment: res.getComment(),
+                datatype: this.type.datatype,
+                context: res.getContext(),
+                index: this.resourceIndex++
+            }));
+        } else {
+            this.set.add(res);
+        }
+    } else {
+        if (res) {
+            if (res.getProject() !== this.project.getProjectId()) {
+                logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+            } else {
+                logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.localeSpec);
+            }
+        } else {
+            logger.warn("Attempt to add an undefined resource to a resource file.");
+        }
+    }
+};
+
+/**
+ * Return true if this resource file has been modified
+ * since it was loaded from disk.
+ *
+ * @returns {boolean} true if this resource file has been
+ * modified since it was loaded
+ */
+POFile.prototype.isDirty = function() {
+    return this.set.isDirty();
+};
 
 /**
  * Return the location on disk where the version of this file localized
@@ -586,20 +655,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                         }
                     }
                 } else {
-                    // extract this value
-                    this.set.add(this.API.newResource({
-                        resType: "string",
-                        project: r.getProject(),
-                        key: key,
-                        sourceLocale: r.getSourceLocale(),
-                        source: text,
-                        pathName: r.getPath(),
-                        state: "new",
-                        comment: r.getComment(),
-                        datatype: r.getDataType(),
-                        context: r.getContext(),
-                        index: this.resourceIndex++
-                    }));
+                    translatedText = r.getTarget() || "";
                 }
 
                 output += 'msgstr "' + escapeQuotes(translatedText) + '"\n';
@@ -662,20 +718,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                         }
                     }
                 } else {
-                    // extract this value
-                    this.set.add(this.API.newResource({
-                        resType: "plural",
-                        project: r.getProject(),
-                        key: key,
-                        sourceLocale: r.getSourceLocale(),
-                        sourceStrings: sourcePlurals,
-                        pathName: r.getPath(),
-                        state: "new",
-                        comment: r.getComment(),
-                        datatype: r.getDataType,
-                        context: r.getContext(),
-                        index: this.resourceIndex++
-                    }));
+                    translatedPlurals = r.getTargetPlurals() || {};
                 }
 
                 output += 'msgid_plural "' + escapeQuotes(sourcePlurals.other)  + '"\n';

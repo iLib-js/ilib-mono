@@ -2441,4 +2441,464 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileWriteSourceOnly: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        // custom project with no mappings should force it to use the default
+        // mappings to get the target locale
+        var p2 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "POFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: ".",
+        });
+        var t2 = new POFileType(p2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/ru-RU.po",
+            type: t2,
+            locale: "ru-RU"
+        });
+        test.ok(pof);
+
+
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            datatype: "po"
+        }));
+        pof.addResource(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        pof.write();
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        content = fs.readFileSync(path.join(base, "testfiles/po/ru-RU.po"), "utf-8");
+
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/ru-RU.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: ru-RU\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n' +
+            'msgstr[2] ""\n' +
+            '\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr ""\n\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testPOFileWriteWithTranslation: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        // custom project with no mappings should force it to use the default
+        // mappings to get the target locale
+        var p2 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "POFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: ".",
+        });
+        var t2 = new POFileType(p2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/ru-RU.po",
+            type: t2,
+            locale: "ru-RU"
+        });
+        test.ok(pof);
+
+
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "строка 1",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "строка 2",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "{$count} струна",
+                "few": "{$count} струны",
+                "other": "{$count} струн"
+            },
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "строка 3 и 4",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        pof.write();
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        content = fs.readFileSync(path.join(base, "testfiles/po/ru-RU.po"), "utf-8");
+
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/ru-RU.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: ru-RU\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "строка 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr "строка 2"\n' +
+            '\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} струна"\n' +
+            'msgstr[1] "{$count} струны"\n' +
+            'msgstr[2] "{$count} струн"\n' +
+            '\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr "строка 3 и 4"\n\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testPOFileWriteWithMissingTranslations: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        // custom project with no mappings should force it to use the default
+        // mappings to get the target locale
+        var p2 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "POFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: ".",
+        });
+        var t2 = new POFileType(p2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/ru-RU.po",
+            type: t2,
+            locale: "ru-RU"
+        });
+        test.ok(pof);
+
+
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "строка 1",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "{$count} струна",
+                "other": "{$count} струн"
+            },
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        pof.write();
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+
+        content = fs.readFileSync(path.join(base, "testfiles/po/ru-RU.po"), "utf-8");
+
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/ru-RU.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: ru-RU\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "строка 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} струна"\n' +
+            'msgstr[1] ""\n' +
+            'msgstr[2] "{$count} струн"\n' +
+            '\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr ""\n\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testPOFileWriteWrongTargetLocale: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/de-DE.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+
+        // custom project with no mappings should force it to use the default
+        // mappings to get the target locale
+        var p2 = new CustomProject({
+            name: "foo",
+            id: "foo",
+            sourceLocale: "en-US",
+            plugins: [
+                path.join(process.cwd(), "POFileType")
+            ]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            targetDir: ".",
+        });
+        var t2 = new POFileType(p2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/de-DE.po",
+            type: t2,
+            locale: "de-DE"
+        });
+        test.ok(pof);
+
+        // should add these as source-only resources
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "строка 1",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "строка 2",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "{$count} струна",
+                "few": "{$count} струны",
+                "other": "{$count} струн"
+            },
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        pof.addResource(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "строка 3 и 4",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+
+        pof.write();
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+
+        content = fs.readFileSync(path.join(base, "testfiles/po/de-DE.po"), "utf-8");
+
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/de-DE.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: de-DE\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n' +
+            '\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr ""\n\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
 };
