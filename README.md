@@ -3,6 +3,15 @@
 ilib-loctool-android-layout is a plugin for the loctool that
 allows it to read and localize android layout xml files.
 
+## Release Notes
+
+### v1.0.0
+
+- initial release
+- support Android layout.xml files
+    - extract and localize strings
+    - externalize some other strings automatically into the strings.xml file
+
 ## License
 
 Copyright © 2019, JEDLSoft
