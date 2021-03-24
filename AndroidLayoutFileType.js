@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFileType.js - tool to extract resources from source code
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019,2021, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,7 +191,7 @@ AndroidLayoutFileType.prototype.getDataType = function() {
 
 AndroidLayoutFileType.prototype.getResourceTypes = function() {
     return {
-        "string": "contextString"
+        "string": "ContextResourceString"
     };
 };
 
@@ -202,7 +202,7 @@ AndroidLayoutFileType.prototype.getResourceTypes = function() {
  * need resource files
  */
 AndroidLayoutFileType.prototype.getResourceFileType = function() {
-    return AndroidResourceFileType;
+    return AndroidLayoutFileType;
 };
 
 module.exports = AndroidLayoutFileType;
