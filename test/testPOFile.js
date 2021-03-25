@@ -761,7 +761,7 @@ module.exports.pofile = {
 
         pof.parse(
             '# translator\'s comments\n' +
-            '#: src/foo.html:32\n' +
+            '#: src/foo.html:32 src/bar.html:234\n' +
             '#. This is comments from the engineer to the translator for string 1.\n' +
             '#, c-format\n' +
             '#| str 1\n' +
@@ -769,7 +769,7 @@ module.exports.pofile = {
             'msgstr ""\n' +
             '\n' +
             '# translator\'s comments 2\n' +
-            '#: src/bar.html:644\n' +
+            '#: src/bar.html:644 src/asdf.html:232\n' +
             '#. This is comments from the engineer to the translator for string 2.\n' +
             '#, javascript-format,gcc-internal-format\n' +
             '#| str 2\n' +
@@ -788,19 +788,21 @@ module.exports.pofile = {
         test.equal(resources[0].getKey(), "string 1");
         test.equal(resources[0].getComment(),
             '{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32 src/bar.html:234"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1."],' +
              '"flags":["c-format"],' +
              '"previous":["str 1"]}');
-        test.equal(resources[0].getPath(), "src/foo.html:32");
+        test.equal(resources[0].getPath(), "src/foo.html");
 
         test.equal(resources[1].getSource(), "string 2");
         test.equal(resources[1].getKey(), "string 2");
         test.equal(resources[1].getComment(),
             '{"translator":["translator\'s comments 2"],' +
+             '"paths":["src/bar.html:644 src/asdf.html:232"],' +
              '"extracted":["This is comments from the engineer to the translator for string 2."],' +
              '"flags":["javascript-format,gcc-internal-format"],' +
              '"previous":["str 2"]}');
-        test.equal(resources[1].getPath(), "src/bar.html:644");
+        test.equal(resources[1].getPath(), "src/bar.html");
 
         test.done();
     },
@@ -838,10 +840,11 @@ module.exports.pofile = {
         test.equal(resources[0].getKey(), "string 1");
         test.equal(resources[0].getComment(),
             '{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1."],' +
              '"flags":["c-format"],' +
              '"previous":["str 1"]}');
-        test.equal(resources[0].getPath(), "src/foo.html:32");
+        test.equal(resources[0].getPath(), "src/foo.html");
 
         // comments for string 1 should not carry over to string 2
         test.equal(resources[1].getSource(), "string 2");
@@ -881,8 +884,8 @@ module.exports.pofile = {
 
         test.equal(resources[0].getSource(), "string 1");
         test.equal(resources[0].getKey(), "string 1");
-        test.ok(!resources[0].getComment());
-        test.equal(resources[0].getPath(), "src/foo.html:32 src/bar.html:32 src/asdf.html:32 src/xyz.html:32 src/abc.html:32");
+        test.equal(resources[0].getComment(), '{"paths":["src/foo.html:32","src/bar.html:32","src/asdf.html:32","src/xyz.html:32","src/abc.html:32"]}');
+        test.equal(resources[0].getPath(), "src/foo.html");
 
         test.done();
     },
@@ -1265,7 +1268,8 @@ module.exports.pofile = {
             '# note for translators 2\n' +
             '#. extracted comment 1\n' +
             '#. extracted comment 2\n' +
-            '#: src/a/b/c.js:32 src/a/b/x.js:32\n' +
+            '#: src/a/b/c.js:32\n' +
+            '#: src/a/b/x.js:32\n' +
             '#, c-format\n' +
             '#, javascript-format\n' +
             '#| str2\n' +

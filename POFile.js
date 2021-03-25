@@ -204,8 +204,11 @@ var commentTypeMap = {
     ' ': "translator",
     '.': "extracted",
     ',': "flags",
-    '|': "previous"
+    '|': "previous",
+    ':': "paths"
 };
+
+var rePathStrip = /^: *([^ ]+)(:\d+)/;
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -246,21 +249,17 @@ POFile.prototype.parse = function(data) {
                         break;
                     case tokens.COMMENT:
                         var type = token.value[0];
-                        if (type === ':') {
-                            if (original) {
-                                original += " " + token.value.substring(2);
-                            } else {
-                                original = token.value.substring(2);
-                            }
-                        } else {
-                            if (!comment) {
-                                comment = {};
-                            }
-                            if (!comment[commentTypeMap[type]]) {
-                               comment[commentTypeMap[type]] = [];
-                            }
-                            comment[commentTypeMap[type]].push(token.value.substring((type === ' ') ? 1 : 2));
+                        if (type === ':' && !original) {
+                            var match = rePathStrip.exec(token.value);
+                            original = (match && match.length > 1) ? match[1] : token.value;
                         }
+                        if (!comment) {
+                            comment = {};
+                        }
+                        if (!comment[commentTypeMap[type]]) {
+                           comment[commentTypeMap[type]] = [];
+                        }
+                        comment[commentTypeMap[type]].push(token.value.substring((type === ' ') ? 1 : 2));
                         break;
                     case tokens.PLURAL:
                         var language = this.locale.getLanguage();
@@ -593,8 +592,10 @@ POFile.prototype.localizeText = function(translations, locale) {
                     output += '#. ' + str + '\n';
                 });
             }
-            if (r.getPath()) {
-                output += '#: ' + r.getPath() + '\n';
+            if (c.paths) {
+                c.paths.forEach(function(str) {
+                    output += '#: ' + str + '\n';
+                });
             }
             if (c.flags) {
                 c.flags.forEach(function(str) {

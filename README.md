@@ -196,6 +196,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.1
+
+- fixed a bug where every resource from the PO file had its own file tag
+  in the xliff output because the "original" path was set to the file
+  name colon line number.
+
 ### v1.1.0
 
 - Added the ability to use po files as output resource files by adding a write
