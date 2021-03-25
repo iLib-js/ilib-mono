@@ -281,7 +281,7 @@ AndroidLayoutFile.prototype.extract = function() {
 
         var p = path.join(this.project.root, this.pathName);
         try {
-            var xml = fs.readFileSync(this.pathName, "utf8");
+            var xml = fs.readFileSync(p, "utf8");
             if (xml) {
                 logger.trace("file contents: " + xml);
                 this.parse(xml);

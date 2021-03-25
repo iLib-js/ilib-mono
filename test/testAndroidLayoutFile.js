@@ -1,7 +1,7 @@
 /*
  * testAndroidLayoutFile.js - test the Android layout file handler object.
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019,2021, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+var path = require("path");
+
 if (!AndroidLayoutFile) {
     var AndroidLayoutFile = require("../AndroidLayoutFile.js");
     var AndroidLayoutFileType = require("../AndroidLayoutFileType.js");
@@ -26,14 +28,29 @@ if (!AndroidLayoutFile) {
 
 var p = new CustomProject({
     id: "android",
-    sourceLocale: "en-US"
-}, "./testfiles", {
-    locales:["en-GB"]
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "java": "android/res"
+    },
+    plugins: [
+        path.join(process.cwd(), "AndroidLayoutFileType")
+    ]
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    "build.gradle": "build1.gradle"
 });
 
 var alft = new AndroidLayoutFileType(p);
 
 module.exports.androidlayoutfile = {
+    // make sure to initialize the file types so that the tests below can use
+    // a ContextResourceString instead of a regular ResourceString
+    testAndroidInit: function(test) {
+        p.init(function() {
+            test.done();
+        });
+    },
+
     testAndroidLayoutFileConstructor: function(test) {
         test.expect(1);
 
@@ -101,7 +118,6 @@ module.exports.androidlayoutfile = {
 
         var alf = new AndroidLayoutFile({
             project: p,
-            type: alft,
             type: alft
         });
         test.ok(alf);
@@ -362,7 +378,7 @@ module.exports.androidlayoutfile = {
         var alf = new AndroidLayoutFile({
             project: p,
             type: alft,
-            pathName: "./testfiles/java/res/layout/t1.xml"
+            pathName: "./java/res/layout/t1.xml"
         });
         test.ok(alf);
 
@@ -463,7 +479,7 @@ module.exports.androidlayoutfile = {
         var alf = new AndroidLayoutFile({
             project: p,
             type: alft,
-            pathName: "./testfiles/java/res/layout/foo.xml"
+            pathName: "./java/res/layout/foo.xml"
         });
         test.ok(alf);
 
@@ -508,7 +524,7 @@ module.exports.androidlayoutfile = {
         var alf = new AndroidLayoutFile({
             project: p,
             type: alft,
-            pathName: "./testfiles/java/res/layout/foo.xml"
+            pathName: "./java/res/layout/foo.xml"
         });
         test.ok(alf);
 
@@ -711,7 +727,7 @@ module.exports.androidlayoutfile = {
         var alf = new AndroidLayoutFile({
             project: p,
             type: alft,
-            pathName: "./testfiles/java/res/layout/foo.xml"
+            pathName: "./java/res/layout/foo.xml"
         });
         test.ok(alf);
 
