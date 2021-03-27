@@ -196,6 +196,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.2
+
+- fixed a bug where path names in #: comments that did not have a
+  colon and a line number were not being extracted properly
+
 ### v1.1.1
 
 - fixed a bug where every resource from the PO file had its own file tag
