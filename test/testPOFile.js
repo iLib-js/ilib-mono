@@ -807,6 +807,47 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileParseExtractFileNameNoLineNumbers: function(test) {
+        test.expect(12);
+
+        var pof = new POFile({
+            project: p,
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            '#: src/foo.html src/bar.html\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            '#: src/bar.html\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getComment(),
+            '{"paths":["src/foo.html src/bar.html"]}');
+        test.equal(resources[0].getPath(), "src/foo.html");
+
+        test.equal(resources[1].getSource(), "string 2");
+        test.equal(resources[1].getKey(), "string 2");
+        test.equal(resources[1].getComment(),
+            '{"paths":["src/bar.html"]}');
+        test.equal(resources[1].getPath(), "src/bar.html");
+
+        test.done();
+    },
+
     testPOFileParseClearComments: function(test) {
         test.expect(12);
 

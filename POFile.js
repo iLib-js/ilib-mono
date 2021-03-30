@@ -208,7 +208,7 @@ var commentTypeMap = {
     ':': "paths"
 };
 
-var rePathStrip = /^: *([^ ]+)(:\d+)/;
+var rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
