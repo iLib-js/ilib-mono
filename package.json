@@ -1,0 +1,68 @@
+{
+    "name": "ilib-env",
+    "version": "14.8.0",
+    "main": "index.js",
+    "description": "Common environment detection functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "date",
+        "time",
+        "format",
+        "locale",
+        "translation"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-env",
+    "bugs": "https://github.com/iLib-js/ilib-env/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        },
+        {
+            "name": "Syeonghyup Park",
+            "email": "seonghyup.park@lge.com"
+        }
+    ],
+    "files": [
+        "locale",
+        "Locale.js",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:iLib-js/iLib-locale.git"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git@github.com:iLib-js/iLib-locale.git"
+        }
+    ],
+    "scripts": {
+        "test": "node test/testSuite.js",
+        "debug": "node --inspect-brk test/testSuite.js"
+    },
+    "devDependencies": {
+        "assertextras": "^1.1.0",
+        "nodeunit": "^0.11.3",
+        "webpack": "^5.31.0",
+        "webpack-cli": "^4.6.0"
+    }
+}
