@@ -49,7 +49,6 @@ export function getPlatform() {
             platform = "nodejs";
         } else if (typeof(Qt) !== 'undefined') {
             platform = "qt";
-            ilib._cacheMerged = true; // qt is too slow, so we need to cache the already-merged locale data
         } else if (typeof(PalmSystem) !== 'undefined') {
             platform = (typeof(window) !== 'undefined') ? "webos-webapp" : "webos";
         } else if (typeof(window) !== 'undefined') {
@@ -263,7 +262,7 @@ let tz;
  * If not, it will default to the the zone "local".<p>
  *
  * @static
- * @return {string} the default time zone for ilib
+ * @return {string} the default time zone for the platform
  */
 export function getTimeZone() {
     if (typeof(tz) === 'undefined') {
