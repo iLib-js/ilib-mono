@@ -20,10 +20,9 @@
 if (typeof(Locale) === "undefined") {
     var Locale = require("../lib/Locale.js");
 }
+Locale = Locale.default;
 
-if (typeof(ilibEnv) === "undefined") {
-    var ilibEnv = require("ilib-env");
-}
+var ilibEnv = Locale.ilibEnv;
 
 module.exports.testlocale = {
     testLocaleConstructor: function(test) {
@@ -40,7 +39,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         // cheating to make this test work!
         Object.defineProperty(navigator, "language", {
             writable: true
@@ -65,7 +64,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         // cheating to make this test work!
         Object.defineProperty(navigator, "language", {
             writable: true
@@ -91,7 +90,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         // cheating to make this test work!
         Object.defineProperty(navigator, "language", {
             writable: true
@@ -116,7 +115,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         // cheating to make this test work!
         Object.defineProperty(navigator, "language", {
             writable: true
@@ -141,7 +140,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "en_US";
         test.expect(4);
 
@@ -162,7 +161,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "ko_KR";
         test.expect(4);
 
@@ -183,7 +182,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "de_DE.UTF8";
         test.expect(4);
 
@@ -204,7 +203,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "C";
         test.expect(4);
 
@@ -226,7 +225,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "C.UTF8";
         test.expect(4);
 
@@ -248,7 +247,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "es";
         test.expect(4);
 
@@ -269,7 +268,7 @@ module.exports.testlocale = {
             return;
         }
         // make sure it picks it up from the right place
-        Locale._clearCache();
+        ilibEnv.clearCache();
         global.process.env.LANG = "";
         test.expect(4);
 

@@ -39,7 +39,9 @@ module.exports = function(grunt) {
             options: {
                 sourceMap: true,
                 presets: ['@babel/preset-env'],
-                minified: !debug
+                plugins: ["add-module-exports"],
+                minified: !debug,
+                comments: false
             },
             dist: {
                 files: [{

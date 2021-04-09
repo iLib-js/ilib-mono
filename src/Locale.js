@@ -17,8 +17,14 @@
  * limitations under the License.
  */
 
-var ilibEnv = require("ilib-env");
-var getLocale = ilibEnv.getLocale;
+// from http://en.wikipedia.org/wiki/ISO_3166-1
+import a2toa3regmap from "../locale/a2toa3regmap.json";
+import a1toa3langmap from "../locale/a1toa3langmap.json";
+
+// the list below is originally from https://unicode.org/iso15924/iso15924-codes.html
+import iso15924 from "../locale/scripts.json";
+
+import * as ilibEnv from "ilib-env";
 
 /**
  * Check if an object is a member of the given array. If this javascript engine
@@ -33,7 +39,7 @@ var getLocale = ilibEnv.getLocale;
  * any results.
  * @return {number} index of the object in the array, or -1 if it is not in the array.
  */
-var indexOf = function(array, obj) {
+function indexOf(array, obj) {
     if (!array || !obj) {
         return -1;
     }
@@ -41,7 +47,7 @@ var indexOf = function(array, obj) {
         return array.indexOf(obj);
     } else {
         // polyfill
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             if (array[i] === obj) {
                 return i;
             }
@@ -96,85 +102,200 @@ var indexOf = function(array, obj) {
  * @param {string=} variant the name of the variant of this locale, if any
  * @param {string=} script the ISO 15924 code of the script for this locale, if any
  */
-var Locale = function(language, region, variant, script) {
-    if (typeof(region) === 'undefined' && typeof(variant) === 'undefined' && typeof(script) === 'undefined') {
-        var spec = language || getLocale();
-        if (typeof(spec) === 'string') {
-            var parts = spec.split('-');
-            for ( var i = 0; i < parts.length; i++ ) {
-                if (Locale._isLanguageCode(parts[i])) {
-                    /**
-                     * @private
-                     * @type {string|undefined}
-                     */
-                    this.language = parts[i];
-                } else if (Locale._isRegionCode(parts[i])) {
-                    /**
-                     * @private
-                     * @type {string|undefined}
-                     */
-                    this.region = parts[i];
-                } else if (Locale._isScriptCode(parts[i])) {
-                    /**
-                     * @private
-                     * @type {string|undefined}
-                     */
-                    this.script = parts[i];
-                } else {
-                    /**
-                     * @private
-                     * @type {string|undefined}
-                     */
-                    this.variant = parts[i];
+export default class Locale {
+    constructor(language, region, variant, script) {
+        if (typeof(region) === 'undefined' && typeof(variant) === 'undefined' && typeof(script) === 'undefined') {
+            let spec = language || ilibEnv.getLocale();
+            if (typeof(spec) === 'string') {
+                const parts = spec.split('-');
+                for (let i = 0; i < parts.length; i++ ) {
+                    if (Locale._isLanguageCode(parts[i])) {
+                        /**
+                         * @private
+                         * @type {string|undefined}
+                         */
+                        this.language = parts[i];
+                    } else if (Locale._isRegionCode(parts[i])) {
+                        /**
+                         * @private
+                         * @type {string|undefined}
+                         */
+                        this.region = parts[i];
+                    } else if (Locale._isScriptCode(parts[i])) {
+                        /**
+                         * @private
+                         * @type {string|undefined}
+                         */
+                        this.script = parts[i];
+                    } else {
+                        /**
+                         * @private
+                         * @type {string|undefined}
+                         */
+                        this.variant = parts[i];
+                    }
                 }
+                this.language = this.language || undefined;
+                this.region = this.region || undefined;
+                this.script = this.script || undefined;
+                this.variant = this.variant || undefined;
+            } else if (typeof(spec) === 'object') {
+                this.language = spec.language || undefined;
+                this.region = spec.region || undefined;
+                this.script = spec.script || undefined;
+                this.variant = spec.variant || undefined;
             }
-            this.language = this.language || undefined;
-            this.region = this.region || undefined;
-            this.script = this.script || undefined;
-            this.variant = this.variant || undefined;
-        } else if (typeof(spec) === 'object') {
-            this.language = spec.language || undefined;
-            this.region = spec.region || undefined;
-            this.script = spec.script || undefined;
-            this.variant = spec.variant || undefined;
-        }
-    } else {
-        if (language && typeof(language) === "string") {
-            language = language.trim();
-            this.language = language.length > 0 ? language.toLowerCase() : undefined;
         } else {
-            this.language = undefined;
+            if (language && typeof(language) === "string") {
+                language = language.trim();
+                this.language = language.length > 0 ? language.toLowerCase() : undefined;
+            } else {
+                this.language = undefined;
+            }
+            if (region && typeof(region) === "string") {
+                region = region.trim();
+                this.region = region.length > 0 ? region.toUpperCase() : undefined;
+            } else {
+                this.region = undefined;
+            }
+            if (variant && typeof(variant) === "string") {
+                variant = variant.trim();
+                this.variant = variant.length > 0 ? variant : undefined;
+            } else {
+                this.variant = undefined;
+            }
+            if (script && typeof(script) === "string") {
+                script = script.trim();
+                this.script = script.length > 0 ? script : undefined;
+            } else {
+                this.script = undefined;
+            }
         }
-        if (region && typeof(region) === "string") {
-            region = region.trim();
-            this.region = region.length > 0 ? region.toUpperCase() : undefined;
-        } else {
-            this.region = undefined;
-        }
-        if (variant && typeof(variant) === "string") {
-            variant = variant.trim();
-            this.variant = variant.length > 0 ? variant : undefined;
-        } else {
-            this.variant = undefined;
-        }
-        if (script && typeof(script) === "string") {
-            script = script.trim();
-            this.script = script.length > 0 ? script : undefined;
-        } else {
-            this.script = undefined;
-        }
+        this._genSpec();
     }
-    this._genSpec();
+
+    /**
+     * @private
+     */
+    _genSpec() {
+        this.spec = [this.language, this.script, this.region, this.variant].filter(part => part).join("-");
+    }
+
+    /**
+     * Return the ISO 639 language code for this locale.
+     * @return {string|undefined} the language code for this locale
+     */
+    getLanguage() {
+        return this.language;
+    }
+
+    /**
+     * Return the language of this locale as an ISO-639-alpha3 language code
+     * @return {string|undefined} the alpha3 language code of this locale
+     */
+    getLanguageAlpha3() {
+        return Locale.languageAlpha1ToAlpha3(this.language);
+    }
+
+    /**
+     * Return the ISO 3166 region code for this locale.
+     * @return {string|undefined} the region code of this locale
+     */
+    getRegion() {
+        return this.region;
+    }
+
+    /**
+     * Return the region of this locale as an ISO-3166-alpha3 region code
+     * @return {string|undefined} the alpha3 region code of this locale
+     */
+    getRegionAlpha3() {
+        return Locale.regionAlpha2ToAlpha3(this.region);
+    }
+
+    /**
+     * Return the ISO 15924 script code for this locale
+     * @return {string|undefined} the script code of this locale
+     */
+    getScript() {
+        return this.script;
+    }
+
+    /**
+     * Return the variant code for this locale
+     * @return {string|undefined} the variant code of this locale, if any
+     */
+    getVariant() {
+        return this.variant;
+    }
+
+    /**
+     * Return the whole locale specifier as a string.
+     * @return {string} the locale specifier
+     */
+    getSpec() {
+        if (!this.spec) this._genSpec();
+        return this.spec;
+    }
+
+    /**
+     * Return the language locale specifier. This includes the
+     * language and the script if it is available. This can be
+     * used to see whether the written language of two locales
+     * match each other regardless of the region or variant.
+     *
+     * @return {string} the language locale specifier
+     */
+    getLangSpec() {
+        var spec = this.language;
+        if (spec && this.script) {
+            spec += "-" + this.script;
+        }
+        return spec || "";
+    }
+
+    /**
+     * Express this locale object as a string. Currently, this simply calls the getSpec
+     * function to represent the locale as its specifier.
+     *
+     * @return {string} the locale specifier
+     */
+    toString() {
+        return this.getSpec();
+    }
+
+    /**
+     * Return true if the the other locale is exactly equal to the current one.
+     * @return {boolean} whether or not the other locale is equal to the current one
+     */
+    equals(other) {
+        return this.language === other.language &&
+            this.region === other.region &&
+            this.script === other.script &&
+            this.variant === other.variant;
+    }
+
+    /**
+     * Return true if the current locale uses a valid ISO codes for each component
+     * of the locale that exists.
+     * @return {boolean} true if the current locale has all valid components, and
+     * false otherwise.
+     */
+    isValid() {
+        if (!this.language && !this.script && !this.region) return false;
+
+        return !!((!this.language || (Locale._isLanguageCode(this.language) && Locale.a1toa3langmap[this.language])) &&
+            (!this.script || (Locale._isScriptCode(this.script) && Locale.iso15924.indexOf(this.script) > -1)) &&
+            (!this.region || (Locale._isRegionCode(this.region) && Locale.a2toa3regmap[this.region])));
+    }
 };
 
 // from http://en.wikipedia.org/wiki/ISO_3166-1
-Locale.a2toa3regmap = require("../locale/a2toa3regmap.json");
-
-
-Locale.a1toa3langmap = require("../locale/a1toa3langmap.json");
+Locale.a2toa3regmap = a2toa3regmap;
+Locale.a1toa3langmap = a1toa3langmap;
 
 // the list below is originally from https://unicode.org/iso15924/iso15924-codes.html
-Locale.iso15924 = require("../locale/scripts.json").scripts;
+Locale.iso15924 = iso15924.scripts;
 
 /**
  * Tell whether or not the str does not start with a lower case ASCII char.
@@ -184,7 +305,7 @@ Locale.iso15924 = require("../locale/scripts.json").scripts;
  */
 Locale._notLower = function(str) {
     // do this with ASCII only so we don't have to depend on the CType functions
-    var ch = str.charCodeAt(0);
+    const ch = str.charCodeAt(0);
     return ch < 97 || ch > 122;
 };
 
@@ -196,7 +317,7 @@ Locale._notLower = function(str) {
  */
 Locale._notUpper = function(str) {
     // do this with ASCII only so we don't have to depend on the CType functions
-    var ch = str.charCodeAt(0);
+    const ch = str.charCodeAt(0);
     return ch < 65 || ch > 90;
 };
 
@@ -208,7 +329,7 @@ Locale._notUpper = function(str) {
  */
 Locale._notDigit = function(str) {
     // do this with ASCII only so we don't have to depend on the CType functions
-    var ch = str.charCodeAt(0);
+    const ch = str.charCodeAt(0);
     return ch < 48 || ch > 57;
 };
 
@@ -225,7 +346,7 @@ Locale._isLanguageCode = function(str) {
         return false;
     }
 
-    for (var i = 0; i < str.length; i++) {
+    for (let i = 0; i < str.length; i++) {
         if (Locale._notLower(str.charAt(i))) {
             return false;
         }
@@ -243,7 +364,7 @@ Locale._isLanguageCode = function(str) {
  * @return {boolean} true if the string could syntactically be a language code.
  */
 Locale._isRegionCode = function (str) {
-    var i;
+     let i;
 
     if (typeof(str) === 'undefined' || str.length < 2 || str.length > 3) {
         return false;
@@ -279,7 +400,7 @@ Locale._isScriptCode = function(str) {
         return false;
     }
 
-    for (var i = 1; i < 4; i++) {
+    for (let i = 1; i < 4; i++) {
         if (Locale._notLower(str.charAt(i))) {
             return false;
         }
@@ -314,150 +435,8 @@ Locale.languageAlpha1ToAlpha3 = function(alpha1) {
     return Locale.a1toa3langmap[alpha1] || alpha1;
 };
 
-Locale.prototype = {
-    /**
-     * @private
-     */
-    _genSpec: function () {
-        this.spec = this.language || "";
-
-        if (this.script) {
-            if (this.spec.length > 0) {
-                this.spec += "-";
-            }
-            this.spec += this.script;
-        }
-
-        if (this.region) {
-            if (this.spec.length > 0) {
-                this.spec += "-";
-            }
-            this.spec += this.region;
-        }
-
-        if (this.variant) {
-            if (this.spec.length > 0) {
-                this.spec += "-";
-            }
-            this.spec += this.variant;
-        }
-    },
-
-    /**
-     * Return the ISO 639 language code for this locale.
-     * @return {string|undefined} the language code for this locale
-     */
-    getLanguage: function() {
-        return this.language;
-    },
-
-    /**
-     * Return the language of this locale as an ISO-639-alpha3 language code
-     * @return {string|undefined} the alpha3 language code of this locale
-     */
-    getLanguageAlpha3: function() {
-        return Locale.languageAlpha1ToAlpha3(this.language);
-    },
-
-    /**
-     * Return the ISO 3166 region code for this locale.
-     * @return {string|undefined} the region code of this locale
-     */
-    getRegion: function() {
-        return this.region;
-    },
-
-    /**
-     * Return the region of this locale as an ISO-3166-alpha3 region code
-     * @return {string|undefined} the alpha3 region code of this locale
-     */
-    getRegionAlpha3: function() {
-        return Locale.regionAlpha2ToAlpha3(this.region);
-    },
-
-    /**
-     * Return the ISO 15924 script code for this locale
-     * @return {string|undefined} the script code of this locale
-     */
-    getScript: function () {
-        return this.script;
-    },
-
-    /**
-     * Return the variant code for this locale
-     * @return {string|undefined} the variant code of this locale, if any
-     */
-    getVariant: function() {
-        return this.variant;
-    },
-
-    /**
-     * Return the whole locale specifier as a string.
-     * @return {string} the locale specifier
-     */
-    getSpec: function() {
-        if (!this.spec) this._genSpec();
-        return this.spec;
-    },
-
-    /**
-     * Return the language locale specifier. This includes the
-     * language and the script if it is available. This can be
-     * used to see whether the written language of two locales
-     * match each other regardless of the region or variant.
-     *
-     * @return {string} the language locale specifier
-     */
-    getLangSpec: function() {
-        var spec = this.language;
-        if (spec && this.script) {
-            spec += "-" + this.script;
-        }
-        return spec || "";
-    },
-
-    /**
-     * Express this locale object as a string. Currently, this simply calls the getSpec
-     * function to represent the locale as its specifier.
-     *
-     * @return {string} the locale specifier
-     */
-    toString: function() {
-        return this.getSpec();
-    },
-
-    /**
-     * Return true if the the other locale is exactly equal to the current one.
-     * @return {boolean} whether or not the other locale is equal to the current one
-     */
-    equals: function(other) {
-        return this.language === other.language &&
-            this.region === other.region &&
-            this.script === other.script &&
-            this.variant === other.variant;
-    },
-
-    /**
-     * Return true if the current locale uses a valid ISO codes for each component
-     * of the locale that exists.
-     * @return {boolean} true if the current locale has all valid components, and
-     * false otherwise.
-     */
-    isValid: function() {
-        if (!this.language && !this.script && !this.region) return false;
-
-        return !!((!this.language || (Locale._isLanguageCode(this.language) && Locale.a1toa3langmap[this.language])) &&
-            (!this.script || (Locale._isScriptCode(this.script) && Locale.iso15924.indexOf(this.script) > -1)) &&
-            (!this.region || (Locale._isRegionCode(this.region) && Locale.a2toa3regmap[this.region])));
-    }
-};
-
 /**
  * @private
  * Intended for the unit tests to reset things before the next test.
  */
-Locale._clearCache = function() {
-    ilibEnv.clearCache();
-};
-
-module.exports = Locale;
+Locale.ilibEnv = ilibEnv;

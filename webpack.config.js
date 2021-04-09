@@ -21,17 +21,17 @@ var path = require('path');
 
 module.exports = {
     mode: "development",
-    entry: "./src/index.js",
+    entry: "./src/Locale.js",
     output: {
         path: path.resolve(__dirname, 'output'),
-        filename: "ilib-env-webpack.js",
-        library: "ilibEnv"
+        filename: "ilib-locale-webpack.js",
+        library: "Locale"
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                exclude: /node_modules\/(?!ilib-env)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
