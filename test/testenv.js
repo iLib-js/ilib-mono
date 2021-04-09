@@ -18,7 +18,7 @@
  */
 
 if (typeof(ilibEnv) === 'undefined') {
-    var ilibEnv = require("../index.js");
+    var ilibEnv = require("../lib/index.js");
 }
 
 module.exports.testglobal = {
@@ -263,10 +263,10 @@ module.exports.testglobal = {
     testIsGlobal: function(test) {
         test.expect(1);
         var platform = ilibEnv.getPlatform();
-        if (platform !== "nodejs" && platform !== "trireme" && platform !== "rhino") {
-            window.testGlobalNumber = 32;
-        } else {
+        if (platform === "nodejs" || platform === "trireme" || platform === "rhino") {
             global.testGlobalNumber = 32;
+        } else {
+            window.testGlobalNumber = 32;
         }
         test.ok(ilibEnv.isGlobal("testGlobalNumber"));
         test.done();

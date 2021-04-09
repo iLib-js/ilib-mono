@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var platform;
+let platform;
 
 /**
  * Return the name of the platform. Recognized platforms are:
@@ -36,7 +36,7 @@ var platform;
  * @static
  * @return {string} string naming the platform
  */
-var getPlatform = function getPlatform() {
+export function getPlatform() {
     if (!platform) {
         try {
             if (typeof(java.lang.Object) !== 'undefined') {
@@ -61,7 +61,7 @@ var getPlatform = function getPlatform() {
     return platform;
 };
 
-var browser;
+let browser;
 
 /**
  * If this package is running in a browser, return the name of that browser.
@@ -70,30 +70,24 @@ var browser;
  * "safari", "Edge", "iOS", or "opera"), or undefined if this is not running in a browser or if
  * the browser name could not be determined
  */
-var getBrowser = function getBrowser() {
+export function getBrowser() {
     if (getPlatform() === "browser") {
         if (navigator && navigator.userAgent) {
             if (navigator.userAgent.indexOf("Firefox") > -1) {
                 browser = "firefox";
-            }
-            if (navigator.userAgent.search(/Opera|OPR/) > -1 ) {
+            } else if (navigator.userAgent.search(/Opera|OPR/) > -1 ) {
                 browser = "opera";
-            }
-            if (navigator.userAgent.indexOf("Chrome") > -1) {
+            } else if (navigator.userAgent.indexOf("Chrome") > -1) {
                 browser = "chrome";
-            }
-            if (navigator.userAgent.indexOf(" .NET") > -1) {
+            } else if (navigator.userAgent.indexOf(" .NET") > -1) {
                 browser = "ie";
-            }
-            if (navigator.userAgent.indexOf("Safari") > -1) {
+            } else if (navigator.userAgent.indexOf("Safari") > -1) {
                 // chrome also has the string Safari in its userAgent, but the chrome case is
                 // already taken care of above
                 browser = "safari";
-            }
-            if (navigator.userAgent.indexOf("Edge") > -1) {
+            } else if (navigator.userAgent.indexOf("Edge") > -1) {
                 browser = "Edge";
-            }
-            if (navigator.userAgent.search(/iPad|iPhone|iPod/) > -1) {
+            } else if (navigator.userAgent.search(/iPad|iPhone|iPod/) > -1) {
                 // Due to constraints of the iOS platform,
                 // all browser must be built on top of the WebKit rendering engine
                 browser = "iOS";
@@ -103,6 +97,7 @@ var getBrowser = function getBrowser() {
     return browser;
 };
 
+let topScope;
 
 /**
  * Return the value of the top object in the system. This could be global
@@ -111,27 +106,26 @@ var getBrowser = function getBrowser() {
  * @return {Object|undefined} the top variable, or undefined if there is none on this
  * platform
  */
-var top = function top() {
-    if (typeof(this.top) === 'undefined') {
-        this.top = null;
+export function top() {
+    if (typeof(topScope) === 'undefined') {
         switch (getPlatform()) {
             case "rhino":
-                this.top = (function() {
+                topScope = (function() {
                   return (typeof global === 'object') ? global : this;
                 })();
                 break;
             case "nodejs":
             case "trireme":
-                this.top = typeof(global) !== 'undefined' ? global : this;
-                //console.log("ilib._top: top is " + (typeof(global) !== 'undefined' ? "global" : "this"));
+                topScope = typeof(global) !== 'undefined' ? global : this;
+                //console.log("top: top is " + (typeof(global) !== 'undefined' ? "global" : "this"));
                 break;
             default:
-                this.top = window;
+                topScope = window;
                 break;
         }
     }
 
-    return this.top || undefined;
+    return topScope;
 };
 
 /**
@@ -141,7 +135,7 @@ var top = function top() {
  * @param {string} name the name of the variable to return
  * @return {*} the global variable, or undefined if it does not exist
  */
-var globalVar = function globalVar(name) {
+export function globalVar(name) {
     try {
         return top()[name];
     } catch (e) {
@@ -155,11 +149,11 @@ var globalVar = function globalVar(name) {
  * @param {string} name the name of the variable to check
  * @return {boolean} true if the global variable is defined on this platform, false otherwise
  */
-var isGlobal = function isGlobal(name) {
+export function isGlobal(name) {
     return typeof(globalVar(name)) !== 'undefined';
 };
 
-var locale;
+let locale;
 
 /**
  * Return the default locale for this platform, if there is one.
@@ -168,9 +162,9 @@ var locale;
  * @static
  * @return {string} the BCP-47 locale specifier for the default locale
  */
-var getLocale = function getLocale() {
+export function getLocale() {
     if (typeof(locale) !== 'string') {
-        var plat = getPlatform();
+        const plat = getPlatform();
         switch (plat) {
             case 'browser':
                 // running in a browser
@@ -223,7 +217,7 @@ var getLocale = function getLocale() {
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
                 if (lang && typeof(lang) !== 'undefined') {
-                    var dot = lang.indexOf('.');
+                    const dot = lang.indexOf('.');
                     if (dot > -1) {
                         lang = lang.substring(0, dot);
                     }
@@ -234,12 +228,12 @@ var getLocale = function getLocale() {
                 break;
             case 'nodejs':
                 // running under nodejs
-                lang = global.process.env.LANG || global.process.env.LC_ALL;
+                let lang = global.process.env.LANG || global.process.env.LC_ALL;
                 // the LANG variable on unix is in the form "lang_REGION.CHARSET"
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
                 if (lang && typeof(lang) !== 'undefined') {
-                    var dot = lang.indexOf('.');
+                    const dot = lang.indexOf('.');
                     if (dot > -1) {
                         lang = lang.substring(0, dot);
                     }
@@ -250,8 +244,8 @@ var getLocale = function getLocale() {
                 break;
             case 'qt':
                 // running in the Javascript engine under Qt/QML
-                var locobj = Qt.locale();
-                var lang = locobj.name && locobj.name.replace("_", "-") || "en-US";
+                const locobj = Qt.locale();
+                locale = locobj.name && locobj.name.replace("_", "-") || "en-US";
                 break;
         }
         locale = typeof(locale) === 'string' && locale.length && locale !== "C" ? locale : 'en-US';
@@ -262,7 +256,7 @@ var getLocale = function getLocale() {
     return locale;
 };
 
-var tz;
+let tz;
 
 /**
  * Return the default time zone for this platform if there is one. 
@@ -271,39 +265,43 @@ var tz;
  * @static
  * @return {string} the default time zone for ilib
  */
-var getTimeZone = function() {
+export function getTimeZone() {
     if (typeof(tz) === 'undefined') {
         if (typeof(Intl) !== 'undefined' && typeof(Intl.DateTimeFormat) !== 'undefined') {
-            var ro = new Intl.DateTimeFormat().resolvedOptions();
-            tz = ro && ro.timeZone;
-            if (tz) {
+            const ro = new Intl.DateTimeFormat().resolvedOptions();
+            const { timeZone } = ro;
+            if (timeZone && timeZone !== "Etc/Unknown") {
+                tz = timeZone;
                 return tz;
             }
         }
+        let timezone;
 
-        switch (ilib._getPlatform()) {
+        switch (getPlatform()) {
             case 'browser':
                 // running in a browser
-                if (navigator.timezone && navigator.timezone.length > 0) {
-                    tz = navigator.timezone;
+                ({ timezone } = navigator);
+                if (timezone && timezone.length > 0) {
+                    tz = timezone;
                 }
                 break;
             case 'webos-webapp':
             case 'webos':
                 // running in webkit on webOS
-                if (PalmSystem.timezone && PalmSystem.timezone.length > 0) {
-                    tz = PalmSystem.timezone;
+                ({ timezone } = PalmSystem);
+                if (timezone && timezone.length > 0) {
+                    tz = timezone;
                 }
                 break;
             case 'rhino':
                 // running under rhino
                 if (typeof(environment.user.timezone) !== 'undefined' && environment.user.timezone.length > 0) {
-                    tz = environment.user.timezone;
+                    ({timezone: tz} = environment.user);
                 }
                 break;
             case 'nodejs':
-                if (global.process.env && typeof(global.process.env.TZ) !== "undefined") {
-                    tz = global.process.env.TZ;
+                if (global.process.env) {
+                    ({TZ : tz} = global.process.env);
                 }
                 break;
         }
@@ -314,17 +312,6 @@ var getTimeZone = function() {
     return tz;
 };
 
-var clearCache = function clearCache() {
+export function clearCache() {
     platform = locale = browser = tz = undefined;
-};
-
-module.exports = {
-    clearCache: clearCache,
-    getBrowser: getBrowser,
-    getLocale: getLocale,
-    getPlatform: getPlatform,
-    getTimeZone: getTimeZone,
-    globalVar: globalVar,
-    isGlobal: isGlobal,
-    top: top
 };
