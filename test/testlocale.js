@@ -20,7 +20,6 @@
 if (typeof(Locale) === "undefined") {
     var Locale = require("../lib/Locale.js");
 }
-Locale = Locale.default;
 
 var ilibEnv = Locale.ilibEnv;
 

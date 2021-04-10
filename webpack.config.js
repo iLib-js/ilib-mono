@@ -1,5 +1,5 @@
 /*
- * webpack.config.js - webpack configuration script for ilib-env
+ * webpack.config.js - webpack configuration script for this package
  *
  * Copyright © 2021, JEDLSoft
  *
@@ -35,7 +35,8 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env']
+                        presets: ['@babel/preset-env'],
+                        plugins: ["add-module-exports"]
                     }
                 }
             }
