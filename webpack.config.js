@@ -23,8 +23,8 @@ module.exports = {
     mode: "development",
     entry: "./src/index.js",
     output: {
-        path: path.resolve(__dirname, 'output'),
-        filename: "ilib-env-webpack.js",
+        path: path.resolve(__dirname, 'lib'),
+        filename: "ilib-env-web.js",
         library: "ilibEnv"
     },
     module: {
