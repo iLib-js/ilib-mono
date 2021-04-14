@@ -18,7 +18,7 @@
  */
 
 if (typeof(Path) === "undefined") {
-    var Path = require("../lib/Path.js").default;
+    var Path = require("../lib/Path.js");
 }
 
 module.exports.testpath = {

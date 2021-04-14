@@ -18,7 +18,7 @@
  */
 
 if (typeof(ISet) === "undefined") {
-    var ISet = require("../lib/ISet.js").default;
+    var ISet = require("../lib/ISet.js");
 }
 
 module.exports.testset = {

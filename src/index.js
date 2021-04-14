@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
- import ISet from './ISet';
- 
- import Path from './Path';
- //export {*} from './JSUtils';
- //export {*} from './MathUtils';
- //export {*} from './SearchUtils';
- //export {*} from './Utils';
- 
- export { ISet, Path };
+import ISet from './ISet';
+import Path from './Path';
+
+import * as JSUtils from './JSUtils';
+import * as MathUtils from './MathUtils';
+import * as SearchUtils from './SearchUtils';
+import * as Utils from './Utils';
+
+export { ISet, Path, JSUtils, MathUtils, SearchUtils, Utils };

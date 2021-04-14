@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-if (typeof(ilibCommon) === "undefined") {
-    var ilibCommon = require("../lib/SearchUtils.js");
+if (typeof(SearchUtils) === "undefined") {
+    var SearchUtils = require("../lib/SearchUtils.js");
 }
 
 function strcmp(left, right) {
@@ -30,7 +30,7 @@ module.exports.testsearch = {
         test.expect(1);
         var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
-        test.equal(ilibCommon.bsearch(10, array), 5);
+        test.equal(SearchUtils.bsearch(10, array), 5);
         test.done();
     },
     
@@ -38,13 +38,13 @@ module.exports.testsearch = {
         test.expect(1);
         var array = [];
         
-        test.equal(ilibCommon.bsearch(10, array), 0);
+        test.equal(SearchUtils.bsearch(10, array), 0);
         test.done();
     },
     
     testBsearchUndefinedArray: function(test) {
         test.expect(1);
-        test.equal(ilibCommon.bsearch(10, undefined), -1);
+        test.equal(SearchUtils.bsearch(10, undefined), -1);
         test.done();
     },
     
@@ -52,7 +52,7 @@ module.exports.testsearch = {
         test.expect(1);
         var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
-        test.equal(ilibCommon.bsearch(undefined, array), -1);
+        test.equal(SearchUtils.bsearch(undefined, array), -1);
         test.done();
     },
     
@@ -60,7 +60,7 @@ module.exports.testsearch = {
         test.expect(1);
         var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
-        test.equal(ilibCommon.bsearch(0, array), 0);
+        test.equal(SearchUtils.bsearch(0, array), 0);
         test.done();
     },
     
@@ -68,7 +68,7 @@ module.exports.testsearch = {
         test.expect(1);
         var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
-        test.equal(ilibCommon.bsearch(20, array), 10);
+        test.equal(SearchUtils.bsearch(20, array), 10);
         test.done();
     },
     
@@ -77,7 +77,7 @@ module.exports.testsearch = {
         var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
         // place it right after the exact match
-        test.equal(ilibCommon.bsearch(15, array), 7);
+        test.equal(SearchUtils.bsearch(15, array), 7);
         test.done();
     },
     
@@ -86,7 +86,7 @@ module.exports.testsearch = {
         var array = [0, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
         // place it right after the exact match
-        test.equal(ilibCommon.bsearch(0, array), 0);
+        test.equal(SearchUtils.bsearch(0, array), 0);
         test.done();
     },
     
@@ -95,7 +95,7 @@ module.exports.testsearch = {
         var array = [0, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
         
         // place it right after the exact match
-        test.equal(ilibCommon.bsearch(19, array), 10);
+        test.equal(SearchUtils.bsearch(19, array), 10);
         test.done();
     },
     
@@ -103,7 +103,7 @@ module.exports.testsearch = {
         test.expect(1);
         var array = [0,31,60,91,121,152,182,213,244,274,305,335,366];
         
-        test.equal(ilibCommon.bsearch(182, array), 6);
+        test.equal(SearchUtils.bsearch(182, array), 6);
         test.done();
     },
     
@@ -122,7 +122,7 @@ module.exports.testsearch = {
             "veal"
         ];
         
-        test.equal(ilibCommon.bsearch("mango", array, strcmp), 6);
+        test.equal(SearchUtils.bsearch("mango", array, strcmp), 6);
         test.done();
     },
     
@@ -141,7 +141,7 @@ module.exports.testsearch = {
             "veal"
         ];
         
-        test.equal(ilibCommon.bsearch("apple", array, strcmp), 0);
+        test.equal(SearchUtils.bsearch("apple", array, strcmp), 0);
         test.done();
     },
     
@@ -160,12 +160,12 @@ module.exports.testsearch = {
             "veal"
         ];
         
-        test.equal(ilibCommon.bsearch("zucchini", array, strcmp), 10);
+        test.equal(SearchUtils.bsearch("zucchini", array, strcmp), 10);
         test.done();
     },
     
     testBisectionSearchSimple: function(test) {
-        var actual = ilibCommon.bisectionSearch(16, 0, 10, 1e-12, function linear(x) {
+        var actual = SearchUtils.bisectionSearch(16, 0, 10, 1e-12, function linear(x) {
             return 2 * x + 5;
         });
         test.expect(1);
@@ -174,7 +174,7 @@ module.exports.testsearch = {
     },
     
     testBisectionSearchMoreComplex: function(test) {
-        var actual = ilibCommon.bisectionSearch(16, 0, 10, 1e-12, function square(x) {
+        var actual = SearchUtils.bisectionSearch(16, 0, 10, 1e-12, function square(x) {
             return x * x;
         });
         test.expect(1);
@@ -183,7 +183,7 @@ module.exports.testsearch = {
     },
     
     testBisectionSearchTrig: function(test) {
-        var actual = ilibCommon.bisectionSearch(0.5, 0, 90, 1e-11, function sinInDegrees(x) {
+        var actual = SearchUtils.bisectionSearch(0.5, 0, 90, 1e-11, function sinInDegrees(x) {
             return Math.sin(x * Math.PI / 180);
         });
         test.expect(1);
@@ -192,7 +192,7 @@ module.exports.testsearch = {
     },
     
     testBisectionSearchVeryComplex: function(test) {
-        var actual = ilibCommon.bisectionSearch(0, -0.9, 0, 1e-13, function polynomial(x) {
+        var actual = SearchUtils.bisectionSearch(0, -0.9, 0, 1e-13, function polynomial(x) {
             var coeff = [2, 5, 3];
             var xpow = 1;
             var ret = 0;

@@ -30,7 +30,7 @@ if (typeof(JSUtils) === "undefined") {
     var JSUtils = require("../lib/JSUtils.js");
 }
 if (typeof(ISet) === "undefined") {
-    var ISet = require("../lib/ISet.js").default;
+    var ISet = require("../lib/ISet.js");
 }
 
 var set = new ISet();

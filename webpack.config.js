@@ -23,9 +23,12 @@ module.exports = {
     mode: "development",
     entry: "./src/index.js",
     output: {
-        path: path.resolve(__dirname, 'output'),
-        filename: "ilib-common-webpack.js",
+        path: path.resolve(__dirname, 'lib'),
+        filename: "ilib-common-web.js",
         library: "ilibCommon"
+    },
+    externals: {
+        'ilib-locale': 'Locale'
     },
     module: {
         rules: [
@@ -35,7 +38,8 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env']
+                        presets: ['@babel/preset-env'],
+                        plugins: ["add-module-exports"]
                     }
                 }
             }
