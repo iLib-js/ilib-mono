@@ -19,11 +19,11 @@
 
 if (typeof(Locale) === "undefined") {
     var Locale = require("../lib/Locale.js");
-} else {
-    Locale = Locale.default;
 }
 
-var ilibEnv = Locale.ilibEnv;
+if (typeof(ilibEnv) === "undefined") {
+    var ilibEnv = require("ilib-env");
+}
 
 module.exports.testlocale = {
     testLocaleConstructor: function(test) {

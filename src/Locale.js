@@ -434,9 +434,3 @@ Locale.regionAlpha2ToAlpha3 = function(alpha2) {
 Locale.languageAlpha1ToAlpha3 = function(alpha1) {
     return Locale.a1toa3langmap[alpha1] || alpha1;
 };
-
-/**
- * @private
- * Intended for the unit tests to reset things before the next test.
- */
-Locale.ilibEnv = ilibEnv;

@@ -25,7 +25,8 @@ limitations under the License.
         var module = {};
     </script>
     <script src="./nodeunit/nodeunit.js"></script>
-    <script src="../output/ilib-locale-webpack.js"></script>
+    <script src="../node_modules/ilib-env/lib/ilib-env-web.js"></script>
+    <script src="../lib/ilib-locale-web.js"></script>
     <script>
         var suites = {};
         module = {
@@ -40,6 +41,7 @@ limitations under the License.
     </script>
     <script src="./testSuiteFiles.js"></script>
     <script>
+        Locale = Locale.default;
         loadTests();
     </script>
   </head>

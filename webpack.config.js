@@ -23,15 +23,18 @@ module.exports = {
     mode: "development",
     entry: "./src/Locale.js",
     output: {
-        path: path.resolve(__dirname, 'output'),
-        filename: "ilib-locale-webpack.js",
+        path: path.resolve(__dirname, 'lib'),
+        filename: "ilib-locale-web.js",
         library: "Locale"
+    },
+    externals: {
+        'ilib-env': 'ilibEnv'
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules\/(?!ilib-env)/,
+                exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {

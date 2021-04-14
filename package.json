@@ -54,7 +54,7 @@
         "build": "npm run build:prod",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
-        "build:webpack": "webpack-cli",
+        "build:web": "webpack-cli",
         "dist": "npm run build:prod ; npm pack",
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
