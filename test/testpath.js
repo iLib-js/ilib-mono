@@ -1,7 +1,7 @@
 /*
  * testpath.js - test the Path polyfill class
  *
- * Copyright © 2018, JEDLSoft
+ * Copyright © 2018, 2021 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,10 @@
  */
 
 if (typeof(Path) === "undefined") {
-    var Path = require("../../lib/Path.js");
-}
-
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
+    var Path = require("../lib/Path.js").default;
 }
 
 module.exports.testpath = {
-    setUp: function(callback) {
-        ilib.clearCache();
-        callback();
-    },
-
     testDirnameSimple: function(test) {
         test.expect(1);
         test.equal(Path.dirname("a/b"), "a");

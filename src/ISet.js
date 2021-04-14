@@ -20,13 +20,12 @@
 
 export default class ISet {
     /**
-     * Create a new set with elements in the given array. The type of
+     * @class Create a new set with elements in the given array. The type of
      * the set is gleaned from the type of the first element in the
      * elements array, or the first element added to the set. The type
      * may be "string" or "number", and all elements will be returned
      * as elements of that type.
      *
-     * @class
      * @param {Array.<string|number>=} elements initial elements to add to the set
      * @constructor
      */

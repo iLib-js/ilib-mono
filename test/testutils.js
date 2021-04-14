@@ -1,7 +1,7 @@
 /*
  * testutils.js - test the utility routines
  * 
- * Copyright © 2012-2015, 2017-2019 JEDLSoft
+ * Copyright © 2012-2015, 2017-2019, 2021 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,500 +17,25 @@
  * limitations under the License.
  */
 
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
 if (typeof(Utils) === "undefined") {
-    var Utils = require("../../lib/Utils.js");
+    var Utils = require("../lib/Utils.js");
 }
-if (typeof(SearchUtils) === "undefined") {
-    var SearchUtils = require("../../lib/SearchUtils.js");
-}
-if (typeof(MathUtils) === "undefined") {
-    var MathUtils = require("../../lib/MathUtils.js");
+if (typeof(ilibEnv) === "undefined") {
+    var ilibEnv = require("ilib-env");
 }
 if (typeof(Locale) === "undefined") {
-    var Locale = require("../../lib/Locale.js");
+    var Locale = require("ilib-locale");
 }
 if (typeof(JSUtils) === "undefined") {
-    var JSUtils = require("../../lib/JSUtils.js");
+    var JSUtils = require("../lib/JSUtils.js");
 }
 if (typeof(ISet) === "undefined") {
-    var ISet = require("../../lib/ISet.js");
-}
-
-function strcmp(left, right) {
-    return left.localeCompare(right);
-}
-function mockLoaderUtil(paths, sync, params, callback) {
-    var data = [];
-
-    var returnValues = {
-        "none": {
-            "foo.json": {
-                "a": "b",
-                "c": "d",
-                "e": "f"
-            },
-            "en/foo.json": {
-                "c": "x"
-            },
-            "en/US/foo.json": {
-                "e": "y"
-            },
-            "und/US/foo.json": {
-                "c": "m"
-            },
-            "de/foo.json": {
-                "c": "de1"
-            },
-            "de/DE/foo.json": {
-                "a": "a1"
-            },
-            "und/DE/foo.json": {
-                "c": "de2"
-            },
-            "fr/foo.json": {
-                "c": "fr1"
-            },
-            "bar.json": {
-                "a": "barb",
-                "c": "bard",
-                "e": "barf"
-            },
-            "en/bar.json": {
-                "c": "barx"
-            },
-            "en/US/bar.json": {
-                "e": "bary"
-            },
-            "und/US/bar.json": {
-                "c": "barm"
-            },
-            "foo.html": "<html><body>This is the generic, shared foo.</body></html>",
-            "de/foo.html": "<html><body>Diese ist Foo auf Deutsch.</body></html>",
-            "de/DE/foo.html": "<html><body>Diese ist Foo auf Deutsch fuer Deutschland.</body></html>",
-            "und/DE/foo.html": "<html><body>Diese ist Foo fuer Deutschland.</body></html>",
-            "fr/foo.html": "<html><body>Ceci est foo en francais.</body></html>"
-        },
-        "/usr/share/localization/myapp": {
-            "foo.json": {
-                "xxx": "yyy",
-                "www": "zzz"
-            },
-            "en/foo.json": {
-                "yyy": "vvv"
-            },
-            "en/US/foo.json": {
-                "www": "xyz"
-            },
-            "und/US/foo.json": {
-                "nnn": "mmm"
-            }
-        }
-    };
-    
-    var root = (params && params.root) || "none";
-    for (var i = 0; i < paths.length; i++) {
-        data.push(returnValues[root][paths[i]]);
-    }
-
-    if (typeof(callback) !== 'undefined') {
-        callback.call(this, data);
-    }
-
-    return data;
+    var ISet = require("../lib/ISet.js").default;
 }
 
 var set = new ISet();
 
-function mockLoaderNoMulti(paths, sync, params, callback) {
-    var data = new Array(paths && paths.length || 0);
-
-    for (var i = 0; i < paths.length; i++) {
-        var path = paths[i];
-        if (set.has(path)) {
-            throw "Cache miss";
-        }
-        set.add(path);
-    }
-
-    if (typeof(callback) !== 'undefined') {
-        callback.call(this, data);
-    }
-
-    return data;
-}
-
-var oldLoader = ilib._load;
-
 module.exports.testutils = {
-    setUp: function(callback) {
-        ilib.clearCache();
-        callback();
-    },
-    
-    tearDown: function(callback) {
-        ilib._load = oldLoader;
-        callback();
-    },
-
-    testBsearch: function(test) {
-        test.expect(1);
-        var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        test.equal(SearchUtils.bsearch(10, array), 5);
-        test.done();
-    },
-    
-    testBsearchEmptyArray: function(test) {
-        test.expect(1);
-        var array = [];
-        
-        test.equal(SearchUtils.bsearch(10, array), 0);
-        test.done();
-    },
-    
-    testBsearchUndefinedArray: function(test) {
-        test.expect(1);
-        test.equal(SearchUtils.bsearch(10, undefined), -1);
-        test.done();
-    },
-    
-    testBsearchUndefinedTarget: function(test) {
-        test.expect(1);
-        var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        test.equal(SearchUtils.bsearch(undefined, array), -1);
-        test.done();
-    },
-    
-    testBsearchBefore: function(test) {
-        test.expect(1);
-        var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        test.equal(SearchUtils.bsearch(0, array), 0);
-        test.done();
-    },
-    
-    testBsearchAfter: function(test) {
-        test.expect(1);
-        var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        test.equal(SearchUtils.bsearch(20, array), 10);
-        test.done();
-    },
-    
-    testBsearchExact: function(test) {
-        test.expect(1);
-        var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        // place it right after the exact match
-        test.equal(SearchUtils.bsearch(15, array), 7);
-        test.done();
-    },
-    
-    testBsearchExactBeginning: function(test) {
-        test.expect(1);
-        var array = [0, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        // place it right after the exact match
-        test.equal(SearchUtils.bsearch(0, array), 0);
-        test.done();
-    },
-    
-    testBsearchExactEnd: function(test) {
-        test.expect(1);
-        var array = [0, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-        
-        // place it right after the exact match
-        test.equal(SearchUtils.bsearch(19, array), 10);
-        test.done();
-    },
-    
-    testBsearchMonthEdge: function(test) {
-        test.expect(1);
-        var array = [0,31,60,91,121,152,182,213,244,274,305,335,366];
-        
-        test.equal(SearchUtils.bsearch(182, array), 6);
-        test.done();
-    },
-    
-    testBsearchStrings: function(test) {
-        test.expect(1);
-        var array = [
-            "barley", 
-            "cardomum", 
-            "eggs", 
-            "garlic", 
-            "jackfruit", 
-            "limes", 
-            "orange", 
-            "quince", 
-            "spaghetti", 
-            "veal"
-        ];
-        
-        test.equal(SearchUtils.bsearch("mango", array, strcmp), 6);
-        test.done();
-    },
-    
-    testBsearchStringsBefore: function(test) {
-        test.expect(1);
-        var array = [
-            "barley", 
-            "cardomum", 
-            "eggs", 
-            "garlic", 
-            "jackfruit", 
-            "limes", 
-            "orange", 
-            "quince", 
-            "spaghetti", 
-            "veal"
-        ];
-        
-        test.equal(SearchUtils.bsearch("apple", array, strcmp), 0);
-        test.done();
-    },
-    
-    testBsearchStringsAfter: function(test) {
-        test.expect(1);
-        var array = [
-            "barley", 
-            "cardomum", 
-            "eggs", 
-            "garlic", 
-            "jackfruit", 
-            "limes", 
-            "orange", 
-            "quince", 
-            "spaghetti", 
-            "veal"
-        ];
-        
-        test.equal(SearchUtils.bsearch("zucchini", array, strcmp), 10);
-        test.done();
-    },
-    
-    testBisectionSearchSimple: function(test) {
-        var actual = SearchUtils.bisectionSearch(16, 0, 10, 1e-12, function linear(x) {
-            return 2 * x + 5;
-        });
-        test.expect(1);
-        test.roughlyEqual(actual, 5.5, 1e-12);
-        test.done();
-    },
-    
-    testBisectionSearchMoreComplex: function(test) {
-        var actual = SearchUtils.bisectionSearch(16, 0, 10, 1e-12, function square(x) {
-            return x * x;
-        });
-        test.expect(1);
-        test.roughlyEqual(actual, 4, 1e-12);
-        test.done();
-    },
-    
-    testBisectionSearchTrig: function(test) {
-        var actual = SearchUtils.bisectionSearch(0.5, 0, 90, 1e-11, function sinInDegrees(x) {
-            return Math.sin(x * Math.PI / 180);
-        });
-        test.expect(1);
-        test.roughlyEqual(actual, 30, 1e-9);
-        test.done();
-    },
-    
-    testBisectionSearchVeryComplex: function(test) {
-        var actual = SearchUtils.bisectionSearch(0, -0.9, 0, 1e-13, function polynomial(x) {
-            var coeff = [2, 5, 3];
-            var xpow = 1;
-            var ret = 0;
-            for (var i = 0; i < coeff.length; i++) {
-                ret += coeff[i] * xpow;
-                xpow *= x;
-            }
-            return ret;
-        });
-        test.roughlyEqual(actual, -0.66666666666666, 1e-13);
-        test.done();
-    },
-    
-    testModSimple: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.mod(2, 4), 2);
-        test.done();
-    },
-    
-    testModWrap: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.mod(6, 4), 2);
-        test.done();
-    },
-    
-    testModWrapNeg: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.mod(-6, 4), 2);
-        test.done();
-    },
-    
-    testModZeroModulus: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.mod(6, 0), 0);
-        test.done();
-    },
-    
-    testModZeroNum: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.mod(0, 6), 0);
-        test.done();
-    },
-    
-    testModReal: function(test) {
-        test.expect(1);
-        var actual = MathUtils.mod(2.234231, 4);
-        test.roughlyEqual(actual, 2.234231, 0.0000001);
-        test.done();
-    },
-    testModRealWrap: function(test) {
-        test.expect(1);
-        var actual = MathUtils.mod(6.234231, 4);
-        test.roughlyEqual(actual, 2.234231, 0.0000001);
-        test.done();
-    },
-    testModRealNeg: function(test) {
-        test.expect(1);
-        var actual = MathUtils.mod(-6.3, 4);
-        test.roughlyEqual(actual, 1.7, 0.0000001);
-        test.done();
-    },
-    
-    testAmodSimple: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.amod(2, 4), 2);
-        test.done();
-    },
-    
-    testAmodWrap: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.amod(6, 4), 2);
-        test.done();
-    },
-    
-    testAmodWrapNeg: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.amod(-6, 4), 2);
-        test.done();
-    },
-    
-    testAmodZeroModulus: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.amod(6, 0), 0);
-        test.done();
-    },
-    
-    testAmodZeroNum: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.amod(0, 6), 6);
-        test.done();
-    },
-    
-    testAmodReal: function(test) {
-        test.expect(1);
-        var actual = MathUtils.amod(2.234231, 4);
-        test.roughlyEqual(actual, 2.234231, 0.0000001);
-        test.done();
-    },
-    testAmodRealWrap: function(test) {
-        test.expect(1);
-        var actual = MathUtils.amod(6.234231, 4);
-        test.roughlyEqual(actual, 2.234231, 0.0000001);
-        test.done();
-    },
-    testAmodRealNeg: function(test) {
-        test.expect(1);
-        var actual = MathUtils.amod(-6.3, 4);
-        test.roughlyEqual(actual, 1.7, 0.0000001);
-        test.done();
-    },
-    
-    testLog10: function(test) {
-        test.expect(1);
-        test.equal(Math.floor(MathUtils.log10(12345)), 4);
-        test.done();
-    },
-
-    testLog10two: function(test) {
-        test.expect(1);
-        test.equal(Math.floor(MathUtils.log10(987654321)), 8);
-        test.done();
-    },
-
-    testSignificant1: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(12345, 3), 12300);
-        test.done();
-    },
-
-    testSignificant2: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(12345, 2), 12000);
-        test.done();
-    },
-
-    testSignificant3: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(12345, 1), 10000);
-        test.done();
-    },
-
-    testSignificantZero: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(12345, 0), 12345);
-        test.done();
-    },
-
-    testSignificantNegativeDigits: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(12345, -234), 12345);
-        test.done();
-    },
-
-    testSignificantNegativeNumber: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(-12345, 4), -12340);
-        test.done();
-    },
-
-    testSignificantStradleDecimal: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(12.345, 4), 12.35);
-        test.done();
-    },
-
-    testSignificantLessThanOne: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(0.123456, 2), 0.12);
-        test.done();
-    },
-
-    testSignificantLessThanOneRound: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(0.123456, 4), 0.1235);
-        test.done();
-    },
-
-    testSignificantLessThanOneSmall: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(0.000123456, 2), 0.00012);
-        test.done();
-    },
-
-    testSignificantZero: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.significant(0, 2), 0);
-        test.done();
-    },
-
     testMergeSimple: function(test) {
         test.expect(1);
         var object1 = {"a": "A", "b": "B"},
@@ -882,79 +407,6 @@ module.exports.testutils = {
         test.done();
     },
     
-    testSignumPositive: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(1), 1);
-        test.done();
-    },
-    
-    testSignumPositiveLarge: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(1345234), 1);
-        test.done();
-    },
-    
-    testSignumNegative: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(-1), -1);
-        test.done();
-    },
-    
-    testSignumPositiveLarge: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(-13234), -1);
-        test.done();
-    },
-    
-    testSignumZero: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(0), 1);
-        test.done();
-    },
-    
-    testSignumStringNumberPositive: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum("1345234"), 1);
-        test.done();
-    },
-    
-    testSignumStringNumberNegative: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum("-1345234"), -1);
-        test.done();
-    },
-    
-    testSignumUndefined: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(), 1);
-        test.done();
-    },
-    
-    testSignumNull: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(null), 1);
-        test.done();
-    },
-    
-    testSignumStringNonNumber: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum("rafgasdf"), 1);
-        test.done();
-    },
-    
-    testSignumBoolean: function(test) {
-        test.expect(2);
-        test.equal(MathUtils.signum(true), 1);
-        test.equal(MathUtils.signum(false), 1);
-        test.done();
-    },
-    
-    testSignumFunction: function(test) {
-        test.expect(1);
-        test.equal(MathUtils.signum(function () { return -4; }), 1);
-        test.done();
-    },
-    
     testGetSublocalesENUS: function(test) {
         test.expect(1);
 
@@ -990,6 +442,7 @@ module.exports.testutils = {
         test.done();
     },
 
+/*
     testMergeLocData: function(test) {
         test.expect(3);
         ilib.data.foobar = {
@@ -1255,6 +708,7 @@ module.exports.testutils = {
 
         test.done();
     },
+*/
     
     testGetLocFilesLanguageOnly: function(test) {
         test.expect(2);
@@ -1566,7 +1020,7 @@ module.exports.testutils = {
     
     testHashCodeEqualFunctionDifferentSpacing: function(test) {
         test.expect(1);
-        var plat = ilib._getPlatform(); 
+        var plat = ilibEnv.getPlatform(); 
         if (plat === "qt" || plat === "rhino" || plat === "trireme") {
             // the qt javascript engine doesn't allow you to see the code of a function, so all 
             // functions should have the same hash. On Rhino, you can see the code, but the white
@@ -1590,7 +1044,7 @@ module.exports.testutils = {
     },
     testHashCodeNotEqualFunctionDifferentContents: function(test) {
         test.expect(1);
-        if (ilib._getPlatform() === "qt") {
+        if (ilibEnv.getPlatform() === "qt") {
             // the qt javascript engine doesn't allow you to see the code of a function, so all 
             // functions should have the same hash
             var expected = JSUtils.hashCode(function a() { return "a"; });
@@ -1640,7 +1094,8 @@ module.exports.testutils = {
         test.notEqual(JSUtils.hashCode({name: "abcdef", apple: "jacks", num: 3, type: false}), expected);
         test.done();
     },
-    
+
+/*
     testLoadDataCorrectType: function(test) {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
@@ -2117,7 +1572,7 @@ module.exports.testutils = {
             ilib._cacheMerged = cacheMerged;
         }
     },
-
+*/
     testMapStringDigits: function(test) {
         test.expect(1);
         var map = "abcdefghij".split("");

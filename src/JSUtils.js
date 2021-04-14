@@ -365,3 +365,65 @@ export function callAll(arr, action, callback, results) {
         callback(results);
     }
 };
+
+
+/**
+ * Extend object1 by mixing in everything from object2 into it. The objects
+ * are deeply extended, meaning that this method recursively descends the
+ * tree in the objects and mixes them in at each level. Arrays are extended
+ * by concatenating the elements of object2 onto those of object1.
+ *
+ * @static
+ * @param {Object} object1 the target object to extend
+ * @param {Object=} object2 the object to mix in to object1
+ * @return {Object} returns object1
+ */
+export function extend(object1, object2) {
+    var prop = undefined;
+    if (object2) {
+        for (prop in object2) {
+            // don't extend object with undefined or functions
+            if (prop && typeof(object2[prop]) !== 'undefined' && typeof(object2[prop]) !== "function") {
+                if (isArray(object1[prop]) && isArray(object2[prop])) {
+                    //console.log("Merging array prop " + prop);
+                    object1[prop] = object1[prop].concat(object2[prop]);
+                } else if (typeof(object1[prop]) === 'object' && typeof(object2[prop]) === 'object') {
+                    //console.log("Merging object prop " + prop);
+                    if (prop !== "ilib") {
+                        object1[prop] = extend(object1[prop], object2[prop]);
+                    }
+                } else {
+                    //console.log("Copying prop " + prop);
+                    // for debugging. Used to determine whether or not json files are overriding their parents unnecessarily
+                    object1[prop] = object2[prop];
+                }
+            }
+        }
+    }
+    return object1;
+};
+
+export function extend2(object1, object2) {
+    var prop = undefined;
+    if (object2) {
+        for (prop in object2) {
+            // don't extend object with undefined or functions
+            if (prop && typeof(object2[prop]) !== 'undefined') {
+                if (isArray(object1[prop]) && isArray(object2[prop])) {
+                    //console.log("Merging array prop " + prop);
+                    object1[prop] = object1[prop].concat(object2[prop]);
+                } else if (typeof(object1[prop]) === 'object' && typeof(object2[prop]) === 'object') {
+                    //console.log("Merging object prop " + prop);
+                    if (prop !== "ilib") {
+                        object1[prop] = extend2(object1[prop], object2[prop]);
+                    }
+                } else {
+                    //console.log("Copying prop " + prop);
+                    // for debugging. Used to determine whether or not json files are overriding their parents unnecessarily
+                    object1[prop] = object2[prop];
+                }
+            }
+        }
+    }
+    return object1;
+};

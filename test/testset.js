@@ -1,7 +1,7 @@
 /*
  * testset.js - test the ISet class
  * 
- * Copyright © 2015,2017, JEDLSoft
+ * Copyright © 2015, 2017, 2021 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,10 @@
  */
 
 if (typeof(ISet) === "undefined") {
-    var ISet = require("../../lib/ISet.js");
-}
-
-// var inspect = require("../../../webapp/WEB-INF/app/core/inspect.js");
-
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
+    var ISet = require("../lib/ISet.js").default;
 }
 
 module.exports.testset = {
-    setUp: function(callback) {
-        ilib.clearCache();
-        callback();
-    },
-
     testConstructor: function(test) {
         test.expect(1);
         var s = new ISet();

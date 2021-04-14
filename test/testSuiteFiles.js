@@ -18,6 +18,8 @@
  */
 
 module.exports.files = [
+    "testsearch.js",
+    "testmath.js",
     "testglobal.js",
     "testset.js",
     "testpath.js",
