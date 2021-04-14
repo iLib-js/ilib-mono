@@ -79,7 +79,7 @@
         "webpack-cli": "^4.6.0"
     },
     "dependencies": {
-        "ilib-env": "file:../ilib-env/ilib-env-1.0.0.tgz",
-        "ilib-locale": "file:../ilib-locale/ilib-locale-1.0.0.tgz"
+        "ilib-env": "^1.0.0",
+        "ilib-locale": "^1.0.0"
     }
 }
