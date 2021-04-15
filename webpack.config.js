@@ -39,7 +39,9 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-env'],
-                        plugins: ["add-module-exports"]
+                        plugins: ["add-module-exports"],
+                        minified: true,
+                        comments: false
                     }
                 }
             }
