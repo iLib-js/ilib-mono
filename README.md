@@ -34,6 +34,11 @@ var platform = ilibEnv.getPlatform();
 
 ES6:
 
+import { getPlatform } from 'ilib-env';
+const platform = getPlatform();
+
+or
+
 import ilibEnv from 'ilib-env';
 const platform = ilibEnv.getPlatform();
 ```
@@ -62,6 +67,11 @@ var locale = ilibEnv.getLocale();
 
 ES6:
 
+import { getLocale } from 'ilib-env';
+const locale = getLocale();
+
+or
+
 import ilibEnv from 'ilib-env';
 const locale = ilibEnv.getLocale();
 ```
@@ -83,6 +93,11 @@ var ilibEnv = require("ilib-env");
 var timezone = ilibEnv.getTimeZone();
 
 ES6:
+
+import { getTimeZone } from 'ilib-env';
+const timezone = getTimeZone();
+
+or
 
 import ilibEnv from 'ilib-env';
 const timezone = ilibEnv.getTimeZone();
@@ -109,6 +124,13 @@ if (ilibEnv.getPlatform() === "browser") {
 }
 
 ES6:
+
+import { getPlatform, getBrowser } from 'ilib-env';
+if (getPlatform() === "browser") {
+    browser = getBrowser();
+}
+
+or
 
 import ilibEnv from 'ilib-env';
 if (ilibEnv.getPlatform() === "browser") {
@@ -145,6 +167,14 @@ if (ilibEnv.isGlobal("variableName")) {
 
 ES6:
 
+import { top, isGlobal } from 'ilib-env';
+const top = top();
+if (isGlobal("variableName")) {
+    // safe to reference variableName
+}
+
+or
+
 import ilibEnv from 'ilib-env';
 const top = ilibEnv.top();
 if (ilibEnv.isGlobal("variableName")) {
@@ -168,4 +198,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language governing permissions and
 limitations under the License.
-
