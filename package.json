@@ -44,7 +44,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/iLib-locale.git"
+        "url": "git@github.com:iLib-js/iLib-env.git"
     },
     "scripts": {
         "build": "npm run build:prod",
