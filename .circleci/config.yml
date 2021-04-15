@@ -1,0 +1,38 @@
+version: 2.1
+jobs:
+  test:
+    parameters:
+        docker_image:
+          type: string
+          default: circleci/node:current-browsers
+    docker:
+      - image: << parameters.docker_image >>
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            rm -rf node_modules package-lock.json
+            npm install
+      - run:
+          name: Running all unit tests
+          command: |
+            node -v
+            npm -v
+            npm run test
+
+workflows:
+  version: 2
+  test-all-node-versions:
+    jobs:
+      - test:
+          docker_image: circleci/node:8-browsers
+      - test:
+          docker_image: circleci/node:10-browsers
+      - test:
+          docker_image: circleci/node:12-browsers
+      - test:
+          docker_image: circleci/node:13-browsers
+      - test:
+          docker_image: circleci/node:14-browsers
+      - test
