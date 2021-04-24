@@ -427,3 +427,68 @@ export function extend2(object1, object2) {
     }
     return object1;
 };
+
+/**
+ * Convert a UCS-4 code point to a Javascript string. The codepoint can be any valid
+ * UCS-4 Unicode character, including supplementary characters. Standard Javascript
+ * only supports supplementary characters using the UTF-16 encoding, which has
+ * values in the range 0x0000-0xFFFF. String.fromCharCode() will only
+ * give you a string containing 16-bit characters, and will not properly convert
+ * the code point for a supplementary character (which has a value > 0xFFFF) into
+ * two UTF-16 surrogate characters. Instead, it will just just give you whatever
+ * single character happens to be the same as your code point modulo 0x10000, which
+ * is almost never what you want.<p>
+ *
+ * Similarly, that means if you use String.charCodeAt()
+ * you will only retrieve a 16-bit value, which may possibly be a single
+ * surrogate character that is part of a surrogate pair representing a character
+ * in the supplementary plane. It will not give you a code point. Use
+ * IString.codePointAt() to access code points in a string, or use
+ * an iterator to walk through the code points in a string.
+ *
+ * @static
+ * @param {number} codepoint UCS-4 code point to convert to a character
+ * @return {string} a string containing the character represented by the codepoint
+ */
+export function fromCodePoint(codepoint) {
+    if (codepoint < 0x10000) {
+        return String.fromCharCode(codepoint);
+    } else {
+        var high = Math.floor(codepoint / 0x10000) - 1;
+        var low = codepoint & 0xFFFF;
+
+        return String.fromCharCode(0xD800 | ((high & 0x000F) << 6) |  ((low & 0xFC00) >> 10)) +
+            String.fromCharCode(0xDC00 | (low & 0x3FF));
+    }
+};
+
+/**
+ * Convert the character or the surrogate pair at the given
+ * index into the intrinsic Javascript string to a Unicode
+ * UCS-4 code point.
+ *
+ * @static
+ * @param {string} str string to get the code point from
+ * @param {number} index index into the string
+ * @return {number} code point of the character at the
+ * given index into the string
+ */
+export function toCodePoint(str, index) {
+    if (!str || str.length === 0) {
+        return -1;
+    }
+    var code = -1, high = str.charCodeAt(index);
+    if (high >= 0xD800 && high <= 0xDBFF) {
+        if (str.length > index+1) {
+            var low = str.charCodeAt(index+1);
+            if (low >= 0xDC00 && low <= 0xDFFF) {
+                code = (((high & 0x3C0) >> 6) + 1) << 16 |
+                    (((high & 0x3F) << 10) | (low & 0x3FF));
+            }
+        }
+    } else {
+        code = high;
+    }
+
+    return code;
+};
