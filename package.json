@@ -17,8 +17,8 @@
         "locale",
         "translation"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-common",
-    "bugs": "https://github.com/iLib-js/ilib-common/issues",
+    "homepage": "https://github.com/iLib-js/ilib-ctype",
+    "bugs": "https://github.com/iLib-js/ilib-ctype/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -44,7 +44,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/iLib-common.git"
+        "url": "git@github.com:iLib-js/iLib-ctype.git"
     },
     "scripts": {
         "build": "npm run build:prod",
