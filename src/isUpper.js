@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype_l from "../locale/ctype_l.json";
 
@@ -50,5 +50,5 @@ export default function isUpper(ch) {
             break;
     }
 
-    return ctype_l ? CType._inRange(num, 'Lu', ctype_l) : (num >= 0x41 && num <= 0x5A);
+    return inRange(num, 'Lu', ctype_l);
 };

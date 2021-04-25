@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import scriptToRange from "../locale/scriptToRange.json";
 
@@ -52,5 +52,5 @@ export default function isScript(ch, script) {
             break;
     }
 
-    return CType._inRange(num, script, scriptToRange);
+    return inRange(num, script, scriptToRange);
 };

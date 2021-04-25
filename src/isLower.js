@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype_l from "../locale/ctype_l.json";
 
@@ -50,5 +50,5 @@ export default function isLower(ch) {
             break;
     }
 
-    return ctype_l ? CType._inRange(num, 'Ll', ctype_l) : (num >= 0x61 && num <= 0x7A);
+    return inRange(num, 'Ll', ctype_l);
 };

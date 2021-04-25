@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype from "../locale/ctype.json";
 
@@ -50,6 +50,5 @@ export default function isXdigit(ch) {
             break;
     }
 
-    return ctype ? CType._inRange(num, 'xdigit', ctype) :
-        ((num >= 0x30 && num <= 0x39) || (num >= 0x41 && num <= 0x46) || (num >= 0x61 && num <= 0x66));
+    return inRange(num, 'xdigit', ctype);
 };

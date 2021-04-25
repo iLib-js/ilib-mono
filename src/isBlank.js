@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType.js";
+import { inRange } from "./CType";
 
 import ctype from "../locale/ctype.json";
 
@@ -48,5 +48,5 @@ export default function isBlank(ch) {
             num = ch._toCodePoint(0);
             break;
     }
-    return ctype ? CType._inRange(num, 'blank', ctype) : (ch === ' ' || ch === '\t');
+    return inRange(num, 'blank', ctype);
 };

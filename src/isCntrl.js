@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype_c from "../locale/ctype_c.json";
 
@@ -47,5 +47,5 @@ export default function isCntrl(ch) {
             num = ch._toCodePoint(0);
             break;
     }
-    return CType._inRange(num, 'Cc', ctype_c);
+    return inRange(num, 'Cc', ctype_c);
 };

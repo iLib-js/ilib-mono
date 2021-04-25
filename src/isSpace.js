@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype from "../locale/ctype.json";
 import ctype_z from "../locale/ctype_z.json";
@@ -49,11 +49,8 @@ export default function isSpace(ch) {
             break;
     }
 
-    return ctype && ctype_z ?
-        (CType._inRange(num, 'space', ctype) ||
-        CType._inRange(num, 'Zs', ctype_z) ||
-        CType._inRange(num, 'Zl', ctype_z) ||
-        CType._inRange(num, 'Zp', ctype_z)) :
-        (ch === ' ' || num === 0xA0 ||
-        (num >= 0x09 && num <= 0x0D));
+    return (inRange(num, 'space', ctype) ||
+        inRange(num, 'Zs', ctype_z) ||
+        inRange(num, 'Zl', ctype_z) ||
+        inRange(num, 'Zp', ctype_z));
 };

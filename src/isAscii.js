@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype from "../locale/ctype.json";
 
@@ -47,5 +47,5 @@ export default function isAscii(ch) {
             num = ch._toCodePoint(0);
             break;
     }
-    return ctype ? CType._inRange(num, 'ascii', ctype) : (num <= 0x7F);
+    return ctype ? inRange(num, 'ascii', ctype) : (num <= 0x7F);
 };

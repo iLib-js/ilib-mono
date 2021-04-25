@@ -62,10 +62,9 @@ if (typeof(isAlpha) === "undefined") {
 if (typeof(isAlnum) === "undefined") {
     var isAlnum = require("../lib/isAlnum.js");
 }
-if (typeof(CType) === "undefined") {
-    var CType = require("../lib/CType.js");
+if (typeof(withinRange) === "undefined") {
+    var withinRange = require("../lib/CType.js").default;
 }
-
 if (typeof(JSUtils) === "undefined") {
     var JSUtils = require("ilib-common/lib/JSUtils");
 }
@@ -652,67 +651,67 @@ module.exports.testctype = {
 
     testWithinRangeTrue: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange('a', 'ascii'));
+        test.ok(withinRange('a', 'ascii'));
         test.done();
     },
 
     testWithinRangeOnlyFirstChar: function(test) {
         test.expect(1);
-        test.ok(!CType.withinRange('\u2000a', 'ascii'));
+        test.ok(!withinRange('\u2000a', 'ascii'));
         test.done();
     },
 
     testWithinRangeLowerCaseTheRangeName: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange('a', 'ASCII'));
+        test.ok(withinRange('a', 'ASCII'));
         test.done();
     },
 
     testWithinRangeFalse: function(test) {
         test.expect(1);
-        test.ok(!CType.withinRange('G', 'arabic'));
+        test.ok(!withinRange('G', 'arabic'));
         test.done();
     },
 
     testWithinRangeMultirange1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange('a', 'latin'));
+        test.ok(withinRange('a', 'latin'));
         test.done();
     },
 
     testWithinRangeMultirange2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange('\u1E0F', 'latin'));
+        test.ok(withinRange('\u1E0F', 'latin'));
         test.done();
     },
 
     testWithinRangeMultirange3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange('\u2C61', 'latin'));
+        test.ok(withinRange('\u2C61', 'latin'));
         test.done();
     },
 
     testWithinRangeMultirange4: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange('\uA720', 'latin'));
+        test.ok(withinRange('\uA720', 'latin'));
         test.done();
     },
 
     testWithinRangeMultirangeFalse: function(test) {
         test.expect(1);
-        test.ok(!CType.withinRange('\u2190', 'latin'));
+        test.ok(!withinRange('\u2190', 'latin'));
         test.done();
     },
 
     testWithinRangeEmpty: function(test) {
         test.expect(1);
-        test.ok(!CType.withinRange('', 'latin'));
+        test.ok(!withinRange('', 'latin'));
         test.done();
     },
 
     testWithinRangeUndefined: function(test) {
         test.expect(1);
-        test.ok(!CType.withinRange());
+        test.ok(!withinRange());
         test.done();
     },
 
@@ -721,1059 +720,1059 @@ module.exports.testctype = {
 
     testWithinRangeLatin1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u000A", "Latin"));
+        test.ok(withinRange("\u000A", "Latin"));
         test.done();
     },
 
     testWithinRangeLatin2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1E0A", "Latin"));
+        test.ok(withinRange("\u1E0A", "Latin"));
         test.done();
     },
 
     testWithinRangeLatin3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2C6A", "Latin"));
+        test.ok(withinRange("\u2C6A", "Latin"));
         test.done();
     },
 
     testWithinRangeLatin4: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA72A", "Latin"));
+        test.ok(withinRange("\uA72A", "Latin"));
         test.done();
     },
 
     testWithinRangeIPA1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u025A", "IPA"));
+        test.ok(withinRange("\u025A", "IPA"));
         test.done();
     },
 
     testWithinRangeIPA2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1D0A", "IPA"));
+        test.ok(withinRange("\u1D0A", "IPA"));
         test.done();
     },
 
     testWithinRangeIPA3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1D8A", "IPA"));
+        test.ok(withinRange("\u1D8A", "IPA"));
         test.done();
     },
 
     testWithinRangeOperators1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u220A", "Operators"));
+        test.ok(withinRange("\u220A", "Operators"));
         test.done();
     },
 
     testWithinRangeOperators2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2A0A", "Operators"));
+        test.ok(withinRange("\u2A0A", "Operators"));
         test.done();
     },
 
     testWithinRangeGreek1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u037A", "Greek"));
+        test.ok(withinRange("\u037A", "Greek"));
         test.done();
     },
 
     testWithinRangeGreek2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1F0A", "Greek"));
+        test.ok(withinRange("\u1F0A", "Greek"));
         test.done();
     },
 
     testWithinRangeCyrillic1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u040A", "Cyrillic"));
+        test.ok(withinRange("\u040A", "Cyrillic"));
         test.done();
     },
 
     testWithinRangeCyrillic2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2DEA", "Cyrillic"));
+        test.ok(withinRange("\u2DEA", "Cyrillic"));
         test.done();
     },
 
     testWithinRangeCyrillic3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA64A", "Cyrillic"));
+        test.ok(withinRange("\uA64A", "Cyrillic"));
         test.done();
     },
 
     testWithinRangeArabic1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u060A", "Arabic"));
+        test.ok(withinRange("\u060A", "Arabic"));
         test.done();
     },
 
     testWithinRangeArabic2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u075A", "Arabic"));
+        test.ok(withinRange("\u075A", "Arabic"));
         test.done();
     },
 
     testWithinRangeArabic3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFB5A", "Arabic"));
+        test.ok(withinRange("\uFB5A", "Arabic"));
         test.done();
     },
 
     testWithinRangeArabic4: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFE7A", "Arabic"));
+        test.ok(withinRange("\uFE7A", "Arabic"));
         test.done();
     },
 
     testWithinRangeDevanagari1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u090A", "Devanagari"));
+        test.ok(withinRange("\u090A", "Devanagari"));
         test.done();
     },
 
     testWithinRangeDevanagari2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA8EA", "Devanagari"));
+        test.ok(withinRange("\uA8EA", "Devanagari"));
         test.done();
     },
 
     testWithinRangeMyanmar1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u100A", "Myanmar"));
+        test.ok(withinRange("\u100A", "Myanmar"));
         test.done();
     },
 
     testWithinRangeMyanmar2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uAA6A", "Myanmar"));
+        test.ok(withinRange("\uAA6A", "Myanmar"));
         test.done();
     },
 
     testWithinRangeHangul1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u110A", "Hangul"));
+        test.ok(withinRange("\u110A", "Hangul"));
         test.done();
     },
 
     testWithinRangeHangul2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uAC0A", "Hangul"));
+        test.ok(withinRange("\uAC0A", "Hangul"));
         test.done();
     },
 
     testWithinRangeHangul3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA96A", "Hangul"));
+        test.ok(withinRange("\uA96A", "Hangul"));
         test.done();
     },
 
     testWithinRangeHangul4: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uD7BA", "Hangul"));
+        test.ok(withinRange("\uD7BA", "Hangul"));
         test.done();
     },
 
     testWithinRangeHangul5: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u313A", "Hangul"));
+        test.ok(withinRange("\u313A", "Hangul"));
         test.done();
     },
 
     testWithinRangeEthiopic1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u120A", "Ethiopic"));
+        test.ok(withinRange("\u120A", "Ethiopic"));
         test.done();
     },
 
     testWithinRangeEthiopic2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2D8A", "Ethiopic"));
+        test.ok(withinRange("\u2D8A", "Ethiopic"));
         test.done();
     },
 
     testWithinRangeEthiopic3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uAB0A", "Ethiopic"));
+        test.ok(withinRange("\uAB0A", "Ethiopic"));
         test.done();
     },
 
     testWithinRangeCanadian1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u140A", "Canadian"));
+        test.ok(withinRange("\u140A", "Canadian"));
         test.done();
     },
 
     testWithinRangeCanadian2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u18BA", "Canadian"));
+        test.ok(withinRange("\u18BA", "Canadian"));
         test.done();
     },
 
     testWithinRangeCombining1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u030A", "Combining"));
+        test.ok(withinRange("\u030A", "Combining"));
         test.done();
     },
 
     testWithinRangeCombining2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1DCA", "Combining"));
+        test.ok(withinRange("\u1DCA", "Combining"));
         test.done();
     },
 
     testWithinRangeCombining3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u20DA", "Combining"));
+        test.ok(withinRange("\u20DA", "Combining"));
         test.done();
     },
 
     testWithinRangeArrows1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u219A", "Arrows"));
+        test.ok(withinRange("\u219A", "Arrows"));
         test.done();
     },
 
     testWithinRangeArrows2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2B0A", "Arrows"));
+        test.ok(withinRange("\u2B0A", "Arrows"));
         test.done();
     },
 
     testWithinRangeArrows3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u27FA", "Arrows"));
+        test.ok(withinRange("\u27FA", "Arrows"));
         test.done();
     },
 
     testWithinRangeArrows4: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u290A", "Arrows"));
+        test.ok(withinRange("\u290A", "Arrows"));
         test.done();
     },
 
     testWithinRangeCJK1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u4E0A", "CJK"));
+        test.ok(withinRange("\u4E0A", "CJK"));
         test.done();
     },
 
     testWithinRangeCJK2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u340A", "CJK"));
+        test.ok(withinRange("\u340A", "CJK"));
         test.done();
     },
 
     testWithinRangeCJK3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2FFA", "CJK"));
+        test.ok(withinRange("\u2FFA", "CJK"));
         test.done();
     },
 
     testWithinRangeCJKCompatibility1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u330A", "CJKCompatibility"));
+        test.ok(withinRange("\u330A", "CJKCompatibility"));
         test.done();
     },
 
     testWithinRangeCJKCompatibility2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uF90A", "CJKCompatibility"));
+        test.ok(withinRange("\uF90A", "CJKCompatibility"));
         test.done();
     },
 
     testWithinRangeCJKCompatibility3: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFE3A", "CJKCompatibility"));
+        test.ok(withinRange("\uFE3A", "CJKCompatibility"));
         test.done();
     },
 
     testWithinRangeMathematical1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u27CA", "Mathematical"));
+        test.ok(withinRange("\u27CA", "Mathematical"));
         test.done();
     },
 
     testWithinRangeMathematical2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u298A", "Mathematical"));
+        test.ok(withinRange("\u298A", "Mathematical"));
         test.done();
     },
 
     testWithinRangePrivateUse: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uE00A", "PrivateUse"));
+        test.ok(withinRange("\uE00A", "PrivateUse"));
         test.done();
     },
 
     testWithinRangeVariations: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFE0A", "Variations"));
+        test.ok(withinRange("\uFE0A", "Variations"));
         test.done();
     },
 
     testWithinRangeBamum: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA6AA", "Bamum"));
+        test.ok(withinRange("\uA6AA", "Bamum"));
         test.done();
     },
 
     testWithinRangeGeorgian: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u10AA", "Georgian"));
+        test.ok(withinRange("\u10AA", "Georgian"));
         test.done();
     },
 
     testWithinRangeGeorgian: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2D0A", "Georgian"));
+        test.ok(withinRange("\u2D0A", "Georgian"));
         test.done();
     },
 
     testWithinRangePunctuation1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u200A", "Punctuation"));
+        test.ok(withinRange("\u200A", "Punctuation"));
         test.done();
     },
 
     testWithinRangePunctuation2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2E0A", "Punctuation"));
+        test.ok(withinRange("\u2E0A", "Punctuation"));
         test.done();
     },
 
     testWithinRangeKatakana1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u30AA", "Katakana"));
+        test.ok(withinRange("\u30AA", "Katakana"));
         test.done();
     },
 
     testWithinRangeKatakana2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u31FA", "Katakana"));
+        test.ok(withinRange("\u31FA", "Katakana"));
         test.done();
     },
 
     testWithinRangeBopomofo1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u310A", "Bopomofo"));
+        test.ok(withinRange("\u310A", "Bopomofo"));
         test.done();
     },
 
     testWithinRangeBopomofo2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u31AA", "Bopomofo"));
+        test.ok(withinRange("\u31AA", "Bopomofo"));
         test.done();
     },
 
     testWithinRangeEnclosedAlpha: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u246A", "EnclosedAlpha"));
+        test.ok(withinRange("\u246A", "EnclosedAlpha"));
         test.done();
     },
 
     testWithinRangeCJKRadicals1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2E8A", "CJKRadicals"));
+        test.ok(withinRange("\u2E8A", "CJKRadicals"));
         test.done();
     },
 
     testWithinRangeCJKRadicals2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2F0A", "CJKRadicals"));
+        test.ok(withinRange("\u2F0A", "CJKRadicals"));
         test.done();
     },
 
     testWithinRangeYi1: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA00A", "Yi"));
+        test.ok(withinRange("\uA00A", "Yi"));
         test.done();
     },
 
     testWithinRangeYi2: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA49A", "Yi"));
+        test.ok(withinRange("\uA49A", "Yi"));
         test.done();
     },
 
     testWithinRangeEnclosedCJK: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u320A", "EnclosedCJK"));
+        test.ok(withinRange("\u320A", "EnclosedCJK"));
         test.done();
     },
 
     testWithinRangeSpacing: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u02BA", "Spacing"));
+        test.ok(withinRange("\u02BA", "Spacing"));
         test.done();
     },
 
     testWithinRangeArmenian: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u053A", "Armenian"));
+        test.ok(withinRange("\u053A", "Armenian"));
         test.done();
     },
 
     testWithinRangeHebrew: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u059A", "Hebrew"));
+        test.ok(withinRange("\u059A", "Hebrew"));
         test.done();
     },
 
     testWithinRangeSyriac: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u070A", "Syriac"));
+        test.ok(withinRange("\u070A", "Syriac"));
         test.done();
     },
 
     testWithinRangeThaana: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u078A", "Thaana"));
+        test.ok(withinRange("\u078A", "Thaana"));
         test.done();
     },
 
     testWithinRangeNKo: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u07CA", "NKo"));
+        test.ok(withinRange("\u07CA", "NKo"));
         test.done();
     },
 
     testWithinRangeSamaritan: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u080A", "Samaritan"));
+        test.ok(withinRange("\u080A", "Samaritan"));
         test.done();
     },
 
     testWithinRangeMandaic: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u084A", "Mandaic"));
+        test.ok(withinRange("\u084A", "Mandaic"));
         test.done();
     },
 
     testWithinRangeBengali: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u098A", "Bengali"));
+        test.ok(withinRange("\u098A", "Bengali"));
         test.done();
     },
 
     testWithinRangeGurmukhi: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0A0A", "Gurmukhi"));
+        test.ok(withinRange("\u0A0A", "Gurmukhi"));
         test.done();
     },
 
     testWithinRangeGujarati: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0A8A", "Gujarati"));
+        test.ok(withinRange("\u0A8A", "Gujarati"));
         test.done();
     },
 
     testWithinRangeOriya: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0B0A", "Oriya"));
+        test.ok(withinRange("\u0B0A", "Oriya"));
         test.done();
     },
 
     testWithinRangeTamil: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0B8A", "Tamil"));
+        test.ok(withinRange("\u0B8A", "Tamil"));
         test.done();
     },
 
     testWithinRangeTelugu: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0C0A", "Telugu"));
+        test.ok(withinRange("\u0C0A", "Telugu"));
         test.done();
     },
 
     testWithinRangeKannada: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0C8A", "Kannada"));
+        test.ok(withinRange("\u0C8A", "Kannada"));
         test.done();
     },
 
     testWithinRangeMalayalam: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0D0A", "Malayalam"));
+        test.ok(withinRange("\u0D0A", "Malayalam"));
         test.done();
     },
 
     testWithinRangeSinhala: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0D8A", "Sinhala"));
+        test.ok(withinRange("\u0D8A", "Sinhala"));
         test.done();
     },
 
     testWithinRangeThai: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0E0A", "Thai"));
+        test.ok(withinRange("\u0E0A", "Thai"));
         test.done();
     },
 
     testWithinRangeLao: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0E8A", "Lao"));
+        test.ok(withinRange("\u0E8A", "Lao"));
         test.done();
     },
 
     testWithinRangeTibetan: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u0F0A", "Tibetan"));
+        test.ok(withinRange("\u0F0A", "Tibetan"));
         test.done();
     },
 
     testWithinRangeCherokee: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u13AA", "Cherokee"));
+        test.ok(withinRange("\u13AA", "Cherokee"));
         test.done();
     },
 
     testWithinRangeOgham: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u168A", "Ogham"));
+        test.ok(withinRange("\u168A", "Ogham"));
         test.done();
     },
 
     testWithinRangeRunic: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u16AA", "Runic"));
+        test.ok(withinRange("\u16AA", "Runic"));
         test.done();
     },
 
     testWithinRangeTagalog: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u170A", "Tagalog"));
+        test.ok(withinRange("\u170A", "Tagalog"));
         test.done();
     },
 
     testWithinRangeHanunoo: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u172A", "Hanunoo"));
+        test.ok(withinRange("\u172A", "Hanunoo"));
         test.done();
     },
 
     testWithinRangeBuhid: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u174A", "Buhid"));
+        test.ok(withinRange("\u174A", "Buhid"));
         test.done();
     },
 
     testWithinRangeTagbanwa: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u176A", "Tagbanwa"));
+        test.ok(withinRange("\u176A", "Tagbanwa"));
         test.done();
     },
 
     testWithinRangeKhmer: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u178A", "Khmer"));
+        test.ok(withinRange("\u178A", "Khmer"));
         test.done();
     },
 
     testWithinRangeMongolian: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u180A", "Mongolian"));
+        test.ok(withinRange("\u180A", "Mongolian"));
         test.done();
     },
 
     testWithinRangeLimbu: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u190A", "Limbu"));
+        test.ok(withinRange("\u190A", "Limbu"));
         test.done();
     },
 
     testWithinRangeTaiLe: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u195A", "TaiLe"));
+        test.ok(withinRange("\u195A", "TaiLe"));
         test.done();
     },
 
     testWithinRangeNewTaiLue: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u198A", "NewTaiLue"));
+        test.ok(withinRange("\u198A", "NewTaiLue"));
         test.done();
     },
 
     testWithinRangeKhmerSymbols: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u19EA", "KhmerSymbols"));
+        test.ok(withinRange("\u19EA", "KhmerSymbols"));
         test.done();
     },
 
     testWithinRangeBuginese: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1A0A", "Buginese"));
+        test.ok(withinRange("\u1A0A", "Buginese"));
         test.done();
     },
 
     testWithinRangeTaiTham: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1A2A", "TaiTham"));
+        test.ok(withinRange("\u1A2A", "TaiTham"));
         test.done();
     },
 
     testWithinRangeBalinese: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1B0A", "Balinese"));
+        test.ok(withinRange("\u1B0A", "Balinese"));
         test.done();
     },
 
     testWithinRangeSundanese: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1B8A", "Sundanese"));
+        test.ok(withinRange("\u1B8A", "Sundanese"));
         test.done();
     },
 
     testWithinRangeBatak: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1BCA", "Batak"));
+        test.ok(withinRange("\u1BCA", "Batak"));
         test.done();
     },
 
     testWithinRangeLepcha: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1C0A", "Lepcha"));
+        test.ok(withinRange("\u1C0A", "Lepcha"));
         test.done();
     },
 
     testWithinRangeOlChiki: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1C5A", "OlChiki"));
+        test.ok(withinRange("\u1C5A", "OlChiki"));
         test.done();
     },
 
     testWithinRangeVedic: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u1CDA", "Vedic"));
+        test.ok(withinRange("\u1CDA", "Vedic"));
         test.done();
     },
 
     testWithinRangeSuperSub: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u207A", "SuperSub"));
+        test.ok(withinRange("\u207A", "SuperSub"));
         test.done();
     },
 
     testWithinRangeCurrency: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u20AA", "Currency"));
+        test.ok(withinRange("\u20AA", "Currency"));
         test.done();
     },
 
     testWithinRangeLetterlike: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u210A", "Letterlike"));
+        test.ok(withinRange("\u210A", "Letterlike"));
         test.done();
     },
 
     testWithinRangeNumbers: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u215A", "Numbers"));
+        test.ok(withinRange("\u215A", "Numbers"));
         test.done();
     },
 
     testWithinRangeMisc: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u230A", "Misc"));
+        test.ok(withinRange("\u230A", "Misc"));
         test.done();
     },
 
     testWithinRangeControlPictures: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u240A", "ControlPictures"));
+        test.ok(withinRange("\u240A", "ControlPictures"));
         test.done();
     },
 
     testWithinRangeOCR: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u244A", "OCR"));
+        test.ok(withinRange("\u244A", "OCR"));
         test.done();
     },
 
     testWithinRangeBox: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u250A", "Box"));
+        test.ok(withinRange("\u250A", "Box"));
         test.done();
     },
 
     testWithinRangeBlock: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u258A", "Block"));
+        test.ok(withinRange("\u258A", "Block"));
         test.done();
     },
 
     testWithinRangeGeometric: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u25AA", "Geometric"));
+        test.ok(withinRange("\u25AA", "Geometric"));
         test.done();
     },
 
     testWithinRangeMiscSymbols: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u260A", "MiscSymbols"));
+        test.ok(withinRange("\u260A", "MiscSymbols"));
         test.done();
     },
 
     testWithinRangeDingbats: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u270A", "Dingbats"));
+        test.ok(withinRange("\u270A", "Dingbats"));
         test.done();
     },
 
     testWithinRangeBraille: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u280A", "Braille"));
+        test.ok(withinRange("\u280A", "Braille"));
         test.done();
     },
 
     testWithinRangeGlagolitic: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2C0A", "Glagolitic"));
+        test.ok(withinRange("\u2C0A", "Glagolitic"));
         test.done();
     },
 
     testWithinRangeCoptic: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2C8A", "Coptic"));
+        test.ok(withinRange("\u2C8A", "Coptic"));
         test.done();
     },
 
     testWithinRangeTifinagh: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u2D3A", "Tifinagh"));
+        test.ok(withinRange("\u2D3A", "Tifinagh"));
         test.done();
     },
 
     testWithinRangeCJKPunct: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u300A", "CJKPunct"));
+        test.ok(withinRange("\u300A", "CJKPunct"));
         test.done();
     },
 
     testWithinRangeHiragana: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u304A", "Hiragana"));
+        test.ok(withinRange("\u304A", "Hiragana"));
         test.done();
     },
 
     testWithinRangeKanbun: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u319A", "Kanbun"));
+        test.ok(withinRange("\u319A", "Kanbun"));
         test.done();
     },
 
     testWithinRangeYijing: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u4DCA", "Yijing"));
+        test.ok(withinRange("\u4DCA", "Yijing"));
         test.done();
     },
 
     testWithinRangeCJKStrokes: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\u31CA", "CJKStrokes"));
+        test.ok(withinRange("\u31CA", "CJKStrokes"));
         test.done();
     },
 
     testWithinRangeLisu: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA4DA", "Lisu"));
+        test.ok(withinRange("\uA4DA", "Lisu"));
         test.done();
     },
 
     testWithinRangeVai: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA50A", "Vai"));
+        test.ok(withinRange("\uA50A", "Vai"));
         test.done();
     },
 
     testWithinRangeModifierTone: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA70A", "ModifierTone"));
+        test.ok(withinRange("\uA70A", "ModifierTone"));
         test.done();
     },
 
     testWithinRangeSylotiNagri: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA80A", "SylotiNagri"));
+        test.ok(withinRange("\uA80A", "SylotiNagri"));
         test.done();
     },
 
     testWithinRangeIndicNumber: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA83A", "IndicNumber"));
+        test.ok(withinRange("\uA83A", "IndicNumber"));
         test.done();
     },
 
     testWithinRangePhagspa: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA84A", "Phagspa"));
+        test.ok(withinRange("\uA84A", "Phagspa"));
         test.done();
     },
 
     testWithinRangeSaurashtra: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA88A", "Saurashtra"));
+        test.ok(withinRange("\uA88A", "Saurashtra"));
         test.done();
     },
 
     testWithinRangeKayahLi: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA90A", "KayahLi"));
+        test.ok(withinRange("\uA90A", "KayahLi"));
         test.done();
     },
 
     testWithinRangeRejang: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA93A", "Rejang"));
+        test.ok(withinRange("\uA93A", "Rejang"));
         test.done();
     },
 
     testWithinRangeJavanese: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uA98A", "Javanese"));
+        test.ok(withinRange("\uA98A", "Javanese"));
         test.done();
     },
 
     testWithinRangeCham: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uAA0A", "Cham"));
+        test.ok(withinRange("\uAA0A", "Cham"));
         test.done();
     },
 
     testWithinRangeTaiViet: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uAA8A", "TaiViet"));
+        test.ok(withinRange("\uAA8A", "TaiViet"));
         test.done();
     },
 
     testWithinRangeMeeteiMayek: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uABCA", "MeeteiMayek"));
+        test.ok(withinRange("\uABCA", "MeeteiMayek"));
         test.done();
     },
 
     testWithinRangePresentation: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFB0A", "Presentation"));
+        test.ok(withinRange("\uFB0A", "Presentation"));
         test.done();
     },
 
     testWithinRangeVertical: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFE1A", "Vertical"));
+        test.ok(withinRange("\uFE1A", "Vertical"));
         test.done();
     },
 
     testWithinRangeHalfMarks: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFE2A", "HalfMarks"));
+        test.ok(withinRange("\uFE2A", "HalfMarks"));
         test.done();
     },
 
     testWithinRangeSmall: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFE5A", "Small"));
+        test.ok(withinRange("\uFE5A", "Small"));
         test.done();
     },
 
     testWithinRangeWidth: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFF0A", "Width"));
+        test.ok(withinRange("\uFF0A", "Width"));
         test.done();
     },
 
     testWithinRangeSpecials: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uFFFA", "Specials"));
+        test.ok(withinRange("\uFFFA", "Specials"));
         test.done();
     },
     testWithinRangedivesakuru: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uD806\uDD10", "dives akuru"));
+        test.ok(withinRange("\uD806\uDD10", "dives akuru"));
         test.done();
     },
     testWithinRangeegyptianhieroglyphcontrols: function(test) {
         test.expect(1);
-        test.ok(CType.withinRange("\uD80D\uDC32", "egyptian hieroglyph format controls"));
+        test.ok(withinRange("\uD80D\uDC32", "egyptian hieroglyph format controls"));
         test.done();
     },
     testWithinRangeCopticnumber: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x102e0);
-        test.ok(CType.withinRange(str, "copticnumber"));
+        test.ok(withinRange(str, "copticnumber"));
         test.done();
     },
 
     testWithinRangeOldpermic: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x10350);
-        test.ok(CType.withinRange(str, "oldpermic"));
+        test.ok(withinRange(str, "oldpermic"));
         test.done();
     },
 
     testWithinRangeAlbanian: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x10530);
-        test.ok(CType.withinRange(str, "albanian"));
+        test.ok(withinRange(str, "albanian"));
         test.done();
     },
 
     testWithinRangeLineara: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x10600);
-        test.ok(CType.withinRange(str, "lineara"));
+        test.ok(withinRange(str, "lineara"));
         test.done();
     },
 
     testWithinRangeMeroitic: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x109a0);
-        test.ok(CType.withinRange(str, "meroitic"));
+        test.ok(withinRange(str, "meroitic"));
         test.done();
     },
 
     testWithinRangeLowsurrogates: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0xdc00);
-        test.ok(CType.withinRange(str, "lowsurrogates"));
+        test.ok(withinRange(str, "lowsurrogates"));
         test.done();
     },
 
     testWithinRangeOldhungarian: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x10c80);
-        test.ok(CType.withinRange(str, "oldhungarian"));
+        test.ok(withinRange(str, "oldhungarian"));
         test.done();
     },
 
     testWithinRangeSorasopeng: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x110d0);
-        test.ok(CType.withinRange(str, "sorasompeng"));
+        test.ok(withinRange(str, "sorasompeng"));
         test.done();
     },
 
     testWithinRangeWarangciti: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x118a0);
-        test.ok(CType.withinRange(str, "warangciti"));
+        test.ok(withinRange(str, "warangciti"));
         test.done();
     },
 
     testWithinRangePaucinhau: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x11ac0);
-        test.ok(CType.withinRange(str, "paucinhau"));
+        test.ok(withinRange(str, "paucinhau"));
         test.done();
     },
 
     testWithinRangeBassavah: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x16ad0);
-        test.ok(CType.withinRange(str, "bassavah"));
+        test.ok(withinRange(str, "bassavah"));
         test.done();
     },
 
     testWithinRangePahawhhmong: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x16b00);
-        test.ok(CType.withinRange(str, "pahawhhmong"));
+        test.ok(withinRange(str, "pahawhhmong"));
         test.done();
     },
 
     testWithinRangeShorthandformat: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1bca0);
-        test.ok(CType.withinRange(str, "shorthandformat"));
+        test.ok(withinRange(str, "shorthandformat"));
         test.done();
     },
 
     testWithinRangeSurronsingwriting: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1d800);
-        test.ok(CType.withinRange(str, "suttonsignwriting"));
+        test.ok(withinRange(str, "suttonsignwriting"));
         test.done();
     },
 
     testWithinRangePictographs1: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1f300);
-        test.ok(CType.withinRange(str, "pictographs"));
+        test.ok(withinRange(str, "pictographs"));
         test.done();
     },
 
     testWithinRangePictographs2: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1f9ff);
-        test.ok(CType.withinRange(str, "pictographs"));
+        test.ok(withinRange(str, "pictographs"));
         test.done();
     },
 
     testWithinRangeOrnamentaldingbats: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1f650);
-        test.ok(CType.withinRange(str, "ornamentaldingbats"));
+        test.ok(withinRange(str, "ornamentaldingbats"));
         test.done();
     },
 
     testWithinRangeCyrillic: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1c80);
-        test.ok(CType.withinRange(str, "cyrillic"));
+        test.ok(withinRange(str, "cyrillic"));
         test.done();
     },
 
     testWithinRangeMongolian: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x11660);
-        test.ok(CType.withinRange(str, "mongolian"));
+        test.ok(withinRange(str, "mongolian"));
         test.done();
     },
 
     testWithinRangeTangut1: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x16fe0);
-        test.ok(CType.withinRange(str, "tangut"));
+        test.ok(withinRange(str, "tangut"));
         test.done();
     },
 
     testWithinRangeTangut2: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x17000);
-        test.ok(CType.withinRange(str, "tangut"));
+        test.ok(withinRange(str, "tangut"));
         test.done();
     },
 
     testWithinRangeTangut3: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x18800);
-        test.ok(CType.withinRange(str, "tangut"));
+        test.ok(withinRange(str, "tangut"));
         test.done();
     },
 
     testWithinRangeGlagolitic: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x1e000);
-        test.ok(CType.withinRange(str, "glagolitic"));
+        test.ok(withinRange(str, "glagolitic"));
         test.done();
     },
     testWithinRangeElymaic: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x10feb);
-        test.ok(CType.withinRange(str, "elymaic"));
+        test.ok(withinRange(str, "elymaic"));
         test.done();
     },
     testWithinRangechorasmian: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x10fb3);
-        test.ok(CType.withinRange(str, "chorasmian"));
+        test.ok(withinRange(str, "chorasmian"));
         test.done();
     },
     testWithinRangedivesAkuru: function(test) {
         test.expect(1);
         var str = JSUtils.fromCodePoint(0x11911);
-        test.ok(CType.withinRange(str, "dives akuru"));
+        test.ok(withinRange(str, "dives akuru"));
         test.done();
     },
     testIsScriptTrue: function(test) {

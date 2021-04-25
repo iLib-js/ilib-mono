@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype_p from "../locale/ctype_p.json";
 
@@ -49,13 +49,13 @@ export default function isPunct(ch) {
     }
 
     return ctype_p ?
-        (CType._inRange(num, 'Pd', ctype_p) ||
-        CType._inRange(num, 'Ps', ctype_p) ||
-        CType._inRange(num, 'Pe', ctype_p) ||
-        CType._inRange(num, 'Pc', ctype_p) ||
-        CType._inRange(num, 'Po', ctype_p) ||
-        CType._inRange(num, 'Pi', ctype_p) ||
-        CType._inRange(num, 'Pf', ctype_p)) :
+        (inRange(num, 'Pd', ctype_p) ||
+        inRange(num, 'Ps', ctype_p) ||
+        inRange(num, 'Pe', ctype_p) ||
+        inRange(num, 'Pc', ctype_p) ||
+        inRange(num, 'Po', ctype_p) ||
+        inRange(num, 'Pi', ctype_p) ||
+        inRange(num, 'Pf', ctype_p)) :
         ((num >= 0x21 && num <= 0x2F) ||
         (num >= 0x3A && num <= 0x40) ||
         (num >= 0x5B && num <= 0x60) ||

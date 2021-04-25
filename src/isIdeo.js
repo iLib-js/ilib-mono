@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype from "../locale/ctype.json";
 
@@ -48,9 +48,9 @@ export default function isIdeo(ch) {
             break;
     }
 
-    return CType._inRange(num, 'cjk', ctype) ||
-        CType._inRange(num, 'cjkradicals', ctype) ||
-        CType._inRange(num, 'enclosedcjk', ctype) ||
-        CType._inRange(num, 'cjkpunct', ctype) ||
-        CType._inRange(num, 'cjkcompatibility', ctype);
+    return inRange(num, 'cjk', ctype) ||
+        inRange(num, 'cjkradicals', ctype) ||
+        inRange(num, 'enclosedcjk', ctype) ||
+        inRange(num, 'cjkpunct', ctype) ||
+        inRange(num, 'cjkcompatibility', ctype);
 };

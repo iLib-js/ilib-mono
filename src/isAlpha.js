@@ -19,7 +19,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype_l from "../locale/ctype_l.json";
 
@@ -46,10 +46,10 @@ export default function isAlpha(ch) {
             break;
     }
     return ctype_l ?
-        (CType._inRange(num, 'Lu', ctype_l) ||
-        CType._inRange(num, 'Ll', ctype_l) ||
-        CType._inRange(num, 'Lt', ctype_l) ||
-        CType._inRange(num, 'Lm', ctype_l) ||
-        CType._inRange(num, 'Lo', ctype_l)) :
+        (inRange(num, 'Lu', ctype_l) ||
+        inRange(num, 'Ll', ctype_l) ||
+        inRange(num, 'Lt', ctype_l) ||
+        inRange(num, 'Lm', ctype_l) ||
+        inRange(num, 'Lo', ctype_l)) :
         ((num >= 0x41 && num <= 0x5A) || (num >= 0x61 && num <= 0x7A));
 };

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import CType from './CType';
+import withinRange from './CType';
 import isAlnum from './isAlnum';
 import isAlpha from './isAlpha';
 import isAscii from './isAscii';
@@ -35,7 +35,7 @@ import isUpper from './isUpper';
 import isXdigit from './isXdigit';
 
 export {
-    CType,
+    withinRange,
     isAlnum,
     isAlpha,
     isAscii,

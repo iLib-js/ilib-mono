@@ -21,7 +21,7 @@
 
 import { JSUtils } from "ilib-common";
 
-import CType from "./CType";
+import { inRange } from "./CType";
 
 import ctype_n from "../locale/ctype_n.json";
 
@@ -49,5 +49,5 @@ export default function isDigit(ch) {
             num = ch._toCodePoint(0);
             break;
     }
-    return CType._inRange(num, 'Nd', ctype_n);
+    return inRange(num, 'Nd', ctype_n);
 };

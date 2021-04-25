@@ -19,19 +19,9 @@
 
 // !data ctype
 
-import { SearchUtils, Utils, JSUtils } from 'ilib-common';
+import { SearchUtils, JSUtils } from 'ilib-common';
 
 import ctype from '../locale/ctype.json';
-
-/**
- * Provides a set of static routines that return information about characters.
- * These routines emulate the C-library ctype functions. The characters must be
- * encoded in utf-16, as no other charsets are currently supported. Only the first
- * character of the given string is tested.
- * @namespace
- */
-let CType = {};
-
 
 /**
  * Actual implementation for withinRange. Searches the given object for ranges.
@@ -78,7 +68,7 @@ let CType = {};
  * @return {boolean} true if the first character is within the named
  * range
  */
-CType._inRange = function(num, rangeName, obj) {
+export function inRange(num, rangeName, obj) {
     var range;
     if (num < 0 || !rangeName || !obj) {
         return false;
@@ -270,7 +260,7 @@ CType._inRange = function(num, rangeName, obj) {
  * @return {boolean} true if the first character is within the named
  * range
  */
-CType.withinRange = function(ch, rangeName) {
+export default function withinRange(ch, rangeName) {
     if (!rangeName) {
         return false;
     }
@@ -289,48 +279,5 @@ CType.withinRange = function(ch, rangeName) {
             break;
     }
 
-    return CType._inRange(num, rangeName.toLowerCase(), ctype);
+    return inRange(num, rangeName.toLowerCase(), ctype);
 };
-
-/**
- * @protected
- * @param {boolean} sync
- * @param {Object|undefined} loadParams
- * @param {function(*)|undefined} onLoad
- */
-CType._init = function(sync, loadParams, onLoad) {
-    CType._load("ctype", sync, loadParams, onLoad);
-};
-
-/**
- * @protected
- * @param {string} name
- * @param {boolean} sync
- * @param {Object|undefined} loadParams
- * @param {function(*)|undefined} onLoad
- */
-CType._load = function (name, sync, loadParams, onLoad) {
-    if (!ilib.data[name]) {
-        var loadName = name ? name + ".json" : "CType.json";
-        Utils.loadData({
-            object: "CType",
-            name: loadName,
-            locale: "-",
-            nonlocale: true,
-            sync: sync,
-            loadParams: loadParams,
-            callback: ilib.bind(this, function(ct) {
-                ilib.data[name] = ct;
-                if (onLoad && typeof(onLoad) === 'function') {
-                    onLoad(ilib.data[name]);
-                }
-            })
-        });
-    } else {
-        if (onLoad && typeof(onLoad) === 'function') {
-            onLoad(ilib.data[name]);
-        }
-    }
-};
-
-export default CType;
