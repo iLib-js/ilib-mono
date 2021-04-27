@@ -196,6 +196,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.0
+
+- added the ability to specify a locale map so that output file names of
+  po files are mapped from the internal locale to the output locale
+
 ### v1.1.2
 
 - fixed a bug where path names in #: comments that did not have a
