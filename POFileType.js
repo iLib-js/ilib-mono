@@ -277,7 +277,7 @@ POFileType.prototype.getLocaleFromPath = function(template, pathname) {
  */
 POFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
     var output = "";
-    var l = new Locale(locale);
+    var l = new Locale(this.project.getOutputLocale(locale));
 
     if (!template) {
         template = defaultMappings["**/*.po"].template;
@@ -308,16 +308,16 @@ POFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
                     break;
                 default:
                 case 'locale':
-                    output += locale;
+                    output += l.getSpec();
                     break;
                 case 'language':
-                    output += l.getLanguage();
+                    output += l.getLanguage() || "";
                     break;
                 case 'script':
-                    output += l.getScript();
+                    output += l.getScript() || "";
                     break;
                 case 'region':
-                    output += l.getRegion();
+                    output += l.getRegion() || "";
                     break;
                 case 'localeDir':
                     output += l.getSpec().replace(/-/g, '/');
@@ -329,7 +329,7 @@ POFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
         }
     }
 
-    return output;
+    return path.normalize(output);
 };
 
 /**

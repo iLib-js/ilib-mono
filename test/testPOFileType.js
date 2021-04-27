@@ -55,6 +55,9 @@ var p2 = new CustomProject({
     sourceLocale: "en-US"
 }, "./testfiles", {
     locales:["en-GB"],
+    localeMap: {
+        "de-DE": "de"
+    },
     po: {
         mappings: {
             "**/strings.po": {
@@ -95,6 +98,17 @@ module.exports.pofiletype = {
         test.ok(jft);
 
         test.equals(jft.getLocalizedPath('[dir]/[localeDir]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/DE/strings.po");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathDirWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p2);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath('[dir]/[localeDir]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -143,12 +157,35 @@ module.exports.pofiletype = {
         test.done();
     },
 
+    testPOFileTypeGetLocalizedPathLocaleWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p2);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath('[dir]/[locale]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
+
+        test.done();
+    },
+
     testPOFileTypeGetLocalizedPathLanguage: function(test) {
         test.expect(2);
 
         var jft = new POFileType(p);
         test.ok(jft);
 
+        test.equals(jft.getLocalizedPath('[dir]/[language]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathLanguageWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p2);
+        test.ok(jft);
+
+        // no change
         test.equals(jft.getLocalizedPath('[dir]/[language]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
@@ -161,6 +198,18 @@ module.exports.pofiletype = {
         test.ok(jft);
 
         test.equals(jft.getLocalizedPath('[dir]/[region]/strings.po', "x/y/strings.po", "de-DE"), "x/y/DE/strings.po");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathRegionWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p2);
+        test.ok(jft);
+
+        // no region after the mapping, so it should skip the parts that don't exist
+        test.equals(jft.getLocalizedPath('[dir]/[region]/strings.po', "x/y/strings.po", "de-DE"), "x/y/strings.po");
 
         test.done();
     },
