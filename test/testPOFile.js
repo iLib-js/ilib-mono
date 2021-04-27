@@ -1436,6 +1436,205 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileLocalizeTextWithNoActualTranslation: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "string 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "string 2",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextWithExistingTranslations: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr "string 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr "string 2"\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "string 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "string 2",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextPluralsWithNoActualTranslation: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "{$count} object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            '\n' +
+            'msgid "{$count} item"\n' +
+            'msgid_plural "{$count} items"\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "{$count} object",
+            sourceStrings: {
+                one: "{$count} object",
+                other: "{$count} objects"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                one: "{$count} object",
+                other: "{$count} objects"
+            },
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "{$count} item",
+            sourceStrings: {
+                one: "{$count} item",
+                other: "{$count} items"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                one: "{$count} item",
+                other: "{$count} items"
+            },
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "{$count} object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n' +
+            '\n' +
+            'msgid "{$count} item"\n' +
+            'msgid_plural "{$count} items"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
     testPOFileLocalize: function(test) {
         test.expect(7);
 

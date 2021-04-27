@@ -196,6 +196,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.1
+
+- Make sure to output an empty string if the translated string is the
+  same as the source string so that `gettext()` will default back to
+  the source string
+
 ### v1.2.0
 
 - added the ability to specify a locale map so that output file names of

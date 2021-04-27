@@ -659,6 +659,11 @@ POFile.prototype.localizeText = function(translations, locale) {
                     translatedText = r.getTarget() || "";
                 }
 
+                if (translatedText === r.getSource()) {
+                    // put nothing if there is no difference in the translation
+                    translatedText = "";
+                }
+
                 output += 'msgstr "' + escapeQuotes(translatedText) + '"\n';
             } else {
                 // plural string
@@ -670,9 +675,9 @@ POFile.prototype.localizeText = function(translations, locale) {
                     var translatedPlurals = {};
                     pluralCategories.forEach(function(category) {
                         if (category === "one") {
-                            translatedPlurals.one = sourcePlurals.one;
+                            translatedPlurals.one = "";
                         } else {
-                            translatedPlurals[category] = sourcePlurals.other;
+                            translatedPlurals[category] = "";
                         }
                     });
                     if ((locale !== this.project.pseudoLocale || !this.project.settings.nopseudo) &&
@@ -725,7 +730,9 @@ POFile.prototype.localizeText = function(translations, locale) {
                 output += 'msgid_plural "' + escapeQuotes(sourcePlurals.other)  + '"\n';
                 if (translatedPlurals) {
                     for (var j = 0; j < pluralCategories.length; j++) {
-                        output += 'msgstr[' + j + '] "' + escapeQuotes(translatedPlurals[pluralCategories[j]]) + '"\n';
+                        var translation = translatedPlurals[pluralCategories[j]] !== sourcePlurals[pluralCategories[j]] ?
+                            translatedPlurals[pluralCategories[j]] : "";
+                        output += 'msgstr[' + j + '] "' + escapeQuotes(translation) + '"\n';
                     }
                 }
             }
