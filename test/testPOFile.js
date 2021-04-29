@@ -408,7 +408,7 @@ module.exports.pofile = {
         test.equal(resources[0].getKey(), "one object");
         test.equal(resources[0].getSourceLocale(), "en-US");
         test.ok(!resources[0].getTargetPlurals());
-        test.equal(resources[0].getTargetLocale(), "de-DE");
+        test.ok(!resources[0].getTargetLocale());
 
         test.done();
     },
