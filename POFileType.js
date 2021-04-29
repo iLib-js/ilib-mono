@@ -350,7 +350,7 @@ POFileType.prototype.newFile = function(path, options) {
         project: this.project,
         pathName: path,
         type: this,
-	locale: options.targetLocale
+        locale: options && options.targetLocale
     });
 };
 
