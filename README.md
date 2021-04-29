@@ -196,6 +196,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.2
+
+- Fix a bug where the target locale was not used when specified to
+  POFileType.newFile. It was never passed in to the POFile constructor.
+
 ### v1.2.1
 
 - Make sure to output an empty string if the translated string is the
