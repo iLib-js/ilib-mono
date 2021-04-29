@@ -302,6 +302,14 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.0
+
+- extended array support:
+    1. corrected handling of primitive types. Values are casted to their initial type upon translation
+    2. added support for array of objects
+- fixed a bug of a copy method that results in json parts, that are not defined in the schema,
+to be removed from localized files
+
 ### v1.0.1
 
 - fixed a bug where plural strings resources were not extracted to the new

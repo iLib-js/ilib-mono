@@ -130,7 +130,7 @@ function isPrimitive(type) {
 }
 
 /**
- * Gets type of array of provided schema.
+ * Gets type of array based on provided schema.
  *
  * TODO: Add support for "anyOf" and "oneOf" type definitions.
  */
