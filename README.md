@@ -200,6 +200,9 @@ file for more details.
 
 - Fix a bug where the target locale was not used when specified to
   POFileType.newFile. It was never passed in to the POFile constructor.
+- Fix a bug where the target locale was specified for string and
+  plural resources and there were no target strings or plurals. Having
+  the locale but no target confuses mojito.
 
 ### v1.2.1
 
