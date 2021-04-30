@@ -129,6 +129,55 @@ function isPrimitive(type) {
     return ["boolean", "number", "integer", "string"].indexOf(type) > -1;
 }
 
+/**
+ * Gets type of array based on provided schema.
+ *
+ * TODO: Add support for "anyOf" and "oneOf" type definitions.
+ */
+function getArrayTypeFromSchema(schema) {
+    if (schema.type !== "array") {
+        return null;
+    }
+
+    var allowedTypes = ["string", "integer", "number", "boolean", "object"];
+
+    if (schema.items.type && allowedTypes.indexOf(schema.items.type) > -1) {
+        return schema.items.type;
+    }
+
+    // Default type is string for compatibility reasons.
+    return 'string';
+}
+
+/**
+ * Converts each element of one-dimensional array to a primitive type.
+ */
+function convertArrayElementsToType(array, type) {
+    if (!ilib.isArray(array)){
+        return array;
+    }
+
+    return array.map(function (item) {
+        return convertValueToType(item, type);
+    });
+}
+
+/**
+ * Converts value to a primitive type.
+ */
+function convertValueToType(value, type) {
+    switch (type) {
+        case "boolean":
+            return value === "true";
+        case "number":
+            return Number.parseFloat(value);
+        case "integer":
+            return Number.parseInt(value);
+        default:
+            return value;
+    }
+}
+
 var pluralCategories = {
     "zero": true,
     "one": true,
@@ -282,20 +331,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                             }
                         }
                         if (translatedText) {
-	                        switch (type) {
-	                        case "boolean":
-	                            returnValue = (translatedText === "true");
-	                            break;
-	                        case "number":
-	                            returnValue = Number.parseFloat(translatedText);
-	                            break;
-	                        case "integer":
-	                            returnValue = Number.parseInt(translatedText);
-	                            break;
-	                        default:
-	                            returnValue = translatedText;
-	                            break;
-	                        }
+	                        returnValue = convertValueToType(translatedText, type);
                         }
                     } else {
                         // extract this value
@@ -325,98 +361,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
             break;
 
         case "array":
-            if (!ilib.isArray(json)) {
-               logger.warn(this.pathName + '/' + ref + " is a " +
-                   typeof(json) + " but should be an array according to the schema... skipping.");
-                return null;
-            }
-            // Convert all items to Strings so we can process them properly
-            var sourceArray = json.map(function(item) {
-                return String(item);
-            });
-
-            if (localizable) {
-                var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-                if (translations) {
-                    // localize it
-                    var tester = this.API.newResource({
-                        resType: "array",
-                        project: this.project.getProjectId(),
-                        sourceLocale: this.project.getSourceLocale(),
-                        reskey: key,
-                        datatype: this.type.datatype
-                    });
-                    var hashkey = tester.hashKeyForTranslation(locale);
-                    var translated = translations.getClean(hashkey);
-                    var translatedArray;
-                    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                        translatedArray = this.sparseValue(sourceArray);
-                    } else if (!translated && this.type && this.type.pseudos[locale]) {
-                        var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                        if (sourceLocale !== this.project.sourceLocale) {
-                            // translation is derived from a different locale's translation instead of from the source string
-                            var sourceRes = translations.getClean(
-                                tester.cleanHashKey(),
-                                this.type.datatype);
-                            source = sourceRes ? sourceRes.getTargetArray() : sourceArray;
-                        } else {
-                            source = sourceArray;
-                        }
-                        translatedArray = source.map(function(item) {
-                            return this.type.pseudos[locale].getString(item);
-                        }.bind(this));
-                    } else {
-                        if (translated) {
-                            translatedArray = translated.getTargetArray();
-                        } else {
-                            if (this.type) {
-                                logger.trace("New string found: " + text);
-                                this.type.newres.add(this.API.newResource({
-                                    resType: "array",
-                                    project: this.project.getProjectId(),
-                                    key: key,
-                                    sourceLocale: this.project.sourceLocale,
-                                    sourceArray: sourceArray,
-                                    targetLocale: locale,
-                                    targetArray: sourceArray,
-                                    pathName: this.pathName,
-                                    state: "new",
-                                    datatype: this.type.datatype,
-                                    index: this.resourceIndex++
-                                }));
-                                if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                                    translatedArray = sourceArray.map(function(item) {
-                                        return this.type.missingPseudo.getString(item);
-                                    }.bind(this));
-                                    translatedArray = this.sparseValue(translatedArray);
-                                } else {
-                                    translatedArray = this.sparseValue(sourceArray);
-                                }
-                            } else {
-                                translatedArray = this.sparseValue(sourceArray);
-                            }
-                        }
-                    }
-                    returnValue = translatedArray;
-                } else {
-                    // extract this value
-                    this.set.add(this.API.newResource({
-                        resType: "array",
-                        project: this.project.getProjectId(),
-                        key: JsonFile.unescapeRef(ref).substring(2),
-                        sourceLocale: this.project.sourceLocale,
-                        sourceArray: sourceArray,
-                        pathName: this.pathName,
-                        state: "new",
-                        comment: this.comment,
-                        datatype: this.type.datatype,
-                        index: this.resourceIndex++
-                    }));
-                    returnValue = this.sparseValue(sourceArray);
-                }
-            } else {
-                returnValue = this.sparseValue(sourceArray);
-            }
+            returnValue = this.parseObjArray(json, root, schema, ref, name, localizable, translations, locale);
             break;
 
         case "object":
@@ -535,6 +480,8 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                             localizable,
                             translations,
                             locale);
+                    } else {
+                        returnValue[prop] = this.sparseValue(json[prop]);
                     }
                 }.bind(this));
             }
@@ -544,6 +491,136 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
 
     return isNotEmpty(returnValue) ? returnValue : undefined;
 };
+
+JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, localizable, translations, locale) {
+    if (!ilib.isArray(json)) {
+        logger.warn(this.pathName + '/' + ref + " is a " +
+                typeof(json) + " but should be an array according to the schema... skipping.");
+        return null;
+    }
+
+    var arrayType = getArrayTypeFromSchema(schema);
+
+    if (arrayType === null) {
+        return this.sparseValue(json);
+    }
+
+    if (arrayType === 'object') {
+        // Continue parsing and treat array as a set of regular elements.
+        var returnValue = [];
+        for (var i = 0; i < json.length; i++) {
+            returnValue.push(
+                this.parseObj(
+                        json[i],
+                        root,
+                        schema.items,
+                        ref + '/' + JsonFile.escapeRef("item_" + i),
+                        "item_" + i,
+                        localizable,
+                        translations,
+                        locale
+                )
+            )
+        }
+
+        return returnValue;
+    }
+
+    // Convert all items to Strings so we can process them properly
+    var sourceArray = json.map(function(item) {
+        return String(item);
+    });
+
+    if (!localizable) {
+        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
+    }
+
+    if (!translations) {
+        // extract this value
+        this.set.add(this.API.newResource({
+            resType: "array",
+            project: this.project.getProjectId(),
+            key: JsonFile.unescapeRef(ref).substring(2),
+            sourceLocale: this.project.sourceLocale,
+            sourceArray: sourceArray,
+            pathName: this.pathName,
+            state: "new",
+            comment: this.comment,
+            datatype: this.type.datatype,
+            index: this.resourceIndex++
+        }));
+        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
+    }
+
+    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
+    }
+
+    var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+    var tester = this.API.newResource({
+        resType: "array",
+        project: this.project.getProjectId(),
+        sourceLocale: this.project.getSourceLocale(),
+        reskey: key,
+        datatype: this.type.datatype
+    });
+    var hashkey = tester.hashKeyForTranslation(locale);
+    var translated = translations.getClean(hashkey);
+    var translatedArray;
+
+    if (!translated && this.type && this.type.pseudos[locale]) {
+        var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+        if (sourceLocale !== this.project.sourceLocale) {
+            // translation is derived from a different locale's translation instead of from the source string
+            var sourceRes = translations.getClean(
+                    tester.cleanHashKey(),
+                    this.type.datatype);
+            source = sourceRes ? sourceRes.getTargetArray() : sourceArray;
+        } else {
+            source = sourceArray;
+        }
+        translatedArray = source.map(function(item) {
+            return this.type.pseudos[locale].getString(item);
+        }.bind(this));
+
+        return convertArrayElementsToType(translatedArray, arrayType);
+    }
+
+    if (translated) {
+        return convertArrayElementsToType(translated.getTargetArray(), arrayType);
+    }
+
+    if (!this.type) {
+        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
+    }
+
+    logger.trace("New strings found: " + sourceArray.toString());
+
+    this.type.newres.add(this.API.newResource({
+        resType: "array",
+        project: this.project.getProjectId(),
+        key: key,
+        sourceLocale: this.project.sourceLocale,
+        sourceArray: sourceArray,
+        targetLocale: locale,
+        targetArray: sourceArray,
+        pathName: this.pathName,
+        state: "new",
+        datatype: this.type.datatype,
+        index: this.resourceIndex++
+    }));
+
+    if (this.type.missingPseudo && !this.project.settings.nopseudo) {
+        translatedArray = sourceArray.map(function(item) {
+            return this.type.missingPseudo.getString(item);
+        }.bind(this));
+        translatedArray = this.sparseValue(translatedArray);
+    } else {
+        translatedArray = this.sparseValue(sourceArray);
+    }
+
+    return convertArrayElementsToType(translatedArray, arrayType);
+}
 
 /**
  * Parse the data string looking for the localizable strings and add them to the

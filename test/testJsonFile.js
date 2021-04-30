@@ -92,7 +92,12 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[locale]/refs.json"
             },
-            "**/str.json": {}
+            "**/str.json": {},
+            "**/arrays.json": {
+                "schema": "http://github.com/ilib-js/arrays.json",
+                "method": "copy",
+                "template": "resources/[localeDir]/arrays.json"
+            }
         }
     }
 });
@@ -512,6 +517,162 @@ module.exports.jsonfile = {
         test.equal(arrayStrings[0], "string 1");
         test.equal(arrayStrings[1], "string 2");
         test.equal(arrayStrings[2], "string 3");
+
+        test.done();
+    },
+
+    testJsonFileParseArrayOfStrings: function(test) {
+        test.expect(11);
+
+        // when it's named arrays.json, it should apply the arrays schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "strings": [\n' +
+                '    "string 1",\n' +
+                '    "string 2",\n' +
+                '    "string 3"\n' +
+                '  ]\n' +
+                '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 1);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+        test.equal(resources[0].getType(), 'array');
+        test.equal(resources[0].getKey(), 'strings');
+
+        var arrayStrings = resources[0].getSourceArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings.length, 3);
+        test.equal(arrayStrings[0], "string 1");
+        test.equal(arrayStrings[1], "string 2");
+        test.equal(arrayStrings[2], "string 3");
+
+        test.done();
+    },
+
+    testJsonFileParseArrayOfNumbers: function(test) {
+        test.expect(12);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "numbers": [\n' +
+                '    15,\n' +
+                '    -3,\n' +
+                '    1.18,\n' +
+                '    0\n' +
+                '  ]\n' +
+                '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 1);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+        test.equal(resources[0].getType(), 'array');
+        test.equal(resources[0].getKey(), 'numbers');
+
+        var arrayNumbers = resources[0].getSourceArray();
+        test.ok(arrayNumbers);
+        test.equal(arrayNumbers.length, 4);
+        test.equal(arrayNumbers[0], "15");
+        test.equal(arrayNumbers[1], "-3");
+        test.equal(arrayNumbers[2], "1.18");
+        test.equal(arrayNumbers[3], "0");
+
+        test.done();
+    },
+
+    testJsonFileParseArrayOfBooleans: function(test) {
+        test.expect(10);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "booleans": [\n' +
+                '    true,\n' +
+                '    false\n' +
+                '  ]\n' +
+                '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 1);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+        test.equal(resources[0].getType(), 'array');
+        test.equal(resources[0].getKey(), 'booleans');
+
+        var arrayBooleans = resources[0].getSourceArray();
+        test.ok(arrayBooleans);
+        test.equal(arrayBooleans.length, 2);
+        test.equal(arrayBooleans[0], "true");
+        test.equal(arrayBooleans[1], "false");
+
+        test.done();
+    },
+
+    testJsonFileParseArrayOfObjects: function(test) {
+        test.expect(13);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "objects": [\n' +
+                '    {\n' +
+                '      "name": "First Object",\n' +
+                '      "randomProp": "Non-translatable"\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "name": "Second Object",\n' +
+                '      "description": "String property"\n' +
+                '    }\n' +
+                '  ]\n' +
+                '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 3);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 3);
+        test.equal(resources[0].getType(), 'string');
+        test.equal(resources[0].getKey(), 'objects/item_0/name');
+        test.equal(resources[0].getSource(), 'First Object');
+
+        test.equal(resources[1].getType(), 'string');
+        test.equal(resources[1].getKey(), 'objects/item_1/name');
+        test.equal(resources[1].getSource(), 'Second Object');
+
+        test.equal(resources[2].getType(), 'string');
+        test.equal(resources[2].getKey(), 'objects/item_1/description');
+        test.equal(resources[2].getSource(), 'String property');
 
         test.done();
     },
@@ -995,6 +1156,10 @@ module.exports.jsonfile = {
            '            "string 2",\n' +
            '            "string 3"\n' +
            '        ]\n' +
+           '    },\n' +
+           '    "others": {\n' +
+           '        "first": "abc",\n' +
+           '        "second": "bcd"\n' +
            '    }\n' +
            '}\n');
 
@@ -1072,6 +1237,10 @@ module.exports.jsonfile = {
            '            "chaîne 2",\n' +
            '            "chaîne 3"\n' +
            '        ]\n' +
+           '    },\n' +
+           '    "others": {\n' +
+           '        "first": "abc",\n' +
+           '        "second": "bcd"\n' +
            '    }\n' +
            '}\n';
 
@@ -1195,6 +1364,239 @@ module.exports.jsonfile = {
 
         diff(actual, expected);
         test.equal(actual, expected);
+        test.done();
+    },
+
+    testJsonFileLocalizeArrayOfStrings: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "strings": [\n' +
+                '    "string 1",\n' +
+                '    "string 2",\n' +
+                '    "string 3"\n' +
+                '  ]\n' +
+                '}\n');
+
+        var translations = new TranslationSet('en-US');
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "strings",
+            sourceArray: [
+                "string 1",
+                "string 2",
+                "string 3"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "chaîne 1",
+                "chaîne 2",
+                "chaîne 3"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+                '{\n' +
+                '    "strings": [\n' +
+                '        "chaîne 1",\n' +
+                '        "chaîne 2",\n' +
+                '        "chaîne 3"\n' +
+                '    ]\n' +
+                '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileLocalizeArrayOfNumbers: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "numbers": [\n' +
+                '    15,\n' +
+                '    -3,\n' +
+                '    1.18,\n' +
+                '    0\n' +
+                '  ]\n' +
+                '}\n');
+
+        var translations = new TranslationSet('en-US');
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "numbers",
+            sourceArray: [
+                "15",
+                "-3",
+                "1.18",
+                "0"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "29",
+                "12",
+                "-17.3",
+                "0"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+                '{\n' +
+                '    "numbers": [\n' +
+                '        29,\n' +
+                '        12,\n' +
+                '        -17.3,\n' +
+                '        0\n' +
+                '    ]\n' +
+                '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileLocalizeArrayOfBooleans: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "booleans": [\n' +
+                '    true,\n' +
+                '    false\n' +
+                '  ]\n' +
+                '}\n');
+
+        var translations = new TranslationSet('en-US');
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "booleans",
+            sourceArray: [
+                "true",
+                "false"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "false",
+                "true"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+                '{\n' +
+                '    "booleans": [\n' +
+                '        false,\n' +
+                '        true\n' +
+                '    ]\n' +
+                '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileLocalizeArrayOfObjects: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "objects": [\n' +
+                '    {\n' +
+                '      "name": "First Object",\n' +
+                '      "randomProp": "Non-translatable"\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "name": "Second Object",\n' +
+                '      "description": "String property"\n' +
+                '    }\n' +
+                '  ]\n' +
+                '}\n');
+
+        var translations = new TranslationSet('en-US');
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "objects/item_0/name",
+            source: "First Object",
+            sourceLocale: "en-US",
+            target: "Premier objet",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "objects/item_1/name",
+            source: "Second Object",
+            sourceLocale: "en-US",
+            target: "Deuxième objet",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "objects/item_1/description",
+            source: "String Property",
+            sourceLocale: "en-US",
+            target: "Propriété String",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+                '{\n' +
+                '    "objects": [\n' +
+                '        {\n' +
+                '            "name": "Premier objet",\n' +
+                '            "randomProp": "Non-translatable"\n' +
+                '        },\n' +
+                '        {\n' +
+                '            "name": "Deuxième objet",\n' +
+                '            "description": "Propriété String"\n' +
+                '        }\n' +
+                '    ]\n' +
+                '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
         test.done();
     },
 
