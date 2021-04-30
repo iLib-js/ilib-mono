@@ -345,11 +345,12 @@ POFileType.prototype.write = function() {
     // write out the resources
 };
 
-POFileType.prototype.newFile = function(path) {
+POFileType.prototype.newFile = function(path, options) {
     return new POFile({
         project: this.project,
         pathName: path,
-        type: this
+        type: this,
+        locale: options && options.targetLocale
     });
 };
 

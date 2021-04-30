@@ -290,7 +290,7 @@ POFile.prototype.parse = function(data) {
                                     datatype: this.type.datatype,
                                     context: context,
                                     index: this.resourceIndex++,
-                                    targetLocale: this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
+                                    targetLocale: translationPlurals && this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
                                 };
                                 if (translationPlurals) {
                                     options.targetStrings = translationPlurals;
@@ -308,7 +308,7 @@ POFile.prototype.parse = function(data) {
                                     datatype: this.type.datatype,
                                     context: context,
                                     index: this.resourceIndex++,
-                                    targetLocale: this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
+                                    targetLocale: translation && this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
                                 };
                                 if (translation) {
                                     options.target = translation;
