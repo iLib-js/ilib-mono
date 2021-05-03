@@ -830,7 +830,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
         case 'footnoteReference':
             // footnote references are non-breaking, self-closing nodes
             if (node.localizable) {
-                message.push(node);
+                message.push(node, true);
                 message.pop();
             }
             break;
