@@ -954,6 +954,60 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseFootnotes: function(test) {
+        test.expect(8);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
+                '[^1]: well, not really\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the emergency parsing <c0/> system.");
+        test.equal(r.getKey(), "r1010312382");
+
+        var r = set.getBySource("well, not really");
+        test.ok(r);
+        test.equal(r.getSource(), "well, not really");
+        test.equal(r.getKey(), "r472274968");
+
+        test.done();
+    },
+
+    testMarkdownFileParseFootnotesLongname: function(test) {
+        test.expect(8);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a test of the emergency parsing [^longname] system.\n\n' +
+                '[^longname]: well, not really\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the emergency parsing <c0/> system.");
+        test.equal(r.getKey(), "r1010312382");
+
+        var r = set.getBySource("well, not really");
+        test.ok(r);
+        test.equal(r.getSource(), "well, not really");
+        test.equal(r.getKey(), "r472274968");
+
+        test.done();
+    },
+
     testMarkdownFileParseNonBreakingInlineCode: function(test) {
         test.expect(6);
 
@@ -2362,6 +2416,84 @@ module.exports.markdown = {
             '[C1]: https://www.box.com/fr/test1\n\n' +
             '[R1]: http://www.box.com/fr/about.html\n\n' +
             '<!-- i18n-disable localize-links -->\n');
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextWithFootnotes: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
+            '[^1]: well, not really\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r1010312382",
+            source: "This is a test of the emergency parsing <c0/> system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r472274968",
+            source: "well, not really",
+            sourceLocale: "en-US",
+            target: "normalement, c'est pas vrai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        test.equal(mf.localizeText(translations, "fr-FR"),
+            'Ceci est un test du système d\'analyse syntaxique [^1] de l\'urgence.\n\n' +
+            '[^1]: normalement, c\'est pas vrai\n');
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextWithFootnotesLongName: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p
+        });
+        test.ok(mf);
+
+        mf.parse('This is a test of the emergency parsing [^longname] system.\n\n' +
+            '[^longname]: well, not really\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r1010312382",
+            source: "This is a test of the emergency parsing <c0/> system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r472274968",
+            source: "well, not really",
+            sourceLocale: "en-US",
+            target: "normalement, c'est pas vrai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        test.equal(mf.localizeText(translations, "fr-FR"),
+            'Ceci est un test du système d\'analyse syntaxique [^longname] de l\'urgence.\n\n' +
+            '[^longname]: normalement, c\'est pas vrai\n');
 
         test.done();
     },

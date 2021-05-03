@@ -32,6 +32,7 @@ var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
 var frontmatter = require('remark-frontmatter');
+var footnotes = require('remark-footnotes');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
@@ -48,6 +49,7 @@ var mdparser = unified().
         gfm: true
     }).
     use(frontmatter, ['yaml']).
+    use(footnotes).
     use(highlight).
     use(remark2rehype).
     use(raw);
@@ -61,6 +63,7 @@ var mdstringify = unified().
         bullet: '*',
         listItemIndent: 1
     }).
+    use(footnotes).
     use(frontmatter, ['yaml'])();
 
 function escapeQuotes(str) {
@@ -450,6 +453,15 @@ MarkdownFile.prototype._walk = function(node) {
             }
             break;
 
+        case 'footnoteReference':
+            // footnote references are non-breaking, self-closing nodes
+            if (this.message.getTextLength()) {
+                node.localizable = true;
+                this.message.push(node, true);
+                this.message.pop();
+            }
+            break;
+
         case 'definition':
             // definitions are breaking nodes
             this._emitText();
@@ -469,6 +481,20 @@ MarkdownFile.prototype._walk = function(node) {
         case 'footnoteDefinition':
             // definitions are breaking nodes
             this._emitText();
+            if (node.children && node.children.length) {
+                this.message.push({
+                    name: node.type,
+                    node: node
+                });
+                node.children.forEach(function(child) {
+                    this._walk(child);
+                }.bind(this));
+                this.message.pop();
+
+                node.localizable = node.children.every(function(child) {
+                    return child.localizable;
+                });
+            }
             break;
 
         case 'linkReference':
@@ -795,6 +821,14 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 node.alt = this._localizeString(node.alt, locale, translations);
             }
             // images are non-breaking, self-closing nodes
+            if (node.localizable) {
+                message.push(node);
+                message.pop();
+            }
+            break;
+
+        case 'footnoteReference':
+            // footnote references are non-breaking, self-closing nodes
             if (node.localizable) {
                 message.push(node);
                 message.pop();
