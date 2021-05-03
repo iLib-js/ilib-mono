@@ -5,6 +5,12 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.7.0
+
+* Added support for markdown footnotes using remark-footnote
+* Don't test on node 6 any more -- unit tests do not pass on node 6
+  because of a dependency which we can't really fix ourselves
+
 ### 1.6.0
 
 * Added support for the "fullyTranslated" setting in the frontmatter if
