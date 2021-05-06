@@ -482,14 +482,9 @@ MarkdownFile.prototype._walk = function(node) {
             // definitions are breaking nodes
             this._emitText();
             if (node.children && node.children.length) {
-                this.message.push({
-                    name: node.type,
-                    node: node
-                });
                 node.children.forEach(function(child) {
                     this._walk(child);
                 }.bind(this));
-                this.message.pop();
 
                 node.localizable = node.children.every(function(child) {
                     return child.localizable;

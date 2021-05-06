@@ -5,6 +5,10 @@ Ilib loctool plugin to parse and localize github-flavored markdown
 
 ## Release Notes
 
+### 1.7.1
+
+* Fixed an "Unbalanced component error" while parsing footnote definitions
+
 ### 1.7.0
 
 * Added support for markdown footnotes using remark-footnote
