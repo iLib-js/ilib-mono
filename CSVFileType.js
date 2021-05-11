@@ -23,6 +23,7 @@ var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
+var mm = require("micromatch");
 
 var CSVFile = require("./CSVFile.js");
 
@@ -30,7 +31,7 @@ var logger = log4js.getLogger("loctool.lib.CSVFileType");
 
 var CSVFileType = function(project) {
     this.type = "csv";
-    this.datatype = "CSV";
+    this.datatype = "x-csv";
     this.project = project;
     this.API = project.getAPI();
 
@@ -96,11 +97,13 @@ CSVFileType.prototype.write = function() {
     // write out the resources
 };
 
-CSVFileType.prototype.newFile = function(path) {
+CSVFileType.prototype.newFile = function(path, options) {
     return new CSVFile({
         project: this.project,
         pathName: path,
-        type: this
+        type: this,
+        sourceLocale: options && options.sourceLocale,
+        targetLocale: options && options.targetLocale
     });
 };
 
@@ -156,5 +159,42 @@ CSVFileType.prototype.getNew = function() {
 CSVFileType.prototype.getPseudo = function() {
     return this.pseudo;
 };
+
+var defaultMappings = {
+    "**/*.csv": {
+        method: "copy",
+        template: "[dir]/[basename]-[locale].[extension]",
+        rowSeparatorRegex: '[\n\r\f]+',
+        columnSeparatorChar: ','
+    },
+    "**/*.tsv": {
+        method: "copy",
+        template: "[dir]/[basename]-[locale].[extension]",
+        rowSeparatorRegex: '[\n\r\f]+',
+        columnSeparatorChar: '\t'
+    }
+};
+
+/**
+ * Return the mapping corresponding to this path.
+ * @param {String} pathName the path to check
+ * @returns {Object} the mapping object corresponding to the
+ * path or undefined if none of the mappings match
+ */
+CSVFileType.prototype.getMapping = function(pathName) {
+    if (typeof(pathName) === "undefined") {
+        return undefined;
+    }
+    var csvSettings = this.project.settings.csv;
+    var mappings = (csvSettings && csvSettings.mappings) ? csvSettings.mappings : defaultMappings;
+    var patterns = Object.keys(mappings);
+    var normalized = pathName.toLowerCase();
+
+    var match = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern) || mm.isMatch(normalized, pattern);
+    });
+
+    return match && mappings[match];
+}
 
 module.exports = CSVFileType;
