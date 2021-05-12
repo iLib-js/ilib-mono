@@ -89,7 +89,7 @@ Example configuration:
             "mappings": {
                 "src/**/*.csv": {
                     "template": "resources/[localeDir]/[basename].csv",
-                    "rowSeparator": '\n\n',
+                    "rowSeparator": "\n\n",
                     "columnSeparator": ",",
                     "headerRow": false,
                     "names": ["id", "name", "address", "description"],
@@ -148,16 +148,16 @@ the following mappings:
         "csv": {
             "mappings": {
                 "**/*.csv": {
-                    method: "copy",
-                    template: "[dir]/[basename]-[locale].[extension]",
-                    rowSeparatorRegex: '[\n\r\f]+',
-                    columnSeparatorChar: ','
+                    "method": "copy",
+                    "template": "[dir]/[basename]-[locale].[extension]",
+                    "rowSeparatorRegex": "[\n\r\f]+",
+                    "columnSeparatorChar": ","
                 },
                 "**/*.tsv": {
-                    method: "copy",
-                    template: "[dir]/[basename]-[locale].[extension]",
-                    rowSeparatorRegex: '[\n\r\f]+',
-                    columnSeparatorChar: '\t'
+                    "method": "copy",
+                    "template": "[dir]/[basename]-[locale].[extension]",
+                    "rowSeparatorRegex": "[\n\r\f]+",
+                    "columnSeparatorChar": "\t"
                 }
             }
         }
