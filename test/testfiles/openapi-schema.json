@@ -1,0 +1,9 @@
+{
+  "$id": "openapi-schema",
+  "properties": {
+    "description": {
+      "type": "string",
+      "localizable": true
+    }
+  }
+}

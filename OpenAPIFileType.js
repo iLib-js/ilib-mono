@@ -1,12 +1,14 @@
 var log4js = require('log4js');
 
 var JsonFileType = require('ilib-loctool-json/JsonFileType');
+var MarkdownFileType = require('ilib-loctool-ghfm/MarkdownFileType');
 var logger = log4js.getLogger('loctool.plugin.OpenAPIFileType');
 
 var OpenAPIFileType = function(projectConfig) {
 	// Copy over openapi config to json key to get support of mappings from json plugin.
 	projectConfig.settings.json = projectConfig.settings.openapi;
 	this.jsonFileType = new JsonFileType(projectConfig);
+	this.markdownFileType = new MarkdownFileType(projectConfig);
 }
 
 OpenAPIFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
