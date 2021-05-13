@@ -2208,10 +2208,19 @@ module.exports.htmlfile = {
     },
 
     testHTMLFileLocalize: function(test) {
-        test.expect(5);
+        test.expect(7);
 
         var base = path.dirname(module.id);
 
+        if (fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"))) {
+            fs.unlinkSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"));
+        }
+        if (fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"))) {
+            fs.unlinkSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html")));
 
         var htf = new HTMLFile({
             project: p,
@@ -2292,10 +2301,10 @@ module.exports.htmlfile = {
 
         htf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/html/CookieFlow.fr-FR.html")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/html/CookieFlow.de-DE.html")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html")));
 
-        var content = fs.readFileSync(path.join(base, "testfiles/html/CookieFlow.fr-FR.html"), "utf-8");
+        var content = fs.readFileSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"), "utf-8");
 
         var expected =
             '<div class="upsell-ad-item clearfix">  \n' +
@@ -2322,7 +2331,7 @@ module.exports.htmlfile = {
         diff(content, expected);
         test.equal(content, expected);
 
-        content = fs.readFileSync(path.join(base, "testfiles/html/CookieFlow.de-DE.html"), "utf-8");
+        content = fs.readFileSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"), "utf-8");
 
         test.equal(content,
             '<div class="upsell-ad-item clearfix">  \n' +
@@ -2351,9 +2360,19 @@ module.exports.htmlfile = {
     },
 
     testHTMLFileLocalizeNoStrings: function(test) {
-        test.expect(3);
+        test.expect(5);
 
         var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html"))) {
+            fs.unlinkSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html"));
+        }
+        if (fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html"))) {
+            fs.unlinkSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html")));
 
         var htf = new HTMLFile({
             project: p,
@@ -2386,8 +2405,8 @@ module.exports.htmlfile = {
         htf.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/html/nostrings.fr-FR.html")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/html/nostrings.de-DE.html")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html")));
 
         test.done();
     },
