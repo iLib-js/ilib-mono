@@ -115,6 +115,10 @@ CSVFileType.prototype.getResourceTypes = function() {
     return {};
 };
 
+CSVFileType.prototype.getExtensions = function() {
+    return this.extensions;
+};
+
 /**
  * Return the translation set containing all of the extracted
  * resources for all instances of this type of file. This includes
