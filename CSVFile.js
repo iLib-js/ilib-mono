@@ -240,6 +240,49 @@ CSVFile.prototype.extract = function() {
 };
 
 /**
+ * Get the locale of this resource file. For Xliff files, this
+ * can be extracted automatically based on the name of the directory
+ * that the file is in.
+ *
+ * @returns {String} the locale spec of this file
+ */
+CSVFile.prototype.getLocale = function() {
+    return this.locale;
+};
+
+/**
+ * Get all resources from this file. This will return all resources
+ * of mixed types (strings, arrays, or plurals).
+ *
+ * @returns {Resource} all of the resources available in this resource file.
+ */
+CSVFile.prototype.getAll = function() {
+    return this.set.getAll();
+};
+
+/**
+ * Add a resource to this file. The locale of the resource
+ * should correspond to the locale of the file, and the
+ * context of the resource should match the context of
+ * the file.
+ *
+ * @param {Resource} res a resource to add to this file
+ */
+CSVFile.prototype.addResource = function(res) {
+    logger.trace("CSVFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    if (res && res.getProject() === this.project.getProjectId()) {
+        logger.trace("correct project. Adding.");
+        this.set.add(res);
+    } else {
+        if (res) {
+            logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+        } else {
+            logger.warn("Attempt to add an undefined resource to a resource file.");
+        }
+    }
+};
+
+/**
  * Return the set of resources found in the current CSV file.
  *
  * @returns {TranslationSet} The set of resources found in the
