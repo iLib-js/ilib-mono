@@ -52,7 +52,19 @@ var p2 = new CustomProject({
                 template: "[dir]/[basename]-[locale].[extension]",
                 rowSeparatorRegex: '[\n\r\f]+',
                 columnSeparatorChar: ',',
-                localizable: ["description"]
+                columns: [
+                    {
+                        name: "id"
+                    },
+                    {
+                        name: "name",
+                        localizable: false
+                    },
+                    {
+                        name: "description",
+                        localizable: true
+                    }
+                ]
             },
             "**/*.tsv": {
                 method: "copy",
@@ -103,15 +115,26 @@ module.exports.csvfile = {
         test.done();
     },
 
-    testCSVFileConstructorInitWithNames: function(test) {
+    testCSVFileConstructorInitWithColumns: function(test) {
         test.expect(2);
 
         var j = new CSVFile({
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
-            localizable: ["name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -132,7 +155,19 @@ module.exports.csvfile = {
         });
         test.ok(j);
 
-        test.deepEqual(j.names, ["id", "name", "description"]);
+        test.deepEqual(j.columns, [
+            {
+                "name": "id"
+            },
+            {
+                "name": "name",
+                "localizable": true
+            },
+            {
+                "name": "description",
+                "localizable": true
+            }
+        ]);
 
         test.done();
     },
@@ -144,8 +179,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
-            localizable: ["name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -194,8 +240,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
-            localizable: ["name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -222,7 +279,7 @@ module.exports.csvfile = {
     },
 
     testCSVFileParseGetColumnNames: function(test) {
-        test.expect(4);
+        test.expect(7);
 
         var j = new CSVFile({
             project: p,
@@ -238,11 +295,14 @@ module.exports.csvfile = {
             '2345642,"quoted name with, comma in it","description with, comma in it"\n'
         );
 
-        var names = j.names;
+        var columns = j.columns;
 
-        test.equal(names[0], "id");
-        test.equal(names[1], "name");
-        test.equal(names[2], "description");
+        test.equal(columns[0].name, "id");
+        test.ok(columns[0].localizable);
+        test.equal(columns[1].name, "name");
+        test.ok(columns[1].localizable);
+        test.equal(columns[2].name, "description");
+        test.ok(columns[2].localizable);
 
         test.done();
     },
@@ -273,7 +333,75 @@ module.exports.csvfile = {
         test.done();
     },
 
-    testCSVFileParseRightResources: function(test) {
+    testCSVFileParseRightResourcesAllColumns: function(test) {
+        test.expect(36);
+
+        var j = new CSVFile({
+            project: p,
+            type: cft,
+            pathName: "src/dir1/foo.csv"
+        });
+        test.ok(j);
+
+        j.parse(
+            'name,description\n' +
+            'name1,description1\n' +
+            'name2,description2 that has an escaped\\, comma in it\n' +
+            '"name with quotes", "description with quotes"\n' +
+            '"quoted name with, comma in it", "description with, comma in it"\n'
+        );
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 8);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 8);
+
+        test.equal(resources[0].getType(), 'string');
+        test.equal(resources[0].getKey(), 'name1');
+        test.equal(resources[0].sourceLocale, 'en-US');
+        test.equal(resources[0].getSource(), 'name1');
+
+        test.equal(resources[1].getType(), 'string');
+        test.equal(resources[1].getKey(), 'description1');
+        test.equal(resources[1].sourceLocale, 'en-US');
+        test.equal(resources[1].getSource(), 'description1');
+
+        test.equal(resources[2].getType(), 'string');
+        test.equal(resources[2].getKey(), 'name2');
+        test.equal(resources[2].sourceLocale, 'en-US');
+        test.equal(resources[2].getSource(), 'name2');
+
+        test.equal(resources[3].getType(), 'string');
+        test.equal(resources[3].getKey(), 'description2 that has an escaped, comma in it');
+        test.equal(resources[3].sourceLocale, 'en-US');
+        test.equal(resources[3].getSource(), 'description2 that has an escaped, comma in it');
+
+        test.equal(resources[4].getType(), 'string');
+        test.equal(resources[4].getKey(), 'name with quotes');
+        test.equal(resources[4].sourceLocale, 'en-US');
+        test.equal(resources[4].getSource(), 'name with quotes');
+
+        test.equal(resources[5].getType(), 'string');
+        test.equal(resources[5].getKey(), 'description with quotes');
+        test.equal(resources[5].sourceLocale, 'en-US');
+        test.equal(resources[5].getSource(), 'description with quotes');
+
+        test.equal(resources[6].getType(), 'string');
+        test.equal(resources[6].getKey(), 'quoted name with, comma in it');
+        test.equal(resources[6].sourceLocale, 'en-US');
+        test.equal(resources[6].getSource(), 'quoted name with, comma in it');
+
+        test.equal(resources[7].getType(), 'string');
+        test.equal(resources[7].getKey(), 'description with, comma in it');
+        test.equal(resources[7].sourceLocale, 'en-US');
+        test.equal(resources[7].getSource(), 'description with, comma in it');
+
+        test.done();
+    },
+
+    testCSVFileParseRightResourcesOnlySomeColumns: function(test) {
         test.expect(20);
 
         var j = new CSVFile({
@@ -787,7 +915,19 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -828,7 +968,19 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -869,7 +1021,19 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -910,7 +1074,19 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -953,7 +1129,19 @@ module.exports.csvfile = {
             type: cft,
             rowSeparator: ':',
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -994,7 +1182,22 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "type", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "type"
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -1035,7 +1238,22 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "type", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "type"
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             columnSeparator: '\t',
             records: [
                 {
@@ -1077,8 +1295,19 @@ module.exports.csvfile = {
         var j = new CSVFile({
             project: p,
             type: cft,
-            names: ["id", "name", "description"],
-            localizable: ["name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             records: [
                 {
                     id: "foo",
@@ -1174,7 +1403,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1198,7 +1439,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1221,12 +1474,12 @@ module.exports.csvfile = {
         test.ok(csv1);
         test.ok(csv2);
 
-        test.equal(csv1.names.length, 3);
-        test.equal(csv2.names.length, 3);
+        test.equal(csv1.columns.length, 3);
+        test.equal(csv2.columns.length, 3);
 
         csv1.merge(csv2);
 
-        test.equal(csv1.names.length, 3);
+        test.equal(csv1.columns.length, 3);
 
         test.done();
     },
@@ -1238,7 +1491,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1262,7 +1527,38 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description", "foo"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                },
+                {
+                    "name": "foo",
+                }
+            ],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                },
+                {
+                    "name": "foo",
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1288,12 +1584,12 @@ module.exports.csvfile = {
         test.ok(csv1);
         test.ok(csv2);
 
-        test.equal(csv1.names.length, 3);
-        test.equal(csv2.names.length, 4);
+        test.equal(csv1.columns.length, 3);
+        test.equal(csv2.columns.length, 4);
 
         csv1.merge(csv2);
 
-        test.equal(csv1.names.length, 4);
+        test.equal(csv1.columns.length, 4);
 
         test.done();
     },
@@ -1305,7 +1601,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1329,7 +1637,22 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description", "foo"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                },
+                {
+                    "name": "foo",
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1355,11 +1678,38 @@ module.exports.csvfile = {
         test.ok(csv1);
         test.ok(csv2);
 
-        test.deepEqual(csv1.names, ["id", "name", "description"]);
+        test.deepEqual(csv1.columns, [
+            {
+                "name": "id"
+            },
+            {
+                "name": "name",
+                "localizable": true
+            },
+            {
+                "name": "description",
+                "localizable": true
+            }
+        ]);
 
         csv1.merge(csv2);
 
-        test.deepEqual(csv1.names, ["id", "name", "description", "foo"]);
+        test.deepEqual(csv1.columns, [
+            {
+                "name": "id"
+            },
+            {
+                "name": "name",
+                "localizable": true
+            },
+            {
+                "name": "description",
+                "localizable": true
+            },
+            {
+                "name": "foo",
+            }
+        ]);
 
         test.done();
     },
@@ -1371,7 +1721,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1395,7 +1757,18 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "description", "foo"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                },
+                {
+                    "name": "foo",
+                }
+            ],
             records: [
                 {
                     id: "foo4",
@@ -1417,12 +1790,12 @@ module.exports.csvfile = {
         test.ok(csv1);
         test.ok(csv2);
 
-        test.equal(csv1.names.length, 3);
-        test.equal(csv2.names.length, 3);
+        test.equal(csv1.columns.length, 3);
+        test.equal(csv2.columns.length, 3);
 
         csv1.merge(csv2);
 
-        test.equal(csv1.names.length, 4);
+        test.equal(csv1.columns.length, 4);
 
         test.done();
     },
@@ -1434,7 +1807,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1458,7 +1843,18 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "description", "foo"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                },
+                {
+                    "name": "foo",
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1481,11 +1877,38 @@ module.exports.csvfile = {
         test.ok(csv1);
         test.ok(csv2);
 
-        test.deepEqual(csv1.names, ["id", "name", "description"]);
+        test.deepEqual(csv1.columns, [
+            {
+                "name": "id"
+            },
+            {
+                "name": "name",
+                "localizable": true
+            },
+            {
+                "name": "description",
+                "localizable": true
+            }
+        ]);
 
         csv1.merge(csv2);
 
-        test.deepEqual(csv1.names, ["id", "name", "description", "foo"]);
+        test.deepEqual(csv1.columns, [
+            {
+                "name": "id"
+            },
+            {
+                "name": "name",
+                "localizable": true
+            },
+            {
+                "name": "description",
+                "localizable": true
+            },
+            {
+                "name": "foo",
+            }
+        ]);
 
         test.done();
     },
@@ -1497,7 +1920,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1521,7 +1956,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1562,7 +2009,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1586,7 +2045,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+             columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1628,7 +2099,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1652,7 +2135,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1694,7 +2189,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1718,7 +2225,18 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "description", "type"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                },
+                {
+                    "name": "type",
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1775,7 +2293,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {
@@ -1799,7 +2329,19 @@ module.exports.csvfile = {
             project: p,
             type: cft,
             columnSeparator: '\t',
-            names: ["id", "name", "description"],
+            columns: [
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "name",
+                    "localizable": true
+                },
+                {
+                    "name": "description",
+                    "localizable": true
+                }
+            ],
             key: "id",
             records: [
                 {

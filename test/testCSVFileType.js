@@ -29,7 +29,7 @@ var p = new CustomProject({
     locales:["en-GB"]
 });
 
-module.exports.CSVfiletype = {
+module.exports.csvfiletype = {
     testCSVFileTypeConstructor: function(test) {
         test.expect(1);
 

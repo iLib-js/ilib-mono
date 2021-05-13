@@ -48,13 +48,12 @@ var CSVFile = function(options) {
     var sepRE = options.rowSeparatorRegex || options.rowSeparator;
     var sep = options.rowSeparator;
     var columnSep = options.columnSeparator;
-    var localizable = options.localizable;
-    var names = options.names;
     var headerRow = options.headerRow;
+    var columns = options.columns;
 
     if (this.mapping) {
         if (!sepRE) {
-	        sepRE = this.mapping.rowSeparatorRegex || this.mapping.rowSeparatorRegex;
+            sepRE = this.mapping.rowSeparatorRegex || this.mapping.rowSeparatorRegex;
         }
 
         if (!sep) {
@@ -65,15 +64,11 @@ var CSVFile = function(options) {
             columnSep = this.mapping.columnSeparator;
         }
 
-        if (!localizable) {
-            localizable = this.mapping.localizable;
+        if (!columns) {
+            columns = this.mapping.columns;
         }
 
-        if (!names) {
-            names = this.mapping.names;
-        }
-
-        if (typeof(options.headerRow) === 'undefined') {
+        if (typeof(headerRow) === 'undefined') {
             headerRow = this.mapping.headerRow;
         }
     }
@@ -92,13 +87,22 @@ var CSVFile = function(options) {
             white + '*(' + this.columnSeparator + '|$)', "g");
 
     this.records = options.records || [];
-    this.names = options.names || [];
     this.headerRow = typeof(headerRow) === 'boolean' ? headerRow : true;
+    this.columns = columns;
+
+    var key;
 
     // undefined means all columns are localizable
-    this.localizable = localizable ? new Set(localizable) : undefined;
+    this.localizable = this.columns ? new Set(this.columns.filter(function(column) {
+        if (column.key) {
+            key = column.name;
+        }
+        return typeof(column.localizable) === 'boolean' && column.localizable;
+    }).map(function(column) {
+        return column.name;
+    })) : undefined;
 
-    this.key = options.key || this.names[0];
+    this.key = options.key || key;
 
     this.sourceLocale = options.sourceLocale || (this.project && this.project.sourceLocale) || "zxx-XX";
     this.targetLocale = options.targetLocale; // if available
@@ -167,21 +171,34 @@ CSVFile.prototype.parse = function(data) {
     });
 
     if (this.headerRow) {
-	    // the first record has the names of the columns in it
-	    var names = this._splitIt(lines[0]);
-	    this.names = names;
+        // the first record has the names of the columns in it
+        if (!this.columns) {
+            var names = this._splitIt(lines[0]);
+            if (names && names.length) {
+                if (!this.localizable) {
+                    this.localizable = new Set();
+                }
+                this.columns = names.map(function(name) {
+                    this.localizable.add(name);
+                    return {
+                        name: name,
+                        localizable: true
+                    };
+                }.bind(this));
+            }
+        }
+        lines = lines.slice(1);
     }
-    lines = lines.slice(1);
 
     this.records = lines.map(function(line) {
         var fields = this._splitIt(line);
         var json = {};
-        names.forEach(function(name, i) {
-            json[name] = i < fields.length ? fields[i] : "";
+        this.columns.forEach(function(column, i) {
+            json[column.name] = i < fields.length ? fields[i] : "";
 
-            if (json[name] && (!this.localizable || this.localizable.has(name))) {
+            if (json[column.name] && (!this.localizable || this.localizable.has(column.name))) {
                 // localizable field
-                var source = this.API.utils.escapeInvalidChars(json[name]);
+                var source = this.API.utils.escapeInvalidChars(json[column.name]);
                 this.set.add(this.API.newResource({
                     resType: "string",
                     project: this.project.getProjectId(),
@@ -251,13 +268,13 @@ CSVFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 CSVFile.prototype.localizeText = function(translations, locale) {
-    var header = this.headerRow ? this.names.join(this.columnSeparator) + this.rowSeparator : "";
+    var header = this.headerRow ? this.columns.map(function(column) { return column.name; }).join(this.columnSeparator) + this.rowSeparator : "";
     return header + this.records.map(function(record) {
-        return this.names.map(function(name) {
-            var text = record[name] || "",
+        return this.columns.map(function(column) {
+            var text = record[column.name] || "",
                 translated = text;
 
-            if (!text || (this.localizable && !this.localizable.has(name))) {
+            if (!text || (this.localizable && !this.localizable.has(column.name))) {
                 // not translatable or not a translatable column
                 return text;
             }
@@ -362,12 +379,12 @@ CSVFile.prototype.localize = function(translations, locales) {
  * current one
  */
 CSVFile.prototype.merge = function(other) {
-    if (!other || !other.names || !other.records) return;
+    if (!other || !other.columns || !other.records) return;
 
-    other.names.forEach(function(name) {
-        if (this.names.indexOf(name) === -1) {
+    other.columns.forEach(function(column) {
+        if (!this.columns.some(function(column2) { return column2.name === column.name; })) {
             // missing
-            this.names.push(name);
+            this.columns.push(column);
         }
     }.bind(this));
 
@@ -384,9 +401,9 @@ CSVFile.prototype.merge = function(other) {
         if (this.keyHash[key]) {
             // merge them
             var thisRecord = this.keyHash[key];
-            other.names.forEach(function(name) {
-                if (name !== other.key && otherRecord[name]) {
-                    thisRecord[name] = otherRecord[name];
+            other.columns.forEach(function(column) {
+                if (column.name !== other.key && otherRecord[column.name]) {
+                    thisRecord[column.name] = otherRecord[column.name];
                 }
             }.bind(this));
         } else {

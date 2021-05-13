@@ -29,13 +29,17 @@ used within the csv property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
+    - method: (string) the method of localizable. Currently, the only
+      value accepted is "copy" which means that a copy of the input file
+      is created with localized column values in it. In the future, there will
+      be support for other methods, such as multilingual csv files.
     - template: (string) a path template to use to generate the path to
       the translated
       output files. The template replaces strings in square brackets
       with special values, and keeps any characters intact that are
       not in square brackets. The default template, if not specified is
-      "[dir]/[basename]-[locale].[extension]". The plugin recognizes
-      and replaces the following strings in template strings:
+      "[dir]/[basename]-[locale].[extension]". The plugin relies on the
+      loctool to recognize and replaces the following strings in templates:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.json" -> "foo/bar"
@@ -68,17 +72,21 @@ used within the csv property:
       split the columns from each other. Default if not specified is a
       single comma.
     - headerRow: (boolean) if set to true, then first row of the file
-      is a header row which contains a list of column names. If false, you
-      must specify the names array below to name the columns. Default
+      is a header row which contains a list of column names. When there is a
+      header row, every column is considered localizable. If false, you
+      must specify the columns array below to configure the columns. Default
       if not specified is `true`.
-    - names: (Array.<string>) an array of column names in the order that
-      they appear in the file
-    - localizable: (Array.<string>) an array of column names that are
-      localizable. This can be a smaller list than is in the names array,
-      as often not every column contains localizable strings. Any column names
-      given here which are not also part of the names array will be ignored.
-      Default if this setting is not specified is `undefined`, which means
-      all columns are localizable.
+    - columns: (Array.<Column>) an array of column definitions in the order that
+      they appear in the file. The default if this setting is not specified
+      is that all columns are localizable. Each column definition can contains:
+        - name: (string) a name for this column
+        - localizable: (boolean) whether or not this column is localizable.
+          Default: false, if not specified
+        - locale: (string) the locale of this column. (not used yet -- will be
+          used with multilingual csv support to be implemented later)
+        - key: (boolean) this column contains the resource key for the other
+          columns (not used yet -- will be used in multilingual csv support
+          to be implemented later)
 
 Example configuration:
 
@@ -92,13 +100,42 @@ Example configuration:
                     "rowSeparator": "\n\n",
                     "columnSeparator": ",",
                     "headerRow": false,
-                    "names": ["id", "name", "address", "description"],
-                    "localizable: ["description"]
+                    "columns": [
+                        {
+                            "name": "id"
+                        },
+                        {
+                            "name": "name"
+                        },
+                        {
+                            "name": "address"
+                        },
+                        {
+                            "name": "description",
+                            "localizable": true
+                        }
+                    ]
                 },
                 "src/**/app.tsv": {
                     "template": "[dir]/[basename]-[locale].tsv",
                     "headerRow": true,
-                    "localizable: ["name", "description", "category"]
+                    "columns": [
+                        {
+                            "name": "id",
+                        },
+                        {
+                            "name": "name",
+                            "localizable": true
+                        },
+                        {
+                            "name": "description",
+                            "localizable": true
+                        },
+                        {
+                            "name": "category",
+                            "localizable": true
+                        }
+                    ]
                 }
             }
         }
@@ -129,7 +166,7 @@ by a tab character. Both types of files are assumed to have a header row
 and that all columns are localizable.
 
 If mappings are given, but a csv file does not match any of the match expressions,
-then that entire file is not localizable.
+then that entire file is considered not localizable.
 
 Example:
 
@@ -139,8 +176,7 @@ name,description,category
 "Jimmy Shmitts","A really Latino good actor with a German name.","Oscar winner"
 ```
 
-Essentially, this means that we assume that the file has
-the following mappings:
+Essentially, this means that we assume that the file has the following mappings:
 
 ```json
 {
@@ -179,7 +215,7 @@ file for more details.
 - added content to this README.md
 - added support for mappings
 - added support for extracting resources from csvs
-- added support for list of localizable columns
+- added support for configuring columns
 - added support for optional header row
 
 ### v1.1.0
