@@ -1,4 +1,4 @@
-# ilib-loctool-html
+# ilib-loctool-json
 
 Ilib loctool plugin to parse and localize json files.
 
@@ -9,7 +9,7 @@ defaulting to a list of key/value pairs.
 ## Style of JSON
 
 By default, this plugin assumes that the json file
-conforms to the J[son5 spec](http://json5.org). Earlier
+conforms to the [Json5 spec](http://json5.org). Earlier
 forms of json are subsets
 of Json5, so Json5 is the most flexible standard to
 process.
@@ -301,6 +301,10 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.1.1
+
+- few README.md files (this file!)
 
 ### v1.1.0
 
