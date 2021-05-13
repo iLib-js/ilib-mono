@@ -1,7 +1,7 @@
 {
     "name": "ilib-loctool-csv",
     "version": "1.2.0",
-    "main": "./JavaScriptFileType.js",
+    "main": "./CSVFileType.js",
     "description": "A loctool plugin that knows how to process ilib-loctool-csv files",
     "license": "Apache-2.0",
     "keywords": [
