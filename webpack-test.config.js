@@ -19,26 +19,22 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
 module.exports = {
     mode: "development",
-    entry: "./src/LocaleMatcher.js",
+    entry: "./test/testSuiteWeb.js",
     output: {
-        path: path.resolve(__dirname, 'lib'),
-        filename: "ilib-localematcher-web.js",
-        library: "LocaleMatcher"
+        path: path.resolve(__dirname, 'test'),
+        filename: "localematcher-test.js",
+        library: "ilibLocaleMatcherTest"
     },
     externals: {
-        'ilib-locale': 'Locale',
-        'ilib-common': 'ilibCommon',
-        'ilib-env': 'ilibEnv'
+        'nodeunit': 'nodeunit'
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                exclude: /node_modules\/(?!(ilib-common|ilib-env|ilib-locale))/,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -49,16 +45,9 @@ module.exports = {
             }
         ]
     },
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                sourceMap: true,
-                uglifyOptions: {
-                    output: {
-                        comments: false,
-                    }
-                }
-            })
-        ]
+    resolve: {
+        fallback: {
+            buffer: require.resolve("buffer")
+        }
     }
 };
