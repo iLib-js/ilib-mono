@@ -12,13 +12,13 @@ jobs:
       - run:
           name: Setup
           command: |
+            node -v
+            npm -v
             rm -rf node_modules package-lock.json
             npm install
       - run:
           name: Running all unit tests
           command: |
-            node -v
-            npm -v
             npm run test
 
 workflows:
