@@ -302,6 +302,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.2
+
+- add support for $refs in array schema definitions
+
 ### v1.1.1
 
 - few README.md files (this file!)
