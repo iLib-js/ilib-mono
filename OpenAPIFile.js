@@ -1,10 +1,35 @@
+/*
+ * OpenAPIFile.js - Represents a collection of json files
+ *
+ * Copyright © 2021, Box, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 var log4js = require('log4js');
+var path = require('path');
+var fs = require('fs');
 
 var JsonFile = require('ilib-loctool-json/JsonFile');
 var MarkdownFile = require('ilib-loctool-ghfm/MarkdownFile');
+var Locale = require('ilib/lib/Locale.js');
 var logger = log4js.getLogger('loctool.plugin.OpenAPIFile');
 
 var OpenAPIFile = function(options) {
+	this.pathName = options.pathName;
+	this.project = options.project;
+
 	options.jsonFileType = options.jsonFileType || options.type.jsonFileType;
 	if (!options.jsonFileType) {
 		if (options.type && options.type.jsonFileType) {
@@ -39,8 +64,8 @@ var OpenAPIFile = function(options) {
  * project's translation set.
  *
  * Consists of two steps:
- * 1. Parse json file
- * 2. Parse results of json parsing with markdown parser
+ * 1. Parse JSON structure with json parser
+ * 2. Parse results of JSON parsing with markdown parser
  *
  * @param {String} data the string to parse
  */
@@ -48,23 +73,35 @@ OpenAPIFile.prototype.parse = function(data) {
 	this.parseJson(data);
 	this.parseMarkdown();
 }
-
+/**
+ * Parse JSON data using ilib-loctool-json plugin.
+ *
+ * @private
+ * @param {String} data the string to parse
+ */
 OpenAPIFile.prototype.parseJson = function(data) {
 	this.jsonFile.parse(data);
 
 	this.jsonSet = this.jsonFile.getTranslationSet();
 }
-
+/**
+ * Parse JSON resources using ilib-loctool-ghfm plugin and get
+ * final TranslationSet.
+ *
+ * @private
+ */
 OpenAPIFile.prototype.parseMarkdown = function () {
 	// iterate through this.jsonSet and send strings to Markdown parse
 	// Then update set based on the result from MD parser
 	this.jsonSet.getAll().map(function (res) {
 		if (res.resType === 'string') {
 			this.markdownFile.parse(res.source);
+
+			this.markdownSet.addSet(this.markdownFile.getTranslationSet());
+			this.markdownFile.getTranslationSet().clear();
+			this.markdownFile.comment = undefined;
 		}
 	}.bind(this));
-
-	this.markdownSet = this.markdownFile.getTranslationSet();
 }
 
 /**
@@ -76,9 +113,71 @@ OpenAPIFile.prototype.parseMarkdown = function () {
 OpenAPIFile.prototype.getTranslationSet = function () {
 	return this.markdownSet;
 }
-
+/**
+ * Return hashed key for a provided input string.
+ *
+ * @param {String} source string input to hash
+ * @returns {String} a has key
+ */
 OpenAPIFile.prototype.makeKey = function (source) {
 	return this.API.utils.hashKey(MarkdownFile.cleanString(source));
+}
+
+/**
+ * Extract all the localizable strings from the Json file and add them to the
+ * project's translation set.
+ */
+OpenAPIFile.prototype.extract = function() {
+	logger.debug('Extracting strings from ' + this.pathName);
+	if (this.pathName) {
+		var p = path.join(this.project.root, this.pathName);
+		try {
+			var data = fs.readFileSync(p, 'utf8');
+			if (data) {
+				this.parse(data);
+			}
+		} catch (e) {
+			logger.warn('Could not read file: ' + p);
+			logger.warn(e);
+		}
+	}
+};
+/**
+ * Localize the contents of this OpenAPI file and write out the
+ * localized OpenAPI file to a different file path.
+ *
+ * @param {TranslationSet} translations the current set of
+ * translations
+ * @param {Array.<String>} locales array of locales to translate to
+ */
+OpenAPIFile.prototype.localize = function (translations, locales) {
+	// don't localize if there is no text
+	for (var i = 0; i < locales.length; i++) {
+		if (!this.project.isSourceLocale(locales[i])) {
+			// skip variants for now until we can handle them properly
+			var l = new Locale(locales[i]);
+			if (!l.getVariant()) {
+				var pathName = this.getLocalizedPath(locales[i]);
+				logger.debug('Writing file ' + pathName);
+				var p = path.join(this.project.target, pathName);
+				var d = path.dirname(p);
+				this.API.utils.makeDirs(d);
+
+				fs.writeFileSync(p, this.localizeText(translations, locales[i]), 'utf-8');
+			}
+		}
+	}
+}
+
+/**
+ * Return the location on disk where the version of this file localized
+ * for the given locale should be written.
+ *
+ * @param {String} locale the locale spec for the target locale
+ * @returns {String} the localized path name
+ */
+OpenAPIFile.prototype.getLocalizedPath = function (locale) {
+	return this.jsonFile.getLocalizedPath(locale);
 }
 
 /**

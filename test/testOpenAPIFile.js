@@ -77,7 +77,7 @@ module.exports.openapifile = {
 		testConstructorErrorMissingRequiredParam: function(test) {
 			test.expect(1);
 
-			test.throws(function (test) {
+			test.throws(function(test) {
 				var oaf = new OpenAPIFile({
 					project: p
 				});
@@ -140,11 +140,69 @@ module.exports.openapifile = {
 			test.equal(resource.getDataType(), 'markdown');
 
 			test.done();
+		},
+
+		testParseInlineCodeOnlyString: function(test) {
+			test.expect(7);
+
+			var oaf = new OpenAPIFile({
+				project: p,
+				type: t
+			});
+			test.ok(oaf);
+
+			var jsonToParse = '{\n' +
+					'  "string1": "Description with `code` in it",\n' +
+					'  "string2": "`code only string`",\n' +
+					'  "string3": "String with no parameters"\n' +
+					'}';
+			oaf.parse(jsonToParse);
+
+			var set = oaf.getTranslationSet();
+			test.ok(set);
+
+			var resources = set.getAll();
+			test.equal(resources.length, 2);
+			test.equal(resources[0].getSource(), 'Description with <c0/> in it');
+			test.equal(resources[0].getComment(), 'c0 will be replaced with the inline code `code`.');
+
+			test.equal(resources[1].getSource(), 'String with no parameters');
+			test.equal(resources[1].getComment(), null);
+
+			test.done();
+		},
+
+		testParseDoubleNewLine: function(test) {
+			test.expect(7);
+
+			var oaf = new OpenAPIFile({
+				project: p,
+				type: t
+			});
+			test.ok(oaf);
+
+			var jsonToParse = '{\n' +
+					'  "string1": "First line\\n\\nSecond line `with` code"\n' +
+					'}';
+			oaf.parse(jsonToParse);
+
+			var set = oaf.getTranslationSet();
+			test.ok(set);
+
+			var resources = set.getAll();
+			test.equal(resources.length, 2);
+			test.equal(resources[0].getSource(), 'First line');
+			test.equal(resources[0].getComment(), null);
+
+			test.equal(resources[1].getSource(), 'Second line <c0/> code');
+			test.equal(resources[1].getComment(), 'c0 will be replaced with the inline code `with`.');
+
+			test.done();
 		}
 	},
 
-	localize: {
-		testLocalizeSimpleJson: function (test) {
+	localizeText: {
+		testLocalizeTextSimpleJson: function(test) {
 			test.expect(2);
 
 			var oaf = new OpenAPIFile({
@@ -182,7 +240,7 @@ module.exports.openapifile = {
 			test.done();
 		},
 
-		testLocalizeMarkdownJson: function (test) {
+		testLocalizeTextMarkdownJson: function(test) {
 			test.expect(2);
 
 			var oaf = new OpenAPIFile({
@@ -227,6 +285,14 @@ module.exports.openapifile = {
 					'}\n';
 
 			test.equal(actual, expected);
+
+			test.done();
+		}
+	},
+
+	localize: {
+		testLocalize: function(test) {
+			test.expect(0);
 
 			test.done();
 		}
