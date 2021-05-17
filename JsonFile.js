@@ -134,15 +134,29 @@ function isPrimitive(type) {
  *
  * TODO: Add support for "anyOf" and "oneOf" type definitions.
  */
-function getArrayTypeFromSchema(schema) {
+function getArrayTypeFromSchema(schema, root) {
     if (schema.type !== "array") {
         return null;
     }
 
+    if (typeof(schema.items["$ref"]) !== 'undefined') {
+        // substitute the referenced schema for this one
+        var refname = schema.items["$ref"];
+        var otherschema = root["$$refs"][refname];
+        if (!otherschema) {
+            console.log("Unknown reference " + refname + " while parsing " +
+                    this.pathName + " with schema " + root["$id"]);
+            return;
+        }
+        schema = otherschema;
+    } else {
+        schema = schema.items;
+    }
+
     var allowedTypes = ["string", "integer", "number", "boolean", "object"];
 
-    if (schema.items.type && allowedTypes.indexOf(schema.items.type) > -1) {
-        return schema.items.type;
+    if (schema.type && allowedTypes.indexOf(schema.type) > -1) {
+        return schema.type;
     }
 
     // Default type is string for compatibility reasons.
@@ -499,7 +513,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
         return null;
     }
 
-    var arrayType = getArrayTypeFromSchema(schema);
+    var arrayType = getArrayTypeFromSchema(schema, root);
 
     if (arrayType === null) {
         return this.sparseValue(json);
