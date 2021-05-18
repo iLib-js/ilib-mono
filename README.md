@@ -302,7 +302,7 @@ file for more details.
 
 ## Release Notes
 
-### v1.1.2
+### v1.2.0
 
 - add support for $refs in array schema definitions
 
