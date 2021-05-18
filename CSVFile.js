@@ -40,12 +40,42 @@ var CSVFile = function(options) {
     this.project = options.project;
     this.pathName = options.pathName;
 
-    this.datatype = "x-csv";
     this.API = this.project.getAPI();
+    this.type = options.type;
 
-    this.rowSeparatorRegex = new RegExp(options.rowSeparatorRegex || options.rowSeparator || '[\n\r\f]+');
-    this.rowSeparator = options.rowSeparator || '\n';
-    this.columnSeparator = options.columnSeparator || ',';
+    this.mapping = this.type.getMapping(this.pathName);
+
+    var sepRE = options.rowSeparatorRegex || options.rowSeparator;
+    var sep = options.rowSeparator;
+    var columnSep = options.columnSeparator;
+    var headerRow = options.headerRow;
+    var columns = options.columns;
+
+    if (this.mapping) {
+        if (!sepRE) {
+            sepRE = this.mapping.rowSeparatorRegex || this.mapping.rowSeparatorRegex;
+        }
+
+        if (!sep) {
+            sep = this.mapping.rowSeparator;
+        }
+
+        if (!columnSep) {
+            columnSep = this.mapping.columnSeparator;
+        }
+
+        if (!columns) {
+            columns = this.mapping.columns;
+        }
+
+        if (typeof(headerRow) === 'undefined') {
+            headerRow = this.mapping.headerRow;
+        }
+    }
+
+    this.rowSeparatorRegex = new RegExp(sepRE || '[\n\r\f]+');
+    this.rowSeparator = sep || '\n';
+    this.columnSeparator =  columnSep || ',';
 
     var white, sep = whiteSpaceChars.indexOf(this.columnSeparator);
     white = (sep > -1) ? '[' + whiteSpaceChars.map(function(ch) {
@@ -57,13 +87,28 @@ var CSVFile = function(options) {
             white + '*(' + this.columnSeparator + '|$)', "g");
 
     this.records = options.records || [];
-    this.names = options.names || [];
-    this.localizable = new Set(options.localizable);
+    this.headerRow = typeof(headerRow) === 'boolean' ? headerRow : true;
+    this.columns = columns;
 
-    this.type = options.type;
-    this.key = options.key || this.names[0];
+    var key;
 
-    this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    // undefined means all columns are localizable
+    this.localizable = this.columns ? new Set(this.columns.filter(function(column) {
+        if (column.key) {
+            key = column.name;
+        }
+        return typeof(column.localizable) === 'boolean' && column.localizable;
+    }).map(function(column) {
+        return column.name;
+    })) : undefined;
+
+    this.key = options.key || key;
+
+    this.sourceLocale = options.sourceLocale || (this.project && this.project.sourceLocale) || "zxx-XX";
+    this.targetLocale = options.targetLocale; // if available
+
+    this.set = this.API.newTranslationSet(this.sourceLocale);
+    this.resourceIndex = 0;
 };
 
 /**
@@ -125,17 +170,48 @@ CSVFile.prototype.parse = function(data) {
         return line && line.trim().length > 0;
     });
 
-    // assume the first record has the names of the columns in it
-    var names = this._splitIt(lines[0]);
-    this.names = names;
-    lines = lines.slice(1);
+    if (this.headerRow) {
+        // the first record has the names of the columns in it
+        if (!this.columns) {
+            var names = this._splitIt(lines[0]);
+            if (names && names.length) {
+                if (!this.localizable) {
+                    this.localizable = new Set();
+                }
+                this.columns = names.map(function(name) {
+                    this.localizable.add(name);
+                    return {
+                        name: name,
+                        localizable: true
+                    };
+                }.bind(this));
+            }
+        }
+        lines = lines.slice(1);
+    }
 
     this.records = lines.map(function(line) {
         var fields = this._splitIt(line);
         var json = {};
-        names.forEach(function(name, i) {
-            json[name] = i < fields.length ? fields[i] : "";
-        });
+        this.columns.forEach(function(column, i) {
+            json[column.name] = i < fields.length ? fields[i] : "";
+
+            if (json[column.name] && (!this.localizable || this.localizable.has(column.name))) {
+                // localizable field
+                var source = this.API.utils.escapeInvalidChars(json[column.name]);
+                this.set.add(this.API.newResource({
+                    resType: "string",
+                    project: this.project.getProjectId(),
+                    key: this.makeKey(source),
+                    sourceLocale: this.sourceLocale,
+                    source: source,
+                    pathName: this.pathName,
+                    state: "new",
+                    datatype: this.type.datatype,
+                    index: this.resourceIndex++
+                }));
+            }
+        }.bind(this));
 
         return json;
     }.bind(this));
@@ -164,6 +240,49 @@ CSVFile.prototype.extract = function() {
 };
 
 /**
+ * Get the locale of this resource file. For Xliff files, this
+ * can be extracted automatically based on the name of the directory
+ * that the file is in.
+ *
+ * @returns {String} the locale spec of this file
+ */
+CSVFile.prototype.getLocale = function() {
+    return this.locale;
+};
+
+/**
+ * Get all resources from this file. This will return all resources
+ * of mixed types (strings, arrays, or plurals).
+ *
+ * @returns {Resource} all of the resources available in this resource file.
+ */
+CSVFile.prototype.getAll = function() {
+    return this.set.getAll();
+};
+
+/**
+ * Add a resource to this file. The locale of the resource
+ * should correspond to the locale of the file, and the
+ * context of the resource should match the context of
+ * the file.
+ *
+ * @param {Resource} res a resource to add to this file
+ */
+CSVFile.prototype.addResource = function(res) {
+    logger.trace("CSVFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    if (res && res.getProject() === this.project.getProjectId()) {
+        logger.trace("correct project. Adding.");
+        this.set.add(res);
+    } else {
+        if (res) {
+            logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+        } else {
+            logger.warn("Attempt to add an undefined resource to a resource file.");
+        }
+    }
+};
+
+/**
  * Return the set of resources found in the current CSV file.
  *
  * @returns {TranslationSet} The set of resources found in the
@@ -180,28 +299,7 @@ CSVFile.prototype.getTranslationSet = function() {
  * @returns {String} the localized path name
  */
 CSVFile.prototype.getLocalizedPath = function(locale) {
-    return "";
-    // TODO: implement CSVFile.getLocalizedPath()
-    /*
-    var fullPath = path.join(this.project.root, this.pathName);
-    var dirName = path.dirname(fullPath);
-    var fileName = path.basename(fullPath);
-
-    var parts = fileName.split(".");
-
-    if (parts.length > 2) {
-        if (parts.length > 3 && parts[parts.length-3] === this.project.sourceLocale) {
-            parts.splice(parts.length-3, 1, locale);
-        } else {
-            parts.splice(parts.length-2, 0, locale);
-        }
-    } else if (parts.length > 1) {
-        parts.splice(parts.length-1, 0, locale);
-    } else {
-        parts.splice(parts.length, 0, locale);
-    }
-    return path.join(dirName, parts.join("."));
-    */
+    return this.API.utils.getLocalizedPath(this.mapping.template, this.pathName, locale);
 };
 
 /**
@@ -213,64 +311,89 @@ CSVFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 CSVFile.prototype.localizeText = function(translations, locale) {
-    return this.names.join(this.columnSeparator) + this.rowSeparator + this.records.map(function(record) {
-        return this.names.map(function(name) {
-            var text = record[name] || "",
-                translated = text;
-
-            var source = this.API.utils.escapeInvalidChars(text);
-            var key = this.makeKey(source);
-            var tester = this.API.newResource({
-                type: "string",
-                project: this.project.getProjectId(),
-                sourceLocale: this.project.getSourceLocale(),
-                reskey: key,
-                datatype: this.datatype
-            });
-            var hashkey = tester.hashKeyForTranslation(locale);
-            var translatedResource = translations.get(hashkey);
-
-            if (text) {
-                if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                    translated = source;
-                } else if (translatedResource) {
-                    translated = translatedResource.getTarget();
-                } else if (this.type) {
-                    if (this.type.pseudos && this.type.pseudos[locale]) {
-                        var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                        if (sourceLocale !== this.project.sourceLocale) {
-                            // translation is derived from a different locale's translation instead of from the source string
-                            var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
-                            source = sourceRes ? sourceRes.getTarget() : source;
+    var header = this.headerRow && this.columns ? this.columns.map(function(column) { return column.name; }).join(this.columnSeparator) + this.rowSeparator : "";
+    if (this.records && this.records.length) {
+        return header + this.records.map(function(record) {
+            return this.columns.map(function(column) {
+                var text = record[column.name] || "",
+                    translated = text;
+    
+                if (!text || !translations || (this.localizable && !this.localizable.has(column.name))) {
+                    // not translatable or not a translatable column
+                    return text;
+                }
+    
+                var source = this.API.utils.escapeInvalidChars(text);
+                var key = this.makeKey(source);
+                var tester = this.API.newResource({
+                    type: "string",
+                    project: this.project.getProjectId(),
+                    sourceLocale: this.sourceLocale,
+                    reskey: key,
+                    datatype: this.type.datatype
+                });
+                var hashkey = tester.hashKeyForTranslation(locale);
+                var translatedResource = translations.get(hashkey);
+    
+                if (text) {
+                    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                        translated = source;
+                    } else if (translatedResource) {
+                        translated = translatedResource.getTarget();
+                    } else if (this.type) {
+                        if (this.type.pseudos && this.type.pseudos[locale]) {
+                            var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                            if (sourceLocale !== this.sourceLocale) {
+                                // translation is derived from a different locale's translation instead of from the source string
+                                var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
+                                source = sourceRes ? sourceRes.getTarget() : source;
+                            }
+                            translated = this.type.pseudos[locale].getString(source);
+                        } else {
+                            logger.trace("New string found: " + source);
+                            this.type.newres.add(this.API.newResource({
+                                resType: "string",
+                                project: this.project.getProjectId(),
+                                key: key,
+                                sourceLocale: this.sourceLocale,
+                                source: text,
+                                targetLocale: locale,
+                                target: text,
+                                autoKey: true,
+                                pathName: this.pathName,
+                                state: "new",
+                                datatype: this.type.datatype
+                            }));
+                            translated = !this.project.settings.nopseudo && this.type && this.type.missingPseudo ?
+                                    this.type.missingPseudo.getString(text) : text;
                         }
-                        translated = this.type.pseudos[locale].getString(source);
-                    } else {
-                        logger.trace("New string found: " + source);
-                        this.type.newres.add(this.API.newResource({
-                            resType: "string",
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.project.sourceLocale,
-                            source: text,
-                            targetLocale: locale,
-                            target: text,
-                            autoKey: true,
-                            pathName: this.pathName,
-                            state: "new",
-                            datatype: this.datatype
-                        }));
-                        translated = this.project.settings.nopseudo && locale === this.project.pseudoLocale ? text : this.type.pseudoBundle.getStringJS(text);
                     }
                 }
-            }
-
-            if (translated.indexOf(this.columnSeparator) > -1 || translated.trim() !== translated || translated.indexOf('\n') > -1 || translated.indexOf('"') > -1) {
-                translated = '"' + translated.replace(/"/g, '""') + '"';
-            }
-
-            return translated;
-        }.bind(this)).join(this.columnSeparator);
-    }.bind(this)).join(this.rowSeparator);
+    
+                if (translated.indexOf(this.columnSeparator) > -1 || translated.trim() !== translated || translated.indexOf('\n') > -1 || translated.indexOf('"') > -1) {
+                    translated = '"' + translated.replace(/"/g, '""') + '"';
+                }
+    
+                return translated;
+            }.bind(this)).join(this.columnSeparator);
+        }.bind(this)).join(this.rowSeparator);
+    } else if (this.set.size() > 0) {
+        // no source records available, so just output the resources by making
+        // a simple 3 column file
+        // with the first column being the key, the second being the source, and the
+        // third being the translation (if any)
+        var resources = this.set.getAll();
+        return "key,source,target" + this.rowSeparator + resources.map(function(res) {
+            return [
+                res.getKey(),
+                res.getSource(),
+                res.getTarget()
+            ].join(this.columnSeparator);
+        }.bind(this)).join(this.rowSeparator);
+    } else {
+        console.log("ilib-loctool-csv: Warning: no records or resources to generate.");
+        return undefined;
+    }
 };
 
 /**
@@ -290,8 +413,12 @@ CSVFile.prototype.localize = function(translations, locales) {
             var p = path.join(this.project.target, pathName);
             var d = path.dirname(p);
             this.API.utils.makeDirs(d);
-
-            fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
+            var text = this.localizeText(translations, locales[i]);
+            if (text) {
+                fs.writeFileSync(p, text, "utf-8");
+            } else {
+                console.log("ilib-loctool-csv: warning: no contents written for file " + pathName);
+            }
         }
     } else {
         logger.debug(this.pathName + ": No records, no localize");
@@ -317,12 +444,12 @@ CSVFile.prototype.localize = function(translations, locales) {
  * current one
  */
 CSVFile.prototype.merge = function(other) {
-    if (!other || !other.names || !other.records) return;
+    if (!other || !other.columns || !other.records) return;
 
-    other.names.forEach(function(name) {
-        if (this.names.indexOf(name) === -1) {
+    other.columns.forEach(function(column) {
+        if (!this.columns.some(function(column2) { return column2.name === column.name; })) {
             // missing
-            this.names.push(name);
+            this.columns.push(column);
         }
     }.bind(this));
 
@@ -339,9 +466,9 @@ CSVFile.prototype.merge = function(other) {
         if (this.keyHash[key]) {
             // merge them
             var thisRecord = this.keyHash[key];
-            other.names.forEach(function(name) {
-                if (name !== other.key && otherRecord[name]) {
-                    thisRecord[name] = otherRecord[name];
+            other.columns.forEach(function(column) {
+                if (column.name !== other.key && otherRecord[column.name]) {
+                    thisRecord[column.name] = otherRecord[column.name];
                 }
             }.bind(this));
         } else {
