@@ -311,71 +311,89 @@ CSVFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 CSVFile.prototype.localizeText = function(translations, locale) {
-    var header = this.headerRow ? this.columns.map(function(column) { return column.name; }).join(this.columnSeparator) + this.rowSeparator : "";
-    return header + this.records.map(function(record) {
-        return this.columns.map(function(column) {
-            var text = record[column.name] || "",
-                translated = text;
-
-            if (!text || (this.localizable && !this.localizable.has(column.name))) {
-                // not translatable or not a translatable column
-                return text;
-            }
-
-            var source = this.API.utils.escapeInvalidChars(text);
-            var key = this.makeKey(source);
-            var tester = this.API.newResource({
-                type: "string",
-                project: this.project.getProjectId(),
-                sourceLocale: this.sourceLocale,
-                reskey: key,
-                datatype: this.type.datatype
-            });
-            var hashkey = tester.hashKeyForTranslation(locale);
-            var translatedResource = translations.get(hashkey);
-
-            if (text) {
-                if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                    translated = source;
-                } else if (translatedResource) {
-                    translated = translatedResource.getTarget();
-                } else if (this.type) {
-                    if (this.type.pseudos && this.type.pseudos[locale]) {
-                        var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                        if (sourceLocale !== this.sourceLocale) {
-                            // translation is derived from a different locale's translation instead of from the source string
-                            var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
-                            source = sourceRes ? sourceRes.getTarget() : source;
+    var header = this.headerRow && this.columns ? this.columns.map(function(column) { return column.name; }).join(this.columnSeparator) + this.rowSeparator : "";
+    if (this.records && this.records.length) {
+        return header + this.records.map(function(record) {
+            return this.columns.map(function(column) {
+                var text = record[column.name] || "",
+                    translated = text;
+    
+                if (!text || !translations || (this.localizable && !this.localizable.has(column.name))) {
+                    // not translatable or not a translatable column
+                    return text;
+                }
+    
+                var source = this.API.utils.escapeInvalidChars(text);
+                var key = this.makeKey(source);
+                var tester = this.API.newResource({
+                    type: "string",
+                    project: this.project.getProjectId(),
+                    sourceLocale: this.sourceLocale,
+                    reskey: key,
+                    datatype: this.type.datatype
+                });
+                var hashkey = tester.hashKeyForTranslation(locale);
+                var translatedResource = translations.get(hashkey);
+    
+                if (text) {
+                    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                        translated = source;
+                    } else if (translatedResource) {
+                        translated = translatedResource.getTarget();
+                    } else if (this.type) {
+                        if (this.type.pseudos && this.type.pseudos[locale]) {
+                            var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                            if (sourceLocale !== this.sourceLocale) {
+                                // translation is derived from a different locale's translation instead of from the source string
+                                var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
+                                source = sourceRes ? sourceRes.getTarget() : source;
+                            }
+                            translated = this.type.pseudos[locale].getString(source);
+                        } else {
+                            logger.trace("New string found: " + source);
+                            this.type.newres.add(this.API.newResource({
+                                resType: "string",
+                                project: this.project.getProjectId(),
+                                key: key,
+                                sourceLocale: this.sourceLocale,
+                                source: text,
+                                targetLocale: locale,
+                                target: text,
+                                autoKey: true,
+                                pathName: this.pathName,
+                                state: "new",
+                                datatype: this.type.datatype
+                            }));
+                            translated = !this.project.settings.nopseudo && this.type && this.type.missingPseudo ?
+                                    this.type.missingPseudo.getString(text) : text;
                         }
-                        translated = this.type.pseudos[locale].getString(source);
-                    } else {
-                        logger.trace("New string found: " + source);
-                        this.type.newres.add(this.API.newResource({
-                            resType: "string",
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.sourceLocale,
-                            source: text,
-                            targetLocale: locale,
-                            target: text,
-                            autoKey: true,
-                            pathName: this.pathName,
-                            state: "new",
-                            datatype: this.type.datatype
-                        }));
-                        translated = !this.project.settings.nopseudo && this.type && this.type.missingPseudo ?
-                                this.type.missingPseudo.getString(text) : text;
                     }
                 }
-            }
-
-            if (translated.indexOf(this.columnSeparator) > -1 || translated.trim() !== translated || translated.indexOf('\n') > -1 || translated.indexOf('"') > -1) {
-                translated = '"' + translated.replace(/"/g, '""') + '"';
-            }
-
-            return translated;
-        }.bind(this)).join(this.columnSeparator);
-    }.bind(this)).join(this.rowSeparator);
+    
+                if (translated.indexOf(this.columnSeparator) > -1 || translated.trim() !== translated || translated.indexOf('\n') > -1 || translated.indexOf('"') > -1) {
+                    translated = '"' + translated.replace(/"/g, '""') + '"';
+                }
+    
+                return translated;
+            }.bind(this)).join(this.columnSeparator);
+        }.bind(this)).join(this.rowSeparator);
+    } else if (this.set.size() > 0) {
+        // no source records available, so just output the resources by making
+        // a simple 3 column file
+        // with the first column being the key, the second being the source, and the
+        // third being the translation (if any)
+        var resources = this.set.getAll();
+        return "key,source,target" + this.rowSeparator + resources.map(function(res) {
+            return [
+                res.getKey(),
+                res.getSource(),
+                res.getTarget()
+            ].join(this.columnSeparator);
+        }.bind(this)).join(this.rowSeparator);
+    } else {
+        console.log("ilib-loctool-csv: Warning: no records or resources to generate.");
+        return undefined;
+    }
 };
 
 /**
@@ -395,8 +413,12 @@ CSVFile.prototype.localize = function(translations, locales) {
             var p = path.join(this.project.target, pathName);
             var d = path.dirname(p);
             this.API.utils.makeDirs(d);
-
-            fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
+            var text = this.localizeText(translations, locales[i]);
+            if (text) {
+                fs.writeFileSync(p, text, "utf-8");
+            } else {
+                console.log("ilib-loctool-csv: warning: no contents written for file " + pathName);
+            }
         }
     } else {
         logger.debug(this.pathName + ": No records, no localize");
