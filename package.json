@@ -46,12 +46,12 @@
     "clean": "git clean -f -d test"
   },
   "engines": {
-    "node": ">=6.0"
+    "node": ">=8.0"
   },
   "dependencies": {
-    "ilib": "^14.8.0",
+    "ilib": "^14.9.0",
+    "ilib-loctool-ghfm": "^1.7.1",
     "ilib-loctool-json": "^1.1.0",
-    "ilib-loctool-ghfm": "^1.7.0",
     "log4js": "^4.5.1"
   },
   "devDependencies": {

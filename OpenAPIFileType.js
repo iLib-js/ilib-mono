@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+var fs = require('fs');
 var log4js = require('log4js');
 
 var JsonFileType = require('ilib-loctool-json/JsonFileType');
@@ -25,20 +26,29 @@ var OpenAPIFile = require('./OpenAPIFile');
 var logger = log4js.getLogger('loctool.plugin.OpenAPIFileType');
 
 var OpenAPIFileType = function(project) {
-	this.type = 'openapi';
-	this.datatype = 'openapi';
-	this.extensions = ['.json'];
-	this.project = project;
+    this.type = 'openapi';
+    this.datatype = 'openapi';
+    this.extensions = ['.json', '.jso', '.jsn'];
+    this.project = project;
 
-	this.API = project.getAPI();
-	this.extracted = this.API.newTranslationSet(project.getSourceLocale());
-	this.newres = this.API.newTranslationSet(project.getSourceLocale());
-	this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+    this.API = project.getAPI();
+    this.extracted = this.API.newTranslationSet(project.getSourceLocale());
+    this.newres = this.API.newTranslationSet(project.getSourceLocale());
+    this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 
-	// Copy over openapi config to json key to enable support of mappings from the json plugin.
-	project.settings.json = project.settings.openapi;
-	this.jsonFileType = new JsonFileType(project);
-	this.markdownFileType = new MarkdownFileType(project);
+    this.defaultSchema = fs.readFileSync('./schema.json', 'utf-8');
+
+    if (!project.settings.openapi.schemas) {
+        project.settings.openapi.schemas = [];
+    }
+    // Default OpenAPI schema bundled with the plugin.
+    project.settings.openapi.schemas.unshift('./schema.json');
+
+    // Copy over openapi config to json key to enable support of mappings from the json plugin.
+    project.settings.json = project.settings.openapi;
+
+    this.jsonFileType = new JsonFileType(project);
+    this.markdownFileType = new MarkdownFileType(project);
 }
 
 /**
@@ -51,7 +61,7 @@ var OpenAPIFileType = function(project) {
  * @returns {String} the localized path name
  */
 OpenAPIFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
-	return this.jsonFileType.getLocalizedPath(template, pathname, locale);
+    return this.jsonFileType.getLocalizedPath(template, pathname, locale);
 }
 
 /**
@@ -62,7 +72,7 @@ OpenAPIFileType.prototype.getLocalizedPath = function(template, pathname, locale
  * @returns {String} the locale within the path
  */
 OpenAPIFileType.prototype.getLocaleFromPath = function(template, pathname) {
-	return this.jsonFileType.getLocaleFromPath(template, pathname);
+    return this.jsonFileType.getLocaleFromPath(template, pathname);
 }
 
 /**
@@ -73,7 +83,7 @@ OpenAPIFileType.prototype.getLocaleFromPath = function(template, pathname) {
  * path or undefined if none of the mappings match
  */
 OpenAPIFileType.prototype.getMapping = function(pathName) {
-	return this.jsonFileType.getMapping(pathName);
+    return this.jsonFileType.getMapping(pathName);
 }
 /**
  * Return true if the given path is an Json template file and is handled
@@ -84,7 +94,7 @@ OpenAPIFileType.prototype.getMapping = function(pathName) {
  * false otherwise
  */
 OpenAPIFileType.prototype.handles = function(pathName) {
-	return this.jsonFileType.handles(pathName);
+    return this.jsonFileType.handles(pathName);
 }
 /**
  * Return dataType of the plugin.
@@ -92,7 +102,7 @@ OpenAPIFileType.prototype.handles = function(pathName) {
  * @returns {String}
  */
 OpenAPIFileType.prototype.getDataType = function() {
-	return this.datatype;
+    return this.datatype;
 };
 /**
  * Return resource types of the plugin.
@@ -100,7 +110,7 @@ OpenAPIFileType.prototype.getDataType = function() {
  * @returns {{}}
  */
 OpenAPIFileType.prototype.getResourceTypes = function() {
-	return {};
+    return {};
 }
 /**
  * Return extensions handled by the plugin.
@@ -108,12 +118,12 @@ OpenAPIFileType.prototype.getResourceTypes = function() {
  * @returns {Array.<String>}
  */
 OpenAPIFileType.prototype.getExtensions = function() {
-	return this.extensions;
+    return this.extensions;
 };
 
 OpenAPIFileType.prototype.write = function() {
-	// templates are localized individually, so we don't have to
-	// write out the resources
+    // templates are localized individually, so we don't have to
+    // write out the resources
 };
 
 /**
@@ -124,7 +134,7 @@ OpenAPIFileType.prototype.write = function() {
  * pseudo localized resources
  */
 OpenAPIFileType.prototype.getPseudo = function() {
-	return this.pseudo;
+    return this.pseudo;
 };
 
 /**
@@ -137,7 +147,7 @@ OpenAPIFileType.prototype.getPseudo = function() {
  * extracted resources
  */
 OpenAPIFileType.prototype.getExtracted = function() {
-	return this.extracted;
+    return this.extracted;
 };
 
 /**
@@ -148,22 +158,25 @@ OpenAPIFileType.prototype.getExtracted = function() {
  * new resources
  */
 OpenAPIFileType.prototype.getNew = function() {
-	return this.newres;
+    return this.newres;
 };
 /**
  * Return a new OpenAPIFile object.
  *
  * @param {String} path path to a file
+ * @param {Object} options additional options to be passed
+ * to a file object
  * @returns {OpenAPIFile}
  */
-OpenAPIFileType.prototype.newFile = function(path) {
-	logger.debug('Add new file ' + path);
+OpenAPIFileType.prototype.newFile = function(path, options) {
+    logger.debug('Add new file ' + path);
 
-	return new OpenAPIFile({
-		project: this.project,
-		pathName: path,
-		type: this
-	});
+    return new OpenAPIFile({
+        project: this.project,
+        pathName: path,
+        type: this,
+        targetLocale: options && options.locale
+    });
 };
 
 /**
@@ -173,7 +186,7 @@ OpenAPIFileType.prototype.newFile = function(path) {
  * @param {TranslationSet} set set of resources to add to the current set
  */
 OpenAPIFileType.prototype.addSet = function(set) {
-	this.extracted.addSet(set);
+    this.extracted.addSet(set);
 };
 /**
  * Return file type name.
@@ -181,7 +194,11 @@ OpenAPIFileType.prototype.addSet = function(set) {
  * @returns {String}
  */
 OpenAPIFileType.prototype.name = function() {
-	return 'OpenAPI File Type';
+    return 'OpenAPI File Type';
 };
+
+OpenAPIFileType.prototype.getDefaultSchema = function() {
+    return this.defaultSchema;
+}
 
 module.exports = OpenAPIFileType;

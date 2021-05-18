@@ -27,36 +27,38 @@ var Locale = require('ilib/lib/Locale.js');
 var logger = log4js.getLogger('loctool.plugin.OpenAPIFile');
 
 var OpenAPIFile = function(options) {
-	this.pathName = options.pathName;
-	this.project = options.project;
+    this.pathName = options.pathName;
+    this.project = options.project;
+    this.targetLocale = options.targetLocale;
 
-	options.jsonFileType = options.jsonFileType || options.type.jsonFileType;
-	if (!options.jsonFileType) {
-		if (options.type && options.type.jsonFileType) {
-			options.jsonFileType = options.type.jsonFileType;
-		} else {
-			throw new Error('jsonFileType is not provided. Can not instantiate OpenAPIFile object');
-		}
-	}
+    options.jsonFileType = options.jsonFileType || options.type.jsonFileType;
+    if (!options.jsonFileType) {
+        if (options.type && options.type.jsonFileType) {
+            options.jsonFileType = options.type.jsonFileType;
+        } else {
+            throw new Error('jsonFileType is not provided. Can not instantiate OpenAPIFile object');
+        }
+    }
 
-	if (!options.markdownFileType) {
-		if (options.type && options.type.markdownFileType) {
-			options.markdownFileType = options.type.markdownFileType;
-		} else {
-			throw new Error('markdownFileType is not provided. Can not instantiate OpenAPIFile object');
-		}
-	}
+    if (!options.markdownFileType) {
+        if (options.type && options.type.markdownFileType) {
+            options.markdownFileType = options.type.markdownFileType;
+        } else {
+            throw new Error('markdownFileType is not provided. Can not instantiate OpenAPIFile object');
+        }
+    }
 
-	this.API = options.project.getAPI();
-	this.type = options.type;
-	this.jsonSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
-	this.markdownSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.API = options.project.getAPI();
+    this.type = options.type;
 
-	options.type = options.jsonFileType;
-	this.jsonFile = new JsonFile(options);
+    this.jsonSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : 'zxx-XX');
+    this.markdownSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : 'zxx-XX');
 
-	options.type = options.markdownFileType;
-	this.markdownFile = new MarkdownFile(options);
+    options.type = options.jsonFileType;
+    this.jsonFile = new JsonFile(options);
+
+    options.type = options.markdownFileType;
+    this.markdownFile = new MarkdownFile(options);
 }
 
 /**
@@ -70,8 +72,8 @@ var OpenAPIFile = function(options) {
  * @param {String} data the string to parse
  */
 OpenAPIFile.prototype.parse = function(data) {
-	this.parseJson(data);
-	this.parseMarkdown();
+    this.parseJson(data);
+    this.parseMarkdown();
 }
 /**
  * Parse JSON data using ilib-loctool-json plugin.
@@ -80,9 +82,9 @@ OpenAPIFile.prototype.parse = function(data) {
  * @param {String} data the string to parse
  */
 OpenAPIFile.prototype.parseJson = function(data) {
-	this.jsonFile.parse(data);
+    this.jsonFile.parse(data);
 
-	this.jsonSet = this.jsonFile.getTranslationSet();
+    this.jsonSet = this.jsonFile.getTranslationSet();
 }
 /**
  * Parse JSON resources using ilib-loctool-ghfm plugin and get
@@ -90,18 +92,18 @@ OpenAPIFile.prototype.parseJson = function(data) {
  *
  * @private
  */
-OpenAPIFile.prototype.parseMarkdown = function () {
-	// iterate through this.jsonSet and send strings to Markdown parse
-	// Then update set based on the result from MD parser
-	this.jsonSet.getAll().map(function (res) {
-		if (res.resType === 'string') {
-			this.markdownFile.parse(res.source);
+OpenAPIFile.prototype.parseMarkdown = function() {
+    // iterate through this.jsonSet and send strings to Markdown parse
+    // Then update set based on the result from MD parser
+    this.jsonSet.getAll().forEach(function(res) {
+        if (res.resType === 'string') {
+            this.markdownFile.parse(res.source);
 
-			this.markdownSet.addSet(this.markdownFile.getTranslationSet());
-			this.markdownFile.getTranslationSet().clear();
-			this.markdownFile.comment = undefined;
-		}
-	}.bind(this));
+            this.markdownSet.addSet(this.markdownFile.getTranslationSet());
+            this.markdownFile.getTranslationSet().clear();
+            this.markdownFile.comment = undefined;
+        }
+    }.bind(this));
 }
 
 /**
@@ -110,8 +112,8 @@ OpenAPIFile.prototype.parseMarkdown = function () {
  * @returns {TranslationSet} The set of resources found in the
  * current file.
  */
-OpenAPIFile.prototype.getTranslationSet = function () {
-	return this.markdownSet;
+OpenAPIFile.prototype.getTranslationSet = function() {
+    return this.markdownSet;
 }
 /**
  * Return hashed key for a provided input string.
@@ -119,8 +121,8 @@ OpenAPIFile.prototype.getTranslationSet = function () {
  * @param {String} source string input to hash
  * @returns {String} a has key
  */
-OpenAPIFile.prototype.makeKey = function (source) {
-	return this.API.utils.hashKey(MarkdownFile.cleanString(source));
+OpenAPIFile.prototype.makeKey = function(source) {
+    return this.API.utils.hashKey(MarkdownFile.cleanString(source));
 }
 
 /**
@@ -128,19 +130,20 @@ OpenAPIFile.prototype.makeKey = function (source) {
  * project's translation set.
  */
 OpenAPIFile.prototype.extract = function() {
-	logger.debug('Extracting strings from ' + this.pathName);
-	if (this.pathName) {
-		var p = path.join(this.project.root, this.pathName);
-		try {
-			var data = fs.readFileSync(p, 'utf8');
-			if (data) {
-				this.parse(data);
-			}
-		} catch (e) {
-			logger.warn('Could not read file: ' + p);
-			logger.warn(e);
-		}
-	}
+    logger.debug('Extracting strings from ' + this.pathName);
+    if (this.pathName) {
+        var p = path.join(this.project.root, this.pathName);
+        try {
+            var data = fs.readFileSync(p, 'utf8');
+            if (data) {
+                this.parse(data);
+            }
+        }
+        catch (e) {
+            logger.warn('Could not read file: ' + p);
+            logger.warn(e);
+        }
+    }
 };
 /**
  * Localize the contents of this OpenAPI file and write out the
@@ -150,23 +153,23 @@ OpenAPIFile.prototype.extract = function() {
  * translations
  * @param {Array.<String>} locales array of locales to translate to
  */
-OpenAPIFile.prototype.localize = function (translations, locales) {
-	// don't localize if there is no text
-	for (var i = 0; i < locales.length; i++) {
-		if (!this.project.isSourceLocale(locales[i])) {
-			// skip variants for now until we can handle them properly
-			var l = new Locale(locales[i]);
-			if (!l.getVariant()) {
-				var pathName = this.getLocalizedPath(locales[i]);
-				logger.debug('Writing file ' + pathName);
-				var p = path.join(this.project.target, pathName);
-				var d = path.dirname(p);
-				this.API.utils.makeDirs(d);
+OpenAPIFile.prototype.localize = function(translations, locales) {
+    // don't localize if there is no text
+    for (var i = 0; i < locales.length; i++) {
+        if (!this.project.isSourceLocale(locales[i])) {
+            // skip variants for now until we can handle them properly
+            var l = new Locale(locales[i]);
+            if (!l.getVariant()) {
+                var pathName = this.getLocalizedPath(locales[i]);
+                logger.debug('Writing file ' + pathName);
+                var p = path.join(this.project.target, pathName);
+                var d = path.dirname(p);
+                this.API.utils.makeDirs(d);
 
-				fs.writeFileSync(p, this.localizeText(translations, locales[i]), 'utf-8');
-			}
-		}
-	}
+                fs.writeFileSync(p, this.localizeText(translations, locales[i]), 'utf-8');
+            }
+        }
+    }
 }
 
 /**
@@ -176,8 +179,8 @@ OpenAPIFile.prototype.localize = function (translations, locales) {
  * @param {String} locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-OpenAPIFile.prototype.getLocalizedPath = function (locale) {
-	return this.jsonFile.getLocalizedPath(locale);
+OpenAPIFile.prototype.getLocalizedPath = function(locale) {
+    return this.jsonFile.getLocalizedPath(locale);
 }
 
 /**
@@ -188,24 +191,24 @@ OpenAPIFile.prototype.getLocalizedPath = function (locale) {
  * @param {String} locale the locale to translate to
  * @returns {String} the localized text of this file
  */
-OpenAPIFile.prototype.localizeText = function (translations, locale) {
-	var jsonTranslationSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+OpenAPIFile.prototype.localizeText = function(translations, locale) {
+    var jsonTranslationSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
 
-	this.jsonSet.getAll().forEach(function (res) {
-		if (res.resType === 'string') {
-			this.markdownFile.parse(res.source);
-			var localizedMarkdown = this.markdownFile.localizeText(translations, locale)
+    this.jsonSet.getAll().forEach(function(res) {
+        if (res.resType === 'string') {
+            this.markdownFile.parse(res.source);
+            var localizedMarkdown = this.markdownFile.localizeText(translations, locale)
 
-			// Remove trailing new line as markdown always appends it to the end of the string.
-			localizedMarkdown = localizedMarkdown.replace(/\n$/, '');
+            // Remove trailing new line as markdown always appends it to the end of the string.
+            localizedMarkdown = localizedMarkdown.replace(/\n$/, '');
 
-			res.setTarget(localizedMarkdown);
-			res.setTargetLocale(locale);
-			jsonTranslationSet.add(res);
-		}
-	}.bind(this));
+            res.setTarget(localizedMarkdown);
+            res.setTargetLocale(locale);
+            jsonTranslationSet.add(res);
+        }
+    }.bind(this));
 
-	return this.jsonFile.localizeText(jsonTranslationSet, locale);
+    return this.jsonFile.localizeText(jsonTranslationSet, locale);
 }
 
 module.exports = OpenAPIFile;

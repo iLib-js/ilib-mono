@@ -20,551 +20,551 @@
 var fs = require("fs");
 
 if (!OpenAPIFileType) {
-	var OpenAPIFileType = require("../OpenAPIFileType");
-	var CustomProject =  require("loctool/lib/CustomProject.js");
+    var OpenAPIFileType = require("../OpenAPIFileType");
+    var CustomProject = require("loctool/lib/CustomProject.js");
 }
 
 var p = new CustomProject({
-	sourceLocale: "en-US",
-	plugins: ["../."]
+    sourceLocale: "en-US",
+    plugins: ["../."]
 }, "./test/testfiles", {
-	locales:["en-GB"],
-	openapi: {
-		mappings: {
-			"openapi.json": {
-				schema: "openapi-schema",
-				method: "copy",
-				template: "resources/[localeDir]/openapi.json"
-			},
-			"resources/en/US/openapi.json": {
-				schema: 'openapi-schema',
-				method: 'copy',
-				template: 'resources/[localeDir]/openapi.json'
-			},
-			"**/api.json": {
-				schema: 'api-schema',
-				method: 'copy',
-				template: 'resources/[localeDir]/api.json'
-			},
-			"**/test/openapi.jsn": {
-				schema: 'openapi-schema',
-				method: 'copy',
-				template: '[dir]/[localeDir]/openapi.json'
-			}
-		}
-	}
+    locales: ["en-GB"],
+    openapi: {
+        mappings: {
+            "openapi.json": {
+                schema: "openapi-schema",
+                method: "copy",
+                template: "resources/[localeDir]/openapi.json"
+            },
+            "resources/en/US/openapi.json": {
+                schema: 'openapi-schema',
+                method: 'copy',
+                template: 'resources/[localeDir]/openapi.json'
+            },
+            "**/api.json": {
+                schema: 'api-schema',
+                method: 'copy',
+                template: 'resources/[localeDir]/api.json'
+            },
+            "**/test/openapi.jsn": {
+                schema: 'openapi-schema',
+                method: 'copy',
+                template: '[dir]/[localeDir]/openapi.json'
+            }
+        }
+    }
 });
 
 module.exports.openapifiletype = {
-	testConstructor: function(test) {
-		test.expect(1);
+    testConstructor: function(test) {
+        test.expect(1);
 
-		var oaft = new OpenAPIFileType(p);
+        var oaft = new OpenAPIFileType(p);
 
-		test.ok(oaft);
+        test.ok(oaft);
 
-		test.done();
-	},
+        test.done();
+    },
 
-	getLocalizedPath: {
-		testGetLocalizedPathLocaleDir: function(test) {
-			test.expect(2);
+    getLocalizedPath: {
+        testGetLocalizedPathLocaleDir: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
+            var oaft = new OpenAPIFileType(p);
 
-			test.ok(oaft);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('resources/[localeDir]/openapi.json', 'dirA/dirB/openapi.json', 'de-DE'),
-					'resources/de/DE/openapi.json'
-			);
+            test.equals(
+                oaft.getLocalizedPath('resources/[localeDir]/openapi.json', 'dirA/dirB/openapi.json', 'de-DE'),
+                'resources/de/DE/openapi.json'
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathDir: function(test) {
-			test.expect(2);
+        testGetLocalizedPathDir: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
-					"dirA/dirB/de/DE/openapi.json"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
+                "dirA/dirB/de/DE/openapi.json"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathBasename: function(test) {
-			test.expect(2);
+        testGetLocalizedPathBasename: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[localeDir]/tr-[basename].j', "dirA/dirB/openapi.json", "de-DE"),
-					"de/DE/tr-openapi.j"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[localeDir]/tr-[basename].j', "dirA/dirB/openapi.json", "de-DE"),
+                "de/DE/tr-openapi.j"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathFilename: function(test) {
-			test.expect(2);
+        testGetLocalizedPathFilename: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[localeDir]/tr-[filename]', "dirA/dirB/openapi.json", "de-DE"),
-					"de/DE/tr-openapi.json"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[localeDir]/tr-[filename]', "dirA/dirB/openapi.json", "de-DE"),
+                "de/DE/tr-openapi.json"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathExtension: function(test) {
-			test.expect(2);
+        testGetLocalizedPathExtension: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "dirA/dirB/openapi.jsn", "de-DE"),
-					"de/DE/tr-foobar.jsn"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "dirA/dirB/openapi.jsn", "de-DE"),
+                "de/DE/tr-foobar.jsn"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathLocale: function(test) {
-			test.expect(2);
+        testGetLocalizedPathLocale: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[dir]/[locale]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
-					"dirA/dirB/de-DE/openapi.json"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[dir]/[locale]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
+                "dirA/dirB/de-DE/openapi.json"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathLanguage: function(test) {
-			test.expect(2);
+        testGetLocalizedPathLanguage: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(oaft.getLocalizedPath(
-					'[dir]/[language]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
-					"dirA/dirB/de/openapi.json"
-			);
+            test.equals(oaft.getLocalizedPath(
+                '[dir]/[language]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
+                "dirA/dirB/de/openapi.json"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathRegion: function(test) {
-			test.expect(2);
+        testGetLocalizedPathRegion: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[dir]/[region]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
-					"dirA/dirB/DE/openapi.json"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[dir]/[region]/openapi.json', "dirA/dirB/openapi.json", "de-DE"),
+                "dirA/dirB/DE/openapi.json"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathScript: function(test) {
-			test.expect(2);
+        testGetLocalizedPathScript: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[dir]/[script]/openapi.json', "dirA/dirB/openapi.json", "zh-Hans-CN"),
-					"dirA/dirB/Hans/openapi.json"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[dir]/[script]/openapi.json', "dirA/dirB/openapi.json", "zh-Hans-CN"),
+                "dirA/dirB/Hans/openapi.json"
+            );
 
-			test.done();
-		},
+            test.done();
+        },
 
-		testGetLocalizedPathLocaleUnder: function(test) {
-			test.expect(2);
+        testGetLocalizedPathLocaleUnder: function(test) {
+            test.expect(2);
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.equals(
-					oaft.getLocalizedPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi.json", "zh-Hans-CN"),
-					"dirA/dirB/openapi_zh_Hans_CN.json"
-			);
+            test.equals(
+                oaft.getLocalizedPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi.json", "zh-Hans-CN"),
+                "dirA/dirB/openapi_zh_Hans_CN.json"
+            );
 
-			test.done();
-		}
-	},
-	
-	getLocaleFromPath: {
-		testGetLocaleFromPathDir: function(test) {
-			test.expect(2);
+            test.done();
+        }
+    },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+    getLocaleFromPath: {
+        testGetLocaleFromPathDir: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/openapi.json', "dirA/dirB/openapi.json"), "");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/openapi.json', "dirA/dirB/openapi.json"), "");
 
-		testGetLocaleFromPathBasename: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathBasename: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[basename].json', "dirA/dirB/openapi.json"), "");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[basename].json', "dirA/dirB/openapi.json"), "");
 
-		testGetLocaleFromPathFilename: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathFilename: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[filename]', "dirA/dirB/openapi.json"), "");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[filename]', "dirA/dirB/openapi.json"), "");
 
-		testGetLocaleFromPathLocale: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocale: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[locale]/openapi.json', "dirA/dirB/de-DE/openapi.json"), "de-DE");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[locale]/openapi.json', "dirA/dirB/de-DE/openapi.json"), "de-DE");
 
-		testGetLocaleFromPathLocaleLong: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleLong: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[locale]/openapi.json', "dirA/dirB/zh-Hans-CN/openapi.json"), "zh-Hans-CN");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[locale]/openapi.json', "dirA/dirB/zh-Hans-CN/openapi.json"), "zh-Hans-CN");
 
-		testGetLocaleFromPathLocaleShort: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleShort: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[locale]/openapi.json', "dirA/dirB/fr/openapi.json"), "fr");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[locale]/openapi.json', "dirA/dirB/fr/openapi.json"), "fr");
 
-		testGetLocaleFromPathLanguage: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLanguage: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[language]/openapi.json', "dirA/dirB/de/openapi.json"), "de");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[language]/openapi.json', "dirA/dirB/de/openapi.json"), "de");
 
-		testGetLocaleFromPathScript: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathScript: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[language]-[script]/openapi.json', "dirA/dirB/zh-Hans/openapi.json"), "zh-Hans");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[language]-[script]/openapi.json', "dirA/dirB/zh-Hans/openapi.json"), "zh-Hans");
 
-		testGetLocaleFromPathRegion: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathRegion: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[region]/openapi.json', "dirA/dirB/JP/openapi.json"), "JP");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[region]/openapi.json', "dirA/dirB/JP/openapi.json"), "JP");
 
-		testGetLocaleFromPathLocaleDir: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleDir: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/de/DE/openapi.json"), "de-DE");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/de/DE/openapi.json"), "de-DE");
 
-		testGetLocaleFromPathLocaleDirShort: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleDirShort: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/de/openapi.json"), "de");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/de/openapi.json"), "de");
 
-		testGetLocaleFromPathLocaleDirLong: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleDirLong: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/zh/Hans/CN/openapi.json"), "zh-Hans-CN");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/[localeDir]/openapi.json', "dirA/dirB/zh/Hans/CN/openapi.json"), "zh-Hans-CN");
 
-		testGetLocaleFromPathLocaleDirStart: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleDirStart: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[localeDir]/openapi.json', "de/DE/openapi.json"), "de-DE");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[localeDir]/openapi.json', "de/DE/openapi.json"), "de-DE");
 
-		testGetLocaleFromPathLocaleUnder: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleUnder: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi_de_DE.json"), "de-DE");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi_de_DE.json"), "de-DE");
 
-		testGetLocaleFromPathLocaleUnderShort: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleUnderShort: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi_de.json"), "de");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.equals(oaft.getLocaleFromPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi_de.json"), "de");
 
-		testGetLocaleFromPathLocaleUnderLong: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetLocaleFromPathLocaleUnderLong: function(test) {
+            test.expect(2);
 
-			test.equals(oaft.getLocaleFromPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi_zh_Hans_CN.json"), "zh-Hans-CN");
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		}
-	},
+            test.equals(oaft.getLocaleFromPath('[dir]/openapi_[localeUnder].json', "dirA/dirB/openapi_zh_Hans_CN.json"), "zh-Hans-CN");
 
-	getMapping: {
-		testGetMapping1: function(test) {
-			test.expect(2);
+            test.done();
+        }
+    },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+    getMapping: {
+        testGetMapping1: function(test) {
+            test.expect(2);
 
-			test.deepEqual(
-					oaft.getMapping("dirA/dirB/api.json"),
-					{
-						schema: 'api-schema',
-						method: 'copy',
-						template: 'resources/[localeDir]/api.json'
-					}
-			);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.deepEqual(
+                oaft.getMapping("dirA/dirB/api.json"),
+                {
+                    schema: 'api-schema',
+                    method: 'copy',
+                    template: 'resources/[localeDir]/api.json'
+                }
+            );
 
-		testGetMapping2: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetMapping2: function(test) {
+            test.expect(2);
 
-			test.deepEqual(
-					oaft.getMapping('resources/en/US/openapi.json'),
-					{
-						schema: 'openapi-schema',
-						method: 'copy',
-						template: 'resources/[localeDir]/openapi.json'
-					}
-			);
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.deepEqual(
+                oaft.getMapping('resources/en/US/openapi.json'),
+                {
+                    schema: 'openapi-schema',
+                    method: 'copy',
+                    template: 'resources/[localeDir]/openapi.json'
+                }
+            );
 
-		testGetMappingNoMatch: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testGetMappingNoMatch: function(test) {
+            test.expect(2);
 
-			test.ok(!oaft.getMapping("dirA/dirB/msg.jso"));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		}
-	},
+            test.ok(!oaft.getMapping("dirA/dirB/msg.jso"));
 
-	handles: {
-		testHandlesExtensionTrue: function(test) {
-			test.expect(2);
+            test.done();
+        }
+    },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+    handles: {
+        testHandlesExtensionTrue: function(test) {
+            test.expect(2);
 
-			test.ok(oaft.handles('openapi.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(oaft.handles('openapi.json'));
 
-		testHandlesExtensionFalse: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesExtensionFalse: function(test) {
+            test.expect(2);
 
-			test.ok(!oaft.handles('openapi.jsonhandle'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(!oaft.handles('openapi.jsonhandle'));
 
-		testHandlesNotSource: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesNotSource: function(test) {
+            test.expect(2);
 
-			test.ok(!oaft.handles('foo.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(!oaft.handles('foo.json'));
 
-		testHandlesTrueWithDir: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesTrueWithDir: function(test) {
+            test.expect(2);
 
-			test.ok(oaft.handles('dirA/dirB/dirC/api.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(oaft.handles('dirA/dirB/dirC/api.json'));
 
-		testHandlesFalseWrongDir: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesFalseWrongDir: function(test) {
+            test.expect(2);
 
-			test.ok(!oaft.handles('dirA/dirB/dirC/openapi.jsn'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(!oaft.handles('dirA/dirB/dirC/openapi.jsn'));
 
-		testHandlesFalseRightDir: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesFalseRightDir: function(test) {
+            test.expect(2);
 
-			test.ok(oaft.handles('dirA/dirB/dirC/test/openapi.jsn'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(oaft.handles('dirA/dirB/dirC/test/openapi.jsn'));
 
-		testHandlesTrueSourceLocale: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesTrueSourceLocale: function(test) {
+            test.expect(2);
 
-			test.ok(oaft.handles('resources/en/US/api.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            test.ok(oaft.handles('resources/en/US/api.json'));
 
-		testHandlesAlternateExtensionTrue: function(test) {
-			test.expect(3);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesAlternateExtensionTrue: function(test) {
+            test.expect(3);
 
-			// windows?
-			test.ok(oaft.handles('openapi.jsn'));
-			test.ok(oaft.handles('openapi.jso'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            // windows?
+            test.ok(oaft.handles('openapi.jsn'));
+            test.ok(oaft.handles('openapi.jso'));
 
-		testHandlesAlreadyLocalizedGB: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesAlreadyLocalizedGB: function(test) {
+            test.expect(2);
 
-			// This matches one of the templates, but the locale is
-			// not the source locale, so we don't need to
-			// localize it again.
-			test.ok(!oaft.handles('resources/en/GB/openapi.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            // This matches one of the templates, but the locale is
+            // not the source locale, so we don't need to
+            // localize it again.
+            test.ok(!oaft.handles('resources/en/GB/openapi.json'));
 
-		testHandlesAlreadyLocalizedCN: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesAlreadyLocalizedCN: function(test) {
+            test.expect(2);
 
-			// This matches one of the templates, but the locale is
-			// not the source locale, so we don't need to
-			// localize it again.
-			test.ok(!oaft.handles('resources/zh/Hans/CN/openapi.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		},
+            // This matches one of the templates, but the locale is
+            // not the source locale, so we don't need to
+            // localize it again.
+            test.ok(!oaft.handles('resources/zh/Hans/CN/openapi.json'));
 
-		testHandlesNotAlreadyLocalizedenUS: function(test) {
-			test.expect(2);
+            test.done();
+        },
 
-			var oaft = new OpenAPIFileType(p);
-			test.ok(oaft);
+        testHandlesNotAlreadyLocalizedenUS: function(test) {
+            test.expect(2);
 
-			// we figure this out from the template
-			test.ok(oaft.handles('resources/en/US/api.json'));
+            var oaft = new OpenAPIFileType(p);
+            test.ok(oaft);
 
-			test.done();
-		}
-	}
+            // we figure this out from the template
+            test.ok(oaft.handles('resources/en/US/api.json'));
+
+            test.done();
+        }
+    }
 }

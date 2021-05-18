@@ -31,6 +31,6 @@ suites.forEach(function (path) {
     }
 });
 
-reporter.run(modules, undefined, function(err) {
+reporter.run(modules, undefined, function (err) {
     process.exit(err ? 1 : 0);
 });

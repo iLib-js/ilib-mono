@@ -1,5 +1,5 @@
 {
-  "$id": "openapi-schema",
+  "$id": "custom-schema",
   "properties": {
     "description": {
       "type": "string",
