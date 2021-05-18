@@ -102,8 +102,7 @@ CSVFileType.prototype.newFile = function(path, options) {
         project: this.project,
         pathName: path,
         type: this,
-        sourceLocale: options && options.sourceLocale,
-        targetLocale: options && options.targetLocale
+        targetLocale: options && options.locale
     });
 };
 
