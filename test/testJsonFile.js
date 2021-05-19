@@ -97,6 +97,11 @@ var p = new CustomProject({
                 "schema": "http://github.com/ilib-js/arrays.json",
                 "method": "copy",
                 "template": "resources/[localeDir]/arrays.json"
+            },
+            "**/array-refs.json": {
+                "schema": "http://github.com/ilib-js/array-refs.json",
+                "method": "copy",
+                "template": "resources/[localeDir]/array-refs.json"
             }
         }
     }
@@ -673,6 +678,46 @@ module.exports.jsonfile = {
         test.equal(resources[2].getType(), 'string');
         test.equal(resources[2].getKey(), 'objects/item_1/description');
         test.equal(resources[2].getSource(), 'String property');
+
+        test.done();
+    },
+
+    testJsonFileParseArrayWithRef: function(test) {
+        test.expect(10);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/array-refs.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+                '  "itemsArray": [\n' +
+                '    {\n' +
+                '      "itemField": "First item",\n' +
+                '      "itemFieldIgnore": "Non-translatable"\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "itemField": "Second item",\n' +
+                '      "itemFieldIgnore": "Non-translatable"\n' +
+                '    }\n' +
+                '  ]\n' +
+                '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 2);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+        test.equal(resources[0].getType(), 'string');
+        test.equal(resources[0].getKey(), 'itemsArray/item_0/itemField');
+        test.equal(resources[0].getSource(), 'First item');
+
+        test.equal(resources[1].getType(), 'string');
+        test.equal(resources[1].getKey(), 'itemsArray/item_1/itemField');
+        test.equal(resources[1].getSource(), 'Second item');
 
         test.done();
     },
