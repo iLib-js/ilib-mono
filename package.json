@@ -2,7 +2,6 @@
     "name": "ilib-locale",
     "version": "1.0.0",
     "main": "./lib/Locale.js",
-    "module": "./src/Locale.js",
     "description": "A BCP-47/IETF locale specifier parser/validator",
     "keywords": [
         "internationalization",

@@ -25,7 +25,10 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'lib'),
         filename: "ilib-locale-web.js",
-        library: "Locale"
+        library: {
+            name: "Locale",
+            type: "umd"
+        }
     },
     externals: {
         'ilib-env': 'ilibEnv'
