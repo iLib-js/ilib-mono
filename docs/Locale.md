@@ -26,6 +26,9 @@ with 4 parameters that specify the language, region, variant, and script individ
         * [.regionAlpha2ToAlpha3(alpha2)](#Locale.regionAlpha2ToAlpha3) ⇒ <code>string</code> \| <code>undefined</code>
         * [.languageAlpha1ToAlpha3(alpha1)](#Locale.languageAlpha1ToAlpha3) ⇒ <code>string</code> \| <code>undefined</code>
 
+
+* * *
+
 <a name="new_Locale_new"></a>
 
 ### new Locale(language, [region], [variant], [script])
@@ -73,6 +76,9 @@ the host Javascript engine.<p>
 | [variant] | <code>string</code> | the name of the variant of this locale, if any |
 | [script] | <code>string</code> | the ISO 15924 code of the script for this locale, if any |
 
+
+* * *
+
 <a name="Locale+getLanguage"></a>
 
 ### locale.getLanguage() ⇒ <code>string</code> \| <code>undefined</code>
@@ -80,6 +86,9 @@ Return the ISO 639 language code for this locale.
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> \| <code>undefined</code> - the language code for this locale  
+
+* * *
+
 <a name="Locale+getLanguageAlpha3"></a>
 
 ### locale.getLanguageAlpha3() ⇒ <code>string</code> \| <code>undefined</code>
@@ -87,6 +96,9 @@ Return the language of this locale as an ISO-639-alpha3 language code
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> \| <code>undefined</code> - the alpha3 language code of this locale  
+
+* * *
+
 <a name="Locale+getRegion"></a>
 
 ### locale.getRegion() ⇒ <code>string</code> \| <code>undefined</code>
@@ -94,6 +106,9 @@ Return the ISO 3166 region code for this locale.
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> \| <code>undefined</code> - the region code of this locale  
+
+* * *
+
 <a name="Locale+getRegionAlpha3"></a>
 
 ### locale.getRegionAlpha3() ⇒ <code>string</code> \| <code>undefined</code>
@@ -101,6 +116,9 @@ Return the region of this locale as an ISO-3166-alpha3 region code
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> \| <code>undefined</code> - the alpha3 region code of this locale  
+
+* * *
+
 <a name="Locale+getScript"></a>
 
 ### locale.getScript() ⇒ <code>string</code> \| <code>undefined</code>
@@ -108,6 +126,9 @@ Return the ISO 15924 script code for this locale
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> \| <code>undefined</code> - the script code of this locale  
+
+* * *
+
 <a name="Locale+getVariant"></a>
 
 ### locale.getVariant() ⇒ <code>string</code> \| <code>undefined</code>
@@ -115,6 +136,9 @@ Return the variant code for this locale
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> \| <code>undefined</code> - the variant code of this locale, if any  
+
+* * *
+
 <a name="Locale+getSpec"></a>
 
 ### locale.getSpec() ⇒ <code>string</code>
@@ -122,6 +146,9 @@ Return the whole locale specifier as a string.
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> - the locale specifier  
+
+* * *
+
 <a name="Locale+getLangSpec"></a>
 
 ### locale.getLangSpec() ⇒ <code>string</code>
@@ -132,6 +159,9 @@ match each other regardless of the region or variant.
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> - the language locale specifier  
+
+* * *
+
 <a name="Locale+toString"></a>
 
 ### locale.toString() ⇒ <code>string</code>
@@ -140,6 +170,9 @@ function to represent the locale as its specifier.
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>string</code> - the locale specifier  
+
+* * *
+
 <a name="Locale+equals"></a>
 
 ### locale.equals() ⇒ <code>boolean</code>
@@ -147,6 +180,9 @@ Return true if the the other locale is exactly equal to the current one.
 
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>boolean</code> - whether or not the other locale is equal to the current one  
+
+* * *
+
 <a name="Locale+isValid"></a>
 
 ### locale.isValid() ⇒ <code>boolean</code>
@@ -156,6 +192,9 @@ of the locale that exists.
 **Kind**: instance method of [<code>Locale</code>](#Locale)  
 **Returns**: <code>boolean</code> - true if the current locale has all valid components, and
 false otherwise.  
+
+* * *
+
 <a name="Locale.regionAlpha2ToAlpha3"></a>
 
 ### Locale.regionAlpha2ToAlpha3(alpha2) ⇒ <code>string</code> \| <code>undefined</code>
@@ -171,6 +210,9 @@ parameter if the alpha2 value is not found
 | --- | --- | --- |
 | alpha2 | <code>string</code> \| <code>undefined</code> | the alpha2 code to map |
 
+
+* * *
+
 <a name="Locale.languageAlpha1ToAlpha3"></a>
 
 ### Locale.languageAlpha1ToAlpha3(alpha1) ⇒ <code>string</code> \| <code>undefined</code>
@@ -185,4 +227,7 @@ parameter if the alpha1 value is not found
 | Param | Type | Description |
 | --- | --- | --- |
 | alpha1 | <code>string</code> \| <code>undefined</code> | the alpha1 code to map |
+
+
+* * *
 

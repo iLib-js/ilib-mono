@@ -62,7 +62,7 @@
         "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d *",
-        "doc": "jsdoc2md -c jsdoc.json --source src/* -m table > docs/Locale.md",
+        "doc": "jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/Locale.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
