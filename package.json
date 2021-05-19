@@ -62,7 +62,8 @@
         "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d *",
-        "doc": "jsdoc -c jsdoc.json"
+        "doc": "jsdoc2md -c jsdoc.json --source src/* -m table > docs/Locale.md",
+        "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
         "@babel/core": "^7.14.3",
@@ -83,6 +84,7 @@
         "grunt-contrib-nodeunit": "^2.1.0",
         "grunt-contrib-uglify": "^4.0.1",
         "jsdoc": "^3.6.6",
+        "jsdoc-to-markdown": "^7.0.1",
         "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3",
         "open-cli": "^6.0.1",

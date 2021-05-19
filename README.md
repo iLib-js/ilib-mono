@@ -38,7 +38,7 @@ console.log("Script: " + l.getScript()); // outputs "Hans"
 console.log("Region: " + l.getRegion()); // outputs "CN"
 ```
 
-Full documentation: [Locale class](./docs/index.html)
+Full documentation: [Locale class](./docs/Locale.md)
 
 ## The Current Locale
 
