@@ -115,6 +115,11 @@ limitations under the License.
 
 # Release Notes
 
+## v1.0.1
+
+- do not put the module name into the package.json, because it screws
+up the import of ilib-locale in other apps that use webpack
+
 ## v1.0.0
 
 - Code taken from ilib 14.7.0 and converts to an ES6 module.
