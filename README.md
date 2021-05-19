@@ -38,6 +38,8 @@ console.log("Script: " + l.getScript()); // outputs "Hans"
 console.log("Region: " + l.getRegion()); // outputs "CN"
 ```
 
+Full documentation: [Locale class](./docs/index.html)
+
 ## The Current Locale
 
 To get the default locale of the platform, simply make a new Locale instance

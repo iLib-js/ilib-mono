@@ -32,7 +32,7 @@ import * as ilibEnv from "ilib-env";
  * itself. The idea is to make sure that you can use the quick indexOf if it is
  * available, but use a slower implementation in older engines as well.
  *
- * @static
+ * @private
  * @param {Array.<Object|string|number>} array array to search
  * @param {Object|string|number} obj object being sought. This should be of the same type as the
  * members of the array being searched. If not, this function will not return
@@ -57,52 +57,57 @@ function indexOf(array, obj) {
 };
 
 /**
- * @class
- * Create a new locale instance. Locales are specified either with a specifier string
+ * @class Represent a locale specifier instance.
+ * Locales are specified either with a specifier string
  * that follows the BCP-47 convention (roughly: "language-region-script-variant") or
- * with 4 parameters that specify the language, region, variant, and script individually.<p>
- *
- * The language is given as an ISO 639-1 two-letter, lower-case language code. You
- * can find a full list of these codes at
- * <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</a><p>
- *
- * The region is given as an ISO 3166-1 two-letter, upper-case region code. You can
- * find a full list of these codes at
- * <a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2</a>.<p>
- *
- * The variant is any string that does not contain a dash which further differentiates
- * locales from each other.<p>
- *
- * The script is given as the ISO 15924 four-letter script code. In some locales,
- * text may be validly written in more than one script. For example, Serbian is often
- * written in both Latin and Cyrillic, though not usually mixed together. You can find a
- * full list of these codes at
- * <a href="http://en.wikipedia.org/wiki/ISO_15924#List_of_codes">http://en.wikipedia.org/wiki/ISO_15924#List_of_codes</a>.<p>
- *
- * As an example in ilib, the script can be used in the date formatter. Dates formatted
- * in Serbian could have day-of-week names or month names written in the Latin
- * or Cyrillic script. Often one script is default such that sr-SR-Latn is the same
- * as sr-SR so the script code "Latn" can be left off of the locale spec.<p>
- *
- * Each part is optional, and an empty string in the specifier before or after a
- * dash or as a parameter to the constructor denotes an unspecified value. In this
- * case, many of the ilib functions will treat the locale as generic. For example
- * the locale "en-" is equivalent to "en" and to "en--" and denotes a locale
- * of "English" with an unspecified region and variant, which typically matches
- * any region or variant.<p>
- *
- * Without any arguments to the constructor, this function returns the locale of
- * the host Javascript engine.<p>
- *
- *
- * @constructor
- * @param {?string|Locale=} language the ISO 639 2-letter code for the language, or a full
- * locale spec in BCP-47 format, or another Locale instance to copy from
- * @param {string=} region the ISO 3166 2-letter code for the region
- * @param {string=} variant the name of the variant of this locale, if any
- * @param {string=} script the ISO 15924 code of the script for this locale, if any
+ * with 4 parameters that specify the language, region, variant, and script individually.
  */
-export default class Locale {
+class Locale {
+    /**
+     * Create a new locale instance. Locales are specified either with a specifier string
+     * that follows the BCP-47 convention (roughly: "language-region-script-variant") or
+     * with 4 parameters that specify the language, region, variant, and script individually.<p>
+     *
+     * The language is given as an ISO 639-1 two-letter, lower-case language code. You
+     * can find a full list of these codes at
+     * <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</a><p>
+     *
+     * The region is given as an ISO 3166-1 two-letter, upper-case region code. You can
+     * find a full list of these codes at
+     * <a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2</a>.<p>
+     *
+     * The variant is any string that does not contain a dash which further differentiates
+     * locales from each other.<p>
+     *
+     * The script is given as the ISO 15924 four-letter script code. In some locales,
+     * text may be validly written in more than one script. For example, Serbian is often
+     * written in both Latin and Cyrillic, though not usually mixed together. You can find a
+     * full list of these codes at
+     * <a href="http://en.wikipedia.org/wiki/ISO_15924#List_of_codes">http://en.wikipedia.org/wiki/ISO_15924#List_of_codes</a>.<p>
+     *
+     * As an example in ilib, the script can be used in the date formatter. Dates formatted
+     * in Serbian could have day-of-week names or month names written in the Latin
+     * or Cyrillic script. Often one script is default such that sr-SR-Latn is the same
+     * as sr-SR so the script code "Latn" can be left off of the locale spec.<p>
+     *
+     * Each part is optional, and an empty string in the specifier before or after a
+     * dash or as a parameter to the constructor denotes an unspecified value. In this
+     * case, many of the ilib functions will treat the locale as generic. For example
+     * the locale "en-" is equivalent to "en" and to "en--" and denotes a locale
+     * of "English" with an unspecified region and variant, which typically matches
+     * any region or variant.<p>
+     *
+     * Without any arguments to the constructor, this function returns the locale of
+     * the host Javascript engine.<p>
+     *
+     *
+     * @constructor
+     * @param {?string|Locale=} language the ISO 639 2-letter code for the language, or a full
+     * locale spec in BCP-47 format, or another Locale instance to copy from
+     * @param {string=} region the ISO 3166 2-letter code for the region
+     * @param {string=} variant the name of the variant of this locale, if any
+     * @param {string=} script the ISO 15924 code of the script for this locale, if any
+     */
     constructor(language, region, variant, script) {
         if (typeof(region) === 'undefined' && typeof(variant) === 'undefined' && typeof(script) === 'undefined') {
             let spec = language || ilibEnv.getLocale();
@@ -434,3 +439,6 @@ Locale.regionAlpha2ToAlpha3 = function(alpha2) {
 Locale.languageAlpha1ToAlpha3 = function(alpha1) {
     return Locale.a1toa3langmap[alpha1] || alpha1;
 };
+
+
+export default Locale;
