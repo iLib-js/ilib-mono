@@ -121,6 +121,8 @@ limitations under the License.
 
 - do not put the module name into the package.json, because it screws
 up the import of ilib-locale in other apps that use webpack
+- added API documentation
+- added new way of doing web testing using a webpacked version of the tests
 
 ## v1.0.0
 
