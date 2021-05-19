@@ -1,9 +1,25 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "custom-schema",
+  "type": "object",
+  "description": "Test schema to test schema overwriting using project config",
   "properties": {
-    "description": {
-      "type": "string",
-      "localizable": true
+    "paths": {
+      "type": "object",
+      "properties": {
+        "/markdown": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "additionalField":{
+                "type": "string",
+                "localizable": true
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
