@@ -104,3 +104,4 @@ dist
 .tern-port
 /output/
 /lib/
+test/env-test.js
