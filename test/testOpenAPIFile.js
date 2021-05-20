@@ -625,7 +625,6 @@ module.exports.openapifile = {
                 '        }\n' +
                 '    }\n' +
                 '}\n'
-            console.log(oaf.getTranslationSet().getAll());
 
             test.equal(actual, expected);
 
