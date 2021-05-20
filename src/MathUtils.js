@@ -204,6 +204,6 @@ export function log10(num) {
 export function significant(number, digits, round) {
     if (digits < 1 || number === 0) return number;
     var rnd = round || Math.round;
-    var factor = -Math.floor(MathUtils.log10(Math.abs(number))) + digits - 1;
-    return shiftDecimal(rnd(MathUtils.shiftDecimal(number, factor)), -factor);
+    var factor = -Math.floor(log10(Math.abs(number))) + digits - 1;
+    return shiftDecimal(rnd(shiftDecimal(number, factor)), -factor);
 };

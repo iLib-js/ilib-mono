@@ -1030,8 +1030,8 @@ module.exports.testutils = {
             var expected = JSUtils.hashCode(function a () { return "a"; });
             test.equal(JSUtils.hashCode(function a(){return "a";}), expected);
         } else {
-            var expected = JSUtils.hashCode(function a () { return "a"; });
-            test.notEqual(JSUtils.hashCode(function a(){return "a";}), expected);
+            var expected = JSUtils.hashCode(eval("module.exports = function a () { return \"a\"; }"));
+            test.notEqual(JSUtils.hashCode(eval("module.exports=function a(){return \"a\";}")), expected);
         }
         test.done();
     },
