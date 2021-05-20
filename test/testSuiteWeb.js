@@ -21,4 +21,4 @@ var tests = [
     require('./testlocale.js')
 ];
 
-module.exports = test;
+module.exports = tests;
