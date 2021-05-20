@@ -9,6 +9,8 @@ if (!OpenAPIFile) {
     var CustomProject = require('loctool/lib/CustomProject.js');
     var TranslationSet = require('loctool/lib/TranslationSet.js');
     var ResourceString = require('loctool/lib/ResourceString.js');
+    var ResourceArray = require('loctool/lib/ResourceArray');
+    var ResourcePlural = require('loctool/lib/ResourcePlural');
 }
 
 var p = new CustomProject({
@@ -31,6 +33,11 @@ var p = new CustomProject({
                 schema: 'custom-schema',
                 method: 'copy',
                 template: 'resources/[localeDir]/custom.json'
+            },
+            '**/plural-json.json': {
+                schema: 'custom-schema',
+                method: 'copy',
+                template: 'resources/[localeDir]/plural.json'
             }
         }
     }
@@ -285,6 +292,123 @@ module.exports.openapifile = {
             test.equal(resources[0].getComment(), 'c0 will be replaced with the inline code `custom`.');
 
             test.done();
+        },
+
+        testParseArrayJson: function(test) {
+            test.expect(13);
+
+            var oaf = new OpenAPIFile({
+                project: p,
+                type: t,
+                pathName: 'i18n/openapi.json'
+            });
+            test.ok(oaf);
+
+            var jsonToParse = '{\n' +
+                '  "paths": {\n' +
+                '    "/array": {\n' +
+                '      "get": {\n' +
+                '        "description": "Test array support using tags",\n' +
+                '        "tags": [\n' +
+                '          "First Tag",\n' +
+                '          "Second Tag",\n' +
+                '          "Third Tag"\n' +
+                '        ],\n' +
+                '        "responses": {\n' +
+                '          "200": {\n' +
+                '            "description": "OK Response"\n' +
+                '          }\n' +
+                '        }\n' +
+                '      }\n' +
+                '    }\n' +
+                '  }\n' +
+                '}';
+
+            oaf.parse(jsonToParse);
+
+            var set = oaf.getTranslationSet();
+            test.ok(set);
+
+            var resources = set.getAll();
+            test.equal(resources.length, 3);
+            test.equal(resources[0].getSource(), 'Test array support using tags');
+
+            test.equal(resources[1].getType(), 'array');
+            test.equal(resources[1].getKey(), 'paths//array/get/tags');
+            test.equal(resources[1].getDataType(), 'json');
+
+            var arrayStrings = resources[1].getSourceArray();
+            test.ok(arrayStrings);
+
+            test.equal(arrayStrings.length, 3);
+            test.equals(arrayStrings[0], 'First Tag');
+            test.equals(arrayStrings[1], 'Second Tag');
+            test.equals(arrayStrings[2], 'Third Tag');
+
+            test.equal(resources[2].getSource(), 'OK Response');
+
+            test.done();
+
+        },
+
+        testParsePluralJson: function(test) {
+            test.expect(16);
+
+            var oaf = new OpenAPIFile({
+                project: p,
+                type: t,
+                pathName: 'i18n/custom.json'
+            });
+            test.ok(oaf);
+
+            var jsonToParse = '{\n' +
+                '  "paths": {\n' +
+                '    "/markdown": {\n' +
+                '      "post": {\n' +
+                '        "summary": "Test path with markdown",\n' +
+                '        "description": "Markdown string with `code` in it",\n' +
+                '        "additionalField": "Translatable field using `custom` schema",\n' +
+                '      }\n' +
+                '    },\n' +
+                '    "/plural": {\n' +
+                '      "get": {\n' +
+                '        "description": "Test plural support",\n' +
+                '        "pluralProp": {\n' +
+                '          "one": "singular",\n' +
+                '          "many": "many",\n' +
+                '          "other": "plural"\n' +
+                '        }\n' +
+                '      }\n' +
+                '    }\n' +
+                '  }\n' +
+                '}\n';
+
+            oaf.parse(jsonToParse);
+
+            var set = oaf.getTranslationSet();
+            test.ok(set);
+
+            var resources = set.getAll();
+            test.equal(resources.length, 2);
+            test.equal(resources[0].getSource(), 'Translatable field using <c0/> schema');
+            test.equal(resources[0].getComment(), 'c0 will be replaced with the inline code `custom`.');
+            test.equal(resources[0].getDataType(), 'markdown');
+
+            test.equal(resources[1].getType(), 'plural');
+            test.equal(resources[1].getKey(), 'paths//plural/get/pluralProp');
+            test.equal(resources[1].getDataType(), 'json');
+
+            var pluralStrings = resources[1].getSourcePlurals();
+            test.ok(pluralStrings);
+
+            test.equal(pluralStrings.one, 'singular');
+            test.equal(pluralStrings.many, 'many');
+            test.equal(pluralStrings.other, 'plural');
+            test.ok(!pluralStrings.zero);
+            test.ok(!pluralStrings.two);
+            test.ok(!pluralStrings.few);
+
+            test.done();
         }
     },
 
@@ -397,6 +521,115 @@ module.exports.openapifile = {
             test.equal(actual, expected);
 
             test.done();
+        },
+
+        testLocalizeTextComplexJson: function(test) {
+            test.expect(2);
+
+            var oaf = new OpenAPIFile({
+                project: p,
+                type: t,
+                pathName: 'i18n/custom.json'
+            });
+
+            test.ok(oaf);
+
+            var jsonToParse = '{\n' +
+                '  "paths": {\n' +
+                '    "/markdown": {\n' +
+                '      "post": {\n' +
+                '        "summary": "this is a test summary",\n' +
+                '        "description": "Markdown string with `code` in it",\n' +
+                '        "tags": [\n' +
+                '            "Test Tag",\n' +
+                '            "Another Tag"\n' +
+                '        ],\n' +
+                '        "additionalField": "Non-translatable field"\n' +
+                '      }\n' +
+                '    },\n' +
+                '    "/plural": {\n' +
+                '      "get": {\n' +
+                '        "description": "Test plural support",\n' +
+                '        "pluralProp": {\n' +
+                '          "one": "singular",\n' +
+                '          "many": "many",\n' +
+                '          "other": "plural"\n' +
+                '        }\n' +
+                '      }\n' +
+                '    }\n' +
+                '  }\n' +
+                '}\n';
+
+
+
+            oaf.parse(jsonToParse);
+
+            var translations = new TranslationSet();
+            translations.add(new ResourceArray({
+                project: 'foo',
+                key: 'paths//markdown/post/tags',
+                sourceArray: [
+                    'Test Tag',
+                    'Another Tag'
+                ],
+                sourceLocale: 'en-US',
+                targetArray: [
+                    'Тестовый Тэг',
+                    'Другой Тэг'
+                ],
+                targetLocale: 'ru-RU',
+                datatype: 'json'
+            }));
+            translations.add(new ResourcePlural({
+                project: 'foo',
+                key: 'paths//plural/get/pluralProp',
+                sourceStrings: {
+                    'one': 'singular',
+                    'many': 'many',
+                    'other': 'plural'
+                },
+                sourceLocale: 'en-US',
+                targetStrings: {
+                    'one': 'единственное число',
+                    'many': 'много',
+                    'other': 'другое'
+                },
+                targetLocale: 'ru-RU',
+                datatype: 'json'
+            }));
+
+            var actual = oaf.localizeText(translations, 'ru-RU');
+
+            var expected = '{\n' +
+                '    "paths": {\n' +
+                '        "/markdown": {\n' +
+                '            "post": {\n' +
+                '                "summary": "this is a test summary",\n' +
+                '                "description": "Markdown string with `code` in it",\n' +
+                '                "tags": [\n' +
+                '                    "Тестовый Тэг",\n' +
+                '                    "Другой Тэг"\n' +
+                '                ],\n' +
+                '                "additionalField": "Non-translatable field"\n' +
+                '            }\n' +
+                '        },\n' +
+                '        "/plural": {\n' +
+                '            "get": {\n' +
+                '                "description": "Test plural support",\n' +
+                '                "pluralProp": {\n' +
+                '                    "one": "единственное число",\n' +
+                '                    "many": "много",\n' +
+                '                    "other": "другое"\n' +
+                '                }\n' +
+                '            }\n' +
+                '        }\n' +
+                '    }\n' +
+                '}\n'
+            console.log(oaf.getTranslationSet().getAll());
+
+            test.equal(actual, expected);
+
+            test.done();
         }
     },
 
@@ -448,6 +681,23 @@ module.exports.openapifile = {
                 target: 'Тестовый путь без markdown',
                 targetLocale: 'ru-RU',
                 datatype: 'markdown'
+            }));
+            translations.add(new ResourceArray({
+                project: 'foo',
+                key: 'paths//json/get/tags',
+                sourceArray: [
+                    'First Tag',
+                    'Second Tag',
+                    'Third Tag'
+                ],
+                sourceLocale: 'en-US',
+                targetArray: [
+                    'Первый Тэг',
+                    'Второй Тэг',
+                    'Третий Тэг'
+                ],
+                targetLocale: 'ru-RU',
+                datatype: 'json'
             }));
             translations.add(new ResourceString({
                 project: 'foo',
@@ -509,6 +759,11 @@ module.exports.openapifile = {
                 '            "get": {\n' +
                 '                "summary": "Тестовый путь без markdown",\n' +
                 '                "description": "Test path to verify simple json parser",\n' +
+                '                "tags": [\n' +
+                '                    "Первый Тэг",\n'+
+                '                    "Второй Тэг",\n'+
+                '                    "Третий Тэг"\n'+
+                '                ],\n' +
                 '                "parameters": [\n' +
                 '                    {\n' +
                 '                        "name": "testParam",\n' +

@@ -102,6 +102,10 @@ OpenAPIFile.prototype.parseMarkdown = function() {
             this.markdownSet.addSet(this.markdownFile.getTranslationSet());
             this.markdownFile.getTranslationSet().clear();
             this.markdownFile.comment = undefined;
+        } else {
+            // Any other type of resource but string should be added
+            // to the resultion resource set right away without MD parsing
+            this.markdownSet.add(res);
         }
     }.bind(this));
 }
@@ -205,6 +209,14 @@ OpenAPIFile.prototype.localizeText = function(translations, locale) {
             res.setTarget(localizedMarkdown);
             res.setTargetLocale(locale);
             jsonTranslationSet.add(res);
+        } else {
+            // Any other type of resource but string should be added
+            // to the json resource set right away without MD parsing
+            var translatedResource = translations.get(res.hashKeyForTranslation(locale));
+
+            if (translatedResource) {
+                jsonTranslationSet.add(translatedResource);
+            }
         }
     }.bind(this));
 

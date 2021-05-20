@@ -16,6 +16,11 @@
       "get": {
         "summary": "Test path without markdown",
         "description": "Test path to verify simple json parser",
+        "tags": [
+          "First Tag",
+          "Second Tag",
+          "Third Tag"
+        ],
         "parameters": [
           {
             "name": "testParam",
