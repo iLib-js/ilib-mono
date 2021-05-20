@@ -11,6 +11,10 @@ or
 
 yarn add ilib-common
 ```
+## API Reference
+
+You can see the [generated API reference docs](./docs/ilibCommon.md)
+for full details.
 
 ## License
 

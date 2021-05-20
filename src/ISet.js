@@ -18,9 +18,12 @@
  * limitations under the License.
  */
 
-export default class ISet {
+/**
+ * @class A polyfill for Set in older browsers.
+ */
+class ISet {
     /**
-     * @class Create a new set with elements in the given array. The type of
+     * Create a new set with elements in the given array. The type of
      * the set is gleaned from the type of the first element in the
      * elements array, or the first element added to the set. The type
      * may be "string" or "number", and all elements will be returned
@@ -163,3 +166,5 @@ export default class ISet {
 }
 
 ISet.prototype.has = ISet.prototype.contains; // for compatibility with ES6
+
+export default ISet;
