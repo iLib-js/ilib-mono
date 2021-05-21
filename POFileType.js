@@ -270,14 +270,15 @@ POFileType.prototype.getLocaleFromPath = function(template, pathname) {
 /**
  * Return the location on disk where the version of this file localized
  * for the given locale should be written.
- * @param {String} template template for the output file
+ * @param {Object} mapping the mapping for this source file
  * @param {String} pathname path to the source file
  * @param {String} locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-POFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
+POFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
     var output = "";
-    var l = new Locale(this.project.getOutputLocale(locale));
+    var template = mapping && mapping.template;
+    var l = new Locale((mapping && mapping.localeMap && mapping.localeMap[locale]) || this.project.getOutputLocale(locale));
 
     if (!template) {
         template = defaultMappings["**/*.po"].template;
