@@ -1,5 +1,5 @@
 /*
- * testMarkdownFileType.js - test the Markdown file type handler object.
+ * testOpenAPIFileType.js - test the Markdown file type handler object.
  *
  * Copyright © 2021, Box, Inc.
  *
