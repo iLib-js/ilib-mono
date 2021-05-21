@@ -154,6 +154,15 @@ used within the po property:
         - [localeUnder] the full BCP-47 locale specification, but using
           underscores to separate the locale parts instead of dashes.
           eg. "zh-Hans-CN" -> "zh_Hans_CN"
+    - localeMap: an output locale map that maps the locale used in the
+      translations to a different locale for use in the file name template.
+      For example, an app may wish to use the locale specifier "zh-CN"
+      instead of the full "zh-Hans-CN" for some output files, but not
+      all of them. In this case, a locale map for this template mapping
+      is how this can be achieved. Any locale not listed in the mapping
+      will be used as-is. The overall [shared] locale map is also applied
+      if there is no locale map in the template mapping for a particular
+      locale.
 
 
 Example configuration:
@@ -167,7 +176,12 @@ Example configuration:
                     "template": "resources/[locale].po"
                 },
                 "sublibrary/**/library.pot": {
-                    "template": "[dir]/[locale].po"
+                    "template": "[dir]/[locale].po",
+                    "localeMap": {
+                        "nb-NO": "no",
+                        "sr-Cyrl-RS": "sr-RS",
+                        "zh-Hans-CN": "zh-CN"
+                    }
                 }
             }
         }
@@ -182,7 +196,9 @@ the output is sent to a file named after the target locale located in the
 In the second part of the example, any `library.pot` file that appears in
 the `sublibrary` directory will be localized and the results sent to a
 po file named after each target locale which will appear in the same
-directory where the source file was located.
+directory where the source file was located. If the locale is one of the
+ones listed in the locale map, it will be mapped before being substituted
+in to the template.
 
 If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
@@ -195,6 +211,14 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.3.0
+
+- Added the ability to specify a locale map in the file name template
+  mapping. This allows for different locale specifications for different
+  sets of output files, which may be necessary if those output files
+  are intended to be used in different programming languages or on
+  different platforms that support a different set of locales.
 
 ### v1.2.2
 
