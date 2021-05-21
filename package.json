@@ -51,7 +51,7 @@
   "dependencies": {
     "ilib": "^14.9.0",
     "ilib-loctool-ghfm": "^1.7.1",
-    "ilib-loctool-json": "^1.1.0",
+    "ilib-loctool-json": "^1.2.0",
     "log4js": "^4.5.1"
   },
   "devDependencies": {
