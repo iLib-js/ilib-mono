@@ -38,6 +38,8 @@ console.log("Script: " + l.getScript()); // outputs "Hans"
 console.log("Region: " + l.getRegion()); // outputs "CN"
 ```
 
+Full documentation: [Locale class](./docs/Locale.md)
+
 ## The Current Locale
 
 To get the default locale of the platform, simply make a new Locale instance
@@ -114,6 +116,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 # Release Notes
+
+## v1.0.1
+
+- do not put the module name into the package.json, because it screws
+up the import of ilib-locale in other apps that use webpack
+- added API documentation
+- added new way of doing web testing using a webpacked version of the tests
 
 ## v1.0.0
 

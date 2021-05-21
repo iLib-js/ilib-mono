@@ -106,3 +106,4 @@ dist
 /output/
 /node_modules/
 /lib/
+test/locale-test.js

@@ -1,5 +1,5 @@
 /*
- * webpack.config.js - webpack configuration script for this package
+ * webpack.config.js - webpack configuration script for ilib-env
  *
  * Copyright © 2021, JEDLSoft
  *
@@ -21,33 +21,39 @@ var path = require('path');
 
 module.exports = {
     mode: "development",
-    entry: "./src/Locale.js",
+    entry: "./test/testSuiteWeb.js",
     output: {
-        path: path.resolve(__dirname, 'lib'),
-        filename: "ilib-locale-web.js",
+        path: path.resolve(__dirname, 'test'),
+        filename: "locale-test.js",
         library: {
-            name: "Locale",
+            name: "ilibLocaleTest",
             type: "umd"
         }
     },
     externals: {
-        'ilib-env': 'ilibEnv'
+        'nodeunit': 'nodeunit'
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                exclude: /node_modules\/(?!(ilib-env))/,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-env'],
-                        plugins: ["add-module-exports"],
-                        minified: true,
-                        comments: false
+                        plugins: [
+                            //"add-module-exports",
+                            "@babel/plugin-transform-regenerator"
+                        ]
                     }
                 }
             }
         ]
+    },
+    resolve: {
+        fallback: {
+            buffer: require.resolve("buffer")
+        }
     }
 };
