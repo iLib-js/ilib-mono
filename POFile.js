@@ -531,7 +531,7 @@ POFile.prototype.isDirty = function() {
  * @returns {String} the localized path name
  */
 POFile.prototype.getLocalizedPath = function(locale) {
-    return this.type.getLocalizedPath(this.mapping.template, this.pathName, locale);
+    return this.type.getLocalizedPath(this.mapping, this.pathName, locale);
 };
 
 /**

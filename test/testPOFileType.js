@@ -86,7 +86,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('resources/[localeDir]/strings.po', "x/y/strings.po", "de-DE"), "resources/de/DE/strings.po");
+        test.equals(jft.getLocalizedPath({template:'resources/[localeDir]/strings.po'}, "x/y/strings.po", "de-DE"), "resources/de/DE/strings.po");
 
         test.done();
     },
@@ -97,7 +97,23 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[localeDir]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/DE/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[localeDir]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/de/DE/strings.po");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathDirWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template:'[dir]/[localeDir]/strings.po',
+            localeMap: {
+                "de-DE": "de"
+            }
+        }, "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -108,7 +124,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p2);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[localeDir]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[localeDir]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -119,7 +135,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-[basename].j', "x/y/strings.po", "de-DE"), "de/DE/tr-strings.j");
+        test.equals(jft.getLocalizedPath({template:'[localeDir]/tr-[basename].j'}, "x/y/strings.po", "de-DE"), "de/DE/tr-strings.j");
 
         test.done();
     },
@@ -130,7 +146,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-[filename]', "x/y/strings.po", "de-DE"), "de/DE/tr-strings.po");
+        test.equals(jft.getLocalizedPath({template:'[localeDir]/tr-[filename]'}, "x/y/strings.po", "de-DE"), "de/DE/tr-strings.po");
 
         test.done();
     },
@@ -141,7 +157,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
+        test.equals(jft.getLocalizedPath({template:'[localeDir]/tr-foobar.[extension]'}, "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
 
         test.done();
     },
@@ -152,7 +168,23 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[locale]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de-DE/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[locale]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/de-DE/strings.po");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathLocaleWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template: '[dir]/[locale]/strings.po',
+            localeMap: {
+                "de-DE": "de"
+            }
+        }, "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -163,7 +195,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p2);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[locale]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[locale]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -174,7 +206,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[language]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[language]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -186,7 +218,7 @@ module.exports.pofiletype = {
         test.ok(jft);
 
         // no change
-        test.equals(jft.getLocalizedPath('[dir]/[language]/strings.po', "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[language]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/de/strings.po");
 
         test.done();
     },
@@ -197,7 +229,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[region]/strings.po', "x/y/strings.po", "de-DE"), "x/y/DE/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[region]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/DE/strings.po");
 
         test.done();
     },
@@ -209,7 +241,7 @@ module.exports.pofiletype = {
         test.ok(jft);
 
         // no region after the mapping, so it should skip the parts that don't exist
-        test.equals(jft.getLocalizedPath('[dir]/[region]/strings.po', "x/y/strings.po", "de-DE"), "x/y/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[region]/strings.po'}, "x/y/strings.po", "de-DE"), "x/y/strings.po");
 
         test.done();
     },
@@ -220,7 +252,7 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[script]/strings.po', "x/y/strings.po", "zh-Hans-CN"), "x/y/Hans/strings.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/[script]/strings.po'}, "x/y/strings.po", "zh-Hans-CN"), "x/y/Hans/strings.po");
 
         test.done();
     },
@@ -231,7 +263,23 @@ module.exports.pofiletype = {
         var jft = new POFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/strings_[localeUnder].po', "x/y/strings.po", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.po");
+        test.equals(jft.getLocalizedPath({template:'[dir]/strings_[localeUnder].po'}, "x/y/strings.po", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.po");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathLocaleUnderWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new POFileType(p);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template: '[dir]/strings_[localeUnder].po',
+            localeMap: {
+                "zh-Hans-CN": "zh-CN"
+            }
+        }, "x/y/strings.po", "zh-Hans-CN"), "x/y/strings_zh_CN.po");
 
         test.done();
     },

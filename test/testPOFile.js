@@ -55,6 +55,9 @@ var p = new CustomProject({
     locales:["en-GB"],
     targetDir: ".",
     nopseudo: true,
+    localeMap: {
+        "nb-NO": "nb"
+    },
     po: {
         mappings: {
             "**/messages.po": {
@@ -67,7 +70,12 @@ var p = new CustomProject({
                 "template": "[dir]/[locale].po"
             },
             "**/*.po": {
-                "template": "[dir]/[locale].po"
+                "template": "[dir]/[locale].po",
+                localeMap: {
+                    "nb-NO": "no",
+                    "zh-Hant-TW": "zh-Hant",
+                    "zh-Hant-HK": "zh-HK"
+                }
             }
         }
     }
@@ -2002,6 +2010,68 @@ module.exports.pofile = {
 
         test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_fr-FR.po")));
         test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_de-DE.po")));
+
+        test.done();
+    },
+
+    testPOFileLocalizeWithAlternateLocaleMapping: function(test) {
+        test.expect(3);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "./testfiles/po/no.po"))) {
+            fs.unlinkSync(path.join(base, "./testfiles/po/no.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/foo.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+
+        // should use the locale map in the mapping rather than the shared one
+        pof.localize(translations, ["nb-NO"]);
+
+        test.ok(fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+
+        test.done();
+    },
+
+    testPOFileLocalizeWithSharedLocaleMapping: function(test) {
+        test.expect(3);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/template_nb.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/template_nb.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/template.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+
+        // should use the shared locale map because there isn't one in the mapping
+        pof.localize(translations, ["nb-NO"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
 
         test.done();
     },
