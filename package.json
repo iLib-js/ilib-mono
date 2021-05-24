@@ -1,6 +1,6 @@
 {
     "name": "ilib-locale",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./lib/Locale.js",
     "description": "A BCP-47/IETF locale specifier parser/validator",
     "keywords": [
