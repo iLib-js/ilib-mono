@@ -12,6 +12,8 @@ This package can be used to detect the following things:
 - The current browser
 - The top scope and whether variables are global in the current environment
 
+See the [full API documentation](./docs/ilibEnv.md).
+
 ## Installation
 
 ```
@@ -198,3 +200,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language governing permissions and
 limitations under the License.
+
+## Release Notes
+
+### v1.0.1
+
+- fixed some lint problems
+- added API documentation
+- now can test on web browsers automatically
+
+### v1.0.0
+
+- Initial version

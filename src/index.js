@@ -162,6 +162,7 @@ let locale;
  * @return {string} the BCP-47 locale specifier for the default locale
  */
 export function getLocale() {
+    let lang, dot;
     if (typeof(locale) !== 'string') {
         const plat = getPlatform();
         switch (plat) {
@@ -216,7 +217,7 @@ export function getLocale() {
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
                 if (lang && typeof(lang) !== 'undefined') {
-                    const dot = lang.indexOf('.');
+                    dot = lang.indexOf('.');
                     if (dot > -1) {
                         lang = lang.substring(0, dot);
                     }
@@ -232,7 +233,7 @@ export function getLocale() {
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
                 if (lang && typeof(lang) !== 'undefined') {
-                    const dot = lang.indexOf('.');
+                    dot = lang.indexOf('.');
                     if (dot > -1) {
                         lang = lang.substring(0, dot);
                     }
@@ -311,6 +312,10 @@ export function getTimeZone() {
     return tz;
 };
 
+/**
+ * Used in unit testing to start afresh.
+ * @private
+ */
 export function clearCache() {
     platform = locale = browser = tz = undefined;
 };
