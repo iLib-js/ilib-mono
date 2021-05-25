@@ -56,6 +56,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.1
+
+- Fix errors while loading default schema, relative path was replaced
+with an absolute.
+
 ### v1.0.0
 
 - initial version

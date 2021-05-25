@@ -18,6 +18,7 @@
  */
 
 var fs = require('fs');
+const path = require('path');
 var log4js = require('log4js');
 
 var JsonFileType = require('ilib-loctool-json/JsonFileType');
@@ -36,19 +37,19 @@ var OpenAPIFileType = function(project) {
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
 
-    this.defaultSchema = fs.readFileSync('./schema.json', 'utf-8');
-
-    if (!project.settings.openapi.schemas) {
-        project.settings.openapi.schemas = [];
-    }
-    // Default OpenAPI schema bundled with the plugin.
-    project.settings.openapi.schemas.unshift('./schema.json');
-
     // Copy over openapi config to json key to enable support of mappings from the json plugin.
     project.settings.json = project.settings.openapi;
 
-    this.jsonFileType = new JsonFileType(project);
     this.markdownFileType = new MarkdownFileType(project);
+    this.jsonFileType = new JsonFileType(project);
+
+    // Load default OpenAPI schema bundled with the plugin.
+    var defaultSchemaPath = path.resolve(__dirname, 'schema.json');
+    this.jsonFileType.loadSchemaFile(defaultSchemaPath);
+    this.jsonFileType.findRefs(
+        this.jsonFileType.schemas[defaultSchemaPath],
+        this.jsonFileType.schemas[defaultSchemaPath],
+        '#');
 }
 
 /**
@@ -196,9 +197,5 @@ OpenAPIFileType.prototype.addSet = function(set) {
 OpenAPIFileType.prototype.name = function() {
     return 'OpenAPI File Type';
 };
-
-OpenAPIFileType.prototype.getDefaultSchema = function() {
-    return this.defaultSchema;
-}
 
 module.exports = OpenAPIFileType;

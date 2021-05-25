@@ -196,7 +196,7 @@ OpenAPIFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 OpenAPIFile.prototype.localizeText = function(translations, locale) {
-    var jsonTranslationSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    var jsonTranslationSet = this.API.newTranslationSet(this.project ? this.project.sourceLocale : 'zxx-XX');
 
     this.jsonSet.getAll().forEach(function(res) {
         if (res.resType === 'string') {
