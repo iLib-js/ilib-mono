@@ -11,6 +11,10 @@ or
 
 yarn add ilib-common
 ```
+## API Reference
+
+You can see the [generated API reference docs](./docs/ilibCommon.md)
+for full details.
 
 ## License
 
@@ -30,6 +34,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.0.1
+
+- API documentation updates
+- now can test on web browsers easily
+- fixed bug in `MathUtils.significant()` where it was calling functions
+  using the "MathUtils" namespace instead of local functions
+- fixed tests for hash codes to work inside of a webpacked test
 
 ### v1.0.0
 
