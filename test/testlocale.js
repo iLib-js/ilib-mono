@@ -782,8 +782,8 @@ module.exports.testlocale = {
         var loc = new Locale("en-US");
 
         test.ok(loc !== null);
-
         test.equal(loc.getLanguageAlpha3(), "eng");
+
         test.done();
     },
 
@@ -792,8 +792,8 @@ module.exports.testlocale = {
         var loc = new Locale("ru-RU");
 
         test.ok(loc !== null);
-
         test.equal(loc.getLanguageAlpha3(), "rus");
+
         test.done();
     },
 
@@ -802,8 +802,8 @@ module.exports.testlocale = {
         var loc = new Locale("gv-GB");
 
         test.ok(loc !== null);
-
         test.equal(loc.getLanguageAlpha3(), "glv");
+
         test.done();
     },
 
@@ -812,8 +812,8 @@ module.exports.testlocale = {
         var loc = new Locale("GB");
 
         test.ok(loc !== null);
-
         test.ok(typeof(loc.getLanguageAlpha3()) === "undefined");
+
         test.done();
     },
 
@@ -822,8 +822,8 @@ module.exports.testlocale = {
         var loc = new Locale("en-US");
 
         test.ok(loc !== null);
-
         test.equal(loc.getRegionAlpha3(), "USA");
+
         test.done();
     },
 
@@ -832,8 +832,8 @@ module.exports.testlocale = {
         var loc = new Locale("ru-RU");
 
         test.ok(loc !== null);
-
         test.equal(loc.getRegionAlpha3(), "RUS");
+
         test.done();
     },
 
@@ -842,8 +842,8 @@ module.exports.testlocale = {
         var loc = new Locale("gv-GB");
 
         test.ok(loc !== null);
-
         test.equal(loc.getRegionAlpha3(), "GBR");
+
         test.done();
     },
 
@@ -852,68 +852,68 @@ module.exports.testlocale = {
         var loc = new Locale("en");
 
         test.ok(loc !== null);
-
         test.ok(typeof(loc.getRegionAlpha3()) === "undefined");
+
         test.done();
     },
 
     testLocaleGetLanguageSpecSimple: function(test) {
         test.expect(2);
 
-        test.ok(loc !== null);
-
         var loc = new Locale("en");
+        test.ok(loc !== null);
         test.equal(loc.getLangSpec(), "en");
+
         test.done();
     },
 
     testLocaleGetLanguageSpecLeaveOutRegionAndVariant: function(test) {
         test.expect(2);
 
-        test.ok(loc !== null);
-
         var loc = new Locale("en-US-MILITARY");
+        test.ok(loc !== null);
         test.equal(loc.getLangSpec(), "en");
+
         test.done();
     },
 
     testLocaleGetLanguageSpecIncludeScript: function(test) {
         test.expect(2);
 
-        test.ok(loc !== null);
-
         var loc = new Locale("zh-Hans");
+        test.ok(loc !== null);
         test.equal(loc.getLangSpec(), "zh-Hans");
+
         test.done();
     },
 
     testLocaleGetLanguageSpecIncludeScriptButNotOthers: function(test) {
         test.expect(2);
 
-        test.ok(loc !== null);
-
         var loc = new Locale("zh-Hans-CN-GOVT");
+        test.ok(loc !== null);
         test.equal(loc.getLangSpec(), "zh-Hans");
+
         test.done();
     },
 
     testLocaleGetLanguageSpecLanguageAndScriptMissing: function(test) {
         test.expect(2);
 
-        test.ok(loc !== null);
-
         var loc = new Locale("CN");
+        test.ok(loc !== null);
         test.equal(loc.getLangSpec(), "");
+
         test.done();
     },
 
     testLocaleGetLanguageSpecNoScriptWithoutLanguage: function(test) {
         test.expect(2);
 
-        test.ok(loc !== null);
-
         var loc = new Locale("Hans-CN");
+        test.ok(loc !== null);
         test.equal(loc.getLangSpec(), "");
+
         test.done();
     },
 
@@ -925,20 +925,20 @@ module.exports.testlocale = {
         try {
             var loc = new Locale(true, true, false, true);
             test.equal(loc.getLangSpec(), "");
-            var loc = new Locale(a, a, a, a);
+            loc = new Locale(a, a, a, a);
             test.equal(loc.getSpec(), "");
-            var loc = new Locale(4, 4, 4, 4);
+            loc = new Locale(4, 4, 4, 4);
             test.equal(loc.getSpec(), "");
-            var loc = new Locale({}, {}, {}, {});
+            loc = new Locale({}, {}, {}, {});
             test.equal(loc.getSpec(), "");
 
-            var loc = new Locale(true);
+            loc = new Locale(true);
             test.equal(loc.getSpec(), "");
-            var loc = new Locale(a);
+            loc = new Locale(a);
             test.equal(loc.getSpec(), "");
-            var loc = new Locale(4);
+            loc = new Locale(4);
             test.equal(loc.getSpec(), "");
-            var loc = new Locale({});
+            loc = new Locale({});
             test.equal(loc.getSpec(), "");
         } catch (e) {
             test.fail();

@@ -117,6 +117,10 @@ limitations under the License.
 
 # Release Notes
 
+## v1.0.2
+
+- fixed some incorrect unit tests
+
 ## v1.0.1
 
 - do not put the module name into the package.json, because it screws
