@@ -56,6 +56,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.2
+
+- Add schema.json to bundled files in order to be available at NPM
+
 ### v1.0.1
 
 - Fix errors while loading default schema, relative path was replaced
