@@ -242,7 +242,7 @@ function isNotEmpty(obj) {
 function objectMap(object, visitor) {
     if (isPrimitive(typeof(object))) {
         return visitor(object);
-    } else if (isArray(object)) {
+    } else if (ilib.isArray(object)) {
         return object.map(function(item) {
             return objectMap(item, visitor);
         });
