@@ -302,6 +302,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.2
+
+- Fix a bug where the pseudo locales were not initialized properly. This fix gets
+  the right set of locales from the project settings to see if any of them are pseudo locales.
+
 ### v1.2.1
 
 - Fixed bug where it was not generating pseudo localized text properly for missing
