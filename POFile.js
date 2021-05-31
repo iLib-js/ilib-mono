@@ -550,6 +550,36 @@ POFile.prototype.getTargetLocale = function() {
     return this.localeSpec;
 };
 
+function isPrimitive(type) {
+    return ["boolean", "number", "integer", "string"].indexOf(type) > -1;
+}
+
+/**
+ * Recursively visit every node in an object and call the visitor on any
+ * primitive values.
+ * @param {*} object any object, arrary, or primitive
+ * @param {Function(*)} visitor function to call on any primitive
+ * @returns {*} the same type as the original object, but with every
+ * primitive processed by the visitor function
+ */
+function objectMap(object, visitor) {
+    if (isPrimitive(typeof(object))) {
+        return visitor(object);
+    } else if (ilib.isArray(object)) {
+        return object.map(function(item) {
+            return objectMap(item, visitor);
+        });
+    } else {
+        var ret = {};
+        for (var prop in object) {
+            if (object.hasOwnProperty(prop)) {
+                ret[prop] = objectMap(object[prop], visitor);
+            }
+        }
+        return ret;
+    }
+}
+
 /**
  * Localize the text of the current file to the given locale and return
  * the results.
@@ -716,7 +746,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                     index: this.resourceIndex++
                                 }));
                                 if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                                    translatedPlurals = objectMap(translatedPlurals, function(item) {
+                                    translatedPlurals = objectMap(sourcePlurals, function(item) {
                                         return this.type.missingPseudo.getString(item);
                                     }.bind(this));
                                 }
