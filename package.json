@@ -54,7 +54,7 @@
     },
     "dependencies": {
         "he": "^1.2.0",
-        "ilib": "^14.8.0",
+        "ilib": "^14.9.0",
         "log4js": "^5.3.0",
         "message-accumulator": "^2.2.1",
         "rehype-raw": "^4.0.2",
