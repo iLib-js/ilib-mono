@@ -302,6 +302,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.1
+
+- Fixed bug where it was not generating pseudo localized text properly for missing
+  translations when pseudo is turned on
+
 ### v1.2.0
 
 - add support for $refs in array schema definitions

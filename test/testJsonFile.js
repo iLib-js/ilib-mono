@@ -115,7 +115,20 @@ var p2 = new CustomProject({
 }, "./test/testfiles", {
     locales:["en-GB"],
     identify: true,
-    targetDir: "testfiles"
+    targetDir: "testfiles",
+    nopseudo: false,
+    json: {
+        schemas: [
+            "./test/testfiles/schemas"
+        ],
+        mappings: {
+            "**/messages.json": {
+                "schema": "http://github.com/ilib-js/messages.json",
+                "method": "copy",
+                "template": "resources/[localeDir]/messages.json"
+            }
+        }
+    }
 });
 
 var t2 = new JsonFileType(p2);
@@ -1642,6 +1655,76 @@ module.exports.jsonfile = {
         diff(actual, expected);
         test.equal(actual, expected);
 
+        test.done();
+    },
+
+    testJsonFileLocalizeTextUsePseudoForMissing: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p2,
+            pathName: "./json/messages.json",
+            type: t2
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '   "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "singular",\n' +
+           '            "many": "many",\n' +
+           '            "other": "plural"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b",\n' +
+           '        "c": "d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "string 1",\n' +
+           '            "string 2",\n' +
+           '            "string 3"\n' +
+           '        ]\n' +
+           '    },\n' +
+           '    "others": {\n' +
+           '        "first": "abc",\n' +
+           '        "second": "bcd"\n' +
+           '    }\n' +
+           '}\n');
+
+        var translations = new TranslationSet();
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+           '{\n' +
+           '    "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "šíñğüľàŕ3210",\n' +
+           '            "many": "màñÿ10",\n' +
+           '            "other": "þľüŕàľ210"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b0",\n' +
+           '        "c": "ð0"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "šţŕíñğ 13210",\n' +
+           '            "šţŕíñğ 23210",\n' +
+           '            "šţŕíñğ 33210"\n' +
+           '        ]\n' +
+           '    },\n' +
+           '    "others": {\n' +
+           '        "first": "abc",\n' +
+           '        "second": "bcd"\n' +
+           '    }\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
         test.done();
     },
 
