@@ -212,6 +212,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.3.1
+
+- Fixed a bug where the plugin would not work when generating pseudo localizations
+  for plurals
+
 ### v1.3.0
 
 - Added the ability to specify a locale map in the file name template

@@ -92,7 +92,15 @@ var p2 = new CustomProject({
 }, "./test/testfiles", {
     locales:["en-GB"],
     identify: true,
-    targetDir: "testfiles"
+    targetDir: "testfiles",
+    nopseudo: false,
+    po: {
+        mappings: {
+            "**/messages.po": {
+                "template": "resources/[locale].po"
+            }
+        }
+    }
 });
 
 var t2 = new POFileType(p2);
@@ -1499,6 +1507,51 @@ module.exports.pofile = {
             '\n' +
             'msgid "string 2"\n' +
             'msgstr ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextUsePseudoForMissingTranslations: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p2,
+            pathName: "./po/messages.po",
+            type: t2
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgid_plural "string 2 plural"\n'
+        );
+
+        var translations = new TranslationSet();
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "šţŕíñğ 13210"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgid_plural "string 2 plural"\n' +
+            'msgstr[0] "šţŕíñğ 23210"\n' +
+            'msgstr[1] "šţŕíñğ 2 þľüŕàľ76543210"\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
