@@ -8,7 +8,18 @@ translated files in the same directory with the "en_US" replaced with the name o
 the target locale. The dash in the standard BCP-47 locale name is replaced with an
 underscore, because that is what Salesforce is expecting to find.
 
+## License
+
+This plugin is license under Apache2. See the [LICENSE](./LICENSE)
+file for more details.
+
 ## Release Notes
+
+### v1.0.5
+
+- Fix a bug where the pseudo locales were not initialized properly.
+  This fix gets the right set of locales from the project settings to
+  see if any of them are pseudo locales.
 
 ### 1.0.4
 
