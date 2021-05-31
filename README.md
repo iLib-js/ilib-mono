@@ -209,6 +209,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.1
+
+- Fix a bug where the pseudo locales were not initialized properly.
+  This fix gets the right set of locales from the project settings to
+  see if any of them are pseudo locales.
+
 ### v1.2.0
 
 - previous versions did not package the js files, which made them useless!
