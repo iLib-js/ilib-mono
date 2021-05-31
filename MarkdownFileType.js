@@ -40,7 +40,7 @@ var MarkdownFileType = function(project) {
     this.pseudos = {};
 
     // generate all the pseudo bundles we'll need
-    project.locales && project.locales.forEach(function(locale) {
+    project.settings && project.settings.locales && project.settings.locales.forEach(function(locale) {
         var pseudo = this.API.getPseudoBundle(locale, this, project);
         if (pseudo) {
             this.pseudos[locale] = pseudo;
