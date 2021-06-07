@@ -1842,6 +1842,43 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseWithFrontMatter: function(test) {
+        test.expect(11);
+
+        var mf = new MarkdownFile({
+            project: p2
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'test: This is a test of the front matter\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource("This is a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test");
+        test.equal(r.getKey(), "r654479252");
+
+        r = set.getBySource("This is also a test");
+        test.ok(r);
+        test.equal(r.getSource(), "This is also a test");
+        test.equal(r.getKey(), "r999080996");
+
+        // the front matter should be extracted because p2 has fm settings
+        r = set.getBySource("This is a test of the front matter");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the front matter");
+        test.equal(r.getKey(), "fm:test");
+
+        test.done();
+    },
+
     testMarkdownFileParseTable: function(test) {
         test.expect(21);
 
