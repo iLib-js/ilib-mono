@@ -1,7 +1,7 @@
 /*
  * testMarkdownFileType.js - test the Markdown file type handler object.
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,26 @@ var p = new CustomProject({
     sourceLocale: "en-US",
     plugins: ["../."]
 }, "./test/testfiles", {
-    locales:["en-GB"]
+    locales:["en-GB"],
+    markdown: {
+        "mappings": {
+            "file.md": {
+                "template": "resources/[localeDir]/file.md"
+            },
+            "resources/en/US/file.md": {
+                "template": "resources/[localeDir]/file.md"
+            },
+            "**/messages.md": {
+                "template": "resources/[localeDir]/messages.md"
+            },
+            "**/test/str.md": {
+                "template": "[dir]/[localeDir]/str.md"
+            },
+            "**/*.md": {
+                "template": "[localeDir]/[filename]"
+            }
+        }
+    }
 });
 
 var p2 = new CustomProject({
@@ -49,6 +68,43 @@ module.exports.markdownfiletype = {
         var mdft = new MarkdownFileType(p);
 
         test.ok(mdft);
+
+        test.done();
+    },
+
+     testMarkdownFileTypeGetMapping1: function(test) {
+        test.expect(2);
+
+        var mdft = new MarkdownFileType(p);
+        test.ok(mdft);
+
+        test.deepEqual(mdft.getMapping("x/y/messages.md"), {
+            "template": "resources/[localeDir]/messages.md"
+        });
+
+        test.done();
+    },
+
+     testMarkdownFileTypeGetMapping2: function(test) {
+        test.expect(2);
+
+        var mdft = new MarkdownFileType(p);
+        test.ok(mdft);
+
+        test.deepEqual(mdft.getMapping("resources/en/US/file.md"), {
+            "template": "resources/[localeDir]/file.md"
+        });
+
+        test.done();
+    },
+
+     testMarkdownFileTypeGetMappingNoMatch: function(test) {
+        test.expect(2);
+
+        var mdft = new MarkdownFileType(p);
+        test.ok(mdft);
+
+        test.ok(!mdft.getMapping("x/y/msg.mdx"));
 
         test.done();
     },
@@ -192,42 +248,6 @@ module.exports.markdownfiletype = {
         test.ok(mdft);
 
         test.ok(mdft.handles("en-US/a/b/c/foo.md"));
-
-        test.done();
-    },
-
-    testMarkdownFileTypeHandlesSourceDirNotLocalizedWithMD: function(test) {
-        test.expect(2);
-
-        var mdft = new MarkdownFileType(p2);
-        test.ok(mdft);
-
-        // md has the form of an iso language name, but it is not a real language
-        test.ok(mdft.handles("md/a/b/c/foo.md"));
-
-        test.done();
-    },
-
-    testMarkdownFileTypeHandlesSourceDirNotLocalizedWithLocaleLookingDir: function(test) {
-        test.expect(2);
-
-        var mdft = new MarkdownFileType(p2);
-        test.ok(mdft);
-
-        // en-AA looks like a real locale, but it is not because XX is not a country code
-        test.ok(mdft.handles("en-XX/a/b/c/foo.md"));
-
-        test.done();
-    },
-
-    testMarkdownFileTypeHandlesSourceDirIsNotLocalizedAtEnd: function(test) {
-        test.expect(3);
-
-        var mdft = new MarkdownFileType(p2);
-        test.ok(mdft);
-
-        test.ok(mdft.handles("a/b/c/en-US/foo.md"));
-        test.ok(mdft.handles("a/b/c/en/foo.md"));
 
         test.done();
     },

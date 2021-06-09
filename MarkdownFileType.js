@@ -1,7 +1,7 @@
 /*
  * MarkdownFileType.js - Represents a collection of Markdown files
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
-
+var mm = require("micromatch");
 var MarkdownFile = require("./MarkdownFile.js");
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFileType");
@@ -58,6 +58,41 @@ var MarkdownFileType = function(project) {
     }
 };
 
+var defaultMappings = {
+    "**/*.md": {
+        template: "[locale]/[dir]/[filename]"
+    }
+};
+
+/**
+ * Return the mapping corresponding to this path.
+ * @param {String} pathName the path to check
+ * @returns {Object} the mapping object corresponding to the
+ * path or undefined if none of the mappings match
+ */
+MarkdownFileType.prototype.getMapping = function(pathName) {
+    if (typeof(pathName) === "undefined") {
+        return undefined;
+    }
+    var mappings, match, mdSettings = this.project.settings && this.project.settings.markdown;
+    if (mdSettings) {
+        mappings = mdSettings.mappings || defaultMappings;
+        var patterns = Object.keys(mappings);
+
+        if (patterns) {
+            match = patterns.find(function(pattern) {
+                return mm.isMatch(pathName, pattern);
+            });
+        }
+    }
+
+    return match && mappings[match];
+}
+
+MarkdownFileType.prototype.getDefaultMapping = function() {
+    return defaultMappings["**/*.md"];
+}
+
 var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-([A-Z][A-Z])(-[A-Z]+)?)?)\//);
 
 /**
@@ -72,20 +107,55 @@ MarkdownFileType.prototype.handles = function(pathName) {
     logger.debug("MarkdownFileType handles " + pathName + "?");
     var extension = path.extname(pathName).toLowerCase();
     var ret = (this.extensions.indexOf(extension) > -1);
+    var normalized = pathName;
 
     if (ret) {
         var match = alreadyLoc.exec(pathName);
         if (match && match.length > 2) {
             if (this.API.utils.iso639[match[3]]) {
                 if (match.length < 6 || !match[6] || !this.API.utils.iso3166[match[6]]) {
-                    return true;
+                    ret = true;
+                } else {
+                    ret = (match[2] === this.project.sourceLocale);
                 }
-                return match[2] === this.project.sourceLocale;
             } else {
-                return true;
+                ret = true;
             }
         }
     }
+
+    if (ret) {
+        // normalize the extension so the matching below can work
+        normalized = pathName.substring(0, pathName.lastIndexOf('.')) + ".md";
+    }
+
+    // If it has the right filename extension, then match at least one of the mapping
+    // patterns. If it isn't in a mapping, we don't handle it.
+    if (ret) {
+        ret = false;
+        // first check if it is a source file
+        var mdSettings = this.project.settings && this.project.settings.markdown;
+        if (mdSettings) {
+            var mappings = mdSettings.mappings || defaultMappings;
+            var patterns = Object.keys(mappings);
+            if (patterns) {
+                ret = mm.isMatch(pathName, patterns) || mm.isMatch(normalized, patterns);
+
+                // now check if it is an already-localized file, and if it has a different locale than the
+                // source locale, then we don't need to extract those strings
+                if (ret) {
+                    for (var i = 0; i < patterns.length; i++) {
+                        var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
+                        if (locale && locale !== this.project.sourceLocale) {
+                            ret = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     logger.debug(ret ? "Yes" : "No");
     return ret;
 };
@@ -107,11 +177,12 @@ MarkdownFileType.prototype.write = function() {
     // write out the resources
 };
 
-MarkdownFileType.prototype.newFile = function(path) {
+MarkdownFileType.prototype.newFile = function(path, options) {
     return new MarkdownFile({
         project: this.project,
         pathName: path,
-        type: this
+        type: this,
+        targetLocale: options && options.locale
     });
 };
 

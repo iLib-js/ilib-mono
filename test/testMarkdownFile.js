@@ -67,13 +67,52 @@ var p2 = new CustomProject({
     identify: true
 });
 
+var mdft2 = new MarkdownFileType(p2);
+
+var p3 = new CustomProject({
+    sourceLocale: "en-US",
+    id: "foo",
+    name: "foo",
+    plugins: ["../."]
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    targetDir: "./test/testfiles",
+    nopseudo: true,
+    markdown: {
+        mappings: {
+            "**/simple.md": {
+                template: "[locale]/[dir]/[filename]"
+            },
+            "**/asdf/bar/simple2.md": {
+                template: "[locale]/asdf/bar/[filename]"
+            },
+            "**/bar/simple3.md": {
+                template: "asdf/[locale]/bar/[filename]"
+            },
+            "asdf/pen-USing/en-US/bar/asdf.md": {
+                template: "[locale]/bar/[filename]"
+            },
+            "**/asdf.md": {
+                template: "[dir]/[locale]/bar/[filename]"
+            },
+            "**/x/*.md": {
+                template: "[dir]/[base]_[locale].md"
+            },
+            "**/y/*.md": {
+                template: "[dir]/[locale]/[base].md"
+            }
+        }
+    }
+});
+var mdft3 = new MarkdownFileType(p3);
 
 module.exports.markdown = {
     testMarkdownFileConstructor: function(test) {
         test.expect(1);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -85,7 +124,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./testfiles/md/test1.md"
+            pathName: "./testfiles/md/test1.md",
+            type: mdft
         });
 
         test.ok(mf);
@@ -97,7 +137,8 @@ module.exports.markdown = {
         test.expect(1);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -383,7 +424,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -405,7 +447,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -426,7 +469,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -447,7 +491,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -466,7 +511,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -484,7 +530,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -502,7 +549,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -519,7 +567,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -536,7 +585,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -558,7 +608,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -575,7 +626,8 @@ module.exports.markdown = {
         test.expect(4);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -595,7 +647,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -622,7 +675,8 @@ module.exports.markdown = {
         test.expect(7);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -651,7 +705,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -676,7 +731,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -698,7 +754,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -720,7 +777,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -741,7 +799,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -762,7 +821,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -783,7 +843,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -804,7 +865,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -826,7 +888,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -848,7 +911,8 @@ module.exports.markdown = {
         test.expect(7);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -877,7 +941,8 @@ module.exports.markdown = {
         test.expect(12);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -915,7 +980,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -936,7 +1002,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -958,7 +1025,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -985,7 +1053,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1012,7 +1081,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1034,7 +1104,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1056,7 +1127,8 @@ module.exports.markdown = {
         test.expect(9);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1090,7 +1162,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1111,7 +1184,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1134,7 +1208,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1157,7 +1232,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1180,7 +1256,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1203,7 +1280,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1226,7 +1304,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1249,7 +1328,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1272,7 +1352,8 @@ module.exports.markdown = {
         test.expect(12);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1308,7 +1389,8 @@ module.exports.markdown = {
         test.expect(9);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1338,7 +1420,8 @@ module.exports.markdown = {
         test.expect(9);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1368,7 +1451,8 @@ module.exports.markdown = {
         test.expect(9);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1399,7 +1483,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1421,7 +1506,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1444,7 +1530,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1466,7 +1553,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1488,7 +1576,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1511,7 +1600,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1539,7 +1629,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1567,7 +1658,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1594,7 +1686,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1618,7 +1711,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1644,7 +1738,8 @@ module.exports.markdown = {
         test.expect(10);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1674,7 +1769,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1711,7 +1807,8 @@ module.exports.markdown = {
         test.expect(10);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1749,7 +1846,8 @@ module.exports.markdown = {
         test.expect(21);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1802,7 +1900,8 @@ module.exports.markdown = {
         test.expect(15);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1845,7 +1944,8 @@ module.exports.markdown = {
         test.expect(15);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1894,7 +1994,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./md/test1.md"
+            pathName: "./md/test1.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -1935,7 +2036,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./md/test2.md"
+            pathName: "./md/test2.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -1970,7 +2072,8 @@ module.exports.markdown = {
         var base = path.dirname(module.id);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -1991,7 +2094,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./md/bogus.md"
+            pathName: "./md/bogus.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -2009,7 +2113,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2038,7 +2143,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2065,7 +2171,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2103,7 +2210,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2143,7 +2251,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2184,7 +2293,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2211,7 +2321,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2238,7 +2349,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2268,7 +2380,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2315,7 +2428,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2342,7 +2456,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2369,7 +2484,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2424,7 +2540,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2463,7 +2580,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2502,7 +2620,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2529,7 +2648,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2556,7 +2676,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2583,7 +2704,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2609,7 +2731,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2635,7 +2758,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2661,7 +2785,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2697,7 +2822,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2733,7 +2859,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2760,7 +2887,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2787,7 +2915,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2816,7 +2945,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2845,7 +2975,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2870,7 +3001,7 @@ module.exports.markdown = {
         }));
 
         test.equal(mf.localizeText(translations, "fr-FR"),
-            'Markdown text <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+            'Màŕķðõŵñ ţëxţ6543210 <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
 
         test.done();
     },
@@ -2879,7 +3010,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2904,7 +3036,7 @@ module.exports.markdown = {
         }));
 
         test.equal(mf.localizeText(translations, "fr-FR"),
-            'Markdown text <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+            'Màŕķðõŵñ ţëxţ6543210 <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
 
         test.done();
     },
@@ -2913,7 +3045,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -2967,7 +3100,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -3001,7 +3135,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -3035,7 +3170,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -3063,7 +3199,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p2
+            project: p2,
+            type: mdft2
         });
         test.ok(mf);
 
@@ -3106,7 +3243,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -3136,7 +3274,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -3188,7 +3327,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "simple.md"
+            pathName: "simple.md",
+            type: mdft
         });
         test.ok(mf);
 
@@ -3202,11 +3342,12 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./asdf/bar/simple.md"
+            pathName: "./asdf/bar/simple2.md",
+            type: mdft
         });
         test.ok(mf);
 
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple.md");
+        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
 
         test.done();
     },
@@ -3216,11 +3357,12 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./asdf/bar/simple.md"
+            pathName: "./asdf/bar/simple2.md",
+            type: mdft
         });
         test.ok(mf);
 
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple.md");
+        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
 
         test.done();
     },
@@ -3230,7 +3372,8 @@ module.exports.markdown = {
 
         var mf = new MarkdownFile({
             project: p,
-            pathName: "./asdf/bar/simple"
+            pathName: "./asdf/bar/simple",
+            type: mdft
         });
         test.ok(mf);
 
@@ -3243,12 +3386,13 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p,
-            pathName: "./en-US/asdf/bar/simple.md"
+            project: p3,
+            pathName: "./en-US/asdf/bar/simple2.md",
+            type: mdft3
         });
         test.ok(mf);
 
-        test.equal(mf.getLocalizedPath("fr-FR"), "./fr-FR/asdf/bar/simple.md");
+        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
 
         test.done();
     },
@@ -3257,12 +3401,13 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p,
-            pathName: "./asdf/en-US/bar/simple.md"
+            project: p3,
+            pathName: "./asdf/en-US/bar/simple3.md",
+            type: mdft3
         });
         test.ok(mf);
 
-        test.equal(mf.getLocalizedPath("fr-FR"), "./asdf/fr-FR/bar/simple.md");
+        test.equal(mf.getLocalizedPath("fr-FR"), "asdf/fr-FR/bar/simple3.md");
 
         test.done();
     },
@@ -3271,12 +3416,13 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p,
-            pathName: "en-US/asdf/bar/simple.md"
+            project: p3,
+            pathName: "en-US/asdf/bar/simple2.md",
+            type: mdft3
         });
         test.ok(mf);
 
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple.md");
+        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
 
         test.done();
     },
@@ -3285,13 +3431,14 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p,
-            pathName: "./asdf/pen-USing/en-US/bar/simple.md"
+            project: p3,
+            pathName: "./asdf/pen-USing/en-US/bar/asdf.md",
+            type: mdft3
         });
         test.ok(mf);
 
         // should leave "pen-USing" alone and only get the "en-US" path component
-        test.equal(mf.getLocalizedPath("fr-FR"), "./asdf/pen-USing/fr-FR/bar/simple.md");
+        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/bar/asdf.md");
 
         test.done();
     },
@@ -4032,7 +4179,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4071,7 +4219,8 @@ module.exports.markdown = {
         test.expect(9);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4101,7 +4250,8 @@ module.exports.markdown = {
         test.expect(6);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4133,7 +4283,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4168,7 +4319,8 @@ module.exports.markdown = {
         test.expect(7);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4200,7 +4352,8 @@ module.exports.markdown = {
         test.expect(7);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4234,7 +4387,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4271,7 +4425,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4322,7 +4477,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4374,7 +4530,8 @@ module.exports.markdown = {
         test.expect(3);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4445,7 +4602,8 @@ module.exports.markdown = {
         test.expect(5);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4466,7 +4624,8 @@ module.exports.markdown = {
         test.expect(8);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4492,7 +4651,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4532,7 +4692,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4595,7 +4756,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
@@ -4660,7 +4822,8 @@ module.exports.markdown = {
         test.expect(2);
 
         var mf = new MarkdownFile({
-            project: p
+            project: p,
+            type: mdft
         });
         test.ok(mf);
 
