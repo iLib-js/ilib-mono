@@ -155,6 +155,43 @@ export function isGlobal(name) {
 let locale;
 
 /**
+ * @private
+ */
+function parseLocale(str) {
+    if (!str || str === "C") return str;
+
+    // take care of the libc style locale with a dot + script at the end
+    var dot = str.indexOf('.')
+    if (dot > -1) {
+        str = str.substring(0, dot);
+    }
+
+    // handle the posix default locale
+    if (str === "C") return "en-US";
+
+    if (str.length >= 10) {
+        return [
+            str.substring(0,2).toLowerCase(),
+            str[3].toUpperCase() + str.substring(4,7).toLowerCase(),
+            str.substring(8,10).toUpperCase()
+        ].join("-");
+    }
+
+    if (str.length >= 5) {
+        return [
+            str.substring(0,2).toLowerCase(),
+            str.substring(3,5).toUpperCase()
+        ].join("-");
+    }
+
+    if (str.length < 3) {
+        return str.toLowerCase();
+    }
+
+    return str;
+}
+
+/**
  * Return the default locale for this platform, if there is one.
  * If not, it will default to the locale "en-US".<p>
  *
@@ -169,7 +206,7 @@ export function getLocale() {
             case 'browser':
                 // running in a browser
                 if(typeof(navigator.language) !== 'undefined') {
-                    locale = (navigator.language.length > 3) ? navigator.language.substring(0,3) + navigator.language.substring(3,5).toUpperCase() : navigator.language;  // FF/Opera/Chrome/Webkit
+                    locale = parseLocale(navigator.language);  // FF/Opera/Chrome/Webkit
                 }
                 if (!locale) {
                     // IE on Windows
@@ -180,12 +217,8 @@ export function getLocale() {
                                     (typeof(navigator.systemLanguage) !== 'undefined' ?
                                         navigator.systemLanguage :
                                             undefined));
-                    if (typeof(lang) !== 'undefined' && lang) {
-                        // for some reason, MS uses lower case region tags
-                        locale = (lang.length > 3) ? lang.substring(0,3) + lang.substring(3,5).toUpperCase() : lang;
-                    } else {
-                        locale = undefined;
-                    }
+                    // for some reason, MS uses lower case region tags
+                    locale = parseLocale(lang);
                 }
                 break;
             case 'webos-webapp':
@@ -194,9 +227,9 @@ export function getLocale() {
                 if (typeof(PalmSystem.locales) !== 'undefined' &&
                     typeof(PalmSystem.locales.UI) != 'undefined' &&
                     PalmSystem.locales.UI.length > 0) {
-                    locale = PalmSystem.locales.UI;
+                    locale = parseLocale(PalmSystem.locales.UI);
                 } else if (typeof(PalmSystem.locale) !== 'undefined') {
-                    locale = PalmSystem.locale;
+                    locale = parseLocale(PalmSystem.locale);
                 } else {
                     locale = undefined;
                 }
@@ -204,10 +237,11 @@ export function getLocale() {
             case 'rhino':
                 if (typeof(environment) !== 'undefined' && environment.user && typeof(environment.user.language) === 'string' && environment.user.language.length > 0) {
                     // running under plain rhino
-                    locale = environment.user.language;
+                    var l = [environment.user.language];
                     if (typeof(environment.user.country) === 'string' && environment.user.country.length > 0) {
-                        locale += '-' + environment.user.country;
+                        l.push(environment.user.country);
                     }
+                    locale = l.join("-");
                 }
                 break;
             case "trireme":
@@ -216,15 +250,7 @@ export function getLocale() {
                 // the LANG variable on unix is in the form "lang_REGION.CHARSET"
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
-                if (lang && typeof(lang) !== 'undefined') {
-                    dot = lang.indexOf('.');
-                    if (dot > -1) {
-                        lang = lang.substring(0, dot);
-                    }
-                    locale = (lang.length > 3) ? lang.substring(0,2).toLowerCase() + '-' + lang.substring(3,5).toUpperCase() : lang;
-                } else {
-                    locale = undefined;
-                }
+                locale = parseLocale(lang);
                 break;
             case 'nodejs':
                 // running under nodejs
@@ -232,20 +258,12 @@ export function getLocale() {
                 // the LANG variable on unix is in the form "lang_REGION.CHARSET"
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
-                if (lang && typeof(lang) !== 'undefined') {
-                    dot = lang.indexOf('.');
-                    if (dot > -1) {
-                        lang = lang.substring(0, dot);
-                    }
-                    locale = (lang.length > 3) ? lang.substring(0,2).toLowerCase() + '-' + lang.substring(3,5).toUpperCase() : lang;
-                } else {
-                    locale = undefined;
-                }
+                locale = parseLocale(lang);
                 break;
             case 'qt':
                 // running in the Javascript engine under Qt/QML
                 const locobj = Qt.locale();
-                locale = locobj.name && locobj.name.replace("_", "-") || "en-US";
+                locale = parseLocale(locobj.name || "en-US");
                 break;
         }
         locale = typeof(locale) === 'string' && locale.length && locale !== "C" ? locale : 'en-US';
@@ -318,4 +336,12 @@ export function getTimeZone() {
  */
 export function clearCache() {
     platform = locale = browser = tz = undefined;
+};
+
+/**
+ * Used in unit testing to simulate a platform.
+ * @private
+ */
+export function setPlatform(plat) {
+    platform = plat;
 };
