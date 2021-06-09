@@ -2,12 +2,42 @@
 
 Ilib loctool plugin to parse and localize github-flavored markdown
 
+## Mappings
+
+This plugin now supports mappings:
+
+```json
+{
+  [...]
+  "settings": {
+    "markdown": {
+      "mappings": {
+        "**/foobar.md": {
+          "template": "[dir]/[base]_[locale].[extension]"
+        }
+      }
+    }
+  }
+}
+```
+
+The mappings allow you to match a particular path name and apply an output
+path name template. The mappings are minimatch style.
+
+The template follows the syntax for path name templates defined in the
+the [loctool](https://github.com/iLib-js/loctool/blob/development/lib/utils.js#L1881)
+itself.
+
 ## License
 
 This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.8.0
+
+- added support for settings mappings
 
 ### v1.7.2
 
