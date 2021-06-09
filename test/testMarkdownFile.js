@@ -93,10 +93,12 @@ var p3 = new CustomProject({
                 template: "[locale]/bar/[filename]"
             },
             "**/asdf.md": {
-                template: "[dir]/[locale]/bar/[filename]"
+                template: "[dir]/[locale]/bar/[filename]",
+                frontmatter: ["test"]
             },
             "**/x/*.md": {
-                template: "[dir]/[base]_[locale].md"
+                template: "[dir]/[base]_[locale].md",
+                frontmatter: ["Title", "Description"]
             },
             "**/y/*.md": {
                 template: "[dir]/[locale]/[base].md"
@@ -1807,8 +1809,9 @@ module.exports.markdown = {
         test.expect(10);
 
         var mf = new MarkdownFile({
-            project: p,
-            type: mdft
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar.md"  // no frontmatter config
         });
         test.ok(mf);
 
@@ -1842,11 +1845,13 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseWithFrontMatter: function(test) {
+    testMarkdownFileParseWithFrontMatterExtract: function(test) {
         test.expect(11);
 
         var mf = new MarkdownFile({
-            project: p2
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar/asdf.md"
         });
         test.ok(mf);
 
