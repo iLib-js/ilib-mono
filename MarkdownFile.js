@@ -1,7 +1,7 @@
 /*
  * MarkdownFile.js - plugin to extract resources from an Markdown file
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,9 +126,13 @@ var MarkdownFile = function(options) {
     options = options || {};
 
     this.project = options.project;
-    this.API = this.project.getAPI();
     this.pathName = options.pathName;
+
+    this.API = this.project.getAPI();
     this.type = options.type;
+
+    this.mapping = this.type.getMapping(this.pathName);
+
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.localizeLinks = false;
     // this.componentIndex = 0;
@@ -690,14 +694,11 @@ MarkdownFile.prototype.write = function() {};
  * @returns {String} the localized path name
  */
 MarkdownFile.prototype.getLocalizedPath = function(locale) {
-    var pathName = this.pathName.
-        replace("\/" + this.project.sourceLocale + "\/", "/" + locale + "/").
-        replace(new RegExp("^" + this.project.sourceLocale + "\/"), locale + "/");
-    if (pathName !== this.pathName) return pathName;
-
-    // if we haven't replaced a source locale path component with the current locale
-    // then add it to the beginning of the path.
-    return path.join(locale, this.pathName);
+    var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
+    return path.normalize(this.API.utils.formatPath(mapping.template, {
+        sourcepath: this.pathName,
+        locale: locale
+    }));
 };
 
 /**
@@ -1098,10 +1099,11 @@ MarkdownFile.prototype.localizeText = function(translations, locale) {
                     // replace the source nodes with the translation nodes
                     var prefix = ma.getPrefix();
                     var suffix = ma.getSuffix();
+                    var oldLength = nodeArray.length;
                     nodeArray = nodeArray.slice(0, start).concat(prefix).concat(nodes).concat(suffix).concat(nodeArray.slice(end+1));
 
                     // adjust for the difference in node length of the source and translation
-                    i += nodes.length - (end - start) - 1;
+                    i += (nodeArray.length - oldLength);
                 } // else leave the source nodes alone and register this string as new
             }
             start = -1;
