@@ -160,10 +160,10 @@ module.exports.testglobal = {
         
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "th-TH");
-        test.done();
         
         process.env.LANG = "";
         ilibEnv.clearCache();
+        test.done();
     },
     
     testGetLocaleNodejs2: function(test) {
@@ -179,10 +179,67 @@ module.exports.testglobal = {
         
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "th-TH");
-        test.done();
         
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsFullLocale: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        process.env.LC_ALL = "zh-Hans-CN";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+        test.done();
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+    },
+
+    testGetLocaleNodejsLangScript: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        process.env.LC_ALL = "zh-Hans";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "zh-Hans");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsLangOnly: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        process.env.LC_ALL = "zh";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "zh");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
     },
 
     testGetLocaleNodejsPosixLocale: function(test) {
@@ -198,10 +255,10 @@ module.exports.testglobal = {
 
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "en-US");
-        test.done();
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
+        test.done();
     },
 
     testGetLocaleNodejsPosixLocaleFull: function(test) {
@@ -217,10 +274,10 @@ module.exports.testglobal = {
 
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "en-US");
-        test.done();
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
+        test.done();
     },
 
     testGetLocaleSimulateRhino: function(test) {
