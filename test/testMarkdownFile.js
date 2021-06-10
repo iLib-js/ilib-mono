@@ -93,13 +93,16 @@ var p3 = new CustomProject({
                 template: "[locale]/bar/[filename]"
             },
             "**/asdf.md": {
-                template: "[dir]/[locale]/bar/[filename]"
+                template: "[dir]/[locale]/bar/[filename]",
+                frontmatter: ["test"]
             },
             "**/x/*.md": {
-                template: "[dir]/[base]_[locale].md"
+                template: "[dir]/[base]_[locale].md",
+                frontmatter: ["Title", "Description"]
             },
             "**/y/*.md": {
-                template: "[dir]/[locale]/[base].md"
+                template: "[dir]/[locale]/[base].md",
+                frontmatter: true
             }
         }
     }
@@ -1807,17 +1810,20 @@ module.exports.markdown = {
         test.expect(10);
 
         var mf = new MarkdownFile({
-            project: p,
-            type: mdft
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar.md"  // no frontmatter config
         });
         test.ok(mf);
 
         mf.parse(
             '---\n' +
             'test: This is a test of the front matter\n' +
+            'description: another front matter description\n' +
             '---\n\n' +
             'This is a test\n\n' +
-            'This is also a test\n');
+            'This is also a test\n'
+        );
 
         var set = mf.getTranslationSet();
         test.ok(set);
@@ -1838,6 +1844,88 @@ module.exports.markdown = {
 
         r = set.getBySource("test: This is a test of the front matter");
         test.ok(!r);
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFrontMatterExtract: function(test) {
+        test.expect(8);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar/x/foo.md"
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        // the front matter should be extracted because p3 has fm settings.
+        // the front matter is in yaml format
+        r = set.getBySource("This is a test of the front matter");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the front matter");
+        test.equal(r.getKey(), "Title");
+
+        r = set.getBySource("another front matter description\nwith extended text\n");
+        test.ok(r);
+        test.equal(r.getSource(), "another front matter description\nwith extended text\n");
+        test.equal(r.getKey(), "Description");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFrontMatterExtractAll: function(test) {
+        test.expect(11);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar/y/foo.md" // extracts all front matter fields
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            'Foobar: asdf asdf asdf\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        // the front matter should be extracted because p3 has fm settings.
+        // the front matter is in yaml format
+        r = set.getBySource("This is a test of the front matter");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the front matter");
+        test.equal(r.getKey(), "Title");
+
+        r = set.getBySource("another front matter description\nwith extended text\n");
+        test.ok(r);
+        test.equal(r.getSource(), "another front matter description\nwith extended text\n");
+        test.equal(r.getKey(), "Description");
+
+        r = set.getBySource("asdf asdf asdf");
+        test.ok(r);
+        test.equal(r.getSource(), "asdf asdf asdf");
+        test.equal(r.getKey(), "Foobar");
 
         test.done();
     },
@@ -3315,6 +3403,244 @@ module.exports.markdown = {
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n\n' +
             'Ceci est un essai\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextProcessFrontMatter: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "a/b/x/foo.md"
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r654479252",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r999080996",
+            source: "This is also a test",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Title",
+            source: "This is a test of the front matter",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai de la question en face",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Description",
+            source: "another front matter description\nwith extended text\n",
+            sourceLocale: "en-US",
+            target: "aussi une description de la question en face\navec texte étendu\n",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+
+        // should localize the front matter because the mapping includes Title and Description
+        var expected =
+            '---\n' +
+            'Description: |\n' +
+            '  aussi une description de la question en face\n' +
+            '  avec texte étendu\n' +
+            'Title: Ceci est aussi un essai de la question en face\n' +
+            '---\n' +
+            'Ceci est un essai\n\n' +
+            'Ceci est aussi un essai\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextProcessFrontMatterSkipUnknownFields: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "a/b/x/foo.md"
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            'Foobar: foo asdf asdf asdf\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r654479252",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r999080996",
+            source: "This is also a test",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Title",
+            source: "This is a test of the front matter",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai de la question en face",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Description",
+            source: "another front matter description\nwith extended text\n",
+            sourceLocale: "en-US",
+            target: "aussi une description de la question en face\navec texte étendu\n",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+
+        // should ignore the front matter it doesn't recognize and leave it unlocalized
+        var expected =
+            '---\n' +
+            'Description: |\n' +
+            '  aussi une description de la question en face\n' +
+            '  avec texte étendu\n' +
+            'Foobar: foo asdf asdf asdf\n' +
+            'Title: Ceci est aussi un essai de la question en face\n' +
+            '---\n' +
+            'Ceci est un essai\n\n' +
+            'Ceci est aussi un essai\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testMarkdownFileLocalizeTextProcessFrontMatterLocalizeAll: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "a/b/y/foo.md" // localizes all frontmatter fields
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            'Foobar: asdf asdf asdf\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r654479252",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r999080996",
+            source: "This is also a test",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Title",
+            source: "This is a test of the front matter",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai de la question en face",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Description",
+            source: "another front matter description\nwith extended text\n",
+            sourceLocale: "en-US",
+            target: "aussi une description de la question en face\navec texte étendu\n",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Foobar",
+            source: "asdf asdf asdf",
+            sourceLocale: "en-US",
+            target: "fdsa fdsa fdsa",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+
+        // should localize all the front matter
+        var expected =
+            '---\n' +
+            'Description: |\n' +
+            '  aussi une description de la question en face\n' +
+            '  avec texte étendu\n' +
+            'Foobar: fdsa fdsa fdsa\n' +
+            'Title: Ceci est aussi un essai de la question en face\n' +
+            '---\n' +
+            'Ceci est un essai\n\n' +
+            'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
 
         diff(actual, expected);

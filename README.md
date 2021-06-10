@@ -13,7 +13,8 @@ This plugin now supports mappings:
     "markdown": {
       "mappings": {
         "**/foobar.md": {
-          "template": "[dir]/[base]_[locale].[extension]"
+          "template": "[dir]/[base]_[locale].[extension]",
+          "frontmatter": ["Title", "Description"]
         }
       }
     }
@@ -21,12 +22,22 @@ This plugin now supports mappings:
 }
 ```
 
-The mappings allow you to match a particular path name and apply an output
-path name template. The mappings are minimatch style.
+The mappings allow you to match a particular path name and apply particular
+settings to that path, such as an output path name template. The mappings are
+minimatch style.
 
 The template follows the syntax for path name templates defined in the
 the [loctool](https://github.com/iLib-js/loctool/blob/development/lib/utils.js#L1881)
 itself.
+
+The frontmatter setting specifies an array of strings that represent the names
+of the fields in the frontmatter that should be localized. The frontmatter is
+parsed as a yaml file using the `ilib-loctool-yaml` plugin.
+
+Any fields not listed in the frontmatter list will be preserved but not be localized.
+If frontmatter is set to "true" instead of an array,
+all fields will be localized. If frontmatter is set to "false", or if it is not
+given, then no fields will be localized.
 
 ## License
 
@@ -38,6 +49,7 @@ file for more details.
 ### v1.8.0
 
 - added support for settings mappings
+- added support for parsing and localizing frontmatter fields
 
 ### v1.7.2
 

@@ -55,6 +55,7 @@
     "dependencies": {
         "he": "^1.2.0",
         "ilib": "^14.9.0",
+        "ilib-loctool-yaml": "^1.1.1",
         "log4js": "^5.3.0",
         "message-accumulator": "^2.2.1",
         "rehype-raw": "^4.0.2",

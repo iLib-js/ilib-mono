@@ -36,6 +36,7 @@ var footnotes = require('remark-footnotes');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
+var YamlFileType = require('ilib-loctool-yaml');
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");
 
@@ -140,6 +141,14 @@ var MarkdownFile = function(options) {
     // are not fully translated, just output the original source text.
     this.fullyTranslated = this.project && this.project.settings && this.project.settings.markdown && this.project.settings.markdown.fullyTranslated;
     this.translationStatus = {};
+
+    if (this.mapping && this.mapping.frontmatter) {
+        // needed to parse the front matter, which is in yaml format
+        var type = new YamlFileType(this.project);
+        this.yamlfile = type.newFile({
+            pathName: this.pathName
+        });
+    }
 };
 
 /**
@@ -615,6 +624,21 @@ MarkdownFile.prototype._walk = function(node) {
             }
             break;
 
+        case 'yaml':
+            // parse the front matter using the YamlFile plugin
+            if (this.mapping && this.mapping.frontmatter) {
+                this.yamlfile.parse(node.value);
+                var resources = this.yamlfile.getAll();
+                if (resources) {
+                    resources.forEach(function(res) {
+                        if (typeof(this.mapping.frontmatter) === 'boolean' || this.mapping.frontmatter.indexOf(res.getKey()) > -1) {
+                            this.set.add(res);
+                        }
+                    }.bind(this));
+                }
+            }
+            break;
+
         default:
             this._emitText();
             if (node.children && node.children.length) {
@@ -934,6 +958,13 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
                 }
+            }
+            break;
+
+        case 'yaml':
+            if (this.mapping && this.mapping.frontmatter) {
+                // rely on the yaml plugin to localize the yaml properly
+                node.value = this.yamlfile.localizeText(translations, locale);
             }
             break;
 
