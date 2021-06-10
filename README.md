@@ -208,6 +208,12 @@ limitations under the License.
 - fixed some lint problems
 - added API documentation
 - now can test on web browsers automatically
+- Fixed various bugs parsing the platform locales in getLocale()
+    * Locales with a script code such as "zh-Hans-CN"
+    * The posix "C" default locale
+    * Platforms where the region code is not upper-case
+    * Platforms that don't use a dash to separate the components
+    * Platforms that include a dot and a charset name after the specifier
 
 ### v1.0.0
 
