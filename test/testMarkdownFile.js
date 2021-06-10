@@ -3468,7 +3468,7 @@ module.exports.markdown = {
             datatype: "x-yaml"
         }));
 
-        // should ignore the front matter and leave it unlocalized
+        // should localize the front matter because the mapping includes Title and Description
         var expected =
             '---\n' +
             'Description: |\n' +
@@ -3544,7 +3544,7 @@ module.exports.markdown = {
             datatype: "x-yaml"
         }));
 
-        // should ignore the front matter and leave it unlocalized
+        // should ignore the front matter it doesn't recognize and leave it unlocalized
         var expected =
             '---\n' +
             'Description: |\n' +
@@ -3630,7 +3630,7 @@ module.exports.markdown = {
             datatype: "x-yaml"
         }));
 
-        // should ignore the front matter and leave it unlocalized
+        // should localize all the front matter
         var expected =
             '---\n' +
             'Description: |\n' +
