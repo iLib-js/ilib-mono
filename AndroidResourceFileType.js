@@ -1,7 +1,7 @@
 /*
  * AndroidResourceFileType.js - manages a collection of android resource files
  *
- * Copyright © 2020 JEDLSoft
+ * Copyright © 2020-2021 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,8 +121,8 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
         resources = this.extracted.getAll(),
         db = this.project.db,
         translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !PseudoFactory.isPseudoLocale(locale);
-        }.bind(this));;
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
+        }.bind(this));
 
     logger.trace("There are " + resources.length + " resources to add.");
 
@@ -306,7 +306,7 @@ AndroidResourceFileType.prototype.newFile = function(pathName) {
  */
 AndroidResourceFileType.prototype.getResourceFile = function(context, locale, type, original) {
     // first find the flavor
-    var flavor = this.project.flavors.getFlavorForPath(original);
+    var flavor = (this.project.flavors && this.project.flavors.getFlavorForPath(original));
     var key = makeHashKey(context, locale, type, flavor);
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
@@ -339,7 +339,7 @@ AndroidResourceFileType.prototype.getResourceFile = function(context, locale, ty
             valueDir += "-" + context;
         }
 
-        var resdir = (flavor !== "main") ? this.project.flavors.getResourceDirs(flavor)[0] : this.project.getResourceDirs("java")[0];
+        var resdir = (flavor && flavor !== "main" && this.project.flavors) ? this.project.flavors.getResourceDirs(flavor)[0] : this.project.getResourceDirs("java")[0];
         pathName = path.join(resdir, valueDir, type + ".xml");
 
         if (this.inputFiles[pathName]) {

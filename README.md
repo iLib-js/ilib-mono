@@ -1,11 +1,25 @@
-# ilib-loctool-android-layout
+# ilib-loctool-android-resource
 
-ilib-loctool-android-layout is a plugin for the loctool that
-allows it to read and localize android layout xml files.
+ilib-loctool-android-resource is a plugin for the loctool that
+allows it to read and localize android strings.xml files.
+
+## Release Notes
+
+### v1.0.1
+
+- Add missing functions that loctool needs to get resources out of this plugin
+- Fixed bug when detecting pseudo-locales
+- Fixed handling of flavors
+
+### v1.0.0
+
+- initial release
+- support Android strings.xml files
+    - extract and localize strings
 
 ## License
 
-Copyright © 2019, JEDLSoft
+Copyright © 2019-2021, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
