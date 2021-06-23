@@ -5,6 +5,10 @@ allows it to read and localize android layout xml files.
 
 ## Release Notes
 
+### v1.0.1
+
+- Add missing functions that loctool needs to get resources out of this plugin
+
 ### v1.0.0
 
 - initial release
@@ -14,7 +18,7 @@ allows it to read and localize android layout xml files.
 
 ## License
 
-Copyright © 2019, JEDLSoft
+Copyright © 2019-2021, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
