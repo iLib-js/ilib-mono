@@ -179,7 +179,7 @@ AndroidLayoutFileType.prototype.newFile = function(path) {
         project: this.project,
         pathName: path,
         type: this,
-        API: API
+        API: this.API
     });
     this.files.push(ret);
     return ret;
