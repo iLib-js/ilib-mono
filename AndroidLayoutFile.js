@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFile.js - tool to extract resources from source code
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019, 2021 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ AndroidLayoutFile.prototype._parsePath = function() {
             }
         }
 
-        this.flavor = this.project.flavors.getFlavorForPath(dir);
+        this.flavor = (this.project.flavors && this.project.flavors.getFlavorForPath(dir));
         if (this.flavor === "main") {
             this.flavor = undefined;
         }
