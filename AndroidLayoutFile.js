@@ -41,16 +41,17 @@ var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 var AndroidLayoutFile = function(props) {
     this.dirty = false;
 
-    this.sourceLocale = props.project && props.project.sourceLocale || "en-US";
-
     if (props) {
         this.project = props.project;
         this.pathName = props.pathName;
         this.type = props.type;
         this.locale = props.locale;
         this.API = this.project.getAPI();
-        this.set = this.API.newTranslationSet(this.sourceLocale);
     }
+
+    this.sourceLocale = this.project && this.project.sourceLocale || "en-US";
+
+    this.set = this.API.newTranslationSet(this.sourceLocale);
 
     this.replacements = {};
 };

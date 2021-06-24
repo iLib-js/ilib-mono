@@ -20,7 +20,6 @@
 var log4js = require("log4js");
 
 var AndroidLayoutFile = require("./AndroidLayoutFile.js");
-var AndroidResourceFileType = require("ilib-loctool-android-resource");
 
 var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 
