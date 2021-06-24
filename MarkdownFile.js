@@ -773,7 +773,6 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
                 datatype: "markdown",
                 index: this.resourceIndex++
             }));
-            this.translationStatus[locale] = false; // mark this file as not fully translated in this locale
 
             translation = source;
 
@@ -781,6 +780,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
                 translation = this.type.missingPseudo.getString(source);
             }
         }
+        this.translationStatus[locale] = false; // mark this file as not fully translated in this locale
     } else {
         translation = source;
         this.translationStatus[locale] = false; // mark this file as not fully translated in this locale
