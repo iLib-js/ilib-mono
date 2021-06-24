@@ -179,7 +179,7 @@ AndroidLayoutFileType.prototype.newFile = function(path) {
         project: this.project,
         pathName: path,
         type: this,
-        API: API
+        API: this.API
     });
     this.files.push(ret);
     return ret;
@@ -196,6 +196,40 @@ AndroidLayoutFileType.prototype.getResourceTypes = function() {
 };
 
 /**
+ * Return the translation set containing all of the extracted
+ * resources for all instances of this type of file. This includes
+ * all new strings and all existing strings. If it was extracted
+ * from a source file, it should be returned here.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * extracted resources
+ */
+AndroidLayoutFileType.prototype.getExtracted = function() {
+    return this.extracted;
+};
+
+/**
+ * Add the contents of the given translation set to the extracted resources
+ * for this file type.
+ *
+ * @param {TranslationSet} set set of resources to add to the current set
+ */
+AndroidLayoutFileType.prototype.addSet = function(set) {
+    this.extracted.addSet(set);
+};
+
+/**
+ * Return the translation set containing all of the new
+ * resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * new resources
+ */
+AndroidLayoutFileType.prototype.getNew = function() {
+    return this.newres;
+};
+
+/**
  * Return the name of the node module that implements the resource file type, or
  * the path to a javascript file that implements the resource filetype.
  * @returns {Function|undefined} node module name or path, or undefined if this file type does not
@@ -203,6 +237,17 @@ AndroidLayoutFileType.prototype.getResourceTypes = function() {
  */
 AndroidLayoutFileType.prototype.getResourceFileType = function() {
     return AndroidLayoutFileType;
+};
+
+/**
+ * Return the translation set containing all of the pseudo
+ * localized resources for all instances of this type of file.
+ *
+ * @returns {TranslationSet} the set containing all of the
+ * pseudo localized resources
+ */
+AndroidLayoutFileType.prototype.getPseudo = function() {
+    return this.pseudo;
 };
 
 module.exports = AndroidLayoutFileType;
