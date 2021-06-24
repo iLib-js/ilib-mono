@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-android-resource",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "./AndroidResourceFileType.js",
     "description": "A loctool plugin that knows how to process Android Resource Files",
     "license": "Apache-2.0",
@@ -52,14 +52,14 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.7.0",
+        "ilib": "^14.9.1",
         "log4js": "^2.11.0",
         "pretty-data": ">=0.40.0",
         "xml2json": "^0.11.2"
     },
     "devDependencies": {
         "assertextras": "^1.1.0",
-        "loctool": "^2.11.0",
+        "loctool": "^2.14.0",
         "nodeunit": "^0.11.3"
     }
 }
