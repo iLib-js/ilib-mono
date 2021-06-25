@@ -170,7 +170,7 @@ file for more details.
 ### v1.8.1
 
 - fixed incorrect documentation (ie. the above text!)
-- mark a files as not fully translated if there is pseudo translation
+- mark files as not fully translated if there is pseudo translation
 
 ### v1.8.0
 
