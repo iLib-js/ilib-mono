@@ -2,6 +2,127 @@
 
 Ilib loctool plugin to parse and localize github-flavored markdown
 
+Markdown is broken into paragraphs and phrases using the
+[remark](https://www.npmjs.com/package/remark) family of parsers.
+
+## Escapes
+
+Whenever there is syntax in the markdown that translators should
+not touch, this plugin converts them into xml-like components.
+
+```
+This is _bold_ and *italic* text.
+```
+
+Becomes the string:
+
+```
+This is <c0>bold</c0> and <c1>italic</c1> text.
+```
+
+for the translators.
+
+In this way, translators only have to deal with xml-like syntax
+(which they are probably already familiar with) instead of the
+various methods of marking up text using markdown.
+
+Each component is numbered so that the translators can switch
+them around as appropriate for the grammar of their target
+language.
+
+## Code
+
+Snippets of code are not processed. If there is an inline
+snippet of code, it will be considered part of the surrounding
+text and represented as an XML-like component. The text of
+the inline snippet will be put into the comments of the
+extracted string so that the translator knows what it is.
+
+Example:
+
+```
+There are many instances of `numcount` used in the code.
+```
+
+becomes:
+
+```
+There are many instances of <c0/> used in the code.
+```
+
+for the translators.
+
+Inline snippets are represented with self-closing XML tags.
+
+## HTML
+
+You may embed HTML in the markdown and it will be processed as
+above using the XML-like components.
+
+```
+This text is <b>bold</b> and contains a <span font="foo">different font</span>.
+```
+
+becomes:
+
+```
+This text is <c0>bold</c0> and contains a <c1>different font</c1>.
+```
+
+for the translators.
+
+The attributes of certain HTML tags, such as the "title" attribute will have
+its value extracted as well as a string resource.
+
+## Comments
+
+If you would like to place a translator's commeenent with a particular
+section of text, you can do so with an HTML comment that starts with
+"I18N" like this:
+
+```
+<!-- I18N this commment is extracted and sent along with the
+     resource that follows it. -->
+This is the text that is being commented upon.
+```
+
+## Links, References, and Footnotes
+
+You can have references and links in your markdown as normal:
+
+```
+See the code on [github](https://github.com/ilib-js/ilib-loctool-ghfm).
+```
+
+which becomes:
+
+```
+See the code on <c0>github</c0>.
+```
+
+For the translators.
+
+For references with footnotes, the contents of the footnotes are usually not
+translated if they consist only of URLs. Example:
+
+```
+This text is [translated][tr].
+
+[tr]: http://www.non.translated.url/
+```
+
+However, you can override this for specific footnotes with an HTML comment:
+
+```
+This text is [translated][tr].
+
+<!-- i18n-enable localize-links -->
+[tr]: http://www.non.translated.url/
+<!-- i18n-disable localize-links -->
+```
+
+In this case, the url itself will be extracted as a string resource and will
+be localizable.
 ## Mappings
 
 This plugin now supports mappings:
@@ -13,7 +134,7 @@ This plugin now supports mappings:
     "markdown": {
       "mappings": {
         "**/foobar.md": {
-          "template": "[dir]/[base]_[locale].[extension]",
+          "template": "[dir]/[basename]_[locale].[extension]",
           "frontmatter": ["Title", "Description"]
         }
       }
@@ -45,6 +166,11 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.8.1
+
+- fixed incorrect documentation (ie. the above text!)
+- mark files as not fully translated if there is pseudo translation
 
 ### v1.8.0
 
