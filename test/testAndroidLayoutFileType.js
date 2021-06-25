@@ -1,7 +1,7 @@
 /*
  * testAndroidLayoutFileType.js - test the HTML template file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2020-2021, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,9 @@ var p = new CustomProject({
     "resourceDirs": {
         "java": "android/res"
     }
-}, "./testfiles", {
-    locales:["en-GB"]
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    "build.gradle": "build1.gradle"
 });
 
 module.exports.androidlayoutfiletype = {

@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFile.js - tool to extract resources from source code
  *
- * Copyright © 2019, 2021 JEDLSoft
+ * Copyright © 2019-2021 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -229,7 +229,8 @@ AndroidLayoutFile.prototype.walkLayout = function(node) {
                         comment: comment,
                         dnt: this.API.utils.isDNT(comment),
                         datatype: this.type.datatype,
-                        flavor: this.flavor
+                        flavor: this.flavor,
+                        index: this.resourceIndex++
                     });
                     this.set.add(res);
                     this.dirty = true;
@@ -253,6 +254,8 @@ AndroidLayoutFile.prototype.walkLayout = function(node) {
 AndroidLayoutFile.prototype.parse = function(data) {
     this.xml = data;
     this.contents = xml2json.toJson(data, {object: true});
+    this.resourceIndex = 0;
+
     /*
     if (!this.contents ||
             (!this.contents.FrameLayout &&

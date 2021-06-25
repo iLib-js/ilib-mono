@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFileType.js - tool to extract resources from source code
  *
- * Copyright © 2019,2021, JEDLSoft
+ * Copyright © 2019-2021, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,7 +111,7 @@ AndroidLayoutFileType.prototype.name = function() {
 AndroidLayoutFileType.prototype.write = function(translations, locales) {
     // distribute all the resources to their resource files
     // and then let them write themselves out
-    var resFileType = this.project.getResourceFileType();
+    var resFileType = this.project.getResourceFileType(this.type);
     var res, file,
         resources = this.extracted.getAll(),
         db = this.project.db,
