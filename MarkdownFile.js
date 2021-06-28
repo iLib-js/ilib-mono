@@ -36,7 +36,6 @@ var footnotes = require('remark-footnotes');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
-var YamlFileType = require('ilib-loctool-yaml');
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");
 
@@ -144,9 +143,9 @@ var MarkdownFile = function(options) {
 
     if (this.mapping && this.mapping.frontmatter) {
         // needed to parse the front matter, which is in yaml format
-        var type = new YamlFileType(this.project);
-        this.yamlfile = type.newFile({
-            pathName: this.pathName
+        var type = this.type.getYamlFileType();
+        this.yamlfile = type.newFile(this.pathName, {
+            sourceLocale: this.project.getSourceLocale()
         });
     }
 };

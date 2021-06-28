@@ -22,6 +22,7 @@ var path = require("path");
 var log4js = require("log4js");
 var mm = require("micromatch");
 var MarkdownFile = require("./MarkdownFile.js");
+var YamlFileType = require('ilib-loctool-yaml');
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFileType");
 
@@ -56,6 +57,8 @@ var MarkdownFileType = function(project) {
         translated: [],
         untranslated: []
     }
+
+    this.yamlFileType = new YamlFileType(this.project);
 };
 
 var defaultMappings = {
@@ -229,7 +232,12 @@ MarkdownFileType.prototype.addSet = function(set) {
  * new resources
  */
 MarkdownFileType.prototype.getNew = function() {
-    return this.newres;
+    // get the new strings from the front matter and the file itself and
+    // put them together
+    var set = this.API.newTranslationSet(this.project.getSourceLocale());
+    set.addSet(this.yamlFileType.getNew());
+    set.addSet(this.newres);
+    return set;
 };
 
 /**
@@ -240,7 +248,12 @@ MarkdownFileType.prototype.getNew = function() {
  * pseudo localized resources
  */
 MarkdownFileType.prototype.getPseudo = function() {
-    return this.pseudo;
+    // get the pseudo strings from the front matter and the file itself and
+    // put them together
+    var set = this.API.newTranslationSet(this.project.getSourceLocale());
+    set.addSet(this.yamlFileType.getPseudo());
+    set.addSet(this.pseudo);
+    return set;
 };
 
 MarkdownFileType.prototype.addTranslationStatus = function(fileInfo) {
@@ -256,6 +269,13 @@ MarkdownFileType.prototype.projectClose = function() {
         var fileName = path.join(this.project.root, "translation-status.json");
         fs.writeFileSync(fileName, JSON.stringify(this.fileInfo, undefined, 4), "utf-8");
     }
+};
+
+/**
+ * @private
+ */
+MarkdownFileType.prototype.getYamlFileType = function() {
+    return this.yamlFileType;
 };
 
 module.exports = MarkdownFileType;
