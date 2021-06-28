@@ -167,6 +167,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.8.2
+
+- fixed a bug where the new and pseudo strings for the front matter were not
+  being generated properly
+
 ### v1.8.1
 
 - fixed incorrect documentation (ie. the above text!)

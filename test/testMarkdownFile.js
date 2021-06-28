@@ -3485,6 +3485,81 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileLocalizeTextProcessFrontMatterProcessNewStrings: function(test) {
+        test.expect(12);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "a/b/x/foo.md"
+        });
+        test.ok(mf);
+
+        mdft3.newres.clear();
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r654479252",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "Title",
+            source: "This is a test of the front matter",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai de la question en face",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+
+        // should localize the front matter because the mapping includes Title and Description
+        var expected =
+            '---\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            'Title: Ceci est aussi un essai de la question en face\n' +
+            '---\n' +
+            'Ceci est un essai\n\n' +
+            'This is also a test\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        var newset = mdft3.getNew();
+        test.ok(newset);
+        var resources = newset.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getKey(), "Description");
+        test.equal(resources[0].getSource(), "another front matter description\nwith extended text\n");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getPath(), "a/b/x/foo.md");
+
+        test.equal(resources[1].getKey(), "r999080996");
+        test.equal(resources[1].getSource(), "This is also a test");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        test.equal(resources[1].getPath(), "a/b/x/foo.md");
+
+        test.done();
+    },
+
     testMarkdownFileLocalizeTextProcessFrontMatterSkipUnknownFields: function(test) {
         test.expect(2);
 
