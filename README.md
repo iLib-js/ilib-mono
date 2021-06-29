@@ -27,7 +27,9 @@ Example configuration:
 {
     "settings": {
         "openapi": {
-            "schemas": "./schemas",
+            "schemas": [
+                "./schemas"
+            ],
             "mappings": {
                 "**/openapi.json": {
                     "schema": "openapi-schema",
@@ -55,6 +57,9 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.0.3
+- Add missing `tags` section to the defaults schema
 
 ### v1.0.2
 

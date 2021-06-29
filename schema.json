@@ -18,6 +18,9 @@
     },
     "externalDocs": {
       "$ref": "#/refs/externalDocs"
+    },
+    "tags": {
+      "$ref": "#/refs/tags"
     }
   },
   "refs": {
@@ -61,6 +64,12 @@
         "description": {
           "$ref": "#/refs/common/localizableString"
         }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/refs/tag"
       }
     },
     "schemas": {
@@ -329,6 +338,15 @@
         "localizable": true,
         "items": {
           "type": "string"
+        }
+      }
+    },
+    "tag": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "localizable": true
         }
       }
     }
