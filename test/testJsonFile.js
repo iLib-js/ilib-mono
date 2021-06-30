@@ -1658,6 +1658,48 @@ module.exports.jsonfile = {
         test.done();
     },
 
+    testJsonFileLocalizeArrayOfObjectsWithBooleansOnly: function(test) {
+        test.expect(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse('{\n' +
+            '  "objects": [\n' +
+            '    {\n' +
+            '      "nullable": false\n' +
+            '    },\n' +
+            '    {\n' +
+            '      "nullable": true\n' +
+            '    }\n' +
+            '  ]\n' +
+            '}\n');
+
+        var translations = new TranslationSet('en-US');
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+            '{\n' +
+            '    "objects": [\n' +
+            '        {\n' +
+            '            "nullable": false\n' +
+            '        },\n' +
+            '        {\n' +
+            '            "nullable": true\n' +
+            '        }\n' +
+            '    ]\n' +
+            '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
     testJsonFileLocalizeTextUsePseudoForMissing: function(test) {
         test.expect(2);
 
