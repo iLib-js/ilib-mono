@@ -302,6 +302,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.3
+- fix issue of the parser that resulted in skipping objects with
+  single boolean field which equals `false`
+
 ### v1.2.2
 
 - Fix a bug where the pseudo locales were not initialized properly. This fix gets
