@@ -1351,6 +1351,33 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseWithXMLTags: function(test) {
+        test.expect(6);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "<message>\n" +
+            "This is a string that should be extracted.\n" +
+            "</message>\n");
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+
+        r = set.getBySource("This is a string that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a string that should be extracted.");
+        test.equal(r.getKey(), "r134469253");
+
+        test.done();
+    },
+
     testMarkdownFileParseLists: function(test) {
         test.expect(12);
 
