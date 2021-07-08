@@ -27,7 +27,8 @@ var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var unified = require("unified");
 var markdown = require("remark-parse");
-var remark2rehype = require('remark-rehype');
+// var remark2rehype = require('remark-rehype');
+// var rehype2remark = require('rehype-remark');
 var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
@@ -36,6 +37,7 @@ var footnotes = require('remark-footnotes');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
+var rehype = require("rehype-parse");
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");
 
@@ -51,7 +53,6 @@ var mdparser = unified().
     use(frontmatter, ['yaml']).
     use(footnotes).
     use(highlight).
-    use(remark2rehype).
     use(raw);
 
 var mdstringify = unified().
@@ -65,6 +66,9 @@ var mdstringify = unified().
     }).
     use(footnotes).
     use(frontmatter, ['yaml'])();
+
+var htmlparser = unified().
+    use(rehype);
 
 function escapeQuotes(str) {
     var ret = "";
@@ -332,7 +336,6 @@ var reAttrNameAndValue = /\s(\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?/g;
  */
 MarkdownFile.prototype._findAttributes = function(tagName, tag) {
     var match, name;
-    var ret = [];
 
     // If this is a multiline HTML tag, the parser does not split it for us.
     // It comes as one big ole HTML tag with the open, body, and close all as
@@ -354,8 +357,18 @@ MarkdownFile.prototype._findAttributes = function(tagName, tag) {
             this._addTransUnit(value);
         }
     }
+}
 
-    return ret;
+/**
+ * @private
+ */
+MarkdownFile.prototype._findNodeAttributes = function(node) {
+    for (var name in Object.keys(node.properties)) {
+        var value = node.properties[name];
+        if (value && name === "title" || (this.API.utils.localizableAttributes[node.tagName] && this.API.utils.localizableAttributes[node.tagName][name])) {
+            this._addTransUnit(value);
+        }
+    }
 }
 
 /**
@@ -404,11 +417,11 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
     return ret;
 }
 
-var reTagName = /<(\/?)\s*(\w+)(\s|>)/;
-var reSelfClosingTag = /<\s*(\w+)\/>/;
+var reTagName = /^<(\/?)\s*(\w+)(\s+((\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?)*)*(\/?)>$/;
+var reSelfClosingTag = /<\s*(\w+)\/>$/;
 var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
 
-var reDirectiveComment = /<!--\s*i18n-(en|dis)able\s+(\S*)\s*-->/;
+var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
 
 /**
  * @private
@@ -539,7 +552,6 @@ MarkdownFile.prototype._walk = function(node) {
             break;
 
         case 'html':
-            reTagName.lastIndex = 0;
             var trimmed = node.value.trim();
             if (trimmed.substring(0, 4) === '<!--') {
                 reDirectiveComment.lastIndex = 0;
@@ -575,6 +587,7 @@ MarkdownFile.prototype._walk = function(node) {
                     this._emitText();
                 }
             } else {
+                reTagName.lastIndex = 0;
                 match = reTagName.exec(node.value);
 
                 if (match) {
@@ -617,9 +630,78 @@ MarkdownFile.prototype._walk = function(node) {
                         }
                     }
                 } else {
+                    var root = htmlparser.parse(trimmed);
+                    if (root) {
+                        if (root.type === "root" && root.type === "root") {
+                            var children = root.children;
+                            if (children.length > 0) {
+                                if (children[0].type === "comment") {
+                                    this._walk(children[0]);
+                                } else if (children[0].type === "element" &&
+                                    children[0].tagName === "html") {
+                                    var html = children[0].children;
+                                    if (html.length > 1 &&
+                                        html[1].type === "element" &&
+                                        html[1].tagName === "body") {
+                                        var elements = html[1].children;
+                                        for (var j = 0; j < elements.length; j++) {
+                                            this._walk(elements[j]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+/*
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+*/
                 }
+            }
+            break;
+
+        case 'comment':
+            reDirectiveComment.lastIndex = 0;
+            match = reDirectiveComment.exec(node.value);
+            if (match) {
+                if (match[2] === "localize-links") {
+                    this.localizeLinks = (match[1] === "en");
+                }
+            } else {
+                reL10NComment.lastIndex = 0;
+                match = reL10NComment.exec(node.value);
+                if (match) {
+                    this._addComment(match[1].trim());
+                }
+            }
+            // else ignore other types of HTML comments
+            break;
+
+        case 'element':
+            var tagName = node.tagName;
+            if (this.message.getTextLength()) {
+                if (this.API.utils.nonBreakingTags[tagName]) {
+                    this.message.push({
+                        name: tagName,
+                        node: node
+                    });
+                    node.localizable = true;
+                } else {
+                    // it's a breaking tag, so emit any text
+                    // we have accumulated so far
+                    this._emitText();
+                }
+            }
+            this._findNodeAttributes(node);
+            // Don't look at the children of script or style tags
+            if (tagName !== "script" && tagName !== "style") {
+	            var elements = node.children;
+	            for (var j = 0; j < elements.length; j++) {
+	                this._walk(elements[j]);
+	            }
+            }
+            if (this.message.getTextLength() && node.localizable) {
+                this.message.pop();
             }
             break;
 

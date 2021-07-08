@@ -1,7 +1,7 @@
 /*
  * testMarkdownFile.js - test the Markdown file handler object.
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1361,7 +1361,8 @@ module.exports.markdown = {
         test.ok(mf);
 
         mf.parse(
-            "<message>\n" +
+            "<!-- this is a test -->\n" +
+            "<message a='b'>\n" +
             "This is a string that should be extracted.\n" +
             "</message>\n");
 
