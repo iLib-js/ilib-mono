@@ -632,7 +632,7 @@ MarkdownFile.prototype._walk = function(node) {
                 } else {
                     var root = htmlparser.parse(trimmed);
                     if (root) {
-                        if (root.type === "root" && root.type === "root") {
+                        if (root.type === "root") {
                             var children = root.children;
                             if (children.length > 0) {
                                 if (children[0].type === "comment") {
@@ -988,7 +988,6 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             break;
 
         case 'html':
-            reTagName.lastIndex = 0;
             trimmed = node.value.trim();
             if (trimmed.substring(0, 4) === '<!--') {
                 reL10NComment.lastIndex = 0;
@@ -1008,6 +1007,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     message.pop();
                 }
             } else {
+                reTagName.lastIndex = 0;
                 match = reTagName.exec(node.value);
 
                 if (match) {
@@ -1039,6 +1039,38 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
                 }
+            }
+            break;
+
+        case 'comment':
+            // ignore HTML comments for localization
+            break;
+
+        case 'element':
+            var tagName = node.tagName;
+            if (this.message.getTextLength()) {
+                if (this.API.utils.nonBreakingTags[tagName]) {
+                    this.message.push({
+                        name: tagName,
+                        node: node
+                    });
+                    node.localizable = true;
+                } else {
+                    // it's a breaking tag, so emit any text
+                    // we have accumulated so far
+                    this._emitText();
+                }
+            }
+            this._findNodeAttributes(node);
+            // Don't look at the children of script or style tags
+            if (tagName !== "script" && tagName !== "style") {
+                var elements = node.children;
+                for (var j = 0; j < elements.length; j++) {
+                    this._walk(elements[j]);
+                }
+            }
+            if (this.message.getTextLength() && node.localizable) {
+                this.message.pop();
             }
             break;
 
@@ -1160,9 +1192,51 @@ MarkdownFile.prototype._getTranslationNodes = function(locale, translations, ma)
 };
 
 function mapToNodes(astNode) {
-    var node = new Node(astNode);
+    var node, i;
+    if (astNode.type === "html") {
+        reTagName.lastIndex = 0;
+        match = reTagName.exec(astNode.value);
+
+        if (!match) {
+            // this is flow HTML that needs to be parsed first
+            var root = htmlparser.parse(astNode.value);
+            if (root) {
+                if (root.type === "root") {
+                    var children = root.children;
+                    if (children.length > 0) {
+                        if (children[0].type === "element" &&
+                            children[0].tagName === "html") {
+                            var html = children[0].children;
+                            if (html.length > 1 &&
+                                html[1].type === "element" &&
+                                html[1].tagName === "body") {
+                                var elements = html[1].children;
+                                if (elements && elements.length) {
+                                    node = new Node(elements[0]);
+                                    for (i = 0; i < elements[0].children.length; i++) {
+                                        node.add(mapToNodes(elements[0].children[i]));
+                                    }
+                                    return node;
+                                }
+                            }
+                        } else {
+                            node = new Node(children[0]);
+                            if (children[0].children) {
+                                for (i = 0; i < children[0].children.length; i++) {
+                                    node.add(mapToNodes(children[0].children[i]));
+                                }
+                            }
+                            return node;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    node = new Node(astNode);
     if (astNode.children) {
-        for (var i = 0; i < astNode.children.length; i++) {
+        for (i = 0; i < astNode.children.length; i++) {
             node.add(mapToNodes(astNode.children[i]));
         }
     }
@@ -1178,7 +1252,6 @@ function mapToNodes(astNode) {
  * @returns {String} the localized text of this file
  */
 MarkdownFile.prototype.localizeText = function(translations, locale) {
-    var output = "";
     this.resourceIndex = 0;
 
     logger.debug("Localizing strings for locale " + locale);
