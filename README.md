@@ -65,6 +65,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.1
+
+- updated dependencies
+
 ### v1.0.0
 
 - initial version
