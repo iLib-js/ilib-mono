@@ -27,8 +27,6 @@ var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var unified = require("unified");
 var markdown = require("remark-parse");
-// var remark2rehype = require('remark-rehype');
-// var rehype2remark = require('rehype-remark');
 var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
@@ -354,18 +352,6 @@ MarkdownFile.prototype._findAttributes = function(tagName, tag) {
         var name = match[1],
             value = (match[4] && match[4].trim()) || (match[6] && match[6].trim()) || "";
         if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
-            this._addTransUnit(value);
-        }
-    }
-}
-
-/**
- * @private
- */
-MarkdownFile.prototype._findNodeAttributes = function(node) {
-    for (var name in Object.keys(node.properties)) {
-        var value = node.properties[name];
-        if (value && name === "title" || (this.API.utils.localizableAttributes[node.tagName] && this.API.utils.localizableAttributes[node.tagName][name])) {
             this._addTransUnit(value);
         }
     }
@@ -798,14 +784,6 @@ MarkdownFile.prototype._walk = function(node) {
             }
             break;
 
-        case 'comment':
-            throw "Error: found comment node in markdown tree";
-            break;
-
-        case 'element':
-            throw "Error: found element node in markdown tree";
-            break;
-
         case 'yaml':
             // parse the front matter using the YamlFile plugin
             if (this.mapping && this.mapping.frontmatter) {
@@ -1149,16 +1127,6 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
                 } // else empty html is just a container for some children
             }
-            break;
-
-        case 'comment':
-            // should not occur
-            throw "Error: comment node found!";
-            break;
-
-        case 'element':
-            // should not occur
-            throw "Error: element node found!";
             break;
 
         case 'yaml':
