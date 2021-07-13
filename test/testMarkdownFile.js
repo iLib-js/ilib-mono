@@ -1363,21 +1363,46 @@ module.exports.markdown = {
         mf.parse(
             "<message a='b'>\n" +
             "This is a string that should be extracted.\n" +
-            "</message>\n" +
-            "<message a='c'>\n" +
-            "This is a another string that should be extracted.\n" +
             "</message>\n"
-            );
+        );
 
         var set = mf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 2);
+        test.equal(set.size(), 1);
 
         r = set.getBySource("This is a string that should be extracted.");
         test.ok(r);
         test.equal(r.getSource(), "This is a string that should be extracted.");
         test.equal(r.getKey(), "r134469253");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML: function(test) {
+        test.expect(6);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "<message a='b'>\n" +
+            "This is a <em>string</em> that should be extracted.\n" +
+            "</message>\n"
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+
+        r = set.getBySource("This is a <c0>string</c0> that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a <c0>string</c0> that should be extracted.");
+        test.equal(r.getKey(), "r625837512");
 
         test.done();
     },

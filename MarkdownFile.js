@@ -425,6 +425,123 @@ var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
 
 /**
  * @private
+ * Walk the results of an HTML parse tree to convert it to the
+ * markdown style of nodes.
+ * @param {Node} node the current node of an abstract syntax tree to
+ * walk.
+ * @returns {Array.<Node>} an array of markdown nodes equivalent to
+ * the given HTML node.
+ */
+MarkdownFile.prototype._walkHtml = function(astNode) {
+    var nodes, i, trimmed;
+
+    // for nodes that came from the rehype html parser, convert
+    // them into one or more nodes that remark can process
+    switch (astNode.type) {
+        case 'comment':
+            return new Node({
+                type: "html",
+                value: "<!--" + astNode.value + '-->'
+            });
+
+        case "element":
+            nodes = [];
+
+            // unroll the elements, as that is what markdown does
+            var attrs = [];
+            if (astNode.properties) {
+                for (var name in astNode.properties) {
+                    // for some odd reason, the "class" attribute is renamed to className by the html parser
+                    // so we have to put it back again here
+                    attrs.push((name === "className" ? "class" : name) + '="' + astNode.properties[name] + '"');
+                }
+            }
+            nodes.push(new Node({
+                type: "html",
+                name: astNode.tagName,
+                value: "<" + astNode.tagName + (attrs.length ? " " + attrs.join(" ") : "") + ">"
+            }));
+            if (astNode.children) {
+                astNode.children.forEach(function(child) {
+                    nodes = nodes.concat(this._walkHtml(child));
+                }.bind(this));
+            }
+            nodes.push(new Node({
+                type: "html",
+                name: astNode.tagName,
+                value: "</" + astNode.tagName + ">"
+            }));
+            return nodes;
+
+        case "html":
+            trimmed = astNode.value.trim();
+            // ignore comment html
+            if (trimmed.substring(0, 4) === '<!--') {
+                break;
+            }
+
+            reTagName.lastIndex = 0;
+            match = reTagName.exec(trimmed);
+
+            if (!match) {
+                // this is flow HTML that needs to be parsed into multiple nodes
+                var root = htmlparser.parse(astNode.value);
+
+                if (root) {
+                    if (root.type === "root") {
+                        nodes = [];
+                        var match = astNode.value.match(/^\s+/);
+                        if (match) {
+                           nodes.push(new Node({
+                               type: "text",
+                               value: match[0]
+                           }));
+                        }
+                        var children = root.children;
+                        if (children.length > 0) {
+                            for (i = 0; i < children.length; i++) {
+                                var child = children[i];
+                                if (child.type === "element" &&
+                                    child.tagName === "html") {
+                                    var html = child.children;
+                                    for (i = 0; i < html.length; i++) {
+                                        var child = html[i];
+                                        if (child && child.children) {
+                                            child.children.forEach(function(element) {
+                                                nodes = nodes.concat(this._walkHtml(element));
+                                            });
+                                        }
+                                    }
+                                } else {
+                                    nodes = nodes.concat(this._walkHtml(child));
+                                }
+                            }
+                        }
+                        var match = astNode.value.match(/\s+$/);
+                        if (match) {
+                           nodes.push(new Node({
+                               type: "text",
+                               value: match[0]
+                           }));
+                        }
+                        return nodes;
+                    }
+                }
+            }
+            break;
+    }
+
+    var node = new Node(astNode);
+    if (astNode.children) {
+        for (i = 0; i < astNode.children.length; i++) {
+            node.addChildren(this._walkHtml(astNode.children[i]));
+        }
+    }
+    return [node];
+}
+
+/**
+ * @private
  * Walk the tree looking for localizable text.
  * @param {AST} node the current node of an abstract syntax tree to
  * walk.
@@ -570,6 +687,13 @@ MarkdownFile.prototype._walk = function(node) {
                 // ignore HTML comments
                 break;
             }
+            if (trimmed.startsWith("<script") || trimmed.startsWith("<style")) {
+                // don't parse style or script tags. Just skip them.
+                // They are, however, breaking tags, so emit any text
+                // we have accumulated so far.
+                this._emitText();
+                break;
+            }
             reSelfClosingTag.lastIndex = 0;
             match = reSelfClosingTag.exec(trimmed);
             if (match) {
@@ -632,77 +756,54 @@ MarkdownFile.prototype._walk = function(node) {
                 } else {
                     var root = htmlparser.parse(trimmed);
                     if (root) {
+                        var parent = new Node({
+                            type: "parent"
+                        });
                         if (root.type === "root") {
                             var children = root.children;
                             if (children.length > 0) {
-                                if (children[0].type === "comment") {
-                                    this._walk(children[0]);
-                                } else if (children[0].type === "element" &&
-                                    children[0].tagName === "html") {
-                                    var html = children[0].children;
-                                    if (html.length > 1 &&
-                                        html[1].type === "element" &&
-                                        html[1].tagName === "body") {
-                                        var elements = html[1].children;
-                                        for (var j = 0; j < elements.length; j++) {
-                                            this._walk(elements[j]);
+                                for (var i = 0; i < children.length; i++) {
+                                    if (children[i].type === "element" &&
+                                        children[i].tagName === "html") {
+                                        var html = children[i];
+                                        if (html.children) {
+                                            for (j = 0; j < html.children.length; j++) {
+                                                var element = html.children[j];
+                                                if (element && element.children) {
+                                                    for (k = 0; k < element.children.length; k++) {
+                                                        parent.addChildren(this._walkHtml(element.children[k]));
+                                                    }
+                                                }
+                                            }
                                         }
+                                    } else {
+                                        parent.addChildren(this._walkHtml(children[i]));
                                     }
                                 }
                             }
                         }
+                        // the value of this node is converted into the children, so remove
+                        // the current value and convert this one into a paragraph parent node
+                        // before walking all the children as normal.
+                        node.children = parent.children;
+                        node.value = undefined;
+                        node.type = "paragraph";
+                        // rewalk this node with the new tree under it
+                        this._walk(node);
+                    } else {
+                        throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                            node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
                     }
-/*
-                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
-*/
                 }
             }
             break;
 
         case 'comment':
-            reDirectiveComment.lastIndex = 0;
-            match = reDirectiveComment.exec(node.value);
-            if (match) {
-                if (match[2] === "localize-links") {
-                    this.localizeLinks = (match[1] === "en");
-                }
-            } else {
-                reL10NComment.lastIndex = 0;
-                match = reL10NComment.exec(node.value);
-                if (match) {
-                    this._addComment(match[1].trim());
-                }
-            }
-            // else ignore other types of HTML comments
+            throw "Error: found comment node in markdown tree";
             break;
 
         case 'element':
-            var tagName = node.tagName;
-            if (this.message.getTextLength()) {
-                if (this.API.utils.nonBreakingTags[tagName]) {
-                    this.message.push({
-                        name: tagName,
-                        node: node
-                    });
-                    node.localizable = true;
-                } else {
-                    // it's a breaking tag, so emit any text
-                    // we have accumulated so far
-                    this._emitText();
-                }
-            }
-            this._findNodeAttributes(node);
-            // Don't look at the children of script or style tags
-            if (tagName !== "script" && tagName !== "style") {
-	            var elements = node.children;
-	            for (var j = 0; j < elements.length; j++) {
-	                this._walk(elements[j]);
-	            }
-            }
-            if (this.message.getTextLength() && node.localizable) {
-                this.message.pop();
-            }
+            throw "Error: found element node in markdown tree";
             break;
 
         case 'yaml':
@@ -988,6 +1089,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             break;
 
         case 'html':
+            if (!node.value) {
+                // container node, don't need to do anything for this one
+                break;
+            }
             trimmed = node.value.trim();
             if (trimmed.substring(0, 4) === '<!--') {
                 reL10NComment.lastIndex = 0;
@@ -996,6 +1101,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     this._addComment(match[1].trim());
                 }
                 // ignore HTML comments
+                break;
+            }
+            if (trimmed.startsWith("<script") || trimmed.startsWith("<style")) {
+                // don't parse style or script tags. Just skip them.
                 break;
             }
             reSelfClosingTag.lastIndex = 0;
@@ -1035,43 +1144,21 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                             }
                         }
                     }
-                } else {
+                } else if (node.value) {
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
-                }
+                } // else empty html is just a container for some children
             }
             break;
 
         case 'comment':
-            // ignore HTML comments for localization
+            // should not occur
+            throw "Error: comment node found!";
             break;
 
         case 'element':
-            var tagName = node.tagName;
-            if (this.message.getTextLength()) {
-                if (this.API.utils.nonBreakingTags[tagName]) {
-                    this.message.push({
-                        name: tagName,
-                        node: node
-                    });
-                    node.localizable = true;
-                } else {
-                    // it's a breaking tag, so emit any text
-                    // we have accumulated so far
-                    this._emitText();
-                }
-            }
-            this._findNodeAttributes(node);
-            // Don't look at the children of script or style tags
-            if (tagName !== "script" && tagName !== "style") {
-                var elements = node.children;
-                for (var j = 0; j < elements.length; j++) {
-                    this._walk(elements[j]);
-                }
-            }
-            if (this.message.getTextLength() && node.localizable) {
-                this.message.pop();
-            }
+            // should not occur
+            throw "Error: element node found!";
             break;
 
         case 'yaml':
@@ -1192,51 +1279,9 @@ MarkdownFile.prototype._getTranslationNodes = function(locale, translations, ma)
 };
 
 function mapToNodes(astNode) {
-    var node, i;
-    if (astNode.type === "html") {
-        reTagName.lastIndex = 0;
-        match = reTagName.exec(astNode.value);
-
-        if (!match) {
-            // this is flow HTML that needs to be parsed first
-            var root = htmlparser.parse(astNode.value);
-            if (root) {
-                if (root.type === "root") {
-                    var children = root.children;
-                    if (children.length > 0) {
-                        if (children[0].type === "element" &&
-                            children[0].tagName === "html") {
-                            var html = children[0].children;
-                            if (html.length > 1 &&
-                                html[1].type === "element" &&
-                                html[1].tagName === "body") {
-                                var elements = html[1].children;
-                                if (elements && elements.length) {
-                                    node = new Node(elements[0]);
-                                    for (i = 0; i < elements[0].children.length; i++) {
-                                        node.add(mapToNodes(elements[0].children[i]));
-                                    }
-                                    return node;
-                                }
-                            }
-                        } else {
-                            node = new Node(children[0]);
-                            if (children[0].children) {
-                                for (i = 0; i < children[0].children.length; i++) {
-                                    node.add(mapToNodes(children[0].children[i]));
-                                }
-                            }
-                            return node;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    node = new Node(astNode);
+    var node = new Node(astNode);
     if (astNode.children) {
-        for (i = 0; i < astNode.children.length; i++) {
+        for (var i = 0; i < astNode.children.length; i++) {
             node.add(mapToNodes(astNode.children[i]));
         }
     }
