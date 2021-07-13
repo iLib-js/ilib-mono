@@ -495,7 +495,7 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
                                         if (child && child.children) {
                                             child.children.forEach(function(element) {
                                                 nodes = nodes.concat(this._walkHtml(element));
-                                            });
+                                            }.bind(this));
                                         }
                                     }
                                 } else {
@@ -512,6 +512,9 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
                         }
                         return nodes;
                     }
+                } else {
+                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
                 }
             }
             break;
@@ -740,46 +743,20 @@ MarkdownFile.prototype._walk = function(node) {
                         }
                     }
                 } else {
-                    var root = htmlparser.parse(trimmed);
-                    if (root) {
-                        var parent = new Node({
-                            type: "parent"
-                        });
-                        if (root.type === "root") {
-                            var children = root.children;
-                            if (children.length > 0) {
-                                for (var i = 0; i < children.length; i++) {
-                                    if (children[i].type === "element" &&
-                                        children[i].tagName === "html") {
-                                        var html = children[i];
-                                        if (html.children) {
-                                            for (j = 0; j < html.children.length; j++) {
-                                                var element = html.children[j];
-                                                if (element && element.children) {
-                                                    for (k = 0; k < element.children.length; k++) {
-                                                        parent.addChildren(this._walkHtml(element.children[k]));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        parent.addChildren(this._walkHtml(children[i]));
-                                    }
-                                }
-                            }
-                        }
-                        // the value of this node is converted into the children, so remove
-                        // the current value and convert this one into a paragraph parent node
-                        // before walking all the children as normal.
-                        node.children = parent.children;
-                        node.value = undefined;
-                        node.type = "paragraph";
-                        // rewalk this node with the new tree under it
-                        this._walk(node);
-                    } else {
-                        throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                            node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
-                    }
+                    // This is flow HTML that is not yet parsed, so parse and
+                    // convert the value into an array of mdast nodes and then
+                    // remove the value
+                    node.children = this._walkHtml(node);
+                    node.value = undefined;
+
+                    // Morph this node into a paragraph node which is a type of container
+                    // node which we can add the children to and which appears correctly
+                    // in the output translated markdown
+                    node.type = "paragraph";
+
+                    // now we can rewalk this node with the new mdast tree under it to parse
+                    // and extract the strings in it as we normally do
+                    this._walk(node);
                 }
             }
             break;
