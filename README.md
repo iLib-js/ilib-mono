@@ -167,6 +167,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.8.4
+
+- fixed a bug where markdown embedded inside of flow HTML was not being parsed
+  properly. Flow HTML and markdown should be able to contain each other.
+
 ### v1.8.3
 
 - fixed a bug where strings inside of flow HTML were not being extracted or
