@@ -27,7 +27,6 @@ var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var unified = require("unified");
 var markdown = require("remark-parse");
-var remark2rehype = require('remark-rehype');
 var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
@@ -36,6 +35,7 @@ var footnotes = require('remark-footnotes');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
+var rehype = require("rehype-parse");
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");
 
@@ -51,7 +51,6 @@ var mdparser = unified().
     use(frontmatter, ['yaml']).
     use(footnotes).
     use(highlight).
-    use(remark2rehype).
     use(raw);
 
 var mdstringify = unified().
@@ -65,6 +64,9 @@ var mdstringify = unified().
     }).
     use(footnotes).
     use(frontmatter, ['yaml'])();
+
+var htmlparser = unified().
+    use(rehype);
 
 function escapeQuotes(str) {
     var ret = "";
@@ -332,7 +334,6 @@ var reAttrNameAndValue = /\s(\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?/g;
  */
 MarkdownFile.prototype._findAttributes = function(tagName, tag) {
     var match, name;
-    var ret = [];
 
     // If this is a multiline HTML tag, the parser does not split it for us.
     // It comes as one big ole HTML tag with the open, body, and close all as
@@ -354,8 +355,6 @@ MarkdownFile.prototype._findAttributes = function(tagName, tag) {
             this._addTransUnit(value);
         }
     }
-
-    return ret;
 }
 
 /**
@@ -404,11 +403,131 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
     return ret;
 }
 
-var reTagName = /<(\/?)\s*(\w+)(\s|>)/;
-var reSelfClosingTag = /<\s*(\w+)\/>/;
+var reTagName = /^<(\/?)\s*(\w+)(\s+((\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?)*)*(\/?)>$/;
+var reSelfClosingTag = /<\s*(\w+)\/>$/;
 var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
 
-var reDirectiveComment = /<!--\s*i18n-(en|dis)able\s+(\S*)\s*-->/;
+var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
+
+/**
+ * @private
+ * Walk the results of an HTML parse tree to convert it to the
+ * markdown style of nodes.
+ * @param {Node} node the current node of an abstract syntax tree to
+ * walk.
+ * @returns {Array.<Node>} an array of markdown nodes equivalent to
+ * the given HTML node.
+ */
+MarkdownFile.prototype._walkHtml = function(astNode) {
+    var nodes, i, trimmed;
+
+    // for nodes that came from the rehype html parser, convert
+    // them into one or more nodes that remark can process
+    switch (astNode.type) {
+        case 'comment':
+            return new Node({
+                type: "html",
+                value: "<!--" + astNode.value + '-->'
+            });
+
+        case "element":
+            nodes = [];
+
+            // unroll the elements, as that is what markdown does
+            var attrs = [];
+            if (astNode.properties) {
+                for (var name in astNode.properties) {
+                    // for some odd reason, the "class" attribute is renamed to className by the html parser
+                    // so we have to put it back again here
+                    attrs.push((name === "className" ? "class" : name) + '="' + astNode.properties[name] + '"');
+                }
+            }
+            nodes.push(new Node({
+                type: "html",
+                name: astNode.tagName,
+                value: "<" + astNode.tagName + (attrs.length ? " " + attrs.join(" ") : "") + ">"
+            }));
+            if (astNode.children) {
+                astNode.children.forEach(function(child) {
+                    nodes = nodes.concat(this._walkHtml(child));
+                }.bind(this));
+            }
+            nodes.push(new Node({
+                type: "html",
+                name: astNode.tagName,
+                value: "</" + astNode.tagName + ">"
+            }));
+            return nodes;
+
+        case "html":
+            trimmed = astNode.value.trim();
+            // ignore comment html
+            if (trimmed.substring(0, 4) === '<!--') {
+                break;
+            }
+
+            reTagName.lastIndex = 0;
+            match = reTagName.exec(trimmed);
+
+            if (!match) {
+                // this is flow HTML that needs to be parsed into multiple nodes
+                var root = htmlparser.parse(astNode.value);
+
+                if (root) {
+                    if (root.type === "root") {
+                        nodes = [];
+                        var match = astNode.value.match(/^\s+/);
+                        if (match) {
+                           nodes.push(new Node({
+                               type: "text",
+                               value: match[0]
+                           }));
+                        }
+                        var children = root.children;
+                        if (children.length > 0) {
+                            for (i = 0; i < children.length; i++) {
+                                var child = children[i];
+                                if (child.type === "element" &&
+                                    child.tagName === "html") {
+                                    var html = child.children;
+                                    for (i = 0; i < html.length; i++) {
+                                        var child = html[i];
+                                        if (child && child.children) {
+                                            child.children.forEach(function(element) {
+                                                nodes = nodes.concat(this._walkHtml(element));
+                                            }.bind(this));
+                                        }
+                                    }
+                                } else {
+                                    nodes = nodes.concat(this._walkHtml(child));
+                                }
+                            }
+                        }
+                        var match = astNode.value.match(/\s+$/);
+                        if (match) {
+                           nodes.push(new Node({
+                               type: "text",
+                               value: match[0]
+                           }));
+                        }
+                        return nodes;
+                    }
+                } else {
+                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                }
+            }
+            break;
+    }
+
+    var node = new Node(astNode);
+    if (astNode.children) {
+        for (i = 0; i < astNode.children.length; i++) {
+            node.addChildren(this._walkHtml(astNode.children[i]));
+        }
+    }
+    return [node];
+}
 
 /**
  * @private
@@ -539,7 +658,6 @@ MarkdownFile.prototype._walk = function(node) {
             break;
 
         case 'html':
-            reTagName.lastIndex = 0;
             var trimmed = node.value.trim();
             if (trimmed.substring(0, 4) === '<!--') {
                 reDirectiveComment.lastIndex = 0;
@@ -556,6 +674,13 @@ MarkdownFile.prototype._walk = function(node) {
                     }
                 }
                 // ignore HTML comments
+                break;
+            }
+            if (trimmed.startsWith("<script") || trimmed.startsWith("<style")) {
+                // don't parse style or script tags. Just skip them.
+                // They are, however, breaking tags, so emit any text
+                // we have accumulated so far.
+                this._emitText();
                 break;
             }
             reSelfClosingTag.lastIndex = 0;
@@ -575,6 +700,7 @@ MarkdownFile.prototype._walk = function(node) {
                     this._emitText();
                 }
             } else {
+                reTagName.lastIndex = 0;
                 match = reTagName.exec(node.value);
 
                 if (match) {
@@ -617,8 +743,20 @@ MarkdownFile.prototype._walk = function(node) {
                         }
                     }
                 } else {
-                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                    // This is flow HTML that is not yet parsed, so parse and
+                    // convert the value into an array of mdast nodes and then
+                    // remove the value
+                    node.children = this._walkHtml(node);
+                    node.value = undefined;
+
+                    // Morph this node into a paragraph node which is a type of container
+                    // node which we can add the children to and which appears correctly
+                    // in the output translated markdown
+                    node.type = "paragraph";
+
+                    // now we can rewalk this node with the new mdast tree under it to parse
+                    // and extract the strings in it as we normally do
+                    this._walk(node);
                 }
             }
             break;
@@ -906,7 +1044,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             break;
 
         case 'html':
-            reTagName.lastIndex = 0;
+            if (!node.value) {
+                // container node, don't need to do anything for this one
+                break;
+            }
             trimmed = node.value.trim();
             if (trimmed.substring(0, 4) === '<!--') {
                 reL10NComment.lastIndex = 0;
@@ -915,6 +1056,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     this._addComment(match[1].trim());
                 }
                 // ignore HTML comments
+                break;
+            }
+            if (trimmed.startsWith("<script") || trimmed.startsWith("<style")) {
+                // don't parse style or script tags. Just skip them.
                 break;
             }
             reSelfClosingTag.lastIndex = 0;
@@ -926,6 +1071,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     message.pop();
                 }
             } else {
+                reTagName.lastIndex = 0;
                 match = reTagName.exec(node.value);
 
                 if (match) {
@@ -953,10 +1099,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                             }
                         }
                     }
-                } else {
+                } else if (node.value) {
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
-                }
+                } // else empty html is just a container for some children
             }
             break;
 
@@ -1096,7 +1242,6 @@ function mapToNodes(astNode) {
  * @returns {String} the localized text of this file
  */
 MarkdownFile.prototype.localizeText = function(translations, locale) {
-    var output = "";
     this.resourceIndex = 0;
 
     logger.debug("Localizing strings for locale " + locale);

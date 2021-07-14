@@ -167,6 +167,19 @@ file for more details.
 
 ## Release Notes
 
+### v1.8.3
+
+- fixed a bug where strings inside of flow HTML were not being extracted or
+  localized. Flow HTML is where the HTML tags span multiple lines. HTML that
+  was on a single line was already handled correctly--it is the multiple-lines
+  that threw off the parser. Example of flow HTML:
+
+```
+  <span class="myclass">
+  This text is on a separate line.
+  </span>
+```
+
 ### v1.8.2
 
 - fixed a bug where the new and pseudo strings for the front matter were not

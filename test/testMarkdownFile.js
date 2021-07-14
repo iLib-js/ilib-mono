@@ -1,7 +1,7 @@
 /*
  * testMarkdownFile.js - test the Markdown file handler object.
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2021, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1347,6 +1347,140 @@ module.exports.markdown = {
         test.ok(r);
         test.equal(r.getSource(), "This is a test of the emergency parsing system.");
         test.equal(r.getKey(), "r699762575");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFlowStyleHTMLTags: function(test) {
+        test.expect(6);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "<message a='b'>\n" +
+            "This is a string that should be extracted.\n" +
+            "</message>\n"
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+
+        r = set.getBySource("This is a string that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a string that should be extracted.");
+        test.equal(r.getKey(), "r134469253");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFlowStyleHTMLTagsMultiple: function(test) {
+        test.expect(9);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "<message a='b'>\n" +
+            "This is a string that should be extracted.\n" +
+            "</message>\n" +
+            "<asdf>\n" +
+            "This is another string that should be extracted.\n" +
+            "</message>\n"
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+
+        r = set.getBySource("This is a string that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a string that should be extracted.");
+        test.equal(r.getKey(), "r134469253");
+
+        r = set.getBySource("This is another string that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is another string that should be extracted.");
+        test.equal(r.getKey(), "r142202207");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFlowStyleHTMLTagsMultipleWithTextInBetween: function(test) {
+        test.expect(12);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "<message a='b'>\n" +
+            "This is a string that should be extracted.\n" +
+            "</message>\n" +
+            "ab\n" +
+            "<asdf>\n" +
+            "This is another string that should be extracted.\n" +
+            "</message>\n"
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 3);
+
+        r = set.getBySource("This is a string that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a string that should be extracted.");
+        test.equal(r.getKey(), "r134469253");
+
+        r = set.getBySource("ab");
+        test.ok(r);
+        test.equal(r.getSource(), "ab");
+        test.equal(r.getKey(), "r889488492");
+
+        r = set.getBySource("This is another string that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is another string that should be extracted.");
+        test.equal(r.getKey(), "r142202207");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML: function(test) {
+        test.expect(6);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            "<message a='b'>\n" +
+            "This is a <em>string</em> that should be extracted.\n" +
+            "</message>\n"
+        );
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+
+        r = set.getBySource("This is a <c0>string</c0> that should be extracted.");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a <c0>string</c0> that should be extracted.");
+        test.equal(r.getKey(), "r625837512");
 
         test.done();
     },
@@ -3351,6 +3485,152 @@ module.exports.markdown = {
 
         var expected =
             '<span class="foo" checked>Ceci est un test du système d\'analyse d\'urgence.</span>\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFlowStyleHTML: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '<span class="foo" checked>\n' +
+            'This is a test of the emergency parsing system.\n' +
+            '</span>\n');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r699762575",
+            source: "This is a test of the emergency parsing system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un test du système d'analyse d'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        var expected =
+            '<span class="foo" checked>\n' +
+            'Ceci est un test du système d\'analyse d\'urgence.\n' +
+            '</span>\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFlowStyleHTMLMultiple: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '<span class="foo" checked>\n' +
+            'This is a test of the emergency parsing system.\n' +
+            '</span>\n' +
+            '<message>\n' +
+            'This is translatable.\n' +
+            '</message>\n'
+            );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r699762575",
+            source: "This is a test of the emergency parsing system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un test du système d'analyse d'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r299977686",
+            source: "This is translatable.",
+            sourceLocale: "en-US",
+            target: "Ceci est traduitable.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        var expected =
+            '<span class="foo" checked>\n' +
+            'Ceci est un test du système d\'analyse d\'urgence.\n' +
+            '</span>\n' +
+            '<message>\n' +
+            'Ceci est traduitable.\n' +
+            '</message>\n';
+        var actual = mf.localizeText(translations, "fr-FR");
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testMarkdownFileLocalizeFlowStyleHTMLMultipleWithTextInBetween: function(test) {
+        test.expect(2);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '<span class="foo" checked>\n' +
+            'This is a test of the emergency parsing system.\n' +
+            '</span>\n' +
+            '\n' +
+            'This is translatable.\n' +
+            '\n' +
+            '<message>\n' +
+            'This is translatable.\n' +
+            '</message>\n'
+            );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r699762575",
+            source: "This is a test of the emergency parsing system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un test du système d'analyse d'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r299977686",
+            source: "This is translatable.",
+            sourceLocale: "en-US",
+            target: "Ceci est traduitable.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+
+        var expected =
+            '<span class="foo" checked>\n' +
+            'Ceci est un test du système d\'analyse d\'urgence.\n' +
+            '</span>\n' +
+            '\n' +
+            'Ceci est traduitable.\n' +
+            '\n' +
+            '<message>\n' +
+            'Ceci est traduitable.\n' +
+            '</message>\n';
         var actual = mf.localizeText(translations, "fr-FR");
 
         diff(actual, expected);
