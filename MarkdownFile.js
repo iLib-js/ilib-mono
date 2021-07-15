@@ -419,7 +419,7 @@ var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
  * the given HTML node.
  */
 MarkdownFile.prototype._walkHtml = function(astNode) {
-    var nodes, i, trimmed;
+    var nodes, i, trimmed, root;
 
     // for nodes that came from the rehype html parser, convert
     // them into one or more nodes that remark can process
@@ -471,7 +471,7 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
 
             if (!match) {
                 // this is flow HTML that needs to be parsed into multiple nodes
-                var root = htmlparser.parse(astNode.value);
+                root = htmlparser.parse(astNode.value);
 
                 if (root) {
                     if (root.type === "root") {
@@ -516,6 +516,42 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
                         node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
                 }
+            }
+            break;
+
+        case 'text':
+            // need to to parse text nodes as markdown again, since it was never parsed before
+            root = mdparser.parse(astNode.value);
+            if (root) {
+                if (root.type === "root" &&
+                        root.children &&
+                        root.children.length &&
+                        root.children[0].type === "paragraph" &&
+                        root.children[0].children &&
+                        root.children[0].children.length > 1) {
+                    nodes = [];
+                    var match = astNode.value.match(/^\s+/);
+                    if (match) {
+                       nodes.push(new Node({
+                           type: "text",
+                           value: match[0]
+                       }));
+                    }
+                    nodes = nodes.concat(root.children[0].children);
+                    var match = astNode.value.match(/\s+$/);
+                    if (match) {
+                       nodes.push(new Node({
+                           type: "text",
+                           value: match[0]
+                       }));
+                    }
+                    return nodes;
+                } else {
+                    // just plain text, so return it as-is
+                    return [astNode];
+                }
+            } else {
+                throw new Error("Syntax error in markdown file " + this.pathName + ". Bad markdown syntax.");
             }
             break;
     }
