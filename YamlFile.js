@@ -274,6 +274,14 @@ YamlFile.prototype.parse = function(str) {
     this._parseResources(undefined, this.json, this.set, true);
 };
 
+/**
+ * Parse a yml file as Document and traverse nodes tree
+ * and extract comments.
+ *
+ * @param {String} str source yaml string to parse
+ *
+ * @private
+ */
 YamlFile.prototype._parseComments = function(str) {
     var document = yaml.parseDocument(str);
 
@@ -282,6 +290,18 @@ YamlFile.prototype._parseComments = function(str) {
     });
 }
 
+/**
+ * Extract comments from Node and store it in a map.
+ * element_id => extracted_comment
+ *
+ * @param {String} key id of the node
+ * @param {Object} node node to parse and extract comment from
+ * @param {String} firstComment comment from the level above,
+ * due to the fact that by default first comment in a YAMLMap is assigned
+ * to the YAMLMap's value itself, but not the first element in the map
+ *
+ * @private
+ */
 YamlFile.prototype._parseNodeComment = function(key, node, firstComment) {
     if (yaml.isPair(node)) {
         if (firstComment || node.key.commentBefore) {
@@ -304,6 +324,15 @@ YamlFile.prototype._parseNodeComment = function(key, node, firstComment) {
     }
 }
 
+/**
+ * Constructs full element key by concatenating prefix and element's key.
+ *
+ * @param {String} prefix
+ * @param {String} key
+ * @returns {string}
+ *
+ * @private
+ */
 YamlFile.prototype._normalizeKey = function(prefix, key) {
     return (prefix ? prefix + "@" : "") + key.toString().replace(/@/g, "\\@");
 }
