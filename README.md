@@ -9,6 +9,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.0
+- Add support of yaml comments that enables providing context
+comments for translators
+
 ### v1.1.1
 
 - Fix a bug where the pseudo locales were not initialized properly.

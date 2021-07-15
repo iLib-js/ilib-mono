@@ -415,6 +415,122 @@ module.exports.yamlfile = {
         test.done();
     },
 
+    testYamlFileParseComments: function(test) {
+        test.expect(24);
+
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        test.ok(yml);
+
+        var set = yml.getTranslationSet();
+        test.equal(set.size(), 0);
+
+        yml.parse('#first_a comment\n' +
+            'first_a:\n' +
+            '  #second_a comment\n' +
+            '  second_a: "second a"\n' +
+            '  #second_b comment\n' +
+            '  second_b: "second b"\n' +
+            '#first_b comment\n' +
+            'first_b:\n' +
+            '  #second_c comment\n' +
+            '  second_c:\n' +
+            '    third_a: "third a"\n' +
+            '    #third_b comment\n' +
+            '    third_b: "third b"\n' +
+            '  #   \n' +
+            '  second_d: "second d"\n');
+
+        test.ok(set);
+        test.equal(set.size(), 5);
+
+        var r = set.getAll();
+
+        test.equal(r[0].getSource(), "second a");
+        test.equal(r[0].getKey(), "second_a");
+        test.equal(r[0].getContext(), "first_a");
+        test.equal(r[0].getComment(), "second_a comment");
+
+        test.equal(r[1].getSource(), "second b");
+        test.equal(r[1].getKey(), "second_b");
+        test.equal(r[1].getContext(), "first_a");
+        test.equal(r[1].getComment(), "second_b comment");
+
+        test.equal(r[2].getSource(), "third a");
+        test.equal(r[2].getKey(), "third_a");
+        test.equal(r[2].getContext(), "first_b@second_c");
+        test.equal(r[2].getComment(), undefined);
+
+        test.equal(r[3].getSource(), "third b");
+        test.equal(r[3].getKey(), "third_b");
+        test.equal(r[3].getContext(), "first_b@second_c");
+        test.equal(r[3].getComment(), "third_b comment");
+
+        test.equal(r[4].getSource(), "second d");
+        test.equal(r[4].getKey(), "second_d");
+        test.equal(r[4].getContext(), "first_b");
+        test.equal(r[4].getComment(), "");
+
+        test.done();
+    },
+
+    testYamlFileParseCommentTrim: function(test) {
+        test.expect(5);
+
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        test.ok(yml);
+
+        yml.parse('# space before\n' +
+            'first: "string"\n' +
+            '#space after \n' +
+            'second: "string"\n' +
+            '#   space both multiple        \n' +
+            'third: "string"');
+
+        var set = yml.getTranslationSet();
+        test.equal(set.size(), 3);
+
+        var r = set.getAll();
+
+        test.equal(r[0].getComment(), "space before");
+        test.equal(r[1].getComment(), "space after");
+        test.equal(r[2].getComment(), "space both multiple");
+
+        test.done();
+    },
+
+    testYamlFileParseCommentMultiline: function(test) {
+        test.expect(5);
+
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        test.ok(yml);
+
+        yml.parse('first: "string"\n' +
+            '# this is multiline\n' +
+            '# comment    \n' +
+            'second: "string"\n' +
+            'third: "string"\n');
+
+        var set = yml.getTranslationSet();
+        test.equal(set.size(), 3);
+
+        var r = set.getAll();
+
+        test.equal(r[0].getComment(), undefined);
+        test.equal(r[1].getComment(), "this is multiline\n comment");
+        test.equal(r[2].getComment(), undefined);
+
+        test.done();
+    },
+
     testYamlFileParseArray: function(test) {
         test.expect(18);
 
@@ -460,6 +576,62 @@ module.exports.yamlfile = {
         test.equal(r[3].getSource(), "four");
         test.equal(r[3].getKey(), "3");
         test.equal(r[3].getContext(), "Jobs");
+
+        test.done();
+    },
+
+    testYamlParseArrayComments: function(test) {
+        test.expect(22);
+
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        test.ok(yml);
+
+        var set = yml.getTranslationSet();
+        test.equal(set.size(), 0);
+
+        yml.parse(
+            '---\n' +
+            '#first level comment\n' +
+            'Jobs:\n' +
+            '  - one and\n' +
+            '  #second level comment\n' +
+            '  - two and\n' +
+            '  - three\n' +
+            '  #second level comment\n' +
+            '  - four\n');
+
+        test.ok(set);
+
+        var set = yml.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getAll();
+        test.ok(r);
+
+        test.equal(r.length, 4);
+
+        test.equal(r[0].getSource(), "one and");
+        test.equal(r[0].getKey(), "0");
+        test.equal(r[0].getContext(), "Jobs");
+        test.equal(r[0].getComment(), undefined);
+
+        test.equal(r[1].getSource(), "two and");
+        test.equal(r[1].getKey(), "1");
+        test.equal(r[1].getContext(), "Jobs");
+        test.equal(r[1].getComment(), "second level comment");
+
+        test.equal(r[2].getSource(), "three");
+        test.equal(r[2].getKey(), "2");
+        test.equal(r[2].getContext(), "Jobs");
+        test.equal(r[2].getComment(), undefined);
+
+        test.equal(r[3].getSource(), "four");
+        test.equal(r[3].getKey(), "3");
+        test.equal(r[3].getContext(), "Jobs");
+        test.equal(r[3].getComment(), "second level comment");
 
         test.done();
     },
@@ -951,8 +1123,8 @@ module.exports.yamlfile = {
         });
 
         var expected =
-            "'&apos;&#41;, url&#40;imgs/masks/top_bar': '&apos;&#41;, url&#40;imgs/masks/top_bar康生活相'\n" +
-            "• &amp;nbsp; Address a particular topic: • &amp;nbsp; 解决一个特定的主题\n";
+            '"&apos;&#41;, url&#40;imgs/masks/top_bar": "&apos;&#41;, url&#40;imgs/masks/top_bar康生活相"\n' +
+            '• &amp;nbsp; Address a particular topic: • &amp;nbsp; 解决一个特定的主题\n';
 
         diff(yml.getContent(), expected);
 
@@ -1414,7 +1586,7 @@ module.exports.yamlfile = {
             '  body: “%1”\n' +
             '  ctoa: View %1\n' +
             '  daily_limit_exception_email: true\n' +
-            '  email_subject: \'%1, vous économisez du temps!\'\n' +
+            '  email_subject: "%1, vous économisez du temps!"\n' +
             '  global_link: generic_link\n' +
             '  push_data: You’ve saved lots of time! View %1\n' +
             '  setting_name: thanked_note_time_saved\n' +
@@ -1506,7 +1678,7 @@ module.exports.yamlfile = {
             '  body: “%1”\n' +
             '  ctoa: View %1\n' +
             '  daily_limit_exception_email: true\n' +
-            '  email_subject: \'%1, vous économisez du temps!\'\n' +
+            '  email_subject: "%1, vous économisez du temps!"\n' +
             '  global_link: generic_link\n' +
             '  push_data: Vous avez économisé du temps! Voir %1\n' +
             '  setting_name: thanked_note_time_saved\n' +
