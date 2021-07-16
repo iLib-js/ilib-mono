@@ -24,7 +24,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var jsyaml = require("js-yaml");
+var yaml = require("yaml");
 
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
@@ -59,6 +59,7 @@ var YamlFile = function(props) {
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
+    this.commentsMap = new Map();
 
     if (this.pathName && this.project && this.project.flavorList) {
         var filename = path.basename(this.pathName, ".yml");
@@ -190,8 +191,7 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
     for (var key in obj) {
         if (typeof(obj[key]) === "object") {
             var localizeChildren = localize && (this.getExcludedKeysFromSchema().indexOf(key) === -1);
-            var pre = prefix ? prefix + "@" : "";
-            this._parseResources(pre + key.replace(/@/g, "\\@"), obj[key], set, localizeChildren);
+            this._parseResources(this._normalizeKey(prefix, key), obj[key], set, localizeChildren);
         } else if (localize && this.getExcludedKeysFromSchema().indexOf(key) === -1) {
             var resource = obj[key];
             if (this._isTranslatable(resource)) {
@@ -216,6 +216,11 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
                     params.target = resource;
                     params.targetLocale = locale;
                 }
+
+                if (this.commentsMap.has(this._normalizeKey(prefix, key))) {
+                    params.comment = this.commentsMap.get(this._normalizeKey(prefix, key)).trim();
+                }
+
                 var res = this.API.newResource(params);
 
                 set.add(res);
@@ -230,8 +235,7 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
 YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
     for (var key in obj) {
         if (typeof(obj[key]) === "object") {
-            var pre = prefix ? prefix + "@" : "";
-            this._mergeOutput(pre + key.replace(/@/g, "\\@"), obj[key], set);
+            this._mergeOutput(this._normalizeKey(prefix, key), obj[key], set);
         } else {
             var resource = obj[key];
             if (this._isTranslatable(resource)) {
@@ -265,9 +269,73 @@ YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
  */
 YamlFile.prototype.parse = function(str) {
     this.resourceIndex = 0;
-    this.json = jsyaml.safeLoad(str);
+    this.json = yaml.parse(str);
+    this._parseComments(str);
     this._parseResources(undefined, this.json, this.set, true);
 };
+
+/**
+ * Parse a yml file as Document and traverse nodes tree
+ * and extract comments.
+ *
+ * @param {String} str source yaml string to parse
+ *
+ * @private
+ */
+YamlFile.prototype._parseComments = function(str) {
+    var document = yaml.parseDocument(str);
+
+    document.contents.items.forEach(node => {
+        this._parseNodeComment('', node);
+    });
+}
+
+/**
+ * Extract comments from Node and store it in a map.
+ * element_id => extracted_comment
+ *
+ * @param {String} key id of the node
+ * @param {Object} node node to parse and extract comment from
+ * @param {String} firstComment comment from the level above,
+ * due to the fact that by default first comment in a YAMLMap is assigned
+ * to the YAMLMap's value itself, but not the first element in the map
+ *
+ * @private
+ */
+YamlFile.prototype._parseNodeComment = function(key, node, firstComment) {
+    if (yaml.isPair(node)) {
+        if (firstComment || node.key.commentBefore) {
+            this.commentsMap.set(this._normalizeKey(key, node.key.value), firstComment || node.key.commentBefore);
+        }
+        this._parseNodeComment(this._normalizeKey(key, node.key.value), node.value, node.value.commentBefore);
+
+    } else if (yaml.isSeq(node)) {
+        node.items.forEach((mapNode, i) => {
+            this._parseNodeComment(this._normalizeKey(key, i), mapNode, i === 0 ? firstComment : undefined);
+        });
+    } else if (yaml.isMap(node)) {
+        node.items.forEach((mapNode, i) => {
+            this._parseNodeComment(key, mapNode, i === 0 ? firstComment : undefined);
+        });
+    } else if (yaml.isScalar(node)) {
+        if (firstComment || node.commentBefore) {
+            this.commentsMap.set(key, firstComment || node.commentBefore);
+        }
+    }
+}
+
+/**
+ * Constructs full element key by concatenating prefix and element's key.
+ *
+ * @param {String} prefix
+ * @param {String} key
+ * @returns {string}
+ *
+ * @private
+ */
+YamlFile.prototype._normalizeKey = function(prefix, key) {
+    return (prefix ? prefix + "@" : "") + key.toString().replace(/@/g, "\\@");
+}
 
 /**
  * Parse a target yml file, compare to source's entries
@@ -277,7 +345,7 @@ YamlFile.prototype.parse = function(str) {
  * @param {String} str the string to parse
  */
 YamlFile.prototype.parseOutputFile = function(str) {
-    var json = jsyaml.safeLoad(str);
+    var json = yaml.parse(str);
     this._mergeOutput(undefined, json, this.set, true);
 };
 
@@ -481,12 +549,11 @@ YamlFile.prototype.getContent = function() {
     logger.trace("json is " + JSON.stringify(json));
 
     // now convert the json back to yaml
-    // return yamljs.stringify(json, 4, 2, {});
-    return jsyaml.safeDump(json, {
-        schema: jsyaml.FAILSAFE_SCHEMA,
-        noCompatMode: true,
-        sortKeys: true,
-        linewidth: -1
+    return yaml.stringify(json, {
+        schema: 'failsafe',
+        sortMapEntries: true,
+        lineWidth: 0,
+        doubleQuotedAsJSON: true
     });
 };
 
@@ -534,8 +601,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
         if (typeof(obj[key]) === "object") {
             if (obj[key]) {
                 var localizeChildren = localize && (this.getExcludedKeysFromSchema().indexOf(key) === -1);
-                var pre = prefix ? prefix + "@" : "";
-                ret[key] = this._localizeContent(pre + key.replace(/@/g, "\\@"), obj[key], translations, locale, localizeChildren);
+                ret[key] = this._localizeContent(this._normalizeKey(prefix, key), obj[key], translations, locale, localizeChildren);
             } else {
                 ret[key] = "";
             }
@@ -628,11 +694,11 @@ YamlFile.prototype.localizeText = function(translations, locale) {
             logger.trace("Localized json is: " + JSON.stringify(localizedJson, undefined, 4));
 
             try {
-                output = jsyaml.safeDump(localizedJson, {
-                    schema: jsyaml.FAILSAFE_SCHEMA,
-                    noCompatMode: true,
-                    sortKeys: true,
-                    linewidth: -1
+                output = yaml.stringify(localizedJson, {
+                    schema: 'failsafe',
+                    sortMapEntries: true,
+                    lineWidth: 0,
+                    doubleQuotedAsJSON: true
                 });
             } catch (e) {
                 console.log("Error while localizing file " + this.pathName + " for locale " + this.locale);
