@@ -69,6 +69,14 @@ var p = new CustomProject({
             "**/*.pot": {
                 "template": "[dir]/[locale].po"
             },
+            "**/ignore1.po": {
+                "template": "[dir]/[locale].po",
+                "ignoreComments": true
+            },
+            "**/ignore2.po": {
+                "template": "[dir]/[locale].po",
+                "ignoreComments": ["paths", "flags"]
+            },
             "**/*.po": {
                 "template": "[dir]/[locale].po",
                 localeMap: {
@@ -985,6 +993,90 @@ module.exports.pofile = {
              '"This is more comments from the engineer to the translator for string 1."],' +
              '"flags":["c-format","javascript-format"],' +
              '"previous":["str 1","str 2"]}');
+
+        test.done();
+    },
+
+    testPOFileParseIgnoreComments: function(test) {
+        test.expect(7);
+
+        var pof = new POFile({
+            project: p,
+            type: t,
+            pathName: "foo/bar/ignore2.po"   // picks the right mapping
+        });
+        test.ok(pof);
+
+        pof.parse(
+            '# translator\'s comments 1\n' +
+            '# translator\'s comments 2\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#. This is more comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str 1\n' +
+            '#| str 2\n' +
+            '#: path1.py:234\n' +
+            '#: asdf/path2.py:868\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getComment(),
+            '{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1.",'+
+             '"This is more comments from the engineer to the translator for string 1."],' +
+             '"previous":["str 1","str 2"]}');
+
+        test.done();
+    },
+
+    testPOFileParseIgnoreAllComments: function(test) {
+        test.expect(7);
+
+        var pof = new POFile({
+            project: p,
+            type: t,
+            pathName: "foo/bar/ignore1.po"   // picks the right mapping
+        });
+        test.ok(pof);
+
+        pof.parse(
+            '# translator\'s comments 1\n' +
+            '# translator\'s comments 2\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#. This is more comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str 1\n' +
+            '#| str 2\n' +
+            '#: path1.py:234\n' +
+            '#: asdf/path2.py:868\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1");
+        test.ok(!resources[0].getComment());
 
         test.done();
     },

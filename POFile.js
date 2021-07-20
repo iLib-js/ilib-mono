@@ -39,6 +39,14 @@ function unescapeQuotes(str) {
     return str ? str.replace(/\\"/g, '"') : str;
 }
 
+var commentTypes = {
+    "translator": true,
+    "extracted": true,
+    "flags": true,
+    "previous": true,
+    "paths": true
+};
+
 /**
  * Create a new PO file with the given path name and within
  * the given project.
@@ -60,6 +68,23 @@ var POFile = function(options) {
 
     this.localeSpec = options.locale || (this.mapping && this.type.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
     this.locale = new Locale(this.localeSpec);
+
+    if (this.mapping && this.mapping.ignoreComments) {
+        if (typeof(this.mapping.ignoreComments) === "boolean") {
+            this.commentsToIgnore = new Set(this.mapping.ignoreComments ? Object.keys(commentTypes) : undefined);
+        } else {
+            this.commentsToIgnore = new Set();
+            if (Array.isArray(this.mapping.ignoreComments)) {
+                this.mapping.ignoreComments.forEach(function(element) {
+                    if (commentTypes[element]) {
+                        this.commentsToIgnore.add(element);
+                    }
+                }.bind(this));
+            }
+        }
+    } else {
+        this.commentsToIgnore = new Set();
+    }
 
     this.resourceIndex = 0;
 };
@@ -253,13 +278,16 @@ POFile.prototype.parse = function(data) {
                             var match = rePathStrip.exec(token.value);
                             original = (match && match.length > 1) ? match[1] : token.value;
                         }
-                        if (!comment) {
-                            comment = {};
-                        }
-                        if (!comment[commentTypeMap[type]]) {
-                           comment[commentTypeMap[type]] = [];
-                        }
-                        comment[commentTypeMap[type]].push(token.value.substring((type === ' ') ? 1 : 2));
+                        var commentType = commentTypeMap[type];
+                        if (commentType && !this.commentsToIgnore.has(commentType)) {
+                            if (!comment) {
+                                comment = {};
+                            }
+                            if (!comment[commentType]) {
+                               comment[commentType] = [];
+                            }
+                            comment[commentType].push(token.value.substring((type === ' ') ? 1 : 2));
+                        } // else if it is not in the comments set, ignore it
                         break;
                     case tokens.PLURAL:
                         var language = this.locale.getLanguage();
