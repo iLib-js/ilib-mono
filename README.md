@@ -163,7 +163,16 @@ used within the po property:
       will be used as-is. The overall [shared] locale map is also applied
       if there is no locale map in the template mapping for a particular
       locale.
-
+    - ignoreComments: specify whether to ignore types of comments. Possible values are:
+        - *true* All comment types should be ignored
+        - *false* No comment types should be ignored (default)
+        - Array of strings. Name the types of comments that should be
+          ignored. Possible values are:
+            - "translator" - ignore translator comments (prefix is "# ")
+            - "extracted" - ignore comments extracted from the source code (prefix is "#.")
+            - "flags" - ignore special processing flags (prefix is "#,")
+            - "previous" - ignore previous translation (prefix is "#|")
+            - "paths" - ignore file names and line numbers (prefix is "#:")
 
 Example configuration:
 
@@ -173,7 +182,8 @@ Example configuration:
         "po": {
             "mappings": {
                 "**/template.pot": {
-                    "template": "resources/[locale].po"
+                    "template": "resources/[locale].po",
+                    "ignoreComments": ["paths"]
                 },
                 "sublibrary/**/library.pot": {
                     "template": "[dir]/[locale].po",
@@ -181,7 +191,8 @@ Example configuration:
                         "nb-NO": "no",
                         "sr-Cyrl-RS": "sr-RS",
                         "zh-Hans-CN": "zh-CN"
-                    }
+                    },
+                    "ignoreComments": true
                 }
             }
         }
@@ -191,14 +202,17 @@ Example configuration:
 
 In the above example, any file named `template.pot` will be localized and
 the output is sent to a file named after the target locale located in the
-`resources` directory.
+`resources` directory. In these files, the translator and extracted
+type of comments are ignored and will not be extracted into the resources
+and therefore will not appear in the xliff files.
 
 In the second part of the example, any `library.pot` file that appears in
 the `sublibrary` directory will be localized and the results sent to a
 po file named after each target locale which will appear in the same
 directory where the source file was located. If the locale is one of the
 ones listed in the locale map, it will be mapped before being substituted
-in to the template.
+in to the template. For these files, all comment types are ignored and none
+are sent to the translators in the xliff files.
 
 If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
@@ -211,6 +225,15 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.4.0
+
+- added the ability to ignore comments. This solves the problem where file names
+  and line numbers for each resource change when someone makes an unrelated
+  change to a source file, but the resource itself nor the code around it has
+  changed. This causes some translation management systems to treat the string
+  as changed and therefore requiring useless retranslation.
+    - Added the "ignoreComments" config option (see above for details)
 
 ### v1.3.1
 
