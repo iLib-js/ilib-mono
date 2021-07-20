@@ -287,7 +287,7 @@ POFile.prototype.parse = function(data) {
                                comment[commentType] = [];
                             }
                             comment[commentType].push(token.value.substring((type === ' ') ? 1 : 2));
-                        } // else if it is not in the comments set, ignore it
+                        } // else if it is in the comments set, ignore it
                         break;
                     case tokens.PLURAL:
                         var language = this.locale.getLanguage();
