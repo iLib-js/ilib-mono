@@ -2,6 +2,47 @@
 
 Ilib loctool plugin to parse and localize YAML files.
 
+This plugin can parse and localize **.yml** files. Optionally,
+schema file can be provided to configure plugin's behavior
+for a given source file, such as localized file path
+and name or excluded keys.
+
+## Configuration
+
+By default, plugin will localize source `.yml` files,
+e.g. `/project/en.yml`,  and write localized file
+to a separate folder: `/project/<localeName>/en.yml`.
+
+This behavior can be changed by providing schema file, which should
+be named `<sourceFileName>-schema.json` and be placed in the same
+directory as the source file.
+
+## Schema file
+
+Example of `*-schema.json` file:
+```json
+{
+  "useLocalizedDirectories": false,
+  
+  "excluded_keys": [
+    "testKey",
+    "anotherExcludedKey"
+  ],
+  
+  "outputFilenameMapping": {
+    "ru-RU": "/project/translations/ru.yml"
+  }
+}
+```
+
+`useLocalizedDirectories` - specifies whether localized file should
+be placed in a separate directory. Default: `true`
+
+`excluded_keys` - array of keys to be excluded from localization
+
+`outputFilenameMapping` - array of mappings that
+specify output path for a locale: `<localeName>: <path`
+
 ## Providing context comments
 
 The plugin automatically parses yaml comments and assigns them
