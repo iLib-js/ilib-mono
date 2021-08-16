@@ -57,6 +57,8 @@ var YamlFile = function(props) {
     this.API = this.project.getAPI();
 
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+    this.mapping = this.type.getMapping(this.pathName);
+    this._loadSchema();
 
     this.set = this.API.newTranslationSet(this.locale);
     this.commentsMap = new Map();
@@ -218,7 +220,14 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
                 }
 
                 if (this.commentsMap.has(this._normalizeKey(prefix, key))) {
-                    params.comment = this.commentsMap.get(this._normalizeKey(prefix, key)).trim();
+                    var comment = this.commentsMap.get(this._normalizeKey(prefix, key)).trim();
+                    if (this.getCommentPrefix()) {
+                        if (comment.startsWith(this.getCommentPrefix())) {
+                            params.comment = comment.slice(this.getCommentPrefix().length).trim();
+                        }
+                    } else {
+                        params.comment = comment;
+                    }
                 }
 
                 var res = this.API.newResource(params);
@@ -253,7 +262,7 @@ YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
                         existing.setTarget(resource);
                     }
                     set.dirty = true;
-                } else if (existing){
+                } else if (existing) {
                     logger.debug("Overwriting value for string resource " + JSON.stringify(existing));
                 }
             }
@@ -354,17 +363,6 @@ YamlFile.prototype.parseOutputFile = function(str) {
  * memory.
  */
 YamlFile.prototype.extract = function() {
-    if (this.getSchemaPath()){
-        var p = path.join(this.project.root, this.getSchemaPath());
-        try {
-            var data = fs.readFileSync(p, "utf8");
-            if (data){
-                this.schema = JSON.parse(data);
-            }
-        } catch(e){
-            logger.warn("No schema file found at " + p);
-        }
-    }
     logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
@@ -383,6 +381,26 @@ YamlFile.prototype.extract = function() {
     // so we can tell when other code has added resources to it
     this.set.setClean();
 };
+
+YamlFile.prototype._loadSchema = function () {
+    if (!this.type.isLegacyMode()) {
+        this.schema = this.mapping;
+        return;
+    }
+
+    // Legacy schema handling.
+    if (this.getSchemaPath()) {
+        var p = path.join(this.project.root, this.getSchemaPath());
+        try {
+            var data = fs.readFileSync(p, "utf8");
+            if (data) {
+                this.schema = JSON.parse(data);
+            }
+        } catch (e) {
+            logger.warn("No schema file found at " + p);
+        }
+    }
+}
 
 /**
  * Get the path name of this resource file.
@@ -580,6 +598,27 @@ YamlFile.prototype.getTranslationSet = function() {
  * @returns {String} the localized path name
  */
 YamlFile.prototype.getLocalizedPath = function(locale) {
+    if (this.type.isLegacyMode()) {
+        return this._getLocalizedPathLegacy(locale);
+    }
+
+    var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
+
+    return path.normalize(this.API.utils.formatPath(mapping.template, {
+        sourcepath: this.pathName,
+        locale: locale
+    }));
+};
+
+/**
+ * Legacy version of getLocalizedPath().
+ *
+ * @private
+ *
+ * @param {String} locale the locale spec for the target locale
+ * @returns {String} the localized path name
+ */
+YamlFile.prototype._getLocalizedPathLegacy = function(locale) {
     var fullPath = this.getOutputFilenameForLocale(locale);
     var dirName = path.dirname(fullPath);
     var fileName = path.basename(fullPath);
@@ -750,14 +789,20 @@ YamlFile.prototype.localize = function(translations, locales) {
 };
 
 /**
- * Extract values of key 'excluded_keys' from the loaded schema
+ * Extract values of key 'excludedKeys' or 'excluded_keys' from the loaded schema.
+ * 'excluded_keys' are used for backward compatibility reason.
  *
  * @return {Array.<String>} keys that should not be localized at output time
  */
-YamlFile.prototype.getExcludedKeysFromSchema = function(){
-    if (this.schema && this.schema['excluded_keys']) {
-        return this.schema['excluded_keys'];
+YamlFile.prototype.getExcludedKeysFromSchema = function() {
+    if (this.schema) {
+        if (Array.isArray(this.schema['excludedKeys'])) {
+            return this.schema['excludedKeys']
+        } else if (Array.isArray(this.schema['excluded_keys'])) {
+            return this.schema['excluded_keys'];
+        }
     }
+
     return [];
 }
 
@@ -768,7 +813,7 @@ YamlFile.prototype.getExcludedKeysFromSchema = function(){
  * @return {Boolean} whether output should be written to directory for locale,
  * or kept in same directory as source.
  */
-YamlFile.prototype.getUseLocalizedDirectoriesFromSchema = function(){
+YamlFile.prototype.getUseLocalizedDirectoriesFromSchema = function() {
     if (this.schema && typeof(this.schema['useLocalizedDirectories']) === "boolean") {
         return this.schema['useLocalizedDirectories'];
     }
@@ -782,11 +827,27 @@ YamlFile.prototype.getUseLocalizedDirectoriesFromSchema = function(){
  * @return {String} string filename specified for the given locale in the schema object
  *  defaults to file's own pathname
  */
-YamlFile.prototype.getOutputFilenameForLocale = function(locale){
-    if (this.schema && this.schema['outputFilenameMapping'] && typeof(locale) === "string" && this.schema['outputFilenameMapping'][locale]) {
+YamlFile.prototype.getOutputFilenameForLocale = function(locale) {
+    if (
+        this.schema && this.schema['outputFilenameMapping']
+        && typeof(locale) === "string" && this.schema['outputFilenameMapping'][locale]
+    ) {
         return this.schema['outputFilenameMapping'][locale];
     }
     return path.normalize(this.pathName);
+}
+
+/**
+ * Extract values of key 'commentPrefix' from the loaded schema
+ *
+ * @returns {String|undefined}
+ */
+YamlFile.prototype.getCommentPrefix = function() {
+    if (this.schema && typeof(this.schema['commentPrefix']) === 'string') {
+        return this.schema['commentPrefix'];
+    }
+
+    return undefined;
 }
 
 module.exports = YamlFile;
