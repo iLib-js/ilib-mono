@@ -76,7 +76,7 @@ its value extracted as well as a string resource.
 
 ## Comments
 
-If you would like to place a translator's commeenent with a particular
+If you would like to place a translator's comment with a particular
 section of text, you can do so with an HTML comment that starts with
 "I18N" like this:
 
@@ -123,6 +123,7 @@ This text is [translated][tr].
 
 In this case, the url itself will be extracted as a string resource and will
 be localizable.
+
 ## Mappings
 
 This plugin now supports mappings:
