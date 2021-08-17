@@ -979,6 +979,55 @@ module.exports.markdown = {
         test.done();
     },
 
+    testMarkdownFileParseTurnOnDirectLinks: function(test) {
+        test.expect(18);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'Here are some links:\n\n' +
+            '<!-- i18n-enable localize-links -->\n' +
+            '* This is [foobar](http://www.box.com/foobar)\n' +
+            '* And here is [asdf](http://www.box.com/asdf)\n' +
+            '<!-- i18n-disable localize-links -->\n');
+
+        var set = mf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 5);
+
+        var r = set.getBySource("Here are some links:");
+        test.ok(r);
+        test.equal(r.getSource(), "Here are some links:");
+        test.equal(r.getKey(), "r539503678");
+
+        // the URLs should be extracted because we turned on link localization
+        r = set.getBySource("This is <c0>foobar</c0>");
+        test.ok(r);
+        test.equal(r.getSource(), "This is <c0>foobar</c0>");
+        test.equal(r.getKey(), "r924705194");
+
+        r = set.getBySource("And here is <c0>asdf</c0>");
+        test.ok(r);
+        test.equal(r.getSource(), "And here is <c0>asdf</c0>");
+        test.equal(r.getKey(), "r655195000");
+
+        r = set.getBySource("http://www.box.com/foobar");
+        test.ok(r);
+        test.equal(r.getSource(), "http://www.box.com/foobar");
+        test.equal(r.getKey(), "r803907207");
+
+        r = set.getBySource("http://www.box.com/asdf");
+        test.ok(r);
+        test.equal(r.getSource(), "http://www.box.com/asdf");
+        test.equal(r.getKey(), "r247450278");
+
+        test.done();
+    },
+
     testMarkdownFileParseDoExtractURLLinksMidString: function(test) {
         test.expect(5);
 
@@ -5372,6 +5421,62 @@ module.exports.markdown = {
             '<!-- i18n-enable localize-links -->\n\n' +
             '[twitter]: https://de.twitter.com/OurPlatform "Unsere Platformen"\n\n' +
             '<!-- i18n-disable localize-links -->\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testMarkdownFileLocalizeDirectLinks: function(test) {
+        test.expect(3);
+
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        test.ok(mf);
+
+        mf.parse(
+            'For developer support, please reach out to us via one of our channels:\n' +
+            '\n' +
+            '- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n'
+        );
+        test.ok(mf);
+
+        var translations = new TranslationSet();
+
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r816306377',
+            source: 'For developer support, please reach out to us via one of our channels:',
+            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r629827996',
+            source: '<c0>Ask on Twitter</c0> for general questions and support.',
+            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: 'r85880207',
+            source: 'https://twitter.com/OurPlatform',
+            target: 'https://de.twitter.com/OurPlatform',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+
+        var actual = mf.localizeText(translations, "de-DE");
+
+        var expected =
+            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
+            '\n' +
+            '* [Auf Twitter stellen](https://de.twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
