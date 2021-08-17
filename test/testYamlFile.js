@@ -59,6 +59,35 @@ var p = new CustomProject({
 
 var yft = new YamlFileType(p);
 
+var projectWithMappings = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "YamlFileType")
+    ]
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    nopseudo: true,
+    targetDir: "testfiles",
+    yaml: {
+        mappings: {
+            "**/source.yaml": {
+                template: "localized.[locale].yaml",
+                commentPrefix: "L10N:"
+            },
+            "**/test3.yml": {
+                template: "resources/[locale]/[filename]",
+                excludedKeys: ["c"],
+                commentPrefix: "L10N:"
+            },
+            "**/*.y?(a)ml": {
+                template: "resources/[locale]/[filename]"
+            }
+        }
+    }
+});
+var yamlFileTypeWithMappings = new YamlFileType(projectWithMappings);
+
 module.exports.yamlfile = {
     testYamlInit: function(test) {
         p.init(function() {
@@ -1690,96 +1719,6 @@ module.exports.yamlfile = {
         test.done();
     },
 
-    testYamlGetSchemaPath: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "foo/bar/x.yml"
-        });
-        test.ok(y);
-
-        test.equal(y.getSchemaPath(), "foo/bar/x-schema.json");
-
-        test.done();
-    },
-
-    testYamlGetSchemaPathNoFile: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft
-        });
-        test.ok(y);
-
-        test.equal(y.getSchemaPath(), undefined);
-
-        test.done();
-    },
-
-    testYamlExtractSchemaFile: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test3.yml"
-        });
-        test.ok(y);
-        y.extract();
-        test.notEqual(y.getSchema(), undefined);
-        test.done();
-    },
-
-    testYamlGetExcludedKeysFromSchema: function(test) {
-        test.expect(3);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test3.yml"
-        });
-        test.ok(y);
-        y.extract();
-        test.equal(y.getExcludedKeysFromSchema().length, 1);
-        test.equal(y.getExcludedKeysFromSchema()[0], 'do_not_read_me');
-        test.done();
-    },
-
-    testYamlGetExcludedKeysFromSchemaWithoutSchema: function(test) {
-        test.expect(3);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test.yml"
-        });
-        test.ok(y);
-        y.extract();
-        test.equal(y.getSchema(), undefined);
-        test.equal(y.getExcludedKeysFromSchema().length, 0);
-        test.done();
-    },
-
-    testYamlParseExcludedKeys: function(test) {
-        test.expect(4);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test3.yml"
-        });
-        test.ok(y);
-        y.extract();
-        var set = y.getTranslationSet();
-        test.ok(set);
-        test.equal(set.getBySource('good','title@read_me').getLocalize(), true);
-        test.ok(!set.getBySource('bad','title@do_not_read_me'));
-        test.done();
-    },
-
     testYamlParseOutputFile: function(test) {
         test.expect(5);
 
@@ -1815,150 +1754,6 @@ module.exports.yamlfile = {
         test.ok(y);
         y.extract();
         test.equals(y.getLocalizedPath('de-DE'), 'de-DE/test2.yml');
-        test.done();
-    },
-
-    testYamlUseLocalizedDirectoriesFromSchema: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test3.yml"
-        });
-        test.ok(y);
-        y.schema = {}
-        y.schema['useLocalizedDirectories'] = false;
-        test.equal(y.getUseLocalizedDirectoriesFromSchema(), false);
-        test.done();
-    },
-
-    testYamlUseLocalizedDirectoriesFromSchemaWithoutSchema: function(test) {
-        test.expect(3);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test.yml"
-        });
-        test.ok(y);
-        y.extract();
-        test.equal(y.getSchema(), undefined);
-        test.equal(y.getUseLocalizedDirectoriesFromSchema(), true);
-        test.done();
-    },
-
-    testYamlGetLocalizedPathWithLocalizedDirectories: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test3.yml"
-        });
-        test.ok(y);
-        y.extract();
-        y.schema['useLocalizedDirectories'] = true;
-        test.equals(y.getLocalizedPath('de-DE'), 'de-DE/test3.yml');
-        test.done();
-    },
-
-    testYamlGetLocalizedPathWithoutLocalizedDirectories: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test3.yml"
-        });
-        test.ok(y);
-        y.extract();
-        y.schema['useLocalizedDirectories'] = false;
-        test.equals(y.getLocalizedPath('de-DE'), 'test3.yml');
-        test.done();
-    },
-
-    testYamlGetOutputFilenameForLocaleWithoutSchema: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test2.yml"
-        });
-        test.ok(y);
-        test.equals(y.getOutputFilenameForLocale('de-DE'), 'test2.yml');
-        test.done();
-    },
-
-    testYamlGetOutputFilenameForLocaleWithSchema: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test2.yml"
-        });
-        test.ok(y);
-        y.schema = {};
-        y.schema['outputFilenameMapping'] = {
-            'de-DE': './de.yml'
-        }
-        test.equals(y.getOutputFilenameForLocale('de-DE'), './de.yml');
-        test.done();
-    },
-
-    testYamlGetLocalizedPathWithLocalizedDirs: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test2.yml"
-        });
-        test.ok(y);
-        y.schema = {
-            useLocalizedDirectories: true
-        };
-        test.equals(y.getLocalizedPath('de-DE'), 'de-DE/test2.yml');
-        test.done();
-    },
-
-    testYamlGetLocalizedPathWithLocalizedDirsAndOutputFilenameMapping: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test2.yml"
-        });
-        test.ok(y);
-        y.schema = {
-            useLocalizedDirectories: true,
-            outputFilenameMapping: {
-                'de-DE': './de.yml'
-            }
-        };
-        test.equals(y.getLocalizedPath('de-DE'), 'de-DE/de.yml');
-        test.done();
-    },
-
-    testYamlGetLocalizedPathWithOutputFilenameMappingAndWithoutLocalizedDirectories: function(test) {
-        test.expect(2);
-
-        var y = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./test2.yml"
-        });
-        test.ok(y);
-        y.schema = {
-            'outputFilenameMapping': {
-                'de-DE': './de.yml'
-            },
-            'useLocalizedDirectories': false
-        };
-        test.equals(y.getLocalizedPath('de-DE'), './de.yml');
         test.done();
     },
 
@@ -2204,5 +1999,336 @@ module.exports.yamlfile = {
         test.ok(!r[1].getFlavor());
 
         test.done();
+    },
+
+    testsWithLegacySchema: {
+        testYamlGetSchemaPath: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "foo/bar/x.yml"
+            });
+            test.ok(y);
+
+            test.equal(y.getSchemaPath(), "foo/bar/x-schema.json");
+
+            test.done();
+        },
+
+        testYamlGetSchemaPathNoFile: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft
+            });
+            test.ok(y);
+
+            test.equal(y.getSchemaPath(), undefined);
+
+            test.done();
+        },
+
+        testYamlExtractSchemaFile: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test3.yml"
+            });
+            test.ok(y);
+            y.extract();
+            test.notEqual(y.getSchema(), undefined);
+            test.done();
+        },
+
+        testYamlGetExcludedKeysFromSchema: function(test) {
+            test.expect(3);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test3.yml"
+            });
+            test.ok(y);
+            test.equal(y.getExcludedKeysFromSchema().length, 1);
+            test.equal(y.getExcludedKeysFromSchema()[0], 'do_not_read_me');
+            test.done();
+        },
+
+        testYamlGetExcludedKeysFromSchemaWithoutSchema: function(test) {
+            test.expect(3);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test.yml"
+            });
+            test.ok(y);
+            test.equal(y.getSchema(), undefined);
+            test.equal(y.getExcludedKeysFromSchema().length, 0);
+            test.done();
+        },
+
+        testYamlParseExcludedKeys: function(test) {
+            test.expect(4);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test3.yml"
+            });
+            test.ok(y);
+            y.extract();
+            var set = y.getTranslationSet();
+            test.ok(set);
+            test.equal(set.getBySource('good','title@read_me').getLocalize(), true);
+            test.ok(!set.getBySource('bad','title@do_not_read_me'));
+            test.done();
+        },
+
+        testYamlUseLocalizedDirectoriesFromSchema: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test3.yml"
+            });
+            test.ok(y);
+            y.schema = {}
+            y.schema['useLocalizedDirectories'] = false;
+            test.equal(y.getUseLocalizedDirectoriesFromSchema(), false);
+            test.done();
+        },
+
+        testYamlUseLocalizedDirectoriesFromSchemaWithoutSchema: function(test) {
+            test.expect(3);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test.yml"
+            });
+            test.ok(y);
+            test.equal(y.getSchema(), undefined);
+            test.equal(y.getUseLocalizedDirectoriesFromSchema(), true);
+            test.done();
+        },
+
+        testYamlGetLocalizedPathWithLocalizedDirectories: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test3.yml"
+            });
+            test.ok(y);
+            y.schema['useLocalizedDirectories'] = true;
+            test.equals(y.getLocalizedPath('de-DE'), 'de-DE/test3.yml');
+            test.done();
+        },
+
+        testYamlGetLocalizedPathWithoutLocalizedDirectories: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test3.yml"
+            });
+            test.ok(y);
+            y.schema['useLocalizedDirectories'] = false;
+            test.equals(y.getLocalizedPath('de-DE'), 'test3.yml');
+            test.done();
+        },
+
+        testYamlGetOutputFilenameForLocaleWithoutSchema: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test2.yml"
+            });
+            test.ok(y);
+            test.equals(y.getOutputFilenameForLocale('de-DE'), 'test2.yml');
+            test.done();
+        },
+
+        testYamlGetOutputFilenameForLocaleWithSchema: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test2.yml"
+            });
+            test.ok(y);
+            y.schema = {};
+            y.schema['outputFilenameMapping'] = {
+                'de-DE': './de.yml'
+            }
+            test.equals(y.getOutputFilenameForLocale('de-DE'), './de.yml');
+            test.done();
+        },
+
+        testYamlGetLocalizedPathWithLocalizedDirs: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test2.yml"
+            });
+            test.ok(y);
+            y.schema = {
+                useLocalizedDirectories: true
+            };
+            test.equals(y.getLocalizedPath('de-DE'), 'de-DE/test2.yml');
+            test.done();
+        },
+
+        testYamlGetLocalizedPathWithLocalizedDirsAndOutputFilenameMapping: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test2.yml"
+            });
+            test.ok(y);
+            y.schema = {
+                useLocalizedDirectories: true,
+                outputFilenameMapping: {
+                    'de-DE': './de.yml'
+                }
+            };
+            test.equals(y.getLocalizedPath('de-DE'), 'de-DE/de.yml');
+            test.done();
+        },
+
+        testYamlGetLocalizedPathWithOutputFilenameMappingAndWithoutLocalizedDirectories: function(test) {
+            test.expect(2);
+
+            var y = new YamlFile({
+                project: p,
+                type: yft,
+                pathName: "./test2.yml"
+            });
+            test.ok(y);
+            y.schema = {
+                'outputFilenameMapping': {
+                    'de-DE': './de.yml'
+                },
+                'useLocalizedDirectories': false
+            };
+            test.equals(y.getLocalizedPath('de-DE'), './de.yml');
+            test.done();
+        },
+
+    },
+
+    testsWithMapping: {
+        testYamlGetCommentPrefix: function(test) {
+            test.expect(2);
+
+            var yml = new YamlFile({
+                project: projectWithMappings,
+                type: yamlFileTypeWithMappings,
+                pathName: "source.yaml"
+            });
+            test.ok(yml);
+
+            test.equal(yml.getCommentPrefix(), "L10N:");
+            test.done();
+        },
+
+        testYamlGetCommentPrefixNotProvided: function(test) {
+            test.expect(2);
+
+            var yml = new YamlFile({
+                project: projectWithMappings,
+                type: yamlFileTypeWithMappings,
+                pathName: "random.yaml"
+            });
+            test.ok(yml);
+
+            test.equal(yml.getCommentPrefix(), undefined);
+            test.done();
+        },
+
+        testYamlGetLocalizedPathFromMapping: function (test) {
+            test.expect(2);
+
+            var yml = new YamlFile({
+                project: projectWithMappings,
+                type: yamlFileTypeWithMappings,
+                pathName: "source.yaml"
+            });
+            test.ok(yml);
+
+            test.equal(yml.getLocalizedPath('de-DE'), 'localized.de-DE.yaml');
+
+            test.done();
+        },
+
+        testYamlFileParsePrefixedComments: function(test) {
+            test.expect(5);
+
+            var yml = new YamlFile({
+                project: projectWithMappings,
+                type: yamlFileTypeWithMappings,
+                pathName: "source.yaml"
+            });
+            test.ok(yml);
+
+            yml.parse('#L10N: Prefixed comment\n' +
+                'first: "string"\n' +
+                '#  L10N:Prefixed comment with spaces before \n' +
+                'second: "string"\n' +
+                '# Not prefixed comment with L10N in it \n' +
+                'third: "string"');
+
+            var set = yml.getTranslationSet();
+            test.equal(set.size(), 3);
+
+            var r = set.getAll();
+
+            test.equal(r[0].getComment(), "Prefixed comment");
+            test.equal(r[1].getComment(), "Prefixed comment with spaces before");
+            test.equal(r[2].getComment(), undefined);
+
+            test.done();
+        },
+
+        testYamlFileExtractGetCommentPrefix: function(test) {
+            test.expect(6);
+
+            var yml = new YamlFile({
+                project: projectWithMappings,
+                type: yamlFileTypeWithMappings,
+                pathName: "test3.yml"
+            });
+            test.ok(yml);
+            test.equal(yml.getCommentPrefix(), 'L10N:');
+
+            yml.extract();
+
+            var set = yml.getTranslationSet();
+            test.ok(set);
+            test.equal(set.size(), 2);
+
+            var r = set.getAll();
+
+            test.equal(r[0].getComment(), 'Comment with prefix');
+            test.equal(r[1].getComment(), undefined);
+
+            test.done();
+        }
     }
 };

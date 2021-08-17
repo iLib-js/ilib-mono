@@ -23,6 +23,7 @@ var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var log4js = require("log4js");
+var mm = require("micromatch");
 
 var YamlFile = require("./YamlFile.js");
 
@@ -62,7 +63,58 @@ var YamlFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+
+    // If there is mappings section in yaml project settings => normal mode
+    // Otherwise - legacy mode.
+    this.legacyMode = !(project.settings.yaml && project.settings.yaml.mappings);
 };
+
+/**
+ * Default mapping if none was provided in the yaml config.
+ *
+ * @type Object
+ **/
+var defaultMappings = {
+    "**/*.y?(a)ml": {
+        template: "resources/[locale]/[filename]"
+    }
+};
+
+YamlFileType.prototype.getMapping = function (pathName) {
+    if (typeof(pathName) === "undefined") {
+        return undefined;
+    }
+
+    var yamlSettings = this.project.settings.yaml;
+
+    var mappings = (yamlSettings && yamlSettings.mappings) ? yamlSettings.mappings : defaultMappings;
+    var patterns = Object.keys(mappings);
+
+    var match = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern);
+    });
+
+    return match && mappings[match];
+};
+
+/**
+ * Returns default mapping value.
+ *
+ * @returns {Object}
+ */
+YamlFileType.prototype.getDefaultMapping = function() {
+    return defaultMappings["**/*.y?(a)ml"];
+}
+
+/**
+ * Returns TRUE if there is no yaml mappings provided
+ * in the project.json.
+ *
+ * @returns {boolean}
+ */
+YamlFileType.prototype.isLegacyMode = function() {
+    return this.legacyMode;
+}
 
 var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.yml$/);
 
@@ -73,8 +125,8 @@ var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-[A-Z][
  * @returns true if this file type handles the given path name, and
  * false otherwise
  */
-YamlFileType.prototype.handles = function(pathName) {
-    logger.debug("YamlFileType handles " + pathName + "?");
+YamlFileType.prototype.handlesLegacy = function(pathName) {
+    logger.debug("Mode: LEGACY");
 
     var ret = pathName.length > 4 && pathName.substring(pathName.length - 4) === ".yml";
 
@@ -96,6 +148,44 @@ YamlFileType.prototype.handles = function(pathName) {
 
     logger.debug(ret ? "Yes" : "No");
     return ret;
+};
+
+/**
+ * Return true if this file type handles the type of file in the
+ * given path name.
+ * @param {String} pathName the path to check
+ * @returns true if this file type handles the given path name, and
+ * false otherwise
+ */
+YamlFileType.prototype.handles = function(pathName) {
+    logger.debug("YamlFileType handles " + pathName + "?");
+
+    if (this.isLegacyMode()) {
+        return this.handlesLegacy(pathName);
+    }
+
+    var mapping = this.getMapping(pathName);
+
+    // No matching mapping exist => not localizable.
+    if (!mapping) {
+        return false;
+    }
+
+    // Check if this file is an already localized file.
+    var yamlSettings = this.project.settings.yaml;
+    var mappings = (yamlSettings && yamlSettings.mappings) ? yamlSettings.mappings : defaultMappings;
+    var patterns = Object.keys(mappings);
+
+    // Check all mappings and see if filename matches mapping's template.
+    for (var i = 0; i < patterns.length; i++) {
+        var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
+
+        if (locale && locale !== this.project.sourceLocale) {
+            return false;
+        }
+    }
+
+    return true;
 };
 
 /**
