@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.js - represents a javascript resource file
  *
- * Copyright © 2019-2020, JEDLSoft
+ * Copyright © 2019-2021, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -216,7 +216,7 @@ JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) 
 
     var filename = defaultSpec + ".js";
 
-    dir = path.join(this.project.target, this.project.getResourceDirs("js")[0] || ".");
+    dir = path.join(this.project.target, this.project.getResourceDirs("js")[0] ||this.project.getResourceDirs("javascript")[0] || ".");
     newPath = path.join(dir, filename);
 
     logger.trace("Getting resource file path for locale " + locale + ": " + newPath);
@@ -234,7 +234,7 @@ JavaScriptResourceFile.prototype.write = function() {
             logger.trace("Calculating path name ");
 
             // must be a new file, so create the name
-            this.pathName = path.join(this.project.target, this.getResourceFilePath());
+            this.pathName = this.getResourceFilePath();
         } else {
             this.defaultSpec = this.locale.getSpec();
         }
