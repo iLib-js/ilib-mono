@@ -76,7 +76,7 @@ its value extracted as well as a string resource.
 
 ## Comments
 
-If you would like to place a translator's commeenent with a particular
+If you would like to place a translator's comment with a particular
 section of text, you can do so with an HTML comment that starts with
 "I18N" like this:
 
@@ -100,10 +100,24 @@ which becomes:
 See the code on <c0>github</c0>.
 ```
 
-For the translators.
+for the translators.
+
+For links, such as the above, the target URL of the link is not usually
+translated. However, you can override that for specific links with a
+special HTML comment directive:
+
+```
+<!-- i18n-enable localize-links -->
+See the code on [github](https://github.com/ilib-js/ilib-loctool-ghfm).
+<!-- i18n-disable localize-links -->
+```
+
+In this case, the URL `https://github.com/ilib-js/ilib-loctool-ghfm` will
+be extracted as a separate string resource which can be localized independently,
+presumably to point to a localized version of the website.
 
 For references with footnotes, the contents of the footnotes are usually not
-translated if they consist only of URLs. Example:
+translated either if they consist only of URLs. Example:
 
 ```
 This text is [translated][tr].
@@ -111,7 +125,8 @@ This text is [translated][tr].
 [tr]: http://www.non.translated.url/
 ```
 
-However, you can override this for specific footnotes with an HTML comment:
+However, you can override this for specific footnotes with the same HTML comment
+directive:
 
 ```
 This text is [translated][tr].
@@ -121,8 +136,9 @@ This text is [translated][tr].
 <!-- i18n-disable localize-links -->
 ```
 
-In this case, the url itself will be extracted as a string resource and will
+In this case, the url itself will be extracted as a separate string resource and will
 be localizable.
+
 ## Mappings
 
 This plugin now supports mappings:
@@ -166,6 +182,11 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.9.0
+
+- added the ability to localize URLs in direct links when the localize-links
+  directive is turned on
 
 ### v1.8.4
 

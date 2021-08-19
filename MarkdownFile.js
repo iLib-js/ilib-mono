@@ -591,6 +591,16 @@ MarkdownFile.prototype._walk = function(node) {
         case 'emphasis':
         case 'strong':
             node.title && this._addTransUnit(node.title);
+            if (this.localizeLinks && node.url) {
+                var value = node.url;
+                var parts = trim(this.API, value);
+                // only localizable if there already is some localizable text
+                // or if this text contains anything that is not whitespace
+                if (parts.text) {
+                    this._addTransUnit(node.url);
+                    node.localizable = true;
+                }
+            }
             if (node.children && node.children.length) {
                 this.message.push({
                     name: node.type,
@@ -901,7 +911,7 @@ MarkdownFile.prototype.getLocalizedPath = function(locale) {
 /**
  * @private
  */
-MarkdownFile.prototype._localizeString = function(source, locale, translations) {
+MarkdownFile.prototype._localizeString = function(source, locale, translations, nopseudo) {
     if (!source) return source;
 
     var key = this.makeKey(this.API.utils.escapeInvalidChars(source));
@@ -949,7 +959,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations) 
 
             translation = source;
 
-            if (this.type.missingPseudo && !this.project.settings.nopseudo) {
+            if (this.type.missingPseudo && !nopseudo && !this.project.settings.nopseudo) {
                 translation = this.type.missingPseudo.getString(source);
             }
         }
@@ -995,6 +1005,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
         case 'strong':
             if (node.title) {
                node.title = this._localizeString(node.title, locale, translations);
+            }
+            if (node.url && node.localizable) {
+                // don't pseudo-localize URLs
+                node.url = this._localizeString(node.url, locale, translations, true);
             }
             if (node.localizable) {
                 if (node.use === "start") {
@@ -1061,7 +1075,8 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 }
 
                 if (node.url) {
-                    node.url = this._localizeString(node.url, locale, translations);
+                    // don't pseudo-localize URLs
+                    node.url = this._localizeString(node.url, locale, translations, true);
                 }
                 if (node.title) {
                     node.title = this._localizeString(node.title, locale, translations);
