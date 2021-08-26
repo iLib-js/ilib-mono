@@ -183,6 +183,14 @@ file for more details.
 
 ## Release Notes
 
+### v1.9.1
+
+- fixed a bug where URLs in direct links were added to the new strings set
+  even when the localize-links directive was turned off. If the "fully
+  translated" flag was also turned on, then the plugin would think a file was
+  not fully translated because these links appear in the new strings set
+  and so it would not produce the localized version of the file.
+
 ### v1.9.0
 
 - added the ability to localize URLs in direct links when the localize-links
