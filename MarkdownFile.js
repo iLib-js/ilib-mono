@@ -598,7 +598,7 @@ MarkdownFile.prototype._walk = function(node) {
                 // or if this text contains anything that is not whitespace
                 if (parts.text) {
                     this._addTransUnit(node.url);
-                    node.localizable = true;
+                    node.localizedLink = true;
                 }
             }
             if (node.children && node.children.length) {
@@ -1006,7 +1006,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
             if (node.title) {
                node.title = this._localizeString(node.title, locale, translations);
             }
-            if (node.url && node.localizable) {
+            if (node.url && node.localizedLink) {
                 // don't pseudo-localize URLs
                 node.url = this._localizeString(node.url, locale, translations, true);
             }
