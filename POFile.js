@@ -617,7 +617,7 @@ function objectMap(object, visitor) {
  * @returns {String} the localized text of this file
  */
 POFile.prototype.localizeText = function(translations, locale) {
-    var l = new Locale((this.mapping && this.mapping.localeMap && this.mapping.localeMap[locale]) || this.project.getOutputLocale(locale));
+    var l = this.type.getOutputLocale(this.mapping, locale);
     var plurals = pluralForms[l.getLanguage()] || pluralForms.en;
     var pluralCategories = plurals.categories;
 
