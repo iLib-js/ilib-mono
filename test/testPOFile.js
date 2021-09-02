@@ -2190,6 +2190,87 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileLocalizeWithAlternateLocaleMappingRightContents: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "./testfiles/po/no.po"))) {
+            fs.unlinkSync(path.join(base, "./testfiles/po/no.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/foo.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "streng en",
+            targetLocale: "nb-NO",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "streng to",
+            targetLocale: "nb-NO",
+            datatype: "po"
+        }));
+
+        // should use the locale map in the mapping rather than the shared one
+        pof.localize(translations, ["nb-NO"]);
+
+        test.ok(fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+
+        var actual = fs.readFileSync(path.join(base, "./testfiles/po/no.po"), "utf-8");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/foo.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: no\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '\n' +
+            '#: a/b/c.js:32\n' +
+            'msgid "string 1"\n' +
+            'msgstr "streng en"\n' +
+            '\n' +
+            '# a plural string\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n' +
+            '\n' +
+            '# another string\n' +
+            'msgid "string 2"\n' +
+            'msgstr "streng to"\n' +
+            '\n' +
+            '# string with continuation\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr ""\n\n';
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
     testPOFileLocalizeWithSharedLocaleMapping: function(test) {
         test.expect(3);
 
@@ -2217,6 +2298,88 @@ module.exports.pofile = {
         pof.localize(translations, ["nb-NO"]);
 
         test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+
+        test.done();
+    },
+
+    testPOFileLocalizeWithSharedLocaleMappingRightContents: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/template_nb.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/template_nb.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/template.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "streng en",
+            targetLocale: "nb-NO",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "streng to",
+            targetLocale: "nb-NO",
+            datatype: "po"
+        }));
+
+        // should use the shared locale map because there isn't one in the mapping
+        pof.localize(translations, ["nb-NO"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+
+        var actual = fs.readFileSync(path.join(base, "testfiles/resources/template_nb.po"), "utf-8");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: nb\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '\n' +
+            '#: a/b/c.js:32\n' +
+            'msgid "string 1"\n' +
+            'msgstr "streng en"\n' +
+            '\n' +
+            '# a plural string\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n' +
+            '\n' +
+            '# another string\n' +
+            'msgid "string 2"\n' +
+            'msgstr "streng to"\n' +
+            '\n' +
+            '# string with continuation\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr ""\n\n';
+        diff(actual, expected);
+        test.equal(actual, expected);
+
 
         test.done();
     },

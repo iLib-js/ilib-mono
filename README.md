@@ -226,6 +226,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.4.1
+
+- Fixed the po header output so that it shows the locale spec of the mapped
+  output locale, not of the source locale.
+
 ### v1.4.0
 
 - added the ability to ignore comments. This solves the problem where file names
