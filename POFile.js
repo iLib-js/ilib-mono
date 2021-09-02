@@ -617,7 +617,7 @@ function objectMap(object, visitor) {
  * @returns {String} the localized text of this file
  */
 POFile.prototype.localizeText = function(translations, locale) {
-    var l = new Locale(locale);
+    var l = this.type.getOutputLocale(this.mapping, locale);
     var plurals = pluralForms[l.getLanguage()] || pluralForms.en;
     var pluralCategories = plurals.categories;
 
@@ -630,7 +630,7 @@ POFile.prototype.localizeText = function(translations, locale) {
         '"Content-Transfer-Encoding: 8bit\\n"\n' +
         '"Generated-By: loctool\\n"\n' +
         '"Project-Id-Version: 1\\n"\n' +
-        '"Language: ' + locale + '\\n"\n' +
+        '"Language: ' + l.getSpec() + '\\n"\n' +
         '"Plural-Forms: ' + plurals.rules + '\\n"\n';
 
     if (resources) {

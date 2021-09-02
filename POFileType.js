@@ -268,6 +268,18 @@ POFileType.prototype.getLocaleFromPath = function(template, pathname) {
 };
 
 /**
+ * Return the alternate output locale or the shared output locale for the given
+ * mapping. If there are no locale mappings, it returns the locale parameter.
+ *
+ * @param {Object} mapping the mapping for this source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {Locale} the output locale
+ */
+POFileType.prototype.getOutputLocale = function(mapping, locale) {
+    return new Locale((mapping && mapping.localeMap && mapping.localeMap[locale]) || this.project.getOutputLocale(locale));
+};
+
+/**
  * Return the location on disk where the version of this file localized
  * for the given locale should be written.
  * @param {Object} mapping the mapping for this source file
@@ -278,7 +290,7 @@ POFileType.prototype.getLocaleFromPath = function(template, pathname) {
 POFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
     var output = "";
     var template = mapping && mapping.template;
-    var l = new Locale((mapping && mapping.localeMap && mapping.localeMap[locale]) || this.project.getOutputLocale(locale));
+    var l = this.getOutputLocale(mapping, locale);
 
     if (!template) {
         template = defaultMappings["**/*.po"].template;
