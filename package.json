@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-po",
-    "version": "1.4.1",
+    "version": "1.5.0",
     "main": "./POFileType.js",
     "description": "A loctool plugin that knows how to localize GNU po and pot files",
     "license": "Apache-2.0",
@@ -59,7 +59,7 @@
     },
     "devDependencies": {
         "assertextras": "^1.1.0",
-        "loctool": "^2.14.1",
+        "loctool": "^2.15.0",
         "nodeunit": "^0.11.3"
     }
 }

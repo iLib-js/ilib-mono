@@ -173,6 +173,11 @@ used within the po property:
             - "flags" - ignore special processing flags (prefix is "#,")
             - "previous" - ignore previous translation (prefix is "#|")
             - "paths" - ignore file names and line numbers (prefix is "#:")
+    - headerLocale: specify what kind of locale to put in the file header. Possible values
+        are:
+        - *full*: put the fully specified locale spec in the header
+        - *abbreviated*: put an abbreviated locale spec in the header (language only)
+        - *mapped*: put the results of the output locale mapping (see above) into the header
 
 Example configuration:
 
@@ -225,6 +230,12 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.5.0
+
+- Added headerLocale setting to the mappings. This allows you to specify
+  the style of the locale spec listed in the header of the po file as it
+  is written out to disk.
 
 ### v1.4.1
 
