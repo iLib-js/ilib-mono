@@ -1828,7 +1828,7 @@ module.exports.pofile = {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  ./po/messages.pot  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
@@ -1847,7 +1847,7 @@ module.exports.pofile = {
         test.done();
     },
 
-    testPOFileLocalizeTextHeaderLocaleFull: function(test) {
+    testPOFileLocalizeTextHeaderLocaleAbbreviated: function(test) {
         test.expect(2);
 
         var pof = new POFile({
