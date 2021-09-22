@@ -1951,58 +1951,6 @@ module.exports.pofile = {
         test.done();
     },
 
-    testPOFileLocalizeTextHeaderLocaleAbbreviated: function(test) {
-        test.expect(2);
-
-        var pof = new POFile({
-            project: p,
-            pathName: "./po/template.po",
-            type: t
-        });
-        test.ok(pof);
-
-        pof.parse(
-            'msgid "string 1"\n' +
-            'msgstr ""\n' +
-            '\n' +
-            'msgid "string 2"\n' +
-            'msgstr ""\n'
-        );
-
-        var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
-            project: "foo",
-            key: "string 1",
-            source: "string 1",
-            sourceLocale: "en-US",
-            target: "chaîne numéro 1",
-            targetLocale: "fr-FR",
-            datatype: "po"
-        }));
-
-        var actual = pof.localizeText(translations, "fr-FR");
-        var expected =
-            'msgid ""\n' +
-            'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
-            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
-            '"Content-Transfer-Encoding: 8bit\\n"\n' +
-            '"Generated-By: loctool\\n"\n' +
-            '"Project-Id-Version: 1\\n"\n' +
-            '"Language: fr\\n"\n' +
-            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
-            '\n' +
-            'msgid "string 1"\n' +
-            'msgstr "chaîne numéro 1"\n' +
-            '\n' +
-            'msgid "string 2"\n' +
-            'msgstr ""\n\n';
-
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
     testPOFileLocalize: function(test) {
         test.expect(7);
 
