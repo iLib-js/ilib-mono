@@ -112,7 +112,7 @@ class Locale {
         if (typeof(region) === 'undefined' && typeof(variant) === 'undefined' && typeof(script) === 'undefined') {
             let spec = language || ilibEnv.getLocale();
             if (typeof(spec) === 'string') {
-                const parts = spec.split('-');
+                const parts = spec.split(/[-_]/g);
                 for (let i = 0; i < parts.length; i++ ) {
                     if (Locale._isLanguageCode(parts[i])) {
                         /**

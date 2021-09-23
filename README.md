@@ -117,6 +117,14 @@ limitations under the License.
 
 # Release Notes
 
+## v1.1.0
+
+- added the ability to parse locale specs that contain underscores
+  instead of dashes. Some locale specs for Java properties file names
+  or in some gnu gettext libraries are specified with underscores.
+  (ie. "zh_Hans_CN" === "zh-Hans-CN" now)
+- updated dependencies
+
 ## v1.0.2
 
 - fixed some incorrect unit tests
