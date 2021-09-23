@@ -276,7 +276,10 @@ POFileType.prototype.getLocaleFromPath = function(template, pathname) {
  * @returns {Locale} the output locale
  */
 POFileType.prototype.getOutputLocale = function(mapping, locale) {
-    return new Locale((mapping && mapping.localeMap && mapping.localeMap[locale]) || this.project.getOutputLocale(locale));
+    // we can remove the replace() call after upgrading to
+    // ilib 14.10.0 or later because it can parse locale specs
+    // with underscores in them
+    return new Locale((mapping && mapping.localeMap && mapping.localeMap[locale].replace(/_/g, '-')) || this.project.getOutputLocale(locale));
 };
 
 /**

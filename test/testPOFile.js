@@ -64,10 +64,16 @@ var p = new CustomProject({
                 "template": "resources/[locale].po"
             },
             "**/template.po": {
-                "template": "resources/template_[locale].po"
+                "template": "resources/template_[locale].po",
+                "headerLocale": "abbreviated"
             },
             "**/*.pot": {
-                "template": "[dir]/[locale].po"
+                "template": "[dir]/[locale].po",
+                "headerLocale": "full",
+                "localeMap": {
+                    "ru-RU": "ru",
+                    "fr-FR": "fr"
+                }
             },
             "**/ignore1.po": {
                 "template": "[dir]/[locale].po",
@@ -79,10 +85,11 @@ var p = new CustomProject({
             },
             "**/*.po": {
                 "template": "[dir]/[locale].po",
-                localeMap: {
+                "localeMap": {
                     "nb-NO": "no",
                     "zh-Hant-TW": "zh-Hant",
-                    "zh-Hant-HK": "zh-HK"
+                    "zh-Hant-HK": "zh-HK",
+                    "fr-FR": "fr_Latn_FR"
                 }
             }
         }
@@ -1782,6 +1789,162 @@ module.exports.pofile = {
             'msgid_plural "{$count} items"\n' +
             'msgstr[0] ""\n' +
             'msgstr[1] ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextHeaderLocaleFull: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/messages.pot",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.pot  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextHeaderLocaleAbbreviated: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/template.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextHeaderLocaleMapped: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/foo.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/foo.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-Latn-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -3523,4 +3686,219 @@ module.exports.pofile = {
         test.done();
     },
 
+    testPOFileLocalizeWithHeaderLocaleFull: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/po/ru.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/po/ru.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/template.pot",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "строка 1",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "строка 2",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "{$count} струна",
+                "few": "{$count} струны",
+                "other": "{$count} струн"
+            },
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "строка 3 и 4",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru.po")));
+
+        pof.localize(translations, ["ru-RU"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru.po")));
+
+        content = fs.readFileSync(path.join(base, "testfiles/po/ru.po"), "utf-8");
+
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/template.pot  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: ru-RU\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "строка 1"\n' +
+            '\n' +
+            'msgid "string 2"\n' +
+            'msgstr "строка 2"\n' +
+            '\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} струна"\n' +
+            'msgstr[1] "{$count} струны"\n' +
+            'msgstr[2] "{$count} струн"\n' +
+            '\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr "строка 3 и 4"\n\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testPOFileLocalizeWithHeaderLocaleAbbreviated: function(test) {
+        test.expect(5);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/template_ru-RU.po"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po")));
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/template.po",
+            type: t
+        });
+        test.ok(pof);
+
+        // should read the file
+        pof.extract();
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "строка 1",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "строка 2",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            sourceStrings: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "{$count} струна",
+                "few": "{$count} струны",
+                "other": "{$count} струн"
+            },
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 3 and 4",
+            source: "string 3 and 4",
+            sourceLocale: "en-US",
+            target: "строка 3 и 4",
+            targetLocale: "ru-RU",
+            datatype: "po"
+        }));
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po")));
+
+        pof.localize(translations, ["ru-RU"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po")));
+
+        content = fs.readFileSync(path.join(base, "testfiles/resources/template_ru-RU.po"), "utf-8");
+
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: ru\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '\n' +
+            '#: a/b/c.js:32\n' +
+            'msgid "string 1"\n' +
+            'msgstr "строка 1"\n' +
+            '\n' +
+            '# a plural string\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} струна"\n' +
+            'msgstr[1] "{$count} струны"\n' +
+            'msgstr[2] "{$count} струн"\n' +
+            '\n' +
+            '# another string\n' +
+            'msgid "string 2"\n' +
+            'msgstr "строка 2"\n' +
+            '\n' +
+            '# string with continuation\n' +
+            'msgid "string 3 and 4"\n' +
+            'msgstr "строка 3 и 4"\n\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
 };

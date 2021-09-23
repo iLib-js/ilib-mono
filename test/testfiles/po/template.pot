@@ -1,24 +1,24 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"#-#-#-#-#  messages.po  #-#-#-#-#\n"
+"#-#-#-#-#  ./po/template.pot  #-#-#-#-#\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: loctool\n"
 "Project-Id-Version: 1\n"
+"Language: en-US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: a/b/c.js:32
 msgid "string 1"
 msgstr ""
 
-# a plural string
+msgid "string 2"
+msgstr ""
+
 msgid "one string"
 msgid_plural "{$count} strings"
+msgstr[0] ""
+msgstr[1] ""
 
-# another string
-msgid "string 2"
+msgid "string 3 and 4"
+msgstr ""
 
-# string with continuation
-msgid ""
-"string 3 "
-"and 4"
