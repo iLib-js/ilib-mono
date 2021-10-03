@@ -203,6 +203,17 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.2
+
+* Fixed a bug where locales from the platform returned by getLocale() were not
+  recognized properly if any of the following apply:
+    * They have underscores in them
+    * They have a 3 letter language name ("yue" means "Cantonese" for example)
+    * They have a three digit UN.49 region name ("001" is the "The World",
+      for example)
+    * They have a variant on them ("zh-Hant-TW-u-PostOffice" should return the
+      basic locale "zh-Hant-TW" as the platform locale)
+
 ### v1.0.1
 
 - fixed some lint problems

@@ -280,6 +280,143 @@ module.exports.testglobal = {
         test.done();
     },
 
+    testGetLocaleNodejsThreeLetterLanguage2: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        process.env.LC_ALL = "yue-Hant"; // Cantonese
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "yue-Hant");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsThreeLetterLanguage3: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        process.env.LC_ALL = "yue-Hant-CN"; // Cantonese
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "yue-Hant-CN");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsThreeDigitRegion: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        process.env.LC_ALL = "en-001"; // Cantonese
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "en-001");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsUnderscoreLocale: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        // on some platforms, it uses underscores instead of dashes
+        process.env.LC_ALL = "de_DE";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "de-DE");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsLocaleWithVariant1: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        // should ignore variants
+        process.env.LC_ALL = "de-DE-FOOBAR";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "de-DE");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsLocaleWithVariant2: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        // should ignore variants
+        process.env.LC_ALL = "zh-Hans-CN-FOOBAR";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
+    testGetLocaleNodejsLocaleWithLongVariant: function(test) {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in node
+            test.done();
+            return;
+        }
+
+        ilibEnv.clearCache();
+
+        // should ignore variants
+        process.env.LC_ALL = "zh-Hans-CN-u-col-pinyin";
+
+        test.expect(1);
+        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+
+        process.env.LC_ALL = "";
+        ilibEnv.clearCache();
+        test.done();
+    },
+
     testGetLocaleSimulateRhino: function(test) {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
