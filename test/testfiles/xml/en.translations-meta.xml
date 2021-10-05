@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label>string 1</label>
+        <name>My application</name>
+    </customApplications>
+    <customLabels>
+        <label>Hello World</label>
+        <name>App.Name</name>
+    </customLabels>
+    <customLabels>
+        <label>Are you sure you want to delete this file?</label>
+        <name>file.deletion_warning</name>
+    </customLabels>
+</Translations>

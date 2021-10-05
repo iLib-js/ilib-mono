@@ -1,0 +1,40 @@
+{
+    "$id": "strings-schema",
+    "type": "object",
+    "properties": {
+        "resources": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "object",
+                    "localizable": true,
+                    "properties": {
+                        "_attributes": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "_text": "key"
+                                    }
+                                },
+                                "i18n": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "_text": "comment"
+                                    }
+                                }
+                            }
+                        },
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "_text": "source"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

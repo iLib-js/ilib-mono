@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://github.com/ilib-js/arrays.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "properties": {
+    "strings": {
+      "type": "array",
+      "title": "Array of strings schema",
+      "localizable": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "numbers": {
+      "type": "array",
+      "title": "Array of numbers schema",
+      "localizable": true,
+      "items": {
+        "type": "number"
+      }
+    },
+    "booleans": {
+      "type": "array",
+      "title": "Array of booleans schema",
+      "localizable": true,
+      "items": {
+        "type": "boolean"
+      }
+    },
+    "objects": {
+      "type": "array",
+      "title": "Array of objects schema",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "localizable": true
+          },
+          "description": {
+            "type": "string",
+            "localizable": true
+          }
+        }
+      }
+    }
+  }
+}
