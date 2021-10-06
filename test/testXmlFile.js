@@ -1,5 +1,5 @@
 /*
- * testJsonFile.js - test the json file handler object.
+ * testXmlFile.js - test the XML file handler object.
  *
  * Copyright © 2021, Box, Inc.
  *
@@ -20,9 +20,9 @@
 var path = require("path");
 var fs = require("fs");
 
-if (!JsonFile) {
-    var JsonFile = require("../JsonFile.js");
-    var JsonFileType = require("../JsonFileType.js");
+if (!XmlFile) {
+    var XmlFile = require("../XmlFile.js");
+    var XmlFileType = require("../XmlFileType.js");
 
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
@@ -52,61 +52,61 @@ var p = new CustomProject({
     locales:["en-GB"],
     targetDir: ".",
     nopseudo: true,
-    json: {
+    xml: {
         schemas: [
             "./test/testfiles/schemas"
         ],
         mappings: {
-            "resources/en/US/strings.json": {
+            "resources/en/US/strings.xml": {
                 "schema": "./testfiles/schema/strings-schema.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/strings.json"
+                "template": "resources/[localeDir]/strings.xml"
             },
-            "**/messages.json": {
+            "**/messages.xml": {
                 "schema": "http://github.com/ilib-js/messages.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/messages.json"
+                "template": "resources/[localeDir]/messages.xml"
             },
-            "**/sparse.json": {
+            "**/sparse.xml": {
                 "schema": "strings-schema",
                 "method": "sparse",
-                "template": "resources/[localeDir]/sparse.json"
+                "template": "resources/[localeDir]/sparse.xml"
             },
-            "**/sparse2.json": {
+            "**/sparse2.xml": {
                 "schema": "http://github.com/ilib-js/messages.json",
                 "method": "sparse",
-                "template": "resources/[localeDir]/sparse2.json"
+                "template": "resources/[localeDir]/sparse2.xml"
             },
-            "**/spread.json": {
+            "**/spread.xml": {
                 "schema": "strings-schema",
                 "method": "spread",
-                "template": "resources/[localeDir]/spread.json"
+                "template": "resources/[localeDir]/spread.xml"
             },
-            "**/deep.json": {
+            "**/deep.xml": {
                 "schema": "http://github.com/ilib-js/deep.json",
                 "method": "copy",
-                "template": "resources/deep_[locale].json"
+                "template": "resources/deep_[locale].xml"
             },
-            "**/refs.json": {
+            "**/refs.xml": {
                 "schema": "http://github.com/ilib-js/refs.json",
                 "method": "copy",
-                "template": "resources/[locale]/refs.json"
+                "template": "resources/[locale]/refs.xml"
             },
-            "**/str.json": {},
-            "**/arrays.json": {
+            "**/str.xml": {},
+            "**/arrays.xml": {
                 "schema": "http://github.com/ilib-js/arrays.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/arrays.json"
+                "template": "resources/[localeDir]/arrays.xml"
             },
-            "**/array-refs.json": {
+            "**/array-refs.xml": {
                 "schema": "http://github.com/ilib-js/array-refs.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/array-refs.json"
+                "template": "resources/[localeDir]/array-refs.xml"
             }
         }
     }
 });
-var t = new JsonFileType(p);
+var t = new XmlFileType(p);
 
 var p2 = new CustomProject({
     name: "foo",
@@ -117,189 +117,189 @@ var p2 = new CustomProject({
     identify: true,
     targetDir: "testfiles",
     nopseudo: false,
-    json: {
+    xml: {
         schemas: [
             "./test/testfiles/schemas"
         ],
         mappings: {
-            "**/messages.json": {
+            "**/messages.xml": {
                 "schema": "http://github.com/ilib-js/messages.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/messages.json"
+                "template": "resources/[localeDir]/messages.xml"
             }
         }
     }
 });
 
-var t2 = new JsonFileType(p2);
+var t2 = new XmlFileType(p2);
 
-module.exports.jsonfile = {
-    testJsonFileConstructor: function(test) {
+module.exports.xmlfile = {
+    testXmlFileConstructor: function(test) {
         test.expect(1);
 
-        var jf = new JsonFile({project: p, type: t});
-        test.ok(jf);
+        var xf = new XmlFile({project: p, type: t});
+        test.ok(xf);
 
         test.done();
     },
 
-    testJsonFileConstructorParams: function(test) {
+    testXmlFileConstructorParams: function(test) {
         test.expect(1);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./testfiles/json/messages.json",
+            pathName: "./testfiles/xml/messages.xml",
             type: t
         });
 
-        test.ok(jf);
+        test.ok(xf);
 
         test.done();
     },
 
-    testJsonFileConstructorNoFile: function(test) {
+    testXmlFileConstructorNoFile: function(test) {
         test.expect(1);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         test.done();
     },
 
-    testJsonFileEscapeProp: function(test) {
+    testXmlFileEscapeProp: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.escapeProp("escape/tilde~tilde"), "escape~0tilde~1tilde");
+        test.ok(XmlFile.escapeProp("escape/tilde~tilde"), "escape~0tilde~1tilde");
 
         test.done();
     },
 
-    testJsonFileEscapePropNoChange: function(test) {
+    testXmlFileEscapePropNoChange: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.escapeProp("permissions"), "permissions");
+        test.ok(XmlFile.escapeProp("permissions"), "permissions");
 
         test.done();
     },
 
-    testJsonFileEscapePropDontEscapeOthers: function(test) {
+    testXmlFileEscapePropDontEscapeOthers: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.escapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+        test.ok(XmlFile.escapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
 
         test.done();
     },
 
-    testJsonFileUnescapeProp: function(test) {
+    testXmlFileUnescapeProp: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeProp("escape~0tilde~1tilde"), "escape/tilde~tilde");
+        test.ok(XmlFile.unescapeProp("escape~0tilde~1tilde"), "escape/tilde~tilde");
 
         test.done();
     },
 
-    testJsonFileUnescapePropTricky: function(test) {
+    testXmlFileUnescapePropTricky: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeProp("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
+        test.ok(XmlFile.unescapeProp("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
 
         test.done();
     },
 
-    testJsonFileUnescapePropNoChange: function(test) {
+    testXmlFileUnescapePropNoChange: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeProp("permissions"), "permissions");
+        test.ok(XmlFile.unescapeProp("permissions"), "permissions");
 
         test.done();
     },
 
-    testJsonFileUnescapePropDontEscapeOthers: function(test) {
+    testXmlFileUnescapePropDontEscapeOthers: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+        test.ok(XmlFile.unescapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
 
         test.done();
     },
 
-    testJsonFileEscapeRef: function(test) {
+    testXmlFileEscapeRef: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.escapeRef("escape/tilde~tilde"), "escape~0tilde~1tilde");
+        test.ok(XmlFile.escapeRef("escape/tilde~tilde"), "escape~0tilde~1tilde");
 
         test.done();
     },
 
-    testJsonFileEscapeRefNoChange: function(test) {
+    testXmlFileEscapeRefNoChange: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.escapeRef("permissions"), "permissions");
+        test.ok(XmlFile.escapeRef("permissions"), "permissions");
 
         test.done();
     },
 
-    testJsonFileEscapeRefDontEscapeOthers: function(test) {
+    testXmlFileEscapeRefDontEscapeOthers: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.escapeRef("permissions% \" ^ | \\"), "permissions%25%20%22%20%5E%20%7C%20%5C");
+        test.ok(XmlFile.escapeRef("permissions% \" ^ | \\"), "permissions%25%20%22%20%5E%20%7C%20%5C");
 
         test.done();
     },
 
-    testJsonFileUnescapeRef: function(test) {
+    testXmlFileUnescapeRef: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeRef("escape~0tilde~1tilde"), "escape/tilde~tilde");
+        test.ok(XmlFile.unescapeRef("escape~0tilde~1tilde"), "escape/tilde~tilde");
 
         test.done();
     },
 
-    testJsonFileUnescapeRefTricky: function(test) {
+    testXmlFileUnescapeRefTricky: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeRef("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
+        test.ok(XmlFile.unescapeRef("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
 
         test.done();
     },
 
-    testJsonFileUnescapeRefNoChange: function(test) {
+    testXmlFileUnescapeRefNoChange: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeRef("permissions"), "permissions");
+        test.ok(XmlFile.unescapeRef("permissions"), "permissions");
 
         test.done();
     },
 
-    testJsonFileUnescapeRefDontEscapeOthers: function(test) {
+    testXmlFileUnescapeRefDontEscapeOthers: function(test) {
         test.expect(1);
 
-        test.ok(JsonFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C"), "permissions% \" ^ | \\");
+        test.ok(XmlFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C"), "permissions% \" ^ | \\");
 
         test.done();
     },
 
-    testJsonFileParseSimpleGetByKey: function(test) {
+    testXmlFileParseSimpleGetByKey: function(test) {
         test.expect(5);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "json"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "this is string one");
@@ -308,22 +308,22 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseSimpleRightStrings: function(test) {
+    testXmlFileParseSimpleRightStrings: function(test) {
         test.expect(8);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 2);
@@ -339,22 +339,22 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseSimpleDontExtractEmpty: function(test) {
+    testXmlFileParseSimpleDontExtractEmpty: function(test) {
         test.expect(6);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": ""\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 1);
@@ -367,22 +367,22 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseEscapeStringKeys: function(test) {
+    testXmlFileParseEscapeStringKeys: function(test) {
         test.expect(8);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "/user": "this is string one",\n' +
            '    "~tilde": "this is string two"\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 2);
@@ -398,16 +398,16 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseSimpleRejectThingsThatAreNotInTheSchema: function(test) {
+    testXmlFileParseSimpleRejectThingsThatAreNotInTheSchema: function(test) {
         test.expect(6);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": {\n' +
@@ -415,7 +415,7 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 1);
@@ -428,18 +428,18 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseComplexRightSize: function(test) {
+    testXmlFileParseComplexRightSize: function(test) {
         test.expect(3);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/messages.json",
+            pathName: "i18n/messages.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '   "plurals": {\n' +
            '        "bar": {\n' +
@@ -461,25 +461,25 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 4);
         test.done();
     },
 
-    testJsonFileParseComplexRightStrings: function(test) {
+    testXmlFileParseComplexRightStrings: function(test) {
         test.expect(26);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/messages.json",
+            pathName: "i18n/messages.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '   "plurals": {\n' +
            '        "bar": {\n' +
@@ -501,7 +501,7 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 4);
@@ -539,18 +539,18 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseArrayOfStrings: function(test) {
+    testXmlFileParseArrayOfStrings: function(test) {
         test.expect(11);
 
-        // when it's named arrays.json, it should apply the arrays schema
-        var jf = new JsonFile({
+        // when it's named arrays.xml, it should apply the arrays schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "strings": [\n' +
                 '    "string 1",\n' +
                 '    "string 2",\n' +
@@ -558,7 +558,7 @@ module.exports.jsonfile = {
                 '  ]\n' +
                 '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
         test.equal(set.size(), 1);
 
@@ -577,17 +577,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseArrayOfNumbers: function(test) {
+    testXmlFileParseArrayOfNumbers: function(test) {
         test.expect(12);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "numbers": [\n' +
                 '    15,\n' +
                 '    -3,\n' +
@@ -596,7 +596,7 @@ module.exports.jsonfile = {
                 '  ]\n' +
                 '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
         test.equal(set.size(), 1);
 
@@ -616,24 +616,24 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseArrayOfBooleans: function(test) {
+    testXmlFileParseArrayOfBooleans: function(test) {
         test.expect(10);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "booleans": [\n' +
                 '    true,\n' +
                 '    false\n' +
                 '  ]\n' +
                 '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
         test.equal(set.size(), 1);
 
@@ -651,17 +651,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseArrayOfObjects: function(test) {
+    testXmlFileParseArrayOfObjects: function(test) {
         test.expect(13);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "objects": [\n' +
                 '    {\n' +
                 '      "name": "First Object",\n' +
@@ -674,7 +674,7 @@ module.exports.jsonfile = {
                 '  ]\n' +
                 '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
         test.equal(set.size(), 3);
 
@@ -695,17 +695,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseArrayWithRef: function(test) {
+    testXmlFileParseArrayWithRef: function(test) {
         test.expect(10);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/array-refs.json",
+            pathName: "i18n/array-refs.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "itemsArray": [\n' +
                 '    {\n' +
                 '      "itemField": "First item",\n' +
@@ -718,7 +718,7 @@ module.exports.jsonfile = {
                 '  ]\n' +
                 '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
         test.equal(set.size(), 2);
 
@@ -735,18 +735,18 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseDeepRightSize: function(test) {
+    testXmlFileParseDeepRightSize: function(test) {
         test.expect(3);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/deep.json",
+            pathName: "i18n/deep.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "x": {\n' +
            '        "y": {\n' +
@@ -769,25 +769,25 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 3);
         test.done();
     },
 
-    testJsonFileParseDeepRightStrings: function(test) {
+    testXmlFileParseDeepRightStrings: function(test) {
         test.expect(19);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/deep.json",
+            pathName: "i18n/deep.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "x": {\n' +
            '        "y": {\n' +
@@ -810,7 +810,7 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 3);
@@ -839,19 +839,19 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseTestInvalidJson: function(test) {
+    testXmlFileParseTestInvalidXml: function(test) {
         test.expect(2);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/deep.json",
+            pathName: "i18n/deep.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         test.throws(function(test) {
-            jf.parse(
+            xf.parse(
                '{\n' +
                '    "x": {\n' +
                '        "y": {,@#\n' +
@@ -878,18 +878,18 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseRefsRightSize: function(test) {
+    testXmlFileParseRefsRightSize: function(test) {
         test.expect(3);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/refs.json",
+            pathName: "i18n/refs.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "owner": {\n' +
            '        "name": "Foo Bar",\n' +
@@ -914,25 +914,25 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 3);
         test.done();
     },
 
-    testJsonFileParseRefsRightStrings: function(test) {
+    testXmlFileParseRefsRightStrings: function(test) {
         test.expect(13);
 
-        // when it's named messages.json, it should apply the messages-schema schema
-        var jf = new JsonFile({
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/refs.json",
+            pathName: "i18n/refs.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "owner": {\n' +
            '        "name": "Foo Bar",\n' +
@@ -957,7 +957,7 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 3);
@@ -979,26 +979,26 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileParseDefaultSchema: function(test) {
+    testXmlFileParseDefaultSchema: function(test) {
         test.expect(5);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "a/b/c/str.json",
+            pathName: "a/b/c/str.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "json"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "this is string one");
@@ -1010,16 +1010,16 @@ module.exports.jsonfile = {
 /*
     can't do comments yet
 
-    testJsonFileParseExtractComments: function(test) {
+    testXmlFileParseExtractComments: function(test) {
         test.expect(8);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    // comment for string 1\,' +
            '    "string 1": "this is string one",\n' +
@@ -1027,7 +1027,7 @@ module.exports.jsonfile = {
            '    "string 2": "this is string two"\n' +
            '}\n');
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
         test.ok(set);
 
         test.equal(set.size(), 2);
@@ -1046,22 +1046,22 @@ module.exports.jsonfile = {
 
 */
 
-    testJsonFileExtractFile: function(test) {
+    testXmlFileExtractFile: function(test) {
         test.expect(28);
 
         var base = path.dirname(module.id);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/messages.json",
+            pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should read the file
-        jf.extract();
+        xf.extract();
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
 
         test.equal(set.size(), 5);
 
@@ -1104,59 +1104,59 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileExtractUndefinedFile: function(test) {
+    testXmlFileExtractUndefinedFile: function(test) {
         test.expect(2);
 
         var base = path.dirname(module.id);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should attempt to read the file and not fail
-        jf.extract();
+        xf.extract();
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
 
         test.equal(set.size(), 0);
 
         test.done();
     },
 
-    testJsonFileExtractBogusFile: function(test) {
+    testXmlFileExtractBogusFile: function(test) {
         test.expect(2);
 
         var base = path.dirname(module.id);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/bogus.json",
+            pathName: "./xml/bogus.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should attempt to read the file and not fail
-        jf.extract();
+        xf.extract();
 
-        var set = jf.getTranslationSet();
+        var set = xf.getTranslationSet();
 
         test.equal(set.size(), 0);
 
         test.done();
     },
 
-    testJsonFileLocalizeTextSimple: function(test) {
+    testXmlFileLocalizeTextSimple: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
@@ -1170,10 +1170,10 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
            '{\n' +
            '    "string 1": "C\'est la chaîne numéro 1",\n' +
@@ -1185,17 +1185,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeTextWithSchema: function(test) {
+    testXmlFileLocalizeTextWithSchema: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/messages.json",
+            pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '   "plurals": {\n' +
            '        "bar": {\n' +
@@ -1237,7 +1237,7 @@ module.exports.jsonfile = {
                 "other": "autres"
             },
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1246,7 +1246,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la b",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1255,7 +1255,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la d",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceArray({
             project: "foo",
@@ -1272,10 +1272,10 @@ module.exports.jsonfile = {
                 "chaîne 3"
             ],
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
            '{\n' +
            '    "plurals": {\n' +
@@ -1307,17 +1307,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeTextMethodSparse: function(test) {
+    testXmlFileLocalizeTextMethodSparse: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/sparse.json",
+            pathName: "./xml/sparse.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
@@ -1331,10 +1331,10 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
            '{\n' +
            '    "string 1": "C\'est la chaîne numéro 1"\n' +
@@ -1345,17 +1345,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeTextWithSchemaSparseComplex: function(test) {
+    testXmlFileLocalizeTextWithSchemaSparseComplex: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/sparse2.json",
+            pathName: "./xml/sparse2.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '   "plurals": {\n' +
            '        "bar": {\n' +
@@ -1393,7 +1393,7 @@ module.exports.jsonfile = {
                 "other": "autres"
             },
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1402,10 +1402,10 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la b",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
            '{\n' +
            '    "plurals": {\n' +
@@ -1425,17 +1425,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeArrayOfStrings: function(test) {
+    testXmlFileLocalizeArrayOfStrings: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "strings": [\n' +
                 '    "string 1",\n' +
                 '    "string 2",\n' +
@@ -1459,10 +1459,10 @@ module.exports.jsonfile = {
                 "chaîne 3"
             ],
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
                 '{\n' +
                 '    "strings": [\n' +
@@ -1478,17 +1478,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeArrayOfNumbers: function(test) {
+    testXmlFileLocalizeArrayOfNumbers: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "numbers": [\n' +
                 '    15,\n' +
                 '    -3,\n' +
@@ -1515,10 +1515,10 @@ module.exports.jsonfile = {
                 "0"
             ],
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
                 '{\n' +
                 '    "numbers": [\n' +
@@ -1535,17 +1535,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeArrayOfBooleans: function(test) {
+    testXmlFileLocalizeArrayOfBooleans: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "booleans": [\n' +
                 '    true,\n' +
                 '    false\n' +
@@ -1566,10 +1566,10 @@ module.exports.jsonfile = {
                 "true"
             ],
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
                 '{\n' +
                 '    "booleans": [\n' +
@@ -1584,17 +1584,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeArrayOfObjects: function(test) {
+    testXmlFileLocalizeArrayOfObjects: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
                 '  "objects": [\n' +
                 '    {\n' +
                 '      "name": "First Object",\n' +
@@ -1615,7 +1615,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Premier objet",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1624,7 +1624,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Deuxième objet",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
         translations.add(new ResourceString({
@@ -1634,10 +1634,10 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Propriété String",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
                 '{\n' +
                 '    "objects": [\n' +
@@ -1658,17 +1658,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeArrayOfObjectsWithBooleansOnly: function(test) {
+    testXmlFileLocalizeArrayOfObjectsWithBooleansOnly: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "i18n/arrays.json",
+            pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse('{\n' +
+        xf.parse('{\n' +
             '  "objects": [\n' +
             '    {\n' +
             '      "nullable": false\n' +
@@ -1681,7 +1681,7 @@ module.exports.jsonfile = {
 
         var translations = new TranslationSet('en-US');
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
             '{\n' +
             '    "objects": [\n' +
@@ -1700,17 +1700,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeTextUsePseudoForMissing: function(test) {
+    testXmlFileLocalizeTextUsePseudoForMissing: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p2,
-            pathName: "./json/messages.json",
+            pathName: "./xml/messages.xml",
             type: t2
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '   "plurals": {\n' +
            '        "bar": {\n' +
@@ -1738,7 +1738,7 @@ module.exports.jsonfile = {
 
         var translations = new TranslationSet();
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
            '{\n' +
            '    "plurals": {\n' +
@@ -1773,17 +1773,17 @@ module.exports.jsonfile = {
 /*
     not implemented yet
 
-    testJsonFileLocalizeTextMethodSpread: function(test) {
+    testXmlFileLocalizeTextMethodSpread: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/spread.json",
+            pathName: "./xml/spread.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
@@ -1797,7 +1797,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1806,10 +1806,10 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 2",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, "fr-FR");
+        var actual = xf.localizeText(translations, "fr-FR");
         var expected =
            '{\n' +
            '    "string 1": {\n' +
@@ -1825,17 +1825,17 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeTextMethodSpreadMultilingual: function(test) {
+    testXmlFileLocalizeTextMethodSpreadMultilingual: function(test) {
         test.expect(2);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/spread.json",
+            pathName: "./xml/spread.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
@@ -1849,7 +1849,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1858,7 +1858,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 2",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1867,7 +1867,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Dies ist die Zeichenfolge 1",
             targetLocale: "de",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1876,10 +1876,10 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Dies ist die Zeichenfolge 2",
             targetLocale: "de",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        var actual = jf.localizeText(translations, ["fr-FR", "de"]);
+        var actual = xf.localizeText(translations, ["fr-FR", "de"]);
         var expected =
            '{\n' +
            '    "string 1": {\n' +
@@ -1898,30 +1898,30 @@ module.exports.jsonfile = {
     },
 */
 
-    testJsonFileLocalize: function(test) {
+    testXmlFileLocalize: function(test) {
         test.expect(7);
 
         var base = path.dirname(module.id);
 
-        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/messages.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"));
         }
-        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/messages.json",
+            pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should read the file
-        jf.extract();
+        xf.extract();
 
         var translations = new TranslationSet();
         translations.add(new ResourcePlural({
@@ -1939,7 +1939,7 @@ module.exports.jsonfile = {
                 "other": "autres"
             },
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1948,7 +1948,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la b",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -1957,7 +1957,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la d",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceArray({
             project: "foo",
@@ -1974,7 +1974,7 @@ module.exports.jsonfile = {
                 "chaîne 3"
             ],
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
         translations.add(new ResourcePlural({
@@ -1992,7 +1992,7 @@ module.exports.jsonfile = {
                 "other": "andere"
             },
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -2001,7 +2001,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Die b",
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -2010,7 +2010,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Der d",
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceArray({
             project: "foo",
@@ -2027,15 +2027,15 @@ module.exports.jsonfile = {
                 "Zeichenfolge 3"
             ],
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        jf.localize(translations, ["fr-FR", "de-DE"]);
+        xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
 
-        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.json"), "utf-8");
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"), "utf-8");
 
         var expected =
            '{\n' +
@@ -2067,7 +2067,7 @@ module.exports.jsonfile = {
         diff(content, expected);
         test.equal(content, expected);
 
-        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.json"), "utf-8");
+        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.xml"), "utf-8");
 
         var expected =
            '{\n' +
@@ -2101,66 +2101,66 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeNoTranslations: function(test) {
+    testXmlFileLocalizeNoTranslations: function(test) {
         test.expect(5);
 
         var base = path.dirname(module.id);
 
-        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/messages.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"));
         }
-        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/messages.json",
+            pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should read the file
-        jf.extract();
+        xf.extract();
 
         var translations = new TranslationSet();
 
-        jf.localize(translations, ["fr-FR", "de-DE"]);
+        xf.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
 
         test.done();
     },
 
-    testJsonFileLocalizeMethodSparse: function(test) {
+    testXmlFileLocalizeMethodSparse: function(test) {
         test.expect(7);
 
         var base = path.dirname(module.id);
 
-        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"));
         }
-        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/sparse2.json",
+            pathName: "./xml/sparse2.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should read the file
-        jf.extract();
+        xf.extract();
 
         // only translate some of the strings
         var translations = new TranslationSet();
@@ -2179,7 +2179,7 @@ module.exports.jsonfile = {
                 "other": "autres"
             },
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -2188,7 +2188,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la b",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
         translations.add(new ResourcePlural({
@@ -2206,7 +2206,7 @@ module.exports.jsonfile = {
                 "other": "andere"
             },
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -2215,16 +2215,16 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Die b",
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        jf.localize(translations, ["fr-FR", "de-DE"]);
+        xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
 
         // should only contain the things that were actually translated
-        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"), "utf-8");
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"), "utf-8");
 
         var expected =
            '{\n' +
@@ -2243,7 +2243,7 @@ module.exports.jsonfile = {
         diff(content, expected);
         test.equal(content, expected);
 
-        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"), "utf-8");
+        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"), "utf-8");
 
         var expected =
            '{\n' +
@@ -2264,34 +2264,34 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeExtractNewStrings: function(test) {
+    testXmlFileLocalizeExtractNewStrings: function(test) {
         test.expect(43);
 
         var base = path.dirname(module.id);
 
-        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"));
         }
-        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/sparse2.json",
+            pathName: "./xml/sparse2.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // make sure we start off with no new strings
         t.newres.clear();
         test.equal(t.newres.size(), 0);
 
         // should read the file
-        jf.extract();
+        xf.extract();
 
         // only translate some of the strings
         var translations = new TranslationSet();
@@ -2302,7 +2302,7 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "la b",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
         translations.add(new ResourcePlural({
@@ -2320,7 +2320,7 @@ module.exports.jsonfile = {
                 "other": "andere"
             },
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
         translations.add(new ResourceString({
             project: "foo",
@@ -2329,13 +2329,13 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "Die b",
             targetLocale: "de-DE",
-            datatype: "json"
+            datatype: "xml"
         }));
 
-        jf.localize(translations, ["fr-FR", "de-DE"]);
+        xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
 
         // now verify that the strings which did not have translations show up in the
         // new strings translation set
@@ -2391,55 +2391,55 @@ module.exports.jsonfile = {
         test.done();
     },
 
-    testJsonFileLocalizeWithAlternateFileNameTemplate: function(test) {
+    testXmlFileLocalizeWithAlternateFileNameTemplate: function(test) {
         test.expect(5);
 
         var base = path.dirname(module.id);
 
-        if (fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/deep_fr-FR.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/deep_fr-FR.xml"));
         }
-        if (fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/deep_de-DE.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/deep_de-DE.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml")));
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "./json/deep.json",
+            pathName: "./xml/deep.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
         // should read the file
-        jf.extract();
+        xf.extract();
 
         // only translate some of the strings
         var translations = new TranslationSet();
 
-        jf.localize(translations, ["fr-FR", "de-DE"]);
+        xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml")));
 
         test.done();
     },
 
-    testJsonFileLocalizeDefaultMethodAndTemplate: function(test) {
+    testXmlFileLocalizeDefaultMethodAndTemplate: function(test) {
         test.expect(4);
 
         var base = path.dirname(module.id);
 
-        var jf = new JsonFile({
+        var xf = new XmlFile({
             project: p,
-            pathName: "x/y/str.json",
+            pathName: "x/y/str.xml",
             type: t
         });
-        test.ok(jf);
+        test.ok(xf);
 
-        jf.parse(
+        xf.parse(
            '{\n' +
            '    "string 1": "this is string one",\n' +
            '    "string 2": "this is string two"\n' +
@@ -2453,21 +2453,21 @@ module.exports.jsonfile = {
             sourceLocale: "en-US",
             target: "C'est la chaîne numéro 1",
             targetLocale: "fr-FR",
-            datatype: "json"
+            datatype: "xml"
         }));
 
         // default template is resources/[localeDir]/[filename]
-        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/str.json"));
+        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/str.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.xml")));
 
-        jf.localize(translations, ["fr-FR"]);
+        xf.localize(translations, ["fr-FR"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.xml")));
 
-        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/str.json"), "utf-8");
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/str.xml"), "utf-8");
 
         // default method is copy so this should be the whole file
         var expected =

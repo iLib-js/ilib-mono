@@ -1,5 +1,5 @@
 /*
- * testJsonFileType.js - test the json file type handler object.
+ * testXmlFileType.js - test the XML file type handler object.
  *
  * Copyright © 2021, Box, Inc.
  *
@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-if (!JsonFileType) {
-    var JsonFileType = require("../JsonFileType.js");
+if (!XmlFileType) {
+    var XmlFileType = require("../XmlFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
 }
 
@@ -26,27 +26,27 @@ var p = new CustomProject({
     sourceLocale: "en-US"
 }, "./testfiles", {
     locales:["en-GB"],
-    json: {
+    xml: {
         "mappings": {
-            "strings.json": {
-                "schema": "http://www.lge.com/json/strings",
+            "strings.xml": {
+                "schema": "http://www.lge.com/xml/strings",
                 "method": "copy",
-                "template": "resources/[localeDir]/strings2.json"
+                "template": "resources/[localeDir]/strings2.xml"
             },
-            "resources/en/US/strings.json": {
-                "schema": "http://www.lge.com/json/strings",
+            "resources/en/US/strings.xml": {
+                "schema": "http://www.lge.com/xml/strings",
                 "method": "copy",
-                "template": "resources/[localeDir]/strings.json"
+                "template": "resources/[localeDir]/strings.xml"
             },
-            "**/messages.json": {
-                "schema": "http://www.lge.com/json/messages",
+            "**/messages.xml": {
+                "schema": "http://www.lge.com/xml/messages",
                 "method": "copy",
-                "template": "resources/[localeDir]/messages.json"
+                "template": "resources/[localeDir]/messages.xml"
             },
             "**/test/str.jsn": {
-                "schema": "http://www.lge.com/json/str",
+                "schema": "http://www.lge.com/xml/str",
                 "method": "copy",
-                "template": "[dir]/[localeDir]/str.json"
+                "template": "[dir]/[localeDir]/str.xml"
             }
         }
     }
@@ -57,487 +57,487 @@ var p2 = new CustomProject({
     sourceLocale: "en-US"
 }, "./testfiles", {
     locales:["en-GB"],
-    json: {
+    xml: {
         mappings: {
-            "**/strings.json": {
-                "schema": "http://www.lge.com/json/strings",
+            "**/strings.xml": {
+                "schema": "http://www.lge.com/xml/strings",
                 "method": "copy",
-                "template": "resources/[localeDir]/strings.json"
+                "template": "resources/[localeDir]/strings.xml"
             }
         }
     }
 });
 
 
-module.exports.jsonfiletype = {
-    testJsonFileTypeConstructor: function(test) {
+module.exports.xmlfiletype = {
+    testXmlFileTypeConstructor: function(test) {
         test.expect(1);
 
-        var jft = new JsonFileType(p);
+        var xft = new XmlFileType(p);
 
-        test.ok(jft);
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocalizedPathLocaleDir: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocalizedPath('resources/[localeDir]/strings.json', "x/y/strings.json", "de-DE"), "resources/de/DE/strings.json");
+        test.ok(xft);
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathDir: function(test) {
+    testXmlFileTypeGetLocalizedPathLocaleDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[localeDir]/strings.json', "x/y/strings.json", "de-DE"), "x/y/de/DE/strings.json");
+        test.equals(xft.getLocalizedPath('resources/[localeDir]/strings.xml', "x/y/strings.xml", "de-DE"), "resources/de/DE/strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathBasename: function(test) {
+    testXmlFileTypeGetLocalizedPathDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-[basename].j', "x/y/strings.json", "de-DE"), "de/DE/tr-strings.j");
+        test.equals(xft.getLocalizedPath('[dir]/[localeDir]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/de/DE/strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathFilename: function(test) {
+    testXmlFileTypeGetLocalizedPathBasename: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-[filename]', "x/y/strings.json", "de-DE"), "de/DE/tr-strings.json");
+        test.equals(xft.getLocalizedPath('[localeDir]/tr-[basename].j', "x/y/strings.xml", "de-DE"), "de/DE/tr-strings.j");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathExtension: function(test) {
+    testXmlFileTypeGetLocalizedPathFilename: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
+        test.equals(xft.getLocalizedPath('[localeDir]/tr-[filename]', "x/y/strings.xml", "de-DE"), "de/DE/tr-strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathLocale: function(test) {
+    testXmlFileTypeGetLocalizedPathExtension: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[locale]/strings.json', "x/y/strings.json", "de-DE"), "x/y/de-DE/strings.json");
+        test.equals(xft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathLanguage: function(test) {
+    testXmlFileTypeGetLocalizedPathLocale: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[language]/strings.json', "x/y/strings.json", "de-DE"), "x/y/de/strings.json");
+        test.equals(xft.getLocalizedPath('[dir]/[locale]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/de-DE/strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathRegion: function(test) {
+    testXmlFileTypeGetLocalizedPathLanguage: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[region]/strings.json', "x/y/strings.json", "de-DE"), "x/y/DE/strings.json");
+        test.equals(xft.getLocalizedPath('[dir]/[language]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/de/strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathScript: function(test) {
+    testXmlFileTypeGetLocalizedPathRegion: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[script]/strings.json', "x/y/strings.json", "zh-Hans-CN"), "x/y/Hans/strings.json");
+        test.equals(xft.getLocalizedPath('[dir]/[region]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/DE/strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocalizedPathLocaleUnder: function(test) {
+    testXmlFileTypeGetLocalizedPathScript: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocalizedPath('[dir]/strings_[localeUnder].json', "x/y/strings.json", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.json");
+        test.equals(xft.getLocalizedPath('[dir]/[script]/strings.xml', "x/y/strings.xml", "zh-Hans-CN"), "x/y/Hans/strings.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathDir: function(test) {
+    testXmlFileTypeGetLocalizedPathLocaleUnder: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/strings.json', "x/y/strings.json"), "");
+        test.equals(xft.getLocalizedPath('[dir]/strings_[localeUnder].xml', "x/y/strings.xml", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.xml");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathBasename: function(test) {
+    testXmlFileTypeGetLocaleFromPathDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[basename].json', "x/y/strings.json"), "");
+        test.equals(xft.getLocaleFromPath('[dir]/strings.xml', "x/y/strings.xml"), "");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathFilename: function(test) {
+    testXmlFileTypeGetLocaleFromPathBasename: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[filename]', "x/y/strings.json"), "");
+        test.equals(xft.getLocaleFromPath('[dir]/[basename].xml', "x/y/strings.xml"), "");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathLocale: function(test) {
+    testXmlFileTypeGetLocaleFromPathFilename: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[locale]/strings.json', "x/y/de-DE/strings.json"), "de-DE");
+        test.equals(xft.getLocaleFromPath('[dir]/[filename]', "x/y/strings.xml"), "");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathLocaleLong: function(test) {
+    testXmlFileTypeGetLocaleFromPathLocale: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[locale]/strings.json', "x/y/zh-Hans-CN/strings.json"), "zh-Hans-CN");
+        test.equals(xft.getLocaleFromPath('[dir]/[locale]/strings.xml', "x/y/de-DE/strings.xml"), "de-DE");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathLocaleShort: function(test) {
+    testXmlFileTypeGetLocaleFromPathLocaleLong: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[locale]/strings.json', "x/y/fr/strings.json"), "fr");
+        test.equals(xft.getLocaleFromPath('[dir]/[locale]/strings.xml', "x/y/zh-Hans-CN/strings.xml"), "zh-Hans-CN");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathLanguage: function(test) {
+    testXmlFileTypeGetLocaleFromPathLocaleShort: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[language]/strings.json', "x/y/de/strings.json"), "de");
+        test.equals(xft.getLocaleFromPath('[dir]/[locale]/strings.xml', "x/y/fr/strings.xml"), "fr");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathScript: function(test) {
+    testXmlFileTypeGetLocaleFromPathLanguage: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[language]-[script]/strings.json', "x/y/zh-Hans/strings.json"), "zh-Hans");
+        test.equals(xft.getLocaleFromPath('[dir]/[language]/strings.xml', "x/y/de/strings.xml"), "de");
 
         test.done();
     },
 
-    testJsonFileTypeGetLocaleFromPathRegion: function(test) {
+    testXmlFileTypeGetLocaleFromPathScript: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[region]/strings.json', "x/y/JP/strings.json"), "JP");
+        test.equals(xft.getLocaleFromPath('[dir]/[language]-[script]/strings.xml', "x/y/zh-Hans/strings.xml"), "zh-Hans");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleDir: function(test) {
+    testXmlFileTypeGetLocaleFromPathRegion: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[localeDir]/strings.json', "x/y/de/DE/strings.json"), "de-DE");
+        test.equals(xft.getLocaleFromPath('[dir]/[region]/strings.xml', "x/y/JP/strings.xml"), "JP");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleDirShort: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[localeDir]/strings.json', "x/y/de/strings.json"), "de");
+        test.equals(xft.getLocaleFromPath('[dir]/[localeDir]/strings.xml', "x/y/de/DE/strings.xml"), "de-DE");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleDirLong: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleDirShort: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/[localeDir]/strings.json', "x/y/zh/Hans/CN/strings.json"), "zh-Hans-CN");
+        test.equals(xft.getLocaleFromPath('[dir]/[localeDir]/strings.xml', "x/y/de/strings.xml"), "de");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleDirStart: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleDirLong: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[localeDir]/strings.json', "de/DE/strings.json"), "de-DE");
+        test.equals(xft.getLocaleFromPath('[dir]/[localeDir]/strings.xml', "x/y/zh/Hans/CN/strings.xml"), "zh-Hans-CN");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleUnder: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleDirStart: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/strings_[localeUnder].json', "x/y/strings_de_DE.json"), "de-DE");
+        test.equals(xft.getLocaleFromPath('[localeDir]/strings.xml', "de/DE/strings.xml"), "de-DE");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleUnderShort: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleUnder: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/strings_[localeUnder].json', "x/y/strings_de.json"), "de");
+        test.equals(xft.getLocaleFromPath('[dir]/strings_[localeUnder].xml', "x/y/strings_de_DE.xml"), "de-DE");
 
         test.done();
     },
 
-     testJsonFileTypeGetLocaleFromPathLocaleUnderLong: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleUnderShort: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.equals(jft.getLocaleFromPath('[dir]/strings_[localeUnder].json', "x/y/strings_zh_Hans_CN.json"), "zh-Hans-CN");
+        test.equals(xft.getLocaleFromPath('[dir]/strings_[localeUnder].xml', "x/y/strings_de.xml"), "de");
 
         test.done();
     },
 
-     testJsonFileTypeGetMapping1: function(test) {
+     testXmlFileTypeGetLocaleFromPathLocaleUnderLong: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.deepEqual(jft.getMapping("x/y/messages.json"), {
-            "schema": "http://www.lge.com/json/messages",
+        test.equals(xft.getLocaleFromPath('[dir]/strings_[localeUnder].xml', "x/y/strings_zh_Hans_CN.xml"), "zh-Hans-CN");
+
+        test.done();
+    },
+
+     testXmlFileTypeGetMapping1: function(test) {
+        test.expect(2);
+
+        var xft = new XmlFileType(p);
+        test.ok(xft);
+
+        test.deepEqual(xft.getMapping("x/y/messages.xml"), {
+            "schema": "http://www.lge.com/xml/messages",
             "method": "copy",
-            "template": "resources/[localeDir]/messages.json"
+            "template": "resources/[localeDir]/messages.xml"
         });
 
         test.done();
     },
 
-     testJsonFileTypeGetMapping2: function(test) {
+     testXmlFileTypeGetMapping2: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.deepEqual(jft.getMapping("resources/en/US/strings.json"), {
-            "schema": "http://www.lge.com/json/strings",
+        test.deepEqual(xft.getMapping("resources/en/US/strings.xml"), {
+            "schema": "http://www.lge.com/xml/strings",
             "method": "copy",
-            "template": "resources/[localeDir]/strings.json"
+            "template": "resources/[localeDir]/strings.xml"
         });
 
         test.done();
     },
 
-     testJsonFileTypeGetMappingNoMatch: function(test) {
+     testXmlFileTypeGetMappingNoMatch: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(!jft.getMapping("x/y/msg.jso"));
+        test.ok(!xft.getMapping("x/y/msg.jso"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesExtensionTrue: function(test) {
+    testXmlFileTypeHandlesExtensionTrue: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(jft.handles("strings.json"));
+        test.ok(xft.handles("strings.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesExtensionFalse: function(test) {
+    testXmlFileTypeHandlesExtensionFalse: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(!jft.handles("strings.jsonhandle"));
+        test.ok(!xft.handles("strings.xmlhandle"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesNotSource: function(test) {
+    testXmlFileTypeHandlesNotSource: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(!jft.handles("foo.json"));
+        test.ok(!xft.handles("foo.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesTrueWithDir: function(test) {
+    testXmlFileTypeHandlesTrueWithDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(jft.handles("x/y/z/messages.json"));
+        test.ok(xft.handles("x/y/z/messages.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesFalseWrongDir: function(test) {
+    testXmlFileTypeHandlesFalseWrongDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(!jft.handles("x/y/z/str.jsn"));
+        test.ok(!xft.handles("x/y/z/str.jsn"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesFalseRightDir: function(test) {
+    testXmlFileTypeHandlesFalseRightDir: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(jft.handles("x/y/z/test/str.jsn"));
+        test.ok(xft.handles("x/y/z/test/str.jsn"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesTrueSourceLocale: function(test) {
+    testXmlFileTypeHandlesTrueSourceLocale: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
-        test.ok(jft.handles("resources/en/US/messages.json"));
+        test.ok(xft.handles("resources/en/US/messages.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesAlternateExtensionTrue: function(test) {
+    testXmlFileTypeHandlesAlternateExtensionTrue: function(test) {
         test.expect(3);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
         // windows?
-        test.ok(jft.handles("strings.jsn"));
-        test.ok(jft.handles("strings.jso"));
+        test.ok(xft.handles("strings.jsn"));
+        test.ok(xft.handles("strings.jso"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesAlreadyLocalizedGB: function(test) {
+    testXmlFileTypeHandlesAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
         // This matches one of the templates, but thge locale is
         // not the source locale, so we don't need to
         // localize it again.
-        test.ok(!jft.handles("resources/en/GB/messages.json"));
+        test.ok(!xft.handles("resources/en/GB/messages.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesAlreadyLocalizedCN: function(test) {
+    testXmlFileTypeHandlesAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
         // This matches one of the templates, but thge locale is
         // not the source locale, so we don't need to
         // localize it again.
-        test.ok(!jft.handles("resources/zh/Hans/CN/messages.json"));
+        test.ok(!xft.handles("resources/zh/Hans/CN/messages.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeHandlesNotAlreadyLocalizedenUS: function(test) {
+    testXmlFileTypeHandlesNotAlreadyLocalizedenUS: function(test) {
         test.expect(2);
 
-        var jft = new JsonFileType(p);
-        test.ok(jft);
+        var xft = new XmlFileType(p);
+        test.ok(xft);
 
         // we figure this out from the template
-        test.ok(jft.handles("resources/en/US/messages.json"));
+        test.ok(xft.handles("resources/en/US/messages.xml"));
 
         test.done();
     },
 
-    testJsonFileTypeRejectInvalidSchema: function(test) {
+    testXmlFileTypeRejectInvalidSchema: function(test) {
         test.expect(1);
 
         test.throws(function(test) {
@@ -548,15 +548,15 @@ module.exports.jsonfiletype = {
                     locales:["en-GB"],
                     targetDir: "testfiles",
                     nopseudo: true,
-                    json: {
+                    xml: {
                         schemas: [
                             "./test/testfiles/invalid.json"
                         ],
                         mappings: {
-                            "**/invalid.json": {
+                            "**/invalid.xml": {
                                 "schema": "http://github.com/ilib-js/invalid.json",
                                 "method": "copy",
-                                "template": "resources/invalid_[locale].json"
+                                "template": "resources/invalid_[locale].xml"
                             }
                         }
                     }
@@ -564,7 +564,7 @@ module.exports.jsonfiletype = {
             };
 
             // should throw an exception while trying to parse the invalid.json
-            var jft = new JsonFileType(mockproject);
+            var xft = new XmlFileType(mockproject);
         });
 
         test.done();

@@ -1,0 +1,47 @@
+{
+    "$id": "translations-meta-schema",
+    "type": "object",
+    "$defs": {
+        "entry": {
+            "type": "object",
+            "localizable": true,
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "_text": "source"
+                            }
+                        }
+                    }
+                },
+                "name": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "_text": "key"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+        "Translations": {
+            "type": "object",
+            "properties": {
+                "customApplications": {
+                    "$ref": "#/$defs/entry"
+                },
+                "customLabels": {
+                    "$ref": "#/$defs/entry"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "$id": "labels-meta-schema",
+    "type": "object",
+    "properties": {
+        "CustomLabels": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "object",
+                    "localizable": true,
+                    "properties": {
+                        "fullName": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "_text": "key"
+                                    }
+                                }
+                            }
+                        },
+                        "language": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "_text": "locale"
+                                    }
+                                }
+                            }
+                        },
+                        "shortDescription": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "_text": "comment"
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "_text": "source"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

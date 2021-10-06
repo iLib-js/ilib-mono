@@ -1,5 +1,5 @@
 /*
- * JsonFileType.js - Represents a collection of json files
+ * XmlFileType.js - Represents a collection of XML files
  *
  * Copyright © 2021, Box, Inc.
  *
@@ -21,20 +21,20 @@ var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
+// var log4js = require("log4js");
 var mm = require("micromatch");
-var JsonFile = require("./JsonFile.js");
+var XmlFile = require("./XmlFile.js");
 
-var logger = log4js.getLogger("loctool.plugin.JsonFileType");
+// var logger = log4js.getLogger("loctool.plugin.XmlFileType");
 
-var JsonFileType = function(project) {
-    this.type = "json";
-    this.datatype = "json";
+var XmlFileType = function(project) {
+    this.type = "xml";
+    this.datatype = "xml";
 
     this.project = project;
     this.API = project.getAPI();
 
-    this.extensions = [ ".json", ".jso", ".jsn" ];
+    this.extensions = [ ".xml", ".jso", ".jsn" ];
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
@@ -60,20 +60,20 @@ var JsonFileType = function(project) {
     this.loadSchemas(".");
 };
 
-JsonFileType.prototype.loadSchemaFile = function(pathName) {
+XmlFileType.prototype.loadSchemaFile = function(pathName) {
     try {
         var schema = fs.readFileSync(pathName, "utf-8");
         var schemaObj = JSON.parse(schema);
         this.schemas[pathName] = schemaObj;
         this.refs[schemaObj["$id"]] = schemaObj;
     } catch (e) {
-        logger.fatal("Error while parsing schema file " + pathName);
+        // logger.fatal("Error while parsing schema file " + pathName);
         console.log("Error while parsing schema file " + pathName);
         throw e;
     }
 };
 
-JsonFileType.prototype.loadSchemaDir = function(pathName) {
+XmlFileType.prototype.loadSchemaDir = function(pathName) {
     var files = fs.readdirSync(pathName);
     if (files) {
         files.forEach(function(file) {
@@ -83,7 +83,7 @@ JsonFileType.prototype.loadSchemaDir = function(pathName) {
     }
 };
 
-JsonFileType.prototype.loadSchemaDirOrFile = function(pathName) {
+XmlFileType.prototype.loadSchemaDirOrFile = function(pathName) {
     var stats = fs.statSync(pathName);
     if (!stats) return;
     if (stats.isDirectory()) {
@@ -116,13 +116,13 @@ var typeKeywords = [
  * @param {Object} schema the schema to check
  * @returns {boolean} true if the schema contains a type, false otherwise
  */
-JsonFileType.prototype.hasType = function(schema) {
+XmlFileType.prototype.hasType = function(schema) {
     return typeKeywords.find(function(keyword) {
         return typeof(schema[keyword]) !== 'undefined';
     });
 };
 
-JsonFileType.prototype.findRefs = function(root, schema, ref) {
+XmlFileType.prototype.findRefs = function(root, schema, ref) {
     if (typeof(schema) !== 'object') return;
 
     if (typeof(root["$$refs"]) === 'undefined') {
@@ -157,10 +157,10 @@ JsonFileType.prototype.findRefs = function(root, schema, ref) {
 };
 
 /**
- * Return the default schema for json files.
+ * Return the default schema for xml files.
  * @returns {Object} the default schema
  */
-JsonFileType.prototype.getDefaultSchema = function() {
+XmlFileType.prototype.getDefaultSchema = function() {
     return {
         "$schema": "http://json-schema.org/draft-07/schema",
         "$id": "strings-schema",
@@ -179,18 +179,18 @@ JsonFileType.prototype.getDefaultSchema = function() {
  * @returns {Object} the schema associated with the URI, or undefined if
  * that schema is not defined
  */
-JsonFileType.prototype.getSchema = function(uri) {
+XmlFileType.prototype.getSchema = function(uri) {
     return this.refs[uri] || this.getDefaultSchema();
 };
 
 /**
  * Load all the schema files into memory.
  */
-JsonFileType.prototype.loadSchemas = function(pathName) {
-    var jsonSettings = this.project.settings.json;
+XmlFileType.prototype.loadSchemas = function(pathName) {
+    var xmlSettings = this.project.settings.xml;
 
-    if (jsonSettings) {
-        var schemas = jsonSettings.schemas;
+    if (xmlSettings) {
+        var schemas = xmlSettings.schemas;
         if (schemas) {
             schemas.forEach(function(schema) {
                 var full = path.join(pathName, schema);
@@ -198,7 +198,7 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
             }.bind(this));
         }
     } else {
-        // default schema for all json files with key/value pairs
+        // default schema for all XML files with key/value pairs
         this.schemas = {
             "default": {
                 "$schema": "http://json-schema.org/draft-07/schema",
@@ -223,7 +223,7 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
 };
 
 var defaultMappings = {
-    "**/*.json": {
+    "**/*.xml": {
         schema: "strings-schema",
         method: "copy",
         template: "resources/[localeDir]/[filename]"
@@ -236,15 +236,15 @@ var defaultMappings = {
  * @returns {Object} the mapping object corresponding to the
  * path or undefined if none of the mappings match
  */
-JsonFileType.prototype.getMapping = function(pathName) {
+XmlFileType.prototype.getMapping = function(pathName) {
     if (typeof(pathName) === "undefined") {
         return undefined;
     }
-    var jsonSettings = this.project.settings.json;
-    var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
+    var xmlSettings = this.project.settings.xml;
+    var mappings = (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
     var normalized = pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
-        pathName.substring(0, pathName.length - 4) + ".json" :
+        pathName.substring(0, pathName.length - 4) + ".xml" :
         pathName;
 
     var match = patterns.find(function(pattern) {
@@ -255,15 +255,15 @@ JsonFileType.prototype.getMapping = function(pathName) {
 }
 
 /**
- * Return true if the given path is an Json template file and is handled
+ * Return true if the given path is an XML template file and is handled
  * by the current file type.
  *
  * @param {String} pathName path to the file being questions
  * @returns {boolean} true if the path is a java file, or false
  * otherwise
  */
-JsonFileType.prototype.handles = function(pathName) {
-    logger.debug("JsonFileType handles " + pathName + "?");
+XmlFileType.prototype.handles = function(pathName) {
+    // logger.debug("XmlFileType handles " + pathName + "?");
     var ret = false;
     var normalized = pathName;
 
@@ -271,19 +271,19 @@ JsonFileType.prototype.handles = function(pathName) {
         (pathName.substring(pathName.length - 4) === ".jso" || pathName.substring(pathName.length - 4) === ".jsn")) {
         ret = true;
         // normalize the extension so the matching below can work
-        normalized = pathName.substring(0, pathName.length - 4) + ".json";
+        normalized = pathName.substring(0, pathName.length - 4) + ".xml";
     }
 
     if (!ret) {
-        ret = pathName.length > 5 && pathName.substring(pathName.length - 5) === ".json";
+        ret = pathName.length > 5 && pathName.substring(pathName.length - 5) === ".xml";
     }
 
     // now match at least one of the mapping patterns
     if (ret) {
         ret = false;
         // first check if it is a source file
-        var jsonSettings = this.project.settings.json;
-        var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
+        var xmlSettings = this.project.settings.xml;
+        var mappings = (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
         var patterns = Object.keys(mappings);
         ret = mm.isMatch(pathName, patterns) || mm.isMatch(normalized, patterns);
 
@@ -299,12 +299,12 @@ JsonFileType.prototype.handles = function(pathName) {
             }
         }
     }
-    logger.debug(ret ? "Yes" : "No");
+    // logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
-JsonFileType.prototype.name = function() {
-    return "Json File Type";
+XmlFileType.prototype.name = function() {
+    return "XML File Type";
 };
 
 var matchExprs = {
@@ -368,13 +368,13 @@ var matchExprs = {
  * @param {String} pathname path to the source file
  * @returns {String} the locale within the path
  */
-JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
+XmlFileType.prototype.getLocaleFromPath = function(template, pathname) {
     var regex = "";
     var matchGroups = {};
     var totalBrackets = 0;
 
     if (!template) {
-        template = defaultMappings["**/*.json"].template;
+        template = defaultMappings["**/*.xml"].template;
     }
 
     for (var i = 0; i < template.length; i++) {
@@ -395,7 +395,7 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
                     regex += base.substring(base.lastIndexOf('.')+1);
                     break;
                 case 'basename':
-                    regex += path.basename(pathname, ".json");
+                    regex += path.basename(pathname, ".xml");
                     break;
                 default:
                     regex += matchExprs[keyword].regex;
@@ -437,12 +437,12 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
  * @param {String} locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-JsonFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
+XmlFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
     var output = "";
     var l = new Locale(locale);
 
     if (!template) {
-        template = defaultMappings["**/*.json"].template;
+        template = defaultMappings["**/*.xml"].template;
     }
 
     for (var i = 0; i < template.length; i++) {
@@ -466,7 +466,7 @@ JsonFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
                     output += base.substring(base.lastIndexOf('.')+1);
                     break;
                 case 'basename':
-                    output += path.basename(pathname, ".json");
+                    output += path.basename(pathname, ".xml");
                     break;
                 default:
                 case 'locale':
@@ -502,28 +502,28 @@ JsonFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
  * the files themselves are localized individually, so there
  * are no aggregated strings.
  */
-JsonFileType.prototype.write = function() {
+XmlFileType.prototype.write = function() {
     // templates are localized individually, so we don't have to
     // write out the resources
 };
 
-JsonFileType.prototype.newFile = function(path) {
-    return new JsonFile({
+XmlFileType.prototype.newFile = function(path) {
+    return new XmlFile({
         project: this.project,
         pathName: path,
         type: this
     });
 };
 
-JsonFileType.prototype.getDataType = function() {
+XmlFileType.prototype.getDataType = function() {
     return this.datatype;
 };
 
-JsonFileType.prototype.getResourceTypes = function() {
+XmlFileType.prototype.getResourceTypes = function() {
     return {};
 };
 
-JsonFileType.prototype.getExtensions = function() {
+XmlFileType.prototype.getExtensions = function() {
     return this.extensions;
 };
 
@@ -536,7 +536,7 @@ JsonFileType.prototype.getExtensions = function() {
  * @returns {TranslationSet} the set containing all of the
  * extracted resources
  */
-JsonFileType.prototype.getExtracted = function() {
+XmlFileType.prototype.getExtracted = function() {
     return this.extracted;
 };
 
@@ -546,7 +546,7 @@ JsonFileType.prototype.getExtracted = function() {
  *
  * @param {TranslationSet} set set of resources to add to the current set
  */
-JsonFileType.prototype.addSet = function(set) {
+XmlFileType.prototype.addSet = function(set) {
     this.extracted.addSet(set);
 };
 
@@ -557,7 +557,7 @@ JsonFileType.prototype.addSet = function(set) {
  * @returns {TranslationSet} the set containing all of the
  * new resources
  */
-JsonFileType.prototype.getNew = function() {
+XmlFileType.prototype.getNew = function() {
     return this.newres;
 };
 
@@ -568,8 +568,8 @@ JsonFileType.prototype.getNew = function() {
  * @returns {TranslationSet} the set containing all of the
  * pseudo localized resources
  */
-JsonFileType.prototype.getPseudo = function() {
+XmlFileType.prototype.getPseudo = function() {
     return this.pseudo;
 };
 
-module.exports = JsonFileType;
+module.exports = XmlFileType;

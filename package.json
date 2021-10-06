@@ -52,7 +52,6 @@
     },
     "dependencies": {
         "ilib": "^14.10.0",
-        "json5": "^2.2.0",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {

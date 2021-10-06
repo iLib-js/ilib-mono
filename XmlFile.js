@@ -1,5 +1,5 @@
 /*
- * JsonFile.js - plugin to extract resources from an Json file
+ * XmlFile.js - plugin to extract resources from an XML file
  *
  * Copyright © 2021, Box, Inc.
  *
@@ -20,14 +20,11 @@
 var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
-var JSON5 = require("json5");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 
-var logger = log4js.getLogger("loctool.plugin.JsonFile");
-
 /**
- * Create a new Json file with the given path name and within
+ * Create a new XML file with the given path name and within
  * the given project.
  *
  * @param {Project} project the project object
@@ -35,7 +32,7 @@ var logger = log4js.getLogger("loctool.plugin.JsonFile");
  * of the project file
  * @param {FileType} type the file type instance of this file
  */
-var JsonFile = function(options) {
+var XmlFile = function(options) {
     this.project = options.project;
     this.pathName = options.pathName || "";
     this.type = options.type;
@@ -57,7 +54,7 @@ var JsonFile = function(options) {
  * @param {String} string the string to unescape
  * @returns {String} the unescaped string
  */
-JsonFile.unescapeString = function(string) {
+XmlFile.unescapeString = function(string) {
     var unescaped = string;
 
     unescaped = he.decode(unescaped);
@@ -82,8 +79,8 @@ JsonFile.unescapeString = function(string) {
  * @param {String} string the string to clean
  * @returns {String} the cleaned string
  */
-JsonFile.cleanString = function(string) {
-    var unescaped = JsonFile.unescapeString(string);
+XmlFile.cleanString = function(string) {
+    var unescaped = XmlFile.unescapeString(string);
 
     unescaped = unescaped.
         replace(/[ \n\t\r\f]+/g, " ").
@@ -93,20 +90,20 @@ JsonFile.cleanString = function(string) {
 };
 
 
-JsonFile.escapeProp = function(prop) {
+XmlFile.escapeProp = function(prop) {
     return prop.
         replace(/~/g, "~0").
         replace(/\//g, "~1");
 };
 
-JsonFile.unescapeProp = function(prop) {
+XmlFile.unescapeProp = function(prop) {
     return prop.
         replace(/~1/g, "/").
         replace(/~0/g, "~");
 };
 
-JsonFile.escapeRef = function(prop) {
-    return JsonFile.escapeProp(prop).
+XmlFile.escapeRef = function(prop) {
+    return XmlFile.escapeProp(prop).
         replace(/%/g, "%25").
         replace(/\^/g, "%5E").
         replace(/\|/g, "%7C").
@@ -115,8 +112,8 @@ JsonFile.escapeRef = function(prop) {
         replace(/ /g, "%20");
 };
 
-JsonFile.unescapeRef = function(prop) {
-    return JsonFile.unescapeProp(prop.
+XmlFile.unescapeRef = function(prop) {
+    return XmlFile.unescapeProp(prop.
         replace(/%5E/g, "^").
         replace(/%7C/g, "|").
         replace(/%5C/g, "\\").
@@ -255,12 +252,12 @@ function objectMap(object, visitor) {
     }
 }
 
-JsonFile.prototype.sparseValue = function(value) {
+XmlFile.prototype.sparseValue = function(value) {
     return (!this.mapping || !this.mapping.method || this.mapping.method !== "sparse") ? value : undefined;
 };
 
-JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable, translations, locale) {
-    if (!json || !schema) return;
+XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable, translations, locale) {
+    if (!xml || !schema) return;
 
     if (typeof(schema["$ref"]) !== 'undefined') {
         // substitute the referenced schema for this one
@@ -279,16 +276,16 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
     localizable |= schema.localizable;
 
     if (this.type.hasType(schema)) {
-        var type = schema.type || typeof(json);
+        var type = schema.type || typeof(xml);
         switch (type) {
         case "boolean":
         case "number":
         case "integer":
         case "string":
             if (localizable) {
-                if (isPrimitive(typeof(json))) {
-                    var text = String(json);
-                    var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+                if (isPrimitive(typeof(xml))) {
+                    var text = String(xml);
+                    var key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
                     if (translations) {
                         // localize it
                         var tester = this.API.newResource({
@@ -320,7 +317,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                 translatedText = translated.getTarget();
                             } else {
                                 if (this.type && this.API.utils.containsActualText(text)) {
-                                    logger.trace("New string found: " + text);
+                                    // logger.trace("New string found: " + text);
                                     this.type.newres.add(this.API.newResource({
                                         resType: "string",
                                         project: this.project.getProjectId(),
@@ -364,30 +361,30 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                 } else {
                     // no way to parse the additional items beyond the end of the array,
                     // so just ignore them
-                    logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
-                    returnValue = this.sparseValue(json);
+                    // logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(xml));
+                    returnValue = this.sparseValue(xml);
                 }
             } else {
-                returnValue = this.sparseValue(json);
+                returnValue = this.sparseValue(xml);
             }
             break;
 
         case "array":
-            returnValue = this.parseObjArray(json, root, schema, ref, name, localizable, translations, locale);
+            returnValue = this.parseObjArray(xml, root, schema, ref, name, localizable, translations, locale);
             break;
 
         case "object":
-            if (typeof(json) !== "object") {
-               logger.warn(this.pathName + '/' + ref + " is a " +
-                   typeof(json) + " but should be an object according to the schema...  skipping.");
+            if (typeof(xml) !== "object") {
+                // logger.warn(this.pathName + '/' + ref + " is a " +
+                //    typeof(xml) + " but should be an object according to the schema...  skipping.");
                 return;
             }
-            if (isPlural(json)) {
+            if (isPlural(xml)) {
                 // handle this as a single plural resource instance instead
                 // of an object that has resources inside of it
-                var sourcePlurals = json;
+                var sourcePlurals = xml;
                 if (localizable) {
-                    var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+                    var key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
                     if (translations) {
                         // localize it
                         var tester = this.API.newResource({
@@ -421,7 +418,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                 translatedPlurals = translated.getTargetPlurals();
                             } else {
                                 if (this.type) {
-                                    logger.trace("New string found: " + text);
+                                    // logger.trace("New string found: " + text);
                                     this.type.newres.add(this.API.newResource({
                                         resType: "plural",
                                         project: this.project.getProjectId(),
@@ -454,7 +451,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                         this.set.add(this.API.newResource({
                             resType: "plural",
                             project: this.project.getProjectId(),
-                            key: JsonFile.unescapeRef(ref).substring(2),
+                            key: XmlFile.unescapeRef(ref).substring(2),
                             sourceLocale: this.project.sourceLocale,
                             sourceStrings: sourcePlurals,
                             pathName: this.pathName,
@@ -470,30 +467,30 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                 }
             } else {
                 returnValue = {};
-                var props = Object.keys(json);
+                var props = Object.keys(xml);
                 props.forEach(function(prop) {
                     if (schema.properties && schema.properties[prop]) {
                         returnValue[prop] = this.parseObj(
-                            json[prop],
+                            xml[prop],
                             root,
                             schema.properties[prop],
-                            ref + '/' + JsonFile.escapeRef(prop),
+                            ref + '/' + XmlFile.escapeRef(prop),
                             prop,
                             localizable,
                             translations,
                             locale);
                     } else if (schema.additionalProperties) {
                         returnValue[prop] = this.parseObj(
-                            json[prop],
+                            xml[prop],
                             root,
                             schema.additionalProperties,
-                            ref + '/' + JsonFile.escapeRef(prop),
+                            ref + '/' + XmlFile.escapeRef(prop),
                             prop,
                             localizable,
                             translations,
                             locale);
                     } else {
-                        returnValue[prop] = this.sparseValue(json[prop]);
+                        returnValue[prop] = this.sparseValue(xml[prop]);
                     }
                 }.bind(this));
             }
@@ -504,29 +501,29 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
     return isNotEmpty(returnValue) ? returnValue : undefined;
 };
 
-JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, localizable, translations, locale) {
-    if (!ilib.isArray(json)) {
-        logger.warn(this.pathName + '/' + ref + " is a " +
-                typeof(json) + " but should be an array according to the schema... skipping.");
+XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localizable, translations, locale) {
+    if (!ilib.isArray(xml)) {
+        // logger.warn(this.pathName + '/' + ref + " is a " +
+        //        typeof(xml) + " but should be an array according to the schema... skipping.");
         return null;
     }
 
     var arrayType = getArrayTypeFromSchema(schema, root);
 
     if (arrayType === null) {
-        return this.sparseValue(json);
+        return this.sparseValue(xml);
     }
 
     if (arrayType === 'object') {
         // Continue parsing and treat array as a set of regular elements.
         var returnValue = [];
-        for (var i = 0; i < json.length; i++) {
+        for (var i = 0; i < xml.length; i++) {
             returnValue.push(
                 this.parseObj(
-                        json[i],
+                        xml[i],
                         root,
                         schema.items,
-                        ref + '/' + JsonFile.escapeRef("item_" + i),
+                        ref + '/' + XmlFile.escapeRef("item_" + i),
                         "item_" + i,
                         localizable,
                         translations,
@@ -539,7 +536,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
     }
 
     // Convert all items to Strings so we can process them properly
-    var sourceArray = json.map(function(item) {
+    var sourceArray = xml.map(function(item) {
         return String(item);
     });
 
@@ -552,7 +549,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
         this.set.add(this.API.newResource({
             resType: "array",
             project: this.project.getProjectId(),
-            key: JsonFile.unescapeRef(ref).substring(2),
+            key: XmlFile.unescapeRef(ref).substring(2),
             sourceLocale: this.project.sourceLocale,
             sourceArray: sourceArray,
             pathName: this.pathName,
@@ -568,7 +565,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
         return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
     }
 
-    var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+    var key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
     var tester = this.API.newResource({
         resType: "array",
         project: this.project.getProjectId(),
@@ -606,7 +603,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
         return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
     }
 
-    logger.trace("New strings found: " + sourceArray.toString());
+    // logger.trace("New strings found: " + sourceArray.toString());
 
     this.type.newres.add(this.API.newResource({
         resType: "array",
@@ -639,21 +636,21 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
  * project's translation set.
  * @param {String} data the string to parse
  */
-JsonFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+XmlFile.prototype.parse = function(data) {
+    // logger.debug("Extracting strings from " + this.pathName);
 
-    this.json = JSON5.parse(data);
+    this.xml = JSON.parse(data);
 
     // "#" is the root reference
-    this.parseObj(this.json, this.schema, this.schema, "#", "root", false);
+    this.parseObj(this.xml, this.schema, this.schema, "#", "root", false);
 };
 
 /**
- * Extract all the localizable strings from the Json file and add them to the
+ * Extract all the localizable strings from the XML file and add them to the
  * project's translation set.
  */
-JsonFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+XmlFile.prototype.extract = function() {
+    // logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -662,24 +659,24 @@ JsonFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            // logger.warn("Could not read file: " + p);
+            // logger.warn(e);
         }
     }
 };
 
 /**
- * Return the set of resources found in the current Json file.
+ * Return the set of resources found in the current XML file.
  *
  * @returns {TranslationSet} The set of resources found in the
- * current Json file.
+ * current XML file.
  */
-JsonFile.prototype.getTranslationSet = function() {
+XmlFile.prototype.getTranslationSet = function() {
     return this.set;
 }
 
-//we don't write Json source files
-JsonFile.prototype.write = function() {};
+//we don't write XML source files
+XmlFile.prototype.write = function() {};
 
 /**
  * Return the location on disk where the version of this file localized
@@ -687,7 +684,7 @@ JsonFile.prototype.write = function() {};
  * @param {String] locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-JsonFile.prototype.getLocalizedPath = function(locale) {
+XmlFile.prototype.getLocalizedPath = function(locale) {
     return this.type.getLocalizedPath(this.mapping.template, this.pathName, locale);
 };
 
@@ -699,9 +696,9 @@ JsonFile.prototype.getLocalizedPath = function(locale) {
  * @param {String} locale the locale to translate to
  * @returns {String} the localized text of this file
  */
-JsonFile.prototype.localizeText = function(translations, locale) {
+XmlFile.prototype.localizeText = function(translations, locale) {
         // "#" is the root reference
-    var returnValue = this.parseObj(this.json, this.schema, this.schema, "#", "root", false, translations, locale);
+    var returnValue = this.parseObj(this.xml, this.schema, this.schema, "#", "root", false, translations, locale);
     return JSON.stringify(returnValue, undefined, 4) + '\n';
 };
 
@@ -713,7 +710,7 @@ JsonFile.prototype.localizeText = function(translations, locale) {
  * translations
  * @param {Array.<String>} locales array of locales to translate to
  */
-JsonFile.prototype.localize = function(translations, locales) {
+XmlFile.prototype.localize = function(translations, locales) {
     // don't localize if there is no text
     for (var i = 0; i < locales.length; i++) {
         if (!this.project.isSourceLocale(locales[i])) {
@@ -721,7 +718,7 @@ JsonFile.prototype.localize = function(translations, locales) {
             var l = new Locale(locales[i]);
             if (!l.getVariant()) {
                 var pathName = this.getLocalizedPath(locales[i]);
-                logger.debug("Writing file " + pathName);
+                // logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
                 this.API.utils.makeDirs(d);
@@ -732,4 +729,4 @@ JsonFile.prototype.localize = function(translations, locales) {
     }
 };
 
-module.exports = JsonFile;
+module.exports = XmlFile;
