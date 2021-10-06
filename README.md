@@ -405,7 +405,6 @@ comment and the source text. The schema is specified like this:
                     "key": {
                         "type": "string",
                         "localizableType": {
-                            // maps the value of the "key" attribute to the key resource field
                             "_value": "key"
                         }
                     }
@@ -415,7 +414,6 @@ comment and the source text. The schema is specified like this:
                 "_text": {
                     "type": "string",
                     "localizableType": {
-                        // maps the text value of the comment element into the comment resource field
                         "_value": "comment"
                     }
                 }
@@ -424,7 +422,6 @@ comment and the source text. The schema is specified like this:
                 "_text": {
                     "type": "string",
                     "localizableType": {
-                        // maps the text value of the "_text" element into the source string field
                         "_value": "source"
                     }
                 }
@@ -761,7 +758,7 @@ the following json-XML schema:
             "localizableType": "array",
             "properties": {
                 "_attributes": {
-                    "type": "object":,
+                    "type": "object",
                     "properties": {
                         "name": {
                             "type": "string",
@@ -846,7 +843,7 @@ the following json-XML schema:
                         }
                     }
                 },
-                "plurals: {
+                "plurals": {
                     "type": "object",
                     "localizable": true,
                     "localizableType": "array",
