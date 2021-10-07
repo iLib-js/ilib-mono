@@ -43,7 +43,7 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[localeDir]/messages.xml"
             },
-            "**/test/str.jsn": {
+            "**/test/str.xml": {
                 "schema": "http://www.lge.com/xml/str",
                 "method": "copy",
                 "template": "[dir]/[localeDir]/str.xml"
@@ -76,292 +76,6 @@ module.exports.xmlfiletype = {
         var xft = new XmlFileType(p);
 
         test.ok(xft);
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathLocaleDir: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('resources/[localeDir]/strings.xml', "x/y/strings.xml", "de-DE"), "resources/de/DE/strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathDir: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[dir]/[localeDir]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/de/DE/strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathBasename: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[localeDir]/tr-[basename].j', "x/y/strings.xml", "de-DE"), "de/DE/tr-strings.j");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathFilename: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[localeDir]/tr-[filename]', "x/y/strings.xml", "de-DE"), "de/DE/tr-strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathExtension: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathLocale: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[dir]/[locale]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/de-DE/strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathLanguage: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[dir]/[language]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/de/strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathRegion: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[dir]/[region]/strings.xml', "x/y/strings.xml", "de-DE"), "x/y/DE/strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathScript: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[dir]/[script]/strings.xml', "x/y/strings.xml", "zh-Hans-CN"), "x/y/Hans/strings.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocalizedPathLocaleUnder: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocalizedPath('[dir]/strings_[localeUnder].xml', "x/y/strings.xml", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.xml");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathDir: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/strings.xml', "x/y/strings.xml"), "");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathBasename: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[basename].xml', "x/y/strings.xml"), "");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathFilename: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[filename]', "x/y/strings.xml"), "");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathLocale: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[locale]/strings.xml', "x/y/de-DE/strings.xml"), "de-DE");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathLocaleLong: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[locale]/strings.xml', "x/y/zh-Hans-CN/strings.xml"), "zh-Hans-CN");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathLocaleShort: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[locale]/strings.xml', "x/y/fr/strings.xml"), "fr");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathLanguage: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[language]/strings.xml', "x/y/de/strings.xml"), "de");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathScript: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[language]-[script]/strings.xml', "x/y/zh-Hans/strings.xml"), "zh-Hans");
-
-        test.done();
-    },
-
-    testXmlFileTypeGetLocaleFromPathRegion: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[region]/strings.xml', "x/y/JP/strings.xml"), "JP");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleDir: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[localeDir]/strings.xml', "x/y/de/DE/strings.xml"), "de-DE");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleDirShort: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[localeDir]/strings.xml', "x/y/de/strings.xml"), "de");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleDirLong: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/[localeDir]/strings.xml', "x/y/zh/Hans/CN/strings.xml"), "zh-Hans-CN");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleDirStart: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[localeDir]/strings.xml', "de/DE/strings.xml"), "de-DE");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleUnder: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/strings_[localeUnder].xml', "x/y/strings_de_DE.xml"), "de-DE");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleUnderShort: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/strings_[localeUnder].xml', "x/y/strings_de.xml"), "de");
-
-        test.done();
-    },
-
-     testXmlFileTypeGetLocaleFromPathLocaleUnderLong: function(test) {
-        test.expect(2);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        test.equals(xft.getLocaleFromPath('[dir]/strings_[localeUnder].xml', "x/y/strings_zh_Hans_CN.xml"), "zh-Hans-CN");
 
         test.done();
     },
@@ -402,7 +116,7 @@ module.exports.xmlfiletype = {
         var xft = new XmlFileType(p);
         test.ok(xft);
 
-        test.ok(!xft.getMapping("x/y/msg.jso"));
+        test.ok(!xft.getMapping("x/y/msg.xml"));
 
         test.done();
     },
@@ -457,7 +171,7 @@ module.exports.xmlfiletype = {
         var xft = new XmlFileType(p);
         test.ok(xft);
 
-        test.ok(!xft.handles("x/y/z/str.jsn"));
+        test.ok(!xft.handles("x/y/z/str.xml"));
 
         test.done();
     },
@@ -468,7 +182,7 @@ module.exports.xmlfiletype = {
         var xft = new XmlFileType(p);
         test.ok(xft);
 
-        test.ok(xft.handles("x/y/z/test/str.jsn"));
+        test.ok(xft.handles("x/y/z/test/str.xml"));
 
         test.done();
     },
@@ -480,19 +194,6 @@ module.exports.xmlfiletype = {
         test.ok(xft);
 
         test.ok(xft.handles("resources/en/US/messages.xml"));
-
-        test.done();
-    },
-
-    testXmlFileTypeHandlesAlternateExtensionTrue: function(test) {
-        test.expect(3);
-
-        var xft = new XmlFileType(p);
-        test.ok(xft);
-
-        // windows?
-        test.ok(xft.handles("strings.jsn"));
-        test.ok(xft.handles("strings.jso"));
 
         test.done();
     },
