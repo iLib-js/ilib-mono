@@ -626,17 +626,17 @@ Converted to json, it would look like this:
 ```
 
 To specify the template, simply replace the name of the category with
-the special string "_category" and the value of the translation with
-the special string "_translation".
+the special string "[_category]" and the value of the translation with
+the special string "[_translation]".
 
 Thus, the plural template would look like this:
 
 ```json
     "string": {
         "_attributes": {
-            "category": "_category"
+            "category": "[_category]"
         },
-        "_text": "_translation"
+        "_text": "[_translation]"
     }
 ```
 
@@ -672,32 +672,32 @@ template. This is also specified in the `templates/plural` property:
             "plural": {
                 "zero": {
                     "none": {
-                        "_text": "_translation"
+                        "_text": "[_translation]"
                     }
                 },
                 "one": {
                     "singular": {
-                        "_text": "_translation"
+                        "_text": "[_translation]"
                     }
                 },
                 "two": {
                     "double": {
-                        "_text": "_translation"
+                        "_text": "[_translation]"
                     }
                 },
                 "few": {
                     "few": {
-                        "_text": "_translation"
+                        "_text": "[_translation]"
                     }
                 },
                 "many": {
                     "many": {
-                        "_text": "_translation"
+                        "_text": "[_translation]"
                     }
                 },
                 "other": {
                     "plural": {
-                        "_text": "_translation"
+                        "_text": "[_translation]"
                     }
                 }
             }

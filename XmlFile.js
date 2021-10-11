@@ -22,6 +22,7 @@ var path = require("path");
 var log4js = require("log4js");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
+var xmljs = require("xml-js");
 
 /**
  * Create a new XML file with the given path name and within
@@ -198,21 +199,10 @@ var pluralCategories = {
     "other": true
 };
 
-/**
- * Return true if every property in the node is one of the the Unicode
- * plural categories, which lets us know to treat this node as a plural
- * resource.
- */
-function isPlural(node) {
-    if (!node) return false;
-    var props = Object.keys(node);
-    return props.every(function(prop) {
-        return pluralCategories[prop] && typeof(node[prop]) === "string";
-    });
-}
-
 function isNotEmpty(obj) {
-    if (isPrimitive(typeof(obj))) {
+    if (!obj) {
+        return false;
+    } else if (isPrimitive(typeof(obj))) {
         return typeof(obj) !== 'undefined';
     } else if (ilib.isArray(obj)) {
         return obj.length > 0;
@@ -225,6 +215,35 @@ function isNotEmpty(obj) {
         return false;
     }
 }
+
+var typeKeywords = [
+    "type",
+    "contains",
+    "allOf",
+    "anyOf",
+    "oneOf",
+    "not",
+    "$ref"
+];
+
+/**
+ * Return true if the schema has a type. The type could be indicated by
+ * the presence of any of the following fields:
+ * - type
+ * - contains
+ * - allOf
+ * - anyOf
+ * - oneOf
+ * - not
+ * - $ref
+ * @param {Object} schema the schema to check
+ * @returns {boolean} true if the schema contains a type, false otherwise
+ */
+XmlFile.prototype.hasType = function(schema) {
+    return typeKeywords.find(function(keyword) {
+        return typeof(schema[keyword]) !== 'undefined';
+    });
+};
 
 /**
  * Recursively visit every node in an object and call the visitor on any
@@ -256,7 +275,88 @@ XmlFile.prototype.sparseValue = function(value) {
     return (!this.mapping || !this.mapping.method || this.mapping.method !== "sparse") ? value : undefined;
 };
 
-XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable, translations, locale) {
+function setFieldValue(resource, field, resourceInfo) {
+    switch (field) {
+        case "key":
+            resource.setKey(resourceInfo.value);
+            break;
+
+        case "source":
+            switch(resource.getType()) {
+                case "array":
+                    resource.setSourceArray(resource.getSourceArray().push(value));
+                    break;
+                case "plural":
+                    var plurals = resource.getSourcePlurals();
+                    plurals[category] = value;
+                    resource.setSourcePlurals(plurals);
+                    break;
+                default:
+                case "string":
+                    resource.setSource(value);
+                    break;
+            }
+            break;
+
+        case "comment":
+            resource.setComment(value);
+            break;
+
+        case "locale":
+            resource.setSourceLocale(value);
+            break;
+    }
+}
+
+function getValue(value, xml, ref, element) {
+    switch (value) {
+        case "_value":
+            return xml;
+        case "_element":
+            return element;
+        case "_path":
+            return ref;
+    }
+    return value;
+}
+
+var mapToSourceField = {
+    "array": "sourceArray",
+    "plural": "sourcePlurals",
+    "string": "source"
+};
+
+function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
+    ["category", "locale", "source", "key", "comment"].forEach(function(field) {
+        if (schema.localizableType[field]) {
+            var value = getValue(schema.localizableType[field], text, key, element);
+            if (field === "source") {
+                switch (resourceInfo.resType) {
+                    case "array":
+                        if (!resourceInfo.source) {
+                            resourceInfo.source = [value];
+                        } else {
+                            resourceInfo.source.push(value);
+                        }
+                        break;
+                    case "plural":
+                        if (!resourceInfo.source) {
+                            resourceInfo.source = {};
+                        }
+                        resourceInfo.source[resourceInfo.category] = value;
+                        break;
+                    default:
+                        resourceInfo.source = value;
+                        break;
+                }
+            } else {
+                resourceInfo[field] = value;
+            }
+        }
+    });
+}
+
+XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo) {
     if (!xml || !schema) return;
 
     if (typeof(schema["$ref"]) !== 'undefined') {
@@ -271,237 +371,311 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
         schema = otherschema;
     }
 
-    var returnValue;
+    var returnValue, text, key;
 
-    localizable |= schema.localizable;
+    // When the schema has localizable = true, then start the construction of
+    // an object that we can fill with info about the new resource as the subparts
+    // of this schema are parsed
+    if (schema.localizable) {
+        var resType = "string";
+        resourceInfo = {
+            resType: resType,
+            element: name
+        };
+        localizable = true;
+        if (schema.localizableType) {
+            if (typeof(schema.localizableType) === "string") {
+                resourceInfo.resType = schema.localizableType;
+            } else if (typeof(schema.localizableType) === "object" && schema.localizableType.type) {
+                resourceInfo.resType = schema.localizableType.type;
+            }
+            if (resourceInfo.resType !== "array" && resourceInfo.resType !== "plural") {
+                resourceInfo.resType = "string";
+            }
+            hydrateResourceInfo(resourceInfo, schema, undefined, undefined, ref.substring(ref.lastIndexOf('/')+1));
+        }
+    }
 
-    if (this.type.hasType(schema)) {
-        var type = schema.type || typeof(xml);
-        switch (type) {
-        case "boolean":
-        case "number":
-        case "integer":
-        case "string":
-            if (localizable) {
-                if (isPrimitive(typeof(xml))) {
-                    var text = String(xml);
-                    var key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-                    if (translations) {
-                        // localize it
-                        var tester = this.API.newResource({
-                            resType: "string",
-                            project: this.project.getProjectId(),
-                            sourceLocale: this.project.getSourceLocale(),
-                            reskey: key,
-                            datatype: this.type.datatype
-                        });
-                        var hashkey = tester.hashKeyForTranslation(locale);
-                        var translated = translations.getClean(hashkey);
-                        var translatedText;
-                        if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                            translatedText = this.sparseValue(text);
-                        } else if (!translated && this.type && this.type.pseudos[locale]) {
-                            var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                            if (sourceLocale !== this.project.sourceLocale) {
-                                // translation is derived from a different locale's translation instead of from the source string
-                                var sourceRes = translations.getClean(
-                                    tester.cleanHashKey(),
-                                    this.type.datatype);
-                                source = sourceRes ? sourceRes.getTarget() : text;
-                            } else {
-                                source = text;
-                            }
-                            translatedText = this.type.pseudos[locale].getString(source);
-                        } else {
-                            if (translated) {
-                                translatedText = translated.getTarget();
-                            } else {
-                                if (this.type && this.API.utils.containsActualText(text)) {
-                                    // logger.trace("New string found: " + text);
-                                    this.type.newres.add(this.API.newResource({
-                                        resType: "string",
-                                        project: this.project.getProjectId(),
-                                        key: key,
-                                        sourceLocale: this.project.sourceLocale,
-                                        source: text,
-                                        targetLocale: locale,
-                                        target: text,
-                                        pathName: this.pathName,
-                                        state: "new",
-                                        datatype: this.type.datatype,
-                                        index: this.resourceIndex++
-                                    }));
-                                    translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
-                                            this.type.missingPseudo.getString(text) : text;
-                                    translatedText = this.sparseValue(translatedText);
+    var type, typeProperty = this.hasType(schema);
+    if (typeProperty) {
+        if (typeProperty === "anyOf") {
+            // The type of the node needs to be one of the types
+            // in the given array of types in the schema. That is, this
+            // is an "OR" of types.
+            // So, just reparse the current node with each of the
+            // subtypes until one of them works. Don't descend into
+            // the xml further -- we are only descending into the
+            // the type in the schema, and parsing the same xml node
+            // each time.
+            var sub = schema.anyOf.find(function(subtype) {
+                return this.parseObj(
+                    xml,
+                    root,
+                    subtype,
+                    ref,
+                    name,
+                    localizable,
+                    translations,
+                    locale,
+                    resourceInfo);
+            }.bind(this));
+            if (sub) {
+                returnValue = sub;
+            }
+        } else {
+            type = schema[typeProperty] || typeof(xml);
+            switch (type) {
+            case "boolean":
+            case "number":
+            case "integer":
+            case "string":
+                if (localizable) {
+                    if (isPrimitive(typeof(xml))) {
+                        text = String(xml);
+                        key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+
+                        if (schema.localizableType && resourceInfo) {
+                            hydrateResourceInfo(resourceInfo, schema, text, key, resourceInfo.element);
+                        }
+
+                        if (translations) {
+                            // localize it
+                            var tester = this.API.newResource({
+                                resType: "string",
+                                project: this.project.getProjectId(),
+                                sourceLocale: this.project.getSourceLocale(),
+                                reskey: key,
+                                datatype: this.type.datatype
+                            });
+                            var hashkey = tester.hashKeyForTranslation(locale);
+                            var translated = translations.getClean(hashkey);
+                            var translatedText;
+                            if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                                translatedText = this.sparseValue(text);
+                            } else if (!translated && this.type && this.type.pseudos[locale]) {
+                                var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                                if (sourceLocale !== this.project.sourceLocale) {
+                                    // translation is derived from a different locale's translation instead of from the source string
+                                    var sourceRes = translations.getClean(
+                                        tester.cleanHashKey(),
+                                        this.type.datatype);
+                                    source = sourceRes ? sourceRes.getTarget() : text;
                                 } else {
-                                    translatedText = this.sparseValue(text);
+                                    source = text;
+                                }
+                                translatedText = this.type.pseudos[locale].getString(source);
+                            } else {
+                                if (translated) {
+                                    translatedText = translated.getTarget();
+                                } else {
+                                    if (this.type && this.API.utils.containsActualText(text)) {
+                                        // logger.trace("New string found: " + text);
+                                        this.type.newres.add(this.API.newResource({
+                                            resType: "string",
+                                            project: this.project.getProjectId(),
+                                            key: key,
+                                            sourceLocale: this.project.sourceLocale,
+                                            source: text,
+                                            targetLocale: locale,
+                                            target: text,
+                                            pathName: this.pathName,
+                                            state: "new",
+                                            datatype: this.type.datatype,
+                                            index: this.resourceIndex++
+                                        }));
+                                        translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
+                                                this.type.missingPseudo.getString(text) : text;
+                                        translatedText = this.sparseValue(translatedText);
+                                    } else {
+                                        translatedText = this.sparseValue(text);
+                                    }
                                 }
                             }
-                        }
-                        if (translatedText) {
-	                        returnValue = convertValueToType(translatedText, type);
+                            if (translatedText) {
+                                returnValue = convertValueToType(translatedText, type);
+                            }
+                        } else {
+                            returnValue = this.sparseValue(text);
                         }
                     } else {
-                        // extract this value
-                        this.set.add(this.API.newResource({
-                            resType: "string",
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.project.sourceLocale,
-                            source: text,
-                            pathName: this.pathName,
-                            state: "new",
-                            comment: this.comment,
-                            datatype: this.type.datatype,
-                            index: this.resourceIndex++
-                        }));
-                        returnValue = this.sparseValue(text);
+                        // no way to parse the additional items beyond the end of the array,
+                        // so just ignore them
+                        // logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(xml));
+                        returnValue = this.sparseValue(xml);
                     }
                 } else {
-                    // no way to parse the additional items beyond the end of the array,
-                    // so just ignore them
-                    // logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(xml));
                     returnValue = this.sparseValue(xml);
                 }
-            } else {
-                returnValue = this.sparseValue(xml);
-            }
-            break;
+                break;
 
-        case "array":
-            returnValue = this.parseObjArray(xml, root, schema, ref, name, localizable, translations, locale);
-            break;
+            case "array":
+                returnValue = this.parseObjArray(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo);
+                break;
 
-        case "object":
-            if (typeof(xml) !== "object") {
-                // logger.warn(this.pathName + '/' + ref + " is a " +
-                //    typeof(xml) + " but should be an object according to the schema...  skipping.");
-                return;
-            }
-            if (isPlural(xml)) {
-                // handle this as a single plural resource instance instead
-                // of an object that has resources inside of it
-                var sourcePlurals = xml;
-                if (localizable) {
-                    var key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-                    if (translations) {
-                        // localize it
-                        var tester = this.API.newResource({
-                            resType: "plural",
-                            project: this.project.getProjectId(),
-                            sourceLocale: this.project.getSourceLocale(),
-                            reskey: key,
-                            datatype: this.type.datatype
-                        });
-                        var hashkey = tester.hashKeyForTranslation(locale);
-                        var translated = translations.getClean(hashkey);
-                        var translatedPlurals;
-                        if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                            translatedPlurals = this.sparseValue(sourcePlurals);
-                        } else if (!translated && this.type && this.type.pseudos[locale]) {
-                            var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                            if (sourceLocale !== this.project.sourceLocale) {
-                                // translation is derived from a different locale's translation instead of from the source string
-                                var sourceRes = translations.getClean(
-                                    tester.cleanHashKey(),
-                                    this.type.datatype);
-                                source = sourceRes ? sourceRes.getTargetPlurals() : sourcePlurals;
+            case "object":
+                if (typeof(xml) !== "object") {
+                    // logger.warn(this.pathName + '/' + ref + " is a " +
+                    //    typeof(xml) + " but should be an object according to the schema...  skipping.");
+                    return;
+                }
+                if (false) {
+                    // handle this as a single plural resource instance instead
+                    // of an object that has resources inside of it
+                    var sourcePlurals = xml;
+                    if (localizable) {
+                        key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+                        if (translations) {
+                            // localize it
+                            var tester = this.API.newResource({
+                                resType: "plural",
+                                project: this.project.getProjectId(),
+                                sourceLocale: this.project.getSourceLocale(),
+                                reskey: key,
+                                datatype: this.type.datatype
+                            });
+                            var hashkey = tester.hashKeyForTranslation(locale);
+                            var translated = translations.getClean(hashkey);
+                            var translatedPlurals;
+                            if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                                translatedPlurals = this.sparseValue(sourcePlurals);
+                            } else if (!translated && this.type && this.type.pseudos[locale]) {
+                                var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                                if (sourceLocale !== this.project.sourceLocale) {
+                                    // translation is derived from a different locale's translation instead of from the source string
+                                    var sourceRes = translations.getClean(
+                                        tester.cleanHashKey(),
+                                        this.type.datatype);
+                                    source = sourceRes ? sourceRes.getTargetPlurals() : sourcePlurals;
+                                } else {
+                                    source = sourcePlurals;
+                                }
+                                translatedPlurals = objectMap(source, function(item) {
+                                    return this.type.pseudos[locale].getString(item);
+                                }.bind(this));
                             } else {
-                                source = sourcePlurals;
-                            }
-                            translatedPlurals = objectMap(source, function(item) {
-                                return this.type.pseudos[locale].getString(item);
-                            }.bind(this));
-                        } else {
-                            if (translated) {
-                                translatedPlurals = translated.getTargetPlurals();
-                            } else {
-                                if (this.type) {
-                                    // logger.trace("New string found: " + text);
-                                    this.type.newres.add(this.API.newResource({
-                                        resType: "plural",
-                                        project: this.project.getProjectId(),
-                                        key: key,
-                                        sourceLocale: this.project.sourceLocale,
-                                        sourceStrings: sourcePlurals,
-                                        targetLocale: locale,
-                                        targetStrings: sourcePlurals,
-                                        pathName: this.pathName,
-                                        state: "new",
-                                        datatype: this.type.datatype,
-                                        index: this.resourceIndex++
-                                    }));
-                                    if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                                        translatedPlurals = objectMap(sourcePlurals, function(item) {
-                                            return this.type.missingPseudo.getString(item);
-                                        }.bind(this));
-                                        translatedPlurals = this.sparseValue(translatedPlurals);
+                                if (translated) {
+                                    translatedPlurals = translated.getTargetPlurals();
+                                } else {
+                                    if (this.type) {
+                                        // logger.trace("New string found: " + text);
+                                        this.type.newres.add(this.API.newResource({
+                                            resType: "plural",
+                                            project: this.project.getProjectId(),
+                                            key: key,
+                                            sourceLocale: this.project.sourceLocale,
+                                            sourceStrings: sourcePlurals,
+                                            targetLocale: locale,
+                                            targetStrings: sourcePlurals,
+                                            pathName: this.pathName,
+                                            state: "new",
+                                            datatype: this.type.datatype,
+                                            index: this.resourceIndex++
+                                        }));
+                                        if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
+                                            translatedPlurals = objectMap(sourcePlurals, function(item) {
+                                                return this.type.missingPseudo.getString(item);
+                                            }.bind(this));
+                                            translatedPlurals = this.sparseValue(translatedPlurals);
+                                        } else {
+                                            translatedPlurals = this.sparseValue(sourcePlurals);
+                                        }
                                     } else {
                                         translatedPlurals = this.sparseValue(sourcePlurals);
                                     }
-                                } else {
-                                    translatedPlurals = this.sparseValue(sourcePlurals);
                                 }
                             }
+                            returnValue = translatedPlurals;
+                        } else {
+                            // extract this value
+                            this.set.add(this.API.newResource({
+                                resType: "plural",
+                                project: this.project.getProjectId(),
+                                key: XmlFile.unescapeRef(ref).substring(2),
+                                sourceLocale: this.project.sourceLocale,
+                                sourceStrings: sourcePlurals,
+                                pathName: this.pathName,
+                                state: "new",
+                                comment: this.comment,
+                                datatype: this.type.datatype,
+                                index: this.resourceIndex++
+                            }));
+                            returnValue = this.sparseValue(sourcePlurals);
                         }
-                        returnValue = translatedPlurals;
                     } else {
-                        // extract this value
-                        this.set.add(this.API.newResource({
-                            resType: "plural",
-                            project: this.project.getProjectId(),
-                            key: XmlFile.unescapeRef(ref).substring(2),
-                            sourceLocale: this.project.sourceLocale,
-                            sourceStrings: sourcePlurals,
-                            pathName: this.pathName,
-                            state: "new",
-                            comment: this.comment,
-                            datatype: this.type.datatype,
-                            index: this.resourceIndex++
-                        }));
                         returnValue = this.sparseValue(sourcePlurals);
                     }
                 } else {
-                    returnValue = this.sparseValue(sourcePlurals);
+                    returnValue = {};
+                    var props = Object.keys(xml);
+                    props.forEach(function(prop) {
+                        if (schema.properties && schema.properties[prop]) {
+                            if (resourceInfo && schema.properties[prop].localizable) {
+                                // remember the parent element's name
+                                resourceInfo.element = prop;
+                            }
+                            returnValue[prop] = this.parseObj(
+                                xml[prop],
+                                root,
+                                schema.properties[prop],
+                                ref + '/' + XmlFile.escapeRef(prop),
+                                prop,
+                                localizable,
+                                translations,
+                                locale,
+                                resourceInfo);
+                        } else if (schema.additionalProperties && prop !== "_attributes") {
+                            // don't consider _attributes to be an additional property that
+                            // should be examined
+                            if (resourceInfo && schema.additionalProperties.localizable) {
+                                // remember the parent element's name
+                                resourceInfo.element = prop;
+                            }
+                            returnValue[prop] = this.parseObj(
+                                xml[prop],
+                                root,
+                                schema.additionalProperties,
+                                ref + '/' + XmlFile.escapeRef(prop),
+                                prop,
+                                localizable,
+                                translations,
+                                locale,
+                                resourceInfo);
+                        } else {
+                            returnValue[prop] = this.sparseValue(xml[prop]);
+                        }
+                    }.bind(this));
                 }
-            } else {
-                returnValue = {};
-                var props = Object.keys(xml);
-                props.forEach(function(prop) {
-                    if (schema.properties && schema.properties[prop]) {
-                        returnValue[prop] = this.parseObj(
-                            xml[prop],
-                            root,
-                            schema.properties[prop],
-                            ref + '/' + XmlFile.escapeRef(prop),
-                            prop,
-                            localizable,
-                            translations,
-                            locale);
-                    } else if (schema.additionalProperties) {
-                        returnValue[prop] = this.parseObj(
-                            xml[prop],
-                            root,
-                            schema.additionalProperties,
-                            ref + '/' + XmlFile.escapeRef(prop),
-                            prop,
-                            localizable,
-                            translations,
-                            locale);
-                    } else {
-                        returnValue[prop] = this.sparseValue(xml[prop]);
-                    }
-                }.bind(this));
+                break;
             }
-            break;
         }
+    }
+
+    if (schema.localizable && resourceInfo && resourceInfo.source) {
+        // all the subparts of the xml element have been processed now,
+        // so we can create it and add it to the set
+        var options = {
+            resType: resourceInfo.resType,
+            project: this.project.getProjectId(),
+            sourceLocale: resourceInfo.locale || this.project.sourceLocale,
+            key: resourceInfo.key || XmlFile.unescapeRef(ref).substring(2),  // strips off the #/ part
+            pathName: this.pathName,
+            state: "new",
+            datatype: this.type.datatype,
+            comment: resourceInfo.comment,
+            index: this.resourceIndex++
+        };
+
+        if (resourceInfo.source) {
+            options[mapToSourceField[resourceInfo.resType]] = resourceInfo.source;
+        }
+
+        this.set.add(this.API.newResource(options));
     }
 
     return isNotEmpty(returnValue) ? returnValue : undefined;
 };
 
-XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localizable, translations, locale) {
+XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo) {
     if (!ilib.isArray(xml)) {
         // logger.warn(this.pathName + '/' + ref + " is a " +
         //        typeof(xml) + " but should be an array according to the schema... skipping.");
@@ -520,14 +694,16 @@ XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localiz
         for (var i = 0; i < xml.length; i++) {
             returnValue.push(
                 this.parseObj(
-                        xml[i],
-                        root,
-                        schema.items,
-                        ref + '/' + XmlFile.escapeRef("item_" + i),
-                        "item_" + i,
-                        localizable,
-                        translations,
-                        locale
+                    xml[i],
+                    root,
+                    schema.items,
+                    ref + '/' + XmlFile.escapeRef("item_" + i),
+                    // "item_" + i,
+                    name,
+                    localizable,
+                    translations,
+                    locale,
+                    resourceInfo
                 )
             )
         }
@@ -544,20 +720,9 @@ XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localiz
         return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
     }
 
-    if (!translations) {
+    if (resourceInfo && !translations) {
         // extract this value
-        this.set.add(this.API.newResource({
-            resType: "array",
-            project: this.project.getProjectId(),
-            key: XmlFile.unescapeRef(ref).substring(2),
-            sourceLocale: this.project.sourceLocale,
-            sourceArray: sourceArray,
-            pathName: this.pathName,
-            state: "new",
-            comment: this.comment,
-            datatype: this.type.datatype,
-            index: this.resourceIndex++
-        }));
+        resourceInfo.source = sourceArray;
         return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
     }
 
@@ -639,10 +804,17 @@ XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localiz
 XmlFile.prototype.parse = function(data) {
     // logger.debug("Extracting strings from " + this.pathName);
 
-    this.xml = JSON.parse(data);
+    this.xml = data;
+    this.resourceIndex = 0;
+
+    this.json = xmljs.xml2js(data, {
+        trim: false,
+        nativeTypeAttribute: true,
+        compact: true
+    });
 
     // "#" is the root reference
-    this.parseObj(this.xml, this.schema, this.schema, "#", "root", false);
+    this.parseObj(this.json, this.schema, this.schema, "#", "root", false, undefined);
 };
 
 /**
@@ -685,7 +857,11 @@ XmlFile.prototype.write = function() {};
  * @returns {String} the localized path name
  */
 XmlFile.prototype.getLocalizedPath = function(locale) {
-    return this.type.getLocalizedPath(this.mapping.template, this.pathName, locale);
+    var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
+    return path.normalize(this.API.utils.formatPath(mapping.template, {
+        sourcepath: this.pathName,
+        locale: locale
+    }));
 };
 
 /**
@@ -698,8 +874,11 @@ XmlFile.prototype.getLocalizedPath = function(locale) {
  */
 XmlFile.prototype.localizeText = function(translations, locale) {
         // "#" is the root reference
-    var returnValue = this.parseObj(this.xml, this.schema, this.schema, "#", "root", false, translations, locale);
-    return JSON.stringify(returnValue, undefined, 4) + '\n';
+    var json = this.parseObj(this.json, this.schema, this.schema, "#", "root", false, translations, locale, undefined);
+    return xmljs.js2xml(json, {
+        spaces: 4,
+        compact: true
+    }) + '\n';
 };
 
 /**

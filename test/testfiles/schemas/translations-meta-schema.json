@@ -12,7 +12,7 @@
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "_text": "source"
+                                "source": "_value"
                             }
                         }
                     }
@@ -23,7 +23,7 @@
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "_text": "key"
+                                "key": "_value"
                             }
                         }
                     }

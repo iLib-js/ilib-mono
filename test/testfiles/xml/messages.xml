@@ -4,6 +4,7 @@
         <foo>asdf</foo>
         <bar comment="translator comment">
             <one>one</one>
+            <many>many</many>
             <other>other</other>
         </bar>
         <attribute one="one" few="few" many="many" other="other"/>

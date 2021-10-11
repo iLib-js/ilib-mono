@@ -91,34 +91,6 @@ XmlFileType.prototype.loadSchemaDirOrFile = function(pathName) {
     }
 };
 
-var typeKeywords = [
-    "type",
-    "contains",
-    "allOf",
-    "anyOf",
-    "oneOf",
-    "not",
-    "$ref"
-];
-
-/**
- * Return true if the schema has a type. The type could be indicated by
- * the presence of any of the following fields:
- * - type
- * - contains
- * - allOf
- * - anyOf
- * - oneOf
- * - not
- * - $ref
- * @param {Object} schema the schema to check
- * @returns {boolean} true if the schema contains a type, false otherwise
- */
-XmlFileType.prototype.hasType = function(schema) {
-    return typeKeywords.find(function(keyword) {
-        return typeof(schema[keyword]) !== 'undefined';
-    });
-};
 
 XmlFileType.prototype.findRefs = function(root, schema, ref) {
     if (typeof(schema) !== 'object') return;
@@ -160,6 +132,114 @@ var defaultSchema = {
     "type": "object",
     "description": "An Android resource file",
     "$defs": {
+        "plural-item-type": {
+            "type": "object",
+            "properties": {
+                "_attributes": {
+                    "quantity": {
+                        "type": "string",
+                        "localizableType": {
+                            "category": "_value"
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "plural-type": {
+            "type": "object",
+                "localizable": true,
+                "localizableType": "array",
+                "properties": {
+                    "_attributes": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "localizableType": {
+                                    "key": "_value"
+                                }
+                            },
+                            "i18n": {
+                                "type": "string",
+                                "localizableType": {
+                                    "comment": "_value"
+                                }
+                            },
+                            "locale": {
+                                "type": "string",
+                                "localizableType": {
+                                    "locale": "_value"
+                                }
+                            }
+                        }
+                    },
+                    "item": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/$defs/plural-item-type"
+                                }
+                            },
+                            {
+                                "$ref": "#/$defs/plural-item-type"
+                            }
+                        ]
+                    }
+                }
+        },
+        "string-type": {
+            "type": "object",
+            "localizable": true,
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        },
+                        "i18n": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        },
+                        "locale": {
+                            "type": "string",
+                            "localizableType": {
+                                "locale": "_value"
+                            }
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "array-item-type": {
+            "type": "object",
+            "properties": {
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
         "array-type": {
             "type": "object",
             "localizableType": "array",
@@ -170,35 +250,50 @@ var defaultSchema = {
                         "name": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "key"
+                                "key": "_value"
                             }
                         },
                         "i18n": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "comment"
+                                "comment": "_value"
                             }
                         },
                         "locale": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "locale"
+                                "locale": "_value"
                             }
                         }
                     }
                 },
-                "item": {
-                    "type": "object",
-                    "properties": {
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "_value": "source"
+                "items": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-item-type"
                             }
+                        },
+                        {
+                            "$ref": "#/$defs/array-item-type"
                         }
-                    }
+                    ]
                 }
             }
+        },
+        "array-array-type": {
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/array-type"
+                    }
+                },
+                {
+                    "$ref": "#/$defs/array-type"
+                }
+            ]
         },
         "templates": {
             "plurals": {
@@ -216,94 +311,36 @@ var defaultSchema = {
             "type": "object",
             "properties": {
                 "string": {
-                    "type": "object",
-                    "localizable": true,
-                    "properties": {
-                        "_attributes": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "key"
-                                    }
-                                },
-                                "i18n": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "comment"
-                                    }
-                                },
-                                "locale": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "locale"
-                                    }
-                                }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/string-type"
                             }
                         },
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "_value": "source"
-                            }
+                        {
+                            "$ref": "#/$defs/string-type"
                         }
-                    }
+                    ]
                 },
                 "plurals": {
-                    "type": "object",
-                    "localizable": true,
-                    "localizableType": "array",
-                    "properties": {
-                        "_attributes": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "key"
-                                    }
-                                },
-                                "i18n": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "comment"
-                                    }
-                                },
-                                "locale": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "locale"
-                                    }
-                                }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/plural-type"
                             }
                         },
-                        "item": {
-                            "type": "object",
-                            "properties": {
-                                "_attributes": {
-                                    "quantity": {
-                                        "type": "string",
-                                        "localizableType": {
-                                            "_value": "category"
-                                        }
-                                    }
-                                },
-                                "_text": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "source"
-                                    }
-                                }
-                            }
+                        {
+                            "$ref": "#/$defs/plural-type"
                         }
-                    }
+                    ]
                 },
                 "array": {
-                    "$ref": "#/$defs/array-type"
+                    "$ref": "#/$defs/array-array-type"
                 },
                 "string-array": {
-                    "$ref": "#/$defs/array-type"
+                    "$ref": "#/$defs/array-array-type"
                 }
             }
         }
@@ -342,12 +379,6 @@ XmlFileType.prototype.loadSchemas = function(pathName) {
                 this.loadSchemaDirOrFile(full);
             }.bind(this));
         }
-    } else {
-        // default schema for all XML files with key/value pairs
-        this.schemas = {
-            "default": defaultSchema
-        };
-        this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
     }
 
     // now find all the refs
@@ -355,6 +386,14 @@ XmlFileType.prototype.loadSchemas = function(pathName) {
         var schema = this.schemas[file];
         this.findRefs(schema, schema, "#");
     }
+
+    // default schema for all XML files
+    this.schemas["default"] = defaultSchema;
+    this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
+    if (typeof(defaultSchema["$$refs"]) === 'undefined') {
+        this.findRefs(defaultSchema, defaultSchema, "#");
+    }
+
     // connect the mappings to the schemas
 };
 

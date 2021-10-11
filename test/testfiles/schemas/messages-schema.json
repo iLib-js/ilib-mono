@@ -12,7 +12,7 @@
                     "type": "string",
                     "description": "Handle the zero string.",
                     "localizableType": {
-                        "_text": "source",
+                        "source": "_value",
                         "category": "zero"
                     }
                 },
@@ -20,7 +20,7 @@
                     "type": "string",
                     "description": "Handle the singular string.",
                     "localizableType": {
-                        "_text": "source",
+                        "source": "_value",
                         "category": "one"
                     }
                 },
@@ -28,7 +28,7 @@
                     "type": "string",
                     "description": "Handle the dual string.",
                     "localizableType": {
-                        "_text": "source",
+                        "source": "_value",
                         "category": "two"
                     }
                 },
@@ -36,7 +36,7 @@
                     "type": "string",
                     "description": "Handle the few plural string.",
                     "localizableType": {
-                        "_text": "source",
+                        "source": "_value",
                         "category": "few"
                     }
                 },
@@ -44,7 +44,7 @@
                     "type": "string",
                     "description": "Handle the many plural string.",
                     "localizableType": {
-                        "_text": "source",
+                        "source": "_value",
                         "category": "many"
                     }
                 },
@@ -52,272 +52,256 @@
                     "type": "string",
                     "description": "Handle any string not covered by the other plurals.",
                     "localizableType": {
-                        "_text": "source",
+                        "source": "_value",
                         "category": "other"
+                    }
+                }
+            }
+        },
+        "array-item-type": {
+            "type": "object",
+            "properties": {
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
                     }
                 }
             }
         }
     },
     "properties": {
-        "plurals": {
+        "messages": {
             "type": "object",
-            "title": "The plurals schema",
-            "description": "Handle plurals.",
             "properties": {
-                "attribute": {
+                "plurals": {
                     "type": "object",
-                    "localizable": true,
-                    "localizableType": "plural",
+                    "title": "The plurals schema",
+                    "description": "Handle plurals.",
                     "properties": {
-                        "_attributes": {
-                            "$ref": "#/$defs/categories"
-                        }
-                    }
-                },
-                "hybrid": {
-                    "type": "object",
-                    "localizable": true,
-                    "localizableType": "plural",
-                    "properties": {
-                        "_attributes": {
-                            "$ref": "#/$defs/categories"
-                        },
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "_text": "source",
-                                "category": "other"
-                            }
-                        }
-                    }
-                }
-            },
-            "additionalProperties": {
-                "type": "object",
-                "localizable": true,
-                "properties": {
-                    "_text": {
-                        "type": "string",
-                        "description": "Degenerate plural.",
-                        "localizableType": {
-                            "_text": "source",
-                            "_element": "key",
-                            "category": "other"
-                        }
-                    },
-                    "zero": {
-                        "type": "object",
-                        "description": "Handle the zero string.",
-                        "required": [ "_text" ],
-                        "properties": {
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source",
-                                    "category": "zero"
-                                }
-                            }
-                        }
-                    },
-                    "one": {
-                        "type": "object",
-                        "description": "Handle the singular string.",
-                        "required": [ "_text" ],
-                        "properties": {
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source",
-                                    "category": "one"
-                                }
-                            }
-                        }
-                    },
-                    "two": {
-                        "type": "object",
-                        "description": "Handle the dual string.",
-                        "required": [ "_text" ],
-                        "properties": {
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source",
-                                    "category": "two"
-                                }
-                            }
-                        }
-                    },
-                    "few": {
-                        "type": "object",
-                        "description": "Handle the few plural string.",
-                        "required": [ "_text" ],
-                        "properties": {
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source",
-                                    "category": "few"
-                                }
-                            }
-                        }
-                    },
-                    "many": {
-                        "type": "object",
-                        "description": "Handle the many plural string.",
-                        "required": [ "_text" ],
-                        "properties": {
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source",
-                                    "category": "many"
-                                }
-                            }
-                        }
-                    },
-                    "other": {
-                        "type": "object",
-                        "description": "Handle any string not covered by the other plurals.",
-                        "required": [ "_text" ],
-                        "properties": {
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source",
-                                    "category": "other"
-                                }
-                            }
-                        }
-                    },
-                    "_attributes": {
-                        "type": "object",
-                        "properties": {
-                            "comment": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "comment",
-                                    "category": "other"
-                                }
-                            }
-                        }
-                    }
-                },
-                "additionalProperties": false
-            }
-        },
-        "arrays": {
-            "$id": "#/properties/arrays",
-            "type": "object",
-            "title": "The arrays schema",
-            "description": "An explanation about the purpose of this instance.",
-            "properties": {
-                "asdf": {
-                    "type": "object",
-                    "localizable": true,
-                    "localizableType": {
-                        "type": "array",
-                        "_element": "key"
-                    },
-                    "properties": {
-                        "item": {
+                        "attribute": {
                             "type": "object",
+                            "localizable": true,
+                            "localizableType": {
+                                "type": "plural",
+                                "key": "_element"
+                            },
                             "properties": {
+                                "_attributes": {
+                                    "$ref": "#/$defs/categories"
+                                }
+                            }
+                        },
+                        "hybrid": {
+                            "type": "object",
+                            "localizable": true,
+                            "localizableType": {
+                                "type": "plural",
+                                "key": "_element"
+                            },
+                            "properties": {
+                                "_attributes": {
+                                    "$ref": "#/$defs/categories"
+                                },
                                 "_text": {
                                     "type": "string",
                                     "localizableType": {
-                                        "_text": "source"
+                                        "source": "_value",
+                                        "category": "other"
                                     }
                                 }
-                            }
-                        },
-                        "_attributes": {
-                            "type": "object",
-                            "properties": {
-                                "i18n": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_text": "comment"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "strings": {
-            "$id": "#/properties/strings",
-            "type": "object",
-            "title": "The strings schema",
-            "description": "An explanation about the purpose of this instance.",
-            "properties": {
-                "e": {
-                    "type": "object",
-                    "localizable": true,
-                    "localizableType": "string",
-                    "properties": {
-                        "_attributes": {
-                            "key": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "key"
-                                }
-                            },
-                            "value": {
-                                "type": "string",
-                                "localizableType": {
-                                    "_text": "source"
-                                }
-                            }
-                        },
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "_text": "source"
-                            }
-                        }
-                    }
-                }
-            },
-            "additionalProperties": {
-                "type": "object",
-                "localizable": true,
-                "localizableType": {
-                    "type": "string",
-                    "_element": "key",
-                    "_text": "source"
-                },
-                "properties": {
-                    "_attributes": {
-                        "key": {
-                            "type": "string",
-                            "localizableType": {
-                                "_text": "key"
-                            }
-                        },
-                        "value": {
-                            "type": "string",
-                            "localizableType": {
-                                "_text": "source"
-                            }
-                        },
-                        "comment": {
-                            "type": "string",
-                            "localizableType": {
-                                "_text": "comment"
                             }
                         }
                     },
-                    "_text": {
-                        "anyOf": [
-                            {"type": "string"},
-                            {"type": "number"},
-                            {"type": "boolean"},
-                            {"type": "integer"}
-                        ],
+                    "additionalProperties": {
+                        "type": "object",
+                        "localizable": true,
                         "localizableType": {
-                            "_text": "source"
+                            "type": "plural",
+                            "key": "_element"
+                        },
+                        "properties": {
+                            "_text": {
+                                "type": "string",
+                                "description": "Degenerate plural.",
+                                "localizableType": {
+                                    "source": "_value",
+                                    "category": "other"
+                                }
+                            },
+                            "zero": {
+                                "type": "object",
+                                "description": "Handle the zero string.",
+                                "required": [ "_text" ],
+                                "properties": {
+                                    "_text": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "source": "_value",
+                                            "category": "zero"
+                                        }
+                                    }
+                                }
+                            },
+                            "one": {
+                                "type": "object",
+                                "description": "Handle the singular string.",
+                                "required": [ "_text" ],
+                                "properties": {
+                                    "_text": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "source": "_value",
+                                            "category": "one"
+                                        }
+                                    }
+                                }
+                            },
+                            "two": {
+                                "type": "object",
+                                "description": "Handle the dual string.",
+                                "required": [ "_text" ],
+                                "properties": {
+                                    "_text": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "source": "_value",
+                                            "category": "two"
+                                        }
+                                    }
+                                }
+                            },
+                            "few": {
+                                "type": "object",
+                                "description": "Handle the few plural string.",
+                                "required": [ "_text" ],
+                                "properties": {
+                                    "_text": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "source": "_value",
+                                            "category": "few"
+                                        }
+                                    }
+                                }
+                            },
+                            "many": {
+                                "type": "object",
+                                "description": "Handle the many plural string.",
+                                "required": [ "_text" ],
+                                "properties": {
+                                    "_text": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "source": "_value",
+                                            "category": "many"
+                                        }
+                                    }
+                                }
+                            },
+                            "other": {
+                                "type": "object",
+                                "description": "Handle any string not covered by the other plurals.",
+                                "required": [ "_text" ],
+                                "properties": {
+                                    "_text": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "source": "_value",
+                                            "category": "other"
+                                        }
+                                    }
+                                }
+                            },
+                            "_attributes": {
+                                "type": "object",
+                                "properties": {
+                                    "comment": {
+                                        "type": "string",
+                                        "localizableType": {
+                                            "comment": "_value",
+                                            "category": "other"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "arrays": {
+                    "$id": "#/properties/arrays",
+                    "type": "object",
+                    "title": "The arrays schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "properties": {
+                        "asdf": {
+                            "type": "object",
+                            "localizable": true,
+                            "localizableType": {
+                                "type": "array",
+                                "key": "_element"
+                            },
+                            "properties": {
+                                "item": {
+                                    "anyOf": [
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/$defs/array-item-type"
+                                            }
+                                        },
+                                        {
+                                            "$ref": "#/$defs/array-item-type"
+                                        }
+                                    ]
+                                },
+                                "_attributes": {
+                                    "type": "object",
+                                    "properties": {
+                                        "i18n": {
+                                            "type": "string",
+                                            "localizableType": {
+                                                "comment": "_value"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "strings": {
+                    "$id": "#/properties/strings",
+                    "type": "object",
+                    "title": "The strings schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "additionalProperties": {
+                        "type": "object",
+                        "localizable": true,
+                        "localizableType": "string",
+                        "properties": {
+                            "_attributes": {
+                                "value": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "source": "_value"
+                                    }
+                                },
+                                "comment": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "comment": "_value"
+                                    }
+                                }
+                            },
+                            "_text": {
+                                "type": "string",
+                                "localizableType": {
+                                    "source": "_value",
+                                    "key": "_element"
+                                }
+                            }
                         }
                     }
                 }

@@ -18,19 +18,19 @@
                                 "key": {
                                     "type": "string",
                                     "localizableType": {
-                                        "_text": "key"
+                                        "key": "_value"
                                     }
                                 },
                                 "i18n": {
                                     "type": "string",
                                     "localizableType": {
-                                        "_text": "comment"
+                                        "comment": "_value"
                                     }
                                 },
                                 "locale": {
                                     "type": "string",
                                     "localizableType": {
-                                        "_text": "locale"
+                                        "locale": "_value"
                                     }
                                 }
                             }
@@ -38,7 +38,7 @@
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "_text": "source"
+                                "source": "_value"
                             }
                         }
                     }

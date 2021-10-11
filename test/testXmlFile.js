@@ -445,20 +445,26 @@ module.exports.xmlfile = {
         test.ok(xf);
 
         xf.parse(
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singular</item>\n' +
-             '        <item quantity="many">many</item>\n' +
-             '        <item quantity="other">plural</item>\n' +
-             '    </plurals>\n' +
-             '    <string name="a">b</string>\n' +
-             '    <string name="c">d</string>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>string 1</item>\n' +
-             '        <item>string 2</item>\n' +
-             '        <item>string 3</item>\n' +
-             '    </string-array>\n' +
-             '</resources>\n'
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a>b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
         );
 
         var set = xf.getTranslationSet();
@@ -480,20 +486,26 @@ module.exports.xmlfile = {
         test.ok(xf);
 
         xf.parse(
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singular</item>\n' +
-             '        <item quantity="many">many</item>\n' +
-             '        <item quantity="other">plural</item>\n' +
-             '    </plurals>\n' +
-             '    <string name="a">b</string>\n' +
-             '    <string name="c">d</string>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>string 1</item>\n' +
-             '        <item>string 2</item>\n' +
-             '        <item>string 3</item>\n' +
-             '    </string-array>\n' +
-             '</resources>\n'
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a>b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
         );
 
         var set = xf.getTranslationSet();
@@ -527,9 +539,9 @@ module.exports.xmlfile = {
         var arrayStrings = resources[3].getSourceArray();
         test.ok(arrayStrings);
         test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "string 1");
-        test.equal(arrayStrings[1], "string 2");
-        test.equal(arrayStrings[2], "string 3");
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
 
         test.done();
     },
@@ -547,11 +559,11 @@ module.exports.xmlfile = {
 
         xf.parse(
             '<resources>\n' +
-             '    <string-array name="strings">\n' +
+             '    <strings name="strings">\n' +
              '        <item>string 1</item>\n' +
              '        <item>string 2</item>\n' +
              '        <item>string 3</item>\n' +
-             '    </string-array>\n' +
+             '    </strings>\n' +
              '</resources>\n'
         );
 
@@ -586,12 +598,12 @@ module.exports.xmlfile = {
 
         xf.parse(
              '<resources>\n' +
-            '    <string-array name="numbers">\n' +
+            '    <numbers name="numbers">\n' +
             '        <item>15</item>\n' +
             '        <item>-3</item>\n' +
             '        <item>1.18</item>\n' +
             '        <item>0</item>\n' +
-            '    </string-array>\n' +
+            '    </numbers>\n' +
             '</resources>\n'
         );
 
@@ -627,10 +639,10 @@ module.exports.xmlfile = {
 
         xf.parse(
             '<resources>\n' +
-            '    <string-array name="booleans">\n' +
+            '    <booleans name="booleans">\n' +
             '        <item>true</item>\n' +
             '        <item>false</item>\n' +
-            '    </string-array>\n' +
+            '    </booleans>\n' +
             '</resources>\n'
         );
 
@@ -655,7 +667,6 @@ module.exports.xmlfile = {
     testXmlFileParseDeepRightSize: function(test) {
         test.expect(3);
 
-        // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/deep.xml",
@@ -697,7 +708,6 @@ module.exports.xmlfile = {
     testXmlFileParseDeepRightStrings: function(test) {
         test.expect(19);
 
-        // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/deep.xml",
@@ -761,7 +771,6 @@ module.exports.xmlfile = {
     testXmlFileParseTestInvalidXml: function(test) {
         test.expect(2);
 
-        // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/deep.xml",
@@ -799,7 +808,6 @@ module.exports.xmlfile = {
     testXmlFileParseRefsRightSize: function(test) {
         test.expect(3);
 
-        // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/refs.xml",
@@ -843,7 +851,6 @@ module.exports.xmlfile = {
     testXmlFileParseRefsRightStrings: function(test) {
         test.expect(13);
 
-        // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/refs.xml",
@@ -1113,26 +1120,26 @@ module.exports.xmlfile = {
         test.ok(xf);
 
         xf.parse(
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singular</item>\n' +
-             '        <item quantity="many">many</item>\n' +
-             '        <item quantity="other">plural</item>\n' +
-             '    </plurals>\n' +
-             '    <strings>\n' +
-             '        <string name="a">b</string>\n' +
-             '        <string name="c">d</string>\n' +
-             '    </strings>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>string 1</item>\n' +
-             '        <item>string 2</item>\n' +
-             '        <item>string 3</item>\n' +
-             '    </string-array>\n' +
-             '    <others>\n' +
-             '        <string name="first">abc</string>\n' +
-             '        <string name="second">bcd</string>\n' +
-             '    </others>\n' +
-             '</resources>\n'
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a>b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>string 1</item>\n' +
+            '            <item>string 2</item>\n' +
+            '            <item>string 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
         );
 
         var translations = new TranslationSet();
@@ -1191,26 +1198,26 @@ module.exports.xmlfile = {
 
         var actual = xf.localizeText(translations, "fr-FR");
         var expected =
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singulaire</item>\n' +
-             '        <item quantity="many">plupart</item>\n' +
-             '        <item quantity="other">autres</item>\n' +
-             '    </plurals>\n' +
-             '    <strings>\n' +
-             '        <string name="a">la b</string>\n' +
-             '        <string name="c">la d</string>\n' +
-             '    </strings>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>chaîne 1</item>\n' +
-             '        <item>chaîne 2</item>\n' +
-             '        <item>chaîne 3</item>\n' +
-             '    </string-array>\n' +
-             '    <others>\n' +
-             '        <string name="first">abc</string>\n' +
-             '        <string name="second">bcd</string>\n' +
-             '    </others>\n' +
-             '</resources>\n';
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singulaire</one>\n' +
+            '            <many>plupart</many>\n' +
+            '            <other>autres</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a>la b</a>\n' +
+            '        <c>la d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>chaîne 1</item>\n' +
+            '            <item>chaîne 2</item>\n' +
+            '            <item>chaîne 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -1457,52 +1464,52 @@ module.exports.xmlfile = {
         test.ok(xf);
 
         xf.parse(
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singular</item>\n' +
-             '        <item quantity="many">many</item>\n' +
-             '        <item quantity="other">plural</item>\n' +
-             '    </plurals>\n' +
-             '    <strings>\n' +
-             '        <string name="a">b</string>\n' +
-             '        <string name="c">d</string>\n' +
-             '    </strings>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>string 1</item>\n' +
-             '        <item>string 2</item>\n' +
-             '        <item>string 3</item>\n' +
-             '    </string-array>\n' +
-             '    <others>\n' +
-             '        <string name="first">abc</string>\n' +
-             '        <string name="second">bcd</string>\n' +
-             '    </others>\n' +
-             '</resources>\n'
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a>b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>String 1</item>\n' +
+            '            <item>String 2</item>\n' +
+            '            <item>String 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
         );
 
         var translations = new TranslationSet();
 
         var actual = xf.localizeText(translations, "fr-FR");
         var expected =
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">šíñğüľàŕ3210</item>\n' +
-             '        <item quantity="many">màñÿ10</item>\n' +
-             '        <item quantity="other">þľüŕàľ210</item>\n' +
-             '    </plurals>\n' +
-             '    <strings>\n' +
-             '        <string name="a">b0</string>\n' +
-             '        <string name="c">ð0</string>\n' +
-             '    </strings>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>šţŕíñğ 13210</item>\n' +
-             '        <item>šţŕíñğ 23210</item>\n' +
-             '        <item>šţŕíñğ 33210</item>\n' +
-             '    </string-array>\n' +
-             '    <others>\n' +
-             '        <string name="first">abc</string>\n' +
-             '        <string name="second">bcd</string>\n' +
-             '    </others>\n' +
-             '</resources>\n';
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>šíñğüľàŕ3210</one>\n' +
+            '            <many>màñÿ10</many>\n' +
+            '            <other>þľüŕàľ210</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a>b0</a>\n' +
+            '        <c>ð0</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>šţŕíñğ 13210</item>\n' +
+            '            <item>šţŕíñğ 23210</item>\n' +
+            '            <item>šţŕíñğ 33210</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n';
 
         diff(actual, expected);
         test.equal(actual, expected);
@@ -1777,27 +1784,38 @@ module.exports.xmlfile = {
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"), "utf-8");
 
         var expected =
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singulaire</item>\n' +
-             '        <item quantity="many">plupart</item>\n' +
-             '        <item quantity="other">autres</item>\n' +
-             '    </plurals>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>chaîne 1</item>\n' +
-             '        <item>chaîne 2</item>\n' +
-             '        <item>chaîne 3</item>\n' +
-             '    </string-array>\n' +
-             '    <string-array name="asdfasdf">\n' +
-             '        <item>1</item>\n' +
-             '        <item>2</item>\n' +
-             '        <item>3</item>\n' +
-             '    </string-array>\n' +
-             '    <strings>\n' +
-             '        <string name="a">la b</string>\n' +
-             '        <string name="c">la d</string>\n' +
-             '    </strings>\n' +
-             '</resources>\n';
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<messages>\n' +
+            '    <plurals>\n' +
+            '        <foo>asdf</foo>\n' +
+            '        <bar comment="translator comment">\n' +
+            '            <one>singulaire</one>\n' +
+            '            <many>plupart</many>\n' +
+            '            <other>autres</other>\n' +
+            '        </bar>\n' +
+            '        <attribute one="one" few="few" many="many" other="other"/>\n' +
+            '        <hybrid one="one" few="few" many="many">other</hybrid>\n' +
+            '    </plurals>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>chaîne 1</item>\n' +
+            '            <item>chaîne 2</item>\n' +
+            '            <item>chaîne 3</item>\n' +
+            '        </asdf>\n' +
+            '        <asdfasdf key="key">\n' +
+            '            <item>1</item>\n' +
+            '            <item>2</item>\n' +
+            '            <item>3</item>\n' +
+            '        </asdfasdf>\n' +
+            '    </arrays>\n' +
+            '    <strings>\n' +
+            '        <a>la b</a>\n' +
+            '        <c>la d</c>\n' +
+            '        <e key="key1">f</e>\n' +
+            '        <e key="key2" value="g"/>\n' +
+            '    </strings>\n' +
+            '</messages>\n';
+
 
         diff(content, expected);
         test.equal(content, expected);
@@ -1805,27 +1823,37 @@ module.exports.xmlfile = {
         content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.xml"), "utf-8");
 
         var expected =
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">einslige</item>\n' +
-             '        <item quantity="many">mehrere</item>\n' +
-             '        <item quantity="other">andere</item>\n' +
-             '    </plurals>\n' +
-             '    <string-array name="asdf">\n' +
-             '        <item>Zeichenfolge 1</item>\n' +
-             '        <item>Zeichenfolge 2</item>\n' +
-             '        <item>Zeichenfolge 3</item>\n' +
-             '    </string-array>\n' +
-             '    <string-array name="asdfasdf">\n' +
-             '        <item>1</item>\n' +
-             '        <item>2</item>\n' +
-             '        <item>3</item>\n' +
-             '    </string-array>\n' +
-             '    <strings>\n' +
-             '        <string name="a">Die b</string>\n' +
-             '        <string name="c">Der d</string>\n' +
-             '    </strings>\n' +
-             '</resources>\n';
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<messages>\n' +
+            '    <plurals>\n' +
+            '        <foo>asdf</foo>\n' +
+            '        <bar comment="translator comment">\n' +
+            '            <one>einslige</one>\n' +
+            '            <many>mehrere</many>\n' +
+            '            <other>andere</other>\n' +
+            '        </bar>\n' +
+            '        <attribute one="one" few="few" many="many" other="other"/>\n' +
+            '        <hybrid one="one" few="few" many="many">other</hybrid>\n' +
+            '    </plurals>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>Zeichenfolge 1</item>\n' +
+            '            <item>Zeichenfolge 2</item>\n' +
+            '            <item>Zeichenfolge 3</item>\n' +
+            '        </asdf>\n' +
+            '        <asdfasdf key="key">\n' +
+            '            <item>1</item>\n' +
+            '            <item>2</item>\n' +
+            '            <item>3</item>\n' +
+            '        </asdfasdf>\n' +
+            '    </arrays>\n' +
+            '    <strings>\n' +
+            '        <a>Die b</a>\n' +
+            '        <c>Der d</c>\n' +
+            '        <e key="key1">f</e>\n' +
+            '        <e key="key2" value="g"/>\n' +
+            '    </strings>\n' +
+            '</messages>\n';
 
         diff(content, expected);
         test.equal(content, expected);
