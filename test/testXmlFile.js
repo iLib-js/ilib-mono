@@ -747,7 +747,7 @@ module.exports.xmlfile = {
         test.equal(resources.length, 3);
 
         test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "x/y/plurals/bar");
+        test.equal(resources[0].getKey(), "bar");
         var pluralStrings = resources[0].getSourcePlurals();
         test.ok(pluralStrings);
         test.equal(pluralStrings.one, "singular");
@@ -759,11 +759,11 @@ module.exports.xmlfile = {
 
         test.equal(resources[1].getType(), "string");
         test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a/b/strings/a");
+        test.equal(resources[1].getKey(), "a");
 
         test.equal(resources[2].getType(), "string");
         test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "a/b/strings/c");
+        test.equal(resources[2].getKey(), "c");
 
         test.done();
     },
@@ -779,27 +779,29 @@ module.exports.xmlfile = {
         test.ok(xf);
 
         test.throws(function(test) {
-             '<root>\n' +
-             '    <x>\n' +
-             '        <y><z>\n' +
-             '            <plurals>\n' +
-             '                <bar>\n' +
-             '                    <one>singular</one>\n' +
-             '                    <many>many</many>\n' +
-             '                    <other>plural</other>\n' +
-             '                </bar>\n' +
-             '            </plurals>\n' +
-             '        </y>\n' +
-             '    </x>\n' +
-             '    <a>\n' +
-             '        <b>\n' +
-             '            <strings>\n' +
-             '                <a>b</a>\n' +
-             '                <c>d</c>\n' +
-             '            </strings>\n' +
-             '        </b>\n' +
-             '    </a>\n' +
-             '</root>\n'
+            xf.parse(
+                '<root>\n' +
+                '    <x>\n' +
+                '        <y><z>\n' +
+                '            <plurals>\n' +
+                '                <bar>\n' +
+                '                    <one>singular</one>\n' +
+                '                    <many>many</many>\n' +
+                '                    <other>plural</other>\n' +
+                '                </bar>\n' +
+                '            </plurals>\n' +
+                '        </y>\n' +
+                '    </x>\n' +
+                '    <a>\n' +
+                '        <b>\n' +
+                '            <strings>\n' +
+                '                <a>b</a>\n' +
+                '                <c>d</c>\n' +
+                '            </strings>\n' +
+                '        </b>\n' +
+                '    </a>\n' +
+                '</root>\n'
+            );
          });
 
         test.done();

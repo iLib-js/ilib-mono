@@ -52,19 +52,34 @@
         }
     },
     "properties": {
-        "owner": {
-            "title": "Owner of the asset",
+        "root": {
             "type": "object",
             "properties": {
-                "name": {
-                    "title": "Name of the owner",
-                    "type": "string"
-                },
-                "phone": {
-                    "$ref": "#/$defs/phonenumber"
-                },
-                "address": {
-                    "$ref": "#address"
+                "owner": {
+                    "title": "Owner of the asset",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "title": "Name of the owner",
+                            "type": "object",
+                            "localizable": true,
+                            "localizableType": "string",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "source": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "phone": {
+                            "$ref": "#/$defs/phonenumber"
+                        },
+                        "address": {
+                            "$ref": "#address"
+                        }
+                    }
                 }
             }
         }
