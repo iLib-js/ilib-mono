@@ -6,17 +6,26 @@
     "description": "An example of a deeply nested schema.",
     "$defs": {
         "phonenumber": {
-            "title": "Phone Number",
             "type": "object",
             "properties": {
                 "number": {
-                    "title": "Number",
-                    "type": "string"
+                    "type": "object"
                 },
                 "type": {
-                    "title": "Type",
-                    "type": "string",
-                    "localizable": true
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": {
+                        "type": "string",
+                        "key": "_path"
+                    },
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -30,23 +39,46 @@
                     "type": "string"
                 },
                 "region": {
-                    "title": "Street Address",
-                    "type": "string",
-                    "localizable": true
+                    "title": "Region/State/Province",
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": {
+                        "type": "string",
+                        "key": "_path"
+                    },
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
                 },
                 "city": {
                     "title": "Street Address",
-                    "type": "string",
-                    "localizable": true
+                    "type": "object"
                 },
                 "postalCode": {
                     "title": "Street Address",
-                    "type": "string"
+                    "type": "object"
                 },
                 "country": {
                     "title": "Street Address",
-                    "type": "string",
-                    "localizable": true
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": {
+                        "type": "string",
+                        "key": "_path"
+                    },
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -61,39 +93,32 @@
                     "properties": {
                         "name": {
                             "title": "Name of the owner",
-                            "type": "object",
-                            "localizable": true,
-                            "localizableType": "string",
-                            "properties": {
-                                "_text": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "source": "_value"
-                                    }
-                                }
-                            }
+                            "type": "object"
                         },
                         "phone": {
                             "$ref": "#/$defs/phonenumber"
                         },
                         "address": {
-                            "$ref": "#address"
+                            "$ref": "#/$defs/address"
                         }
                     }
                 }
-            }
-        }
-    },
-    "additionalProperties": {
-        "title": "customers of the asset",
-        "type": "object",
-        "properties": {
-            "name": {
-                "title": "Name of the customer",
-                "type": "string"
             },
-            "phone": {
-                "$ref": "#/$defs/phonenumber"
+            "additionalProperties": {
+                "title": "customers of the asset",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "title": "Name of the customer",
+                        "type": "object"
+                    },
+                    "phone": {
+                        "$ref": "#/$defs/phonenumber"
+                    },
+                    "address": {
+                        "$ref": "#/$defs/address"
+                    }
+                }
             }
         }
     }

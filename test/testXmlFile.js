@@ -895,15 +895,15 @@ module.exports.xmlfile = {
 
         test.equal(resources[0].getType(), "string");
         test.equal(resources[0].getSource(), "Mobile");
-        test.equal(resources[0].getKey(), "owner/phone/type");
+        test.equal(resources[0].getKey(), "root/owner/phone/type");
 
         test.equal(resources[1].getType(), "string");
         test.equal(resources[1].getSource(), "Home");
-        test.equal(resources[1].getKey(), "customer1/phone/type");
+        test.equal(resources[1].getKey(), "root/customer1/phone/type");
 
         test.equal(resources[2].getType(), "string");
         test.equal(resources[2].getSource(), "Work");
-        test.equal(resources[2].getKey(), "customer2/phone/type");
+        test.equal(resources[2].getKey(), "root/customer2/phone/type");
 
         test.done();
     },
@@ -938,7 +938,7 @@ module.exports.xmlfile = {
     },
 
     testXmlFileParseExtractComments: function(test) {
-        test.expect(8);
+        test.expect(10);
 
         var xf = new XmlFile({
             project: p,
@@ -962,17 +962,18 @@ module.exports.xmlfile = {
 
         test.equal(resources[0].getSource(), "this is string one");
         test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getNote(), "comment for string 1");
+        test.equal(resources[0].getComment(), "comment for string 1");
 
         test.equal(resources[1].getSource(), "this is string two");
         test.equal(resources[1].getKey(), "string 2");
+        test.equal(resources[1].getComment(), "comment for string 2");
 
         test.done();
     },
 
 
     testXmlFileExtractFile: function(test) {
-        test.expect(28);
+        test.expect(40);
 
         var base = path.dirname(module.id);
 
@@ -988,43 +989,59 @@ module.exports.xmlfile = {
 
         var set = xf.getTranslationSet();
 
-        test.equal(set.size(), 5);
+        test.equal(set.size(), 7);
 
         var resources = set.getAll();
-        test.equal(resources.length, 5);
+        test.equal(resources.length, 7);
 
         test.equal(resources[0].getType(), "plural");
         var categories = resources[0].getSourcePlurals();
         test.ok(categories);
-        test.equal(categories.one, "one");
-        test.equal(categories.other, "other");
-        test.equal(resources[0].getKey(), "plurals/bar");
+        test.equal(categories.other, "asdf");
+        test.ok(!categories.many);
+        test.ok(!categories.one);
+        test.equal(resources[0].getKey(), "foo");
 
-        test.equal(resources[1].getType(), "array");
-        var arr = resources[1].getSourceArray();
+        test.equal(resources[1].getType(), "plural");
+        categories = resources[1].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one");
+        test.equal(categories.many, "many");
+        test.equal(categories.other, "other");
+        test.equal(resources[1].getKey(), "bar");
+
+        test.equal(resources[2].getType(), "plural");
+        categories = resources[2].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one");
+        test.equal(categories.many, "many");
+        test.equal(categories.other, "other");
+        test.equal(resources[2].getKey(), "attribute");
+
+        test.equal(resources[3].getType(), "plural");
+        categories = resources[3].getSourcePlurals();
+        test.ok(categories);
+        test.equal(categories.one, "one");
+        test.equal(categories.many, "many");
+        test.equal(categories.other, "other");
+        test.equal(resources[3].getKey(), "hybrid");
+
+        test.equal(resources[4].getType(), "array");
+        var arr = resources[4].getSourceArray();
         test.ok(arr);
         test.equal(arr.length, 3);
         test.equal(arr[0], "value 1");
         test.equal(arr[1], "value 2");
         test.equal(arr[2], "value 3");
-        test.equal(resources[1].getKey(), "arrays/asdf");
+        test.equal(resources[4].getKey(), "asdf");
 
-        test.equal(resources[2].getType(), "array");
-        var arr = resources[2].getSourceArray();
-        test.ok(arr);
-        test.equal(arr.length, 3);
-        test.equal(arr[0], "1");
-        test.equal(arr[1], "2");
-        test.equal(arr[2], "3");
-        test.equal(resources[2].getKey(), "arrays/asdfasdf");
+        test.equal(resources[5].getType(), "string");
+        test.equal(resources[5].getSource(), "b");
+        test.equal(resources[5].getKey(), "a");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "b");
-        test.equal(resources[3].getKey(), "strings/a");
-
-        test.equal(resources[4].getType(), "string");
-        test.equal(resources[4].getSource(), "d");
-        test.equal(resources[4].getKey(), "strings/c");
+        test.equal(resources[6].getType(), "string");
+        test.equal(resources[6].getSource(), "d");
+        test.equal(resources[6].getKey(), "c");
 
         test.done();
     },
