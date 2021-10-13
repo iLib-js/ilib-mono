@@ -231,6 +231,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.1
+
+- fixed a bug in the getOutputLocale function when you are missing a
+  locale in the localeMap that is mentioned in the list of locales
+
 ### v1.5.0
 
 - Added headerLocale setting to the mappings. This allows you to specify
