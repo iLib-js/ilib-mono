@@ -279,7 +279,10 @@ POFileType.prototype.getOutputLocale = function(mapping, locale) {
     // we can remove the replace() call after upgrading to
     // ilib 14.10.0 or later because it can parse locale specs
     // with underscores in them
-    return new Locale((mapping && mapping.localeMap && mapping.localeMap[locale].replace(/_/g, '-')) || this.project.getOutputLocale(locale));
+    return new Locale(
+        (mapping && mapping.localeMap && mapping.localeMap[locale] && 
+         mapping.localeMap[locale].replace(/_/g, '-')) || 
+        this.project.getOutputLocale(locale));
 };
 
 /**
