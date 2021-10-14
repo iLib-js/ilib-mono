@@ -66,7 +66,7 @@ var POFile = function(options) {
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.mapping = this.type.getMapping(this.pathName);
 
-    this.localeSpec = options.locale || (this.mapping && this.type.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
+    this.localeSpec = options.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
     this.locale = new Locale(this.localeSpec);
 
     if (this.mapping && this.mapping.ignoreComments) {
@@ -583,32 +583,6 @@ function isPrimitive(type) {
 }
 
 /**
- * Recursively visit every node in an object and call the visitor on any
- * primitive values.
- * @param {*} object any object, arrary, or primitive
- * @param {Function(*)} visitor function to call on any primitive
- * @returns {*} the same type as the original object, but with every
- * primitive processed by the visitor function
- */
-function objectMap(object, visitor) {
-    if (isPrimitive(typeof(object))) {
-        return visitor(object);
-    } else if (ilib.isArray(object)) {
-        return object.map(function(item) {
-            return objectMap(item, visitor);
-        });
-    } else {
-        var ret = {};
-        for (var prop in object) {
-            if (object.hasOwnProperty(prop)) {
-                ret[prop] = objectMap(object[prop], visitor);
-            }
-        }
-        return ret;
-    }
-}
-
-/**
  * Localize the text of the current file to the given locale and return
  * the results.
  *
@@ -765,7 +739,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                         } else {
                             source = translatedPlurals;
                         }
-                        translatedPlurals = objectMap(source, function(item) {
+                        translatedPlurals = this.API.utils.objectMap(source, function(item) {
                             return this.type.pseudos[locale].getString(item);
                         }.bind(this));
                     } else {
@@ -789,7 +763,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                     index: this.resourceIndex++
                                 }));
                                 if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                                    translatedPlurals = objectMap(sourcePlurals, function(item) {
+                                    translatedPlurals = this.API.utils.objectMap(sourcePlurals, function(item) {
                                         return this.type.missingPseudo.getString(item);
                                     }.bind(this));
                                 }
