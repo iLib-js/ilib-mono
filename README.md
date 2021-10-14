@@ -151,7 +151,11 @@ This plugin now supports mappings:
       "mappings": {
         "**/foobar.md": {
           "template": "[dir]/[basename]_[locale].[extension]",
-          "frontmatter": ["Title", "Description"]
+          "frontmatter": ["Title", "Description"],
+          "localeMap": {
+            "fr-FR": "fr",
+            "ja-JP": "ja"
+          }
         }
       }
     }
@@ -175,6 +179,10 @@ Any fields not listed in the frontmatter list will be preserved but not be local
 If frontmatter is set to "true" instead of an array,
 all fields will be localized. If frontmatter is set to "false", or if it is not
 given, then no fields will be localized.
+
+The localeMap setting specifies the mapping between locales that are used
+internally in the plugin, and the output locale that should be used for constructing
+the file name of output files.
 
 ## License
 
