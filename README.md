@@ -183,6 +183,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.10.0
+
+- added localeMaps to the mappings
+
 ### v1.9.1
 
 - fixed a bug where URLs in direct links were added to the new strings set
