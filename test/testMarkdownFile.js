@@ -89,6 +89,13 @@ var p3 = new CustomProject({
             "**/bar/simple3.md": {
                 template: "asdf/[locale]/bar/[filename]"
             },
+            "**/simple4.md": {
+                template: "[locale]/asdf/bar/[filename]",
+                localeMap: {
+                    "fr-FR": "fr",
+                    "zh-Hans-CN": "zh-CN"
+                }
+            },
             "asdf/pen-USing/en-US/bar/asdf.md": {
                 template: "[locale]/bar/[filename]"
             },
@@ -4411,6 +4418,22 @@ module.exports.markdown = {
 
         // should leave "pen-USing" alone and only get the "en-US" path component
         test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/bar/asdf.md");
+
+        test.done();
+    },
+
+    testMarkdownFileGetLocalizedPathWithLocaleMap: function(test) {
+        test.expect(3);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            pathName: "simple4.md",
+            type: mdft3
+        });
+        test.ok(mf);
+
+        test.equal(mf.getLocalizedPath("fr-FR"), "fr/asdf/bar/simple4.md");
+        test.equal(mf.getLocalizedPath("zh-Hans-CN"), "zh-CN/asdf/bar/simple4.md");
 
         test.done();
     },

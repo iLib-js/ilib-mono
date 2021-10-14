@@ -895,6 +895,24 @@ MarkdownFile.prototype.getTranslationSet = function() {
 MarkdownFile.prototype.write = function() {};
 
 /**
+ * Return the alternate output locale or the shared output locale for the given
+ * mapping. If there are no locale mappings, it returns the locale parameter.
+ *
+ * @param {Object} mapping the mapping for this source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {Locale} the output locale
+ */
+MarkdownFile.prototype.getOutputLocale = function(mapping, locale) {
+    // we can remove the replace() call after upgrading to
+    // ilib 14.10.0 or later because it can parse locale specs
+    // with underscores in them
+    return new Locale(
+        (mapping && mapping.localeMap && mapping.localeMap[locale] &&
+         mapping.localeMap[locale].replace(/_/g, '-')) ||
+        this.project.getOutputLocale(locale));
+};
+
+/**
  * Return the location on disk where the version of this file localized
  * for the given locale should be written.
  * @param {String] locale the locale spec for the target locale
@@ -902,9 +920,11 @@ MarkdownFile.prototype.write = function() {};
  */
 MarkdownFile.prototype.getLocalizedPath = function(locale) {
     var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
+    var l = this.getOutputLocale(mapping, locale);
+
     return path.normalize(this.API.utils.formatPath(mapping.template, {
         sourcepath: this.pathName,
-        locale: locale
+        locale: l
     }));
 };
 
