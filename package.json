@@ -71,7 +71,7 @@
         "unist-util-filter": "^2.0.0"
     },
     "devDependencies": {
-        "loctool": "^2.15.0",
+        "loctool": "^2.15.1",
         "nodeunit": "^0.11.3"
     }
 }
