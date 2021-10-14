@@ -129,7 +129,7 @@ POFileType.prototype.handles = function(pathName) {
         // source locale, then we don't need to extract those strings
         if (ret) {
             for (var i = 0; i < patterns.length; i++) {
-                var locale = this.getLocaleFromPath(mappings[patterns[i]].template, "./" + pathName);
+                var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, "./" + pathName);
                 if (locale && this.isValidLocale(locale) && locale !== this.project.sourceLocale) {
                     ret = false;
                     break;
@@ -201,73 +201,6 @@ var matchExprs = {
 };
 
 /**
- * Return a locale encoded in the path using template to parse that path.
- * @param {String} template template for the output file
- * @param {String} pathname path to the source file
- * @returns {String} the locale within the path
- */
-POFileType.prototype.getLocaleFromPath = function(template, pathname) {
-    var regex = "";
-    var matchGroups = {};
-    var totalBrackets = 0;
-
-    if (!template) {
-        template = defaultMappings["**/*.po"].template;
-    }
-
-    for (var i = 0; i < template.length; i++) {
-        if ( template[i] !== '[' ) {
-            regex += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'filename':
-                    regex += path.basename(pathname);
-                    break;
-                case 'extension':
-                    var base = path.basename(pathname);
-                    regex += base.substring(base.lastIndexOf('.')+1);
-                    break;
-                case 'basename':
-                    regex += path.basename(pathname, ".po");
-                    break;
-                default:
-                    regex += matchExprs[keyword].regex;
-                    for (var prop in matchExprs[keyword].groups) {
-                        matchGroups[prop] = totalBrackets + matchExprs[keyword].groups[prop];
-                    }
-                    totalBrackets += matchExprs[keyword].brackets;
-                    break;
-            }
-        }
-    }
-
-    var re = new RegExp(regex, "u");
-    var match;
-
-    if ((match = re.exec(pathname)) !== null) {
-        var groups = {};
-        var found = false;
-        for (var groupName in matchGroups) {
-            if (match[matchGroups[groupName]]) {
-                groups[groupName] = match[matchGroups[groupName]];
-                found = true;
-            }
-        }
-        if (found) {
-            var l = new Locale(groups.language, groups.region, undefined, groups.script);
-            return l.getSpec();
-        }
-    }
-
-    return "";
-};
-
-/**
  * Return the alternate output locale or the shared output locale for the given
  * mapping. If there are no locale mappings, it returns the locale parameter.
  *
@@ -280,8 +213,8 @@ POFileType.prototype.getOutputLocale = function(mapping, locale) {
     // ilib 14.10.0 or later because it can parse locale specs
     // with underscores in them
     return new Locale(
-        (mapping && mapping.localeMap && mapping.localeMap[locale] && 
-         mapping.localeMap[locale].replace(/_/g, '-')) || 
+        (mapping && mapping.localeMap && mapping.localeMap[locale] &&
+         mapping.localeMap[locale].replace(/_/g, '-')) ||
         this.project.getOutputLocale(locale));
 };
 
@@ -301,54 +234,11 @@ POFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
     if (!template) {
         template = defaultMappings["**/*.po"].template;
     }
-
-    for (var i = 0; i < template.length; i++) {
-        if ( template[i] !== '[' ) {
-            output += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'dir':
-                    output += path.dirname(pathname);
-                    break;
-                case 'filename':
-                    output += path.basename(pathname);
-                    break;
-                case 'extension':
-                    var base = path.basename(pathname);
-                    output += base.substring(base.lastIndexOf('.')+1);
-                    break;
-                case 'basename':
-                    output += path.basename(pathname, ".po");
-                    break;
-                default:
-                case 'locale':
-                    output += l.getSpec();
-                    break;
-                case 'language':
-                    output += l.getLanguage() || "";
-                    break;
-                case 'script':
-                    output += l.getScript() || "";
-                    break;
-                case 'region':
-                    output += l.getRegion() || "";
-                    break;
-                case 'localeDir':
-                    output += l.getSpec().replace(/-/g, '/');
-                    break;
-                case 'localeUnder':
-                    output += l.getSpec().replace(/-/g, '_');
-                    break;
-            }
-        }
-    }
-
-    return path.normalize(output);
+    
+    return path.normalize(this.API.utils.formatPath(template, {
+        sourcepath: pathname,
+        locale: l
+    }));
 };
 
 /**
