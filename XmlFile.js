@@ -322,9 +322,37 @@ function getValue(value, xml, ref, element) {
 
 var mapToSourceField = {
     "array": "sourceArray",
-    "plural": "sourcePlurals",
+    "plural": "sourceStrings",
     "string": "source"
 };
+
+function getSource(resource) {
+    return resource[mapToSourceField[resource.getType()]];
+}
+
+var mapToTargetField = {
+    "array": "targetArray",
+    "plural": "targetStrings",
+    "string": "target"
+};
+
+function getTarget(resource) {
+    return resource[mapToTargetField[resource.getType()]];
+}
+
+XmlFile.prototype.localizeNode = function(resourceInfo, schema) {
+    switch (resourceInfo.resType) {
+        case "plural":
+            var category = resourceInfo.category || "other";
+            return (schema.localizableType.source === "_value") ?
+                resourceInfo.translation[category] :
+                this.sparseValue(resourceInfo.source[category]);
+        default:
+            return (schema.localizableType.source === "_value") ?
+                resourceInfo.translation :
+                this.sparseValue(resourceInfo.source);
+    }
+}
 
 function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
     ["category", "locale", "source", "key", "comment"].forEach(function(field) {
@@ -356,6 +384,113 @@ function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
     });
 }
 
+XmlFile.prototype.addExtractedResource = function(ref, resourceInfo) {
+    // all the subparts of the xml element have been processed now,
+    // so we can create it and add it to the extracted set
+    var options = {
+        resType: resourceInfo.resType,
+        project: this.project.getProjectId(),
+        sourceLocale: resourceInfo.locale || this.project.sourceLocale,
+        key: resourceInfo.key || XmlFile.unescapeRef(ref).substring(2),  // strips off the #/ part
+        pathName: this.pathName,
+        state: "new",
+        datatype: this.type.datatype,
+        comment: resourceInfo.comment,
+        index: this.resourceIndex++
+    };
+
+    if (resourceInfo.source) {
+        options[mapToSourceField[resourceInfo.resType]] = resourceInfo.source;
+    }
+    var resource = this.API.newResource(options);
+    this.set.add(resource);
+    return resource;
+}
+
+XmlFile.prototype.getTranslation = function(resourceInfo, locale, resource, translations) {
+    var translation, hashkey = resource.hashKeyForTranslation(locale);
+    if (translations) {
+        translation = translations.getClean(hashkey);
+    }
+    if (translation) {
+        resourceInfo.translation = getTarget(translation);
+    } else if (this.API.isPseudoLocale(locale) && this.type && this.type.pseudos[locale]) {
+        var source, pseudoSourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+        if (pseudoSourceLocale !== this.project.sourceLocale) {
+            // translation is derived from a different locale's translation instead of from the source string
+            var sourceRes = translations.getClean(
+                resource.cleanHashKey(),
+                this.type.datatype);
+            source = sourceRes ? getTarget(sourceRes) : getTarget(resource);
+        } else {
+            source = getTarget(resource);
+        }
+        if (source) {
+            switch (resource.getType()) {
+                case "array":
+                    resourceInfo.translation = source.map(function(item) {
+                        return this.type.pseudos[locale].getString(item);
+                    }.bind(this));
+                    break;
+                case "plural":
+                    resourceInfo.translation = objectMap(source, function(item) {
+                        return this.type.pseudos[locale].getString(item);
+                    }.bind(this));
+                    break;
+                default:
+                    resourceInfo.translation = this.type.pseudos[locale].getString(source);
+                    break;
+            }
+        }
+    } else {
+        if (this.type) {
+            // logger.trace("New string found: " + text);
+
+            var options = {
+                resType: resource.getType(),
+                project: this.project.getProjectId(),
+                key: resource.getKey(),
+                sourceLocale: this.project.sourceLocale,
+                targetLocale: locale,
+                pathName: this.pathName,
+                state: "new",
+                datatype: this.type.datatype,
+                index: this.resourceIndex++
+            };
+
+            switch (resource.getType()) {
+                case "array":
+                    options.sourceArray = resource.getSourceArray();
+                    options.targetArray = options.sourceArray;
+                    if (this.type.missingPseudo && !this.project.settings.nopseudo) {
+                        resourceInfo.translation = options.sourceArray.map(function(item) {
+                            return this.type.missingPseudo.getString(item);
+                        }.bind(this));
+                    }
+                    break;
+                case "plural":
+                    options.sourcePlurals = resource.getSourcePlurals();
+                    options.targetPlurals = options.sourcePlurals;
+                    if (this.type.missingPseudo && !this.project.settings.nopseudo) {
+                        resourceInfo.translation = objectMap(options.sourcePlurals, function(item) {
+                            return this.type.missingPseudo.getString(item);
+                        }.bind(this));
+                    }
+                    break;
+                default:
+                    options.source = resource.getSource();
+                    options.target = options.source;
+                    if (this.type.missingPseudo && !this.project.settings.nopseudo) {
+                        resourceInfo.translation = this.type.missingPseudo.getString(options.source);
+                    }
+                    break;
+            }
+
+            this.type.newres.add(this.API.newResource(options));
+        }
+    }
+};
+
 XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo) {
     if (!xml || !schema) return;
 
@@ -371,18 +506,18 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
         schema = otherschema;
     }
 
-    var returnValue, text, key;
+    var localizeTree = localizable, returnValue, text, key;
 
     // When the schema has localizable = true, then start the construction of
     // an object that we can fill with info about the new resource as the subparts
     // of this schema are parsed
-    if (schema.localizable) {
+    if (!localizable && schema.localizable && !resourceInfo) {
+        localizeTree = true;
         var resType = "string";
         resourceInfo = {
             resType: resType,
             element: name
         };
-        localizable = true;
         if (schema.localizableType) {
             if (typeof(schema.localizableType) === "string") {
                 resourceInfo.resType = schema.localizableType;
@@ -407,21 +542,19 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
             // the xml further -- we are only descending into the
             // the type in the schema, and parsing the same xml node
             // each time.
-            var sub = schema.anyOf.find(function(subtype) {
-                return this.parseObj(
+            schema.anyOf.find(function(subtype) {
+                returnValue = this.parseObj(
                     xml,
                     root,
                     subtype,
                     ref,
                     name,
-                    localizable,
+                    localizeTree,
                     translations,
                     locale,
                     resourceInfo);
+                return returnValue;
             }.bind(this));
-            if (sub) {
-                returnValue = sub;
-            }
         } else {
             type = schema[typeProperty] || typeof(xml);
             switch (type) {
@@ -429,87 +562,36 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
             case "number":
             case "integer":
             case "string":
-                if (localizable) {
-                    if (isPrimitive(typeof(xml))) {
-                        text = String(xml);
-                        key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-
-                        if (schema.localizableType && resourceInfo) {
-                            hydrateResourceInfo(resourceInfo, schema, text, key, resourceInfo.element);
-                        }
-
-                        if (translations) {
-                            // localize it
-                            var tester = this.API.newResource({
-                                resType: "string",
-                                project: this.project.getProjectId(),
-                                sourceLocale: this.project.getSourceLocale(),
-                                reskey: key,
-                                datatype: this.type.datatype
-                            });
-                            var hashkey = tester.hashKeyForTranslation(locale);
-                            var translated = translations.getClean(hashkey);
-                            var translatedText;
-                            if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                                translatedText = this.sparseValue(text);
-                            } else if (!translated && this.type && this.type.pseudos[locale]) {
-                                var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                                if (sourceLocale !== this.project.sourceLocale) {
-                                    // translation is derived from a different locale's translation instead of from the source string
-                                    var sourceRes = translations.getClean(
-                                        tester.cleanHashKey(),
-                                        this.type.datatype);
-                                    source = sourceRes ? sourceRes.getTarget() : text;
-                                } else {
-                                    source = text;
-                                }
-                                translatedText = this.type.pseudos[locale].getString(source);
-                            } else {
-                                if (translated) {
-                                    translatedText = translated.getTarget();
-                                } else {
-                                    if (this.type && this.API.utils.containsActualText(text)) {
-                                        // logger.trace("New string found: " + text);
-                                        this.type.newres.add(this.API.newResource({
-                                            resType: "string",
-                                            project: this.project.getProjectId(),
-                                            key: key,
-                                            sourceLocale: this.project.sourceLocale,
-                                            source: text,
-                                            targetLocale: locale,
-                                            target: text,
-                                            pathName: this.pathName,
-                                            state: "new",
-                                            datatype: this.type.datatype,
-                                            index: this.resourceIndex++
-                                        }));
-                                        translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
-                                                this.type.missingPseudo.getString(text) : text;
-                                        translatedText = this.sparseValue(translatedText);
-                                    } else {
-                                        translatedText = this.sparseValue(text);
-                                    }
-                                }
-                            }
-                            if (translatedText) {
-                                returnValue = convertValueToType(translatedText, type);
-                            }
-                        } else {
-                            returnValue = this.sparseValue(text);
-                        }
-                    } else {
-                        // no way to parse the additional items beyond the end of the array,
-                        // so just ignore them
-                        // logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(xml));
-                        returnValue = this.sparseValue(xml);
-                    }
+                if (!localizeTree || !isPrimitive(typeof(xml)) || !schema || !schema.localizableType || !resourceInfo) {
+                    returnValue = xml;
                 } else {
-                    returnValue = this.sparseValue(xml);
+                    text = String(xml);
+                    key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+                    hydrateResourceInfo(resourceInfo, schema, text, key, resourceInfo.element);
+                    if (resourceInfo.translation && schema.localizableType.source === "_value") {
+                        switch (resourceInfo.resType) {
+                        case "plural":
+                            var category = resourceInfo.category || "other";
+                            returnValue = resourceInfo.translation[category];
+                            break;
+                        case "array":
+                            returnValue = resourceInfo.translation[resourceInfo.index];
+                            break;
+                        default:
+                            returnValue = resourceInfo.translation;
+                            break;
+                        }
+                        // note down that we used an actual translation so that later
+                        // when it comes time to prune resources in a sparse XML, we know to keep this one 
+                        resourceInfo.keep = true;
+                    } else {
+                        returnValue = text;
+                    }
                 }
                 break;
 
             case "array":
-                returnValue = this.parseObjArray(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo);
+                returnValue = this.parseObjArray(xml, root, schema, ref, name, localizeTree, translations, locale, resourceInfo);
                 break;
 
             case "object":
@@ -518,158 +600,81 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                     //    typeof(xml) + " but should be an object according to the schema...  skipping.");
                     return;
                 }
-                if (false) {
-                    // handle this as a single plural resource instance instead
-                    // of an object that has resources inside of it
-                    var sourcePlurals = xml;
-                    if (localizable) {
-                        key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-                        if (translations) {
-                            // localize it
-                            var tester = this.API.newResource({
-                                resType: "plural",
-                                project: this.project.getProjectId(),
-                                sourceLocale: this.project.getSourceLocale(),
-                                reskey: key,
-                                datatype: this.type.datatype
-                            });
-                            var hashkey = tester.hashKeyForTranslation(locale);
-                            var translated = translations.getClean(hashkey);
-                            var translatedPlurals;
-                            if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                                translatedPlurals = this.sparseValue(sourcePlurals);
-                            } else if (!translated && this.type && this.type.pseudos[locale]) {
-                                var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                                if (sourceLocale !== this.project.sourceLocale) {
-                                    // translation is derived from a different locale's translation instead of from the source string
-                                    var sourceRes = translations.getClean(
-                                        tester.cleanHashKey(),
-                                        this.type.datatype);
-                                    source = sourceRes ? sourceRes.getTargetPlurals() : sourcePlurals;
-                                } else {
-                                    source = sourcePlurals;
-                                }
-                                translatedPlurals = objectMap(source, function(item) {
-                                    return this.type.pseudos[locale].getString(item);
-                                }.bind(this));
-                            } else {
-                                if (translated) {
-                                    translatedPlurals = translated.getTargetPlurals();
-                                } else {
-                                    if (this.type) {
-                                        // logger.trace("New string found: " + text);
-                                        this.type.newres.add(this.API.newResource({
-                                            resType: "plural",
-                                            project: this.project.getProjectId(),
-                                            key: key,
-                                            sourceLocale: this.project.sourceLocale,
-                                            sourceStrings: sourcePlurals,
-                                            targetLocale: locale,
-                                            targetStrings: sourcePlurals,
-                                            pathName: this.pathName,
-                                            state: "new",
-                                            datatype: this.type.datatype,
-                                            index: this.resourceIndex++
-                                        }));
-                                        if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                                            translatedPlurals = objectMap(sourcePlurals, function(item) {
-                                                return this.type.missingPseudo.getString(item);
-                                            }.bind(this));
-                                            translatedPlurals = this.sparseValue(translatedPlurals);
-                                        } else {
-                                            translatedPlurals = this.sparseValue(sourcePlurals);
-                                        }
-                                    } else {
-                                        translatedPlurals = this.sparseValue(sourcePlurals);
-                                    }
-                                }
-                            }
-                            returnValue = translatedPlurals;
-                        } else {
-                            // extract this value
-                            this.set.add(this.API.newResource({
-                                resType: "plural",
-                                project: this.project.getProjectId(),
-                                key: XmlFile.unescapeRef(ref).substring(2),
-                                sourceLocale: this.project.sourceLocale,
-                                sourceStrings: sourcePlurals,
-                                pathName: this.pathName,
-                                state: "new",
-                                comment: this.comment,
-                                datatype: this.type.datatype,
-                                index: this.resourceIndex++
-                            }));
-                            returnValue = this.sparseValue(sourcePlurals);
+                returnValue = {};
+                var props = Object.keys(xml);
+                props.forEach(function(prop) {
+                    if (schema.properties && schema.properties[prop]) {
+                        if (resourceInfo && schema.properties[prop].localizable) {
+                            // remember the parent element's name
+                            resourceInfo.element = prop;
                         }
+                        returnValue[prop] = this.parseObj(
+                            xml[prop],
+                            root,
+                            schema.properties[prop],
+                            ref + '/' + XmlFile.escapeRef(prop),
+                            prop,
+                            localizeTree,
+                            translations,
+                            locale,
+                            resourceInfo);
+                    } else if (schema.additionalProperties && prop !== "_attributes") {
+                        // don't consider _attributes to be an additional property that
+                        // should be examined
+                        if (resourceInfo && schema.additionalProperties.localizable) {
+                            // remember the parent element's name
+                            resourceInfo.element = prop;
+                        }
+                        returnValue[prop] = this.parseObj(
+                            xml[prop],
+                            root,
+                            schema.additionalProperties,
+                            ref + '/' + XmlFile.escapeRef(prop),
+                            prop,
+                            localizeTree,
+                            translations,
+                            locale,
+                            resourceInfo);
                     } else {
-                        returnValue = this.sparseValue(sourcePlurals);
+                       // not in the schema, so don't propegate this node if we're in
+                       // sparse mode
+                       var obj = (prop !== "_attributes") ? this.sparseValue(xml[prop]) : xml[prop]; 
+                       if (obj) returnValue[prop] = obj;
                     }
-                } else {
-                    returnValue = {};
-                    var props = Object.keys(xml);
-                    props.forEach(function(prop) {
-                        if (schema.properties && schema.properties[prop]) {
-                            if (resourceInfo && schema.properties[prop].localizable) {
-                                // remember the parent element's name
-                                resourceInfo.element = prop;
-                            }
-                            returnValue[prop] = this.parseObj(
-                                xml[prop],
-                                root,
-                                schema.properties[prop],
-                                ref + '/' + XmlFile.escapeRef(prop),
-                                prop,
-                                localizable,
-                                translations,
-                                locale,
-                                resourceInfo);
-                        } else if (schema.additionalProperties && prop !== "_attributes") {
-                            // don't consider _attributes to be an additional property that
-                            // should be examined
-                            if (resourceInfo && schema.additionalProperties.localizable) {
-                                // remember the parent element's name
-                                resourceInfo.element = prop;
-                            }
-                            returnValue[prop] = this.parseObj(
-                                xml[prop],
-                                root,
-                                schema.additionalProperties,
-                                ref + '/' + XmlFile.escapeRef(prop),
-                                prop,
-                                localizable,
-                                translations,
-                                locale,
-                                resourceInfo);
-                        } else {
-                            returnValue[prop] = this.sparseValue(xml[prop]);
-                        }
-                    }.bind(this));
-                }
+                }.bind(this));
                 break;
             }
         }
-    }
 
-    if (schema.localizable && resourceInfo && resourceInfo.source) {
-        // all the subparts of the xml element have been processed now,
-        // so we can create it and add it to the set
-        var options = {
-            resType: resourceInfo.resType,
-            project: this.project.getProjectId(),
-            sourceLocale: resourceInfo.locale || this.project.sourceLocale,
-            key: resourceInfo.key || XmlFile.unescapeRef(ref).substring(2),  // strips off the #/ part
-            pathName: this.pathName,
-            state: "new",
-            datatype: this.type.datatype,
-            comment: resourceInfo.comment,
-            index: this.resourceIndex++
-        };
+        if (schema.localizable && resourceInfo && resourceInfo.source && !resourceInfo.translation) {
+            var resource = this.addExtractedResource(ref, resourceInfo);
 
-        if (resourceInfo.source) {
-            options[mapToSourceField[resourceInfo.resType]] = resourceInfo.source;
+            // now check if we have a translation or pseudo translation of this string
+            this.getTranslation(resourceInfo, locale, resource, translations);
+
+            if (resourceInfo.translation) {
+                // reparse now that we have all the resource parts in resourceInfo and
+                // also the translation itself, so that we can distribute the translated
+                // bits to the right places of the xml structure
+                var obj = this.parseObj(
+                    xml,
+                    root,
+                    schema,
+                    ref,
+                    name,
+                    localizeTree,
+                    translations,
+                    locale,
+                    resourceInfo);
+
+                // over-ride the returnValue if we actually used the translation
+                returnValue = resourceInfo.keep ? obj : this.sparseValue(returnValue);
+            } else {
+                // if we have no translation for this resource, then don't propegate
+                // this node when in sparse mode
+                returnValue = this.sparseValue(returnValue);
+            }
         }
-
-        this.set.add(this.API.newResource(options));
     }
 
     return isNotEmpty(returnValue) ? returnValue : undefined;
@@ -682,118 +687,32 @@ XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localiz
         return null;
     }
 
-    var arrayType = getArrayTypeFromSchema(schema, root);
-
-    if (arrayType === null) {
-        return this.sparseValue(xml);
-    }
-
-    if (arrayType === 'object') {
-        // Continue parsing and treat array as a set of regular elements.
-        var returnValue = [];
-        for (var i = 0; i < xml.length; i++) {
-            returnValue.push(
-                this.parseObj(
-                    xml[i],
-                    root,
-                    schema.items,
-                    ref + '/' + XmlFile.escapeRef("item_" + i),
-                    // "item_" + i,
-                    name,
-                    localizable,
-                    translations,
-                    locale,
-                    resourceInfo
-                )
+    // Continue parsing and treat array as a set of regular elements.
+    var returnValue = [];
+    for (var i = 0; i < xml.length; i++) {
+        if (resourceInfo) {
+            resourceInfo.index = i;
+        }
+        returnValue.push(
+            this.parseObj(
+                xml[i],
+                root,
+                schema.items,
+                ref + '/' + XmlFile.escapeRef("item_" + i),
+                // "item_" + i,
+                name,
+                localizable,
+                translations,
+                locale,
+                resourceInfo
             )
-        }
-
-        return returnValue;
+        );
+    }
+    if (resourceInfo) {
+        resourceInfo.index = undefined;
     }
 
-    // Convert all items to Strings so we can process them properly
-    var sourceArray = xml.map(function(item) {
-        return String(item);
-    });
-
-    if (!localizable) {
-        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
-    }
-
-    if (resourceInfo && !translations) {
-        // extract this value
-        resourceInfo.source = sourceArray;
-        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
-    }
-
-    if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
-    }
-
-    var key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-    var tester = this.API.newResource({
-        resType: "array",
-        project: this.project.getProjectId(),
-        sourceLocale: this.project.getSourceLocale(),
-        reskey: key,
-        datatype: this.type.datatype
-    });
-    var hashkey = tester.hashKeyForTranslation(locale);
-    var translated = translations.getClean(hashkey);
-    var translatedArray;
-
-    if (!translated && this.type && this.type.pseudos[locale]) {
-        var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-        if (sourceLocale !== this.project.sourceLocale) {
-            // translation is derived from a different locale's translation instead of from the source string
-            var sourceRes = translations.getClean(
-                    tester.cleanHashKey(),
-                    this.type.datatype);
-            source = sourceRes ? sourceRes.getTargetArray() : sourceArray;
-        } else {
-            source = sourceArray;
-        }
-        translatedArray = source.map(function(item) {
-            return this.type.pseudos[locale].getString(item);
-        }.bind(this));
-
-        return convertArrayElementsToType(translatedArray, arrayType);
-    }
-
-    if (translated) {
-        return convertArrayElementsToType(translated.getTargetArray(), arrayType);
-    }
-
-    if (!this.type) {
-        return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
-    }
-
-    // logger.trace("New strings found: " + sourceArray.toString());
-
-    this.type.newres.add(this.API.newResource({
-        resType: "array",
-        project: this.project.getProjectId(),
-        key: key,
-        sourceLocale: this.project.sourceLocale,
-        sourceArray: sourceArray,
-        targetLocale: locale,
-        targetArray: sourceArray,
-        pathName: this.pathName,
-        state: "new",
-        datatype: this.type.datatype,
-        index: this.resourceIndex++
-    }));
-
-    if (this.type.missingPseudo && !this.project.settings.nopseudo) {
-        translatedArray = sourceArray.map(function(item) {
-            return this.type.missingPseudo.getString(item);
-        }.bind(this));
-        translatedArray = this.sparseValue(translatedArray);
-    } else {
-        translatedArray = this.sparseValue(sourceArray);
-    }
-
-    return convertArrayElementsToType(translatedArray, arrayType);
+    return returnValue;
 }
 
 /**

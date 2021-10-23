@@ -68,6 +68,34 @@
                     }
                 }
             }
+        },
+        "string-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "_attributes": {
+                    "value": {
+                        "type": "string",
+                        "localizableType": {
+                            "source": "_value"
+                        }
+                    },
+                    "comment": {
+                        "type": "string",
+                        "localizableType": {
+                            "comment": "_value"
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value",
+                        "key": "_element"
+                    }
+                }
+            }
         }
     },
     "properties": {
@@ -277,32 +305,17 @@
                     "title": "The strings schema",
                     "description": "An explanation about the purpose of this instance.",
                     "additionalProperties": {
-                        "type": "object",
-                        "localizable": true,
-                        "localizableType": "string",
-                        "properties": {
-                            "_attributes": {
-                                "value": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "source": "_value"
-                                    }
-                                },
-                                "comment": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "comment": "_value"
-                                    }
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/$defs/string-type"
                                 }
                             },
-                            "_text": {
-                                "type": "string",
-                                "localizableType": {
-                                    "source": "_value",
-                                    "key": "_element"
-                                }
+                            {
+                                "$ref": "#/$defs/string-type"
                             }
-                        }
+                        ]
                     }
                 }
             }

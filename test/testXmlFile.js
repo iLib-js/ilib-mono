@@ -1164,7 +1164,7 @@ module.exports.xmlfile = {
         var translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
                 "many": "many",
@@ -1181,7 +1181,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "la b",
@@ -1190,7 +1190,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/c",
+            key: "c",
             source: "d",
             sourceLocale: "en-US",
             target: "la d",
@@ -1199,7 +1199,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceArray({
             project: "foo",
-            key: "arrays/asdf",
+            key: "asdf",
             sourceArray: [
                 "string 1",
                 "string 2",
@@ -1523,9 +1523,9 @@ module.exports.xmlfile = {
             '    </strings>\n' +
             '    <arrays>\n' +
             '        <asdf i18n="comment">\n' +
-            '            <item>šţŕíñğ 13210</item>\n' +
-            '            <item>šţŕíñğ 23210</item>\n' +
-            '            <item>šţŕíñğ 33210</item>\n' +
+            '            <item>Šţŕíñğ 13210</item>\n' +
+            '            <item>Šţŕíñğ 23210</item>\n' +
+            '            <item>Šţŕíñğ 33210</item>\n' +
             '        </asdf>\n' +
             '    </arrays>\n' +
             '</messages>\n';
