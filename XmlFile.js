@@ -377,7 +377,7 @@ function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
                         resourceInfo.source = value;
                         break;
                 }
-            } else {
+            } else if (value) {
                 resourceInfo[field] = value;
             }
         }
@@ -693,20 +693,19 @@ XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localiz
         if (resourceInfo) {
             resourceInfo.index = i;
         }
-        returnValue.push(
-            this.parseObj(
-                xml[i],
-                root,
-                schema.items,
-                ref + '/' + XmlFile.escapeRef("item_" + i),
-                // "item_" + i,
-                name,
-                localizable,
-                translations,
-                locale,
-                resourceInfo
-            )
+        var item = this.parseObj(
+            xml[i],
+            root,
+            schema.items,
+            ref + '/' + XmlFile.escapeRef("item_" + i),
+            // "item_" + i,
+            name,
+            localizable,
+            translations,
+            locale,
+            resourceInfo
         );
+        if (item) returnValue.push(item);
     }
     if (resourceInfo) {
         resourceInfo.index = undefined;

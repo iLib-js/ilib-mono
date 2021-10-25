@@ -973,9 +973,7 @@ module.exports.xmlfile = {
 
 
     testXmlFileExtractFile: function(test) {
-        test.expect(40);
-
-        var base = path.dirname(module.id);
+        test.expect(46);
 
         var xf = new XmlFile({
             project: p,
@@ -989,10 +987,10 @@ module.exports.xmlfile = {
 
         var set = xf.getTranslationSet();
 
-        test.equal(set.size(), 7);
+        test.equal(set.size(), 9);
 
         var resources = set.getAll();
-        test.equal(resources.length, 7);
+        test.equal(resources.length, 9);
 
         test.equal(resources[0].getType(), "plural");
         var categories = resources[0].getSourcePlurals();
@@ -1042,6 +1040,14 @@ module.exports.xmlfile = {
         test.equal(resources[6].getType(), "string");
         test.equal(resources[6].getSource(), "d");
         test.equal(resources[6].getKey(), "c");
+
+        test.equal(resources[7].getType(), "string");
+        test.equal(resources[7].getSource(), "f");
+        test.equal(resources[7].getKey(), "key1");
+
+        test.equal(resources[8].getType(), "string");
+        test.equal(resources[8].getSource(), "g");
+        test.equal(resources[8].getKey(), "key2");
 
         test.done();
     },
@@ -1293,7 +1299,7 @@ module.exports.xmlfile = {
         test.ok(xf);
 
         xf.parse(
-             '<resources>\n' +
+             '<messages>\n' +
              '    <plurals name="bar">\n' +
              '        <item quantity="one">singular</item>\n' +
              '        <item quantity="many">many</item>\n' +
@@ -1307,13 +1313,14 @@ module.exports.xmlfile = {
              '        <item>string 1</item>\n' +
              '        <item>string 2</item>\n' +
              '        <item>string 3</item>\n' +
-             '    </string-array>\n'
+             '    </string-array>\n' +
+             '</messages>\n'
         );
 
         var translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
                 "many": "many",
@@ -1330,7 +1337,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "la b",
@@ -1340,7 +1347,7 @@ module.exports.xmlfile = {
 
         var actual = xf.localizeText(translations, "fr-FR");
         var expected =
-             '<resources>\n' +
+             '<messages>\n' +
              '    <plurals name="bar">\n' +
              '        <item quantity="one">singulaire</item>\n' +
              '        <item quantity="many">plupart</item>\n' +
@@ -1349,7 +1356,7 @@ module.exports.xmlfile = {
              '    <strings>\n' +
              '        <string name="a">la b</string>\n' +
              '    </strings>\n' +
-             '</resources>\n';
+             '</messages>\n';
 
         diff(actual, expected);
         test.equal(actual, expected);

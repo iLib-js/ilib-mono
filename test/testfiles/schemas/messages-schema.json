@@ -69,22 +69,55 @@
                 }
             }
         },
+        "string-type-e": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        },
+                        "value": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        },
+                        "comment": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
         "string-type": {
             "type": "object",
             "localizable": true,
             "localizableType": "string",
             "properties": {
                 "_attributes": {
-                    "value": {
-                        "type": "string",
-                        "localizableType": {
-                            "source": "_value"
-                        }
-                    },
-                    "comment": {
-                        "type": "string",
-                        "localizableType": {
-                            "comment": "_value"
+                    "type": "object",
+                    "properties": {
+                        "comment": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
                         }
                     }
                 },
@@ -304,6 +337,21 @@
                     "type": "object",
                     "title": "The strings schema",
                     "description": "An explanation about the purpose of this instance.",
+                    "properties": {
+                        "e": {
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/string-type-e"
+                                    }
+                                },
+                                {
+                                    "$ref": "#/$defs/string-type-e"
+                                }
+                            ]
+                        }
+                    },
                     "additionalProperties": {
                         "anyOf": [
                             {
