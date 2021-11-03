@@ -83,6 +83,10 @@ var p = new CustomProject({
                 "template": "[dir]/[locale].po",
                 "ignoreComments": ["paths", "flags"]
             },
+            "**/context.po": {
+                "template": "[dir]/[locale].po",
+                "contextInKey": true
+            },
             "**/*.po": {
                 "template": "[dir]/[locale].po",
                 "localeMap": {
@@ -734,6 +738,48 @@ module.exports.pofile = {
 
         test.equal(resources[1].getSource(), "string 1");
         test.equal(resources[1].getKey(), "string 1");
+        test.equal(resources[1].getContext(), "context 2");
+        test.ok(!resources[1].getTarget());
+        test.ok(!resources[1].getTargetLocale());
+
+        test.done();
+    },
+
+    testPOFileParseSameStringContextInKey: function(test) {
+        test.expect(14);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "foo/bar/context.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgctxt "context 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgctxt "context 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var set = pof.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getKey(), "string 1 --- context 1");
+        test.equal(resources[0].getContext(), "context 1");
+        test.ok(!resources[0].getTarget());
+        test.ok(!resources[0].getTargetLocale());
+
+        test.equal(resources[1].getSource(), "string 1");
+        test.equal(resources[1].getKey(), "string 1 --- context 2");
         test.equal(resources[1].getContext(), "context 2");
         test.ok(!resources[1].getTarget());
         test.ok(!resources[1].getTargetLocale());
@@ -1531,6 +1577,73 @@ module.exports.pofile = {
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgctxt "context 1"\n' +
+            'msgstr "chaîne numéro 1 contexte 1"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgctxt "context 2"\n' +
+            'msgstr "chaîne numéro 2 contexte 2"\n\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testPOFileLocalizeTextWithContextInKey: function(test) {
+        test.expect(2);
+
+        var pof = new POFile({
+            project: p,
+            pathName: "./po/context.po",
+            type: t
+        });
+        test.ok(pof);
+
+        pof.parse(
+            'msgid "string 1"\n' +
+            'msgctxt "context 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgctxt "context 2"\n' +
+            'msgstr ""\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1 --- context 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            context: "context 1",
+            target: "chaîne numéro 1 contexte 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1 --- context 2",
+            source: "string 1",
+            sourceLocale: "en-US",
+            context: "context 2",
+            target: "chaîne numéro 2 contexte 2",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        var actual = pof.localizeText(translations, "fr-FR");
+        var expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/context.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +

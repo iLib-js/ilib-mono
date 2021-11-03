@@ -178,6 +178,12 @@ used within the po property:
         - *full*: put the fully specified locale spec in the header
         - *abbreviated*: put an abbreviated locale spec in the header (language only)
         - *mapped*: put the results of the output locale mapping (see above) into the header
+    - contextInKey: some translation management systems cannot support separate context
+      fields, and therefore two translation units that only differ in their context cannot
+      be distinguished from each other. If this setting is set to "true", then the context
+      is added to the key for a unit. eg. if the string is "Sent" and the context is "Email",
+      a translation unit will be produced with the key "Sent --- Email" and the source string
+      is "Sent".
 
 Example configuration:
 
@@ -230,6 +236,14 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.6.0
+
+- added the contextInKey setting so that we can support translation
+  management systems that do not support contexts. Instead, we add the context
+  to the key for each translation unit, so that two translations units
+  that differ only in their context can still be dinstinguished from each
+  other.
 
 ### v1.5.1
 
