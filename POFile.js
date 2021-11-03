@@ -304,12 +304,13 @@ POFile.prototype.parse = function(data) {
                     case tokens.BLANKLINE:
                         if (source || sourcePlurals) {
                             // emit a resource
-                            var options;
+                            var options, key;
                             if (sourcePlurals) {
+                                key = (context && this.mapping && this.mapping.contextInKey) ? sourcePlurals.one + " --- " + context : sourcePlurals.one;
                                 options = {
                                     resType: "plural",
                                     project: this.project.getProjectId(),
-                                    key: source,
+                                    key: key,
                                     sourceLocale: this.project.sourceLocale,
                                     sourceStrings: sourcePlurals,
                                     pathName: original,
@@ -324,10 +325,11 @@ POFile.prototype.parse = function(data) {
                                     options.targetStrings = translationPlurals;
                                 }
                             } else {
+                                key = (context && this.mapping && this.mapping.contextInKey) ? source + " --- " + context : source;
                                 options = {
                                     resType: "string",
                                     project: this.project.getProjectId(),
-                                    key: source,
+                                    key: key,
                                     sourceLocale: this.project.sourceLocale,
                                     source: source,
                                     pathName: original,
@@ -626,6 +628,10 @@ POFile.prototype.localizeText = function(translations, locale) {
         for (var i = 0; i < resources.length; i++) {
             var r = resources[i];
             var key = r.getKey();
+            if (this.mapping && this.mapping.contextInKey && r.getContext()) {
+                // strip off the context built into the key
+                key = r.getKey().replace(/ --- .*$/, '');
+            }
             output += '\n';
             var c = r.getComment() ? JSON.parse(r.getComment()) : {};
 
@@ -685,7 +691,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                 this.type.newres.add(this.API.newResource({
                                     resType: "string",
                                     project: r.getProject(),
-                                    key: key,
+                                    key: r.getKey(),
                                     sourceLocale: r.getSourceLocale(),
                                     source: text,
                                     targetLocale: locale,
@@ -751,7 +757,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                                 this.type.newres.add(this.API.newResource({
                                     resType: "plural",
                                     project: r.getProject(),
-                                    key: key,
+                                    key: r.getKey(),
                                     sourceLocale: r.getSourceLocale(),
                                     sourceStrings: sourcePlurals,
                                     targetLocale: locale,
