@@ -582,7 +582,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                             break;
                         }
                         // note down that we used an actual translation so that later
-                        // when it comes time to prune resources in a sparse XML, we know to keep this one 
+                        // when it comes time to prune resources in a sparse XML, we know to keep this one
                         resourceInfo.keep = true;
                     } else {
                         returnValue = text;
@@ -601,14 +601,14 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                     return;
                 }
                 returnValue = {};
-                var props = Object.keys(xml);
+                var props = Object.keys(xml), subobject;
                 props.forEach(function(prop) {
                     if (schema.properties && schema.properties[prop]) {
                         if (resourceInfo && schema.properties[prop].localizable) {
                             // remember the parent element's name
                             resourceInfo.element = prop;
                         }
-                        returnValue[prop] = this.parseObj(
+                        subobject = this.parseObj(
                             xml[prop],
                             root,
                             schema.properties[prop],
@@ -618,6 +618,9 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                             translations,
                             locale,
                             resourceInfo);
+                        if (isNotEmpty(subobject)) {
+                            returnValue[prop] = subobject;
+                        }
                     } else if (schema.additionalProperties && prop !== "_attributes") {
                         // don't consider _attributes to be an additional property that
                         // should be examined
@@ -625,7 +628,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                             // remember the parent element's name
                             resourceInfo.element = prop;
                         }
-                        returnValue[prop] = this.parseObj(
+                        subobject = this.parseObj(
                             xml[prop],
                             root,
                             schema.additionalProperties,
@@ -635,13 +638,21 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                             translations,
                             locale,
                             resourceInfo);
+                        if (isNotEmpty(subobject)) {
+                            returnValue[prop] = subobject;
+                        }
                     } else {
                        // not in the schema, so don't propegate this node if we're in
                        // sparse mode
-                       var obj = (prop !== "_attributes") ? this.sparseValue(xml[prop]) : xml[prop]; 
+                       var obj = (prop !== "_attributes") ? this.sparseValue(xml[prop]) : xml[prop];
                        if (obj) returnValue[prop] = obj;
                     }
                 }.bind(this));
+                // if we are doing sparse, and the current object has no children, then there is
+                // no point in returning the current node as well
+                if (this.mapping && this.mapping.method && this.mapping.method === "sparse" && this.API.utils.isEmpty(returnValue)) {
+                    returnValue = undefined;
+                }
                 break;
             }
         }
@@ -649,30 +660,32 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
         if (schema.localizable && resourceInfo && resourceInfo.source && !resourceInfo.translation) {
             var resource = this.addExtractedResource(ref, resourceInfo);
 
-            // now check if we have a translation or pseudo translation of this string
-            this.getTranslation(resourceInfo, locale, resource, translations);
+            if (translations && locale) {
+                // now check if we have a translation or pseudo translation of this string
+                this.getTranslation(resourceInfo, locale, resource, translations);
 
-            if (resourceInfo.translation) {
-                // reparse now that we have all the resource parts in resourceInfo and
-                // also the translation itself, so that we can distribute the translated
-                // bits to the right places of the xml structure
-                var obj = this.parseObj(
-                    xml,
-                    root,
-                    schema,
-                    ref,
-                    name,
-                    localizeTree,
-                    translations,
-                    locale,
-                    resourceInfo);
+                if (resourceInfo.translation) {
+                    // reparse now that we have all the resource parts in resourceInfo and
+                    // also the translation itself, so that we can distribute the translated
+                    // bits to the right places of the xml structure
+                    var obj = this.parseObj(
+                        xml,
+                        root,
+                        schema,
+                        ref,
+                        name,
+                        localizeTree,
+                        translations,
+                        locale,
+                        resourceInfo);
 
-                // over-ride the returnValue if we actually used the translation
-                returnValue = resourceInfo.keep ? obj : this.sparseValue(returnValue);
-            } else {
-                // if we have no translation for this resource, then don't propegate
-                // this node when in sparse mode
-                returnValue = this.sparseValue(returnValue);
+                    // over-ride the returnValue if we actually used the translation
+                    returnValue = resourceInfo.keep ? obj : this.sparseValue(returnValue);
+                } else {
+                    // if we have no translation for this resource, then don't propegate
+                    // this node when in sparse mode
+                    returnValue = this.sparseValue(returnValue);
+                }
             }
         }
     }

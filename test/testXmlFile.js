@@ -1300,14 +1300,16 @@ module.exports.xmlfile = {
 
         xf.parse(
              '<messages>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singular</item>\n' +
-             '        <item quantity="many">many</item>\n' +
-             '        <item quantity="other">plural</item>\n' +
+             '    <plurals>\n' +
+             '        <bar>\n' +
+             '            <one>singular</one>\n' +
+             '            <many>many</many>\n' +
+             '            <other>plural</other>\n' +
+             '        </bar>\n' +
              '    </plurals>\n' +
              '    <strings>\n' +
-             '        <string name="a">b</string>\n' +
-             '        <string name="c">d</string>\n' +
+             '        <a>b</a>\n' +
+             '        <c>d</c>\n' +
              '    </strings>\n' +
              '    <string-array name="asdf">\n' +
              '        <item>string 1</item>\n' +
@@ -1348,13 +1350,15 @@ module.exports.xmlfile = {
         var actual = xf.localizeText(translations, "fr-FR");
         var expected =
              '<messages>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singulaire</item>\n' +
-             '        <item quantity="many">plupart</item>\n' +
-             '        <item quantity="other">autres</item>\n' +
+             '    <plurals>\n' +
+             '        <bar>\n' +
+             '            <one>singulaire</one>\n' +
+             '            <many>plupart</many>\n' +
+             '            <other>autres</other>\n' +
+             '        </bar>\n' +
              '    </plurals>\n' +
              '    <strings>\n' +
-             '        <string name="a">la b</string>\n' +
+             '        <a>la b</a>\n' +
              '    </strings>\n' +
              '</messages>\n';
 
@@ -1375,11 +1379,11 @@ module.exports.xmlfile = {
 
         xf.parse(
             '<resources>\n' +
-             '    <string-array name="strings">\n' +
+             '    <strings name="strings">\n' +
              '        <item>string 1</item>\n' +
              '        <item>string 2</item>\n' +
              '        <item>string 3</item>\n' +
-             '    </string-array>\n' +
+             '    </strings>\n' +
              '</resources>\n'
         );
 
@@ -1405,11 +1409,11 @@ module.exports.xmlfile = {
         var actual = xf.localizeText(translations, "fr-FR");
         var expected =
             '<resources>\n' +
-             '    <string-array name="strings">\n' +
+             '    <strings name="strings">\n' +
              '        <item>chaîne 1</item>\n' +
              '        <item>chaîne 2</item>\n' +
              '        <item>chaîne 3</item>\n' +
-             '    </string-array>\n' +
+             '    </strings>\n' +
              '</resources>\n';
 
         diff(actual, expected);
@@ -1430,12 +1434,12 @@ module.exports.xmlfile = {
 
         xf.parse(
             '<resources>\n' +
-            '    <string-array name="numbers">\n' +
+            '    <strings name="numbers">\n' +
             '        <item>15</item>\n' +
             '        <item>-3</item>\n' +
             '        <item>1.18</item>\n' +
             '        <item>0</item>\n' +
-            '    </string-array>\n' +
+            '    </strings>\n' +
             '</resources>\n'
         );
 
@@ -1465,12 +1469,12 @@ module.exports.xmlfile = {
         var actual = xf.localizeText(translations, "fr-FR");
         var expected =
             '<resources>\n' +
-            '    <string-array name="numbers">\n' +
+            '    <strings name="numbers">\n' +
             '        <item>29</item>\n' +
             '        <item>12</item>\n' +
             '        <item>-17.3</item>\n' +
             '        <item>0</item>\n' +
-            '    </string-array>\n' +
+            '    </strings>\n' +
             '</resources>\n';
 
         diff(actual, expected);
@@ -1698,7 +1702,7 @@ module.exports.xmlfile = {
         var translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
                 "many": "many",
@@ -1715,7 +1719,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "la b",
@@ -1724,7 +1728,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/c",
+            key: "c",
             source: "d",
             sourceLocale: "en-US",
             target: "la d",
@@ -1733,7 +1737,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceArray({
             project: "foo",
-            key: "arrays/asdf",
+            key: "asdf",
             sourceArray: [
                 "string 1",
                 "string 2",
@@ -1751,7 +1755,7 @@ module.exports.xmlfile = {
 
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
                 "many": "many",
@@ -1768,7 +1772,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "Die b",
@@ -1777,7 +1781,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/c",
+            key: "c",
             source: "d",
             sourceLocale: "en-US",
             target: "Der d",
@@ -1786,7 +1790,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceArray({
             project: "foo",
-            key: "arrays/asdf",
+            key: "asdf",
             sourceArray: [
                 "string 1",
                 "string 2",
@@ -1952,16 +1956,14 @@ module.exports.xmlfile = {
         var translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
-                "many": "many",
                 "other": "plural"
             },
             sourceLocale: "en-US",
             targetStrings: {
                 "one": "singulaire",
-                "many": "plupart",
                 "other": "autres"
             },
             targetLocale: "fr-FR",
@@ -1969,7 +1971,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "la b",
@@ -1979,16 +1981,14 @@ module.exports.xmlfile = {
 
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
-                "many": "many",
                 "other": "plural"
             },
             sourceLocale: "en-US",
             targetStrings: {
                 "one": "einslige",
-                "many": "mehrere",
                 "other": "andere"
             },
             targetLocale: "de-DE",
@@ -1996,7 +1996,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "Die b",
@@ -2013,16 +2013,17 @@ module.exports.xmlfile = {
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"), "utf-8");
 
         var expected =
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">singulaire</item>\n' +
-             '        <item quantity="many">plupart</item>\n' +
-             '        <item quantity="other">autres</item>\n' +
+             '<messages>\n' +
+             '    <plurals>\n' +
+             '        <bar>\n' +
+             '            <one>singulaire</one>\n' +
+             '            <other>autres</other>\n' +
+             '        </bar>\n' +
              '    </plurals>\n' +
              '    <strings>\n' +
-             '        <string name="a">la b</string>\n' +
+             '        <a>la b</a>\n' +
              '    </strings>\n' +
-             '</resources>\n';
+             '</messages>\n';
 
         diff(content, expected);
         test.equal(content, expected);
@@ -2030,16 +2031,17 @@ module.exports.xmlfile = {
         content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"), "utf-8");
 
         var expected =
-             '<resources>\n' +
-             '    <plurals name="bar">\n' +
-             '        <item quantity="one">einslige</item>\n' +
-             '        <item quantity="many">mehrere</item>\n' +
-             '        <item quantity="other">andere</item>\n' +
+             '<messages>\n' +
+             '    <plurals>\n' +
+             '        <bar>\n' +
+             '            <one>einslige</one>\n' +
+             '            <other>andere</other>\n' +
+             '        </bar>\n' +
              '    </plurals>\n' +
              '    <strings>\n' +
-             '        <string name="a">Die b</string>\n' +
+             '        <a>Die b</a>\n' +
              '    </strings>\n' +
-             '</resources>\n';
+             '</messages>\n';
         diff(content, expected);
         test.equal(content, expected);
 
@@ -2047,7 +2049,7 @@ module.exports.xmlfile = {
     },
 
     testXmlFileLocalizeExtractNewStrings: function(test) {
-        test.expect(43);
+        test.expect(65);
 
         var base = path.dirname(module.id);
 
@@ -2079,7 +2081,7 @@ module.exports.xmlfile = {
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "la b",
@@ -2089,16 +2091,14 @@ module.exports.xmlfile = {
 
         translations.add(new ResourcePlural({
             project: "foo",
-            key: "plurals/bar",
+            key: "bar",
             sourceStrings: {
                 "one": "singular",
-                "many": "many",
                 "other": "plural"
             },
             sourceLocale: "en-US",
             targetStrings: {
                 "one": "einslige",
-                "many": "mehrere",
                 "other": "andere"
             },
             targetLocale: "de-DE",
@@ -2106,7 +2106,7 @@ module.exports.xmlfile = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "strings/a",
+            key: "a",
             source: "b",
             sourceLocale: "en-US",
             target: "Die b",
@@ -2126,49 +2126,78 @@ module.exports.xmlfile = {
         test.equal(resources.length, 7);
 
         test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "plurals/bar");
+        test.equal(resources[0].getKey(), "foo");
         test.equal(resources[0].getTargetLocale(), "fr-FR");
         var pluralStrings = resources[0].getSourcePlurals();
         test.ok(pluralStrings);
+        test.ok(!pluralStrings.one);
+        test.equal(pluralStrings.other, "asdf");
+        pluralStrings = resources[0].getTargetPlurals();
+        test.ok(pluralStrings);
+        test.ok(!pluralStrings.one);
+        test.equal(pluralStrings.other, "asdf");
+
+        test.equal(resources[1].getType(), "plural");
+        test.equal(resources[1].getKey(), "bar");
+        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        var pluralStrings = resources[1].getSourcePlurals();
+        test.ok(pluralStrings);
         test.equal(pluralStrings.one, "one");
         test.equal(pluralStrings.other, "other");
-        pluralStrings = resources[0].getTargetPlurals();
+        pluralStrings = resources[1].getTargetPlurals();
         test.ok(pluralStrings);
         test.equal(pluralStrings.one, "one");
         test.equal(pluralStrings.other, "other");
 
-        test.equal(resources[1].getType(), "array");
-        test.equal(resources[1].getKey(), "arrays/asdf");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
-        var arrayStrings = resources[1].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
-        arrayStrings = resources[1].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
-
         test.equal(resources[2].getType(), "array");
-        test.equal(resources[2].getKey(), "arrays/asdfasdf");
+        test.equal(resources[2].getKey(), "asdf");
         test.equal(resources[2].getTargetLocale(), "fr-FR");
         var arrayStrings = resources[2].getSourceArray();
         test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "1");
-        test.equal(arrayStrings[1], "2");
-        test.equal(arrayStrings[2], "3");
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
         arrayStrings = resources[2].getTargetArray();
         test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "1");
-        test.equal(arrayStrings[1], "2");
-        test.equal(arrayStrings[2], "3");
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
 
         test.equal(resources[3].getType(), "string");
         test.equal(resources[3].getSource(), "d");
-        test.equal(resources[3].getKey(), "strings/c");
+        test.equal(resources[3].getKey(), "c");
         test.equal(resources[3].getTargetLocale(), "fr-FR");
+
+        test.equal(resources[4].getType(), "plural");
+        test.equal(resources[4].getKey(), "foo");
+        test.equal(resources[4].getTargetLocale(), "de-DE");
+        var pluralStrings = resources[4].getSourcePlurals();
+        test.ok(pluralStrings);
+        test.ok(!pluralStrings.one);
+        test.equal(pluralStrings.other, "asdf");
+        pluralStrings = resources[4].getTargetPlurals();
+        test.ok(pluralStrings);
+        test.ok(!pluralStrings.one);
+        test.equal(pluralStrings.other, "asdf");
+
+        test.equal(resources[5].getType(), "array");
+        test.equal(resources[5].getKey(), "asdf");
+        test.equal(resources[5].getTargetLocale(), "de-DE");
+        var arrayStrings = resources[5].getSourceArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
+        arrayStrings = resources[5].getTargetArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings[0], "value 1");
+        test.equal(arrayStrings[1], "value 2");
+        test.equal(arrayStrings[2], "value 3");
+
+        test.equal(resources[6].getType(), "string");
+        test.equal(resources[6].getSource(), "d");
+        test.equal(resources[6].getKey(), "c");
+        test.equal(resources[6].getTargetLocale(), "de-DE");
 
         test.done();
     },
@@ -2216,7 +2245,7 @@ module.exports.xmlfile = {
 
         var xf = new XmlFile({
             project: p,
-            pathName: "x/y/str.xml",
+            pathName: "x/y/nomatch.xml",
             type: t
         });
         test.ok(xf);
@@ -2239,18 +2268,18 @@ module.exports.xmlfile = {
             datatype: "xml"
         }));
 
-        // default template is resources/[localeDir]/[filename]
-        if (fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.xml"))) {
-            fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/str.xml"));
+        // default template is "[dir]/[basename]-[localeUnder].[extension]"
+        if (fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.xml")));
+        test.ok(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml")));
 
         xf.localize(translations, ["fr-FR"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.xml")));
+        test.ok(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml")));
 
-        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/str.xml"), "utf-8");
+        var content = fs.readFileSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"), "utf-8");
 
         // default method is copy so this should be the whole file
         var expected =

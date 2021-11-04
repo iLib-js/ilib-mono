@@ -401,7 +401,7 @@ var defaultMappings = {
     "**/*.xml": {
         schema: "android-resource-schema",
         method: "copy",
-        template: "[dir]/[basename]-[localeUnder].[ext]"
+        template: "[dir]/[basename]-[localeUnder].[extension]"
     }
 };
 
@@ -424,7 +424,14 @@ XmlFileType.prototype.getMapping = function(pathName) {
     });
 
     return match && mappings[match];
-}
+};
+
+/**
+ * Return the default mapping for this plugin.
+ */
+XmlFileType.prototype.getDefaultMapping = function() {
+    return defaultMappings["**/*.xml"];
+};
 
 /**
  * Return true if the given path is an XML template file and is handled
