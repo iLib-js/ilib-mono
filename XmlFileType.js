@@ -253,6 +253,10 @@ var defaultSchema = {
         "templates": {
             "plurals": {
                 "default": {
+                    "_attributes": {
+                        "name": "[_key]",
+                        "i18n": "[_comment]"
+                    },
                     "[_forEachCategory]": {
                         "item": {
                             "_attributes": {

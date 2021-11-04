@@ -2644,6 +2644,161 @@ module.exports.xmlfile = {
         test.equal(content, expected);
 
         test.done();
-    }
+    },
 
+    testXmlFileLocalizeDefaultSchemaAndroidPluralTemplate: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "x/y/nomatch.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1">this is string one</string>\n' +
+            '    <plurals name="plural 1" i18n="comment">\n' +
+            '        <item quantity="one">singular</item>\n' +
+            '        <item quantity="other">plural</item>\n' +
+            '    </plurals>\n' +
+            '</resources>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "Это строка первая.",
+            targetLocale: "ru-RU",
+            datatype: "xml"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "plural 1",
+            sourceStrings: {
+                "one": "singular",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "один",
+                "few": "немного",
+                "other": "много"
+            },
+            targetLocale: "ru-RU",
+            datatype: "xml"
+        }));
+
+
+        // default template is "[dir]/[basename]-[localeUnder].[extension]"
+        if (fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml")));
+
+        xf.localize(translations, ["ru-RU"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml")));
+
+        var content = fs.readFileSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"), "utf-8");
+
+        // default method is copy so this should be the whole file
+        var expected =
+            '<resources>\n' +
+            '    <string name="string 1">Это строка первая.</string>\n' +
+            '    <plurals name="plural 1" i18n="comment">\n' +
+            '        <item quantity="one">один</item>\n' +
+            '        <item quantity="few">немного</item>\n' +
+            '        <item quantity="other">много</item>\n' +
+            '    </plurals>\n' +
+            '</resources>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testXmlFileLocalizeDefaultSchemaAndroidPluralTemplateJA: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "x/y/nomatch.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1">this is string one</string>\n' +
+            '    <plurals name="plural 1" i18n="comment">\n' +
+            '        <item quantity="one">singular</item>\n' +
+            '        <item quantity="other">plural</item>\n' +
+            '    </plurals>\n' +
+            '</resources>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "これは文字列1です。",
+            targetLocale: "ja-JP",
+            datatype: "xml"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "plural 1",
+            sourceStrings: {
+                "one": "singular",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "other": "多くの"
+            },
+            targetLocale: "ja-JP",
+            datatype: "xml"
+        }));
+
+
+        // default template is "[dir]/[basename]-[localeUnder].[extension]"
+        if (fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml")));
+
+        xf.localize(translations, ["ja-JP"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml")));
+
+        var content = fs.readFileSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"), "utf-8");
+
+        // default method is copy so this should be the whole file
+        var expected =
+            '<resources>\n' +
+            '    <string name="string 1">これは文字列1です。</string>\n' +
+            '    <plurals name="plural 1" i18n="comment">\n' +
+            '        <item quantity="other">多くの</item>\n' +
+            '    </plurals>\n' +
+            '</resources>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    }
 };

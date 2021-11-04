@@ -614,11 +614,10 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                 return returnValue;
             }.bind(this));
         } else {
-            if (resourceInfo && 
-                    resourceInfo.resType === "plural" && 
+            if (resourceInfo &&
+                    resourceInfo.resType === "plural" &&
                     resourceInfo.translation &&
                     schema.localizable &&
-                    schema.localizableType.type === "plural" &&
                     root["$$refs"]["#/$defs/templates/plurals"]) {
                 // If this is a localizable plural and we have a translation and a template available,
                 // then generate the plural children from the templates instead of just localizing
