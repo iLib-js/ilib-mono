@@ -132,14 +132,40 @@ var defaultSchema = {
     "type": "object",
     "description": "An Android resource file",
     "$defs": {
+        "resource-attribute-type": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "localizableType": {
+                        "key": "_value"
+                    }
+                },
+                "i18n": {
+                    "type": "string",
+                    "localizableType": {
+                        "comment": "_value"
+                    }
+                },
+                "locale": {
+                    "type": "string",
+                    "localizableType": {
+                        "locale": "_value"
+                    }
+                }
+            }
+        },
         "plural-item-type": {
             "type": "object",
             "properties": {
                 "_attributes": {
-                    "quantity": {
-                        "type": "string",
-                        "localizableType": {
-                            "category": "_value"
+                    "type": "object",
+                    "properties": {
+                        "quantity": {
+                            "type": "string",
+                            "localizableType": {
+                                "category": "_value"
+                            }
                         }
                     }
                 },
@@ -153,73 +179,34 @@ var defaultSchema = {
         },
         "plural-type": {
             "type": "object",
-                "localizable": true,
-                "localizableType": "array",
-                "properties": {
-                    "_attributes": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "localizableType": {
-                                    "key": "_value"
-                                }
-                            },
-                            "i18n": {
-                                "type": "string",
-                                "localizableType": {
-                                    "comment": "_value"
-                                }
-                            },
-                            "locale": {
-                                "type": "string",
-                                "localizableType": {
-                                    "locale": "_value"
-                                }
-                            }
-                        }
-                    },
-                    "item": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/$defs/plural-item-type"
-                                }
-                            },
-                            {
+            "localizable": true,
+            "localizableType": "plural",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
                                 "$ref": "#/$defs/plural-item-type"
                             }
-                        ]
-                    }
+                        },
+                        {
+                            "$ref": "#/$defs/plural-item-type"
+                        }
+                    ]
                 }
+            }
         },
         "string-type": {
             "type": "object",
             "localizable": true,
+            "localizableType": "string",
             "properties": {
                 "_attributes": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "localizableType": {
-                                "key": "_value"
-                            }
-                        },
-                        "i18n": {
-                            "type": "string",
-                            "localizableType": {
-                                "comment": "_value"
-                            }
-                        },
-                        "locale": {
-                            "type": "string",
-                            "localizableType": {
-                                "locale": "_value"
-                            }
-                        }
-                    }
+                    "$ref": "#/$defs/resource-attribute-type"
                 },
                 "_text": {
                     "type": "string",
@@ -242,32 +229,13 @@ var defaultSchema = {
         },
         "array-type": {
             "type": "object",
+            "localizable": true,
             "localizableType": "array",
             "properties": {
                 "_attributes": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "localizableType": {
-                                "key": "_value"
-                            }
-                        },
-                        "i18n": {
-                            "type": "string",
-                            "localizableType": {
-                                "comment": "_value"
-                            }
-                        },
-                        "locale": {
-                            "type": "string",
-                            "localizableType": {
-                                "locale": "_value"
-                            }
-                        }
-                    }
+                    "$ref": "#/$defs/resource-attribute-type"
                 },
-                "items": {
+                "item": {
                     "anyOf": [
                         {
                             "type": "array",
@@ -281,19 +249,6 @@ var defaultSchema = {
                     ]
                 }
             }
-        },
-        "array-array-type": {
-            "anyOf": [
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/$defs/array-type"
-                    }
-                },
-                {
-                    "$ref": "#/$defs/array-type"
-                }
-            ]
         },
         "templates": {
             "plurals": {
@@ -336,11 +291,18 @@ var defaultSchema = {
                         }
                     ]
                 },
-                "array": {
-                    "$ref": "#/$defs/array-array-type"
-                },
                 "string-array": {
-                    "$ref": "#/$defs/array-array-type"
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-type"
+                        }
+                    ]
                 }
             }
         }

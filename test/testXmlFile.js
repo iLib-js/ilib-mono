@@ -62,6 +62,11 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[localeDir]/strings.xml"
             },
+            "xml/values/*.xml": {
+                "schema": "android-resource-schema",
+                "method": "sparse",
+                "template": "resources/values-[language]-r[region]/[filename]"
+            },
             "**/messages.xml": {
                 "schema": "http://github.com/ilib-js/messages.json",
                 "method": "copy",
@@ -971,6 +976,144 @@ module.exports.xmlfile = {
         test.done();
     },
 
+    testXmlFileParseArraysOfArrays: function(test) {
+        test.expect(18);
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "xml/values/arrays.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+             '<resources>\n' +
+             '    <string-array name="array1">\n' +
+             '        <item>array 1 item 1</item>\n' +
+             '        <item>array 1 item 2</item>\n' +
+             '        <item>array 1 item 3</item>\n' +
+             '    </string-array>\n' +
+             '    <string-array name="array2">\n' +
+             '        <item>array 2 item 1</item>\n' +
+             '        <item>array 2 item 2</item>\n' +
+             '        <item>array 2 item 3</item>\n' +
+             '    </string-array>\n' +
+             '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getType(), "array");
+        test.equal(resources[0].getKey(), "array1");
+        var arr = resources[0].getSourceArray();
+        test.ok(arr);
+        test.equal(arr.length, 3);
+        test.equal(arr[0], "array 1 item 1");
+        test.equal(arr[1], "array 1 item 2");
+        test.equal(arr[2], "array 1 item 3");
+
+        test.equal(resources[1].getType(), "array");
+        test.equal(resources[1].getKey(), "array2");
+        arr = resources[1].getSourceArray();
+        test.ok(arr);
+        test.equal(arr.length, 3);
+        test.equal(arr[0], "array 2 item 1");
+        test.equal(arr[1], "array 2 item 2");
+        test.equal(arr[2], "array 2 item 3");
+
+        test.done();
+    },
+
+    testXmlFileParseArraysOfPlurals: function(test) {
+        test.expect(16);
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "xml/values/plurals.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+             '<resources>\n' +
+             '    <plurals name="plural1">\n' +
+             '        <item quantity="one">plural 1 item 1</item>\n' +
+             '        <item quantity="many">plural 1 item 2</item>\n' +
+             '        <item quantity="other">plural 1 item 3</item>\n' +
+             '    </plurals>\n' +
+             '    <plurals name="plural2">\n' +
+             '        <item quantity="one">plural 2 item 1</item>\n' +
+             '        <item quantity="many">plural 2 item 2</item>\n' +
+             '        <item quantity="other">plural 2 item 3</item>\n' +
+             '    </plurals>\n' +
+             '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getType(), "plural");
+        test.equal(resources[0].getKey(), "plural1");
+        var plural = resources[0].getSourcePlurals();
+        test.ok(plural);
+        test.equal(plural.one, "plural 1 item 1");
+        test.equal(plural.many, "plural 1 item 2");
+        test.equal(plural.other, "plural 1 item 3");
+
+        test.equal(resources[1].getType(), "plural");
+        test.equal(resources[1].getKey(), "plural2");
+        plural = resources[1].getSourcePlurals();
+        test.ok(plural);
+        test.equal(plural.one, "plural 2 item 1");
+        test.equal(plural.many, "plural 2 item 2");
+        test.equal(plural.other, "plural 2 item 3");
+
+        test.done();
+    },
+
+    testXmlFileParseArraysOfStrings: function(test) {
+        test.expect(10);
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "xml/values/strings.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+             '<resources>\n' +
+             '    <string name="string1">This is string1</string>\n' +
+             '    <string name="string2">This is string2</string>\n' +
+             '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getKey(), "string1");
+        test.equal(resources[0].getSource(), "This is string1");
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getKey(), "string2");
+        test.equal(resources[1].getSource(), "This is string2");
+
+        test.done();
+    },
 
     testXmlFileExtractFile: function(test) {
         test.expect(46);
