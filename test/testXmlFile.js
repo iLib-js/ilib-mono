@@ -2435,5 +2435,215 @@ module.exports.xmlfile = {
         test.equal(content, expected);
 
         test.done();
+    },
+
+    testXmlFileLocalizeWithRussianPlurals: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml")));
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "./xml/messages.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        // should read the file
+        xf.extract();
+
+        var translations = new TranslationSet();
+        // more plurals than the original source to test expanding plurals
+        // and changing their form
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "bar",
+            sourceStrings: {
+                "one": "singular",
+                "many": "many",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "единственное число",
+                "few": "двойной",
+                "many": "много",
+                "other": "Другие"
+            },
+            targetLocale: "ru-RU",
+            datatype: "xml"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "foo",
+            sourceStrings: {
+                "other": "asdf"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "единственное число",
+                "few": "двойной",
+                "many": "много",
+                "other": "Другие"
+            },
+            targetLocale: "ru-RU",
+            datatype: "xml"
+        }));
+
+        xf.localize(translations, ["ru-RU"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml")));
+
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"), "utf-8");
+
+        var expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<messages>\n' +
+            '    <plurals>\n' +
+            '        <foo>\n' +
+            '            <one>единственное число</one>\n' +
+            '            <few>двойной</few>\n' +
+            '            <many>много</many>\n' +
+            '            <other>Другие</other>\n' +
+            '        </foo>\n' +
+            '        <bar comment="translator comment">\n' +
+            '            <one>единственное число</one>\n' +
+            '            <few>двойной</few>\n' +
+            '            <many>много</many>\n' +
+            '            <other>Другие</other>\n' +
+            '        </bar>\n' +
+            '        <attribute one="one" few="few" many="many" other="other"/>\n' +
+            '        <hybrid one="one" few="few" many="many">other</hybrid>\n' +
+            '    </plurals>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '        <asdfasdf key="key">\n' +
+            '            <item>1</item>\n' +
+            '            <item>2</item>\n' +
+            '            <item>3</item>\n' +
+            '        </asdfasdf>\n' +
+            '    </arrays>\n' +
+            '    <strings>\n' +
+            '        <a>b</a>\n' +
+            '        <c>d</c>\n' +
+            '        <e key="key1">f</e>\n' +
+            '        <e key="key2" value="g"/>\n' +
+            '    </strings>\n' +
+            '</messages>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
+    },
+
+    testXmlFileLocalizeWithJapanesePlurals: function(test) {
+        test.expect(4);
+
+        var base = path.dirname(module.id);
+
+        if (fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"))) {
+            fs.unlinkSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"));
+        }
+
+        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml")));
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "./xml/messages.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        // should read the file
+        xf.extract();
+
+        var translations = new TranslationSet();
+        // less plurals than the original source to test contracting plurals
+        // and changing their forms
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "bar",
+            sourceStrings: {
+                "one": "singular",
+                "many": "many",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "other": "複数"
+            },
+            targetLocale: "ja-JP",
+            datatype: "xml"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "attribute",
+            sourceStrings: {
+                "one": "singular",
+                "few": "few",
+                "many": "many",
+                "other": "plural"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "other": "複数"
+            },
+            targetLocale: "ja-JP",
+            datatype: "xml"
+        }));
+
+        xf.localize(translations, ["ja-JP"]);
+
+        test.ok(fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml")));
+
+        var content = fs.readFileSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"), "utf-8");
+
+        var expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<messages>\n' +
+            '    <plurals>\n' +
+            '        <foo>asdf</foo>\n' +
+            '        <bar comment="translator comment">\n' +
+            '            <other>複数</other>\n' +
+            '        </bar>\n' +
+            '        <attribute other="複数"/>\n' +
+            '        <hybrid one="one" few="few" many="many">other</hybrid>\n' +
+            '    </plurals>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '        <asdfasdf key="key">\n' +
+            '            <item>1</item>\n' +
+            '            <item>2</item>\n' +
+            '            <item>3</item>\n' +
+            '        </asdfasdf>\n' +
+            '    </arrays>\n' +
+            '    <strings>\n' +
+            '        <a>b</a>\n' +
+            '        <c>d</c>\n' +
+            '        <e key="key1">f</e>\n' +
+            '        <e key="key2" value="g"/>\n' +
+            '    </strings>\n' +
+            '</messages>\n';
+
+        diff(content, expected);
+        test.equal(content, expected);
+
+        test.done();
     }
+
 };

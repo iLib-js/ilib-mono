@@ -129,6 +129,38 @@
                     }
                 }
             }
+        },
+        "templates": {
+            "plurals": {
+                "default": {
+                    "_attributes": {
+                        "comment": "[_comment]"
+                    },
+                    "[_forEachCategory]": {
+                        "[_category]": {
+                            "_text": "[_source]"
+                        }
+                    }
+                },
+                "attribute": {
+                    "_attributes": {
+                        "[_forEachCategory]": {
+                            "[_category]": "[_target]"
+                        },
+                        "comment": "[_comment]"
+                    }
+                },
+                "hybrid": {
+                    "_attributes": {
+                        "[_forEachCategory]": {
+                            "[_category]": "[_target]"
+                        }
+                    },
+                    "_text": {
+                        "other": "[_target]"
+                    }
+                }
+            }
         }
     },
     "properties": {

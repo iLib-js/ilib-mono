@@ -252,11 +252,15 @@ var defaultSchema = {
         },
         "templates": {
             "plurals": {
-                "item": {
-                    "_attributes": {
-                        "quantity": "[_category]"
-                    },
-                    "_text": "[_source]"
+                "default": {
+                    "[_forEachCategory]": {
+                        "item": {
+                            "_attributes": {
+                                "quantity": "[_category]"
+                            },
+                            "_text": "[_target]"
+                        }
+                    }
                 }
             }
         }

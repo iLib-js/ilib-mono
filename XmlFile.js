@@ -491,6 +491,64 @@ XmlFile.prototype.getTranslation = function(resourceInfo, locale, resource, tran
     }
 };
 
+XmlFile.prototype.mapTemplateString = function(string, resourceInfo, plural) {
+    switch (string) {
+        case "[_category]":
+            return plural;
+        case "[_source]":
+        case "[_target]":
+            // record that we did a translation
+            resourceInfo.keep = true;
+            return resourceInfo.translation[plural];
+        case "[_key]":
+            return resourceInfo.key;
+        case "[_comment]":
+            return resourceInfo.comment;
+        case "[_locale]":
+            return resourceInfo.locale;
+        default:
+            return string;
+    }
+};
+
+function mergeItem(existingItem, newItem) {
+    if (existingItem) {
+        if (ilib.isArray(existingItem)) {
+            existingItem.push(newItem);
+            return existingItem;
+        } else {
+            return [
+                existingItem,
+                newItem
+            ];
+        }
+    } else {
+        return newItem;
+    }
+}
+
+XmlFile.prototype.formatTemplate = function(template, resourceInfo, plural) {
+    var returnValue = {}, item, subitem;
+    for (var property in template) {
+        var targetProperty = this.mapTemplateString(property, resourceInfo, plural);
+        if (property === "[_forEachCategory]") {
+            for (var plural in resourceInfo.translation) {
+                item = this.formatTemplate(template[property], resourceInfo, plural);
+                // now merge the item into any existing items
+                for (subitem in item) {
+                    returnValue[subitem] = mergeItem(returnValue[subitem], item[subitem]);
+                }
+            }
+        } else {
+            returnValue[targetProperty] = (typeof(template[property]) === "object") ?
+                this.formatTemplate(template[property], resourceInfo, plural) :
+                this.mapTemplateString(template[property], resourceInfo, plural);
+        }
+    }
+
+    return returnValue;
+};
+
 XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo) {
     if (!xml || !schema) return;
 
@@ -556,6 +614,25 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                 return returnValue;
             }.bind(this));
         } else {
+            if (resourceInfo && 
+                    resourceInfo.resType === "plural" && 
+                    resourceInfo.translation &&
+                    schema.localizable &&
+                    schema.localizableType.type === "plural" &&
+                    root["$$refs"]["#/$defs/templates/plurals"]) {
+                // If this is a localizable plural and we have a translation and a template available,
+                // then generate the plural children from the templates instead of just localizing
+                // whatever children are there already. This is how we support expanding or
+                // contracting plurals
+                var template =
+                    root["$$refs"]["#/$defs/templates/plurals/" + name] ||
+                    root["$$refs"]["#/$defs/templates/plurals/default"];
+                if (template) {
+                    return this.formatTemplate(template, resourceInfo);
+                }
+                // else fall through and localize whatever children are there
+            }
+
             type = schema[typeProperty] || typeof(xml);
             switch (type) {
             case "boolean":
