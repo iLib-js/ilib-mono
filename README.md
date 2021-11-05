@@ -371,6 +371,7 @@ XML:
 - "source" - the source text of this resource
 - "comment" - a comment for the translator to give more context
 - "locale" - the source locale of this resource
+- "category" - the plural category for a plural resource
 
 #### Element Parts
 
@@ -405,7 +406,7 @@ comment and the source text. The schema is specified like this:
                     "key": {
                         "type": "string",
                         "localizableType": {
-                            "_value": "key"
+                            "key": "_value"
                         }
                     }
                 }
@@ -414,7 +415,7 @@ comment and the source text. The schema is specified like this:
                 "_text": {
                     "type": "string",
                     "localizableType": {
-                        "_value": "comment"
+                        "comment": "_value"
                     }
                 }
             },
@@ -422,7 +423,7 @@ comment and the source text. The schema is specified like this:
                 "_text": {
                     "type": "string",
                     "localizableType": {
-                        "_value": "source"
+                        "source": "_value"
                     }
                 }
             }
@@ -490,7 +491,7 @@ This is specified as follows in the schema:
                     "id": {
                         "type": "string",
                         "localizableType": {
-                            "_value": "key"
+                            "key": "_value"
                         }
                     }
                 }
@@ -498,7 +499,7 @@ This is specified as follows in the schema:
             "item": {
                 "type": "string",
                 "localizableType": {
-                    "_value": "source"
+                    "source": "_value"
                 }
             }
         }
@@ -560,7 +561,7 @@ Example JSON schema file for the above XML:
                         "id": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "key"
+                                "key": "_value"
                             }
                         }
                     }
@@ -571,7 +572,7 @@ Example JSON schema file for the above XML:
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "source",
+                                "source": "_value",
                                 "category": "one"
                             }
                         }
@@ -583,7 +584,7 @@ Example JSON schema file for the above XML:
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "source",
+                                "source": "_value",
                                 "category": "other"
                             }
                         }
@@ -599,60 +600,190 @@ The value of the "_value" element is assigned to the "source" field of the
 resource in both the singular and plural elements. The difference is that
 they have different categories, so they do not conflict.
 
+Note that the way the xml to json converter works is that a single subitem
+of a node will just contain that subitem, but if there are multiple subitems
+in a node, it will have an array of them.
+
+Example: plurals with "item" subelements as in Android resource files
+
+```xml
+    <plurals name="unique">
+        <item quantity="one">This is the singular string</item>
+        <item quantity="other">This is the plural string</item>
+    </plurals>
+```
+
+The above would convert into the following json:
+
+```json
+    "plurals": {
+        "_attributes": {
+            "name": "unique"
+        },
+        "item": [
+            {
+                "_attributes": {
+                    "quantity": "one"
+                },
+                "_text": "This is the singular string"
+            },
+            {
+                "_attributes": {
+                    "quantity": "other"
+                },
+                "_text": "This is the plural string"
+            }
+        ]
+    }
+```
+
+But, if there were only one item in the plural, like this:
+
+
+```xml
+    <plurals name="unique">
+        <item quantity="other">This is the plural string</item>
+    </plurals>
+```
+
+Then the above would convert into the following json:
+
+```json
+    "plurals": {
+        "_attributes": {
+            "name": "unique"
+        },
+        "item": {
+            "_attributes": {
+                "quantity": "other"
+            },
+            "_text": "This is the plural string"
+        }
+    }
+```
+
+In the first example, the "item" node is an array of objects. In the second,
+it is a single object.
+
+Care must be taken to account for this in your schema. Here is how you
+might make a useful schema using the "anyOf" keyword in your json schema
+to parse an array of plurals or just a single plural. These share the
+definition of a plural and of an item in the "$defs" keyword by using "$ref"
+to refer to them:
+
+```json
+    "$defs": {
+        "plural-item-type": {
+            "type": "object",
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "quantity": {
+                            "type": "string",
+                            "localizableType": {
+                                "category": "_value"
+                            }
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "plural-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "plural",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/plural-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/plural-item-type"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "properties": {
+        "plurals": {
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/plural-type"
+                    }
+                },
+                {
+                    "$ref": "#/$defs/plural-type"
+                }
+            ]
+        }
+    }
+```
+
 #### Plural Templates
 
 The above XML has two strings, one for singular and one for plural. What
 about the other categories? In other languages, the plurals may use other
-categories, so how do we notate that in the translated file? In this case,
-the plugin
+categories that are not used in the source language (English?), so how do
+we notate that in the translated file? In this case, the plugin
 needs to know which elements or attributes to use for those categories when
 writing out the localized files. The solution is plural templates.
 
-Suppose we want to specify category strings like this:
+Plural templates allow you to specify the attributes and children of a
+plural element and with special keywords that get replaced with values
+from the original source. For example, you can use "[_key]" to specify
+that the unique key of a resource should be placed into the template
+at this point.
+
+Example. A full plural might look something like this in an Android
+resource file:
 
 ```xml
-<string category="one">This is the singular.</string>
+<plurals name="plural 1">
+    <item quantity="one">This is the singular.</item>
+    <item quantity="other">This is the plural.</item>
+</plural>
 ```
 
-Converted to json, it would look like this:
+For English, we would use the "one" and "other" categories as specified
+above, but for Russian, we need to use the "one", "few", and "other"
+categories, so we need a plural template to generate those.
 
-```json
-    "string": {
-        "_attributes": {
-            "category": "one"
-        },
-        "_text": "This is the singular."
-    }
-```
-
-To specify the template, simply replace the name of the category with
-the special string "[_category]" and the value of the translation with
-the special string "[_translation]".
-
-Thus, the plural template would look like this:
-
-```json
-    "string": {
-        "_attributes": {
-            "category": "[_category]"
-        },
-        "_text": "[_translation]"
-    }
-```
-
-The plural templates are specified in the schema definition in the
-`$defs` keyword.
+The plural templates are specified in the schema definition inside the
+`$defs` keyword. Here is a full plural template for the above
+plural xml in the "$defs":
 
 ```json
     "$defs": {
         "templates": {
-            "plural": {
-                "all": {
-                    "string": {
-                        "_attributes": {
-                            "category": "[_category]"
-                        },
-                        "_text": "[_translation]"
+            "plurals": {
+                "default": {
+                    "_attributes": {
+                        "name": "[_key]"
+                    },
+                    "[_forEachCategory]": {
+                        "item": {
+                            "_attributes": {
+                                "quantity": "[_category]"
+                            },
+                            "_text": "[_target]"
+                        }
                     }
                 }
             }
@@ -660,53 +791,30 @@ The plural templates are specified in the schema definition in the
     }
 ```
 
-The above specifies that the template given inside of the "all"
-property should be used with all categories.
+Inside of "$defs/templates/plurals" is the "default" property. This is the
+name of the template. The schema allows you to have multiple templates,
+one for each type of plural you need to support. The name "default" is used
+when no specific name is given to the template and will be used as the
+default template.
 
-In some forms of XML, each category needs to have a different
-template. This is also specified in the `templates/plural` property:
+Inside the template, we specify the name attribute, which takes the value
+of the resource's key, and we have a special property "[_forEachCategory]".
+This specifies that all of the children underneath it get replicated for
+every category in the translation of a plural resource. That is, in Russian
+that part of the template gets replicated 3 times, one each for "one",
+"few", and "other".
 
-```json
-    "$defs": {
-        "templates": {
-            "plural": {
-                "zero": {
-                    "none": {
-                        "_text": "[_translation]"
-                    }
-                },
-                "one": {
-                    "singular": {
-                        "_text": "[_translation]"
-                    }
-                },
-                "two": {
-                    "double": {
-                        "_text": "[_translation]"
-                    }
-                },
-                "few": {
-                    "few": {
-                        "_text": "[_translation]"
-                    }
-                },
-                "many": {
-                    "many": {
-                        "_text": "[_translation]"
-                    }
-                },
-                "other": {
-                    "plural": {
-                        "_text": "[_translation]"
-                    }
-                }
-            }
-        }
-    }
-```
+Inside the "forEachCategory" property, other strings get replaced with
+values from the resource. Here is a table of the replacement values:
 
-In that example, the category is implicit in the name of the XML
-element that is generated. Example XML might look like this:
+|| label || value ||
+| _key | The unique key of the resource. |
+| _target | The target translation of the resource for the category |
+| _category | The category of the translation |
+| _locale | The locale specifier for the translation |
+| _comment | The translator's comment for the resource |
+
+Let's say we have a plural resource that should look like this:
 
 ```xml
     <string-plural id="unique">
@@ -717,10 +825,32 @@ element that is generated. Example XML might look like this:
     </string-plural>
 ```
 
-Note that the plural templates only specify the sub-elements or
-attributes of the category strings. The parent element
-(ie. "string-array" in the example) stays the same as it was in the
-source XML.
+That is, the subelements of "string-plural" are named for the
+category instead of having an attribute that names the category.
+In this case, we can use the "[_category]" substitution
+in property name inside the template, like this:
+
+```json
+    "$defs": {
+        "templates": {
+            "plurals": {
+                "default": {
+                    "_attributes": {
+                        "id": "[_key]"
+                    },
+                    "[_forEachCategory]": {
+                        "[_category]": {
+                            "_text": "[_target]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+```
+
+The "[_forEachCategory]" keyword can also appear inside of
+attributes if necessary.
 
 ## Default Schema
 
@@ -753,53 +883,139 @@ the following json-XML schema:
     "type": "object",
     "description": "An Android resource file",
     "$defs": {
-        "array-type": {
+        "resource-attribute-type": {
             "type": "object",
-            "localizableType": "array",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "localizableType": {
+                        "key": "_value"
+                    }
+                },
+                "i18n": {
+                    "type": "string",
+                    "localizableType": {
+                        "comment": "_value"
+                    }
+                },
+                "locale": {
+                    "type": "string",
+                    "localizableType": {
+                        "locale": "_value"
+                    }
+                }
+            }
+        },
+        "plural-item-type": {
+            "type": "object",
             "properties": {
                 "_attributes": {
                     "type": "object",
                     "properties": {
-                        "name": {
+                        "quantity": {
                             "type": "string",
                             "localizableType": {
-                                "_value": "key"
-                            }
-                        },
-                        "i18n": {
-                            "type": "string",
-                            "localizableType": {
-                                "_value": "comment"
-                            }
-                        },
-                        "locale": {
-                            "type": "string",
-                            "localizableType": {
-                                "_value": "locale"
+                                "category": "_value"
                             }
                         }
                     }
                 },
-                "item": {
-                    "type": "object",
-                    "properties": {
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "_value": "source"
-                            }
-                        }
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
                     }
+                }
+            }
+        },
+        "plural-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "plural",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/plural-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/plural-item-type"
+                        }
+                    ]
+                }
+            }
+        },
+        "string-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "array-item-type": {
+            "type": "object",
+            "properties": {
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "array-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "array",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-item-type"
+                        }
+                    ]
                 }
             }
         },
         "templates": {
             "plurals": {
-                "item": {
+                "default": {
                     "_attributes": {
-                        "quantity": "[_category]"
+                        "name": "[_key]",
+                        "i18n": "[_comment]"
                     },
-                    "_text": "[_source]"
+                    "[_forEachCategory]": {
+                        "item": {
+                            "_attributes": {
+                                "quantity": "[_category]"
+                            },
+                            "_text": "[_target]"
+                        }
+                    }
                 }
             }
         }
@@ -809,100 +1025,68 @@ the following json-XML schema:
             "type": "object",
             "properties": {
                 "string": {
-                    "type": "object",
-                    "localizable": true,
-                    "properties": {
-                        "_attributes": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "key"
-                                    }
-                                },
-                                "i18n": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "comment"
-                                    }
-                                },
-                                "locale": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "locale"
-                                    }
-                                }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/string-type"
                             }
                         },
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "_value": "source"
-                            }
+                        {
+                            "$ref": "#/$defs/string-type"
                         }
-                    }
+                    ]
                 },
                 "plurals": {
-                    "type": "object",
-                    "localizable": true,
-                    "localizableType": "array",
-                    "properties": {
-                        "_attributes": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "key"
-                                    }
-                                },
-                                "i18n": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "comment"
-                                    }
-                                },
-                                "locale": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "locale"
-                                    }
-                                }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/plural-type"
                             }
                         },
-                        "item": {
-                            "type": "object",
-                            "properties": {
-                                "_attributes": {
-                                    "quantity": {
-                                        "type": "string",
-                                        "localizableType": {
-                                            "_value": "category"
-                                        }
-                                    }
-                                },
-                                "_text": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "_value": "source"
-                                    }
-                                }
-                            }
+                        {
+                            "$ref": "#/$defs/plural-type"
                         }
-                    }
-                },
-                "array": {
-                    "$ref": "#/$defs/array-type"
+                    ]
                 },
                 "string-array": {
-                    "$ref": "#/$defs/array-type"
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-type"
+                        }
+                    ]
                 }
             }
         }
     }
 }
 ```
+
+### One Last Note
+
+Getting the schema definitions is often pretty difficult. If your schema
+is not causing the plugin to extract any resources, it's probably your
+schema definition. Try changing the log4js.json inside of the loctool to
+set the level for the various `loctool.lib.ResourceFactory*` settings
+to "debug" or "trace". This will give some clue about whether resources
+are being created and if so, what types are they.
+
+Also, it is a good idea to convert your XML to json format and examine
+that before writing the JSON schema to parse it. To convert it, use the
+auxiliary program `convertToJson.js` that comes along with this plugin.
+
+```
+Usage: node node_modules/ilib-loctool-xml/convertToJson.js myfile.xml
+```
+
+That will output the json to the standard output.
 
 ## Not an XML Validator
 
@@ -925,3 +1109,4 @@ file for more details.
 - initial version
 - support JSON schema style parsing of XML and also a default schema
   (Java properties files)
+- support for plural templates

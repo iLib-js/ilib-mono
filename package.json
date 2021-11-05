@@ -35,7 +35,8 @@
         "README.md",
         "LICENSE",
         "XmlFile.js",
-        "XmlFileType.js"
+        "XmlFileType.js",
+        "convertToJson.js"
     ],
     "repository": {
         "type": "git",
