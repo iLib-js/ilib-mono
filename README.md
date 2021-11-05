@@ -807,7 +807,8 @@ that part of the template gets replicated 3 times, one each for "one",
 Inside the "forEachCategory" property, other strings get replaced with
 values from the resource. Here is a table of the replacement values:
 
-|| label || value ||
+|  *label* |  *value* |
+|---------|---------|
 | _key | The unique key of the resource. |
 | _target | The target translation of the resource for the category |
 | _category | The category of the translation |
