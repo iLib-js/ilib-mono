@@ -237,6 +237,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.6.1
+
+- make sure the msgctxt line comes out before the msgid line. Some libraries
+  cannot handle it the other way around.
+
 ### v1.6.0
 
 - added the contextInKey setting so that we can support translation
