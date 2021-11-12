@@ -660,10 +660,10 @@ POFile.prototype.localizeText = function(translations, locale) {
                     output += '#| ' + str + '\n';
                 });
             }
-            output += 'msgid "' + escapeQuotes(key) + '"\n';
             if (r.getContext()) {
                 output += 'msgctxt "' + escapeQuotes(r.getContext()) + '"\n';
             }
+            output += 'msgid "' + escapeQuotes(key) + '"\n';
             if (r.getType() === "string") {
                 var text = r.getSource();
                 if (translations) {
