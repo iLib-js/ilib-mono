@@ -260,8 +260,8 @@ module.exports.pofile = {
         test.ok(pof);
 
         pof.parse(
-            'msgid "string 1"\n' +
-            'msgctxt "context 1"\n'
+            'msgctxt "context 1"\n' +
+            'msgid "string 1"\n'
         );
 
         var set = pof.getTranslationSet();
@@ -714,12 +714,12 @@ module.exports.pofile = {
 
         // only source strings
         pof.parse(
-            'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n'
         );
 
@@ -756,12 +756,12 @@ module.exports.pofile = {
         test.ok(pof);
 
         pof.parse(
-            'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n'
         );
 
@@ -1541,12 +1541,12 @@ module.exports.pofile = {
         test.ok(pof);
 
         pof.parse(
-            'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n'
         );
 
@@ -1584,12 +1584,12 @@ module.exports.pofile = {
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1 contexte 1"\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr "chaîne numéro 2 contexte 2"\n\n';
 
         diff(actual, expected);
@@ -1608,12 +1608,12 @@ module.exports.pofile = {
         test.ok(pof);
 
         pof.parse(
-            'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr ""\n'
         );
 
@@ -1651,12 +1651,12 @@ module.exports.pofile = {
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1 contexte 1"\n' +
             '\n' +
-            'msgid "string 1"\n' +
             'msgctxt "context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr "chaîne numéro 2 contexte 2"\n\n';
 
         diff(actual, expected);
