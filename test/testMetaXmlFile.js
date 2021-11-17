@@ -24,11 +24,25 @@ if (!MetaXmlFile) {
     var MetaXmlFile = require("../MetaXmlFile.js");
     var MetaXmlFileType = require("../MetaXmlFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
-    var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
+    var ResourceString =  require("loctool/lib/ResourceString.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
 }
 
 function diff(a, b) {
+    if (!a && !b) return;
+    if (!a) {
+        console.log("Found difference at character 0");
+        console.log("a: undefined");
+        console.log("b: " + b.substring(i));
+        return;
+    }
+    if (!b) {
+        console.log("Found difference at character 0");
+        console.log("a: " + a.substring(i));
+        console.log("b: undefined");
+        return;
+    }
+
     var min = Math.min(a.length, b.length);
 
     for (var i = 0; i < min; i++) {
@@ -70,8 +84,6 @@ var p2 = new CustomProject({
 var t = new MetaXmlFileType(p2);
 
 module.exports.metaxmlfile = {
-    // make sure to initialize the file types so that the tests below can use
-    // a ContextResourceString instead of a regular ContextResourceString
     testMetaXmlInit: function(test) {
         p.init(function() {
             p2.init(function() {
@@ -84,7 +96,8 @@ module.exports.metaxmlfile = {
         test.expect(1);
 
         var mxf = new MetaXmlFile({
-            project: p
+            project: p,
+            type: mxft
         });
         test.ok(mxf);
 
@@ -304,7 +317,10 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyNewLines: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
         test.ok(mxf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
@@ -316,7 +332,10 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyEscapeN: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
         test.ok(mxf);
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
@@ -328,7 +347,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyTabs: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("A \t B"), "r191336864");
@@ -339,7 +362,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyEscapeT: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("A \\t B"), "r191336864");
@@ -350,7 +377,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyQuotes: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("A \\'B\\' C"), "r935639115");
@@ -361,7 +392,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("\\u00A0 \\u0023"), "r2293235");
@@ -372,7 +407,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat"), "r969175354");
@@ -383,7 +422,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyInterpretEscapedOctalChars: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("A \\40 \\011 B"), "r191336864");
@@ -394,7 +437,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyMetaXmlEscapeSequences: function(test) {
         test.expect(2);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("A \\b\\t\\n\\f\\r B"), "r191336864");
@@ -405,7 +452,11 @@ module.exports.metaxmlfile = {
     testMetaXmlFileMakeKeyCheckRubyCompatibility: function(test) {
         test.expect(13);
 
-        var mxf = new MetaXmlFile({project: p});
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+
         test.ok(mxf);
 
         test.equals(mxf.makeKey("This has \\\"double quotes\\\" in it."), "r487572481");
@@ -438,6 +489,38 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
+            '        <label>Password</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Password");
+        test.equal(r.getKey(), "Test");
+
+        test.done();
+    },
+
+    testMetaXmlFileParseCommentOnly: function(test) {
+        test.expect(5);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: undefined,
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
             '        <label><!-- Password --></label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
@@ -447,17 +530,17 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customApplications", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
 
-        test.equal(r.getSource(), "Password");
+        test.ok(!r.getSource());
         test.equal(r.getKey(), "Test");
 
         test.done();
     },
 
-    testMetaXmlFileParseIgnoreEmpty: function(test) {
-        test.expect(3);
+    testMetaXmlFileParseEmpty: function(test) {
+        test.expect(6);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -479,7 +562,13 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 0);
+        test.equal(set.size(), 1);
+
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
+        test.ok(r);
+
+        test.ok(!r.getSource());
+        test.equal(r.getKey(), "Test");
 
         test.done();
     },
@@ -498,7 +587,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!--    Enter Your Password \r \n  --></label>\n' +
+            '        <label>    Enter Your Password \r \n  </label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
@@ -507,7 +596,7 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customApplications", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
         test.equal(r.getSource(), "Enter Your Password");
         test.equal(r.getKey(), "Test");
@@ -532,7 +621,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
@@ -546,7 +635,7 @@ module.exports.metaxmlfile = {
     },
 
     testMetaXmlFileParseCustomApplications: function(test) {
-        test.expect(6);
+        test.expect(5);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -559,7 +648,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
@@ -568,18 +657,17 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customApplications", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test");
-        test.equal(r.getContext(), "customApplications");
 
         test.done();
     },
 
     testMetaXmlFileParseCustomLabels: function(test) {
-        test.expect(6);
+        test.expect(5);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -592,7 +680,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customLabels>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customLabels>\n' +
             '</Translations>\n'
@@ -601,18 +689,17 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customLabels", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test");
-        test.equal(r.getContext(), "customLabels");
 
         test.done();
     },
 
     testMetaXmlFileParseCustomTabs: function(test) {
-        test.expect(6);
+        test.expect(5);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -625,7 +712,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customTabs>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customTabs>\n' +
             '</Translations>\n'
@@ -634,22 +721,21 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customTabs", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test");
-        test.equal(r.getContext(), "customTabs");
 
         test.done();
     },
 
     testMetaXmlFileParseQuickActions: function(test) {
-        test.expect(6);
+        test.expect(5);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -658,7 +744,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <quickActions>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </quickActions>\n' +
             '</Translations>\n'
@@ -667,22 +753,21 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "quickActions", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test");
-        test.equal(r.getContext(), "quickActions");
 
         test.done();
     },
 
     testMetaXmlFileParseReportTypes: function(test) {
-        test.expect(10);
+        test.expect(8);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -691,11 +776,11 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <reportTypes>\n' +
-            '        <label><!-- Screen Flows --></label>\n' +
+            '        <label>Screen Flows</label>\n' +
             '        <name>screen_flows_prebuilt_crt</name>\n' +
             '        <sections>\n' +
-            '            <label><!-- Flow Interview Log Entries --></label>\n' +
             '            <name>Test1</name>\n' +
+            '            <label>Flow Interview Log Entries</label>\n' +
             '        </sections>\n' +
             '    </reportTypes>\n' +
             '</Translations>\n'
@@ -704,29 +789,27 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes", "en-US", "screen_flows_prebuilt_crt", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Screen Flows");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getContext(), "reportTypes");
 
-        r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes.sections", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test1");
-        test.equal(r.getContext(), "reportTypes.sections");
+        test.equal(r.getKey(), "Test1");
 
         test.done();
     },
 
     testMetaXmlFileParseReportTypesMultiple: function(test) {
-        test.expect(14);
+        test.expect(11);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -735,15 +818,15 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <reportTypes>\n' +
-            '        <description><!-- Screen Flows --></description>\n' +
-            '        <label><!-- Screen Flows --></label>\n' +
+            '        <description>Screen Flows</description>\n' +
+            '        <label>Screen Flows</label>\n' +
             '        <name>screen_flows_prebuilt_crt</name>\n' +
             '        <sections>\n' +
-            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <label>Flow Interview Log Entries</label>\n' +
             '            <name>Test1</name>\n' +
             '        </sections>\n' +
             '        <sections>\n' +
-            '            <label><!-- Flow Interview Logs --></label>\n' +
+            '            <label>Flow Interview Logs</label>\n' +
             '            <name>Test2</name>\n' +
             '        </sections>\n' +
             '    </reportTypes>\n' +
@@ -753,26 +836,23 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes", "en-US", "screen_flows_prebuilt_crt", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Screen Flows");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getContext(), "reportTypes");
 
-        r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes.sections", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test1");
-        test.equal(r.getContext(), "reportTypes.sections");
+        test.equal(r.getKey(), "Test1");
 
-        r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes.sections", "en-US", "screen_flows_prebuilt_crt.Test2", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test2", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Logs");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test2");
-        test.equal(r.getContext(), "reportTypes.sections");
+        test.equal(r.getKey(), "Test2");
 
         test.done();
     },
@@ -782,7 +862,7 @@ module.exports.metaxmlfile = {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -791,15 +871,15 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <reportTypes>\n' +
-            '        <description><!-- Screen Flows --></description>\n' +
-            '        <label><!-- Screen Flows --></label>\n' +
+            '        <description>Screen Flows</description>\n' +
+            '        <label>Screen Flows</label>\n' +
             '        <name>screen_flows_prebuilt_crt</name>\n' +
             '        <sections>\n' +
-            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <label>Flow Interview Log Entries</label>\n' +
             '            <name>Test1</name>\n' +
             '        </sections>\n' +
             '        <sections>\n' +
-            '            <label><!-- Flow Interview Logs --></label>\n' +
+            '            <label>Flow Interview Logs</label>\n' +
             '            <name>Test2</name>\n' +
             '        </sections>\n' +
             '    </reportTypes>\n' +
@@ -809,17 +889,17 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 4);
+        test.equal(set.size(), 3);
 
         test.done();
     },
 
     testMetaXmlFileParseReportTypesWithDescription: function(test) {
-        test.expect(14);
+        test.expect(9);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -828,11 +908,11 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <reportTypes>\n' +
-            '        <description><!-- Screen Flows Description --></description>\n' +
-            '        <label><!-- Screen Flows --></label>\n' +
+            '        <description>Screen Flows Description</description>\n' +
+            '        <label>Screen Flows</label>\n' +
             '        <name>screen_flows_prebuilt_crt</name>\n' +
             '        <sections>\n' +
-            '            <label><!-- Flow Interview Log Entries --></label>\n' +
+            '            <label>Flow Interview Log Entries</label>\n' +
             '            <name>Test1</name>\n' +
             '        </sections>\n' +
             '    </reportTypes>\n' +
@@ -842,36 +922,28 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes", "en-US", "screen_flows_prebuilt_crt", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "screen_flows_prebuilt_crt", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Screen Flows");
         test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getContext(), "reportTypes");
+        test.equal(r.getComment(), "Screen Flows Description");
 
-        r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes", "en-US", "screen_flows_prebuilt_crt.description", "metaxml"));
-        test.ok(r);
-
-        test.equal(r.getSource(), "Screen Flows Description");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt.description");
-        test.equal(r.getContext(), "reportTypes");
-
-        r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes.sections", "en-US", "screen_flows_prebuilt_crt.Test1", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Test1");
-        test.equal(r.getContext(), "reportTypes.sections");
+        test.equal(r.getKey(), "Test1");
 
         test.done();
     },
 
     testMetaXmlFileParseWithDups: function(test) {
-        test.expect(7);
+        test.expect(6);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -880,11 +952,11 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customLabels>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customLabels>\n' +
             '    <customLabels>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customLabels>\n' +
             '</Translations>\n'
@@ -893,12 +965,11 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customLabels", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test");
-        test.equal(r.getContext(), "customLabels");
 
         test.equal(set.size(), 1);
 
@@ -906,11 +977,11 @@ module.exports.metaxmlfile = {
     },
 
     testMetaXmlFileParseWithDupsWithDifferentKeys: function(test) {
-        test.expect(11);
+        test.expect(9);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: undefined,
+            pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
         test.ok(mxf);
@@ -919,11 +990,11 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customLabels>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test1</name>\n' +
             '    </customLabels>\n' +
             '    <customLabels>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test2</name>\n' +
             '    </customLabels>\n' +
             '</Translations>\n'
@@ -932,27 +1003,70 @@ module.exports.metaxmlfile = {
         var set = mxf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customLabels", "en-US", "Test1", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test1", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test1");
-        test.equal(r.getContext(), "customLabels");
 
-        r = set.get(ContextResourceString.hashKey("forceapp", "customLabels", "en-US", "Test2", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test2", "xml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Password");
         test.equal(r.getKey(), "Test2");
-        test.equal(r.getContext(), "customLabels");
 
         test.equal(set.size(), 2);
 
         test.done();
     },
 
+
+    testMetaXmlFileParseCustomApplication: function(test) {
+        test.expect(11);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "foo/bar/foo.app-meta.xml",
+            type: mxft
+        });
+        test.ok(mxf);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <defaultLandingTab>x</defaultLandingTab>\n' +
+            '    <description>Screen Flows Description</description>\n' +
+            '    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>\n' +
+            '    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>\n' +
+            '    <label>Screen Flows</label>\n' +
+            '    <logo>screen_flow.png</logo>\n' +
+            '    <tabs>x</tabs>\n' +
+            '    <tabs>y</tabs>\n' +
+            '    <tabs>z</tabs>\n' +
+            '</CustomApplication>\n'
+        );
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Screen Flows", "xml"));
+        test.ok(r);
+
+        test.equal(r.getSource(), "Screen Flows");
+        test.equal(r.getKey(), "Screen Flows");
+        test.equal(r.getComment(), "Screen Flows Description");
+        test.equal(r.getSourceLocale(), "en-US");
+        test.equal(r.getType(), "string");
+        test.ok(!r.getTarget());
+        test.ok(!r.getTargetLocale());
+
+        test.done();
+    },
+
     testMetaXmlFileExtractFile: function(test) {
-        test.expect(14);
+        test.expect(11);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -966,25 +1080,22 @@ module.exports.metaxmlfile = {
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 9);
+        test.equal(set.size(), 8);
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "customApplications", "en-US", "Test", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
         test.ok(r);
-        test.equal(r.getSource(), "Test");
+        test.ok(!r.getSource());
         test.equal(r.getKey(), "Test");
-        test.equal(r.getContext(), "customApplications");
 
-        r = set.get(ContextResourceString.hashKey("forceapp", "customApplications", "en-US", "Force_com", "metaxml"));
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Force_com", "xml"));
         test.ok(r);
-        test.equal(r.getSource(), "Force.com");
+        test.ok(!r.getSource());
         test.equal(r.getKey(), "Force_com");
-        test.equal(r.getContext(), "customApplications");
 
-        var r = set.get(ContextResourceString.hashKey("forceapp", "reportTypes.sections", "en-US", "screen_flows_prebuilt_crt.Flow Interview Log Entries", "metaxml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Flow Interview Log Entries", "xml"));
         test.ok(r);
-        test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt.Flow Interview Log Entries");
-        test.equal(r.getContext(), "reportTypes.sections");
+        test.ok(!r.getSource());
+        test.equal(r.getKey(), "Flow Interview Log Entries");
 
         test.done();
     },
@@ -1158,20 +1269,20 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
         );
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Test',
             source: 'Password',
             target: 'Passwort',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
 
@@ -1208,20 +1319,20 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password <name> &uuml; --></label>\n' +
+            '        <label>Password &lt;name> &uuml;</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
         );
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Test',
             source: 'Password <name> &uuml;',
             target: 'Passwort <name> &uuml;',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
 
@@ -1258,7 +1369,7 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <reportTypes>\n' +
-            '        <description><!-- Screen Flows Description --></description>\n' +
+            '        <description>Screen Flows Description</description>\n' +
             '        <label>Coule d\'écran</label>\n' +
             '        <name>screen_flows_prebuilt_crt</name>\n' +
             '        <sections>\n' +
@@ -1270,31 +1381,31 @@ module.exports.metaxmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt',
             source: 'Screen Flows',
             target: "Coule d'écran",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.description',
             source: 'Screen Flows Description',
             target: "Description de coule d'écran",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.Flow Interview Log Entries',
             source: 'Flow Interview Log Entries',
             target: "Entrées de journal pour coule de entretien",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes.sections"
         }));
 
@@ -1336,167 +1447,167 @@ module.exports.metaxmlfile = {
         mxf.extract();
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Test',
             source: 'Test',
             target: 'Testez',
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Force_com',
             source: 'Force.com',
             target: 'Force.fr',
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Account',
             source: 'Text Account',
             target: 'Compte de texte',
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customLabels"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Files2',
             source: 'Files online',
             target: 'Fichiers en ligne',
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customTabs"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'LogACall',
             source: 'LogACall',
             target: 'EnregistrerUnAppel',
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "quickActions"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt',
             source: 'Screen Flows',
             target: "Coule d'écran",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.description',
             source: 'Screen Flows Description',
             target: "Description de coule d'écran",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.Flow Interview Log Entries',
             source: 'Flow Interview Log Entries',
             target: "Entrées de journal pour coule de entretien",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes.sections"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.Flow Interview Logs',
             source: 'Flow Interview Logs',
             target: "Journals pour coule de entretien",
             targetLocale: "fr-FR",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes.sections"
         }));
 
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Test',
             source: 'Test',
             target: 'Testen',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Force_com',
             source: 'Force.com',
             target: 'Force.de',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Account',
             source: 'Text Account',
             target: 'Texteskonto',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customLabels"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'Files2',
             source: 'Files online',
             target: 'Dateien online',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customTabs"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'LogACall',
             source: 'LogACall',
             target: 'EinenAnrufProtokollieren',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "quickActions"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt',
             source: 'Screen Flows',
             target: "Bildschirmsflussen",
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.description',
             source: 'Screen Flows Description',
             target: "Beschreibung des Bildschirmsflussen",
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.Flow Interview Log Entries',
             source: 'Flow Interview Log Entries',
             target: "Protokolleinträge von Flussinterviews",
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes.sections"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'screen_flows_prebuilt_crt.Flow Interview Logs',
             source: 'Flow Interview Logs',
             target: "Protokollen von Flussinterviews",
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "reportTypes.sections"
         }));
 
@@ -1621,28 +1732,28 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
         );
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'r308704783',
             source: 'Get insurance quotes for free!',
             target: 'Obtenez des devis d\'assurance gratuitement!',
             targetLocale: "fr-FR",
-            datatype: "metaxml"
+            datatype: "xml"
         }));
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'r308704783',
             source: 'Get insurance quotes for free!',
             target: 'Kostenlosen Versicherungs-Angebote erhalten!',
             targetLocale: "de-DE",
-            datatype: "metaxml"
+            datatype: "xml"
         }));
 
         mxf.localize(translations, ["fr-FR", "de-DE"]);
@@ -1671,20 +1782,20 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
         );
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'foo',
             source: 'bar',
             target: 'asdf',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customApplications"
         }));
 
@@ -1744,20 +1855,20 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
+            '        <label>Password</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n'
         );
 
         var translations = new TranslationSet();
-        translations.add(new ContextResourceString({
+        translations.add(new ResourceString({
             project: "forceapp",
             key: 'foo',
             source: 'bar',
             target: 'asdf',
             targetLocale: "de-DE",
-            datatype: "metaxml",
+            datatype: "xml",
             context: "customLabels"
         }));
 

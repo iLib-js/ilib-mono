@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
-var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
+var mm = require("micromatch");
 var log4js = require("log4js");
+var XmlFileType = require("ilib-loctool-xml");
 
 var MetaXmlFile = require("./MetaXmlFile.js");
 var sfLocales = require("./sflocales.json");
@@ -30,8 +30,8 @@ var sfLocales = require("./sflocales.json");
 var logger = log4js.getLogger("loctool.lib.MetaXmlFileType");
 
 var MetaXmlFileType = function(project) {
-    this.type = "metaxml";
-    this.datatype = "metaxml";
+    this.type = "xml";
+    this.datatype = "xml";
 
     this.project = project;
     this.API = this.project.getAPI();
@@ -56,6 +56,120 @@ var MetaXmlFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+
+    if (!project.settings) {
+        project.settings = {};
+    }
+
+    if (!project.settings.xml) {
+        var mappings = this._getMappings();
+        Object.assign(project.settings, {
+            xml: {
+                schemas: this.smartJoin(module.path, "./schemas"),
+                mappings: mappings
+            }
+        });
+    }
+    this.xmlFileType = new XmlFileType(project);
+};
+
+/**
+ * @private
+ * Join two paths unless the child is an absolute path
+ */
+MetaXmlFileType.prototype.smartJoin = function(parent, child) {
+    return (child[0] === "/") ? child : path.join(parent, child);
+}
+
+/**
+ * Return the default schema for xml files.
+ * @returns {Object} the default schema
+ */
+MetaXmlFileType.prototype.getDefaultSchema = function() {
+    return this.xmlFileType.getSchema("translation-meta-xml-schema");
+};
+
+/**
+ * Get the schema associated with the given URI
+ * @param {String} uri the uri identifying the schema
+ * @returns {Object} the schema associated with the URI, or undefined if
+ * that schema is not defined
+ */
+MetaXmlFileType.prototype.getSchema = function(uri) {
+    var schema = this.xmlFileType.getSchema(uri);
+    if (schema === this.xmlFileType.getDefaultSchema()) {
+        // our default is different than the xml plugin's default
+        schema = this.getDefaultSchema();
+    }
+    return schema;
+};
+
+/**
+ * @private
+ */
+MetaXmlFileType.prototype._getMappings = function() {
+    var xmlSettings = this.project.settings.metaxml;
+    return (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
+};
+
+/**
+ * Return the mapping corresponding to this path.
+ * @param {String} pathName the path to check
+ * @returns {Object} the mapping object corresponding to the
+ * path or undefined if none of the mappings match
+ */
+MetaXmlFileType.prototype.getMapping = function(pathName) {
+    if (typeof(pathName) === "undefined") {
+        return this.getDefaultMapping();
+    }
+
+    var mappings = this._getMappings();
+    var patterns = Object.keys(mappings);
+
+    var match = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern);
+    });
+
+    return match && mappings[match];
+};
+
+/**
+ * Return the default mapping for this plugin.
+ */
+MetaXmlFileType.prototype.getDefaultMapping = function() {
+    return defaultMappings["**/*.translation-meta.xml"];
+};
+
+var defaultMappings = {
+    "**/*.app-meta.xml": {
+        "schema": "customApplication-meta-xml-schema"
+    },
+    "**/*.field-meta.xml": {
+        "schema": "customField-meta-xml-schema"
+    },
+    "**/*.labels-meta.xml": {
+        "schema": "customLabels-meta-xml-schema"
+    },
+    "**/*.md-meta.xml": {
+        "schema": "customMetadata-meta-xml-schema"
+    },
+    "**/*.object-meta.xml": {
+        "schema": "customObject-meta-xml-schema"
+    },
+    "**/*.customPermission-meta.xml": {
+        "schema": "customPermission-meta-xml-schema"
+    },
+    "**/*.tab-meta.xml": {
+        "schema": "customTab-meta-xml-schema"
+    },
+    "**/*.quickAction-meta.xml": {
+        "schema": "quickaction-meta-xml-schema"
+    },
+    "**/*.translation-meta.xml": {
+        "schema": "translation-meta-xml-schema",
+        "method": "copy",
+        "template": "[dir]/[locale].translation-meta.xml"
+    }
 };
 
 /**
@@ -75,12 +189,21 @@ MetaXmlFileType.prototype.handles = function(pathName) {
 
     // check the path too
     var ret = true;
-    var filename = path.basename(pathName);
-    if (filename !== "en_US.translation-meta.xml") {
-        ret = false;
-    } else {
-        var parts = path.dirname(pathName).split(/\//g);
-        if (parts[parts.length-1] !== "translations") {
+    var patterns = Object.keys(defaultMappings); 
+    ret = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern);
+    });
+
+    // check that we don't have an already translated file
+    var base = path.basename(pathName);
+    if (ret && base.endsWith(".translation-meta.xml")) {
+        if (base === "en_US.translation-meta.xml") {
+            var parts = path.dirname(pathName).split(/\//g);
+            if (parts[parts.length-1] !== "translations") {
+                ret = false;
+            }
+        } else {
+            // an already translated file
             ret = false;
         }
     }
@@ -104,8 +227,68 @@ MetaXmlFileType.prototype.name = function() {
  * @param {Array.<String>} locales the list of locales to localize to
  */
 MetaXmlFileType.prototype.write = function(translations, locales) {
-    // metaxml files are localized individually, so we don't have to
-    // write out the resources
+    // distribute all the resources to their resource files
+    // and then let them write themselves out
+    var resFileType = this.project.getResourceFileType();
+    var res, file,
+        resources = this.extracted.getAll(),
+        db = this.project.db,
+        translationLocales = locales.filter(function(locale) {
+            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
+        }.bind(this));
+
+    for (var i = 0; i < resources.length; i++) {
+        res = resources[i];
+        // have to store the base English string or else there will be nothing to override in the translations
+        file = resFileType.getResourceFile(res.context, res.getSourceLocale(), res.resType + "s", res.pathName);
+        file.addResource(res);
+
+        // for each extracted string, write out the translations of it
+        translationLocales.forEach(function(locale) {
+            logger.trace("Localizing Java strings to " + locale);
+
+            db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
+                var r = translated;
+                if (res.dnt) {
+                    logger.trace("Resource " + res.reskey + " is set to 'do not translate'");
+                } else if (!r || this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
+                    if (r) {
+                        logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
+                        logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
+                    }
+                    var note = r && 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + r.getSource() + '"';
+                    var newres = res.clone();
+                    newres.setTargetLocale(locale);
+                    newres.setTarget((r && r.getTarget()) || res.getSource());
+                    newres.setState("new");
+                    newres.setComment(note);
+
+                    this.newres.add(newres);
+
+                    // skip because the fallbacks will go to the English resources anyways
+                    logger.trace("No translation for " + res.reskey + " to " + locale);
+                } else if (r.getTarget() !== res.getSource()) {
+                    file = resFileType.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
+                    file.addResource(r);
+                    logger.trace("Added " + r.reskey + " to " + file.pathName);
+                }
+            }.bind(this));
+        }.bind(this));
+    }
+
+    resources = this.pseudo.getAll().filter(function(resource) {
+        return resource.datatype === this.datatype;
+    }.bind(this));
+
+    for (var i = 0; i < resources.length; i++) {
+        res = resources[i];
+        // only need to add the resource if it is different from the source text
+        if (res.getSource() !== res.getTarget()) {
+            file = resFileType.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
+            file.addResource(res);
+            logger.trace("Added " + res.reskey + " to " + file.pathName);
+        }
+    }
 };
 
 MetaXmlFileType.prototype.newFile = function(path) {
@@ -121,9 +304,7 @@ MetaXmlFileType.prototype.getDataType = function() {
 };
 
 MetaXmlFileType.prototype.getResourceTypes = function() {
-    return {
-        "string": "ContextResourceString"
-    };
+    return {};
 };
 
 MetaXmlFileType.prototype.getExtensions = function() {
@@ -198,7 +379,7 @@ MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName) {
     var filename = path.basename(pathName);
     var dirname = path.dirname(pathName);
 
-    return path.join(dirname, spec + ".translation-meta.xml");
+    return this.smartJoin(dirname, spec + ".translation-meta.xml");
 };
 
 module.exports = MetaXmlFileType;

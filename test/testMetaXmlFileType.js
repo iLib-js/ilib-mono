@@ -92,7 +92,7 @@ module.exports.metaxmlfiletype = {
         var mxft = new MetaXmlFileType(p);
         test.ok(mxft);
 
-        test.ok(!mxft.handles("translations/en_US.field-meta.xml"));
+        test.ok(!mxft.handles("translations/en_US.translate-meta.xml"));
 
         test.done();
     },
@@ -151,4 +151,103 @@ module.exports.metaxmlfiletype = {
 
         test.done();
     },
+
+    testMetaXmlFileTypeHandlesCustomApplicationFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/myapp.app-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesCustomFieldFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/Field__c.field-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesLabelsFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/Field__c.labels-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesCustomMetadataFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/myapp.md-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesCustomObjectFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/myapp.object-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesCustomPermissionsFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/myapp.customPermission-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesCustomTabFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/myapp.tab-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeHandlesQuickActionFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(mxft.handles("force-app/main/default/app/myapp.quickAction-meta.xml"));
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeDoesNotHandleOtherFiles: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.ok(!mxft.handles("force-app/main/default/app/myapp.page-meta.xml"));
+
+        test.done();
+    }
 };

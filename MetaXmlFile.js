@@ -22,6 +22,7 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 var xmljs = require("xml-js");
+
 var IString = require("ilib/lib/IString");
 var Locale = require("ilib/lib/Locale");
 var sfLocales = require("./sflocales.json");
@@ -46,7 +47,13 @@ var MetaXmlFile = function(options) {
     this.API = this.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.mapping = this.type.getMapping(this.pathName);
+    this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
     this.resourceIndex = 0;
+
+    this.xmlFile = this.type.xmlFileType.newFile(this.pathName, {
+        mapping: this.mapping
+    });
 };
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
@@ -126,17 +133,6 @@ MetaXmlFile.cleanString = function(string) {
 MetaXmlFile.prototype.makeKey = function(source) {
     return this.API.utils.hashKey(MetaXmlFile.cleanString(source));
 };
-
-/*
-var reGetStringBogusConcatenation1 = new RegExp(/(^R|\WR)B\.getString\s*\(\s*"((\\"|[^"])*)"\s*\+/g);
-var reGetStringBogusConcatenation2 = new RegExp(/(^R|\WR)B\.getString\s*\([^\)]*\+\s*"((\\"|[^"])*)"\s*\)/g);
-var reGetStringBogusParam = new RegExp(/(^R|\WR)B\.getString\s*\([^"\)]*\)/g);
-
-var reGetString = new RegExp(/(^R|\WR)B\.getString\s*\(\s*"((\\"|[^"])*)"\s*\)/g);
-var reGetStringWithId = new RegExp(/(^R|\WR)B\.getString\("((\\"|[^"])*)"\s*,\s*"((\\"|[^"])*)"\)/g);
-
-var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
-*/
 
 var skipProperties = {
     "_attributes": true,
@@ -295,6 +291,9 @@ MetaXmlFile.prototype.walkLayout = function(node) {
 MetaXmlFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
 
+    this.xmlFile.parse(data);
+
+    /*
     this.xml = data;
     this.contents = xmljs.xml2js(data, {
         trim: false,
@@ -304,6 +303,7 @@ MetaXmlFile.prototype.parse = function(data) {
     this.resourceIndex = 0;
 
     this.walkLayout(this.contents);
+    */
 };
 
 /**
@@ -313,7 +313,7 @@ MetaXmlFile.prototype.parse = function(data) {
 MetaXmlFile.prototype.extract = function() {
     logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
-        var p = path.join(this.project.root, this.pathName);
+        var p = this.type.smartJoin(this.project.root, this.pathName);
         try {
             var data = fs.readFileSync(p, "utf8");
             if (data) {
@@ -333,7 +333,7 @@ MetaXmlFile.prototype.extract = function() {
  * current MetaXml file.
  */
 MetaXmlFile.prototype.getTranslationSet = function() {
-    return this.set;
+    return this.xmlFile.set;
 }
 
 /**
@@ -352,7 +352,7 @@ MetaXmlFile.prototype.getLocalizedPath = function(locale) {
     var filename = path.basename(this.pathName);
     var dirname = path.dirname(this.pathName);
 
-    return path.join(dirname, spec + ".translation-meta.xml");
+    return this.type.smartJoin(dirname, spec + ".translation-meta.xml");
 };
 
 /**
@@ -364,6 +364,7 @@ MetaXmlFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 MetaXmlFile.prototype.localizeText = function(translations, locale) {
+/*
     var output = {
         _declaration: {
             _attributes: {
@@ -467,6 +468,7 @@ MetaXmlFile.prototype.localizeText = function(translations, locale) {
         spaces: 4,
         compact: true
     }) + '\n';
+*/
 };
 
 /**
@@ -478,6 +480,7 @@ MetaXmlFile.prototype.localizeText = function(translations, locale) {
  * @param {Array.<String>} locales array of locales to translate to
  */
 MetaXmlFile.prototype.localize = function(translations, locales) {
+    /*
     // don't localize if there is no text
     if (this.set.size() > 0 && translations && translations.size() > 0 && locales && locales.length > 0) {
         for (var i = 0; i < locales.length; i++) {
@@ -487,7 +490,7 @@ MetaXmlFile.prototype.localize = function(translations, locales) {
                 if (!l.getVariant()) {
                     var pathName = this.getLocalizedPath(locales[i]);
                     logger.debug("Writing file " + pathName);
-                    var p = path.join(this.project.target, pathName);
+                    var p = this.type.smartJoin(this.project.target, pathName);
                     var d = path.dirname(p);
                     this.API.utils.makeDirs(d);
 
@@ -498,8 +501,34 @@ MetaXmlFile.prototype.localize = function(translations, locales) {
     } else {
         logger.debug(this.pathName + ": No strings, no localize");
     }
+    */
 };
 
-MetaXmlFile.prototype.write = function() {};
+MetaXmlFile.prototype.write = function() {
+    logger.trace("writing resource file. [" + [this.project.getProjectId(), this.locale].join(", ") + "]");
+    if (this.set.isDirty()) {
+        var dir;
+
+        if (!this.pathName) {
+            this.pathName = this.type.getResourceFilePath(this.locale || this.project.sourceLocale, undefined, "xml", this.flavor);
+        }
+
+        var p = this.type.smartJoin(this.project.target, this.pathName);
+        dir = path.dirname(p);
+
+        var resources = this.set.getAll();
+
+        logger.info("Writing properties file for locale " + this.locale + " to file " + this.pathName);
+
+        var content = this.getContent();
+
+        this.API.utils.makeDirs(dir);
+
+        fs.writeFileSync(p, content, "utf8");
+        logger.debug("Wrote string translations to file " + this.pathName);
+    } else {
+        logger.debug("File " + this.pathName + " is not dirty. Skipping.");
+    }
+};
 
 module.exports = MetaXmlFile;

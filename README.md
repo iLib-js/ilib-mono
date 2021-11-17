@@ -15,6 +15,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.0
+
+- now uses ilib-loctool-xml plugin to parse various meta xml files to look for
+  source strings
+
 ### v1.0.5
 
 - Fix a bug where the pseudo locales were not initialized properly.
