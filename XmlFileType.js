@@ -58,7 +58,17 @@ var XmlFileType = function(project) {
     this.loadSchemas(".");
 };
 
+/** join two paths unless the child is an absolute path */
+function smartJoin(parent, child) {
+    if (!parent) return child;
+    if (!child) return parent;
+    return (child[0] === "/") ? child : path.join(parent, child);
+}
+
 XmlFileType.prototype.loadSchemaFile = function(pathName) {
+    // only read json files as schemas
+    if (!pathName.endsWith(".json") && !pathName.endsWith(".jsn")) return;
+
     try {
         var schema = fs.readFileSync(pathName, "utf-8");
         var schemaObj = JSON.parse(schema);
@@ -75,7 +85,7 @@ XmlFileType.prototype.loadSchemaDir = function(pathName) {
     var files = fs.readdirSync(pathName);
     if (files) {
         files.forEach(function(file) {
-            var full = path.join(pathName, file);
+            var full = smartJoin(pathName, file);
             this.loadSchemaDirOrFile(full);
         }.bind(this));
     }
@@ -343,9 +353,10 @@ XmlFileType.prototype.loadSchemas = function(pathName) {
 
     if (xmlSettings) {
         var schemas = xmlSettings.schemas;
+        schemas = Array.isArray(schemas) ? schemas : [schemas];
         if (schemas) {
             schemas.forEach(function(schema) {
-                var full = path.join(pathName, schema);
+                var full = smartJoin(pathName, schema);
                 this.loadSchemaDirOrFile(full);
             }.bind(this));
         }
@@ -462,12 +473,12 @@ XmlFileType.prototype.write = function() {
 };
 
 XmlFileType.prototype.newFile = function(path, options) {
-    return new XmlFile({
+    var opts = Object.assign({
         project: this.project,
         pathName: path,
         type: this,
-        locale: options && options.locale
-    });
+    }, options);
+    return new XmlFile(opts);
 };
 
 XmlFileType.prototype.getDataType = function() {

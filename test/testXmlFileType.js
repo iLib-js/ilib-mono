@@ -27,6 +27,7 @@ var p = new CustomProject({
 }, "./testfiles", {
     locales:["en-GB"],
     xml: {
+        "schemas": ["./test/testfiles/schemas"],
         "mappings": {
             "strings.xml": {
                 "schema": "http://www.lge.com/xml/strings",
@@ -58,7 +59,8 @@ var p2 = new CustomProject({
 }, "./testfiles", {
     locales:["en-GB"],
     xml: {
-        mappings: {
+        "schemas": ["./test/testfiles/schemas"],
+        "mappings": {
             "**/strings.xml": {
                 "schema": "http://www.lge.com/xml/strings",
                 "method": "copy",

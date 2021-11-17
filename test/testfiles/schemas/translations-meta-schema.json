@@ -29,6 +29,64 @@
                     }
                 }
             }
+        },
+        "report-entry": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "name": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                },
+                "sections": {
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": "string",
+                    "properties": {
+                        "label": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "source": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "name": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "key": "_value"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "properties": {
@@ -40,6 +98,9 @@
                 },
                 "customLabels": {
                     "$ref": "#/$defs/entry"
+                },
+                "reportTypes": {
+                    "$ref": "#/$defs/report-entry"
                 }
             }
         }

@@ -34,6 +34,7 @@ var xmljs = require("xml-js");
  * @param {FileType} type the file type instance of this file
  */
 var XmlFile = function(options) {
+    if (!options) options = {};
     this.project = options.project;
     this.pathName = options.pathName || "";
     this.type = options.type;
@@ -41,7 +42,7 @@ var XmlFile = function(options) {
     this.API = this.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
-    this.mapping = this.type.getMapping(this.pathName);
+    this.mapping = options.mapping || this.type.getMapping(this.pathName);
     this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
     this.resourceIndex = 0;
 };
@@ -385,29 +386,39 @@ function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
 }
 
 XmlFile.prototype.addExtractedResource = function(ref, resourceInfo) {
-    // all the subparts of the xml element have been processed now,
-    // so we can create it and add it to the extracted set
-    var options = {
-        resType: resourceInfo.resType,
-        project: this.project.getProjectId(),
-        sourceLocale: resourceInfo.locale || this.project.sourceLocale,
-        key: resourceInfo.key || XmlFile.unescapeRef(ref).substring(2),  // strips off the #/ part
-        pathName: this.pathName,
-        state: "new",
-        datatype: this.type.datatype,
-        comment: resourceInfo.comment,
-        index: this.resourceIndex++
-    };
+    var resource = resourceInfo.resource;
 
-    if (resourceInfo.source) {
-        options[mapToSourceField[resourceInfo.resType]] = resourceInfo.source;
+    if (!resource) {
+        // all the subparts of the xml element have been processed now,
+        // so we can create it and add it to the extracted set
+        var options = {
+            resType: resourceInfo.resType,
+            project: this.project.getProjectId(),
+            sourceLocale: resourceInfo.locale || this.project.sourceLocale,
+            key: resourceInfo.key || XmlFile.unescapeRef(ref).substring(2),  // strips off the #/ part
+            pathName: this.pathName,
+            state: "new",
+            datatype: this.type.datatype,
+            comment: resourceInfo.comment,
+            index: this.resourceIndex++
+        };
+
+        if (resourceInfo.source) {
+            options[mapToSourceField[resourceInfo.resType]] = resourceInfo.source;
+        }
+        var resource = this.API.newResource(options);
+        var hashkey = resource.hashKey();
+        resourceInfo.resource = this.set.get(hashkey);
+        if (!resourceInfo.resource) {
+            this.set.add(resource);
+            resourceInfo.resource = resource;
+        }
     }
-    var resource = this.API.newResource(options);
-    this.set.add(resource);
     return resource;
 }
 
-XmlFile.prototype.getTranslation = function(resourceInfo, locale, resource, translations) {
+XmlFile.prototype.getTranslation = function(resourceInfo, locale, translations) {
+    var resource = resourceInfo.resource;
     var translation, hashkey = resource.hashKeyForTranslation(locale);
     if (translations) {
         translation = translations.getClean(hashkey);
@@ -569,23 +580,34 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
     // When the schema has localizable = true, then start the construction of
     // an object that we can fill with info about the new resource as the subparts
     // of this schema are parsed
-    if (!localizable && schema.localizable && !resourceInfo) {
+    if (schema.localizable) {
         localizeTree = true;
-        var resType = "string";
-        resourceInfo = {
-            resType: resType,
-            element: name
-        };
-        if (schema.localizableType) {
-            if (typeof(schema.localizableType) === "string") {
-                resourceInfo.resType = schema.localizableType;
-            } else if (typeof(schema.localizableType) === "object" && schema.localizableType.type) {
-                resourceInfo.resType = schema.localizableType.type;
+        if (xml.resourceInfo) {
+            resourceInfo = xml.resourceInfo;
+            resourceInfo.keep = undefined;
+            resourceInfo.translation = undefined;
+            if (translations && locale) {
+                // now check if we have a translation or pseudo translation of this string
+                this.getTranslation(resourceInfo, locale, translations);
             }
-            if (resourceInfo.resType !== "array" && resourceInfo.resType !== "plural") {
-                resourceInfo.resType = "string";
+        } else {
+            var resType = "string";
+            resourceInfo = {
+                resType: resType,
+                element: name
+            };
+            if (schema.localizableType) {
+                if (typeof(schema.localizableType) === "string") {
+                    resourceInfo.resType = schema.localizableType;
+                } else if (typeof(schema.localizableType) === "object" && schema.localizableType.type) {
+                    resourceInfo.resType = schema.localizableType.type;
+                }
+                if (resourceInfo.resType !== "array" && resourceInfo.resType !== "plural") {
+                    resourceInfo.resType = "string";
+                }
+                hydrateResourceInfo(resourceInfo, schema, "", undefined, ref.substring(ref.lastIndexOf('/')+1));
             }
-            hydrateResourceInfo(resourceInfo, schema, undefined, undefined, ref.substring(ref.lastIndexOf('/')+1));
+            xml.resourceInfo = resourceInfo;
         }
     }
 
@@ -717,7 +739,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                         if (isNotEmpty(subobject)) {
                             returnValue[prop] = subobject;
                         }
-                    } else {
+                    } else if (prop !== "resourceInfo") {
                        // not in the schema, so don't propegate this node if we're in
                        // sparse mode
                        var obj = (prop !== "_attributes") ? this.sparseValue(xml[prop]) : xml[prop];
@@ -733,35 +755,10 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
             }
         }
 
-        if (schema.localizable && resourceInfo && resourceInfo.source && !resourceInfo.translation) {
-            var resource = this.addExtractedResource(ref, resourceInfo);
-
-            if (translations && locale) {
-                // now check if we have a translation or pseudo translation of this string
-                this.getTranslation(resourceInfo, locale, resource, translations);
-
-                if (resourceInfo.translation) {
-                    // reparse now that we have all the resource parts in resourceInfo and
-                    // also the translation itself, so that we can distribute the translated
-                    // bits to the right places of the xml structure
-                    var obj = this.parseObj(
-                        xml,
-                        root,
-                        schema,
-                        ref,
-                        name,
-                        localizeTree,
-                        translations,
-                        locale,
-                        resourceInfo);
-
-                    // over-ride the returnValue if we actually used the translation
-                    returnValue = resourceInfo.keep ? obj : this.sparseValue(returnValue);
-                } else {
-                    // if we have no translation for this resource, then don't propegate
-                    // this node when in sparse mode
-                    returnValue = this.sparseValue(returnValue);
-                }
+        if (schema.localizable && resourceInfo) {
+            this.addExtractedResource(ref, resourceInfo);
+            if (translations && !resourceInfo.keep) {
+                returnValue = this.sparseValue(returnValue);
             }
         }
     }
@@ -880,7 +877,7 @@ XmlFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 XmlFile.prototype.localizeText = function(translations, locale) {
-        // "#" is the root reference
+    // "#" is the root reference
     var json = this.parseObj(this.json, this.schema, this.schema, "#", "root", false, translations, locale, undefined);
     return xmljs.js2xml(json, {
         spaces: 4,

@@ -103,10 +103,20 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[localeDir]/arrays.xml"
             },
+            "**/arrays-sparse.xml": {
+                "schema": "http://github.com/ilib-js/arrays.json",
+                "method": "sparse",
+                "template": "resources/[localeDir]/arrays.xml"
+            },
             "**/array-refs.xml": {
                 "schema": "http://github.com/ilib-js/array-refs.json",
                 "method": "copy",
                 "template": "resources/[localeDir]/array-refs.xml"
+            },
+            "**/*.translation-meta.xml": {
+                "schema": "translations-meta-schema",
+                "method": "copy",
+                "template": "[dir]/[basename]-[localeUnder].[extension]"
             }
         }
     }
@@ -346,8 +356,8 @@ module.exports.xmlfile = {
         test.done();
     },
 
-    testXmlFileParseSimpleDontExtractEmpty: function(test) {
-        test.expect(6);
+    testXmlFileParseSimpleExtractEmpty: function(test) {
+        test.expect(10);
 
         var xf = new XmlFile({
             project: p,
@@ -365,12 +375,17 @@ module.exports.xmlfile = {
         var set = xf.getTranslationSet();
         test.ok(set);
 
-        test.equal(set.size(), 1);
+        test.equal(set.size(), 2);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        test.equal(resources.length, 2);
 
         test.equal(resources[0].getSource(), "this is string one");
         test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getType(), "string");
+
+        test.ok(!resources[1].getSource());
+        test.equal(resources[1].getKey(), "string 2");
+        test.equal(resources[1].getType(), "string");
 
         test.done();
     },
@@ -547,6 +562,49 @@ module.exports.xmlfile = {
         test.equal(arrayStrings[0], "value 1");
         test.equal(arrayStrings[1], "value 2");
         test.equal(arrayStrings[2], "value 3");
+
+        test.done();
+    },
+
+    testXmlFileParseComplexNestedStrings: function(test) {
+        test.expect(10);
+
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
+            project: p,
+            pathName: "force-app/default/main/translations/app.translation-meta.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<Translations>\n' +
+            '    <reportTypes>\n' +
+            '        <name>Report1</name>\n' +
+            '        <label>Report One</label>\n' +
+            '        <sections>\n' +
+            '            <name>Section1</name>\n' +
+            '            <label>Section One</label>\n' +
+            '        </sections>\n' +
+            '    </reportTypes>\n' +
+            '</Translations>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getSource(), "Section One");
+        test.equal(resources[0].getKey(), "Section1");
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getKey(), "Report1");
+        test.equal(resources[1].getSource(), "Report One");
 
         test.done();
     },
@@ -1558,6 +1616,74 @@ module.exports.xmlfile = {
              '        <item>chaîne 3</item>\n' +
              '    </strings>\n' +
              '</resources>\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testXmlFileLocalizeArrayOfStringsSparse: function(test) {
+        test.expect(6);
+
+        var xf = new XmlFile({
+            project: p,
+            pathName: "i18n/arrays-sparse.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <strings name="strings">\n' +
+            '        <item>string 1</item>\n' +
+            '        <item>string 2</item>\n' +
+            '        <item>string 3</item>\n' +
+            '    </strings>\n' +
+            '    <strings name="strings2">\n' +
+            '        <item>a1</item>\n' +
+            '        <item>b2</item>\n' +
+            '        <item>c3</item>\n' +
+            '    </strings>\n' +
+            '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 2);
+
+        var translations = new TranslationSet('en-US');
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "strings",
+            sourceArray: [
+                "string 1",
+                "string 2",
+                "string 3"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "chaîne 1",
+                "chaîne 2",
+                "chaîne 3"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+
+        var actual = xf.localizeText(translations, "fr-FR");
+        var expected =
+            '<resources>\n' +
+             '    <strings name="strings">\n' +
+             '        <item>chaîne 1</item>\n' +
+             '        <item>chaîne 2</item>\n' +
+             '        <item>chaîne 3</item>\n' +
+             '    </strings>\n' +
+             '</resources>\n';
+
+        set = xf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 2);
 
         diff(actual, expected);
         test.equal(actual, expected);

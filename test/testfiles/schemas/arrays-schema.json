@@ -15,6 +15,38 @@
                     }
                 }
             }
+        },
+        "strings-array-type" : {
+            "type": "object",
+            "title": "Array of strings schema",
+            "localizable": true,
+            "localizableType": "array",
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-item-type"
+                        }
+                    ]
+                }
+            }
         }
     },
     "properties": {
@@ -22,36 +54,17 @@
             "type": "object",
             "properties": {
                 "strings": {
-                    "type": "object",
-                    "title": "Array of strings schema",
-                    "localizable": true,
-                    "localizableType": "array",
-                    "properties": {
-                        "_attributes": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "localizableType": {
-                                        "key": "_value"
-                                    }
-                                }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/strings-array-type"
                             }
                         },
-                        "item": {
-                            "anyOf": [
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/$defs/array-item-type"
-                                    }
-                                },
-                                {
-                                    "$ref": "#/$defs/array-item-type"
-                                }
-                            ]
+                        {
+                            "$ref": "#/$defs/strings-array-type"
                         }
-                    }
+                    ]
                 },
                 "numbers": {
                     "type": "object",
