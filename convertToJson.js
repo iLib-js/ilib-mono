@@ -24,27 +24,27 @@ var ilib = require("ilib");
 var xmljs = require("xml-js");
 
 if (process.argv.length < 2) {
-	console.log("Usage: convertToJson xml-file-name");
-	process.exit(1);
+    console.log("Usage: convertToJson xml-file-name");
+    process.exit(1);
 }
 
 var filename = process.argv[2];
 
 // logger.debug("Extracting strings from " + this.pathName);
 if (filename) {
-	try {
-		var data = fs.readFileSync(filename, "utf8");
-		if (data) {
-			var json = xmljs.xml2js(data, {
-				trim: false,
-				nativeTypeAttribute: true,
-				compact: true
-			});
+    try {
+        var data = fs.readFileSync(filename, "utf8");
+        if (data) {
+            var json = xmljs.xml2js(data, {
+                trim: false,
+                nativeTypeAttribute: true,
+                compact: true
+            });
 
-			console.log(JSON.stringify(json, undefined, 4));
-		}
-	} catch (e) {
-		console.log("Could not read file: " + filename);
-	}
+            console.log(JSON.stringify(json, undefined, 4));
+        }
+    } catch (e) {
+        console.log("Could not read file: " + filename);
+    }
 };
 
