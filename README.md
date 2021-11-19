@@ -592,8 +592,6 @@ Example JSON schema file for the above XML:
                 }
             }
         }
-    }
-}
 ```
 
 The value of the "_value" element is assigned to the "source" field of the

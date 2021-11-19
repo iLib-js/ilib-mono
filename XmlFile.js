@@ -201,9 +201,7 @@ var pluralCategories = {
 };
 
 function isNotEmpty(obj) {
-    if (!obj) {
-        return false;
-    } else if (isPrimitive(typeof(obj))) {
+    if (isPrimitive(typeof(obj))) {
         return typeof(obj) !== 'undefined';
     } else if (ilib.isArray(obj)) {
         return obj.length > 0;
