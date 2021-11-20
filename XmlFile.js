@@ -355,7 +355,8 @@ XmlFile.prototype.localizeNode = function(resourceInfo, schema) {
 
 function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
     ["category", "locale", "source", "key", "comment"].forEach(function(field) {
-        if (schema.localizableType[field]) {
+        if ((typeof(schema.localizableType) === "string" && schema.localizableType === field) ||
+                schema.localizableType[field]) {
             var value = getValue(schema.localizableType[field], text, key, element);
             if (field === "source") {
                 switch (resourceInfo.resType) {
@@ -373,7 +374,7 @@ function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
                         resourceInfo.source[resourceInfo.category] = value;
                         break;
                     default:
-                        resourceInfo.source = value;
+                        resourceInfo.source = value || "";
                         break;
                 }
             } else if (value) {
@@ -401,7 +402,7 @@ XmlFile.prototype.addExtractedResource = function(ref, resourceInfo) {
             index: this.resourceIndex++
         };
 
-        if (resourceInfo.source) {
+        if (typeof(resourceInfo.source) !== 'undefined') {
             options[mapToSourceField[resourceInfo.resType]] = resourceInfo.source;
         }
         var resource = this.API.newResource(options);
@@ -469,7 +470,7 @@ XmlFile.prototype.getTranslation = function(resourceInfo, locale, translations) 
 
             switch (resource.getType()) {
                 case "array":
-                    options.sourceArray = resource.getSourceArray();
+                    options.sourceArray = resource.getSourceArray() || [];
                     options.targetArray = options.sourceArray;
                     if (this.type.missingPseudo && !this.project.settings.nopseudo) {
                         resourceInfo.translation = options.sourceArray.map(function(item) {
@@ -478,7 +479,7 @@ XmlFile.prototype.getTranslation = function(resourceInfo, locale, translations) 
                     }
                     break;
                 case "plural":
-                    options.sourcePlurals = resource.getSourcePlurals();
+                    options.sourcePlurals = resource.getSourcePlurals() || {};
                     options.targetPlurals = options.sourcePlurals;
                     if (this.type.missingPseudo && !this.project.settings.nopseudo) {
                         resourceInfo.translation = objectMap(options.sourcePlurals, function(item) {
@@ -487,7 +488,7 @@ XmlFile.prototype.getTranslation = function(resourceInfo, locale, translations) 
                     }
                     break;
                 default:
-                    options.source = resource.getSource();
+                    options.source = resource.getSource() || "";
                     options.target = options.source;
                     if (this.type.missingPseudo && !this.project.settings.nopseudo) {
                         resourceInfo.translation = this.type.missingPseudo.getString(options.source);
@@ -600,8 +601,17 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                 } else if (typeof(schema.localizableType) === "object" && schema.localizableType.type) {
                     resourceInfo.resType = schema.localizableType.type;
                 }
-                if (resourceInfo.resType !== "array" && resourceInfo.resType !== "plural") {
-                    resourceInfo.resType = "string";
+                switch (resourceInfo.resType) {
+                    case "array":
+                       resourceInfo.source = [];
+                       break;
+                    case "plural":
+                       resourceInfo.source = {};
+                       break;
+                    default:
+                       resourceInfo.resType = "string";
+                       resourceInfo.source = "";
+                       break;
                 }
                 hydrateResourceInfo(resourceInfo, schema, "", undefined, ref.substring(ref.lastIndexOf('/')+1));
             }
