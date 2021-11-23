@@ -833,10 +833,10 @@ Let's say we have a plural resource that should look like this:
 
 ```xml
     <string-plural id="unique">
-        <singular>This is the singular string</singular>
-        <double>This is the dual string</double>
+        <one>This is the singular string</one>
+        <two>This is the dual string</two>
         <many>This is the many plural string</many>
-        <plural>This is the plural string</plural>
+        <other>This is the plural string</other>
     </string-plural>
 ```
 
