@@ -299,7 +299,9 @@ XmlFileType.prototype.getDataType = function() {
 };
 
 XmlFileType.prototype.getResourceTypes = function() {
-    return {};
+    return {
+        "string": "ContextResourceString"
+    };
 };
 
 XmlFileType.prototype.getExtensions = function() {

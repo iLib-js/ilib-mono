@@ -164,6 +164,12 @@ used within the json property:
           include localized strings
         - resource: write out a resource file format with the
           translations in it
+    - flavor: the flavor attribute to use for Android resource files.
+      The flavor usually applies to all resources in a particular
+      subdirectory, and corresponds to a particular customer for a
+      white label app. Each resource produced from the source file
+      will have the given flavor. If not specified, there is no
+      flavor attribute for the resources.
     - template: a path template to use to generate the path to
       the translated
       output files. The template replaces strings in square brackets
@@ -213,9 +219,10 @@ Example configuration:
                     "method": "sparse",
                     "template": "config/config_[localeUnder].xml"
                 },
-                "src/**/strings.xml": {
+                "customer1/src/**/strings.xml": {
                     "schema": "http://www.mycompany.com/xml/strings",
                     "method": "copy",
+                    "flavor": "customer1",
                     "template": "[dir]/strings.[locale].xml"
                 }
             }
@@ -240,7 +247,8 @@ the `src` directory will be parsed with the schema
 the parts that were not localized,
 will be sent to the same directory as the source file. However, the
 localized file name will also contain the name of the locale to distinguish
-it from the source file.
+it from the source file. Also, every resource in the strings.xml file will have
+the Android flavor "customer1".
 
 If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
@@ -372,6 +380,8 @@ XML:
 - "comment" - a comment for the translator to give more context
 - "locale" - the source locale of this resource
 - "category" - the plural category for a plural resource
+- "context" - the context field for this resource
+- "formatted" - for Android resources, the formatted attribute of a resource
 
 #### Element Parts
 
@@ -385,6 +395,9 @@ name of all the elements in the tree above the current element
 plus the name of the current element, all separated by slashes. This
 is similar to an xpath selector without any predicates or wildcards
 in it.
+- "_pathname" - The full path name of the file from the root of the project
+to the current file
+- "_basename" - The basename of the current file without the extension
 
 #### Assigning Element Parts to Resource Fields
 
@@ -812,6 +825,9 @@ values from the resource. Here is a table of the replacement values:
 | _category | The category of the translation |
 | _locale | The locale specifier for the translation |
 | _comment | The translator's comment for the resource |
+| _context | The context attribute for the resource |
+| _flavor  | The flavor attribute for the resource (Android) |
+| _formatted  | The formatted attribute for the resource (Android) |
 
 Let's say we have a plural resource that should look like this:
 

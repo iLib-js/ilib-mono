@@ -17,13 +17,18 @@
  * limitations under the License.
  */
 
+var path = require("path");
+
 if (!XmlFileType) {
     var XmlFileType = require("../XmlFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
 }
 
 var p = new CustomProject({
-    sourceLocale: "en-US"
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "XmlFileType")
+    ]
 }, "./testfiles", {
     locales:["en-GB"],
     xml: {
@@ -55,7 +60,10 @@ var p = new CustomProject({
 
 
 var p2 = new CustomProject({
-    sourceLocale: "en-US"
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "XmlFileType")
+    ]
 }, "./testfiles", {
     locales:["en-GB"],
     xml: {

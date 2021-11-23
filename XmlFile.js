@@ -43,7 +43,12 @@ var XmlFile = function(options) {
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.mapping = options.mapping || this.type.getMapping(this.pathName);
-    this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
+    if (this.mapping) {
+        this.schema = this.type.getSchema(this.mapping.schema);
+        this.flavor = this.mapping.flavor;
+    } else {
+        this.schema = this.type.getDefaultSchema();
+    }
     this.resourceIndex = 0;
 };
 
@@ -129,59 +134,19 @@ function isPrimitive(type) {
 }
 
 /**
- * Gets type of array based on provided schema.
- *
- * TODO: Add support for "anyOf" and "oneOf" type definitions.
- */
-function getArrayTypeFromSchema(schema, root) {
-    if (schema.type !== "array") {
-        return null;
-    }
-
-    if (typeof(schema.items["$ref"]) !== 'undefined') {
-        // substitute the referenced schema for this one
-        var refname = schema.items["$ref"];
-        var otherschema = root["$$refs"][refname];
-        if (!otherschema) {
-            console.log("Unknown reference " + refname + " while parsing " +
-                    this.pathName + " with schema " + root["$id"]);
-            return;
-        }
-        schema = otherschema;
-    } else {
-        schema = schema.items;
-    }
-
-    var allowedTypes = ["string", "integer", "number", "boolean", "object"];
-
-    if (schema.type && allowedTypes.indexOf(schema.type) > -1) {
-        return schema.type;
-    }
-
-    // Default type is string for compatibility reasons.
-    return 'string';
-}
-
-/**
- * Converts each element of one-dimensional array to a primitive type.
- */
-function convertArrayElementsToType(array, type) {
-    if (!ilib.isArray(array)){
-        return array;
-    }
-
-    return array.map(function (item) {
-        return convertValueToType(item, type);
-    });
-}
-
-/**
  * Converts value to a primitive type.
  */
 function convertValueToType(value, type) {
     switch (type) {
         case "boolean":
-            return value === "true";
+            switch (value) {
+                case "false":
+                case "no":
+                case "0":
+                    return false;
+                default:
+                    return true;
+            }
         case "number":
             return Number.parseFloat(value);
         case "integer":
@@ -274,40 +239,7 @@ XmlFile.prototype.sparseValue = function(value) {
     return (!this.mapping || !this.mapping.method || this.mapping.method !== "sparse") ? value : undefined;
 };
 
-function setFieldValue(resource, field, resourceInfo) {
-    switch (field) {
-        case "key":
-            resource.setKey(resourceInfo.value);
-            break;
-
-        case "source":
-            switch(resource.getType()) {
-                case "array":
-                    resource.setSourceArray(resource.getSourceArray().push(value));
-                    break;
-                case "plural":
-                    var plurals = resource.getSourcePlurals();
-                    plurals[category] = value;
-                    resource.setSourcePlurals(plurals);
-                    break;
-                default:
-                case "string":
-                    resource.setSource(value);
-                    break;
-            }
-            break;
-
-        case "comment":
-            resource.setComment(value);
-            break;
-
-        case "locale":
-            resource.setSourceLocale(value);
-            break;
-    }
-}
-
-function getValue(value, xml, ref, element) {
+XmlFile.prototype.getValue = function(value, xml, ref, element) {
     switch (value) {
         case "_value":
             return xml;
@@ -315,6 +247,10 @@ function getValue(value, xml, ref, element) {
             return element;
         case "_path":
             return ref;
+        case "_pathname":
+            return this.pathName;
+        case "_basename":
+            return path.basename(this.pathName, ".xml");
     }
     return value;
 }
@@ -353,11 +289,11 @@ XmlFile.prototype.localizeNode = function(resourceInfo, schema) {
     }
 }
 
-function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
-    ["category", "locale", "source", "key", "comment"].forEach(function(field) {
+XmlFile.prototype.hydrateResourceInfo = function(resourceInfo, schema, text, key, element) {
+    ["category", "locale", "source", "key", "comment", "context", "formatted"].forEach(function(field) {
         if ((typeof(schema.localizableType) === "string" && schema.localizableType === field) ||
                 schema.localizableType[field]) {
-            var value = getValue(schema.localizableType[field], text, key, element);
+            var value = this.getValue(schema.localizableType[field], text, key, element);
             if (field === "source") {
                 switch (resourceInfo.resType) {
                     case "array":
@@ -378,10 +314,10 @@ function hydrateResourceInfo(resourceInfo, schema, text, key, element) {
                         break;
                 }
             } else if (value) {
-                resourceInfo[field] = value;
+                resourceInfo[field] = convertValueToType(value, schema.type);
             }
         }
-    });
+    }.bind(this));
 }
 
 XmlFile.prototype.addExtractedResource = function(ref, resourceInfo) {
@@ -399,7 +335,10 @@ XmlFile.prototype.addExtractedResource = function(ref, resourceInfo) {
             state: "new",
             datatype: this.type.datatype,
             comment: resourceInfo.comment,
-            index: this.resourceIndex++
+            index: this.resourceIndex++,
+            formatted: resourceInfo.formatted,
+            context: resourceInfo.context,
+            flavor: (this.mapping && this.mapping.flavor)
         };
 
         if (typeof(resourceInfo.source) !== 'undefined') {
@@ -465,7 +404,10 @@ XmlFile.prototype.getTranslation = function(resourceInfo, locale, translations) 
                 pathName: this.pathName,
                 state: "new",
                 datatype: this.type.datatype,
-                index: this.resourceIndex++
+                index: this.resourceIndex++,
+                formatted: resource.formatted,
+                context: resource.getContext(),
+                flavor: resource.getFlavor()
             };
 
             switch (resource.getType()) {
@@ -516,6 +458,12 @@ XmlFile.prototype.mapTemplateString = function(string, resourceInfo, plural) {
             return resourceInfo.comment;
         case "[_locale]":
             return resourceInfo.locale;
+        case "[_context]":
+            return resourceInfo.context;
+        case "[_formatted]":
+            return resourceInfo.formatted;
+        case "[_flavor]":
+            return (this.mapping && this.mapping.flavor) || string
         default:
             return string;
     }
@@ -613,7 +561,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                        resourceInfo.source = "";
                        break;
                 }
-                hydrateResourceInfo(resourceInfo, schema, "", undefined, ref.substring(ref.lastIndexOf('/')+1));
+                this.hydrateResourceInfo(resourceInfo, schema, "", undefined, ref.substring(ref.lastIndexOf('/')+1));
             }
             xml.resourceInfo = resourceInfo;
         }
@@ -673,7 +621,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                 } else {
                     text = String(xml);
                     key = XmlFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-                    hydrateResourceInfo(resourceInfo, schema, text, key, resourceInfo.element);
+                    this.hydrateResourceInfo(resourceInfo, schema, text, key, resourceInfo.element);
                     if (resourceInfo.translation && schema.localizableType.source === "_value") {
                         switch (resourceInfo.resType) {
                         case "plural":
