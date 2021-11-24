@@ -52,7 +52,7 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.10.0",
+        "ilib": "^14.11.0",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
