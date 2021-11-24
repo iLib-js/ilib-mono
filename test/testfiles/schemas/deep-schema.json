@@ -1,0 +1,156 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://github.com/ilib-js/deep.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "An example of a deeply nested schema.",
+    "$defs": {
+        "array-item-type": {
+        }
+    },
+    "properties": {
+        "root": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "object",
+                    "properties": {
+                        "y": {
+                            "type": "object",
+                            "properties": {
+                                "plurals": {
+                                    "type": "object",
+                                    "title": "The plurals schema",
+                                    "description": "Handle plurals.",
+                                    "additionalProperties": {
+                                        "type": "object",
+                                        "required": [
+                                            "one",
+                                            "other"
+                                        ],
+                                        "localizable": true,
+                                        "localizableType": {
+                                            "type": "plural",
+                                            "key": "_element"
+                                        },
+                                        "properties": {
+                                            "zero": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_text": {
+                                                        "type": "string",
+                                                        "description": "Handle the zero string.",
+                                                        "localizableType": {
+                                                            "source": "_value",
+                                                            "category": "zero"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "one": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_text": {
+                                                        "type": "string",
+                                                        "description": "Handle the singular string.",
+                                                        "localizableType": {
+                                                            "source": "_value",
+                                                            "category": "one"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "two": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_text": {
+                                                        "type": "string",
+                                                        "description": "Handle the dual string.",
+                                                        "localizableType": {
+                                                            "source": "_value",
+                                                            "category": "two"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "few": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_text": {
+                                                        "type": "string",
+                                                       "description": "Handle the few plural string.",
+                                                        "localizableType": {
+                                                            "source": "_value",
+                                                            "category": "few"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "many": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_text": {
+                                                        "type": "string",
+                                                      "description": "Handle the many plural string.",
+                                                        "localizableType": {
+                                                            "source": "_value",
+                                                            "category": "many"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "other": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_text": {
+                                                        "type": "string",
+                                                        "description": "Handle any string not covered by the other plurals.",
+                                                        "localizableType": {
+                                                            "source": "_value",
+                                                            "category": "other"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "a": {
+                    "type": "object",
+                    "properties": {
+                        "b": {
+                            "type": "object",
+                            "properties": {
+                                "strings": {
+                                    "type": "object",
+                                    "title": "The strings schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "additionalProperties": {
+                                        "type": "object",
+                                        "localizable": true,
+                                        "localizableType": {
+                                            "type": "string",
+                                            "key": "_element"
+                                        },
+                                        "properties": {
+                                            "_text": {
+                                                "type": "string",
+                                                "localizableType": {
+                                                    "source": "_value"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

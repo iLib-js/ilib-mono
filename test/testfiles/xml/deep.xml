@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <x>
+        <y>
+            <plurals>
+                <bar>
+                    <one>singular</one>
+                    <many>many</many>
+                    <other>plural</other>
+                </bar>
+            </plurals>
+        </y>
+    </x>
+    <a>
+        <b>
+            <strings>
+                <a>b</a>
+                <c>d</c>
+            </strings>
+        </b>
+    </a>
+</root>

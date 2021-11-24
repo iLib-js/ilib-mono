@@ -1,0 +1,61 @@
+{
+    "$id": "labels-meta-schema",
+    "type": "object",
+    "properties": {
+        "CustomLabels": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "object",
+                    "localizable": true,
+                    "properties": {
+                        "fullName": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "key": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "language": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "locale": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "shortDescription": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "comment": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "source": "_value"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

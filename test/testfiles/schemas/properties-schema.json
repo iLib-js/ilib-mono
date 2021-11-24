@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://github.com/ilib-js/properties.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire XML document.",
+    "properties": {
+        "properties": {
+            "type": "object",
+            "properties": {
+                "entry": {
+                    "type": "object",
+                    "localizable": true,
+                    "properties": {
+                        "_attributes": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "key": "_value"
+                                    }
+                                },
+                                "i18n": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "comment": "_value"
+                                    }
+                                },
+                                "locale": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "locale": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
