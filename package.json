@@ -32,6 +32,7 @@
         }
     ],
     "files": [
+        "schemas",
         "README.md",
         "LICENSE",
         "XmlFile.js",

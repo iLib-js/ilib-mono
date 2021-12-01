@@ -1134,6 +1134,7 @@ file for more details.
       file, even if it does not exist in the source file. This
       allows for localization of empty strings or missing source
       strings.
+- fixed android resource schema file which was missing from the package
 
 ### v1.0.0
 
