@@ -9,6 +9,7 @@
             "properties": {
                 "label": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",

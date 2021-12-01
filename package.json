@@ -55,15 +55,14 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.10.0",
+        "ilib": "^14.11.1",
         "ilib-loctool-xml": "^1.0.0",
-        "log4js": "^2.11.0",
         "micromatch": "^4.0.4",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
         "assertextras": "^1.1.0",
-        "loctool": "^2.15.0",
+        "loctool": "^2.16.0",
         "nodeunit": "^0.11.3"
     }
 }

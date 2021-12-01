@@ -6,9 +6,11 @@
             "type": "object",
             "localizable": true,
             "localizableType": "string",
+            "required": ["label","name"],
             "properties": {
                 "label": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
@@ -20,6 +22,7 @@
                 },
                 "name": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
@@ -46,9 +49,11 @@
             "type": "object",
             "localizable": true,
             "localizableType": "string",
+            "required": ["label", "name"],
             "properties": {
                 "label": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
@@ -60,6 +65,7 @@
                 },
                 "name": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",

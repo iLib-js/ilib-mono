@@ -21,13 +21,18 @@ var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var mm = require("micromatch");
-var log4js = require("log4js");
 var XmlFileType = require("ilib-loctool-xml");
 
 var MetaXmlFile = require("./MetaXmlFile.js");
 var sfLocales = require("./sflocales.json");
 
-var logger = log4js.getLogger("loctool.lib.MetaXmlFileType");
+var logger = {
+    error: function() {},
+    info: function() {},
+    warn: function() {},
+    debug: function() {},
+    trace: function() {}
+};
 
 var MetaXmlFileType = function(project) {
     this.type = "xml";
@@ -35,6 +40,10 @@ var MetaXmlFileType = function(project) {
 
     this.project = project;
     this.API = this.project.getAPI();
+
+    if (typeof(this.API.getLogger) === "function") {
+        logger = this.API.getLogger("loctool.lib.MetaXmlFileType");
+    }
 
     this.extensions = [ ".xml" ];
 
@@ -374,12 +383,26 @@ MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName) {
     if (sfLocales[spec]) {
         spec = sfLocales[spec];
     }
-    spec = spec.replace(/-/g, "_");
 
-    var filename = path.basename(pathName);
-    var dirname = path.dirname(pathName);
+    var template = (this.project.settings && this.project.settings.metaxml && this.project.settings.metaxml.resourceFile) ||
+        "force-app/main/default/translations/[localeUnder].translation-meta.xml";
 
-    return this.smartJoin(dirname, spec + ".translation-meta.xml");
+    return path.normalize(this.API.utils.formatPath(template, {
+        sourcepath: pathName,
+        locale: spec
+    }));
+};
+
+
+/**
+ * Return the name of the node module that implements the resource file type, or
+ * the path to a javascript file that implements the resource filetype.
+ * @returns {FileType|undefined} class that implements a resource file type,
+ * or undefined if this file type does not need resource files
+ */
+MetaXmlFileType.prototype.getResourceFileType = function() {
+    // this is its own resource file type
+    return MetaXmlFileType;
 };
 
 module.exports = MetaXmlFileType;

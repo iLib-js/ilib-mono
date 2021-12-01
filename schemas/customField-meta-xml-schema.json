@@ -9,6 +9,7 @@
             "properties": {
                 "label": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
@@ -20,6 +21,7 @@
                 },
                 "fullName": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
@@ -40,6 +42,7 @@
             "properties": {
                 "label": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",

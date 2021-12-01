@@ -6,9 +6,11 @@
             "type": "object",
             "localizable": true,
             "localizableType": "string",
+            "required": ["value"],
             "properties": {
                 "value": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
