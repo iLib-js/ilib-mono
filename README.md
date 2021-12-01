@@ -152,7 +152,7 @@ used within the json property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - schema: schema to use with that matcher. The schema is 
+    - schema: schema to use with that matcher. The schema is
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above. The default schema is "properties-schema"
       which is given in the previous section.
@@ -180,7 +180,7 @@ used within the json property:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.xml" -> "foo/bar"
-        - [filename] the file name of the matching file. 
+        - [filename] the file name of the matching file.
           eg. "foo/bar/strings.xml" -> "strings.xml"
         - [basename] the basename of the matching file without any extension
           eg. "foo/bar/strings.xml" -> "strings"
@@ -529,7 +529,7 @@ in the original XML file.
 
 When the `localizable` keyword is given for an object type, that object
 may encode a plural string. Plurals are not possible if the JSON schema
-for the current element is a primitive type like string or number. 
+for the current element is a primitive type like string or number.
 The `localizableType` keyword should contain a type property with
 the value "plural" to specify that.
 
@@ -1118,6 +1118,22 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.1.0
+
+- Add support for new replacements and tags
+    - In parsing the resources, you can now extracted the
+      "formatted", "context", and the "flavor" attributes for a resource.
+    - In creating a plural template, you can now use those three
+      attributes.
+    - When getting the value of an attribute, you can now use the
+      \_pathname and \_basename values, which will convert into the full
+      path name of the file, and the base name of the file.
+- Make sure required properties exist in the localization
+    - If a property is required, it should exist in the localized
+      file, even if it does not exist in the source file. This
+      allows for localization of empty strings or missing source
+      strings.
 
 ### v1.0.0
 
