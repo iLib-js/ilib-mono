@@ -1389,7 +1389,46 @@ module.exports.xmlfile = {
         test.done();
     },
 
-    testXmlFileLocalizeWithEmptyString: function(test) {
+    testXmlFileLocalizeTextRemoveComments: function(test) {
+        test.expect(2);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1"><!-- test1 -->this is string one</string>\n' +
+            '    <string name="string 2"><!-- test2 -->this is string two</string>\n' +
+            '</resources>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+
+        var actual = xf.localizeText(translations, "fr-FR");
+        var expected =
+            '<resources>\n' +
+            '    <string name="string 1">C\'est la chaîne numéro 1</string>\n' +
+            '    <string name="string 2">this is string two</string>\n' +
+            '</resources>\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testXmlFileLocalizeWithEmptyStringInFile: function(test) {
         test.expect(2);
 
         var xf = new XmlFile({
@@ -1421,6 +1460,54 @@ module.exports.xmlfile = {
             '<resources>\n' +
             '    <string name="string 1">C\'est la chaîne numéro 1</string>\n' +
             '    <string name="string 2"/>\n' +
+            '</resources>\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testXmlFileLocalizeTheEmptyString: function(test) {
+        test.expect(2);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1">this is string one</string>\n' +
+            '    <string name="string 2"></string>\n' +
+            '</resources>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+
+        var actual = xf.localizeText(translations, "fr-FR");
+        var expected =
+            '<resources>\n' +
+            '    <string name="string 1">C\'est la chaîne numéro 1</string>\n' +
+            '    <string name="string 2">C\'est la chaîne numéro 2</string>\n' +
             '</resources>\n';
 
         diff(actual, expected);

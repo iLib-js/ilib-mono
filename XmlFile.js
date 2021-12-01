@@ -166,17 +166,29 @@ var pluralCategories = {
 };
 
 function isNotEmpty(obj) {
-    if (isPrimitive(typeof(obj))) {
-        return typeof(obj) !== 'undefined';
-    } else if (ilib.isArray(obj)) {
-        return obj.length > 0;
-    } else {
-        for (var prop in obj) {
-            if (isNotEmpty(obj[prop])) {
-                return true;
+    var type = typeof(obj);
+    switch (type) {
+        case "string":
+            return obj.length > 0;
+        case "boolean":
+        case "number":
+            return true;
+        case "undefined":
+        case "function":
+            return false;
+        case "object":
+            if (obj === null) {
+                return false;
+            } else if (ilib.isArray(obj)) {
+                return obj.length > 0;
+            } else {
+                for (var prop in obj) {
+                    if (isNotEmpty(obj[prop])) {
+                        return true;
+                    }
+                }
+                return false;
             }
-        }
-        return false;
     }
 }
 
@@ -508,7 +520,7 @@ XmlFile.prototype.formatTemplate = function(template, resourceInfo, plural) {
 };
 
 XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo) {
-    if (!xml || !schema) return;
+    if (typeof(xml) === 'undefined' || !schema) return;
 
     if (typeof(schema["$ref"]) !== 'undefined') {
         // substitute the referenced schema for this one
@@ -695,13 +707,50 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
                         if (isNotEmpty(subobject)) {
                             returnValue[prop] = subobject;
                         }
-                    } else if (prop !== "resourceInfo") {
+                    } else if (prop !== "resourceInfo" && prop !== "_comment") {
                        // not in the schema, so don't propegate this node if we're in
                        // sparse mode
                        var obj = (prop !== "_attributes") ? this.sparseValue(xml[prop]) : xml[prop];
                        if (obj) returnValue[prop] = obj;
                     }
                 }.bind(this));
+
+                // now look for any required attributes and add them if they are missing
+                if (schema.properties && schema.required) {
+                    schema.required.forEach(function(prop) {
+                        if (typeof(returnValue[prop]) === 'undefined') {
+                            var obj, property = schema.properties[prop];
+                            if (property && property.type) {
+                                switch (property.type) {
+                                    case "object":
+                                        subobject = {};
+                                        break;
+                                    case "array":
+                                        subobject = [];
+                                        break;
+                                    default:
+                                    case "string":
+                                        subobject = "";
+                                        break;
+                                }
+                                obj = this.parseObj(
+                                    subobject,
+                                    root,
+                                    property,
+                                    ref + '/' + XmlFile.escapeRef(prop),
+                                    prop,
+                                    localizeTree,
+                                    translations,
+                                    locale,
+                                    resourceInfo);
+                                if (isNotEmpty(obj)) {
+                                    returnValue[prop] = obj;
+                                }
+                            }
+                        }
+                    }.bind(this));
+                }
+
                 // if we are doing sparse, and the current object has no children, then there is
                 // no point in returning the current node as well
                 if (this.mapping && this.mapping.method && this.mapping.method === "sparse" && this.API.utils.isEmpty(returnValue)) {
