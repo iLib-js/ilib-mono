@@ -351,7 +351,7 @@ MetaXmlFileType.prototype.addSet = function(set) {
  * new resources
  */
 MetaXmlFileType.prototype.getNew = function() {
-    return this.newres;
+    return this.xmlFileType.getNew();
 };
 
 /**
@@ -362,7 +362,7 @@ MetaXmlFileType.prototype.getNew = function() {
  * pseudo localized resources
  */
 MetaXmlFileType.prototype.getPseudo = function() {
-    return this.pseudo;
+    return this.xmlFileType.getPseudo();
 };
 
 /**

@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
     <customApplications>
-        <label><!-- Test --></label>
-        <name>Test</name>
+        <label><!-- The best way to do X on the Internet! --></label>
+        <name>MyApp</name>
     </customApplications>
-    <customApplications>
-        <label><!-- Force.com --></label>
-        <name>Force_com</name>
-    </customApplications>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>AcessToken_Expr__c</name>
+    </customField>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>Allocation_status__c</name>
+    </customField>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>Collaboration__c</name>
+    </customField>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>Retry_Count__c</name>
+    </customField>
     <customLabels>
-        <label><!-- Text Account --></label>
-        <name>Account</name>
+        <label><!-- Whether or not the sender should be shown in the recipient list of the email. --></label>
+        <name>Show_Sender_in_Recipient_List</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Had this been a real test, you would have been instructed to calmly leave the building. --></label>
+        <name>Test_of_emergency_warning_system</name>
+    </customLabels>
+    <customLabels>
+        <label>Translations Only String</label>
+        <name>String_only_in_translations_meta_xml</name>
     </customLabels>
     <customTabs>
-        <label><!-- Files online --></label>
-        <name>Files2</name>
+        <label><!-- My Application Files --></label>
+        <name>MyApp_Files2</name>
     </customTabs>
     <quickActions>
         <label><!-- LogACall --></label>

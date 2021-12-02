@@ -1083,22 +1083,22 @@ module.exports.metaxmlfile = {
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 8);
+        test.equal(set.size(), 13);
 
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Test", "xml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "String_only_in_translations_meta_xml", "xml"));
+        test.ok(r);
+        test.equal(r.getSource(), "Translations Only String");
+        test.equal(r.getKey(), "String_only_in_translations_meta_xml");
+
+        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Retry_Count__c", "xml"));
         test.ok(r);
         test.ok(!r.getSource());
-        test.equal(r.getKey(), "Test");
+        test.equal(r.getKey(), "Retry_Count__c");
 
-        r = set.get(ResourceString.hashKey("forceapp", "en-US", "Force_com", "xml"));
+        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "MyApp_Files2", "xml"));
         test.ok(r);
         test.ok(!r.getSource());
-        test.equal(r.getKey(), "Force_com");
-
-        var r = set.get(ResourceString.hashKey("forceapp", "en-US", "Flow Interview Log Entries", "xml"));
-        test.ok(r);
-        test.ok(!r.getSource());
-        test.equal(r.getKey(), "Flow Interview Log Entries");
+        test.equal(r.getKey(), "MyApp_Files2");
 
         test.done();
     },
@@ -1325,6 +1325,120 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
+    testMetaXmlFileAddResourceNoSourceInExtracted: function(test) {
+        test.expect(14);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft,
+            locale: "de-DE"
+        });
+        test.ok(mxf);
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 0);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- username --></label>\n' +
+            '        <name>user</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        test.equal(set.size(), 2);
+
+        var resources = set.getAll();
+        test.ok(resources);
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getKey(), "Test");
+        test.ok(!resources[0].getSource());
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getState(), "new");
+
+        test.equal(resources[1].reskey, "user");
+        test.ok(!resources[1].getSource());
+        test.equal(resources[1].sourceLocale, "en-US");
+        test.equal(resources[1].state, "new");
+
+        test.done();
+    },
+
+    testMetaXmlFileAddResourceAddSourceExtractedFromOtherResources: function(test) {
+        test.expect(14);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft
+        });
+        test.ok(mxf);
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 0);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- username --></label>\n' +
+            '        <name>user</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        test.equal(set.size(), 2);
+
+        mxf.addResource(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            sourceLocale: "en-US",
+            source: "Password",
+            comment: "comment1",
+            datatype: "xml",
+            pathName: "force-app/main/apps/main.application-meta.xml"
+        }));
+        mxf.addResource(new ResourceString({
+            project: "forceapp",
+            key: 'user',
+            sourceLocale: "en-US",
+            source: "User Name",
+            comment: "comment2",
+            datatype: "xml",
+            pathName: "force-app/main/apps/main2.application-meta.xml"
+        }));
+
+        // should add the source strings to the existing resources
+
+        var resources = set.getAll();
+        test.ok(resources);
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getKey(), "Test");
+        test.equal(resources[0].getSource(), "Password");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getState(), "new");
+
+        test.equal(resources[1].reskey, "user");
+        test.equal(resources[1].getSource(), "User Name");
+        test.equal(resources[1].sourceLocale, "en-US");
+        test.equal(resources[1].state, "new");
+
+        test.done();
+    },
+
     testMetaXmlFileLocalizeTextSimpleNoSource: function(test) {
         test.expect(5);
 
@@ -1400,8 +1514,8 @@ module.exports.metaxmlfile = {
         test.done();
     },
 
-    testMetaXmlFileGetTextSimpleNoSourceInExtracted: function(test) {
-        test.expect(14);
+    testMetaXmlFileLocalizeTextNewResourcesRightContent: function(test) {
+        test.expect(6);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -1414,50 +1528,7 @@ module.exports.metaxmlfile = {
         test.ok(set);
         test.equal(set.size(), 0);
 
-        mxf.parse(
-            '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
-            '    <customApplications>\n' +
-            '        <label><!-- Password --></label>\n' +
-            '        <name>Test</name>\n' +
-            '    </customApplications>\n' +
-            '    <customApplications>\n' +
-            '        <label><!-- username --></label>\n' +
-            '        <name>user</name>\n' +
-            '    </customApplications>\n' +
-            '</Translations>\n'
-        );
-
-        test.equal(set.size(), 2);
-
-        var resources = set.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 2);
-
-        test.equal(resources[0].getKey(), "Test");
-        test.ok(!resources[0].getSource());
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getState(), "new");
-
-        test.equal(resources[1].reskey, "user");
-        test.ok(!resources[1].getSource());
-        test.equal(resources[1].sourceLocale, "en-US");
-        test.equal(resources[1].state, "new");
-
-        test.done();
-    },
-
-    testMetaXmlFileGetTextSimpleAddSourceInExtractedFromOtherResources: function(test) {
-        test.expect(14);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            type: mxft
-        });
-        test.ok(mxf);
-
-        var set = mxf.getTranslationSet();
-        test.ok(set);
+        set = mxft.getNew();
         test.equal(set.size(), 0);
 
         mxf.parse(
@@ -1474,8 +1545,184 @@ module.exports.metaxmlfile = {
             '</Translations>\n'
         );
 
+        set = mxf.getTranslationSet();
         test.equal(set.size(), 2);
 
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: 'Password',
+            sourceLocale: "en-US",
+            comment: "comment",
+            datatype: "xml",
+            target: "Passwort",
+            targetLocale: "de-DE",
+            pathName: "force-app/main/default/translations/en_US.translation-meta.xml"
+        }));
+
+        // should translate anyways, despite having no source strings
+        var actual = mxf.localizeText(translations, "de-DE");
+        var expected =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label>Passwort</label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <name>user</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeTextNewResourcesRightSize: function(test) {
+        test.expect(6);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft,
+            locale: "de-DE"
+        });
+        test.ok(mxf);
+
+        var set = mxf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 0);
+
+        set = mxft.getNew();
+        set.clear();
+        test.equal(set.size(), 0);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- username --></label>\n' +
+            '        <name>user</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        set = mxf.getTranslationSet();
+        test.equal(set.size(), 2);
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: 'Password',
+            sourceLocale: "en-US",
+            comment: "comment",
+            datatype: "xml",
+            target: "Passwort",
+            targetLocale: "de-DE",
+            pathName: "force-app/main/default/translations/en_US.translation-meta.xml"
+        }));
+
+        // should put 1 string into the new set because 1 translation is missing
+        mxf.localizeText(translations, "de-DE");
+
+        set = mxft.getNew();
+        test.equal(set.size(), 1);
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeTextNewResourcesRightResources: function(test) {
+        test.expect(8);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft,
+            locale: "de-DE"
+        });
+        test.ok(mxf);
+
+        set = mxft.getNew();
+        set.clear();
+        test.equal(set.size(), 0);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- username --></label>\n' +
+            '        <name>user</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: '',
+            sourceLocale: "en-US",
+            comment: "comment",
+            datatype: "xml",
+            target: "Passwort",
+            targetLocale: "de-DE",
+            pathName: "force-app/main/default/translations/en_US.translation-meta.xml"
+        }));
+
+        // should put the untranslated string in the new set
+        mxf.localizeText(translations, "de-DE");
+
+        var resources = set.getAll();
+        test.ok(resources);
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getKey(), "user");
+        test.equal(resources[0].getProject(), "forceapp");
+        test.ok(!resources[0].getSource());
+        test.equal(resources[0].getSourceLocale(), "en-US");
+
+        test.done();
+    },
+
+    testMetaXmlFileLocalizeTextNewResourcesAddSourceStrings: function(test) {
+        test.expect(8);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            type: mxft,
+            locale: "de-DE"
+        });
+        test.ok(mxf);
+
+        set = mxft.getNew();
+        set.clear();
+        test.equal(set.size(), 0);
+
+        mxf.parse(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- Password --></label>\n' +
+            '        <name>Test</name>\n' +
+            '    </customApplications>\n' +
+            '    <customApplications>\n' +
+            '        <label><!-- username --></label>\n' +
+            '        <name>user</name>\n' +
+            '    </customApplications>\n' +
+            '</Translations>\n'
+        );
+
+        // fill in the source strings
         mxf.addResource(new ResourceString({
             project: "forceapp",
             key: 'Test',
@@ -1495,22 +1742,34 @@ module.exports.metaxmlfile = {
             pathName: "force-app/main/apps/main2.application-meta.xml"
         }));
 
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "forceapp",
+            key: 'Test',
+            source: '',
+            sourceLocale: "en-US",
+            comment: "comment",
+            datatype: "xml",
+            target: "Passwort",
+            targetLocale: "de-DE",
+            pathName: "force-app/main/default/translations/en_US.translation-meta.xml"
+        }));
+
+        // should put the untranslated string in the new set
+        mxf.localizeText(translations, "de-DE");
+
         var resources = set.getAll();
         test.ok(resources);
-        test.equal(resources.length, 2);
+        test.equal(resources.length, 1);
 
-        test.equal(resources[0].getKey(), "Test");
-        test.equal(resources[0].getSource(), "Password");
+        test.equal(resources[0].getKey(), "user");
+        test.equal(resources[0].getProject(), "forceapp");
+        test.equal(resources[0].getSource(), "User Name");
         test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getState(), "new");
-
-        test.equal(resources[1].reskey, "user");
-        test.equal(resources[1].getSource(), "User Name");
-        test.equal(resources[1].sourceLocale, "en-US");
-        test.equal(resources[1].state, "new");
 
         test.done();
     },
+
 /*
     testMetaXmlFileLocalizeSimple: function(test) {
         test.expect(2);
