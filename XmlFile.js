@@ -325,6 +325,9 @@ XmlFile.prototype.hydrateResourceInfo = function(resourceInfo, schema, text, key
                         resourceInfo.source = value || "";
                         break;
                 }
+            } else if (field === "locale") {
+                var l = new Locale(convertValueToType(value, schema.type));
+                resourceInfo[field] = l.getSpec();
             } else if (value) {
                 resourceInfo[field] = convertValueToType(value, schema.type);
             }

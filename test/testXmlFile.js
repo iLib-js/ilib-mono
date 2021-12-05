@@ -409,6 +409,75 @@ module.exports.xmlfile = {
         test.done();
     },
 
+    testXmlFileParseAllFields: function(test) {
+        test.expect(16);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1" i18n="this is comment 1" locale="de-DE" context="fooasdf" formatted="true">this is string one</string>\n' +
+            '    <string name="string 2" i18n="this is comment 2" locale="zh-Hans-CN" context="badda bing" formatted="false">this is string two</string>\n' +
+            '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getComment(), "this is comment 1");
+        test.equal(resources[0].getSourceLocale(), "de-DE");
+        test.equal(resources[0].getContext(), "fooasdf");
+        test.ok(resources[0].formatted);
+
+        test.equal(resources[1].getSource(), "this is string two");
+        test.equal(resources[1].getKey(), "string 2");
+        test.equal(resources[1].getComment(), "this is comment 2");
+        test.equal(resources[1].getSourceLocale(), "zh-Hans-CN");
+        test.equal(resources[1].getContext(), "badda bing");
+        test.ok(!resources[1].formatted);
+
+        test.done();
+    },
+
+    testXmlFileParseNormalizeLocale: function(test) {
+        test.expect(7);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1" locale="de_DE">this is string one</string>\n' +
+            '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "de-DE");
+
+        test.done();
+    },
+
     testXmlFileParseEscapeStringKeys: function(test) {
         test.expect(8);
 
