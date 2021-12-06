@@ -1,7 +1,7 @@
 /*
  * testYaml.js - test the Yaml object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2021 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -352,6 +352,78 @@ module.exports.yamlfile = {
         test.equal(r[5].getSourceLocale(), "en-US");
         test.equal(r[5].getKey(), "test");
         test.equal(r[5].getContext(), "zh_Hans_CN@foo@bar@asdf");
+
+        test.done();
+    },
+
+    testYamlFileParseWithLocaleSubkeysAndPath: function(test) {
+        test.expect(28);
+
+        var yml = new YamlFile({
+            project: p,
+            pathName: "x/y/z/foo.yaml",
+            type: yft
+        });
+        test.ok(yml);
+
+        yml.parse(
+                '---\n' +
+                "  a:\n" +
+                '    r9834724545: Jobs\n' +
+                '    r9483762220: Our internship program\n' +
+                '    r6782977423: |\n' +
+                '      Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
+                '      and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
+                '      directly from experienced, successful entrepreneurs.\n' +
+                "  b:\n" +
+                '    r4524523454: Working at MyCompany\n' +
+                '    r3254356823: Jobs\n' +
+                '  foo:\n' +
+                '    bar:\n' +
+                '      asdf:\n' +
+                '        test: test of many levels\n');
+
+        var set = yml.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getAll();
+        test.ok(r);
+
+        test.equal(r.length, 6);
+
+        // locale is not special for this type of yml file, so it should appear in the context
+        test.equal(r[0].getSource(), "Jobs");
+        test.equal(r[0].getSourceLocale(), "en-US");
+        test.equal(r[0].getKey(), "r9834724545");
+        test.equal(r[0].getContext(), "x/y/z/foo.yaml@a");
+
+        test.equal(r[1].getSource(), "Our internship program");
+        test.equal(r[1].getSourceLocale(), "en-US");
+        test.equal(r[1].getKey(), "r9483762220");
+        test.equal(r[1].getContext(), "x/y/z/foo.yaml@a");
+
+        test.equal(r[2].getSource(),
+                'Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
+                'and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
+                'directly from experienced, successful entrepreneurs.\n');
+        test.equal(r[2].getSourceLocale(), "en-US");
+        test.equal(r[2].getKey(), "r6782977423");
+        test.equal(r[2].getContext(), "x/y/z/foo.yaml@a");
+
+        test.equal(r[3].getSource(), "Working at MyCompany");
+        test.equal(r[3].getSourceLocale(), "en-US");
+        test.equal(r[3].getKey(), "r4524523454");
+        test.equal(r[3].getContext(), "x/y/z/foo.yaml@b");
+
+        test.equal(r[4].getSource(), "Jobs");
+        test.equal(r[4].getSourceLocale(), "en-US");
+        test.equal(r[4].getKey(), "r3254356823");
+        test.equal(r[4].getContext(), "x/y/z/foo.yaml@b");
+
+        test.equal(r[5].getSource(), "test of many levels");
+        test.equal(r[5].getSourceLocale(), "en-US");
+        test.equal(r[5].getKey(), "test");
+        test.equal(r[5].getContext(), "x/y/z/foo.yaml@foo@bar@asdf");
 
         test.done();
     },
@@ -916,7 +988,7 @@ module.exports.yamlfile = {
         });
         test.ok(yml);
 
-        // camel case means identifier, not English
+        // all caps case means identifier, not English
         yml.parse('---\n' +
                 'a: "LARGE"\n' +
                 'b: "ATTENTION"\n');
@@ -938,7 +1010,7 @@ module.exports.yamlfile = {
         });
         test.ok(yml);
 
-        // camel case means identifier, not English
+        // boolean means identifier, not English
         yml.parse('---\n' +
                 'a: true\n' +
                 'b: false\n');
@@ -960,7 +1032,7 @@ module.exports.yamlfile = {
         });
         test.ok(yml);
 
-        // camel case means identifier, not English
+        // only digits means identifier, not English
         yml.parse('---\n' +
                 'a: 452345\n' +
                 'b: 344\n');
@@ -982,7 +1054,7 @@ module.exports.yamlfile = {
         });
         test.ok(yml);
 
-        // camel case means identifier, not English
+        // only hex means identifier, not English
         yml.parse('---\n' +
                 'a: cbca81213eb5901b8ae4f8ac\n' +
                 'b: ab21fe4f440EA4\n');
@@ -996,7 +1068,7 @@ module.exports.yamlfile = {
     },
 
     testYamlFileExtractFile: function(test) {
-        test.expect(14);
+        test.expect(17);
 
         var yml = new YamlFile({
             project: p,
@@ -1019,6 +1091,7 @@ module.exports.yamlfile = {
         test.equal(r[0].getSource(), "Marketing");
         test.equal(r[0].getKey(), "Marketing");
         test.ok(!r[0].getComment());
+        test.equal(r[0].getContext(), "test.yml");
 
         var r = set.getBy({
             reskey: "Everyone_at_MyCompany_has_not_only_welcomed_us_interns,_but_given_us_a_chance_to_ask_questions_and_really_learn_about_what_they_do._That's_why_I'm_thrilled_to_be_a_part_of_this_team_and_part_of_a_company_that_will,_I'm_sure,_soon_be_a_household_name."
@@ -1027,6 +1100,7 @@ module.exports.yamlfile = {
         test.equal(r[0].getSource(), "Everyone at MyCompany has not only welcomed us interns, but given us a chance to ask questions and really learn about what they do. That's why I'm thrilled to be a part of this team and part of a company that will, I'm sure, soon be a household name.");
         test.equal(r[0].getKey(), "Everyone_at_MyCompany_has_not_only_welcomed_us_interns,_but_given_us_a_chance_to_ask_questions_and_really_learn_about_what_they_do._That's_why_I'm_thrilled_to_be_a_part_of_this_team_and_part_of_a_company_that_will,_I'm_sure,_soon_be_a_household_name.");
         test.ok(!r[0].getComment());
+        test.equal(r[0].getContext(), "test.yml");
 
         var r = set.getBy({
             reskey: "Learn_by_contributing_to_a_venture_that_will_change_the_world"
@@ -1035,6 +1109,7 @@ module.exports.yamlfile = {
         test.equal(r[0].getSource(), "Learn by contributing to a venture that will change the world");
         test.equal(r[0].getKey(), "Learn_by_contributing_to_a_venture_that_will_change_the_world");
         test.ok(!r[0].getComment());
+        test.equal(r[0].getContext(), "test.yml");
 
         test.done();
     },
@@ -1095,14 +1170,18 @@ module.exports.yamlfile = {
                 sourceLocale: "de-DE",
                 key: "source_text",
                 source: "Quellen\"text",
-                comment: "foo"
+                comment: "foo",
+                path: "asdf.yml",
+                context: "asdf.yml"
             }),
             new ContextResourceString({
                 project: "webapp",
                 sourceLocale: "de-DE",
                 key: "more_source_text",
                 source: "mehr Quellen\"text",
-                comment: "bar"
+                comment: "bar",
+                path: "asdf.yml",
+                context: "asdf.yml"
             })
         ].forEach(function(res) {
             yml.addResource(res);
@@ -1138,14 +1217,18 @@ module.exports.yamlfile = {
                 sourceLocale: "zh-Hans-CN",
                 key: "• &amp;nbsp; Address a particular topic",
                 source: "• &amp;nbsp; 解决一个特定的主题",
-                comment: " "
+                comment: " ",
+                path: "zh.yml",
+                context: "zh.yml"
             }),
             new ContextResourceString({
                 project: "webapp",
                 sourceLocale: "zh-Hans-CN",
                 key: "&apos;&#41;, url&#40;imgs/masks/top_bar",
                 source: "&apos;&#41;, url&#40;imgs/masks/top_bar康生活相",
-                comment: "bar"
+                comment: "bar",
+                path: "zh.yml",
+                context: "zh.yml"
             })
         ].forEach(function(res) {
             yml.addResource(res);
@@ -1179,14 +1262,18 @@ module.exports.yamlfile = {
                 sourceLocale: "zh-Hans-CN",
                 key: "short key",
                 source: "this is text that is relatively long and can run past the end of the page\nSo, we put a new line in the middle of it.",
-                comment: " "
+                comment: " ",
+                path: "zh.yml",
+                context: "zh.yml"
             }),
             new ContextResourceString({
                 project: "webapp",
                 sourceLocale: "zh-Hans-CN",
                 key: "A very long key that happens to have \n new line characters in the middle of it. Very very long. How long is it? It's so long that it won't even fit in 64 bits.",
                 source: "short text",
-                comment: "bar"
+                comment: "bar",
+                path: "zh.yml",
+                context: "zh.yml"
             })
         ].forEach(function(res) {
             yml.addResource(res);
@@ -1222,16 +1309,18 @@ module.exports.yamlfile = {
                 sourceLocale: "zh-Hans-CN",
                 key: "key1",
                 source: "medium length text that doesn't go beyond one line",
-                context: "foo@bar",
-                comment: " "
+                context: "zh.yml@foo@bar",
+                comment: " ",
+                path: "zh.yml"
             }),
             new ContextResourceString({
                 project: "webapp",
                 sourceLocale: "zh-Hans-CN",
                 key: "key2",
                 source: "short text",
-                context: "foo@bar@asdf",
-                comment: "bar"
+                context: "zh.yml@foo@bar@asdf",
+                comment: "bar",
+                path: "zh.yml"
             })
         ].forEach(function(res) {
             yml.addResource(res);
@@ -1283,7 +1372,7 @@ module.exports.yamlfile = {
         var set = yml.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "The_perks_of_interning", "x-yaml"));
+        var r = set.get(ContextResourceString.hashKey("webapp", "test.yml", "en-US", "The_perks_of_interning", "x-yaml"));
         test.ok(r);
 
         test.equal(r.getSource(), "The perks of interning");
@@ -1308,13 +1397,13 @@ module.exports.yamlfile = {
         var set = yml.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", "saved_someone_else_time", "en-US", "subject", "x-yaml"));
+        var r = set.get(ContextResourceString.hashKey("webapp", "test2.yml@saved_someone_else_time", "en-US", "subject", "x-yaml"));
         test.ok(r);
 
         test.equal(r.getSource(), "Someone said a colleague’s answer to your question saved them a lot of time:");
         test.equal(r.getKey(), "subject");
         test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getContext(), "saved_someone_else_time");
+        test.equal(r.getContext(), "test2.yml@saved_someone_else_time");
 
         test.done();
     },
@@ -1335,13 +1424,13 @@ module.exports.yamlfile = {
         var set = yml.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", "member_question_asked\\@answered", "en-US", "email_subject", "x-yaml"));
+        var r = set.get(ContextResourceString.hashKey("webapp", "test2.yml@member_question_asked\\@answered", "en-US", "email_subject", "x-yaml"));
         test.ok(r);
 
         test.equal(r.getSource(), "%1, %2 has answered a question you asked!");
         test.equal(r.getKey(), "email_subject");
         test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getContext(), "member_question_asked\\@answered");
+        test.equal(r.getContext(), "test2.yml@member_question_asked\\@answered");
 
         test.done();
     },
@@ -1362,7 +1451,7 @@ module.exports.yamlfile = {
         var set = yml.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ContextResourceString.hashKey("webapp", "member_question_asked\\@answered", "en-US", "email_subject", "x-yaml"));
+        var r = set.get(ContextResourceString.hashKey("webapp", "test2.yml@member_question_asked\\@answered", "en-US", "email_subject", "x-yaml"));
         test.ok(r);
 
         test.ok(r instanceof ContextResourceString);
@@ -1719,6 +1808,137 @@ module.exports.yamlfile = {
         test.done();
     },
 
+    testYamlFileLocalizeTextWithPath: function(test) {
+        test.expect(8);
+
+        var yml = new YamlFile({
+            project: p,
+            type: yft,
+            pathName: "x/y/z/foo.yaml",
+            locale: "en-US"
+        });
+        test.ok(yml);
+
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject: \'%1, you’re saving time!\'\n' +
+            '  subject: You’ve been thanked for saving a colleague\'s time!\n' +
+            '  body: “%1”\n' +
+            '  ctoa: View %1\n' +
+            '  push_data: You’ve saved lots of time! View %1\n' +
+            '  global_link: generic_link\n' +
+            '  setting_name: thanked_note_time_saved\n' +
+            '  daily_limit_exception_email: true\n'
+        );
+
+        var set = yml.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource('%1, you’re saving time!', "x/y/z/foo.yaml@thanked_note_time_saved");
+        test.ok(r);
+        test.equal(r.getSource(), '%1, you’re saving time!');
+        test.equal(r.getSourceLocale(), 'en-US');
+        test.equal(r.getKey(), 'email_subject');
+        test.equal(r.getContext(), "x/y/z/foo.yaml@thanked_note_time_saved");
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "webapp",
+            context: "x/y/z/foo.yaml@thanked_note_time_saved",
+            key: 'email_subject',
+            source: '%1, you\'re saving time!',
+            target: '%1, vous économisez du temps!',
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+
+        var actual = yml.localizeText(translations, "fr-FR");
+
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  body: “%1”\n' +
+            '  ctoa: View %1\n' +
+            '  daily_limit_exception_email: true\n' +
+            '  email_subject: "%1, vous économisez du temps!"\n' +
+            '  global_link: generic_link\n' +
+            '  push_data: You’ve saved lots of time! View %1\n' +
+            '  setting_name: thanked_note_time_saved\n' +
+            '  subject: You’ve been thanked for saving a colleague\'s time!\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testYamlFileLocalizeTextWithPathWithLegacyTranslations: function(test) {
+        test.expect(8);
+
+        var yml = new YamlFile({
+            project: p,
+            type: yft,
+            pathName: "x/y/z/foo.yaml",
+            locale: "en-US"
+        });
+        test.ok(yml);
+
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject: \'%1, you’re saving time!\'\n' +
+            '  subject: You’ve been thanked for saving a colleague\'s time!\n' +
+            '  body: “%1”\n' +
+            '  ctoa: View %1\n' +
+            '  push_data: You’ve saved lots of time! View %1\n' +
+            '  global_link: generic_link\n' +
+            '  setting_name: thanked_note_time_saved\n' +
+            '  daily_limit_exception_email: true\n'
+        );
+
+        var set = yml.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBySource('%1, you’re saving time!', "x/y/z/foo.yaml@thanked_note_time_saved");
+        test.ok(r);
+        test.equal(r.getSource(), '%1, you’re saving time!');
+        test.equal(r.getSourceLocale(), 'en-US');
+        test.equal(r.getKey(), 'email_subject');
+        test.equal(r.getContext(), "x/y/z/foo.yaml@thanked_note_time_saved");
+
+        var translations = new TranslationSet();
+        // no file name in the context!
+        translations.add(new ContextResourceString({
+            project: "webapp",
+            context: "thanked_note_time_saved",
+            key: 'email_subject',
+            source: '%1, you\'re saving time!',
+            target: '%1, vous économisez du temps!',
+            targetLocale: "fr-FR",
+            datatype: "x-yaml",
+            context: "x/y/z/foo.yaml@thanked_note_time_saved"
+        }));
+
+        var actual = yml.localizeText(translations, "fr-FR");
+
+        // still works, despite lacking the path name in the context
+        // so that we can remain backwards compatible with existing
+        // translations
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  body: “%1”\n' +
+            '  ctoa: View %1\n' +
+            '  daily_limit_exception_email: true\n' +
+            '  email_subject: "%1, vous économisez du temps!"\n' +
+            '  global_link: generic_link\n' +
+            '  push_data: You’ve saved lots of time! View %1\n' +
+            '  setting_name: thanked_note_time_saved\n' +
+            '  subject: You’ve been thanked for saving a colleague\'s time!\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
     testYamlParseOutputFile: function(test) {
         test.expect(5);
 
@@ -1736,7 +1956,7 @@ module.exports.yamlfile = {
         var set = y.getTranslationSet();
         test.ok(set);
         //test.equal(set.getBySource('d', 'title@do_not_read_me'), undefined);
-        var r = set.getBy({reskey: 'subject', context: 'saved_someone_else_time'});
+        var r = set.getBy({reskey: 'subject', context: 'test2.yml@saved_someone_else_time'});
         test.ok(r);
         test.equal(r.length, 1);
         test.equal(r[0].getSource(), 'Someone said a colleague’s answer to your question saved them a lot of time:');
@@ -1947,13 +2167,13 @@ module.exports.yamlfile = {
         test.equal(r[0].getSource(), "foobar");
         test.equal(r[0].getSourceLocale(), "en-US");
         test.equal(r[0].getKey(), "a");
-        test.ok(!r[0].getContext());
+        test.equal(r[0].getContext(), "customization/en-CHOCOLATE.yml");
         test.equal(r[0].getFlavor(), "CHOCOLATE");
 
         test.equal(r[1].getSource(), "barfoo");
         test.equal(r[1].getSourceLocale(), "en-US");
         test.equal(r[1].getKey(), "b");
-        test.ok(!r[1].getContext());
+        test.equal(r[1].getContext(), "customization/en-CHOCOLATE.yml");
         test.equal(r[1].getFlavor(), "CHOCOLATE");
 
         test.done();
@@ -1988,14 +2208,14 @@ module.exports.yamlfile = {
         test.equal(r[0].getTargetLocale(), "en-ZA");
         test.equal(r[0].getSourceLocale(), "en-US");
         test.equal(r[0].getKey(), "a");
-        test.ok(!r[0].getContext());
+        test.equal(r[0].getContext(), "customization/en-ZA.yml");
         test.ok(!r[0].getFlavor());
 
         test.equal(r[1].getTarget(), "barfoo");
         test.equal(r[1].getTargetLocale(), "en-ZA");
         test.equal(r[1].getSourceLocale(), "en-US");
         test.equal(r[1].getKey(), "b");
-        test.ok(!r[1].getContext());
+        test.equal(r[1].getContext(), "customization/en-ZA.yml");
         test.ok(!r[1].getFlavor());
 
         test.done();
@@ -2085,8 +2305,8 @@ module.exports.yamlfile = {
             y.extract();
             var set = y.getTranslationSet();
             test.ok(set);
-            test.equal(set.getBySource('good','title@read_me').getLocalize(), true);
-            test.ok(!set.getBySource('bad','title@do_not_read_me'));
+            test.equal(set.getBySource('good','test3.yml@title@read_me').getLocalize(), true);
+            test.ok(!set.getBySource('bad','test3.yml@title@do_not_read_me'));
             test.done();
         },
 

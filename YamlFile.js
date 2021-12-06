@@ -6,7 +6,7 @@
  * writing out a parallel yml file with the same structure, but translated
  * content.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019,2021 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -280,7 +280,7 @@ YamlFile.prototype.parse = function(str) {
     this.resourceIndex = 0;
     this.json = yaml.parse(str);
     this._parseComments(str);
-    this._parseResources(undefined, this.json, this.set, true);
+    this._parseResources(this.pathName ? path.normalize(this.pathName) : undefined, this.json, this.set, true);
 };
 
 /**
@@ -544,6 +544,9 @@ YamlFile.prototype.getContent = function() {
                 var context = resource.getContext();
                 if (context && context.length) {
                     var parts = context.split(/@/g);
+                    if (parts.length && parts[0] == path.normalize(this.pathName)) {
+                        parts = parts.slice(1);
+                    }
                     for (var i = 0; i < parts.length; i++) {
                         if (!parent[parts[i]]) {
                             parent[parts[i]] = {};

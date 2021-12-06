@@ -49,12 +49,12 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.9.0",
+        "ilib": "^14.10.0",
         "log4js": "^2.11.0",
         "yaml": "2.0.0-6"
     },
     "devDependencies": {
-        "loctool": "^2.13.0",
+        "loctool": "^2.15.1",
         "nodeunit": "^0.11.3"
     }
 }
