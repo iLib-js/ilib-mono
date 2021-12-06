@@ -847,6 +847,106 @@ module.exports.xmlfile = {
         test.done();
     },
 
+    testXmlFileParseWithBasename: function(test) {
+        test.expect(8);
+
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
+            project: p,
+            pathName: "i18n/messages.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a basename="testing the basename">b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "b");
+        test.equal(resources[1].getKey(), "a");
+        // basename of the path to this xml file with no extensions
+        test.equal(resources[1].getContext(), "messages");
+
+        test.done();
+    },
+
+    testXmlFileParseWithPathname: function(test) {
+        test.expect(8);
+
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
+            project: p,
+            pathName: "i18n/messages.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a pathname="testing the pathname">b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "b");
+        test.equal(resources[1].getKey(), "a");
+        // the path to the file
+        test.equal(resources[1].getContext(), "i18n/messages.xml");
+
+        test.done();
+    },
+
     testXmlFileParseDeepRightSize: function(test) {
         test.expect(3);
 

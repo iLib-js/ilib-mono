@@ -118,6 +118,18 @@
                             "localizableType": {
                                 "comment": "_value"
                             }
+                        },
+                        "basename": {
+                            "type": "string",
+                            "localizableType": {
+                                "context": "_basename"
+                            }
+                        },
+                        "pathname": {
+                            "type": "string",
+                            "localizableType": {
+                                "context": "_pathname"
+                            }
                         }
                     }
                 },

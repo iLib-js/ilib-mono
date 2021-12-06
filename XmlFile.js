@@ -262,7 +262,12 @@ XmlFile.prototype.getValue = function(value, xml, ref, element) {
         case "_pathname":
             return this.pathName;
         case "_basename":
-            return path.basename(this.pathName, ".xml");
+            if (this.pathName) {
+                var base = path.basename(this.pathName);
+                var firstdot = base.indexOf(".");
+                return firstdot > -1 ? base.substring(0, firstdot) : base;
+            }
+            return undefined;
     }
     return value;
 }
