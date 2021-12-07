@@ -108,7 +108,13 @@ var p = new CustomProject({
             "**/arrays.xml": {
                 "schema": "http://github.com/ilib-js/arrays.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/arrays.xml"
+                "template": "resources/[localeDir]/arrays.xml",
+                "localeMap": {
+                    "de-DE": "de",
+                    "fr-FR": "fr",
+                    "sv-SE": "sv",
+                    "en-001": "en-GB"
+                }
             },
             "**/arrays-sparse.xml": {
                 "schema": "http://github.com/ilib-js/arrays.json",
@@ -2291,6 +2297,60 @@ module.exports.xmlfile = {
         test.done();
     },
 */
+
+    testXmlGetLocalizedPath: function(test) {
+        test.expect(4);
+
+        // mapping contains a locale map
+        var xf = new XmlFile({
+            project: p,
+            pathName: "./xml/arrays.xml",
+            type: t
+        });
+        test.ok(xf);
+        
+        test.equal(xf.getLocalizedPath("de-DE"), "resources/de/arrays.xml");
+        test.equal(xf.getLocalizedPath("fr-FR"), "resources/fr/arrays.xml");
+        test.equal(xf.getLocalizedPath("en-001"), "resources/en/GB/arrays.xml");
+
+        test.done();
+    },
+
+    testXmlGetLocalizedPathNonMapping: function(test) {
+        test.expect(3);
+
+        // mapping contains a locale map
+        var xf = new XmlFile({
+            project: p,
+            pathName: "./xml/arrays.xml",
+            type: t
+        });
+        test.ok(xf);
+        
+        // non-mappings
+        test.equal(xf.getLocalizedPath("da"), "resources/da/arrays.xml");
+        test.equal(xf.getLocalizedPath("en-CA"), "resources/en/CA/arrays.xml");
+
+        test.done();
+    },
+
+    testXmlGetLocalizedPathNoLocaleMap: function(test) {
+        test.expect(4);
+
+        // mapping does not contain a locale map
+        var xf = new XmlFile({
+            project: p,
+            pathName: "xml/values/strings.xml",
+            type: t
+        });
+        test.ok(xf);
+        
+        test.equal(xf.getLocalizedPath("de-DE"), "resources/values-de-rDE/strings.xml");
+        test.equal(xf.getLocalizedPath("fr-FR"), "resources/values-fr-rFR/strings.xml");
+        test.equal(xf.getLocalizedPath("en-001"), "resources/values-en-r001/strings.xml");
+
+        test.done();
+    },
 
     testXmlFileLocalize: function(test) {
         test.expect(7);

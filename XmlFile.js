@@ -875,9 +875,14 @@ XmlFile.prototype.write = function() {};
  */
 XmlFile.prototype.getLocalizedPath = function(locale) {
     var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
+    var spec = locale || this.project.sourceLocale;
+    if (mapping.localeMap && mapping.localeMap[spec]) {
+        spec = mapping.localeMap[spec];
+    }
+
     return path.normalize(this.API.utils.formatPath(mapping.template, {
         sourcepath: this.pathName,
-        locale: locale
+        locale: spec
     }));
 };
 

@@ -212,9 +212,10 @@ XmlFileType.prototype.getMapping = function(pathName) {
     var xmlSettings = this.project.settings.xml;
     var mappings = (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
+    var normalized = path.normalize(pathName);
 
     var match = patterns.find(function(pattern) {
-        return mm.isMatch(pathName, pattern);
+        return mm.isMatch(normalized, pattern);
     });
 
     return match && mappings[match];

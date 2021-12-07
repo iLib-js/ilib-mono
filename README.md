@@ -170,6 +170,12 @@ used within the json property:
       white label app. Each resource produced from the source file
       will have the given flavor. If not specified, there is no
       flavor attribute for the resources.
+    - localeMap: an output locale map that specifies the mapping
+      between locales that are used internally in the plugin, and the
+      output locale that should be used for constructing
+      the file name of output files. If a locale does not appear in
+      the mapping, it will not be mapped. That is, the original locale
+      will be used to construct the output file name.
     - template: a path template to use to generate the path to
       the translated
       output files. The template replaces strings in square brackets
@@ -217,7 +223,12 @@ Example configuration:
                 "**/config.xml": {
                     "schema": "http://www.lge.com/xml/config",
                     "method": "sparse",
-                    "template": "config/config_[localeUnder].xml"
+                    "template": "config/config_[localeUnder].xml",
+                    "localeMap": {
+                        "de-DE": "de", 
+                        "fr-FR": "fr", 
+                        "ja-JP": "ja"
+                    }
                 },
                 "customer1/src/**/strings.xml": {
                     "schema": "http://www.mycompany.com/xml/strings",
@@ -239,7 +250,9 @@ In the second part of the example, any `config.xml` file will be parsed with
 the schema `http://www.mycompany.com/xml/config`. Because the method is
 `sparse`, only the parts of the XML file that have translated strings in them will
 appear in the output config files. The output file is sent to the `config`
-directory.
+directory, and the locale used to construct the file name goes through the
+locale map first. That is, if you localized to the locale "de-DE", the locale
+will be mapped to "de" and the file name will come out as "config/config_de.xml"
 
 In the third part of the example, any `strings.xml` file that appears in
 the `src` directory will be parsed with the schema
@@ -1135,6 +1148,7 @@ file for more details.
       allows for localization of empty strings or missing source
       strings.
 - fixed android resource schema file which was missing from the package
+- added localeMap to the configuration of a mapping
 
 ### v1.0.0
 
