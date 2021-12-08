@@ -1,5 +1,5 @@
 {
-    "$id": "quickAction-meta-xml-schema",
+    "$id": "quickaction-meta-xml-schema",
     "type": "object",
     "$defs": {
         "entry-type": {
@@ -15,18 +15,8 @@
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "source": "_value"
-                            }
-                        }
-                    }
-                },
-                "type": {
-                    "type": "object",
-                    "properties": {
-                        "_text": {
-                            "type": "string",
-                            "localizableType": {
-                                "key": "_value"
+                                "source": "_value",
+                                "key": "_basename"
                             }
                         }
                     }

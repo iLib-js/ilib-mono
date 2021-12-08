@@ -69,6 +69,7 @@ var MetaXmlFileType = function(project) {
     if (!project.settings) {
         project.settings = {};
     }
+    this.project.plugins.push("ilib-loctool-xml");
 
     if (!project.settings.xml) {
         var mappings = this._getMappings();
@@ -80,6 +81,9 @@ var MetaXmlFileType = function(project) {
         });
     }
     this.xmlFileType = new XmlFileType(project);
+
+    // place to store files of this type
+    this.files = {};
 };
 
 /**
@@ -134,9 +138,10 @@ MetaXmlFileType.prototype.getMapping = function(pathName) {
 
     var mappings = this._getMappings();
     var patterns = Object.keys(mappings);
+    var normalized = path.normalize(pathName);
 
     var match = patterns.find(function(pattern) {
-        return mm.isMatch(pathName, pattern);
+        return mm.isMatch(normalized, pattern);
     });
 
     return match && mappings[match];
@@ -151,33 +156,50 @@ MetaXmlFileType.prototype.getDefaultMapping = function() {
 
 var defaultMappings = {
     "**/*.app-meta.xml": {
-        "schema": "customApplication-meta-xml-schema"
-    },
-    "**/*.field-meta.xml": {
-        "schema": "customField-meta-xml-schema"
-    },
-    "**/*.labels-meta.xml": {
-        "schema": "customLabels-meta-xml-schema"
-    },
-    "**/*.md-meta.xml": {
-        "schema": "customMetadata-meta-xml-schema"
-    },
-    "**/*.object-meta.xml": {
-        "schema": "customObject-meta-xml-schema"
+        "schema": "customApplication-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
     },
     "**/*.customPermission-meta.xml": {
-        "schema": "customPermission-meta-xml-schema"
+        "schema": "customPermission-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
     },
-    "**/*.tab-meta.xml": {
-        "schema": "customTab-meta-xml-schema"
+    "**/*.listView-meta.xml": {
+        "schema": "listview-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.field-meta.xml": {
+        "schema": "customField-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.labels-meta.xml": {
+        "schema": "customLabels-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.md-meta.xml": {
+        "schema": "customMetadata-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.object-meta.xml": {
+        "schema": "customObject-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.permissionset-meta.xml": {
+        "schema": "permissionset-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
     },
     "**/*.quickAction-meta.xml": {
-        "schema": "quickaction-meta-xml-schema"
+        "schema": "quickaction-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.tab-meta.xml": {
+        "schema": "customtab-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
     },
     "**/*.translation-meta.xml": {
         "schema": "translation-meta-xml-schema",
         "method": "copy",
-        "template": "[dir]/[locale].translation-meta.xml"
+        "localeMap": sfLocales,
+        "template": "[dir]/[localeUnder].translation-meta.xml"
     }
 };
 
@@ -198,7 +220,7 @@ MetaXmlFileType.prototype.handles = function(pathName) {
 
     // check the path too
     var ret = true;
-    var patterns = Object.keys(defaultMappings); 
+    var patterns = Object.keys(defaultMappings);
     ret = patterns.find(function(pattern) {
         return mm.isMatch(pathName, pattern);
     });
@@ -236,76 +258,45 @@ MetaXmlFileType.prototype.name = function() {
  * @param {Array.<String>} locales the list of locales to localize to
  */
 MetaXmlFileType.prototype.write = function(translations, locales) {
-    // distribute all the resources to their resource files
-    // and then let them write themselves out
-    var resFileType = this.project.getResourceFileType();
-    var res, file,
-        resources = this.extracted.getAll(),
-        db = this.project.db,
-        translationLocales = locales.filter(function(locale) {
-            return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
-        }.bind(this));
+    // distribute all the resources to their resource files which are
+    // other meta xml files
+    var fileNames = Object.keys(this.files);
+    fileNames.forEach(function(fileName) {
+        var file = this.files[fileName];
+        if (!file.translationFile) {
+            var resFileName = this.getResourceFilePath("en-US", file.pathName);
 
-    for (var i = 0; i < resources.length; i++) {
-        res = resources[i];
-        // have to store the base English string or else there will be nothing to override in the translations
-        file = resFileType.getResourceFile(res.context, res.getSourceLocale(), res.resType + "s", res.pathName);
-        file.addResource(res);
-
-        // for each extracted string, write out the translations of it
-        translationLocales.forEach(function(locale) {
-            logger.trace("Localizing Java strings to " + locale);
-
-            db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
-                var r = translated;
-                if (res.dnt) {
-                    logger.trace("Resource " + res.reskey + " is set to 'do not translate'");
-                } else if (!r || this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
-                    if (r) {
-                        logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
-                        logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
-                    }
-                    var note = r && 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + r.getSource() + '"';
-                    var newres = res.clone();
-                    newres.setTargetLocale(locale);
-                    newres.setTarget((r && r.getTarget()) || res.getSource());
-                    newres.setState("new");
-                    newres.setComment(note);
-
-                    this.newres.add(newres);
-
-                    // skip because the fallbacks will go to the English resources anyways
-                    logger.trace("No translation for " + res.reskey + " to " + locale);
-                } else if (r.getTarget() !== res.getSource()) {
-                    file = resFileType.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
-                    file.addResource(r);
-                    logger.trace("Added " + r.reskey + " to " + file.pathName);
-                }
-            }.bind(this));
-        }.bind(this));
-    }
-
-    resources = this.pseudo.getAll().filter(function(resource) {
-        return resource.datatype === this.datatype;
+            var mxf = this.files[resFileName];
+            if (mxf) {
+                mxf.addSet(file.getTranslationSet());
+            } else {
+                logger.warn("Missing resource file " + resFileName);
+            }
+        }
     }.bind(this));
 
-    for (var i = 0; i < resources.length; i++) {
-        res = resources[i];
-        // only need to add the resource if it is different from the source text
-        if (res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
-            file.addResource(res);
-            logger.trace("Added " + res.reskey + " to " + file.pathName);
+    // and then let them write themselves out
+    fileNames.forEach(function(fileName) {
+        var file = this.files[fileName];
+        if (file.translationFile) {
+            file.localizeWrite(translations, locales);
         }
-    }
+    }.bind(this));
 };
 
-MetaXmlFileType.prototype.newFile = function(path) {
-    return new MetaXmlFile({
+MetaXmlFileType.prototype.newFile = function(path, options) {
+    var opts = {
         project: this.project,
         pathName: path,
         type: this
-    });
+    };
+    opts = Object.assign(opts, options);
+    var file = new MetaXmlFile(opts);
+
+    // record for later
+    this.files[path] = file;
+
+    return file;
 };
 
 MetaXmlFileType.prototype.getDataType = function() {

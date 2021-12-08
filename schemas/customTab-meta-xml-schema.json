@@ -1,8 +1,8 @@
 {
-    "$id": "customPermission-meta-xml-schema",
+    "$id": "customtab-meta-xml-schema",
     "type": "object",
     "properties": {
-        "CustomPermission": {
+        "CustomTab": {
             "type": "object",
             "localizable": true,
             "localizableType": "string",
@@ -16,13 +16,14 @@
                             "type": "string",
                             "localizableType": {
                                 "source": "_value",
-                                "key": "_value"
+                                "key": "_basename"
                             }
                         }
                     }
                 },
                 "description": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",

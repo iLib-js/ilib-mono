@@ -1,8 +1,8 @@
 {
-    "$id": "customPermission-meta-xml-schema",
+    "$id": "listview-meta-xml-schema",
     "type": "object",
     "properties": {
-        "CustomPermission": {
+        "ListView": {
             "type": "object",
             "localizable": true,
             "localizableType": "string",
@@ -15,19 +15,19 @@
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "source": "_value",
-                                "key": "_basename"
+                                "source": "_value"
                             }
                         }
                     }
                 },
-                "description": {
+                "fullName": {
                     "type": "object",
+                    "required": ["_text"],
                     "properties": {
                         "_text": {
                             "type": "string",
                             "localizableType": {
-                                "comment": "_value"
+                                "key": "_value"
                             }
                         }
                     }
