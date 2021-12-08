@@ -26,7 +26,7 @@ if (!XmlFile) {
 
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
-    var ResourceString =  require("loctool/lib/ResourceString.js");
+    var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
     var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
     var ResourceArray =  require("loctool/lib/ResourceArray.js");
 }
@@ -47,7 +47,10 @@ function diff(a, b) {
 var p = new CustomProject({
     name: "foo",
     id: "foo",
-    sourceLocale: "en-US"
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "XmlFileType")
+    ]
 }, "./test/testfiles", {
     locales:["en-GB"],
     targetDir: ".",
@@ -82,14 +85,18 @@ var p = new CustomProject({
                 "method": "sparse",
                 "template": "resources/[localeDir]/sparse2.xml"
             },
-            "**/spread.xml": {
+            /*
+            not implemented yet
+            "** /spread.xml": {
                 "schema": "strings-schema",
                 "method": "spread",
                 "template": "resources/[localeDir]/spread.xml"
             },
+            */
             "**/deep.xml": {
                 "schema": "http://github.com/ilib-js/deep.json",
                 "method": "copy",
+                "flavor": "chocolate",
                 "template": "resources/deep_[locale].xml"
             },
             "**/refs.xml": {
@@ -101,7 +108,13 @@ var p = new CustomProject({
             "**/arrays.xml": {
                 "schema": "http://github.com/ilib-js/arrays.json",
                 "method": "copy",
-                "template": "resources/[localeDir]/arrays.xml"
+                "template": "resources/[localeDir]/arrays.xml",
+                "localeMap": {
+                    "de-DE": "de",
+                    "fr-FR": "fr",
+                    "sv-SE": "sv",
+                    "en-001": "en-GB"
+                }
             },
             "**/arrays-sparse.xml": {
                 "schema": "http://github.com/ilib-js/arrays.json",
@@ -126,7 +139,10 @@ var t = new XmlFileType(p);
 var p2 = new CustomProject({
     name: "foo",
     id: "foo",
-    sourceLocale: "en-US"
+    sourceLocale: "en-US",
+    plugins: [
+        path.join(process.cwd(), "XmlFileType")
+    ]
 }, "./test/testfiles", {
     locales:["en-GB"],
     identify: true,
@@ -149,6 +165,15 @@ var p2 = new CustomProject({
 var t2 = new XmlFileType(p2);
 
 module.exports.xmlfile = {
+    testXmlFileInit: function(test) {
+        // initialize so we get the right resource string type
+        p.init(function() {
+            p2.init(function() {
+                test.done();
+            });
+        });
+    },
+
     testXmlFileConstructor: function(test) {
         test.expect(1);
 
@@ -315,7 +340,7 @@ module.exports.xmlfile = {
         var set = xf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "xml"));
+        var r = set.get(ContextResourceString.hashKey("foo", undefined, "en-US", "string 1", "xml", undefined));
         test.ok(r);
 
         test.equal(r.getSource(), "this is string one");
@@ -390,6 +415,75 @@ module.exports.xmlfile = {
         test.done();
     },
 
+    testXmlFileParseAllFields: function(test) {
+        test.expect(16);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1" i18n="this is comment 1" locale="de-DE" context="fooasdf" formatted="true">this is string one</string>\n' +
+            '    <string name="string 2" i18n="this is comment 2" locale="zh-Hans-CN" context="badda bing" formatted="false">this is string two</string>\n' +
+            '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 2);
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getComment(), "this is comment 1");
+        test.equal(resources[0].getSourceLocale(), "de-DE");
+        test.equal(resources[0].getContext(), "fooasdf");
+        test.ok(resources[0].formatted);
+
+        test.equal(resources[1].getSource(), "this is string two");
+        test.equal(resources[1].getKey(), "string 2");
+        test.equal(resources[1].getComment(), "this is comment 2");
+        test.equal(resources[1].getSourceLocale(), "zh-Hans-CN");
+        test.equal(resources[1].getContext(), "badda bing");
+        test.ok(!resources[1].formatted);
+
+        test.done();
+    },
+
+    testXmlFileParseNormalizeLocale: function(test) {
+        test.expect(7);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1" locale="de_DE">this is string one</string>\n' +
+            '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 1);
+        var resources = set.getAll();
+        test.equal(resources.length, 1);
+
+        test.equal(resources[0].getSource(), "this is string one");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "de-DE");
+
+        test.done();
+    },
+
     testXmlFileParseEscapeStringKeys: function(test) {
         test.expect(8);
 
@@ -449,6 +543,38 @@ module.exports.xmlfile = {
 
         test.equal(resources[0].getSource(), "this is string one");
         test.equal(resources[0].getKey(), "string 1");
+
+        test.done();
+    },
+
+    testXmlFileParseAllAttributes: function(test) {
+        test.expect(8);
+
+        // should default to the android strings schema
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1" i18n="comment" formatted="true" context="asdf">this is string one</string>\n' +
+            '    <string name="string 2">this is string two</string>\n' +
+            '</resources>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        var r = set.get(ContextResourceString.hashKey("foo", "asdf", "en-US", "string 1", "xml", undefined));
+        test.ok(r);
+
+        test.equal(r.getSource(), "this is string one");
+        test.equal(r.getKey(), "string 1");
+        test.equal(r.getContext(), "asdf");
+        test.equal(r.getComment(), "comment");
+        test.ok(r.formatted);
 
         test.done();
     },
@@ -727,6 +853,106 @@ module.exports.xmlfile = {
         test.done();
     },
 
+    testXmlFileParseWithBasename: function(test) {
+        test.expect(8);
+
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
+            project: p,
+            pathName: "i18n/messages.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a basename="testing the basename">b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "b");
+        test.equal(resources[1].getKey(), "a");
+        // basename of the path to this xml file with no extensions
+        test.equal(resources[1].getContext(), "messages");
+
+        test.done();
+    },
+
+    testXmlFileParseWithPathname: function(test) {
+        test.expect(8);
+
+        // when it's named messages.xml, it should apply the messages-schema schema
+        var xf = new XmlFile({
+            project: p,
+            pathName: "i18n/messages.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<messages>\n' +
+            '    <plurals name="foo">\n' +
+            '        <bar>\n' +
+            '            <one>singular</one>\n' +
+            '            <many>many</many>\n' +
+            '            <other>plural</other>\n' +
+            '        </bar>\n' +
+            '    </plurals>\n' +
+            '    <strings>\n' +
+            '        <a pathname="testing the pathname">b</a>\n' +
+            '        <c>d</c>\n' +
+            '    </strings>\n' +
+            '    <arrays>\n' +
+            '        <asdf i18n="comment">\n' +
+            '            <item>value 1</item>\n' +
+            '            <item>value 2</item>\n' +
+            '            <item>value 3</item>\n' +
+            '        </asdf>\n' +
+            '    </arrays>\n' +
+            '</messages>\n'
+        );
+
+        var set = xf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSource(), "b");
+        test.equal(resources[1].getKey(), "a");
+        // the path to the file
+        test.equal(resources[1].getContext(), "i18n/messages.xml");
+
+        test.done();
+    },
+
     testXmlFileParseDeepRightSize: function(test) {
         test.expect(3);
 
@@ -769,7 +995,7 @@ module.exports.xmlfile = {
     },
 
     testXmlFileParseDeepRightStrings: function(test) {
-        test.expect(19);
+        test.expect(22);
 
         var xf = new XmlFile({
             project: p,
@@ -819,14 +1045,17 @@ module.exports.xmlfile = {
         test.ok(!pluralStrings.zero);
         test.ok(!pluralStrings.two);
         test.ok(!pluralStrings.few);
+        test.equal(resources[0].flavor, "chocolate");
 
         test.equal(resources[1].getType(), "string");
         test.equal(resources[1].getSource(), "b");
         test.equal(resources[1].getKey(), "a");
+        test.equal(resources[1].flavor, "chocolate");
 
         test.equal(resources[2].getType(), "string");
         test.equal(resources[2].getSource(), "d");
         test.equal(resources[2].getKey(), "c");
+        test.equal(resources[2].flavor, "chocolate");
 
         test.done();
     },
@@ -991,7 +1220,7 @@ module.exports.xmlfile = {
         var set = xf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "xml"));
+        var r = set.get(ContextResourceString.hashKey("foo", undefined, "en-US", "string 1", "xml", undefined));
         test.ok(r);
 
         test.equal(r.getSource(), "this is string one");
@@ -1313,7 +1542,7 @@ module.exports.xmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -1335,7 +1564,46 @@ module.exports.xmlfile = {
         test.done();
     },
 
-    testXmlFileLocalizeWithEmptyString: function(test) {
+    testXmlFileLocalizeTextRemoveComments: function(test) {
+        test.expect(2);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1"><!-- test1 -->this is string one</string>\n' +
+            '    <string name="string 2"><!-- test2 -->this is string two</string>\n' +
+            '</resources>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+
+        var actual = xf.localizeText(translations, "fr-FR");
+        var expected =
+            '<resources>\n' +
+            '    <string name="string 1">C\'est la chaîne numéro 1</string>\n' +
+            '    <string name="string 2">this is string two</string>\n' +
+            '</resources>\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testXmlFileLocalizeWithEmptyStringInFile: function(test) {
         test.expect(2);
 
         var xf = new XmlFile({
@@ -1352,7 +1620,7 @@ module.exports.xmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -1367,6 +1635,54 @@ module.exports.xmlfile = {
             '<resources>\n' +
             '    <string name="string 1">C\'est la chaîne numéro 1</string>\n' +
             '    <string name="string 2"/>\n' +
+            '</resources>\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+        test.done();
+    },
+
+    testXmlFileLocalizeTheEmptyString: function(test) {
+        test.expect(2);
+
+        var xf = new XmlFile({
+            project: p,
+            type: t
+        });
+        test.ok(xf);
+
+        xf.parse(
+            '<resources>\n' +
+            '    <string name="string 1">this is string one</string>\n' +
+            '    <string name="string 2"></string>\n' +
+            '</resources>\n'
+        );
+
+        var translations = new TranslationSet();
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+        translations.add(new ContextResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "xml"
+        }));
+
+        var actual = xf.localizeText(translations, "fr-FR");
+        var expected =
+            '<resources>\n' +
+            '    <string name="string 1">C\'est la chaîne numéro 1</string>\n' +
+            '    <string name="string 2">C\'est la chaîne numéro 2</string>\n' +
             '</resources>\n';
 
         diff(actual, expected);
@@ -1425,7 +1741,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -1434,7 +1750,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "c",
             source: "d",
@@ -1507,7 +1823,7 @@ module.exports.xmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -1577,7 +1893,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -1874,7 +2190,7 @@ module.exports.xmlfile = {
             '}\n');
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -1883,7 +2199,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "this is string two",
@@ -1926,7 +2242,7 @@ module.exports.xmlfile = {
             '}\n');
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -1935,7 +2251,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "this is string two",
@@ -1944,7 +2260,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -1953,7 +2269,7 @@ module.exports.xmlfile = {
             targetLocale: "de",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 2",
             source: "this is string two",
@@ -1981,6 +2297,60 @@ module.exports.xmlfile = {
         test.done();
     },
 */
+
+    testXmlGetLocalizedPath: function(test) {
+        test.expect(4);
+
+        // mapping contains a locale map
+        var xf = new XmlFile({
+            project: p,
+            pathName: "./xml/arrays.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        test.equal(xf.getLocalizedPath("de-DE"), "resources/de/arrays.xml");
+        test.equal(xf.getLocalizedPath("fr-FR"), "resources/fr/arrays.xml");
+        test.equal(xf.getLocalizedPath("en-001"), "resources/en/GB/arrays.xml");
+
+        test.done();
+    },
+
+    testXmlGetLocalizedPathNonMapping: function(test) {
+        test.expect(3);
+
+        // mapping contains a locale map
+        var xf = new XmlFile({
+            project: p,
+            pathName: "./xml/arrays.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        // non-mappings
+        test.equal(xf.getLocalizedPath("da"), "resources/da/arrays.xml");
+        test.equal(xf.getLocalizedPath("en-CA"), "resources/en/CA/arrays.xml");
+
+        test.done();
+    },
+
+    testXmlGetLocalizedPathNoLocaleMap: function(test) {
+        test.expect(4);
+
+        // mapping does not contain a locale map
+        var xf = new XmlFile({
+            project: p,
+            pathName: "xml/values/strings.xml",
+            type: t
+        });
+        test.ok(xf);
+
+        test.equal(xf.getLocalizedPath("de-DE"), "resources/values-de-rDE/strings.xml");
+        test.equal(xf.getLocalizedPath("fr-FR"), "resources/values-fr-rFR/strings.xml");
+        test.equal(xf.getLocalizedPath("en-001"), "resources/values-en-r001/strings.xml");
+
+        test.done();
+    },
 
     testXmlFileLocalize: function(test) {
         test.expect(7);
@@ -2025,7 +2395,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -2034,7 +2404,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "c",
             source: "d",
@@ -2078,7 +2448,7 @@ module.exports.xmlfile = {
             targetLocale: "de-DE",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -2087,7 +2457,7 @@ module.exports.xmlfile = {
             targetLocale: "de-DE",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "c",
             source: "d",
@@ -2277,7 +2647,7 @@ module.exports.xmlfile = {
             targetLocale: "fr-FR",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -2302,7 +2672,7 @@ module.exports.xmlfile = {
             targetLocale: "de-DE",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -2387,7 +2757,7 @@ module.exports.xmlfile = {
 
         // only translate some of the strings
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -2412,7 +2782,7 @@ module.exports.xmlfile = {
             targetLocale: "de-DE",
             datatype: "xml"
         }));
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "a",
             source: "b",
@@ -2566,7 +2936,7 @@ module.exports.xmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -2834,7 +3204,7 @@ module.exports.xmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",
@@ -2914,7 +3284,7 @@ module.exports.xmlfile = {
         );
 
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
+        translations.add(new ContextResourceString({
             project: "foo",
             key: "string 1",
             source: "this is string one",

@@ -6,6 +6,7 @@
     "$defs": {
         "resource-attribute-type": {
             "type": "object",
+            "required": ["name"],
             "properties": {
                 "name": {
                     "type": "string",
@@ -41,6 +42,7 @@
         },
         "plural-item-type": {
             "type": "object",
+            "required": ["_text"],
             "properties": {
                 "_attributes": {
                     "type": "object",
@@ -88,6 +90,7 @@
             "type": "object",
             "localizable": true,
             "localizableType": "string",
+            "required": ["_text"],
             "properties": {
                 "_attributes": {
                     "$ref": "#/$defs/resource-attribute-type"
@@ -102,6 +105,7 @@
         },
         "array-item-type": {
             "type": "object",
+            "required": ["_text"],
             "properties": {
                 "_text": {
                     "type": "string",

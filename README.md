@@ -152,7 +152,7 @@ used within the json property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - schema: schema to use with that matcher. The schema is 
+    - schema: schema to use with that matcher. The schema is
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above. The default schema is "properties-schema"
       which is given in the previous section.
@@ -164,6 +164,18 @@ used within the json property:
           include localized strings
         - resource: write out a resource file format with the
           translations in it
+    - flavor: the flavor attribute to use for Android resource files.
+      The flavor usually applies to all resources in a particular
+      subdirectory, and corresponds to a particular customer for a
+      white label app. Each resource produced from the source file
+      will have the given flavor. If not specified, there is no
+      flavor attribute for the resources.
+    - localeMap: an output locale map that specifies the mapping
+      between locales that are used internally in the plugin, and the
+      output locale that should be used for constructing
+      the file name of output files. If a locale does not appear in
+      the mapping, it will not be mapped. That is, the original locale
+      will be used to construct the output file name.
     - template: a path template to use to generate the path to
       the translated
       output files. The template replaces strings in square brackets
@@ -174,7 +186,7 @@ used within the json property:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.xml" -> "foo/bar"
-        - [filename] the file name of the matching file. 
+        - [filename] the file name of the matching file.
           eg. "foo/bar/strings.xml" -> "strings.xml"
         - [basename] the basename of the matching file without any extension
           eg. "foo/bar/strings.xml" -> "strings"
@@ -211,11 +223,17 @@ Example configuration:
                 "**/config.xml": {
                     "schema": "http://www.lge.com/xml/config",
                     "method": "sparse",
-                    "template": "config/config_[localeUnder].xml"
+                    "template": "config/config_[localeUnder].xml",
+                    "localeMap": {
+                        "de-DE": "de",
+                        "fr-FR": "fr",
+                        "ja-JP": "ja"
+                    }
                 },
-                "src/**/strings.xml": {
+                "customer1/src/**/strings.xml": {
                     "schema": "http://www.mycompany.com/xml/strings",
                     "method": "copy",
+                    "flavor": "customer1",
                     "template": "[dir]/strings.[locale].xml"
                 }
             }
@@ -232,7 +250,9 @@ In the second part of the example, any `config.xml` file will be parsed with
 the schema `http://www.mycompany.com/xml/config`. Because the method is
 `sparse`, only the parts of the XML file that have translated strings in them will
 appear in the output config files. The output file is sent to the `config`
-directory.
+directory, and the locale used to construct the file name goes through the
+locale map first. That is, if you localized to the locale "de-DE", the locale
+will be mapped to "de" and the file name will come out as "config/config_de.xml"
 
 In the third part of the example, any `strings.xml` file that appears in
 the `src` directory will be parsed with the schema
@@ -240,7 +260,8 @@ the `src` directory will be parsed with the schema
 the parts that were not localized,
 will be sent to the same directory as the source file. However, the
 localized file name will also contain the name of the locale to distinguish
-it from the source file.
+it from the source file. Also, every resource in the strings.xml file will have
+the Android flavor "customer1".
 
 If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
@@ -372,6 +393,8 @@ XML:
 - "comment" - a comment for the translator to give more context
 - "locale" - the source locale of this resource
 - "category" - the plural category for a plural resource
+- "context" - the context field for this resource
+- "formatted" - for Android resources, the formatted attribute of a resource
 
 #### Element Parts
 
@@ -385,6 +408,9 @@ name of all the elements in the tree above the current element
 plus the name of the current element, all separated by slashes. This
 is similar to an xpath selector without any predicates or wildcards
 in it.
+- "_pathname" - The full path name of the file from the root of the project
+to the current file
+- "_basename" - The basename of the current file without the extension
 
 #### Assigning Element Parts to Resource Fields
 
@@ -516,7 +542,7 @@ in the original XML file.
 
 When the `localizable` keyword is given for an object type, that object
 may encode a plural string. Plurals are not possible if the JSON schema
-for the current element is a primitive type like string or number. 
+for the current element is a primitive type like string or number.
 The `localizableType` keyword should contain a type property with
 the value "plural" to specify that.
 
@@ -812,15 +838,18 @@ values from the resource. Here is a table of the replacement values:
 | _category | The category of the translation |
 | _locale | The locale specifier for the translation |
 | _comment | The translator's comment for the resource |
+| _context | The context attribute for the resource |
+| _flavor  | The flavor attribute for the resource (Android) |
+| _formatted  | The formatted attribute for the resource (Android) |
 
 Let's say we have a plural resource that should look like this:
 
 ```xml
     <string-plural id="unique">
-        <singular>This is the singular string</singular>
-        <double>This is the dual string</double>
+        <one>This is the singular string</one>
+        <two>This is the dual string</two>
         <many>This is the many plural string</many>
-        <plural>This is the plural string</plural>
+        <other>This is the plural string</other>
     </string-plural>
 ```
 
@@ -1102,6 +1131,24 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.1.0
+
+- Add support for new replacements and tags
+    - In parsing the resources, you can now extracted the
+      "formatted", "context", and the "flavor" attributes for a resource.
+    - In creating a plural template, you can now use those three
+      attributes.
+    - When getting the value of an attribute, you can now use the
+      \_pathname and \_basename values, which will convert into the full
+      path name of the file, and the base name of the file.
+- Make sure required properties exist in the localization
+    - If a property is required, it should exist in the localized
+      file, even if it does not exist in the source file. This
+      allows for localization of empty strings or missing source
+      strings.
+- fixed android resource schema file which was missing from the package
+- added localeMap to the configuration of a mapping
 
 ### v1.0.0
 

@@ -32,7 +32,7 @@ var XmlFileType = function(project) {
     this.project = project;
     this.API = project.getAPI();
 
-    this.extensions = [ ".xml" ];
+    this.extensions = validExtensions;
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
@@ -212,9 +212,10 @@ XmlFileType.prototype.getMapping = function(pathName) {
     var xmlSettings = this.project.settings.xml;
     var mappings = (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
+    var normalized = path.normalize(pathName);
 
     var match = patterns.find(function(pattern) {
-        return mm.isMatch(pathName, pattern);
+        return mm.isMatch(normalized, pattern);
     });
 
     return match && mappings[match];
@@ -227,6 +228,40 @@ XmlFileType.prototype.getDefaultMapping = function() {
     return defaultMappings["**/*.xml"];
 };
 
+var validExtensions = [
+    ".xml",
+    ".ddi",
+    ".docm",
+    ".docx",
+    ".dotm",
+    ".gml",
+    ".iml",
+    ".mlt",
+    ".plist",
+    ".potm",
+    ".potx",
+    ".ppam",
+    ".ppsx",
+    ".pptm",
+    ".pptx",
+    ".properties",
+    ".qti",
+    ".sldx",
+    ".thmx",
+    ".uml",
+    ".webloc",
+    ".wsdl",
+    ".xlam",
+    ".xlm",
+    ".xlsb",
+    ".xlsm",
+    ".xlsx",
+    ".xmls",
+    ".xslt",
+    ".xspf",
+    ".xtml"
+];
+
 /**
  * Return true if the given path is an XML template file and is handled
  * by the current file type.
@@ -237,11 +272,11 @@ XmlFileType.prototype.getDefaultMapping = function() {
  */
 XmlFileType.prototype.handles = function(pathName) {
     // logger.debug("XmlFileType handles " + pathName + "?");
-    var ret = false;
+    if (!pathName) return false;
 
-    if (!ret) {
-        ret = pathName.length > 4 && pathName.substring(pathName.length - 4) === ".xml";
-    }
+    var lastdot = pathName.lastIndexOf(".");
+    var extension = pathName.substring(lastdot > -1 ? lastdot : 0);
+    var ret = validExtensions.indexOf(extension) > -1;
 
     // now match at least one of the mapping patterns
     if (ret) {
@@ -250,17 +285,17 @@ XmlFileType.prototype.handles = function(pathName) {
         var xmlSettings = this.project.settings.xml;
         var mappings = (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
         var patterns = Object.keys(mappings);
-        ret = mm.isMatch(pathName, patterns);
 
-        // now check if it is an already-localized file, and if it has a different locale than the
-        // source locale, then we don't need to extract those strings
-        if (ret) {
-            for (var i = 0; i < patterns.length; i++) {
+        // now check if it has a mapping and if it is an already-localized file and if it has a different
+        // locale than the source locale, then we don't need to extract those strings
+        for (var i = 0; i < patterns.length; i++) {
+            if (mm.isMatch(pathName, patterns[i])) {
+                ret = true;
                 var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
                 if (locale && locale !== this.project.sourceLocale) {
                     ret = false;
-                    break;
                 }
+                break;
             }
         }
     }
@@ -299,7 +334,9 @@ XmlFileType.prototype.getDataType = function() {
 };
 
 XmlFileType.prototype.getResourceTypes = function() {
-    return {};
+    return {
+        "string": "ContextResourceString"
+    };
 };
 
 XmlFileType.prototype.getExtensions = function() {

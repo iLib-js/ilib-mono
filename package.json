@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-xml",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "./XmlFileType.js",
     "description": "A loctool plugin that knows how to localize xml files",
     "license": "Apache-2.0",
@@ -32,6 +32,7 @@
         }
     ],
     "files": [
+        "schemas",
         "README.md",
         "LICENSE",
         "XmlFile.js",
@@ -52,12 +53,12 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.10.0",
+        "ilib": "^14.11.1",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
         "assertextras": "^1.1.0",
-        "loctool": "^2.15.0",
+        "loctool": "^2.16.0",
         "nodeunit": "^0.11.3"
     }
 }
