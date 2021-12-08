@@ -32,7 +32,7 @@ var XmlFileType = function(project) {
     this.project = project;
     this.API = project.getAPI();
 
-    this.extensions = [ ".xml" ];
+    this.extensions = validExtensions;
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
