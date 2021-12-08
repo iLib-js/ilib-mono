@@ -225,8 +225,8 @@ Example configuration:
                     "method": "sparse",
                     "template": "config/config_[localeUnder].xml",
                     "localeMap": {
-                        "de-DE": "de", 
-                        "fr-FR": "fr", 
+                        "de-DE": "de",
+                        "fr-FR": "fr",
                         "ja-JP": "ja"
                     }
                 },
