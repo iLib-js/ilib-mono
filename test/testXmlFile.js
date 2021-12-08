@@ -2308,7 +2308,7 @@ module.exports.xmlfile = {
             type: t
         });
         test.ok(xf);
-        
+
         test.equal(xf.getLocalizedPath("de-DE"), "resources/de/arrays.xml");
         test.equal(xf.getLocalizedPath("fr-FR"), "resources/fr/arrays.xml");
         test.equal(xf.getLocalizedPath("en-001"), "resources/en/GB/arrays.xml");
@@ -2326,7 +2326,7 @@ module.exports.xmlfile = {
             type: t
         });
         test.ok(xf);
-        
+
         // non-mappings
         test.equal(xf.getLocalizedPath("da"), "resources/da/arrays.xml");
         test.equal(xf.getLocalizedPath("en-CA"), "resources/en/CA/arrays.xml");
@@ -2344,7 +2344,7 @@ module.exports.xmlfile = {
             type: t
         });
         test.ok(xf);
-        
+
         test.equal(xf.getLocalizedPath("de-DE"), "resources/values-de-rDE/strings.xml");
         test.equal(xf.getLocalizedPath("fr-FR"), "resources/values-fr-rFR/strings.xml");
         test.equal(xf.getLocalizedPath("en-001"), "resources/values-en-r001/strings.xml");
