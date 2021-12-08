@@ -53,6 +53,21 @@ var p = new CustomProject({
                 "schema": "http://www.lge.com/xml/str",
                 "method": "copy",
                 "template": "[dir]/[localeDir]/str.xml"
+            },
+            "**/*.properties": {
+                "schema": "properties-schema",
+                "method": "copy",
+                "template": "[dir]/[localeDir]/[filename]"
+            },
+            "**/*.docx": {
+                "schema": "properties-schema",
+                "method": "copy",
+                "template": "[dir]/[localeDir]/[filename]"
+            },
+            "**/*.xlsx": {
+                "schema": "properties-schema",
+                "method": "copy",
+                "template": "[dir]/[localeDir]/[filename]"
             }
         }
     }
@@ -132,23 +147,30 @@ module.exports.xmlfiletype = {
     },
 
     testXmlFileTypeHandlesExtensionTrue: function(test) {
-        test.expect(2);
+        test.expect(5);
 
         var xft = new XmlFileType(p);
         test.ok(xft);
 
         test.ok(xft.handles("strings.xml"));
+        test.ok(xft.handles("strings.properties"));
+        test.ok(xft.handles("strings.xlsx"));
+        test.ok(xft.handles("strings.docx"));
 
         test.done();
     },
 
     testXmlFileTypeHandlesExtensionFalse: function(test) {
-        test.expect(2);
+        test.expect(4);
 
         var xft = new XmlFileType(p);
         test.ok(xft);
 
         test.ok(!xft.handles("strings.xmlhandle"));
+
+        // handled, but no mappings, so we don't read them
+        test.ok(!xft.handles("strings.uml"));
+        test.ok(!xft.handles("strings.iml"));
 
         test.done();
     },
