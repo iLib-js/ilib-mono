@@ -6,7 +6,7 @@
     </customApplications>
     <customField>
         <label><!-- This is a test. --></label>
-        <name>AcessToken_Expr__c</name>
+        <name>AccessToken_Expr__c</name>
     </customField>
     <customField>
         <label><!-- This is a test. --></label>
