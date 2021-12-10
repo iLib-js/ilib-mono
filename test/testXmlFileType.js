@@ -238,12 +238,12 @@ module.exports.xmlfiletype = {
         var xft = new XmlFileType(p);
         test.ok(xft);
 
-        // This matches one of the templates, but thge locale is
+        // This matches one of the templates, but the locale is
         // not the source locale, so we don't need to
         // localize it again.
         test.ok(!xft.handles("resources/en/GB/messages.xml"));
         test.ok(!xft.handles("props/messages_en_GB.properties"));
-        test.ok(!xft.handles("file_en-GB.docx"));
+        test.ok(!xft.handles("files/file_en-GB.docx"));
 
         test.done();
     },

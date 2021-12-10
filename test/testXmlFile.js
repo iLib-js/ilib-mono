@@ -408,7 +408,7 @@ module.exports.xmlfile = {
         test.equal(resources[0].getKey(), "string 1");
         test.equal(resources[0].getType(), "string");
 
-        test.ok(!resources[1].getSource());
+        test.equal(resources[1].getSource(), "");
         test.equal(resources[1].getKey(), "string 2");
         test.equal(resources[1].getType(), "string");
 

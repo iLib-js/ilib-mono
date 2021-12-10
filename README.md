@@ -1132,6 +1132,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.1
+
+- Add unit tests to verify parsing the file name with locale
+- Updated the way that the plugin decides which files to handle
+
 ### v1.1.0
 
 - Add support for new replacements and tags
