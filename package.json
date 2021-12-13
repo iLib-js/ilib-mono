@@ -59,7 +59,7 @@
     },
     "devDependencies": {
         "assertextras": "^1.1.0",
-        "loctool": "^2.16.1",
+        "loctool": "^2.16.2",
         "nodeunit": "^0.11.3"
     }
 }
