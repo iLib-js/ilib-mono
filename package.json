@@ -54,7 +54,6 @@
     },
     "dependencies": {
         "ilib": "^14.11.1",
-        "log4js": "^6.3.0",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
