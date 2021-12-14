@@ -91,6 +91,8 @@ var MetaXmlFileType = function(project) {
  * Join two paths unless the child is an absolute path
  */
 MetaXmlFileType.prototype.smartJoin = function(parent, child) {
+    if (!parent) return child;
+    if (!child) return parent;
     return (child[0] === "/") ? child : path.join(parent, child);
 }
 
