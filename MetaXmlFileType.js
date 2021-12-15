@@ -75,7 +75,7 @@ var MetaXmlFileType = function(project) {
         var mappings = this._getMappings();
         Object.assign(project.settings, {
             xml: {
-                schemas: this.smartJoin(module.path, "./schemas"),
+                schemas: this.smartJoin(path.dirname(module.id), "./schemas"),
                 mappings: mappings
             }
         });
