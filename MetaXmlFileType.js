@@ -17,24 +17,33 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
-var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var log4js = require("log4js");
+var mm = require("micromatch");
+var XmlFileType = require("ilib-loctool-xml");
 
 var MetaXmlFile = require("./MetaXmlFile.js");
 var sfLocales = require("./sflocales.json");
 
-var logger = log4js.getLogger("loctool.lib.MetaXmlFileType");
+var logger = {
+    error: function() {},
+    info: function() {},
+    warn: function() {},
+    debug: function() {},
+    trace: function() {}
+};
 
 var MetaXmlFileType = function(project) {
-    this.type = "metaxml";
-    this.datatype = "metaxml";
+    this.type = "xml";
+    this.datatype = "xml";
 
     this.project = project;
     this.API = this.project.getAPI();
+
+    if (typeof(this.API.getLogger) === "function") {
+        logger = this.API.getLogger("loctool.lib.MetaXmlFileType");
+    }
 
     this.extensions = [ ".xml" ];
 
@@ -56,6 +65,144 @@ var MetaXmlFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+
+    if (!project.settings) {
+        project.settings = {};
+    }
+    this.project.plugins.push("ilib-loctool-xml");
+
+    if (!project.settings.xml) {
+        var mappings = this._getMappings();
+        Object.assign(project.settings, {
+            xml: {
+                schemas: this.smartJoin(module.path, "./schemas"),
+                mappings: mappings
+            }
+        });
+    }
+    this.xmlFileType = new XmlFileType(project);
+
+    // place to store files of this type
+    this.files = {};
+};
+
+/**
+ * @private
+ * Join two paths unless the child is an absolute path
+ */
+MetaXmlFileType.prototype.smartJoin = function(parent, child) {
+    if (!parent) return child;
+    if (!child) return parent;
+    return (child[0] === "/") ? child : path.join(parent, child);
+}
+
+/**
+ * Return the default schema for xml files.
+ * @returns {Object} the default schema
+ */
+MetaXmlFileType.prototype.getDefaultSchema = function() {
+    return this.xmlFileType.getSchema("translation-meta-xml-schema");
+};
+
+/**
+ * Get the schema associated with the given URI
+ * @param {String} uri the uri identifying the schema
+ * @returns {Object} the schema associated with the URI, or undefined if
+ * that schema is not defined
+ */
+MetaXmlFileType.prototype.getSchema = function(uri) {
+    var schema = this.xmlFileType.getSchema(uri);
+    if (schema === this.xmlFileType.getDefaultSchema()) {
+        // our default is different than the xml plugin's default
+        schema = this.getDefaultSchema();
+    }
+    return schema;
+};
+
+/**
+ * @private
+ */
+MetaXmlFileType.prototype._getMappings = function() {
+    var xmlSettings = this.project.settings.metaxml;
+    return (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
+};
+
+/**
+ * Return the mapping corresponding to this path.
+ * @param {String} pathName the path to check
+ * @returns {Object} the mapping object corresponding to the
+ * path or undefined if none of the mappings match
+ */
+MetaXmlFileType.prototype.getMapping = function(pathName) {
+    if (typeof(pathName) === "undefined") {
+        return this.getDefaultMapping();
+    }
+
+    var mappings = this._getMappings();
+    var patterns = Object.keys(mappings);
+    var normalized = path.normalize(pathName);
+
+    var match = patterns.find(function(pattern) {
+        return mm.isMatch(normalized, pattern);
+    });
+
+    return match && mappings[match];
+};
+
+/**
+ * Return the default mapping for this plugin.
+ */
+MetaXmlFileType.prototype.getDefaultMapping = function() {
+    return defaultMappings["**/*.translation-meta.xml"];
+};
+
+var defaultMappings = {
+    "**/*.app-meta.xml": {
+        "schema": "customApplication-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.customPermission-meta.xml": {
+        "schema": "customPermission-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.listView-meta.xml": {
+        "schema": "listview-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.field-meta.xml": {
+        "schema": "customField-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.labels-meta.xml": {
+        "schema": "customLabels-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.md-meta.xml": {
+        "schema": "customMetadata-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.object-meta.xml": {
+        "schema": "customObject-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.permissionset-meta.xml": {
+        "schema": "permissionset-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.quickAction-meta.xml": {
+        "schema": "quickaction-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.tab-meta.xml": {
+        "schema": "customtab-meta-xml-schema",
+        "template": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+    },
+    "**/*.translation-meta.xml": {
+        "schema": "translation-meta-xml-schema",
+        "method": "copy",
+        "localeMap": sfLocales,
+        "template": "[dir]/[localeUnder].translation-meta.xml"
+    }
 };
 
 /**
@@ -75,12 +222,21 @@ MetaXmlFileType.prototype.handles = function(pathName) {
 
     // check the path too
     var ret = true;
-    var filename = path.basename(pathName);
-    if (filename !== "en_US.translation-meta.xml") {
-        ret = false;
-    } else {
-        var parts = path.dirname(pathName).split(/\//g);
-        if (parts[parts.length-1] !== "translations") {
+    var patterns = Object.keys(defaultMappings);
+    ret = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern);
+    });
+
+    // check that we don't have an already translated file
+    var base = path.basename(pathName);
+    if (ret && base.endsWith(".translation-meta.xml")) {
+        if (base === "en_US.translation-meta.xml") {
+            var parts = path.dirname(pathName).split(/\//g);
+            if (parts[parts.length-1] !== "translations") {
+                ret = false;
+            }
+        } else {
+            // an already translated file
             ret = false;
         }
     }
@@ -104,16 +260,45 @@ MetaXmlFileType.prototype.name = function() {
  * @param {Array.<String>} locales the list of locales to localize to
  */
 MetaXmlFileType.prototype.write = function(translations, locales) {
-    // metaxml files are localized individually, so we don't have to
-    // write out the resources
+    // distribute all the resources to their resource files which are
+    // other meta xml files
+    var fileNames = Object.keys(this.files);
+    fileNames.forEach(function(fileName) {
+        var file = this.files[fileName];
+        if (!file.translationFile) {
+            var resFileName = this.getResourceFilePath("en-US", file.pathName);
+
+            var mxf = this.files[resFileName];
+            if (mxf) {
+                mxf.addSet(file.getTranslationSet());
+            } else {
+                logger.warn("Missing resource file " + resFileName);
+            }
+        }
+    }.bind(this));
+
+    // and then let them write themselves out
+    fileNames.forEach(function(fileName) {
+        var file = this.files[fileName];
+        if (file.translationFile) {
+            file.localizeWrite(translations, locales);
+        }
+    }.bind(this));
 };
 
-MetaXmlFileType.prototype.newFile = function(path) {
-    return new MetaXmlFile({
+MetaXmlFileType.prototype.newFile = function(path, options) {
+    var opts = {
         project: this.project,
         pathName: path,
         type: this
-    });
+    };
+    opts = Object.assign(opts, options);
+    var file = new MetaXmlFile(opts);
+
+    // record for later
+    this.files[path] = file;
+
+    return file;
 };
 
 MetaXmlFileType.prototype.getDataType = function() {
@@ -121,9 +306,7 @@ MetaXmlFileType.prototype.getDataType = function() {
 };
 
 MetaXmlFileType.prototype.getResourceTypes = function() {
-    return {
-        "string": "ContextResourceString"
-    };
+    return {};
 };
 
 MetaXmlFileType.prototype.getExtensions = function() {
@@ -161,7 +344,7 @@ MetaXmlFileType.prototype.addSet = function(set) {
  * new resources
  */
 MetaXmlFileType.prototype.getNew = function() {
-    return this.newres;
+    return this.xmlFileType.getNew();
 };
 
 /**
@@ -172,7 +355,7 @@ MetaXmlFileType.prototype.getNew = function() {
  * pseudo localized resources
  */
 MetaXmlFileType.prototype.getPseudo = function() {
-    return this.pseudo;
+    return this.xmlFileType.getPseudo();
 };
 
 /**
@@ -193,12 +376,26 @@ MetaXmlFileType.prototype.getResourceFilePath = function(locale, pathName) {
     if (sfLocales[spec]) {
         spec = sfLocales[spec];
     }
-    spec = spec.replace(/-/g, "_");
 
-    var filename = path.basename(pathName);
-    var dirname = path.dirname(pathName);
+    var template = (this.project.settings && this.project.settings.metaxml && this.project.settings.metaxml.resourceFile) ||
+        "force-app/main/default/translations/[localeUnder].translation-meta.xml";
 
-    return path.join(dirname, spec + ".translation-meta.xml");
+    return path.normalize(this.API.utils.formatPath(template, {
+        sourcepath: pathName,
+        locale: spec
+    }));
+};
+
+
+/**
+ * Return the name of the node module that implements the resource file type, or
+ * the path to a javascript file that implements the resource filetype.
+ * @returns {FileType|undefined} class that implements a resource file type,
+ * or undefined if this file type does not need resource files
+ */
+MetaXmlFileType.prototype.getResourceFileType = function() {
+    // this is its own resource file type
+    return MetaXmlFileType;
 };
 
 module.exports = MetaXmlFileType;

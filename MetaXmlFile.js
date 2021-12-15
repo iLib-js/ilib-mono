@@ -20,13 +20,19 @@
 var ilib = require("ilib");
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var xmljs = require("xml-js");
+
 var IString = require("ilib/lib/IString");
 var Locale = require("ilib/lib/Locale");
 var sfLocales = require("./sflocales.json");
 
-var logger = log4js.getLogger("loctool.lib.MetaXmlFile");
+var logger = {
+    error: function() {},
+    info: function() {},
+    warn: function() {},
+    debug: function() {},
+    trace: function() {}
+};
 
 /**
  * Create a new java file with the given path name and within
@@ -45,8 +51,21 @@ var MetaXmlFile = function(options) {
 
     this.API = this.project.getAPI();
 
+    if (typeof(this.API.getLogger) === "function") {
+        logger = this.API.getLogger("loctool.lib.MetaXmlFileType");
+    }
+
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.mapping = this.type.getMapping(this.pathName);
+    this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
     this.resourceIndex = 0;
+    this.locale = new Locale(options.locale || "en-US");
+
+    this.xmlFile = this.type.xmlFileType.newFile(this.pathName, {
+        mapping: this.mapping
+    });
+
+    this.translationFile = this.isTranslationFile(this.pathName);
 };
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
@@ -111,6 +130,7 @@ MetaXmlFile.cleanString = function(string) {
     return unescaped;
 };
 
+
 /**
  * Make a new key for the given string. This must correspond
  * exactly with the code in htglob jar file so that the
@@ -127,163 +147,50 @@ MetaXmlFile.prototype.makeKey = function(source) {
     return this.API.utils.hashKey(MetaXmlFile.cleanString(source));
 };
 
-/*
-var reGetStringBogusConcatenation1 = new RegExp(/(^R|\WR)B\.getString\s*\(\s*"((\\"|[^"])*)"\s*\+/g);
-var reGetStringBogusConcatenation2 = new RegExp(/(^R|\WR)B\.getString\s*\([^\)]*\+\s*"((\\"|[^"])*)"\s*\)/g);
-var reGetStringBogusParam = new RegExp(/(^R|\WR)B\.getString\s*\([^"\)]*\)/g);
-
-var reGetString = new RegExp(/(^R|\WR)B\.getString\s*\(\s*"((\\"|[^"])*)"\s*\)/g);
-var reGetStringWithId = new RegExp(/(^R|\WR)B\.getString\("((\\"|[^"])*)"\s*,\s*"((\\"|[^"])*)"\)/g);
-
-var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
-*/
-
-var skipProperties = {
-    "_attributes": true,
-    "_declaration": true
+MetaXmlFile.prototype.isTranslationFile = function(pathName) {
+    return !pathName || pathName.endsWith(".translation-meta.xml");
 };
 
-MetaXmlFile.prototype.addResource = function(key, text, comment, autoKey, context) {
-    if (!this.API.utils.isDNT(comment)) {
-        if (!key) {
-            key = this.makeKey(text);
-            autoKey = true;
-        }
-        var res = this.API.newResource({
-            datatype: this.type.datatype,
-            resType: "string",
-            key: key,
-            source: text,
-            pathName: this.pathName,
-            sourceLocale: this.locale || this.sourceLocale,
-            project: this.project.getProjectId(),
-            autoKey: autoKey,
-            comment: comment,
-            dnt: this.API.utils.isDNT(comment),
-            index: this.resourceIndex++,
-            context: context
-        });
-        this.set.add(res);
-        this.dirty = true;
-    }
-};
-
-function textOrComment(node) {
-    return (node._text && node._text.trim()) || (node._comment && node._comment.trim());
-}
-
-MetaXmlFile.prototype.handleCustom = function(context, subnode) {
-    var text, key, comment, autoKey;
-
-    if (subnode.name && subnode.name._text) {
-        key = subnode.name._text.trim();
-        autoKey = false;
-    }
-
-    comment = subnode._comment && subnode._comment.trim();
-
-    if (subnode.label) {
-        text = textOrComment(subnode.label);
-        if (text && text.length) {
-            if (subnode._attributes) {
-                comment = subnode._attributes["x-i18n"];
+MetaXmlFile.prototype.addResource = function(res) {
+    logger.trace("MetaXmlFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    if (this.translationFile) {
+        var ourResource = this.set.get(res.hashKey());
+        if (!ourResource) {
+            this.set.add(res);
+        } else {
+            switch (res.getType()) {
+                default:
+                case "string":
+                    if (!ourResource.getSource()) {
+                        ourResource.setSource(res.getSource());
+                    }
+                    break;
+                case "plural":
+                    if (!ourResource.getSourcePlurals()) {
+                        ourResource.setSourcePlurals(res.getSourcePlurals());
+                    }
+                    break;
+                case "array":
+                    if (!ourResource.getSourceArray()) {
+                        ourResource.setSourceArray(res.getSourceArray());
+                    }
+                    break;
             }
-            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
-            this.addResource(key, text, comment, autoKey, context);
         }
-    }
-
-    if (subnode.description) {
-        text = textOrComment(subnode.description);
-        if (text && text.length) {
-            if (subnode._attributes) {
-                comment = subnode._attributes["x-i18n"];
-            }
-            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
-            this.addResource(key + ".description", text, comment, autoKey, context);
-        }
-    }
-}
-
-MetaXmlFile.prototype.handleReportTypes = function(context, subnode) {
-    var text, key, comment, autoKey;
-
-    if (subnode.name && subnode.name._text) {
-        key = subnode.name._text.trim();
-        autoKey = false;
-    }
-
-    comment = subnode._comment;
-
-    if (subnode.description) {
-        text = textOrComment(subnode.description);
-        if (text && text.length) {
-            if (subnode._attributes) {
-                comment = subnode._attributes["x-i18n"];
-            }
-            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
-            this.addResource(key + ".description", text, comment, autoKey, context);
-        }
-    }
-
-    if (subnode.label) {
-        text = textOrComment(subnode.label);
-        if (text && text.length) {
-            if (subnode._attributes) {
-                comment = subnode._attributes["x-i18n"];
-            }
-            logger.trace("Found resource type " + context + " with string " + text + " and comment " + comment);
-            this.addResource(key, text, comment, autoKey, context);
-        }
-    }
-
-    if (subnode.sections) {
-        var sections = ilib.isArray(subnode.sections) ? subnode.sections : [ subnode.sections ];
-        for (var i = 0; i < sections.length; i++) {
-            autoKey = false;
-            var section = sections[i];
-            var label = textOrComment(section.label);
-            var subkey = textOrComment(section.name);
-            if (!subkey) {
-                subkey = this.makeKey(label);
-                autoKey = true;
-            }
-            subkey = [key, subkey].join('.');
-            this.addResource(subkey, label, comment, autoKey, context + ".sections");
-        }
-    }
-}
-
-var localizableElements = {
-    "customApplications": true,
-    "customLabels": true,
-    "customTabs": true,
-    "quickActions": true,
-    "reportTypes": true
+    } // else do not add a resource to a non translation file
 };
 
 /**
- * Walk the node tree looking for properties that have localizable values, then extract
- * them and resourcify them.
- * @private
+ * Add a set of resources to this file.
+ * @param {TranslationSet} set the set to add
  */
-MetaXmlFile.prototype.walkLayout = function(node) {
-    var comment, id, subnodes, subnode, text, autoKey;
-
-    for (var p in node) {
-        if (p in localizableElements) {
-            subnodes = ilib.isArray(node[p]) ? node[p] : [ node[p] ];
-            for (var i = 0; i < subnodes.length; i++) {
-                subnode = subnodes[i];
-                if (p === "reportTypes") {
-                    this.handleReportTypes(p, subnode);
-                } else {
-                    this.handleCustom(p, subnode);
-                }
-            }
-        } else if (typeof(node[p]) === "object" && !(p in skipProperties)) {
-            this.walkLayout(node[p]);
-        }
+MetaXmlFile.prototype.addSet = function(set) {
+    if (!set) return;
+    var resources = set.getAll();
+    if (resources) {
+        resources.forEach(function(resource) {
+            this.addResource(resource);
+        }.bind(this));
     }
 };
 
@@ -295,15 +202,15 @@ MetaXmlFile.prototype.walkLayout = function(node) {
 MetaXmlFile.prototype.parse = function(data) {
     logger.debug("Extracting strings from " + this.pathName);
 
-    this.xml = data;
-    this.contents = xmljs.xml2js(data, {
-        trim: false,
-        nativeTypeAttribute: true,
-        compact: true
-    });
-    this.resourceIndex = 0;
-
-    this.walkLayout(this.contents);
+    this.xmlFile.parse(data);
+    if (this.translationFile) {
+        var xmlSet = this.xmlFile.getTranslationSet();
+        if (xmlSet.size() > 0) {
+            this.set.addSet(xmlSet);
+            // clean = no resources added yet
+            this.set.setClean();
+        }
+    }
 };
 
 /**
@@ -313,7 +220,7 @@ MetaXmlFile.prototype.parse = function(data) {
 MetaXmlFile.prototype.extract = function() {
     logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
-        var p = path.join(this.project.root, this.pathName);
+        var p = this.type.smartJoin(this.project.root, this.pathName);
         try {
             var data = fs.readFileSync(p, "utf8");
             if (data) {
@@ -333,6 +240,9 @@ MetaXmlFile.prototype.extract = function() {
  * current MetaXml file.
  */
 MetaXmlFile.prototype.getTranslationSet = function() {
+    if (this.set.size() === 0 && this.xmlFile.set.size() > 0) {
+        this.set.addSet(this.xmlFile.set);
+    }
     return this.set;
 }
 
@@ -343,16 +253,7 @@ MetaXmlFile.prototype.getTranslationSet = function() {
  * @returns {String} the localized path name
  */
 MetaXmlFile.prototype.getLocalizedPath = function(locale) {
-    var spec = locale || this.project.sourceLocale;
-    if (sfLocales[spec]) {
-        spec = sfLocales[spec];
-    }
-    spec = spec.replace(/-/g, "_");
-
-    var filename = path.basename(this.pathName);
-    var dirname = path.dirname(this.pathName);
-
-    return path.join(dirname, spec + ".translation-meta.xml");
+    return this.type.getResourceFilePath(locale);
 };
 
 /**
@@ -364,109 +265,26 @@ MetaXmlFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 MetaXmlFile.prototype.localizeText = function(translations, locale) {
-    var output = {
-        _declaration: {
-            _attributes: {
-                version: "1.0",
-                encoding: "UTF-8"
-            }
-        },
-        Translations: {
-            _attributes: {
-                 xmlns: "http://soap.sforce.com/2006/04/metadata"
-            }
-        }
-    };
-    var resources = this.set.getAll();
-    var reportTypes = {}, key, type;
+    return this.translationFile && this.xmlFile.localizeText(translations, locale);
+};
 
-    for (var i = 0; i < resources.length; i++) {
-        var resource = resources[i];
-        var hashkey = resource.hashKeyForTranslation(locale);
-        var translated = translations.getClean(hashkey);
-        if (!translated) {
-            // new string
-            var translated = this.API.newResource(resource);
-            translated.target = translated.source;
-            translated.targetLocale = locale;
-            translated.state = "new";
-            translated.index = this.resourceIndex++;
-            this.type.newres.add(translated);
-            if (this.type && this.type.missingPseudo && !this.project.settings.nopseudo) {
-                translated = this.API.newResource(translated);
-                translated.target = this.type.missingPseudo.getString(resource.source);
-            }
-        }
-
-        if (typeof output.Translations[translated.context] === 'undefined') {
-            output.Translations[translated.context] = [];
-        }
-        if (translated.context.startsWith("reportTypes")) {
-            if (translated.context === "reportTypes") {
-                if (translated.reskey.endsWith(".description")) {
-                    key = translated.reskey.substring(0, translated.reskey.length - 12);
-                    if (!reportTypes[key]) {
-                        reportTypes[key] = {};
-                    }
-                    type = reportTypes[key];
-                    type.description = {
-                        _text: translated.target
-                    };
-                } else {
-                    key = translated.reskey;
-                    if (!reportTypes[key]) {
-                        reportTypes[key] = {};
-                    }
-                    type = reportTypes[key];
-                    type.label = {
-                        _text: translated.target
-                    };
-                    type.name = {
-                        _text: translated.reskey
-                    };
-                }
-            } else {
-                var parts = translated.reskey.split(/\./g);
-                mainkey = parts[0];
-                key = parts[1];
-
-                if (!reportTypes[mainkey]) {
-                    reportTypes[mainkey] = {};
-                }
-                type = reportTypes[mainkey];
-                if (!type.sections) {
-                    type.sections = [];
-                }
-
-                type.sections.push({
-                    label: {
-                        _text: translated.target
-                    },
-                    name: {
-                        _text: key
-                    }
-                });
-            }
-        } else {
-            output.Translations[translated.context].push({
-                label: {
-                    _text: translated.target
-                },
-                name: {
-                    _text: translated.reskey
-                }
-            });
-        }
+/**
+ * Localize the contents of this HTML file and write out the
+ * localized HTML file to a different file path. This method is called
+ * from the MetaXmlFileType.write method after all of the source files have
+ * been read and their resources distributed to the translation files.
+ * This is different than the localize method in that localize is called
+ * on each file after it has been read, whereas localizeWrite is called
+ * after all files have been read and the resources distributed.
+ *
+ * @param {TranslationSet} translations the current set of
+ * translations
+ * @param {Array.<String>} locales array of locales to translate to
+ */
+MetaXmlFile.prototype.localizeWrite = function(translations, locales) {
+    if (this.set.size() > 0 && translations && translations.size() > 0 && locales && locales.length > 0) {
+        this.xmlFile.localize(translations, locales);
     }
-    var types = Object.keys(reportTypes);
-    types.forEach(function(type) {
-        output.Translations.reportTypes.push(reportTypes[type]);
-    });
-
-    return xmljs.json2xml(output, {
-        spaces: 4,
-        compact: true
-    }) + '\n';
 };
 
 /**
@@ -478,28 +296,38 @@ MetaXmlFile.prototype.localizeText = function(translations, locale) {
  * @param {Array.<String>} locales array of locales to translate to
  */
 MetaXmlFile.prototype.localize = function(translations, locales) {
-    // don't localize if there is no text
-    if (this.set.size() > 0 && translations && translations.size() > 0 && locales && locales.length > 0) {
-        for (var i = 0; i < locales.length; i++) {
-            if (!this.project.isSourceLocale(locales[i])) {
-                // skip variants for now until we can handle them properly
-                var l = new Locale(locales[i]);
-                if (!l.getVariant()) {
-                    var pathName = this.getLocalizedPath(locales[i]);
-                    logger.debug("Writing file " + pathName);
-                    var p = path.join(this.project.target, pathName);
-                    var d = path.dirname(p);
-                    this.API.utils.makeDirs(d);
-
-                    fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
-                }
-            }
-        }
-    } else {
-        logger.debug(this.pathName + ": No strings, no localize");
-    }
+    // don't localize these files individually. Instead, wait until
+    // all of the files have been read and then use MetaXmlFileType.write()
+    // to find all of the non translation files and distribute their
+    // resources to the translation files, then write out each translation
+    // file
 };
 
-MetaXmlFile.prototype.write = function() {};
+MetaXmlFile.prototype.write = function() {
+    logger.trace("writing resource file. [" + [this.project.getProjectId(), this.locale].join(", ") + "]");
+    if (this.set.isDirty()) {
+        var dir;
+
+        if (!this.pathName) {
+            this.pathName = this.type.getResourceFilePath(this.locale || this.project.sourceLocale, undefined, "xml", this.flavor);
+        }
+
+        var p = this.type.smartJoin(this.project.target, this.pathName);
+        dir = path.dirname(p);
+
+        var resources = this.set.getAll();
+
+        logger.info("Writing properties file for locale " + this.locale + " to file " + this.pathName);
+
+        var content = this.getContent();
+
+        this.API.utils.makeDirs(dir);
+
+        fs.writeFileSync(p, content, "utf8");
+        logger.debug("Wrote string translations to file " + this.pathName);
+    } else {
+        logger.debug("File " + this.pathName + " is not dirty. Skipping.");
+    }
+};
 
 module.exports = MetaXmlFile;

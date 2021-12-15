@@ -1,0 +1,38 @@
+{
+    "$id": "listview-meta-xml-schema",
+    "type": "object",
+    "properties": {
+        "ListView": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "required": ["label"],
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "fullName": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,84 @@
+{
+    "$id": "customObject-meta-xml-schema",
+    "type": "object",
+    "properties": {
+        "CustomObject": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "plural",
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value",
+                                "key": "_basename",
+                                "category": "one"
+                            }
+                        }
+                    }
+                },
+                "pluralLabel": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value",
+                                "category": "other"
+                            }
+                        }
+                    }
+                },
+                "description": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        }
+                    }
+                },
+                "nameField": {
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": "string",
+                    "required": ["label"],
+                    "properties": {
+                        "label": {
+                            "type": "object",
+                            "required": ["_text"],
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "source": "_value",
+                                        "key": "_basename",
+                                        "context": "_path"
+                                    }
+                                }
+                            }
+                        },
+                        "description": {
+                            "type": "object",
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "comment": "_value"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

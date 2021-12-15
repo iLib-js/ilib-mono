@@ -1,0 +1,138 @@
+{
+    "$id": "translation-meta-xml-schema",
+    "type": "object",
+    "$defs": {
+        "entry-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "required": ["label","name"],
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "name": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                },
+                "description": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "report-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "required": ["label", "name"],
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "name": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                },
+                "description": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        }
+                    }
+                },
+                "sections": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/entry-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/entry-type"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "properties": {
+        "Translations": {
+            "type": "object",
+            "properties": {
+                "reportTypes": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/report-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/report-type"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/$defs/entry-type"
+                        }
+                    },
+                    {
+                        "$ref": "#/$defs/entry-type"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,92 @@
+{
+    "$id": "customField-meta-xml-schema",
+    "type": "object",
+    "$defs": {
+        "entry-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "fullName": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+        "CustomField": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "fullName": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                },
+                "valueSet": {
+                    "type": "object",
+                    "properties": {
+                        "valueSetDefinition": {
+                            "type": "object",
+                            "properties": {
+                                "value": {
+                                    "anyOf": [
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/$defs/entry-type"
+                                            }
+                                        },
+                                        {
+                                            "$ref": "#/$defs/entry-type"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

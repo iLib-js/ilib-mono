@@ -1,0 +1,37 @@
+{
+    "$id": "customApplication-meta-xml-schema",
+    "type": "object",
+    "properties": {
+        "CustomApplication": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value",
+                                "key": "_basename"
+                            }
+                        }
+                    }
+                },
+                "description": {
+                    "type": "object",
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
