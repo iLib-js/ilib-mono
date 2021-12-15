@@ -57,17 +57,17 @@ var p = new CustomProject({
             "**/*.properties": {
                 "schema": "properties-schema",
                 "method": "copy",
-                "template": "[dir]/[localeDir]/[filename]"
+                "template": "[dir]/[basename]_[localeUnder].[extension]"
             },
             "**/*.docx": {
                 "schema": "properties-schema",
                 "method": "copy",
-                "template": "[dir]/[localeDir]/[filename]"
+                "template": "[dir]/[basename]_[locale].[extension]"
             },
             "**/*.xlsx": {
                 "schema": "properties-schema",
                 "method": "copy",
-                "template": "[dir]/[localeDir]/[filename]"
+                "template": "[dir]/[basename]_[locale].[extension]"
             }
         }
     }
@@ -220,26 +220,30 @@ module.exports.xmlfiletype = {
     },
 
     testXmlFileTypeHandlesTrueSourceLocale: function(test) {
-        test.expect(2);
+        test.expect(4);
 
         var xft = new XmlFileType(p);
         test.ok(xft);
 
         test.ok(xft.handles("resources/en/US/messages.xml"));
+        test.ok(xft.handles("resources/messages_en_US.properties"));
+        test.ok(xft.handles("file_en-US.docx"));
 
         test.done();
     },
 
     testXmlFileTypeHandlesAlreadyLocalizedGB: function(test) {
-        test.expect(2);
+        test.expect(4);
 
         var xft = new XmlFileType(p);
         test.ok(xft);
 
-        // This matches one of the templates, but thge locale is
+        // This matches one of the templates, but the locale is
         // not the source locale, so we don't need to
         // localize it again.
         test.ok(!xft.handles("resources/en/GB/messages.xml"));
+        test.ok(!xft.handles("props/messages_en_GB.properties"));
+        test.ok(!xft.handles("files/file_en-GB.docx"));
 
         test.done();
     },

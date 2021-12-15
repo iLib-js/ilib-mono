@@ -282,20 +282,12 @@ XmlFileType.prototype.handles = function(pathName) {
     if (ret) {
         ret = false;
         // first check if it is a source file
-        var xmlSettings = this.project.settings.xml;
-        var mappings = (xmlSettings && xmlSettings.mappings) ? xmlSettings.mappings : defaultMappings;
-        var patterns = Object.keys(mappings);
-
-        // now check if it has a mapping and if it is an already-localized file and if it has a different
-        // locale than the source locale, then we don't need to extract those strings
-        for (var i = 0; i < patterns.length; i++) {
-            if (mm.isMatch(pathName, patterns[i])) {
-                ret = true;
-                var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
-                if (locale && locale !== this.project.sourceLocale) {
-                    ret = false;
-                }
-                break;
+        var mapping = this.getMapping(pathName);
+        if (mapping) {
+            ret = true;
+            var locale = this.API.utils.getLocaleFromPath(mapping.template, pathName);
+            if (locale && locale !== this.project.sourceLocale) {
+                ret = false;
             }
         }
     }
