@@ -89,6 +89,8 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.1
+
 - fixed a bug where the xml schemas are not loaded properly on some versions
   of nodejs
 - fixed a bug where source strings from various meta xml files cannot be added
