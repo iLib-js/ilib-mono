@@ -89,6 +89,13 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.1
+
+- fixed a bug where the xml schemas are not loaded properly on some versions
+  of nodejs
+- fixed a bug where source strings from various meta xml files cannot be added
+  to a translation source file for the locale en-US
+
 ### v1.1.0
 
 - now uses ilib-loctool-xml plugin to parse various meta xml files to look for

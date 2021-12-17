@@ -152,6 +152,39 @@ module.exports.metaxmlfiletype = {
         test.done();
     },
 
+    testMetaXmlFileTypeGetResourceFilePathNonTranslationFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.equal(mxft.getResourceFilePath("de-DE", "force-app/main/default/fields/Foo__c/Foo__c.field-meta.xml"), "force-app/main/default/translations/de.translation-meta.xml");
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeGetResourceFilePathEnUS: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.equal(mxft.getResourceFilePath("en-US", "force-app/main/default/translations/en_US.translation-meta.xml"), "force-app/main/default/translations/en_US.translation-meta.xml");
+
+        test.done();
+    },
+
+    testMetaXmlFileTypeGetResourceFilePathEnUSNonTranslationFile: function(test) {
+        test.expect(2);
+
+        var mxft = new MetaXmlFileType(p);
+        test.ok(mxft);
+
+        test.equal(mxft.getResourceFilePath("en-US", "force-app/main/default/fields/Foo__c/Foo__c.field-meta.xml"), "force-app/main/default/translations/en_US.translation-meta.xml");
+
+        test.done();
+    },
+
     testMetaXmlFileTypeHandlesCustomApplicationFile: function(test) {
         test.expect(2);
 
