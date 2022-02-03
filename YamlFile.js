@@ -279,8 +279,9 @@ YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
 YamlFile.prototype.parse = function(str) {
     this.resourceIndex = 0;
     this.json = yaml.parse(str);
-    this._parseComments(str);
-    this._parseResources(this.pathName ? path.normalize(this.pathName) : undefined, this.json, this.set, true);
+    var prefix = this.pathName ? path.normalize(this.pathName) : undefined;
+    this._parseComments(prefix, str);
+    this._parseResources(prefix, this.json, this.set, true);
 };
 
 /**
@@ -291,11 +292,11 @@ YamlFile.prototype.parse = function(str) {
  *
  * @private
  */
-YamlFile.prototype._parseComments = function(str) {
+YamlFile.prototype._parseComments = function(prefix, str) {
     var document = yaml.parseDocument(str);
 
     document.contents.items.forEach(node => {
-        this._parseNodeComment('', node);
+        this._parseNodeComment(prefix, node);
     });
 }
 
@@ -656,6 +657,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                     sourceLocale: this.project.getSourceLocale(),
                     reskey: key,
                     context: prefix,
+                    pathName: this.pathName,
                     datatype: this.type.datatype
                 });
                 var hashkey = tester.hashKeyForTranslation(locale);
@@ -731,7 +733,8 @@ YamlFile.prototype.localizeText = function(translations, locale) {
     var output = "";
     if (this.json) {
         this.dirty = false;
-        var localizedJson = this._localizeContent(undefined, this.json, translations, locale, true);
+        var prefix = this.pathName ? path.normalize(this.pathName) : undefined;
+        var localizedJson = this._localizeContent(prefix, this.json, translations, locale, true);
         if (localizedJson) {
             logger.trace("Localized json is: " + JSON.stringify(localizedJson, undefined, 4));
 
