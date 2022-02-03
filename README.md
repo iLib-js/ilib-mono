@@ -180,6 +180,9 @@ file for more details.
 file naming and use of schema per-mapping
 - Add `commentPrefix` key to the schema that allows to specify prefix
 for context comments that are extracted along with source strings
+- Add the file name into the context for each resource so that resource
+"a" from file1 does not conflict with resource "a" in file2.
+- Minimum version of node that this can run on is now v10
 
 ### v1.2.0
 - Add support of yaml comments that enables providing context
