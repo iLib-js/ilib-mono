@@ -6,7 +6,7 @@
  * writing out a parallel yml file with the same structure, but translated
  * content.
  *
- * Copyright © 2019,2021 Box, Inc.
+ * Copyright © 2019,2021-2022 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,6 @@ var yaml = require("yaml");
 
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.plugin.YamlFile");
 
 /**
  * @class Represents a yaml source file.
@@ -55,6 +52,7 @@ var YamlFile = function(props) {
     }
 
     this.API = this.project.getAPI();
+    this.logger = this.API.getLogger("loctool.plugin.YamlFile");
 
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
     this.mapping = this.type.getMapping(this.pathName);
@@ -197,7 +195,7 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
         } else if (localize && this.getExcludedKeysFromSchema().indexOf(key) === -1) {
             var resource = obj[key];
             if (this._isTranslatable(resource)) {
-                logger.trace("Adding string resource " + JSON.stringify(resource) + " locale " + this.getLocale());
+                this.logger.trace("Adding string resource " + JSON.stringify(resource) + " locale " + this.getLocale());
                 var params = {
                     resType: "string",
                     project: this.project.getProjectId(),
@@ -248,7 +246,7 @@ YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
         } else {
             var resource = obj[key];
             if (this._isTranslatable(resource)) {
-                logger.trace("Found string resource " + JSON.stringify(resource) + " with key " + key + " locale " + this.getLocale());
+                this.logger.trace("Found string resource " + JSON.stringify(resource) + " with key " + key + " locale " + this.getLocale());
                 var resources = (this.getLocale() === this.project.sourceLocale) ?
                     set.getBy({reskey: key, pathName: this.pathName, sourceLocale: this.getLocale(), project: this.project.getProjectId()}) :
                     set.getBy({reskey: key, pathName: this.pathName, targetLocale: this.getLocale(), project: this.project.getProjectId()});
@@ -263,7 +261,7 @@ YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
                     }
                     set.dirty = true;
                 } else if (existing) {
-                    logger.debug("Overwriting value for string resource " + JSON.stringify(existing));
+                    this.logger.debug("Overwriting value for string resource " + JSON.stringify(existing));
                 }
             }
         }
@@ -364,7 +362,7 @@ YamlFile.prototype.parseOutputFile = function(str) {
  * memory.
  */
 YamlFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -373,8 +371,8 @@ YamlFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 
@@ -398,7 +396,7 @@ YamlFile.prototype._loadSchema = function () {
                 this.schema = JSON.parse(data);
             }
         } catch (e) {
-            logger.warn("No schema file found at " + p);
+            this.logger.warn("No schema file found at " + p);
         }
     }
 }
@@ -487,15 +485,15 @@ YamlFile.prototype.getAll = function() {
  * @param {Resource} res a resource to add to this file
  */
 YamlFile.prototype.addResource = function(res) {
-    logger.trace("YamlFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    this.logger.trace("YamlFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
     if (res && res.getProject() === this.project.getProjectId()) {
-        logger.trace("correct project. Adding.");
+        this.logger.trace("correct project. Adding.");
         this.set.add(res);
     } else {
         if (res) {
-            logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+            this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -556,19 +554,19 @@ YamlFile.prototype.getContent = function() {
                     }
                 }
                 if (resource.resType === "plural") {
-                    logger.trace("writing plural translation for " + resource.getKey() + " as " + JSON.stringify(resource.getTargetPlurals() || resource.getSourcePlurals()));
+                    this.logger.trace("writing plural translation for " + resource.getKey() + " as " + JSON.stringify(resource.getTargetPlurals() || resource.getSourcePlurals()));
                     parent[key] = resource.getTargetPlurals() || resource.getSourcePlurals();
                 } else {
-                    logger.trace("writing translation for " + resource.getKey() + " as " + (resource.getTarget() || resource.getSource()));
+                    this.logger.trace("writing translation for " + resource.getKey() + " as " + (resource.getTarget() || resource.getSource()));
                     parent[key] = resource.getTarget() || resource.getSource();
                 }
             } else {
-                logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
+                this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
             }
         }
     }
 
-    logger.trace("json is " + JSON.stringify(json));
+    this.logger.trace("json is " + JSON.stringify(json));
 
     // now convert the json back to yaml
     return yaml.stringify(json, {
@@ -662,7 +660,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                 });
                 var hashkey = tester.hashKeyForTranslation(locale);
 
-                logger.trace("Localizing string resource " + JSON.stringify(resource) + " locale " + locale);
+                this.logger.trace("Localizing string resource " + JSON.stringify(resource) + " locale " + locale);
                 var res = translations.get(hashkey);
                 if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
                     ret[key] = obj[key].toString();
@@ -681,7 +679,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                     }
                 } else {
                     if (res && this.API.utils.cleanString(res.getSource()) === this.API.utils.cleanString(obj[key].toString())) {
-                        logger.trace("Translation: " + res.getTarget());
+                        this.logger.trace("Translation: " + res.getTarget());
                         ret[key] = res.getTarget();
                         this.dirty |= (ret[key] !== res.getSource());
                     } else {
@@ -704,7 +702,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                                 index: this.resourceIndex++
                             }));
                         }
-                        logger.trace("Missing translation");
+                        this.logger.trace("Missing translation");
                         ret[key] = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
                             this.type.missingPseudo.getString(resource) : resource;
                         this.dirty |= (ret[key] !== resource);
@@ -736,7 +734,7 @@ YamlFile.prototype.localizeText = function(translations, locale) {
         var prefix = this.pathName ? path.normalize(this.pathName) : undefined;
         var localizedJson = this._localizeContent(prefix, this.json, translations, locale, true);
         if (localizedJson) {
-            logger.trace("Localized json is: " + JSON.stringify(localizedJson, undefined, 4));
+            this.logger.trace("Localized json is: " + JSON.stringify(localizedJson, undefined, 4));
 
             try {
                 output = yaml.stringify(localizedJson, {
@@ -768,7 +766,7 @@ YamlFile.prototype.localize = function(translations, locales) {
     if (this.json) {
         for (var i = 0; i < locales.length; i++) {
             var p, pathName = this.getLocalizedPath(locales[i]);
-            logger.debug("Checking for existing output file " + pathName);
+            this.logger.debug("Checking for existing output file " + pathName);
 
             try {
                 p = path.join(this.project.root, pathName);
@@ -779,18 +777,18 @@ YamlFile.prototype.localize = function(translations, locales) {
                     }
                 }
             } catch (e) {
-                logger.warn("Could not read file: " + p);
-                logger.warn(e);
+                this.logger.warn("Could not read file: " + p);
+                this.logger.warn(e);
             }
 
-            logger.debug("Writing file " + pathName);
+            this.logger.debug("Writing file " + pathName);
             p = path.join(this.project.target, pathName);
             var dir = path.dirname(p);
             this.API.utils.makeDirs(dir);
             fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
         }
     } else {
-        logger.debug(this.pathName + ": No json, no localize");
+        this.logger.debug(this.pathName + ": No json, no localize");
     }
 };
 

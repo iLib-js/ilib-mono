@@ -1,7 +1,7 @@
 /*
  * YamlFileType.js - manages a collection of yaml files
  *
- * Copyright © 2016-2017, 2019, HealthTap, Inc.
+ * Copyright © 2016-2017, 2019, 2022 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,9 @@ var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var log4js = require("log4js");
 var mm = require("micromatch");
 
 var YamlFile = require("./YamlFile.js");
-
-var logger = log4js.getLogger("loctool.lib.YamlFileType");
 
 /**
  * @class Manage a collection of Android resource files.
@@ -39,9 +36,10 @@ var YamlFileType = function(project) {
     this.datatype = "x-yaml";
 
     this.resourceFiles = {};
-    
+
     this.project = project;
     this.API = project.getAPI();
+    this.logger = this.API.getLogger("loctool.lib.YamlFileType");
 
     this.extensions = [ ".yml", ".yaml" ];
 
@@ -126,7 +124,7 @@ var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-[A-Z][
  * false otherwise
  */
 YamlFileType.prototype.handlesLegacy = function(pathName) {
-    logger.debug("Mode: LEGACY");
+    this.logger.debug("Mode: LEGACY");
 
     var ret = pathName.length > 4 && pathName.substring(pathName.length - 4) === ".yml";
 
@@ -146,7 +144,7 @@ YamlFileType.prototype.handlesLegacy = function(pathName) {
         }
     }
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -158,7 +156,7 @@ YamlFileType.prototype.handlesLegacy = function(pathName) {
  * false otherwise
  */
 YamlFileType.prototype.handles = function(pathName) {
-    logger.debug("YamlFileType handles " + pathName + "?");
+    this.logger.debug("YamlFileType handles " + pathName + "?");
 
     if (this.isLegacyMode()) {
         return this.handlesLegacy(pathName);

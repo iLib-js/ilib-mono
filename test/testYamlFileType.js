@@ -36,14 +36,14 @@ var projectWithMappings = new CustomProject({
             "foo.yml": {
                 template: "res/[locale]/foo.yml"
             },
+            "**/*.y?(a)ml": {
+                template: "resources/[locale]/[filename]"
+            },
             "**/strings.yaml": {
                 template: "[dir]/strings.[locale].yaml"
             },
             "**/test/strings.y?(a)ml": {
                 template: "[dir]/[basename]/[locale].[extension]"
-            },
-            "**/*.y?(a)ml": {
-                template: "resources/[locale]/[filename]"
             }
         }
     }
@@ -170,7 +170,7 @@ module.exports.yamlfiletype = {
             var yft = new YamlFileType(projectWithMappings);
             test.ok(yft);
 
-            test.ok(yft.handles("res/ru-RU/subdir/foo.yml"));
+            test.ok(!yft.handles("res/ru-RU/foo.yml"));
 
             test.done();
         },
