@@ -199,11 +199,10 @@ YamlFile.prototype._parseResources = function(prefix, obj, set, localize) {
                 var params = {
                     resType: "string",
                     project: this.project.getProjectId(),
-                    key: key,
+                    key: this._normalizeKey(prefix, key),
                     autoKey: true,
                     pathName: this.pathName,
                     datatype: this.type.datatype,
-                    context: prefix,
                     localize: localize,
                     index: this.resourceIndex++
                 };
@@ -277,7 +276,7 @@ YamlFile.prototype._mergeOutput = function(prefix, obj, set) {
 YamlFile.prototype.parse = function(str) {
     this.resourceIndex = 0;
     this.json = yaml.parse(str);
-    var prefix = this.pathName ? path.normalize(this.pathName) : undefined;
+    var prefix = this.pathName ? this.API.utils.hashKey(path.normalize(this.pathName)) : undefined;
     this._parseComments(prefix, str);
     this._parseResources(prefix, this.json, this.set, true);
 };
@@ -342,7 +341,7 @@ YamlFile.prototype._parseNodeComment = function(key, node, firstComment) {
  * @private
  */
 YamlFile.prototype._normalizeKey = function(prefix, key) {
-    return (prefix ? prefix + "@" : "") + key.toString().replace(/@/g, "\\@");
+    return (prefix ? prefix + "." : "") + key.toString().replace(/\./g, '\\.');
 }
 
 /**
@@ -539,26 +538,30 @@ YamlFile.prototype.getContent = function() {
             var target, resource = resources[j];
             if (resource.resType === "plural" || resource.getTarget() || resource.getSource()) {
                 var key = resource.getKey();
+                var lastKey = key;
                 var parent = json;
-                var context = resource.getContext();
-                if (context && context.length) {
-                    var parts = context.split(/@/g);
-                    if (parts.length && parts[0] == path.normalize(this.pathName)) {
+                if (key && key.length) {
+                    var parts = key.split(/(?<!\\)\./g);
+                    if (parts.length > 1 && parts[0] == this.API.utils.hashKey(path.normalize(this.pathName))) {
                         parts = parts.slice(1);
                     }
-                    for (var i = 0; i < parts.length; i++) {
-                        if (!parent[parts[i]]) {
-                            parent[parts[i]] = {};
+                    if (parts.length > 1) {
+                        for (var i = 0; i < parts.length-1; i++) {
+                            if (!parent[parts[i]]) {
+                                parent[parts[i]] = {};
+                            }
+                            parent = parent[parts[i]];
                         }
-                        parent = parent[parts[i]];
                     }
+                    lastKey = parts[parts.length-1];
                 }
+                lastKey = lastKey.replace(/\\./g, '.');
                 if (resource.resType === "plural") {
                     this.logger.trace("writing plural translation for " + resource.getKey() + " as " + JSON.stringify(resource.getTargetPlurals() || resource.getSourcePlurals()));
-                    parent[key] = resource.getTargetPlurals() || resource.getSourcePlurals();
+                    parent[lastKey] = resource.getTargetPlurals() || resource.getSourcePlurals();
                 } else {
                     this.logger.trace("writing translation for " + resource.getKey() + " as " + (resource.getTarget() || resource.getSource()));
-                    parent[key] = resource.getTarget() || resource.getSource();
+                    parent[lastKey] = resource.getTarget() || resource.getSource();
                 }
             } else {
                 this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
@@ -653,8 +656,7 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                     resType: "string",
                     project: this.project.getProjectId(),
                     sourceLocale: this.project.getSourceLocale(),
-                    reskey: key,
-                    context: prefix,
+                    reskey: this._normalizeKey(prefix, key),
                     pathName: this.pathName,
                     datatype: this.type.datatype
                 });
@@ -688,14 +690,13 @@ YamlFile.prototype._localizeContent = function(prefix, obj, translations, locale
                             this.type.newres.add(this.API.newResource({
                                 resType: "string",
                                 project: this.project.getProjectId(),
-                                key: key,
+                                key: this._normalizeKey(prefix, key),
                                 source: obj[key],
                                 sourceLocale: this.project.sourceLocale,
                                 target: (res && res.getTarget()) || obj[key],
                                 targetLocale: locale,
                                 pathName: this.pathName,
                                 datatype: this.type.datatype,
-                                context: prefix,
                                 state: "new",
                                 flavor: this.flavor,
                                 comment: note,
@@ -731,7 +732,7 @@ YamlFile.prototype.localizeText = function(translations, locale) {
     var output = "";
     if (this.json) {
         this.dirty = false;
-        var prefix = this.pathName ? path.normalize(this.pathName) : undefined;
+        var prefix = this.pathName ? this.API.utils.hashKey(path.normalize(this.pathName)) : undefined;
         var localizedJson = this._localizeContent(prefix, this.json, translations, locale, true);
         if (localizedJson) {
             this.logger.trace("Localized json is: " + JSON.stringify(localizedJson, undefined, 4));
