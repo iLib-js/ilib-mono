@@ -175,14 +175,17 @@ file for more details.
 
 ## Release Notes
 
+### v1.4.0
+
+- Add a hash of the file name into the key for each resource so that
+resource "a" from file1 does not conflict with resource "a" in file2.
+- Minimum version of node that this can run on is now v10
+
 ### v1.3.0
 - Add support for mappings in yaml config that allows custom output
 file naming and use of schema per-mapping
 - Add `commentPrefix` key to the schema that allows to specify prefix
 for context comments that are extracted along with source strings
-- Add the file name into the context for each resource so that resource
-"a" from file1 does not conflict with resource "a" in file2.
-- Minimum version of node that this can run on is now v10
 
 ### v1.2.0
 - Add support of yaml comments that enables providing context
