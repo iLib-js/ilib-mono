@@ -1,7 +1,7 @@
 /*
  * testYamlFileType.js - test the HTML template file type handler object.
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2021-2022 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,14 +36,14 @@ var projectWithMappings = new CustomProject({
             "foo.yml": {
                 template: "res/[locale]/foo.yml"
             },
+            "**/*.y?(a)ml": {
+                template: "resources/[locale]/[filename]"
+            },
             "**/strings.yaml": {
                 template: "[dir]/strings.[locale].yaml"
             },
             "**/test/strings.y?(a)ml": {
                 template: "[dir]/[basename]/[locale].[extension]"
-            },
-            "**/*.y?(a)ml": {
-                template: "resources/[locale]/[filename]"
             }
         }
     }
@@ -170,7 +170,7 @@ module.exports.yamlfiletype = {
             var yft = new YamlFileType(projectWithMappings);
             test.ok(yft);
 
-            test.ok(yft.handles("res/ru-RU/subdir/foo.yml"));
+            test.ok(!yft.handles("res/ru-RU/foo.yml"));
 
             test.done();
         },
