@@ -118,7 +118,7 @@ export default class Loader {
             } else {
                 return Promise.allSettled(paths.map((path) => {
                     // should return a Promise
-                    return this.loadFile(paths[i], options);
+                    return this.loadFile(path, options);
                 })).then((values) => {
                     return values.map((value) => {
                         return (value.status === "fulfilled") ? value.value : undefined;
