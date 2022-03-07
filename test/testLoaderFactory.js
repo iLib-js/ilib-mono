@@ -19,14 +19,39 @@
 
 var ilibEnv = require("ilib-env");
 if (typeof(LoaderFactory) === "undefined") {
-    var LoaderFactory = require("../lib/index.js").default;
+    var index = require("../lib/index.js");
+    var LoaderFactory = index.default;
+    var registerLoader = index.registerLoader;
+    var MockLoader = require("../lib/MockLoader.js");
 }
 
 module.exports.testLoaderFactory = {
     testLoaderFactoryNode: function(test) {
+        test.expect(2);
         ilibEnv.setPlatform("nodejs");
         var loader = LoaderFactory();
+        test.equal(loader.getName(), "Nodejs Loader");
         test.equalIgnoringOrder(loader.getPlatforms(), ["nodejs", "webos"]);
         test.done();
     },
+
+    testLoaderFactoryNodeAlt: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+        test.equalIgnoringOrder(loader.getPlatforms(), ["mock"]);
+        test.done();
+    },
+
+    testLoaderFactoryNodeNone: function(test) {
+        test.expect(1);
+        ilibEnv.setPlatform("foo");
+
+        var loader = LoaderFactory();
+        test.ok(!loader);
+        test.done();
+    }
 };

@@ -1,5 +1,5 @@
 /*
- * Loader.js - a loader for running under Nodejs
+ * MockLoader.js - a mock loader for unit testing
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { readFile, readFileSync } from 'fs';
 import Loader from './Loader';
 
 /**
@@ -32,7 +31,7 @@ import Loader from './Loader';
  * @private
  * @constructor
  */
-export default class NodeLoader extends Loader {
+export default class MockLoader extends Loader {
     /**
      * Create a loader instance.
      *
@@ -42,31 +41,14 @@ export default class NodeLoader extends Loader {
         super(options);
     }
 
-    /**
-     * Return an array of platform names for the platforms that this
-     * loader supports.
-     * @returns {Array.<string>} the names of the platform.
-     */
     getPlatforms() {
-        return ["nodejs", "webos"];
+        return ["mock"];
     }
 
-    /**
-     * Return a string identifying this type of loader.
-     * @returns {string} the name of this type of loader
-     */
     getName() {
-        return "Nodejs Loader";
+        return "Mock Loader";
     }
 
-    /**
-     * Return true if this loader supports synchronous operation.
-     * Loaders for particular platforms should override this
-     * method if they support synchronous and return true.
-     *
-     * @returns {boolean} true if this loader supports synchronous
-     * operation, or false otherwise.
-     */
     supportsSync() {
         return true;
     }
@@ -75,10 +57,10 @@ export default class NodeLoader extends Loader {
         const { sync } = options || {};
 
         if (sync) {
-            var text = readFileSync(pathName, "utf-8");
+            var text = pathName;
             return text;
         }
 
-        return readFile(pathName, "utf-8");
+        return new Promise((resolve, reject) => setTimeout(resolve, 100, pathName));
     }
 };
