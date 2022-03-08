@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import 'core-js/actual/promise';
+
 /**
  * @class Superclass of the loader classes that contains shared functionality.
  *
