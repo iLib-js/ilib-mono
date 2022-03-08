@@ -12,6 +12,7 @@ created from the loader factory is dependent on the platform given by the
 `getPlatform()` function in the `ilib-env` package.
 
 Creating a new loader from the factory:
+
 ```
 import LoaderFactory from 'ilib-loader';
 
@@ -20,34 +21,28 @@ const loader = LoaderFactory();
 
 Once you have the loader, you can use it to load single files:
 
-Asynchronous usage:
 ```
 import LoaderFactory from 'ilib-loader';
 
 const loader = LoaderFactory();
 
+// asynchronous usage
 loader.loadFile("pathname").then((content) => {
     // use the content here
 });
-```
 
-Synchronous usage:
-```
-import LoaderFactory from 'ilib-loader';
-
-const loader = LoaderFactory();
-
+// synchronous usage
 const content = loader.loadFile("pathname", { sync: true });
 ```
 
 or an array of files all at once:
 
-Asynchronous usage:
 ```
 import LoaderFactory from 'ilib-loader';
 
 const loader = LoaderFactory();
 
+// asynchronous usage
 loader.loadFiles(["path1", "path2", "path3"]).then((content) => {
     // content is:
     // [
@@ -56,14 +51,8 @@ loader.loadFiles(["path1", "path2", "path3"]).then((content) => {
     //    "content of path3"
     // ]
 });
-```
 
-Synchronous usage:
-```
-import LoaderFactory from 'ilib-loader';
-
-const loader = LoaderFactory();
-
+// synchronous usage:
 const content = loader.loadFile(["path1", "path2", "path3"], { sync: true });
 // content is:
 // [
