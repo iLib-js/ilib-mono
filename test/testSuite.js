@@ -25,6 +25,10 @@ var reporter = nodeunit.reporters.minimal;
 var modules = {};
 var suites = require("./testSuiteFiles.js").files;
 
+// this processes all subsequent requires using babel
+process.env.BABEL_ENV = "test";
+require("@babel/register");
+
 suites.forEach(function (path) {
     var test = require("./" + path);
     for (var suite in test) {

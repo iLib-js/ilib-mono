@@ -17,18 +17,14 @@
  * limitations under the License.
  */
 
-var ilibEnv = require("ilib-env");
-if (typeof(LoaderFactory) === "undefined") {
-    var index = require("../lib/index.js");
-    var LoaderFactory = index.default;
-    var registerLoader = index.registerLoader;
-    var MockLoader = require("../lib/MockLoader.js");
-}
+import { setPlatform } from 'ilib-env';
+import LoaderFactory, { registerLoader } from '../src/index';
+import MockLoader from './MockLoader';
 
 module.exports.testLoaderFactory = {
     testLoaderFactoryNode: function(test) {
         test.expect(2);
-        ilibEnv.setPlatform("nodejs");
+        setPlatform("nodejs");
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Nodejs Loader");
         test.equalIgnoringOrder(loader.getPlatforms(), ["nodejs", "webos"]);
@@ -38,7 +34,7 @@ module.exports.testLoaderFactory = {
     testLoaderFactoryNodeAlt: function(test) {
         test.expect(2);
         registerLoader(MockLoader);
-        ilibEnv.setPlatform("mock");
+        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -48,7 +44,7 @@ module.exports.testLoaderFactory = {
 
     testLoaderFactoryNodeNone: function(test) {
         test.expect(1);
-        ilibEnv.setPlatform("foo");
+        setPlatform("foo");
 
         var loader = LoaderFactory();
         test.ok(!loader);
