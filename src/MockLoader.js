@@ -56,11 +56,15 @@ export default class MockLoader extends Loader {
     loadFile(pathName, options) {
         const { sync } = options || {};
 
+        let text = pathName && pathName.length ? pathName : undefined;
+        if (pathName === "unknown.json") {
+            text = undefined;
+        }
+
         if (sync) {
-            var text = pathName;
             return text;
         }
 
-        return new Promise((resolve, reject) => setTimeout(resolve, 100, pathName));
+        return new Promise((resolve, reject) => setTimeout(resolve, 100, text));
     }
 };

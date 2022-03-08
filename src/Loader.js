@@ -18,13 +18,18 @@
  */
 
 /**
- * @class
- * Superclass of the loader classes that contains shared functionality.
+ * @class Superclass of the loader classes that contains shared functionality.
+ *
+ * Loaders are the layer of code that knows how to load files from where-ever
+ * they are stored based on the platform and environment. They do not know
+ * anything about the file contents other than that they are in plain text
+ * and they are encoded in UTF-8.<p>
  *
  * All loaders must support asynchronous operation. That is, they take
  * a file name or a list of file names and return a promise to load
  * them. Some loader may optionally also support synchronous operation
- * as well if the locale files are located locally.
+ * as well if the locale files are located locally and the platform supports
+ * it.
  *
  * @private
  * @constructor
@@ -57,8 +62,7 @@ export default class Loader {
      * Return a string identifying this type of loader.
      * @returns {string} the name of this type of loader
      */
-    getName() {
-    }
+    getName() {}
 
     /**
      * @abstract
@@ -82,6 +86,29 @@ export default class Loader {
     }
 
     /**
+     * @abstract
+     * Load an individual file specified by the path name, and return its
+     * content. If the file does not exist or could not be loaded, this method
+     * will return undefined.<p>
+     *
+     * The options object may contain any of these properties:
+     * <ul>
+     * <li>sync {boolean} - when true, load the file synchronously, else load
+     * it asynchronously. Loaders that do not support synchronous loading will
+     * ignore this option.
+     * </ul>
+     *
+     * @param {string} pathName a file name to load
+     * @param {Object} options options guiding the load, as per above
+     * @returns {Promise|string|undefined>} A promise to load the file contents
+     * in async mode or a string which is the contents of the file in sync mode.
+     * If this method returns undefined or the promise resolves to the value
+     * undefined, this indicates that the file did not exist or could not be
+     * loaded.
+     */
+    loadFile(pathName, options) {}
+
+    /**
      * Load a number of files specified by an array of file names, and return an
      * array of content. The array of content is in the same order as the file
      * names such that the n'th element of the return array is the content
@@ -96,11 +123,16 @@ export default class Loader {
      * ignore this option.
      * </ul>
      *
+     * The loadFiles method depends on the subclass to implement the abstract
+     * method loadFile to load individual files.
+     *
      * @param {Array.<string>} paths an array of file names to load
      * @param {Object} options options guiding the load, as per above
-     * @returns {Array.<string|undefined>} An array where each element is either
-     * a string which is the contents of a file, or undefined to indicate that
-     * the file did not exist or could not be loaded.
+     * @returns {Promise|Array.<string>|undefined>} A promise to load the
+     * array of files or an array where each element is either
+     * a string which is the contents of a file. If any element of the returned
+     * array or the array that that the promise resolves to is undefined, this
+     * indicates that that particular file did not exist or could not be loaded.
      */
     loadFiles(paths, options) {
         const { sync } = options;
@@ -126,8 +158,5 @@ export default class Loader {
                 });
             }
         }
-    }
-
-    listAvailableFiles() {
     }
 };

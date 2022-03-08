@@ -55,6 +55,45 @@ module.exports.testLoader = {
         test.done();
     },
 
+    testLoadFileSyncUndefinedFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var content = loader.loadFile(undefined, {sync: true});
+        test.ok(!content);
+        test.done();
+    },
+
+    testLoadFileSyncEmptyFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var content = loader.loadFile("", {sync: true});
+        test.ok(!content);
+        test.done();
+    },
+
+    testLoadFileSyncUnknownFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var content = loader.loadFile("unknown.json", {sync: true});
+        test.ok(!content);
+        test.done();
+    },
+
     testLoadFileAsync: function(test) {
         test.expect(2);
         registerLoader(MockLoader);
@@ -129,4 +168,135 @@ module.exports.testLoader = {
         });
     },
 
+    testLoadFilesSyncUndefinedFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var content = loader.loadFiles([
+            "foobar.json",
+            undefined,
+            "blah.json"
+        ], {sync: true});
+        test.equalIgnoringOrder(content, [
+            "foobar.json",
+            undefined,
+            "blah.json"
+        ]);
+        test.done();
+    },
+
+    testLoadFilesSyncEmptyFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var content = loader.loadFiles([
+            "foobar.json",
+            "",
+            "blah.json"
+        ], {sync: true});
+        test.equalIgnoringOrder(content, [
+            "foobar.json",
+            undefined,
+            "blah.json"
+        ]);
+        test.done();
+    },
+
+    testLoadFilesAsyncUndefinedFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var promise = loader.loadFiles([
+            "foobar.json",
+            undefined,
+            "blah.json"
+        ], {sync: false});
+        promise.then(function(content) {
+            test.equalIgnoringOrder(content, [
+                "foobar.json",
+                undefined,
+                "blah.json"
+            ]);
+            test.done();
+        });
+    },
+
+    testLoadFilesAsyncEmptyFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var promise = loader.loadFiles([
+            "foobar.json",
+            "",
+            "blah.json"
+        ], {sync: false});
+        promise.then(function(content) {
+            test.equalIgnoringOrder(content, [
+                "foobar.json",
+                undefined,
+                "blah.json"
+            ]);
+            test.done();
+        });
+    },
+
+    testLoadFilesSyncUnknownFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var content = loader.loadFiles([
+            "foobar.json",
+            "unknown.json",
+            "blah.json"
+        ], {sync: true});
+        test.equalIgnoringOrder(content, [
+            "foobar.json",
+            undefined,
+            "blah.json"
+        ]);
+        test.done();
+    },
+
+    testLoadFilesAsyncUnknownFileName: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        ilibEnv.setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+
+        var promise = loader.loadFiles([
+            "foobar.json",
+            "unknown.json",
+            "blah.json"
+        ], {sync: false});
+        promise.then(function(content) {
+            test.equalIgnoringOrder(content, [
+                "foobar.json",
+                undefined,
+                "blah.json"
+            ]);
+            test.done();
+        });
+    },
 };
