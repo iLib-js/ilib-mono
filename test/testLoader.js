@@ -295,4 +295,50 @@ module.exports.testLoader = {
             test.done();
         });
     },
+
+    testLoadFilesSyncMode: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+        loader.setSyncMode();
+
+        var content = loader.loadFiles([
+            "foobar.json",
+            "asdf.json",
+            "blah.json"
+        ]);
+        test.equalIgnoringOrder(content, [
+            "foobar.json",
+            "asdf.json",
+            "blah.json"
+        ]);
+        test.done();
+    },
+
+    testLoadFilesAsync: function(test) {
+        test.expect(2);
+        registerLoader(MockLoader);
+        setPlatform("mock");
+
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Mock Loader");
+        loader.setAsyncMode();
+
+        var promise = loader.loadFiles([
+            "foobar.json",
+            "asdf.json",
+            "blah.json"
+        ]);
+        promise.then((content) => {
+            test.equalIgnoringOrder(content, [
+                "foobar.json",
+                "asdf.json",
+                "blah.json"
+            ]);
+            test.done();
+        });
+    }
 };

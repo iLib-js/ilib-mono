@@ -72,7 +72,8 @@ export default class NodeLoader extends Loader {
     }
 
     loadFile(pathName, options) {
-        const { sync } = options || {};
+        let { sync } = options || {};
+        sync = typeof(sync) === "boolean" ? sync : this.sync;
 
         if (sync) {
             var text = readFileSync(pathName, "utf-8");

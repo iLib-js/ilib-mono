@@ -54,7 +54,8 @@ export default class MockLoader extends Loader {
     }
 
     loadFile(pathName, options) {
-        const { sync } = options || {};
+        let { sync } = options || {};
+        sync = typeof(sync) === "boolean" ? sync : this.sync;
 
         let text = pathName && pathName.length ? pathName : undefined;
         if (pathName === "unknown.json") {

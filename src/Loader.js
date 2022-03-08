@@ -44,6 +44,7 @@ export default class Loader {
         // console.log("new Loader instance");
         this.protocol = "file://";
         let { paths } = options || {};
+        this.sync = false;
         this.paths = paths;
     }
 
@@ -75,6 +76,30 @@ export default class Loader {
      */
     supportsSync() {
         return false;
+    }
+
+    /**
+     * Set synchronous mode for loaders that support it. In synchronous
+     * mode, loading a file will be done synchronously if the "sync"
+     * option is not explicitly given to loadFile or loadFiles. For
+     * loaders that do not support synchronous loading, this method has
+     * no effect. Files will continue to be loaded asynchronously.
+     */
+    setSyncMode() {
+        if (this.supportsSync()) {
+            this.sync = true;
+        }
+    }
+
+    /**
+     * Set asynchronous mode. In asynchronous
+     * mode, loading a file will be done asynchronously if the "sync"
+     * option is not explicitly given to loadFile or loadFiles. This
+     * is the default behaviour, and loaders will behave this way when
+     * they are first created.
+     */
+    setAsyncMode() {
+        this.sync = false;
     }
 
     /**
@@ -135,7 +160,8 @@ export default class Loader {
      * indicates that that particular file did not exist or could not be loaded.
      */
     loadFiles(paths, options) {
-        const { sync } = options;
+        let { sync } = options || {};
+        sync = typeof(sync) === "boolean" ? sync : this.sync;
         let values = [];
         if (paths) {
             if (typeof(sync) === "boolean" && sync) {
