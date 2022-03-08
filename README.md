@@ -97,6 +97,11 @@ No assumptions are made about the contents of the files other than these:
 Specifically, no assumption is made as to the format of the file, making it equally
 possible to load json files as well as yaml files.
 
+Full JS Docs
+--------------------
+
+Full API documentation can be found [here](./docs/ilib-loader.md).
+
 ## License
 
 Copyright © 2022, JEDLSoft

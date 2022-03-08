@@ -21,22 +21,21 @@ import { readFile, readFileSync } from 'fs';
 import Loader from './Loader';
 
 /**
- * @class
- * Superclass of the loader classes that contains shared functionality.
+ * Class that loads files under nodejs.
  *
  * All loaders must support asynchronous operation. That is, they take
  * a file name or a list of file names and return a promise to load
  * them. Some loader may optionally also support synchronous operation
  * as well if the locale files are located locally.
  *
- * @private
- * @constructor
+ * @extends Loader
  */
-export default class NodeLoader extends Loader {
+class NodeLoader extends Loader {
     /**
      * Create a loader instance.
      *
      * @param {Object} options
+     * @constructor
      */
     constructor(options) {
         super(options);
@@ -71,6 +70,26 @@ export default class NodeLoader extends Loader {
         return true;
     }
 
+    /**
+     * Load an individual file specified by the path name, and return its
+     * content. If the file does not exist or could not be loaded, this method
+     * will return undefined.<p>
+     *
+     * The options object may contain any of these properties:
+     * <ul>
+     * <li>sync {boolean} - when true, load the file synchronously, else load
+     * it asynchronously. Loaders that do not support synchronous loading will
+     * ignore this option.
+     * </ul>
+     *
+     * @param {string} pathName a file name to load
+     * @param {Object} options options guiding the load, as per above
+     * @returns {Promise|string|undefined} A promise to load the file contents
+     * in async mode or a string which is the contents of the file in sync mode.
+     * If this method returns undefined or the promise resolves to the value
+     * undefined, this indicates that the file did not exist or could not be
+     * loaded.
+     */
     loadFile(pathName, options) {
         let { sync } = options || {};
         sync = typeof(sync) === "boolean" ? sync : this.sync;
@@ -83,3 +102,5 @@ export default class NodeLoader extends Loader {
         return readFile(pathName, "utf-8");
     }
 };
+
+export default NodeLoader;

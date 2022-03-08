@@ -30,15 +30,13 @@
  * them. Some loader may optionally also support synchronous operation
  * as well if the locale files are located locally and the platform supports
  * it.
- *
- * @private
- * @constructor
  */
-export default class Loader {
+class Loader {
     /**
      * Create a loader instance.
      *
      * @param {Object} options
+     * @constructor
      */
     constructor(options) {
         // console.log("new Loader instance");
@@ -49,9 +47,9 @@ export default class Loader {
     }
 
     /**
-     * @abstract
      * Return an array of platform names for the platforms that this
      * loader supports.
+     * @abstract
      * @returns {Array.<string>} the names of the platform.
      */
     getPlatforms() {
@@ -59,18 +57,18 @@ export default class Loader {
     }
 
     /**
-     * @abstract
      * Return a string identifying this type of loader.
+     * @abstract
      * @returns {string} the name of this type of loader
      */
     getName() {}
 
     /**
-     * @abstract
      * Return true if this loader supports synchronous operation.
      * Loaders for particular platforms should override this
      * method if they support synchronous and return true.
      *
+     * @abstract
      * @returns {boolean} true if this loader supports synchronous
      * operation, or false otherwise.
      */
@@ -111,7 +109,6 @@ export default class Loader {
     }
 
     /**
-     * @abstract
      * Load an individual file specified by the path name, and return its
      * content. If the file does not exist or could not be loaded, this method
      * will return undefined.<p>
@@ -123,9 +120,10 @@ export default class Loader {
      * ignore this option.
      * </ul>
      *
+     * @abstract
      * @param {string} pathName a file name to load
      * @param {Object} options options guiding the load, as per above
-     * @returns {Promise|string|undefined>} A promise to load the file contents
+     * @returns {Promise|string|undefined} A promise to load the file contents
      * in async mode or a string which is the contents of the file in sync mode.
      * If this method returns undefined or the promise resolves to the value
      * undefined, this indicates that the file did not exist or could not be
@@ -153,7 +151,7 @@ export default class Loader {
      *
      * @param {Array.<string>} paths an array of file names to load
      * @param {Object} options options guiding the load, as per above
-     * @returns {Promise|Array.<string>|undefined>} A promise to load the
+     * @returns {Promise|Array.<string>|undefined} A promise to load the
      * array of files or an array where each element is either
      * a string which is the contents of a file. If any element of the returned
      * array or the array that that the promise resolves to is undefined, this
@@ -186,3 +184,5 @@ export default class Loader {
         }
     }
 };
+
+export default Loader;

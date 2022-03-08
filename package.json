@@ -36,6 +36,7 @@
     "files": [
         "src",
         "lib",
+        "docs",
         "README.md",
         "LICENSE"
     ],
@@ -47,17 +48,21 @@
         "build": "npm run build:prod",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
-        "dist": "npm run build:prod ; npm pack",
+        "build:web": "webpack-cli",
+        "build:test": "webpack-cli --config webpack-test.config.js",
+        "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d * ; rm -rf lib"
+        "clean": "git clean -f -d * ; rm -rf lib",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-loader.md",
+        "doc:html": "jsdoc -c jsdoc.json"
     },
     "dependencies": {
         "ilib-env": "^1.0.2",
         "promise": "^8.1.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.4",
+        "@babel/core": "^7.17.5",
         "@babel/preset-env": "^7.16.11",
         "@babel/register": "^7.17.0",
         "@babel/runtime": "^7.17.2",
@@ -69,9 +74,11 @@
         "grunt-babel": "^8.0.0",
         "grunt-cli": "^1.4.3",
         "grunt-contrib-clean": "^2.0.0",
-        "grunt-contrib-jshint": "^3.1.1",
+        "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.0.1",
+        "jsdoc": "^3.6.10",
+        "jsdoc-to-markdown": "^7.1.1",
         "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3"
     }

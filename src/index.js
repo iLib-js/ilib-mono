@@ -28,6 +28,12 @@ import NodeLoader from './NodeLoader';
 
 let classCache = {};
 
+/**
+ * Register a loader with the loader factory. The loader must return
+ * which platforms it is a loader for.
+ *
+ * @param {Class} loaderClass a loader class from which to make an instance
+ */
 export function registerLoader(loaderClass) {
     if (!loaderClass) return;
     var loader = new loaderClass();
@@ -49,7 +55,14 @@ registerLoader(NodeLoader);
 // registerLoader(RhinoLoader);
 // registerLoader(RingoLoader);
 
-export default function LoaderFactory() {
+/**
+ * Factory method that returns a loader instance that is appropriate
+ * for the current platform. The current platform is determined using
+ * the ilib-env package.
+ *
+ * @returns {Loader} a loader instance for this platform
+ */
+function LoaderFactory() {
     // special case because Webpack is not a platform:
     if (typeof(__webpack_require__) !== 'undefined' && classCache.webpack) {
         return classCache.webpack;
@@ -64,3 +77,5 @@ export default function LoaderFactory() {
     // built-in.
     return undefined;
 };
+
+export default LoaderFactory;
