@@ -265,7 +265,7 @@ function trim(API, text) {
 
     ret.text = text;
 
-    this.logger.trace('text: pre is "' + ret.pre + '" value is "' + ret.text + '" and post is "' + ret.post + '"');
+    // console.log('text: pre is "' + ret.pre + '" value is "' + ret.text + '" and post is "' + ret.post + '"');
 
     return ret;
 }

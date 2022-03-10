@@ -342,6 +342,7 @@ to translate.
 
 - The plugin now adds a translator comment/note for inline code so that the
   translator can know what the text of the self-closing components is.
+- Minimum node version to run this plugin is now v10
 
 ### 1.2.6
 
