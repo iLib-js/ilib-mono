@@ -1,6 +1,6 @@
 {
     "name": "ilib-localematcher",
-    "version": "1.0.2",
+    "version": "1.0.1",
     "main": "./lib/LocaleMatcher.js",
     "module": "./src/LocaleMatcher.js",
     "description": "A locale matcher to resolve partial locales or find fallback locales. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
