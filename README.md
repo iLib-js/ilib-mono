@@ -67,12 +67,12 @@ limitations under the License.
 
 ### v1.0.2
 
-- updated dependencies
-- added docs in markdown format as well
+- ship the locale dir too or else this whole package won't work!
 
 ### v1.0.1
 
 - updated dependencies
+- added docs in markdown format as well
 
 ### v1.0.0
 
