@@ -70,6 +70,7 @@
         "assertextras": "^1.1.0",
         "babel-plugin-add-module-exports": "^1.0.4",
         "core-js": "^3.21.1",
+        "docdash": "^1.2.0",
         "grunt": "^1.4.1",
         "grunt-babel": "^8.0.0",
         "grunt-cli": "^1.4.3",

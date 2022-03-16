@@ -123,4 +123,5 @@ limitations under the License.
 
 ### v1.0.0
 
-- Initial version
+- Initial version which only supports loading files on Nodejs. Later
+  updates to this package will introduce support for webpack, Qt, etc.
