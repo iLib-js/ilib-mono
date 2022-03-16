@@ -17,8 +17,20 @@
  * limitations under the License.
  */
 
-module.exports.files = [
+var ilibEnv = require("ilib-env");
+
+var files = [
     "testLoaderFactory.js",
     "testLoader.js",
-    "testNodeLoader.js"
 ];
+
+console.log("testSuiteFiles: Platform reported by ilib-env is " + ilibEnv.getPlatform());
+
+// add platform-specific loaders here so that we only test it on that
+// particular platform
+
+if (ilibEnv.getPlatform() === "nodejs") {
+    files.push("testNodeLoader.js");
+}
+
+module.exports = { files };

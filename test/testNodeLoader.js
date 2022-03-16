@@ -17,12 +17,10 @@
  * limitations under the License.
  */
 
-import { getPlatform, setPlatform } from 'ilib-env';
+import { setPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index';
 
-console.log("testNodeLoader: Platform reported by ilib-env is " + getPlatform());
-
-module.exports.testNodeLoader = (getPlatform() === "nodejs") ? {
+module.exports.testNodeLoader = {
     setUp: function(callback) {
         setPlatform("nodejs");
         callback();
@@ -384,4 +382,4 @@ module.exports.testNodeLoader = (getPlatform() === "nodejs") ? {
             test.done();
         });
     }
-} : {};
+};
