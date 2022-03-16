@@ -20,7 +20,7 @@
 import { getPlatform, setPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index';
 
-console.log("Platform reported by ilib-env is " + getPlatform());
+console.log("testNodeLoader: Platform reported by ilib-env is " + getPlatform());
 
 module.exports.testNodeLoader = (getPlatform() === "nodejs") ? {
     setUp: function(callback) {

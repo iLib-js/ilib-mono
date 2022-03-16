@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
-import { setPlatform } from 'ilib-env';
+import { getPlatform, setPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index';
 import MockLoader from './MockLoader';
+
+console.log("testLoader: Platform reported by ilib-env is " + getPlatform());
 
 module.exports.testLoader = {
     setUp: function(callback) {
