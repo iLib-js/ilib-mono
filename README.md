@@ -65,14 +65,15 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.0.2
+### v1.1.0
 
-- updated dependencies
-- added docs in markdown format as well
+- ship the locale dir too or else this whole package won't work!
+- update to CLDR 40
 
 ### v1.0.1
 
 - updated dependencies
+- added docs in markdown format as well
 
 ### v1.0.0
 
