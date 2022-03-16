@@ -1,5 +1,5 @@
 /*
- * testloader.js - test the character type information functions
+ * testloader.js - test the loader factory
  *
  * Copyright © 2022 JEDLSoft
  *

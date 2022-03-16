@@ -1,5 +1,5 @@
 /*
- * testloader.js - test the character type information functions
+ * testloader.js - test the loader
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -22,17 +22,21 @@ import LoaderFactory, { registerLoader } from '../src/index';
 import MockLoader from './MockLoader';
 
 module.exports.testLoader = {
+    setUp: function(callback) {
+        registerLoader(MockLoader);
+        setPlatform("mock");
+        callback();
+    },
+
     testLoaderGetName: function(test) {
         test.expect(1);
-        setPlatform("nodejs");
         var loader = LoaderFactory();
-        test.equal(loader.getName(), "Nodejs Loader");
+        test.equal(loader.getName(), "Mock Loader");
         test.done();
     },
 
     testLoaderSupportsSync: function(test) {
         test.expect(1);
-        setPlatform("nodejs");
         var loader = LoaderFactory();
         test.ok(loader.supportsSync());
         test.done();
@@ -40,8 +44,6 @@ module.exports.testLoader = {
 
     testLoadFileSync: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -53,8 +55,6 @@ module.exports.testLoader = {
 
     testLoadFileSyncUndefinedFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -66,8 +66,6 @@ module.exports.testLoader = {
 
     testLoadFileSyncEmptyFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -79,8 +77,6 @@ module.exports.testLoader = {
 
     testLoadFileSyncUnknownFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -92,8 +88,6 @@ module.exports.testLoader = {
 
     testLoadFileAsync: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -107,8 +101,6 @@ module.exports.testLoader = {
 
     testLoadFileAsyncDefault: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -122,8 +114,6 @@ module.exports.testLoader = {
 
     testLoadFilesSync: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -143,8 +133,6 @@ module.exports.testLoader = {
 
     testLoadFilesAsync: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -166,8 +154,6 @@ module.exports.testLoader = {
 
     testLoadFilesSyncUndefinedFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -187,8 +173,6 @@ module.exports.testLoader = {
 
     testLoadFilesSyncEmptyFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -208,8 +192,6 @@ module.exports.testLoader = {
 
     testLoadFilesAsyncUndefinedFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -231,8 +213,6 @@ module.exports.testLoader = {
 
     testLoadFilesAsyncEmptyFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -254,8 +234,6 @@ module.exports.testLoader = {
 
     testLoadFilesSyncUnknownFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -275,8 +253,6 @@ module.exports.testLoader = {
 
     testLoadFilesAsyncUnknownFileName: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -298,8 +274,6 @@ module.exports.testLoader = {
 
     testLoadFilesSyncMode: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");
@@ -320,8 +294,6 @@ module.exports.testLoader = {
 
     testLoadFilesAsync: function(test) {
         test.expect(2);
-        registerLoader(MockLoader);
-        setPlatform("mock");
 
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Mock Loader");

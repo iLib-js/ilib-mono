@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { readFile, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import Loader from './Loader';
 
 /**
@@ -95,11 +96,14 @@ class NodeLoader extends Loader {
         sync = typeof(sync) === "boolean" ? sync : this.sync;
 
         if (sync) {
-            var text = readFileSync(pathName, "utf-8");
-            return text;
+            try {
+                var text = readFileSync(pathName, "utf-8");
+                return text;
+            } catch (e) {
+                return undefined;
+            }
         }
-
-        return readFile(pathName, "utf-8");
+        return readFile(pathName, "utf-8").catch((e) => undefined);
     }
 };
 

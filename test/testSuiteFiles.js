@@ -19,5 +19,6 @@
 
 module.exports.files = [
     "testLoaderFactory.js",
-    "testLoader.js"
+    "testLoader.js",
+    "testNodeLoader.js"
 ];
