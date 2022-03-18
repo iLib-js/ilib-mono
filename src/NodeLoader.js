@@ -92,6 +92,7 @@ class NodeLoader extends Loader {
      * loaded.
      */
     loadFile(pathName, options) {
+        if (!pathName) return undefined;
         let { sync } = options || {};
         sync = typeof(sync) === "boolean" ? sync : this.sync;
 
