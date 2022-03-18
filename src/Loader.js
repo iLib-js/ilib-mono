@@ -18,6 +18,7 @@
  */
 
 import 'core-js/actual/promise';
+import log4js from '@log4js-node/log4js-api';
 
 /**
  * @class Superclass of the loader classes that contains shared functionality.
@@ -31,7 +32,7 @@ import 'core-js/actual/promise';
  * a file name or a list of file names and return a promise to load
  * them. Some loader may optionally also support synchronous operation
  * as well if the locale files are located locally and the platform supports
- * it.
+ * it.<p>
  */
 class Loader {
     /**
@@ -46,6 +47,8 @@ class Loader {
         let { paths } = options || {};
         this.sync = false;
         this.paths = paths;
+
+        this.logger = log4js.getLogger("ilib-loader");
     }
 
     /**
@@ -170,6 +173,7 @@ class Loader {
                         values[i] = this.loadFile(paths[i], options);
                     } catch (e) {
                         // ignore for now
+                        logger.trace(e);
                     }
                 }
                 return values;

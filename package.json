@@ -58,6 +58,7 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "dependencies": {
+        "@log4js-node/log4js-api": "^1.0.2",
         "ilib-env": "^1.0.2"
     },
     "devDependencies": {

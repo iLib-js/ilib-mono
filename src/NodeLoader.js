@@ -19,6 +19,7 @@
 
 import fs from 'fs';
 import { readFileSync } from 'fs';
+import log4js from '@log4js-node/log4js-api';
 import Loader from './Loader';
 
 /**
@@ -52,6 +53,8 @@ class NodeLoader extends Loader {
                 fs.readFile(...arg, (err, data) => err ? reject(err) : resolve(data))
             });
         }
+
+        this.logger = log4js.getLogger("ilib-loader");
     }
 
     /**
@@ -117,7 +120,7 @@ class NodeLoader extends Loader {
             }
         }
         return this.readFile(pathName, "utf-8").catch((e) => {
-            console.log(e);
+            this.logger.trace(e);
         });
     }
 };

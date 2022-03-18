@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+import log4js from '@log4js-node/log4js-api';
+
 import { getPlatform } from 'ilib-env';
 import NodeLoader from './NodeLoader';
 
@@ -27,6 +29,7 @@ import NodeLoader from './NodeLoader';
 // import RingoLoader from 'RingoLoader';
 
 let classCache = {};
+const logger = log4js.getLogger("ilib-loader");
 
 /**
  * Register a loader with the loader factory. The loader must return
@@ -43,6 +46,7 @@ export function registerLoader(loaderClass) {
             classCache[platform] = loader;
         });
     }
+    logger.trace(`Registered loader ${loader.getName()}`);
 };
 
 // Known loaders that ship with this package. You can write your own
