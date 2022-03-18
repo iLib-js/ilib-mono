@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
+import fs from 'fs';
 import { readFileSync } from 'fs';
-import { readFile } from 'fs/promises';
 import Loader from './Loader';
 
 /**
@@ -40,6 +40,18 @@ class NodeLoader extends Loader {
      */
     constructor(options) {
         super(options);
+
+        // make sure this works on all versions of node
+        try {
+            // modern versions of node have the promise code already in it
+            fsPromise = require("fs/promise");
+            this.readFile = fsPromise.readFile;
+        } catch(e) {
+            // polyfill for older versions of node
+            this.readFile = (...arg) => new Promise((resolve, reject) => {
+                fs.readFile(...arg, (err, data) => err ? reject(err) : resolve(data))
+            });
+        }
     }
 
     /**
@@ -104,7 +116,7 @@ class NodeLoader extends Loader {
                 return undefined;
             }
         }
-        return readFile(pathName, "utf-8").catch((e) => {
+        return this.readFile(pathName, "utf-8").catch((e) => {
             console.log(e);
         });
     }
