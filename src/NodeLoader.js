@@ -103,7 +103,9 @@ class NodeLoader extends Loader {
                 return undefined;
             }
         }
-        return readFile(pathName, "utf-8").catch((e) => undefined);
+        return readFile(pathName, "utf-8").catch((e) => {
+            console.log(e);
+        });
     }
 };
 
