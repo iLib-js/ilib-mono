@@ -110,7 +110,7 @@ class DataCache {
             this.logger.info(`Attempt to get data from the cache with no basename.`);
             return;
         }
-        
+
         if ( !this.data[basename] ) {
             return undefined;
         }
@@ -136,7 +136,7 @@ class DataCache {
             this.logger.info(`Attempt to store data in the cache with no basename.`);
             return;
         }
-        
+
         if ( !this.data[basename] ) {
             this.data[basename] = {};
         }
