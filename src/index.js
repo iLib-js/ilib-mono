@@ -17,40 +17,31 @@
  * limitations under the License.
  */
 
-import { getPlatform } from 'ilib-env';
-import LoaderFactory from 'ilib-loader';
+import log4js from '@log4js-node/log4js-api';
 
-class LocaleData {
-/**
- * Find locale data or load it in. If the data with the given name is preassembled, it will
- * find the data in ilib.data. If the data is not preassembled but there is a loader function,
- * this function will call it to load the data. Otherwise, the callback will be called with
- * undefined as the data. This function will create a cache under the given class object.
- * If data was successfully loaded, it will be set into the cache so that future access to
- * the same data for the same locale is much quicker.<p>
- *
- * The parameters can specify any of the following properties:<p>
- *
- * <ul>
- * <li><i>name</i> - String. The name of the file being loaded. Default: ResBundle.json
- * <li><i>object</i> - String. The name of the class attempting to load data. This is used to differentiate parts of the cache.
- * <li><i>locale</i> - Locale. The locale for which data is loaded. Default is the current locale.
- * <li><i>nonlocale</i> - boolean. If true, the data being loaded is not locale-specific.
- * <li><i>type</i> - String. Type of file to load. This can be "json" or "other" type. Default: "json"
- * <li><i>replace</i> - boolean. When merging json objects, this parameter controls whether to merge arrays
- * or have arrays replace each other. If true, arrays in child objects replace the arrays in parent
- * objects. When false, the arrays in child objects are concatenated with the arrays in parent objects.
- * <li><i>root</i> - String. If provided, look in this root directory first for files, and then fall back
- * to the standard include paths if they are not found in this root. If not provided, just search the
- * standard include paths.
- * <li><i>returnOne</i> - return only the first file found. Do not merge many locale data files into one.
- * <li><i>sync</i> - boolean. Whether or not to load the data synchronously
- * </ul>
- *
- * @param {Object} params Parameters configuring how to load the files (see above)
- */
-export function loadData(params) {
+import LocaleData from './LocaleData';
+
+// the singletons
+const locData = {
 };
 
-export function addPaths(paths) {}
-export function getPaths() {}
+/**
+ * Return the locale data singleton for the package that needs data.
+ *
+ * @param {string} pkg name of the package that needs a locale
+ * data object.
+ * @param {Object} params
+ * @returns {LocaleData|undefined} a locale data instance you can use
+ * to load locale data, or undefined if it could not be created
+ * or if the package name was not specified
+ */
+function getLocaleData(pkg, params) {
+    if (typeof(pkg) !== 'string' || !pkg) return undefined;
+    if (!locData[pkg]) {
+        locData[pkg] = new LocaleData(pkg, params);
+    }
+    return locData[pkg];
+}
+
+export * from './LocaleData';
+export default getLocaleData;

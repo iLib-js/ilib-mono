@@ -18,5 +18,5 @@
  */
 
 module.exports.files = [
-    "testLoadeData.js"
+    "testDataCache.js"
 ];

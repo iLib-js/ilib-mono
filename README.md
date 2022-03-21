@@ -7,6 +7,12 @@ Full JS Docs
 
 Full API documentation can be found [here](./docs/ilib-loader.md).
 
+Logging
+--------------------
+
+Use the name "ilib-localedata" to configure a log4js appender in your app to
+see logging output from this library.
+
 ## License
 
 Copyright © 2022, JEDLSoft
