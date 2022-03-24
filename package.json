@@ -2,7 +2,6 @@
     "name": "ilib-env",
     "version": "1.1.0",
     "main": "./lib/index.js",
-    "module": "./src/index.js",
     "description": "Common environment detection functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
         "internationalization",
@@ -45,7 +44,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/iLib-env.git"
+        "url": "git@github.com:iLib-js/ilib-env.git"
     },
     "scripts": {
         "build": "npm run build:prod",
@@ -57,7 +56,7 @@
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
         "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d *",
+        "clean": "git clean -f -d * ; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibEnv.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
@@ -70,6 +69,9 @@
         "acorn-jsx": "^5.3.2",
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.3",
+        "babel-plugin-add-module-exports": "^1.0.4",
+        "core-js": "^3.21.1",
+        "docdash": "^1.2.0",
         "grunt": "^1.4.1",
         "grunt-babel": "^8.0.0",
         "grunt-cli": "^1.4.3",
