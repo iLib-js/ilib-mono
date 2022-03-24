@@ -17,12 +17,19 @@
  * limitations under the License.
  */
 
-import { setPlatform } from 'ilib-env';
+import { setPlatform, getPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index';
 import MockLoader from './MockLoader';
 
-module.exports.testLoaderFactory = {
+export const testLoaderFactory = {
     testLoaderFactoryNode: function(test) {
+        setPlatform(undefined); // clear whatever other tests put there
+        if (getPlatform() === "browser") {
+            // this test doesn't work on browsers because there are no
+            // loaders except the web loader
+            test.done();
+            return;
+        }
         test.expect(2);
         setPlatform("nodejs");
         var loader = LoaderFactory();
@@ -32,6 +39,13 @@ module.exports.testLoaderFactory = {
     },
 
     testLoaderFactoryNodeAlt: function(test) {
+        setPlatform(undefined); // clear whatever other tests put there
+        if (getPlatform() === "browser") {
+            // this test doesn't work on browsers because there are no
+            // loaders except the web loader
+            test.done();
+            return;
+        }
         test.expect(2);
         registerLoader(MockLoader);
         setPlatform("mock");
@@ -43,11 +57,35 @@ module.exports.testLoaderFactory = {
     },
 
     testLoaderFactoryNodeNone: function(test) {
+        setPlatform(undefined); // clear whatever other tests put there
+        if (getPlatform() === "browser") {
+            // this test doesn't work on browsers because there are no
+            // loaders except the web loader
+            test.done();
+            return;
+        }
         test.expect(1);
         setPlatform("foo");
 
         var loader = LoaderFactory();
         test.ok(!loader);
         test.done();
+    },
+
+/*
+    testLoaderFactoryWeb: function(test) {
+        setPlatform(undefined); // clear whatever other tests put there
+        if (getPlatform() !== "browser") {
+            // this test doesn't work on browsers because there are no
+            // loaders except the web loader
+            test.done();
+            return;
+        }
+        test.expect(2);
+        var loader = LoaderFactory();
+        test.equal(loader.getName(), "Webpack Loader");
+        test.equalIgnoringOrder(loader.getPlatforms(), ["web"]);
+        test.done();
     }
+*/
 };

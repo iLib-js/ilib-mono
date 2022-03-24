@@ -21,7 +21,7 @@ import { setPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index';
 import MockLoader from './MockLoader';
 
-module.exports.testLoader = {
+export const testLoader = {
     setUp: function(callback) {
         registerLoader(MockLoader);
         setPlatform("mock");
