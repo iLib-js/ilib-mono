@@ -1,5 +1,5 @@
 /*
- * testSuiteFiles.js - list the test files in this directory
+ * testSuiteWeb.js - test suite for this directory
  *
  * Copyright © 2022, JEDLSoft
  *
@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-module.exports.files = [
-    "testDataCache.js",
-    "testLocaleData.js"
+var tests = [
+    require('./testLocaleInfo.js'),
+    require('./testLocaleInfoAsync.js')
 ];
+
+module.exports = tests;
