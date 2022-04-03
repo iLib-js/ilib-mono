@@ -20,15 +20,19 @@
 
 import log4js from '@log4js-node/log4js-api';
 
-import { getPlatform, getLocale } from 'ilib-env';
+import { getPlatform, getLocale, top } from 'ilib-env';
 import LoaderFactory from 'ilib-loader';
-import { getSublocales, getLocFiles, Path } from 'ilib-common';
+import { Utils, Path } from 'ilib-common';
 
 import DataCache from './DataCache';
 
-// global list of roots shared by all instances of the locale data class
-let roots = [];
-
+function getIlib() {
+    var globalScope = top();
+    if (!globalScope.ilib) {
+        globalScope.ilib = {};
+    }
+    return globalScope.ilib;
+}
 /**
  * @class A locale data instance.
  *
@@ -232,6 +236,7 @@ class LocaleData {
         this.sync = typeof(sync) === "boolean" && sync && (!this.loader || this.loader.supportsSync());
         this.cache = new DataCache({packageName: name});
         this.logger = log4js.getLogger("ilib-localedata");
+        this.path = path;
     }
 
     /**
@@ -258,7 +263,7 @@ class LocaleData {
      * The parameters can specify any of the following properties:<p>
      *
      * <ul>
-     * <li><i>name</i> - String. The base name of the file being loaded. Default: ResBundle
+     * <li><i>basename</i> - String. The base name of the file being loaded. Default: ResBundle
      * <li><i>locale</i> - Locale. The locale for which data is loaded. Default is the current locale.
      * <li><i>replace</i> - boolean. When merging json objects, this parameter controls whether to merge arrays
      * or have arrays replace each other. If true, arrays in child objects replace the arrays in parent
@@ -276,27 +281,31 @@ class LocaleData {
         const {
             sync = this.sync,
             locale = getLocale(),
-            name
+            basename
         } = params || {};
 
         // first check if it's in the cache
-        const data = getSublocales(locale).map((sublocale) => { locale: sublocale });
-        
+        // const locales = Utils.getSublocales(locale).map((sublocale) => { locale: sublocale });
+
         // then check how to load it
         // then load it
-        const files = getLocFiles(locale, name);
-        const roots = [roots, ...this.path];
+        const files = Utils.getLocFiles(locale, basename).map(file => {name: file});
+        const roots = [this.getRoots(), ...this.path];
+        const extensions = [".js", ".json"];
 
-        roots.forEach((root) => {
-            const filelist = files.map(file => Path.join(root, file));
-            const result = this.loader.loadFiles(filelist, {sync});
-            if (sync) {
-                const localedata = result.reduce((previous, current) => {
-                    
-                }, {});
-            } else {
-                result.then();
-            }
+        extensions.forEach((extension) => {
+            roots.forEach((root) => {
+                const filesNeedingData = files.filter(file => !file.data).map();
+                const filelist = filesNeedingData.map(file => Path.join(root, file.name + extension));
+                const result = this.loader.loadFiles(filelist, {sync});
+                if (sync) {
+                    const localedata = result.reduce((previous, current) => {
+                        
+                    }, {});
+                } else {
+                    result.then();
+                }
+            });
         });
         
         // then cache it
@@ -304,25 +313,39 @@ class LocaleData {
     };
 
     getRoots() {
-        return roots;
+        var ilib = getIlib();
+        if (!ilib.roots) {
+            ilib.roots = [];
+        }
+        return ilib.roots;
     }
 
     addRoot(pathName) {
         logger.trace(`Added root ${pathName} to the list of global roots`);
-        roots.push(pathName);
+        var ilib = getIlib();
+        if (!ilib.roots) {
+            ilib.roots = [];
+        }
+        ilib.roots.push(pathName);
     }
 
     removeRoot(pathName) {
-        const element = roots.find((root) => root === pathName);
+        var ilib = getIlib();
+        if (!ilib.roots) {
+            ilib.roots = [];
+            return;
+        }
+        const element = ilib.roots.find((root) => root === pathName);
         if (element) {
             logger.trace(`Removed root ${pathName} from the list of global roots`);
-            roots.splice(element, 1);
+            ilib.roots.splice(element, 1);
         }
     }
 
     clearRoots() {
         logger.trace(`The list of global roots has been reset.`);
-        roots = [];
+        var ilib = getIlib();
+        ilib.roots = [];
     }
 
     /**

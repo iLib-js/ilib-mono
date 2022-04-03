@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { setPlatform } from 'ilib-env';
+import { setPlatform, getPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
 
 import MockLoader from './MockLoader';
@@ -80,6 +80,105 @@ module.exports.testLocaleData = {
         // clean up
         setPlatform(undefined);
 
+        test.done();
+    },
+
+    testLocaleDataNodeSyncRoot: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "root"
+        });
+
+        test.equal(actual, {
+            "a": "b",
+            "c": "d",
+            "x": {
+               "m": "n",
+               "o": "p"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeSyncen: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "en"
+        });
+
+        test.equal(actual, {
+            "a": "b en",
+            "c": "d",
+            "x": {
+               "m": "n",
+               "o": "p en"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeSyncenUS: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "en-US"
+        });
+
+        test.equal(actual, {
+            "a": "b en",
+            "c": "d en-US",
+            "x": {
+               "m": "n",
+               "o": "p en-US"
+            }
+        });
         test.done();
     },
 };
