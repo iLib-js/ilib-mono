@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Loader from 'ilib-loader';
+import { Loader } from 'ilib-loader';
 
 /**
  * @class
