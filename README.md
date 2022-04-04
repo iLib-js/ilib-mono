@@ -203,6 +203,18 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.0
+
+* When two different copies of ilib-env are loaded from different node_modules
+  directories or an app loads two copies of ilib-env with different version
+  numbers, they will be copies of each other with separate variables in
+  them. When that happens, setting
+  the platform, timezone, or locale for the entire app will not work because
+  each copy of ilib-env will have a different idea of what those variables are.
+  The solution is to save the settings in the global scope so that they are
+  shared between all copies of ilib-env.
+* update dependencies
+
 ### v1.0.2
 
 * Fixed a bug where locales from the platform returned by getLocale() were not

@@ -17,7 +17,61 @@
  * limitations under the License.
  */
 
-let platform;
+/**
+ * Get the raw, uncached platform value of the actual platform this is
+ * running on.
+ *
+ * @private
+ * @returns {string} the raw platform value
+ */
+function getPlatformValue() {
+    try {
+        if (typeof(java.lang.Object) !== 'undefined') {
+            return (typeof(process) !== 'undefined') ? "trireme" : "rhino";
+        }
+    } catch (e) {}
+
+    if (typeof(global) !== 'undefined' && global.process && global.process.versions && global.process.versions.node && typeof(module) !== 'undefined') {
+        return "nodejs";
+    } else if (typeof(Qt) !== 'undefined') {
+        return "qt";
+    } else if (typeof(PalmSystem) !== 'undefined') {
+        return (typeof(window) !== 'undefined') ? "webos-webapp" : "webos";
+    } else if (typeof(window) !== 'undefined') {
+        return "browser";
+    } else {
+        return "unknown";
+    }
+};
+
+/**
+ * Return the value of the top object in the system. This could be global
+ * for node, or window for browsers, etc.
+ * @static
+ * @return {Object|undefined} the top variable, or undefined if there is none on this
+ * platform
+ */
+export function top() {
+    let topScope;
+    switch (getPlatformValue()) {
+        case "rhino":
+            topScope = (function() {
+                return (typeof global === 'object') ? global : this;
+            })();
+            break;
+        case "nodejs":
+        case "qt":
+        case "trireme":
+            topScope = typeof(global) !== 'undefined' ? global : this;
+            //console.log("top: top is " + (typeof(global) !== 'undefined' ? "global" : "this"));
+            break;
+        default:
+            topScope = window;
+            break;
+    }
+
+    return topScope;
+};
 
 /**
  * Return the name of the platform. Recognized platforms are:
@@ -37,30 +91,21 @@ let platform;
  * @return {string} string naming the platform
  */
 export function getPlatform() {
-    if (!platform) {
-        try {
-            if (typeof(java.lang.Object) !== 'undefined') {
-                platform = (typeof(process) !== 'undefined') ? "trireme" : "rhino";
-                return platform;
-            }
-        } catch (e) {}
-
-        if (typeof(global) !== 'undefined' && global.process && global.process.versions && global.process.versions.node && typeof(module) !== 'undefined') {
-            platform = "nodejs";
-        } else if (typeof(Qt) !== 'undefined') {
-            platform = "qt";
-        } else if (typeof(PalmSystem) !== 'undefined') {
-            platform = (typeof(window) !== 'undefined') ? "webos-webapp" : "webos";
-        } else if (typeof(window) !== 'undefined') {
-            platform = "browser";
-        } else {
-            platform = "unknown";
-        }
+    const globalScope = top();
+    if (!globalScope.platform) {
+        globalScope.platform = getPlatformValue();
     }
-    return platform;
+    return globalScope.platform;
 };
 
-let browser;
+/**
+ * Used in unit testing to simulate a platform.
+ * @private
+ */
+export function setPlatform(plat) {
+    let globalScope = top();
+    globalScope.platform = plat;
+};
 
 /**
  * If this package is running in a browser, return the name of that browser.
@@ -70,62 +115,34 @@ let browser;
  * the browser name could not be determined
  */
 export function getBrowser() {
-    if (getPlatform() === "browser") {
+    const globalScope = top();
+    if (getPlatform() === "browser" && !globalScope.browser) {
         if (navigator && navigator.userAgent) {
             if (navigator.userAgent.indexOf("Firefox") > -1) {
-                browser = "firefox";
+                globalScope.browser = "firefox";
             } else if (navigator.userAgent.search(/Opera|OPR/) > -1 ) {
-                browser = "opera";
+                globalScope.browser = "opera";
             } else if (navigator.userAgent.indexOf("Chrome") > -1) {
-                browser = "chrome";
+                globalScope.browser = "chrome";
             } else if (navigator.userAgent.indexOf(" .NET") > -1) {
-                browser = "ie";
+                globalScope.browser = "ie";
             } else if (navigator.userAgent.indexOf("Safari") > -1) {
                 // chrome also has the string Safari in its userAgent, but the chrome case is
                 // already taken care of above
-                browser = "safari";
+                globalScope.browser = "safari";
             } else if (navigator.userAgent.indexOf("Edge") > -1) {
-                browser = "Edge";
+                globalScope.browser = "Edge";
             } else if (navigator.userAgent.search(/iPad|iPhone|iPod/) > -1) {
                 // Due to constraints of the iOS platform,
                 // all browser must be built on top of the WebKit rendering engine
-                browser = "iOS";
+                globalScope.browser = "iOS";
             }
         }
     }
-    return browser;
+
+    return globalScope.browser;
 };
 
-let topScope;
-
-/**
- * Return the value of the top object in the system. This could be global
- * for node, or window for browsers, etc.
- * @static
- * @return {Object|undefined} the top variable, or undefined if there is none on this
- * platform
- */
-export function top() {
-    if (typeof(topScope) === 'undefined') {
-        switch (getPlatform()) {
-            case "rhino":
-                topScope = (function() {
-                  return (typeof global === 'object') ? global : this;
-                })();
-                break;
-            case "nodejs":
-            case "trireme":
-                topScope = typeof(global) !== 'undefined' ? global : this;
-                //console.log("top: top is " + (typeof(global) !== 'undefined' ? "global" : "this"));
-                break;
-            default:
-                topScope = window;
-                break;
-        }
-    }
-
-    return topScope;
-};
 
 /**
  * Return the value of a global variable given its name in a way that works
@@ -207,16 +224,18 @@ function parseLocale(str) {
  * @return {string} the BCP-47 locale specifier for the default locale
  */
 export function getLocale() {
+    let globalScope = top();
+
     let lang, dot;
-    if (typeof(locale) !== 'string') {
+    if (typeof(globalScope.locale) !== 'string') {
         const plat = getPlatform();
         switch (plat) {
             case 'browser':
                 // running in a browser
                 if(typeof(navigator.language) !== 'undefined') {
-                    locale = parseLocale(navigator.language);  // FF/Opera/Chrome/Webkit
+                    globalScope.locale = parseLocale(navigator.language);  // FF/Opera/Chrome/Webkit
                 }
-                if (!locale) {
+                if (!globalScope.locale) {
                     // IE on Windows
                     lang = typeof(navigator.browserLanguage) !== 'undefined' ?
                         navigator.browserLanguage :
@@ -226,7 +245,7 @@ export function getLocale() {
                                         navigator.systemLanguage :
                                             undefined));
                     // for some reason, MS uses lower case region tags
-                    locale = parseLocale(lang);
+                    globalScope.locale = parseLocale(lang);
                 }
                 break;
             case 'webos-webapp':
@@ -235,11 +254,11 @@ export function getLocale() {
                 if (typeof(PalmSystem.locales) !== 'undefined' &&
                     typeof(PalmSystem.locales.UI) != 'undefined' &&
                     PalmSystem.locales.UI.length > 0) {
-                    locale = parseLocale(PalmSystem.locales.UI);
+                    globalScope.locale = parseLocale(PalmSystem.locales.UI);
                 } else if (typeof(PalmSystem.locale) !== 'undefined') {
-                    locale = parseLocale(PalmSystem.locale);
+                    globalScope.locale = parseLocale(PalmSystem.locale);
                 } else {
-                    locale = undefined;
+                    globalScope.locale = undefined;
                 }
                 break;
             case 'rhino':
@@ -249,7 +268,7 @@ export function getLocale() {
                     if (typeof(environment.user.country) === 'string' && environment.user.country.length > 0) {
                         l.push(environment.user.country);
                     }
-                    locale = l.join("-");
+                    globalScope.locale = l.join("-");
                 }
                 break;
             case "trireme":
@@ -258,7 +277,7 @@ export function getLocale() {
                 // the LANG variable on unix is in the form "lang_REGION.CHARSET"
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
-                locale = parseLocale(lang);
+                globalScope.locale = parseLocale(lang);
                 break;
             case 'nodejs':
                 // running under nodejs
@@ -266,23 +285,21 @@ export function getLocale() {
                 // the LANG variable on unix is in the form "lang_REGION.CHARSET"
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
-                locale = parseLocale(lang);
+                globalScope.locale = parseLocale(lang);
                 break;
             case 'qt':
                 // running in the Javascript engine under Qt/QML
                 const locobj = Qt.locale();
-                locale = parseLocale(locobj.name || "en-US");
+                globalScope.locale = parseLocale(locobj.name || "en-US");
                 break;
         }
-        locale = typeof(locale) === 'string' && locale.length && locale !== "C" ? locale : 'en-US';
-        if (locale === "en") {
-            locale = "en-US"; // hack to get various platforms working correctly
+        globalScope.locale = typeof(globalScope.locale) === 'string' && globalScope.locale.length && globalScope.locale !== "C" ? globalScope.locale : 'en-US';
+        if (globalScope.locale === "en") {
+            globalScope.locale = "en-US"; // hack to get various platforms working correctly
         }
     }
-    return locale;
+    return globalScope.locale;
 };
-
-let tz;
 
 /**
  * Return the default time zone for this platform if there is one. 
@@ -292,13 +309,15 @@ let tz;
  * @return {string} the default time zone for the platform
  */
 export function getTimeZone() {
-    if (typeof(tz) === 'undefined') {
+    let tz, globalScope = top();
+
+    if (typeof(globalScope.tz) === 'undefined') {
         if (typeof(Intl) !== 'undefined' && typeof(Intl.DateTimeFormat) !== 'undefined') {
             const ro = new Intl.DateTimeFormat().resolvedOptions();
             const { timeZone } = ro;
             if (timeZone && timeZone !== "Etc/Unknown") {
-                tz = timeZone;
-                return tz;
+                globalScope.tz = timeZone;
+                return globalScope.tz;
             }
         }
         let timezone;
@@ -332,10 +351,10 @@ export function getTimeZone() {
                 break;
         }
 
-        tz = tz || "local";
+        globalScope.tz = tz || "local";
     }
 
-    return tz;
+    return globalScope.tz;
 };
 
 /**
@@ -343,13 +362,6 @@ export function getTimeZone() {
  * @private
  */
 export function clearCache() {
-    platform = locale = browser = tz = undefined;
-};
-
-/**
- * Used in unit testing to simulate a platform.
- * @private
- */
-export function setPlatform(plat) {
-    platform = plat;
+    let globalScope = top();
+    globalScope.platform = globalScope.locale = globalScope.browser = globalScope.tz = undefined;
 };

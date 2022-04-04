@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-if (typeof(ilibEnv) === 'undefined') {
-    var ilibEnv = require("../lib/index.js");
-}
+import * as ilibEnv from '../src/index';
 
-module.exports.testglobal = {
+export const testenv = {
     testGetLocaleDefault: function(test) {
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "en-US");
