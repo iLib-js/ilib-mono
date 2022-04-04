@@ -289,24 +289,54 @@ class LocaleData {
 
         // then check how to load it
         // then load it
-        const files = Utils.getLocFiles(locale, basename).map(file => {name: file});
+        const files = Utils.getLocFiles(locale, basename).map(
+            file => {
+                name: file
+            }
+        ).forEach((file, i) => {
+            file.index = i;
+        });
         const roots = [this.getRoots(), ...this.path];
         const extensions = [".js", ".json"];
+        let promise;
 
+        if (!sync) {
+            promise = new Promise((resolve) => {
+                resolve(true);
+            });
+        }
         extensions.forEach((extension) => {
             roots.forEach((root) => {
                 const filesNeedingData = files.filter(file => !file.data).map();
+                if (filesNeedingData.length < 1) {
+                    break;
+                }
                 const filelist = filesNeedingData.map(file => Path.join(root, file.name + extension));
-                const result = this.loader.loadFiles(filelist, {sync});
                 if (sync) {
-                    const localedata = result.reduce((previous, current) => {
-                        
-                    }, {});
+                    const results = this.loader.loadFiles(filelist, {sync});
+                    results.forEach((result, i) => {
+                        filesNeedingData[i].data = result;
+                    });
                 } else {
-                    result.then();
+                    promise.then(() => {
+                        return this.loader.loadFiles(filelist, {sync}).then((results) => {
+                            results.forEach((result, i) => {
+                                filesNeedingData[i].data = result;
+                            })
+                        });
+                    });
                 }
             });
         });
+
+        // merge the loaded files
+        if (sync) {
+            const localedata = result.reduce((previous, current) => {
+                
+            }, {});
+        } else {
+            result.then();
+        }
         
         // then cache it
         // extract the relevants parts and return it
