@@ -1,7 +1,7 @@
 <!--
 testSuite.html - Run all tests
 
-Copyright © 2021 JEDLSoft
+Copyright © 2022 JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,42 +21,13 @@ limitations under the License.
   <head>
     <title>Test Suite</title>
     <link rel="stylesheet" href="./nodeunit/nodeunit.css" type="text/css" />
-    <script>
-        var module = {};
-    </script>
     <script src="./nodeunit/nodeunit.js"></script>
-    <script src="../node_modules/ilib-env/lib/ilib-env-web.js"></script>
-    <script src="../node_modules/ilib-locale/lib/ilib-locale-web.js"></script>
-    <script src="../lib/ilib-common-web.js"></script>
-   <script>
-        var suites = {};
-        module = {
-            exports: {}
-        };
-        function loadTests() {
-            for (var i = 0; i < module.exports.files.length; i++) {
-                document.write("<scrip" + 't src="' + module.exports.files[i] + '"></scr' + "ipt>");
-            }
-        }
-        function require(foo) { return {}; }
-    </script>
-    <script src="./testSuiteFiles.js"></script>
-    <script>
-        var ISet = ilibCommon.ISet;
-        var Path = ilibCommon.Path;
-        var JSUtils = ilibCommon.JSUtils;
-        var MathUtils = ilibCommon.MathUtils;
-        var SearchUtils = ilibCommon.SearchUtils;
-        var Utils = ilibCommon.Utils;
-        var Locale = Locale.default;
-
-        loadTests();
-    </script>
+    <script src="./ilib-loader-test.js"></script>
   </head>
   <body>
     <h1 id="nodeunit-header">iLib All Test Suites</h1>
     <script>
-     nodeunit.run(module.exports);
+      nodeunit.run(ilibLoaderTest);
     </script>
   </body>
 </html>

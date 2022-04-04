@@ -106,7 +106,59 @@ Logging
 --------------------
 
 Use the name "ilib-loader" to configure a log4js appender in your app to
-see logging output from this library.
+see logging output from this library. If your app does not use log4js, that is
+okay as well. The log4js output will just go to the bitbucket instead.
+
+Using this Module in Webpack
+--------------------
+
+If you are using this module with your Webpacked application, Webpack will read and
+chase down all dependencies and include them in the bundle. Unfortunately, since
+this is a js-engine dependent module, some of the subclasses of Loader rely on
+other modules that are not available and which cannot and should not be included
+in the bundle. This causes errors when Webpack runs.
+
+The solution is to declare that these unused dependencies are external. That is,
+Webpack will assume that the environment that your app is running in will provide
+these dependencies already. In our case, we won't actually provide the dependencies,
+because we don't have to -- code that uses those dependencies will never run
+because it is for a different engine.
+
+Add the following to your webpack.config.js file:
+
+```js
+module.exports = {
+    "externals": {
+        "./NodeLoader": "NodeLoader",
+        "./QtLoader": "QtLoader",
+        "./RhinoLoader": "RhinoLoader",
+        "./NashornLoader": "NashornLoader",
+        "./RingoLoader": "RingoLoader",
+        "log4js": "log4js"
+    }
+}
+```
+
+The last external, "log4js", should only be added if your app does not use log4js
+already. If it does, then it will be in your Webpack bundle already, so you don't
+have to pretend it is external.
+
+In addition to preparing the externals, you should make sure to include all of
+the ilib modules into the package. Fortunately, all of the ilib modules have names
+that start with the prefix "ilib-" so they are easy to recognize:
+
+```js
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                include: /node_modules\/ilib-/,
+                ...
+            }
+        ]
+    }
+```
 
 ## License
 

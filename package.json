@@ -1,9 +1,8 @@
 {
     "name": "ilib-loader",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "./lib/index.js",
-    "main-es6": "./src/index.js",
-    "description": "Loader to load iLib locale data",
+    "description": "Loader to load text files in a cross-platform manner",
     "keywords": [
         "internationalization",
         "i18n",
@@ -52,6 +51,7 @@
         "build:test": "webpack-cli --config webpack-test.config.js",
         "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
+        "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d * ; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-loader.md",
@@ -59,16 +59,17 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-env": "^1.0.2"
+        "ilib-env": "^1.1.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.5",
+        "@babel/core": "^7.17.8",
         "@babel/preset-env": "^7.16.11",
-        "@babel/register": "^7.17.0",
-        "@babel/runtime": "^7.17.2",
+        "@babel/register": "^7.17.7",
+        "@babel/runtime": "^7.17.8",
         "acorn": "^8.7.0",
         "acorn-jsx": "^5.3.2",
         "assertextras": "^1.1.0",
+        "babel-loader": "^8.2.3",
         "babel-plugin-add-module-exports": "^1.0.4",
         "core-js": "^3.21.1",
         "docdash": "^1.2.0",
@@ -82,6 +83,9 @@
         "jsdoc": "^3.6.10",
         "jsdoc-to-markdown": "^7.1.1",
         "load-grunt-tasks": "^5.1.0",
-        "nodeunit": "^0.11.3"
+        "nodeunit": "^0.11.3",
+        "open-cli": "^7.0.1",
+        "webpack": "^5.70.0",
+        "webpack-cli": "^4.9.2"
     }
 }

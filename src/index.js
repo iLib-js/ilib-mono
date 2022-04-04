@@ -20,7 +20,8 @@
 
 import log4js from '@log4js-node/log4js-api';
 
-import { getPlatform } from 'ilib-env';
+import { getPlatform, top } from 'ilib-env';
+import Loader from './Loader';
 import NodeLoader from './NodeLoader';
 
 // import WebpackLoader from 'WebpackLoader';
@@ -39,11 +40,20 @@ const logger = log4js.getLogger("ilib-loader");
  */
 export function registerLoader(loaderClass) {
     if (!loaderClass) return;
+
+    const globalScope = top();
+    if (!globalScope.ilib) {
+        globalScope.ilib = {};
+    }
+    if (!globalScope.ilib.classCache) {
+        globalScope.ilib.classCache = {};
+    }
+
     var loader = new loaderClass();
     const platforms = loader.getPlatforms();
     if (platforms) {
         platforms.forEach((platform) => {
-            classCache[platform] = loader;
+            globalScope.ilib.classCache[platform] = loader;
         });
     }
     logger.trace(`Registered loader ${loader.getName()}`);
@@ -67,13 +77,19 @@ registerLoader(NodeLoader);
  * @returns {Loader} a loader instance for this platform
  */
 function LoaderFactory() {
+    const globalScope = top();
+
+    if (!globalScope.ilib || !globalScope.ilib.classCache) {
+        return undefined;
+    }
+
     // special case because Webpack is not a platform:
-    if (typeof(__webpack_require__) !== 'undefined' && classCache.webpack) {
-        return classCache.webpack;
+    if (typeof(__webpack_require__) !== 'undefined' && globalScope.ilib.classCache.webpack) {
+        return globalScope.ilib.classCache.webpack;
     } else {
         const platform = getPlatform();
-        if (classCache[platform]) {
-            return classCache[platform];
+        if (globalScope.ilib.classCache[platform]) {
+            return globalScope.ilib.classCache[platform];
         }
     }
 
@@ -82,4 +98,5 @@ function LoaderFactory() {
     return undefined;
 };
 
+export { Loader };
 export default LoaderFactory;
