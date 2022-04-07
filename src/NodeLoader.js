@@ -18,7 +18,6 @@
  */
 
 import fs from 'fs';
-import { readFileSync } from 'fs';
 import log4js from '@log4js-node/log4js-api';
 import Loader from './Loader';
 
@@ -42,19 +41,27 @@ class NodeLoader extends Loader {
     constructor(options) {
         super(options);
 
+        this.logger = log4js.getLogger("ilib-loader");
+
         // make sure this works on all versions of node
         try {
             // modern versions of node have the promise code already in it
-            fsPromise = require("fs/promise");
+            const fsPromise = require("fs/promises");
             this.readFile = fsPromise.readFile;
         } catch(e) {
+            this.logger.trace(e);
+            this.logger.trace("Using polyfill for readFile instead");
+
             // polyfill for older versions of node
             this.readFile = (...arg) => new Promise((resolve, reject) => {
-                fs.readFile(...arg, (err, data) => err ? reject(err) : resolve(data))
+                fs.readFile(...arg, (err, data) => {
+                    if (err) {
+                        this.logger.debug("Could not load file.");
+                    }
+                    return err ? reject(err) : resolve(data)
+                })
             });
         }
-
-        this.logger = log4js.getLogger("ilib-loader");
     }
 
     /**
@@ -113,12 +120,13 @@ class NodeLoader extends Loader {
 
         if (sync) {
             try {
-                var text = readFileSync(pathName, "utf-8");
-                return text;
+                this.logger.trace(`loadFile: loading file ${pathName} synchronously.`);
+                return fs.readFileSync(pathName, "utf-8");
             } catch (e) {
                 return undefined;
             }
         }
+        this.logger.trace(`loadFile: loading file ${pathName} asynchronously.`);
         return this.readFile(pathName, "utf-8").catch((e) => {
             this.logger.trace(e);
         });

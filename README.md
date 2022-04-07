@@ -179,6 +179,20 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.2
+
+- use correct package name for the node fs packages for promises so that
+  we don't use the polyfill all the time
+- fix problem with missing variable declaration
+- added some debugging output
+
+### v1.0.1
+
+- use the global scope to store class instances so that all copies
+  of this library use the same class cache
+- update dependencies
+- add more to this README.md
+
 ### v1.0.0
 
 - Initial version which only supports loading files on Nodejs. Later
