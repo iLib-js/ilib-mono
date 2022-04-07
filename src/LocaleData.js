@@ -352,15 +352,20 @@ class LocaleData {
     };
 
     getRoots() {
+        // this.path always goes at the end
+        return LocaleData.getGlobalRoots().concat([this.path]);
+    }
+
+    static getGlobalRoots() {
         var ilib = getIlib();
         if (!ilib.roots) {
             ilib.roots = [];
         }
         // this.path always goes at the end
-        return ilib.roots.concat([this.path]);
+        return ilib.roots;
     }
 
-    addRoot(pathName) {
+    static addGlobalRoot(pathName) {
         if (typeof(pathName) !== 'string') return;
         var ilib = getIlib();
         if (!ilib.roots) {
@@ -368,10 +373,9 @@ class LocaleData {
         }
         // prepend it
         ilib.roots = [pathName].concat(ilib.roots);
-        this.logger.trace(`Added root ${pathName} to the list of global roots`);
     }
 
-    removeRoot(pathName) {
+    static removeGlobalRoot(pathName) {
         if (typeof(pathName) !== 'string') return;
         var ilib = getIlib();
         if (!ilib.roots) {
@@ -381,12 +385,10 @@ class LocaleData {
         const element = ilib.roots.indexOf(pathName);
         if (element > -1) {
             ilib.roots.splice(element, 1);
-            this.logger.trace(`Removed root ${pathName} from the list of global roots`);
         }
     }
 
-    clearRoots() {
-        this.logger.trace(`The list of global roots has been reset.`);
+    static clearGlobalRoots() {
         var ilib = getIlib();
         ilib.roots = [];
     }
