@@ -33,7 +33,7 @@ module.exports.testLocaleData = {
         test.ok(locData);
         test.done();
     },
-    
+
     testLocaleDataConstructorNoPath: function(test) {
         test.expect(1);
         test.throws((test) => {
@@ -43,7 +43,7 @@ module.exports.testLocaleData = {
         });
         test.done();
     },
-    
+
     testLocaleDataConstructorNoPackage: function(test) {
         test.expect(1);
         test.throws(() => {
@@ -203,15 +203,15 @@ module.exports.testLocaleData = {
             basename: "tester",
             locale: "root"
         }).then((actual) => {
-	        test.deepEqual(actual, {
-	            "a": "b",
-	            "c": "d",
-	            "x": {
-	               "m": "n",
-	               "o": "p"
-	            }
-	        });
-	        test.done();
+            test.deepEqual(actual, {
+                "a": "b",
+                "c": "d",
+                "x": {
+                   "m": "n",
+                   "o": "p"
+                }
+            });
+            test.done();
         });
     },
 
@@ -280,4 +280,321 @@ module.exports.testLocaleData = {
             test.done();
         });
     },
+
+    testLocaleDataGetRoots: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+
+        // should have the path of caller in it only
+        test.deepEqual(locData.getRoots(), ["./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataAddRoot: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+
+        test.deepEqual(locData.getRoots(), ["foobar/asf", "./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataAddRootMultiple: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataAddRootUndefined: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot(undefined);
+
+        test.deepEqual(locData.getRoots(), ["foobar/asf", "./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataAddRootNull: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot(null);
+
+        test.deepEqual(locData.getRoots(), ["foobar/asf", "./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataAddRootNumber: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot(3);
+
+        test.deepEqual(locData.getRoots(), ["foobar/asf", "./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataClearRoots: function(test) {
+        test.expect(2);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        locData.clearRoots();
+
+        // should only have the path of the caller left over
+        test.deepEqual(locData.getRoots(), ["./test/files"]);
+
+        test.done();
+    },
+
+    testLocaleDataRemoveRoot: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot("foobar/asf");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "./test/files"]);
+        test.done();
+    },
+
+    testLocaleDataRemoveRootMultiple: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+        locData.addRoot("x/y");
+        locData.addRoot("man/woman");
+
+        test.deepEqual(locData.getRoots(), ["man/woman", "x/y", "a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot("foobar/asf");
+        locData.removeRoot("x/y");
+
+        test.deepEqual(locData.getRoots(), ["man/woman", "a/b/c", "./test/files"]);
+        test.done();
+    },
+
+    testLocaleDataRemoveRootNotThere: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot("ff");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+        test.done();
+    },
+
+    testLocaleDataRemoveRootUndefined: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot(undefined);
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+        test.done();
+    },
+
+    testLocaleDataRemoveRootNull: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot(null);
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+        test.done();
+    },
+
+    testLocaleDataRemoveRootNumber: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot(1);
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+        test.done();
+    },
+
+    testLocaleDataRemoveRootCantRemoveBasePath: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+        locData.clearRoots();
+
+        locData.addRoot("foobar/asf");
+        locData.addRoot("a/b/c");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+
+        locData.removeRoot("./test/files");
+
+        test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
+        test.done();
+    },
+
 };

@@ -356,33 +356,37 @@ class LocaleData {
         if (!ilib.roots) {
             ilib.roots = [];
         }
-        return ilib.roots;
+        // this.path always goes at the end
+        return ilib.roots.concat([this.path]);
     }
 
     addRoot(pathName) {
-        logger.trace(`Added root ${pathName} to the list of global roots`);
+        if (typeof(pathName) !== 'string') return;
         var ilib = getIlib();
         if (!ilib.roots) {
             ilib.roots = [];
         }
-        ilib.roots.push(pathName);
+        // prepend it
+        ilib.roots = [pathName].concat(ilib.roots);
+        this.logger.trace(`Added root ${pathName} to the list of global roots`);
     }
 
     removeRoot(pathName) {
+        if (typeof(pathName) !== 'string') return;
         var ilib = getIlib();
         if (!ilib.roots) {
             ilib.roots = [];
             return;
         }
-        const element = ilib.roots.find((root) => root === pathName);
-        if (element) {
-            logger.trace(`Removed root ${pathName} from the list of global roots`);
+        const element = ilib.roots.indexOf(pathName);
+        if (element > -1) {
             ilib.roots.splice(element, 1);
+            this.logger.trace(`Removed root ${pathName} from the list of global roots`);
         }
     }
 
     clearRoots() {
-        logger.trace(`The list of global roots has been reset.`);
+        this.logger.trace(`The list of global roots has been reset.`);
         var ilib = getIlib();
         ilib.roots = [];
     }

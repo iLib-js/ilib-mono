@@ -86,7 +86,7 @@
         "@log4js-node/log4js-api": "^1.0.2",
         "ilib-common": "^1.0.1",
         "ilib-env": "^1.1.0",
-        "ilib-loader": "^1.0.1",
+        "ilib-loader": "^1.0.2",
         "ilib-locale": "^1.1.0",
         "json5": "^2.2.1"
     }
