@@ -22,7 +22,8 @@ import log4js from '@log4js-node/log4js-api';
 
 import { getPlatform, getLocale, top } from 'ilib-env';
 import LoaderFactory from 'ilib-loader';
-import { Utils, Path } from 'ilib-common';
+import { Utils, JSUtils, Path } from 'ilib-common';
+import JSON5 from 'json5';
 
 import DataCache from './DataCache';
 
@@ -289,55 +290,63 @@ class LocaleData {
 
         // then check how to load it
         // then load it
-        const files = Utils.getLocFiles(locale, basename).map(
+        const files = Utils.getLocFiles(locale, basename + ".json").map(
             file => {
-                name: file
+                return {
+                    name: file
+                };
             }
-        ).forEach((file, i) => {
-            file.index = i;
-        });
-        const roots = [this.getRoots(), ...this.path];
-        const extensions = [".js", ".json"];
+        );
+        const roots = [...this.getRoots(), this.path];
         let promise;
 
-        if (!sync) {
-            promise = new Promise((resolve) => {
-                resolve(true);
-            });
-        }
-        extensions.forEach((extension) => {
-            roots.forEach((root) => {
-                const filesNeedingData = files.filter(file => !file.data).map();
-                if (filesNeedingData.length < 1) {
-                    break;
-                }
-                const filelist = filesNeedingData.map(file => Path.join(root, file.name + extension));
-                if (sync) {
-                    const results = this.loader.loadFiles(filelist, {sync});
-                    results.forEach((result, i) => {
-                        filesNeedingData[i].data = result;
-                    });
-                } else {
-                    promise.then(() => {
-                        return this.loader.loadFiles(filelist, {sync}).then((results) => {
-                            results.forEach((result, i) => {
-                                filesNeedingData[i].data = result;
-                            })
-                        });
-                    });
-                }
-            });
-        });
-
-        // merge the loaded files
         if (sync) {
-            const localedata = result.reduce((previous, current) => {
-                
+            roots.forEach((root) => {
+                const count = files.filter(file => !file.data).length;
+                if (count) {
+                    const fileNames = files.map((file) => {
+                        return file.data ? undefined : Path.join(root, file.name);
+                    }); 
+                    const data = this.loader.loadFiles(fileNames, {sync});
+                    data.forEach((datum, i) => {
+                        if (datum) {
+                            files[i].data = JSON5.parse(datum);
+                        }
+                    });
+                }
+            });
+            
+            const merged = files.map(file => file.data).reduce((previous, current) => {
+                return JSUtils.merge(previous, current);
             }, {});
+
+            return merged;
         } else {
-            result.then();
+            promise = Promise.resolve(true);
+            roots.forEach((root) => {
+                promise = promise.then(() => {
+                    const count = files.filter(file => !file.data).length;
+                    if (count) {
+                        const fileNames = files.map((file) => {
+                            return file.data ? undefined : Path.join(root, file.name);
+                        }); 
+                        return this.loader.loadFiles(fileNames, {sync}).then((data) => {
+                            data.forEach((datum, i) => {
+                                if (datum) {
+                                    files[i].data = JSON5.parse(datum);
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+            return promise.then(() => {
+                return files.map(file => file.data).reduce((previous, current) => {
+                    return JSUtils.merge(previous, current || {});
+                }, {});
+            });
         }
-        
+
         // then cache it
         // extract the relevants parts and return it
     };

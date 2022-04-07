@@ -105,7 +105,7 @@ module.exports.testLocaleData = {
             locale: "root"
         });
 
-        test.equal(actual, {
+        test.deepEqual(actual, {
             "a": "b",
             "c": "d",
             "x": {
@@ -138,7 +138,7 @@ module.exports.testLocaleData = {
             locale: "en"
         });
 
-        test.equal(actual, {
+        test.deepEqual(actual, {
             "a": "b en",
             "c": "d",
             "x": {
@@ -171,7 +171,7 @@ module.exports.testLocaleData = {
             locale: "en-US"
         });
 
-        test.equal(actual, {
+        test.deepEqual(actual, {
             "a": "b en",
             "c": "d en-US",
             "x": {
@@ -180,5 +180,104 @@ module.exports.testLocaleData = {
             }
         });
         test.done();
+    },
+
+    testLocaleDataNodeAsyncRoot: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+
+        test.ok(locData);
+        locData.loadData({
+            basename: "tester",
+            locale: "root"
+        }).then((actual) => {
+	        test.deepEqual(actual, {
+	            "a": "b",
+	            "c": "d",
+	            "x": {
+	               "m": "n",
+	               "o": "p"
+	            }
+	        });
+	        test.done();
+        });
+    },
+
+    testLocaleDataNodeAsyncen: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+
+        test.ok(locData);
+        locData.loadData({
+            basename: "tester",
+            locale: "en"
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b en",
+                "c": "d",
+                "x": {
+                   "m": "n",
+                   "o": "p en"
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeAsyncenUS: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+
+        locData.loadData({
+            basename: "tester",
+            locale: "en-US"
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b en",
+                "c": "d en-US",
+                "x": {
+                   "m": "n",
+                   "o": "p en-US"
+                }
+            });
+            test.done();
+        });
     },
 };
