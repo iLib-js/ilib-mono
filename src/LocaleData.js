@@ -297,7 +297,7 @@ class LocaleData {
                 };
             }
         );
-        const roots = [...this.getRoots(), this.path];
+        const roots = this.getRoots(); // includes this.path at the end of it
         let promise;
 
         if (sync) {
@@ -317,7 +317,7 @@ class LocaleData {
             });
             
             const merged = files.map(file => file.data).reduce((previous, current) => {
-                return JSUtils.merge(previous, current);
+                return JSUtils.merge(previous, current || {});
             }, {});
 
             return merged;

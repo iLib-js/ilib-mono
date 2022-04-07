@@ -84,7 +84,9 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeSyncRoot: function(test) {
-        setPlatform();
+       test.expect(3);
+
+       setPlatform();
 
         // only do this test on nodejs
         if (getPlatform() !== "nodejs") {
@@ -117,6 +119,8 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeSyncen: function(test) {
+        test.expect(3);
+
         setPlatform();
 
         // only do this test on nodejs
@@ -150,6 +154,8 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeSyncenUS: function(test) {
+        test.expect(3);
+
         setPlatform();
 
         // only do this test on nodejs
@@ -183,6 +189,8 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeAsyncRoot: function(test) {
+        test.expect(3);
+
         setPlatform();
 
         // only do this test on nodejs
@@ -216,6 +224,8 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeAsyncen: function(test) {
+        test.expect(3);
+
         setPlatform();
 
         // only do this test on nodejs
@@ -249,6 +259,8 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeAsyncenUS: function(test) {
+        test.expect(3);
+
         setPlatform();
 
         // only do this test on nodejs
@@ -595,6 +607,154 @@ module.exports.testLocaleData = {
 
         test.deepEqual(locData.getRoots(), ["a/b/c", "foobar/asf", "./test/files"]);
         test.done();
+    },
+
+    testLocaleDataNodeSyncWithRoots: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: true
+        });
+        locData.addRoot("./test/files2");
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "en-US"
+        });
+
+
+        test.deepEqual(actual, {
+            "a": "b en from files2",
+            "c": "d en-US",
+            "x": {
+               "m": "n",
+               "o": "p en-US"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeAsyncWithRoots: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+
+        locData.addRoot("./test/files2");
+
+        locData.loadData({
+            basename: "tester",
+            locale: "en-US"
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b en from files2",
+                "c": "d en-US",
+                "x": {
+                   "m": "n",
+                   "o": "p en-US"
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeSyncWithRootsjaJP: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: true
+        });
+        locData.addRoot("./test/files2");
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "ja-JP"
+        });
+
+
+        test.deepEqual(actual, {
+            "a": "b ja-JP from files2",
+            "c": "d ja",
+            "x": {
+               "m": "n ja-JP from files2",
+               "o": "p ja"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeAsyncWithRootsjaJP: function(test) {
+        test.expect(3);
+
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            name: "test",
+            sync: false
+        });
+        test.ok(locData);
+
+        locData.addRoot("./test/files2");
+
+        locData.loadData({
+            basename: "tester",
+            locale: "ja-JP"
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b ja-JP from files2",
+                "c": "d ja",
+                "x": {
+                   "m": "n ja-JP from files2",
+                   "o": "p ja"
+                }
+            });
+            test.done();
+        });
     },
 
 };
