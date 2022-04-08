@@ -1,6 +1,6 @@
 {
     "name": "ilib-env",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "main": "./lib/index.js",
     "description": "Common environment detection functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [

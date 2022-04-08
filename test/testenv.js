@@ -1,7 +1,7 @@
 /*
  * testenv.js - test the environment detection functions
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,41 @@ export const testenv = {
         test.equal(ilibEnv.getLocale(), "en-US");
         test.done();
     },
-    
+
+    testSetLocale: function(test) {
+        test.expect(1);
+        ilibEnv.setLocale("ja-JP");
+        test.equal(ilibEnv.getLocale(), "ja-JP");
+        test.done();
+    },
+
+    testSetLocaleNonString1: function(test) {
+        test.expect(1);
+        ilibEnv.setLocale("ja-JP");
+        ilibEnv.setLocale(true);
+        // should not change
+        test.equal(ilibEnv.getLocale(), "ja-JP");
+        test.done();
+    },
+
+    testSetLocaleNonString2: function(test) {
+        test.expect(1);
+        ilibEnv.setLocale("ja-JP");
+        ilibEnv.setLocale(4);
+        // should not change
+        test.equal(ilibEnv.getLocale(), "ja-JP");
+        test.done();
+    },
+
+    testSetLocaleClear: function(test) {
+        test.expect(1);
+        ilibEnv.setLocale("ja-JP");
+        ilibEnv.setLocale();
+        // should revert back to the default
+        test.equal(ilibEnv.getLocale(), "en-US");
+        test.done();
+    },
+
     testGetTimeZoneDefault: function(test) {
         // use a different test when the Intl object is available
         ilibEnv.clearCache();
@@ -101,14 +135,14 @@ export const testenv = {
             if (!process.env) process.env = {};
             var tmp = process.env.TZ;
             process.env.TZ = "America/Phoenix";
-            
+
             test.equal(ilibEnv.getTimeZone(), "America/Phoenix");
-            
+
             process.env.TZ = tmp;
         }
         test.done();
     },
-    
+
     testGetTimeZoneRhino: function(test) {
         if (ilibEnv.getPlatform() !== "rhino" || ilibEnv.globalVar("Intl")) {
             // only test this in rhino
@@ -123,12 +157,12 @@ export const testenv = {
             // under trireme on rhino emulating nodejs
             process.env.TZ = "America/New_York";
         }
-    
+
         test.expect(1);
         test.equal(ilibEnv.getTimeZone(), "America/New_York");
         test.done();
     },
-    
+
     testGetTimeZoneWebOS: function(test) {
         if (ilibEnv.getPlatform() !== "webos" || ilibEnv.globalVar("Intl")) {
             // only test this in webos
@@ -136,48 +170,108 @@ export const testenv = {
             return;
         }
         ilibEnv.clearCache();
-        
+
         PalmSystem.timezone = "Europe/London";
-            
+
         test.expect(1);
         test.equal(ilibEnv.getTimeZone(), "Europe/London");
         test.done();
     },
-    
+
+    testSetTimeZone: function(test) {
+        ilibEnv.clearCache();
+
+        test.expect(1);
+
+        ilibEnv.setTimeZone("Europe/London");
+
+        test.equal(ilibEnv.getTimeZone(), "Europe/London");
+        test.done();
+    },
+
+    testSetTimeZoneNonString1: function(test) {
+        ilibEnv.clearCache();
+
+        test.expect(1);
+
+        let tz = ilibEnv.getTimeZone();
+
+        ilibEnv.setTimeZone(true);
+
+        // should not change
+        test.equal(ilibEnv.getTimeZone(), tz);
+
+        test.done();
+    },
+
+    testSetTimeZoneNonString1: function(test) {
+        ilibEnv.clearCache();
+
+        test.expect(1);
+
+        let tz = ilibEnv.getTimeZone();
+
+        ilibEnv.setTimeZone(2);
+
+        // should not change
+        test.equal(ilibEnv.getTimeZone(), tz);
+
+        test.done();
+    },
+
+    testSetTimeZoneReset: function(test) {
+        ilibEnv.clearCache();
+
+        test.expect(2);
+
+        let tz = ilibEnv.getTimeZone();
+
+        ilibEnv.setTimeZone("Europe/London");
+
+        test.equal(ilibEnv.getTimeZone(), "Europe/London");
+
+        ilibEnv.setTimeZone();
+
+        // should not change
+        test.equal(ilibEnv.getTimeZone(), tz);
+
+        test.done();
+    },
+
     testGetLocaleNodejs: function(test) {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
             test.done();
             return;
         }
-        
+
         ilibEnv.clearCache();
         if (!process.env) process.env = {};
-        
+
         process.env.LANG = "th-TH";
-        
+
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "th-TH");
-        
+
         process.env.LANG = "";
         ilibEnv.clearCache();
         test.done();
     },
-    
+
     testGetLocaleNodejs2: function(test) {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
             test.done();
             return;
         }
-        
+
         ilibEnv.clearCache();
-    
+
         process.env.LC_ALL = "th-TH";
-        
+
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "th-TH");
-        
+
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
         test.done();
@@ -881,11 +975,11 @@ export const testenv = {
             // under trireme on rhino emulating nodejs
             process.env.LANG = "de_AT.UTF8";
         }
-        
+
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "de-AT");
         test.done();
-        
+
         if (typeof(process) === 'undefined') {
             // under plain rhino
             environment.user.language = undefined;
@@ -894,22 +988,22 @@ export const testenv = {
             process.env.LANG = "en_US.UTF8";
         }
     },
-    
+
     testGetLocaleWebOS: function(test) {
         if (ilibEnv.getPlatform() !== "webos") {
             // only test this in node
             test.done();
             return;
         }
-        
+
         ilibEnv.clearCache();
-    
+
         PalmSystem.locale = "ru-RU";
-        
+
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "ru-RU");
         test.done();
-        
+
         PalmSystem.locale = undefined;
     },
 
@@ -920,14 +1014,14 @@ export const testenv = {
             return;
         }
         ilibEnv.clearCache();
-        
+
         var loc = "";
-        
+
         if (navigator.language.length > 5) {
             var l = navigator.language;
             loc = l.substring(0,3) + l.charAt(3).toUpperCase() + l.substring(4,8).toLowerCase() + l.substring(8).toUpperCase();
         } else if (navigator.language.length > 2) {
-            loc = navigator.language.substring(0,3) + navigator.language.substring(3).toUpperCase();    
+            loc = navigator.language.substring(0,3) + navigator.language.substring(3).toUpperCase();
         } else {
             loc = navigator.language;
         }
@@ -956,7 +1050,7 @@ export const testenv = {
         test.ok(!ilibEnv.isGlobal("asdfasdfasdf"));
         test.done();
     },
-    
+
     testGlobal: function(test) {
         test.expect(1);
         var platform = ilibEnv.getPlatform();
@@ -968,7 +1062,7 @@ export const testenv = {
         test.equal(ilibEnv.globalVar("testGlobalNumber"), 42);
         test.done();
     },
-    
+
     testGlobalUndefined: function(test) {
         test.expect(1);
         test.ok(typeof(ilibEnv.globalVar("testGlobalNumber2")) === "undefined");
