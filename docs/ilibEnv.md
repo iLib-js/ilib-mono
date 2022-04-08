@@ -34,9 +34,21 @@ correctly for the current platform.</p>
 <dd><p>Return the default locale for this platform, if there is one.
 If not, it will default to the locale &quot;en-US&quot;.<p></p>
 </dd>
+<dt><a href="#setLocale">setLocale(locale)</a></dt>
+<dd><p>Set the default locale for ilib. This overrides the locale from the
+platform. To clear the locale again and cause <code>getLocale</code> to
+get the locale from the platform again, call <code>setLocale</code> with no
+parameters.<p></p>
+</dd>
 <dt><a href="#getTimeZone">getTimeZone()</a> ⇒ <code>string</code></dt>
-<dd><p>Return the default time zone for this platform if there is one. 
+<dd><p>Return the default time zone for this platform if there is one.
 If not, it will default to the the zone &quot;local&quot;.<p></p>
+</dd>
+<dt><a href="#setTimeZone">setTimeZone(zoneName)</a></dt>
+<dd><p>Set the default time zone for ilib. This overrides the time zone from the
+platform. To clear the time zone again and cause <code>getTimeZone</code> to
+get the time zone from the platform again, call <code>setTimeZone</code> with no
+parameters.<p></p>
 </dd>
 </dl>
 
@@ -127,14 +139,48 @@ If not, it will default to the locale "en-US".<p>
 
 * * *
 
+<a name="setLocale"></a>
+
+## setLocale(locale)
+Set the default locale for ilib. This overrides the locale from the
+platform. To clear the locale again and cause `getLocale` to
+get the locale from the platform again, call `setLocale` with no
+parameters.<p>
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| locale | <code>string</code> | the BCP-47 locale specifier to set as the default locale |
+
+
+* * *
+
 <a name="getTimeZone"></a>
 
 ## getTimeZone() ⇒ <code>string</code>
-Return the default time zone for this platform if there is one. 
+Return the default time zone for this platform if there is one.
 If not, it will default to the the zone "local".<p>
 
 **Kind**: global function  
 **Returns**: <code>string</code> - the default time zone for the platform  
+
+* * *
+
+<a name="setTimeZone"></a>
+
+## setTimeZone(zoneName)
+Set the default time zone for ilib. This overrides the time zone from the
+platform. To clear the time zone again and cause `getTimeZone` to
+get the time zone from the platform again, call `setTimeZone` with no
+parameters.<p>
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| zoneName | <code>string</code> | the IANA name of the time zone |
+
 
 * * *
 
