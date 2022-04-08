@@ -19,5 +19,6 @@
 
 module.exports.files = [
     "testDataCache.js",
-    "testLocaleData.js"
+    "testLocaleData.js",
+    "testGetLocaleData.js"
 ];

@@ -18,29 +18,45 @@
  */
 
 import log4js from '@log4js-node/log4js-api';
+import { top } from 'ilib-env';
 
 import LocaleData from './LocaleData';
 
-// the singletons
-const locData = {
-};
-
 /**
- * Return the locale data singleton for the package that needs data.
+ * Return the locale data singleton for a package that needs data.
  *
  * @param {string} pkg name of the package that needs a locale
  * data object.
- * @param {Object} params
+ * @param {Object} options
  * @returns {LocaleData|undefined} a locale data instance you can use
  * to load locale data, or undefined if it could not be created
  * or if the package name was not specified
  */
-function getLocaleData(pkg, params) {
-    if (typeof(pkg) !== 'string' || !pkg) return undefined;
-    if (!locData[pkg]) {
-        locData[pkg] = new LocaleData(pkg, params);
+function getLocaleData(pkg, options) {
+    if (!options || !options.path || !pkg) {
+        throw "Missing options to LocaleData constructor";
     }
-    return locData[pkg];
+
+    const globalScope = top();
+    if (!globalScope.ilib) {
+        globalScope.ilib = {};
+    }
+    if (!globalScope.ilib.localeDataCache) {
+        globalScope.ilib.localeDataCache = {};
+    }
+
+    if (!globalScope.ilib.localeDataCache[pkg]) {
+        globalScope.ilib.localeDataCache[pkg] = new LocaleData(pkg, options);
+    }
+    return globalScope.ilib.localeDataCache[pkg];
+}
+
+export function clearLocaleData() {
+    const globalScope = top();
+    if (!globalScope.ilib) {
+        globalScope.ilib = {};
+    }
+    globalScope.ilib.localeDataCache = {};
 }
 
 export * from './LocaleData';

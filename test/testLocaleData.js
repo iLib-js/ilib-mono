@@ -26,7 +26,7 @@ import LocaleData from '../src/LocaleData';
 module.exports.testLocaleData = {
     testLocaleDataConstructor: function(test) {
         test.expect(1);
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
             name: "test"
         });
@@ -37,8 +37,18 @@ module.exports.testLocaleData = {
     testLocaleDataConstructorNoPath: function(test) {
         test.expect(1);
         test.throws((test) => {
-            new LocaleData({
+            new LocaleData("test", {
                 name: "test"
+            });
+        });
+        test.done();
+    },
+
+    testLocaleDataConstructorEmptyPackage: function(test) {
+        test.expect(1);
+        test.throws(() => {
+            new LocaleData("", {
+                path: "./test/files"
             });
         });
         test.done();
@@ -47,7 +57,7 @@ module.exports.testLocaleData = {
     testLocaleDataConstructorNoPackage: function(test) {
         test.expect(1);
         test.throws(() => {
-            new LocaleData({
+            new LocaleData(undefined, {
                 path: "./test/files"
             });
         });
@@ -56,7 +66,7 @@ module.exports.testLocaleData = {
 
     testLocaleDataConstructorNoSync: function(test) {
         test.expect(1);
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
             name: "test"
         });
@@ -70,9 +80,8 @@ module.exports.testLocaleData = {
         registerLoader(MockLoader);
         setPlatform("mock");
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: true
         });
         test.ok(!locData.isSync());
@@ -95,9 +104,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: true
         });
 
@@ -130,9 +138,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: true
         });
 
@@ -165,9 +172,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: true
         });
 
@@ -200,9 +206,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
 
@@ -235,9 +240,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
 
@@ -270,9 +274,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
         test.ok(locData);
@@ -310,9 +313,8 @@ module.exports.testLocaleData = {
 
         setPlatform();
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
         test.ok(locData);
@@ -344,9 +346,8 @@ module.exports.testLocaleData = {
 
         LocaleData.clearGlobalRoots();
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
         test.ok(locData);
@@ -551,9 +552,8 @@ module.exports.testLocaleData = {
 
         setPlatform();
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
         test.ok(locData);
@@ -583,9 +583,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: true
         });
         LocaleData.addGlobalRoot("./test/files2");
@@ -620,9 +619,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
         test.ok(locData);
@@ -657,9 +655,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: true
         });
         LocaleData.addGlobalRoot("./test/files2");
@@ -694,9 +691,8 @@ module.exports.testLocaleData = {
         }
         test.expect(2);
 
-        const locData = new LocaleData({
+        const locData = new LocaleData("test", {
             path: "./test/files",
-            name: "test",
             sync: false
         });
         test.ok(locData);

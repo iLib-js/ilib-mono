@@ -223,19 +223,18 @@ class LocaleData {
      * @param {Object} options
      * @constructor
      */
-    constructor(options) {
-        if (!options || !options.path || !options.name) {
+    constructor(packageName, options) {
+        if (!options || !options.path || !packageName) {
             throw "Missing options to LocaleData constructor";
         }
         let {
             sync = false,
-            path,
-            name
+            path
         } = options;
 
         this.loader = LoaderFactory();
         this.sync = typeof(sync) === "boolean" && sync && (!this.loader || this.loader.supportsSync());
-        this.cache = new DataCache({packageName: name});
+        this.cache = new DataCache({packageName});
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
     }
@@ -428,14 +427,14 @@ class LocaleData {
      * for the locale.
      * </ul>
      */
-    cacheData(data) {
+    static cacheData(data) {
     }
 
     /**
      * Clear the locale data cache. This function is intended to be used by unit testing
      * to guarantee that the cache is clear before starting a new test.
      */
-    clear() {
+    static clearCache() {
     }
 }
 
