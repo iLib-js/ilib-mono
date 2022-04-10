@@ -135,9 +135,9 @@ function getIlib() {
  * and would contain data for multiple data types.<p>
  *
  * Data that is split in to its locale parts exists in directories named after
- * the locale parts in files of the form "<datatype>.json" or "<datatype>.js".
+ * the locale parts in files of the form "[basename].json" or "[basename].js".
  * For example, data for number formatting in the locale Danish for Denmark
- * would appear in the file "<root>/da/DK/numfmt.json".<p>
+ * would appear in the file "[root]/da/DK/numfmt.json".<p>
  *
  * The purpose for splitting the locale data into separate parts is so that the various
  * parts can be
@@ -162,12 +162,12 @@ function getIlib() {
  * which uses the more specific data of the apostrophe for the grouping character.<p>
  *
  * <ul>
- * <li> &lt;root>/numfmt.json -> contains grouping separator character is comma "," which is
+ * <li> [root]/numfmt.json -> contains grouping separator character is comma "," which is
  *  default for the world. eg. 100,000
- * <li>&lt;root>/it/numfmt.json -> contains the grouping separator char period "." for any
+ * <li>[root]/it/numfmt.json -> contains the grouping separator char period "." for any
  * place that speaks Italian, including Italy, Switzerland, San Marino, and Vatican City
  * as well as small parts of Austria, Slovenia, and Croatia. eg. 100.000
- * <li>&lt;root>/it/CH/numfmt.json -> contains the grouping separator char apostrophe "’"
+ * <li>[root]/it/CH/numfmt.json -> contains the grouping separator char apostrophe "’"
  * specifically for Italian as it is spoken in Switzerland. eg. 100’000
  * </ul>
  *
