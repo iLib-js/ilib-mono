@@ -64,22 +64,6 @@ still returned, even though is resolved immediately.
 <li>by looking for files that contain data about parts of a locale.
 </ol>
 
-<h2>Caching</h2>
-
-<p>The cache can be filled in two ways:</p>
-<ol>
-<li>By explicitly calling the `cacheData()` method. This will prepopulate
-the cache using statically loaded data for later use. See the `cacheData`
-method docs for information on the format.
-<li>When a file is loaded and parsed, the results are stored in the
-the cache so that subsequent requests for the same data are relatively
-fast.
-</ol>
-
-<p>The cache contains information about various types of data, as well as
-various locales. Files that contain data about an entire locale would
-typically contain multiple types of data. The data in them would be cached
-and returned to the right caller.</p>
 <h2>Locale Data Files</h2>
 
 <p>Files containing locale data can be encoded in two ways:</p>
@@ -127,8 +111,8 @@ locale. There are two styles of locale data:</p>
 </ol>
 
 <p>Files named for the entire locale appear in the top of the root and have
-the form &quot;<locale-spec>.json&quot; or &quot;<locale-spec>.js&quot;. For example, data for
-the Danish locale for Denmark would appear in &quot;<root>/da-DK.json&quot; file,
+the form &quot;[locale-spec].json&quot; or &quot;[locale-spec].js&quot;. For example, data for
+the Danish locale for Denmark would appear in &quot;[root]/da-DK.json&quot; file,
 and would contain data for multiple data types.<p></p>
 <p>Data that is split in to its locale parts exists in directories named after
 the locale parts in files of the form &quot;<datatype>.json&quot; or &quot;<datatype>.js&quot;.
@@ -433,24 +417,6 @@ still returned, even though is resolved immediately.
 <li>by looking for files that contain data about parts of a locale.
 </ol>
 
-<h2>Caching</h2>
-
-The cache can be filled in two ways:
-
-<ol>
-<li>By explicitly calling the `cacheData()` method. This will prepopulate
-the cache using statically loaded data for later use. See the `cacheData`
-method docs for information on the format.
-<li>When a file is loaded and parsed, the results are stored in the
-the cache so that subsequent requests for the same data are relatively
-fast.
-</ol>
-
-The cache contains information about various types of data, as well as
-various locales. Files that contain data about an entire locale would
-typically contain multiple types of data. The data in them would be cached
-and returned to the right caller.
-
 <h2>Locale Data Files</h2>
 
 Files containing locale data can be encoded in two ways:
@@ -504,8 +470,8 @@ locale. There are two styles of locale data:
 </ol>
 
 Files named for the entire locale appear in the top of the root and have
-the form "<locale-spec>.json" or "<locale-spec>.js". For example, data for
-the Danish locale for Denmark would appear in "<root>/da-DK.json" file,
+the form "[locale-spec].json" or "[locale-spec].js". For example, data for
+the Danish locale for Denmark would appear in "[root]/da-DK.json" file,
 and would contain data for multiple data types.<p>
 
 Data that is split in to its locale parts exists in directories named after
