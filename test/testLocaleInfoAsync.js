@@ -23,117 +23,89 @@ import LoaderFactory, { registerLoader, Loader } from 'ilib-loader';
 import MockLoader from './MockLoader';
 
 module.exports.testlocaleinfoasync = {
-    setUp: function(callback) {
-        registerLoader(MockLoader);
-        setPlatform("mock");
-
-        var loader = LoaderFactory();
-    },
-
     testLocaleInfoAsyncConstructor: function(test) {
         test.expect(5);
-        new LocaleInfo(undefined, {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
+        LocaleInfo.create(undefined).then((info) => {
+            test.ok(info !== null);
 
-                var loc = info.getLocale();
-                test.ok(loc !== null);
+            var loc = info.getLocale();
+            test.ok(loc !== null);
 
-                test.equal(loc.getLanguage(), "en");
-                test.equal(loc.getRegion(), "US");
-                test.ok(typeof(loc.getVariant()) === "undefined");
-                test.done();
-            }
+            test.equal(loc.getLanguage(), "en");
+            test.equal(loc.getRegion(), "US");
+            test.ok(typeof(loc.getVariant()) === "undefined");
+            test.done();
         });
     },
 
     testLocaleInfoAsyncConstructorGivenLocale: function(test) {
         test.expect(4);
-        new LocaleInfo("de-DE", {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
+        LocaleInfo.create("de-DE").then((info) => {
+            test.ok(info !== null);
 
-                var loc = info.getLocale();
+            var loc = info.getLocale();
 
-                test.equal(loc.getLanguage(), "de");
-                test.equal(loc.getRegion(), "DE");
-                test.ok(typeof(loc.getVariant()) === "undefined");
-                test.done();
-            }
+            test.equal(loc.getLanguage(), "de");
+            test.equal(loc.getRegion(), "DE");
+            test.ok(typeof(loc.getVariant()) === "undefined");
+            test.done();
         });
     },
 
     testLocaleInfoAsyncGetTimeZoneDefault: function(test) {
         test.expect(2);
-        new LocaleInfo("zz-ZZ", {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
+        LocaleInfo.create("zz-ZZ").then((info) => {
+            test.ok(info !== null);
 
-                test.equal(info.getTimeZone(), "Etc/UTC");
-                test.done();
-            }
+            test.equal(info.getTimeZone(), "Etc/UTC");
+            test.done();
         });
     },
 
     testLocaleInfoAsyncGetCurrencyUnknown: function(test) {
         test.expect(2);
-        new LocaleInfo("zxx-XX", {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
+        LocaleInfo.create("zxx-XX").then((info) => {
+            test.ok(info !== null);
 
-                test.equal(info.getCurrency(), "USD");
-                test.done();
-            }
+            test.equal(info.getCurrency(), "USD");
+            test.done();
         });
     },
 
     testLocaleInfoAsyncGetDecimalSeparatorfor_ko_KR: function(test) {
         test.expect(5);
-        new LocaleInfo("ko-KR", {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
-                test.equal(info.getDecimalSeparator(), ".");
-                test.equal(info.getGroupingSeparator(), ",");
-                test.equal(info.getPercentageFormat(), "{n}%");
-                test.equal(info.getCurrencyFormats().common, "{s}{n}");
-                test.done();
-            }
+        LocaleInfo.create("ko-KR").then((info) => {
+            test.ok(info !== null);
+            test.equal(info.getDecimalSeparator(), ".");
+            test.equal(info.getGroupingSeparator(), ",");
+            test.equal(info.getPercentageFormat(), "{n}%");
+            test.equal(info.getCurrencyFormats().common, "{s}{n}");
+            test.done();
         });
     },
 
     testLocaleInfoAsyncGetDecimalSeparatorfor_fr_FR: function(test) {
         test.expect(5);
-        new LocaleInfo("fr-FR", {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
-                test.equal(info.getDecimalSeparator(), ",");
-                test.equal(info.getGroupingSeparator(), ' ');
-                test.equal(info.getPercentageFormat(), "{n} %");
-                test.equal(info.getCurrencyFormats().common, "{n} {s}");
-                test.done();
-            }
+        LocaleInfo.create("fr-FR").then((info) => {
+            test.ok(info !== null);
+            test.equal(info.getDecimalSeparator(), ",");
+            test.equal(info.getGroupingSeparator(), ' ');
+            test.equal(info.getPercentageFormat(), "{n} %");
+            test.equal(info.getCurrencyFormats().common, "{n} {s}");
+            test.done();
         });
     },
 
     testLocaleInfoAsyncGetDecimalSeparatorfor_zh_Hant_US: function(test) {
         test.expect(5);
         // test mixing locale parts for a non-standard locale
-        new LocaleInfo("zh-Hant-US", {
-            sync: false,
-            onLoad: function(info) {
-                test.ok(info !== null);
-                test.equal(info.getDecimalSeparator(), ".");
-                test.equal(info.getGroupingSeparator(), ",");
-                test.equal(info.getRoundingMode(), "halfdown");
-                test.equal(info.getCurrency(), "USD");
-                test.done();
-            }
+        LocaleInfo.create("zh-Hant-US").then((info) => {
+            test.ok(info !== null);
+            test.equal(info.getDecimalSeparator(), ".");
+            test.equal(info.getGroupingSeparator(), ",");
+            test.equal(info.getRoundingMode(), "halfdown");
+            test.equal(info.getCurrency(), "USD");
+            test.done();
         });
     }
 };

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Loader from 'ilib-loader';
+import { Loader } from 'ilib-loader';
 
 /**
  * @class
@@ -31,7 +31,7 @@ import Loader from 'ilib-loader';
  * @private
  * @constructor
  */
-export default class MockLoader extends Loader {
+class MockLoader extends Loader {
     /**
      * Create a loader instance.
      *
@@ -54,8 +54,29 @@ export default class MockLoader extends Loader {
     }
 
     loadFile(pathName, options) {
-        if (pathName.search("fr/localeinfo.json$") !== -1) {
-            return `
+        let returnValue;
+
+        if (pathName.search("en/localeinfo.json$") !== -1) {
+            returnValue = `
+            {
+                "clock": "12",
+                "language.name": "English",
+                "locale": "en",
+                "numfmt": {
+                    "currencyFormats": {
+                        "common": "{s}{n}",
+                        "commonNegative": "-{s}{n}"
+                    }
+                },
+                "scripts": [
+                    "Latn",
+                    "Dsrt",
+                    "Shaw"
+                ]
+            }
+            `;
+        } else if (pathName.search("fr/localeinfo.json$") !== -1) {
+            returnValue =  `
             {
                 "language.name": "French",
                 "numfmt": {
@@ -77,7 +98,7 @@ export default class MockLoader extends Loader {
             }
             `;
         } else if (pathName.search("FR/localeinfo.json$") !== -1) {
-            return `
+            returnValue = `
             {
                 "currency": "EUR",
                 "firstDayOfWeek": 1,
@@ -87,7 +108,7 @@ export default class MockLoader extends Loader {
             }
             `;
         } else if (pathName.search("yyy/localeinfo.json$") !== -1) {
-            return (pathName.indexOf('yyy') === -1) ? undefined : `
+            returnValue = (pathName.indexOf('yyy') === -1) ? undefined : `
             {
                 "clock": "24",
                 "units": "metric",
@@ -110,7 +131,7 @@ export default class MockLoader extends Loader {
             }
             `;
         } else if (pathName === "qq/localeinfo.json") {
-            return `
+            returnValue = `
             {
                 "calendar": "gregorian",
                 "clock": "24",
@@ -134,6 +155,8 @@ export default class MockLoader extends Loader {
                 "units": "metric"
             }`;
         }
-        return undefined;
+        return (options && options.sync) ? returnValue : Promise.resolve(returnValue);
     }
 };
+
+export default MockLoader;

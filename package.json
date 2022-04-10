@@ -62,7 +62,7 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.4",
+        "@babel/core": "^7.17.5",
         "@babel/preset-env": "^7.16.11",
         "@babel/register": "^7.17.0",
         "@babel/runtime": "^7.17.2",
@@ -70,16 +70,19 @@
         "acorn-jsx": "^5.3.2",
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.2",
+        "cldr-core": "^41.0.0",
+        "cldr-numbers-full": "^41.0.0",
         "grunt": "^1.4.1",
         "grunt-babel": "^8.0.0",
         "grunt-cli": "^1.4.3",
         "grunt-contrib-clean": "^2.0.0",
-        "grunt-contrib-jshint": "^3.1.1",
+        "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.0.1",
         "ilib-loader": "^1.0.0",
-        "jsdoc": "^3.6.6",
-        "jsdoc-to-markdown": "^7.0.1",
+        "jsdoc": "^3.6.10",
+        "jsdoc-to-markdown": "^7.1.1",
+        "json-stable-stringify": "^1.0.1",
         "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3",
         "open-cli": "^6.0.1",
@@ -88,7 +91,8 @@
     },
     "dependencies": {
         "ilib-common": "^1.0.1",
+        "ilib-env": "^1.0.2",
         "ilib-locale": "^1.1.0",
-        "ilib-localematcher": "^1.0.0" 
+        "ilib-localematcher": "^1.1.0"
     }
 }

@@ -21,8 +21,8 @@
 
 import Locale from 'ilib-locale';
 import LocaleMatcher from 'ilib-localematcher';
-import { Utils } from 'ilib-common';
-import LoaderFactory from 'ilib-loader';
+import { Utils, Path } from 'ilib-common';
+import getLocaleData, { LocaleData } from 'ilib-localedata';
 
 /**
  * @class
@@ -35,23 +35,10 @@ import LoaderFactory from 'ilib-loader';
  * current list of supported options are:
  *
  * <ul>
- * <li><i>onLoad</i> - a callback function to call when the locale info object is fully
- * loaded. When the onLoad option is given, the localeinfo object will attempt to
- * load any missing locale data using the ilib loader callback.
- * When the constructor is done (even if the data is already preassembled), the
- * onLoad function is called with the current instance as a parameter, so this
- * callback can be used with preassembled or dynamic loading or a mix of the two.
- *
  * <li><i>sync</i> - tell whether to load any missing locale data synchronously or
  * asynchronously. If this option is given as "false", then the "onLoad"
  * callback must be given, as the instance returned from this constructor will
  * not be usable for a while.
- *
- * <li><i>loadParams</i> - an object containing parameters to pass to the
- * loader callback function when locale data is missing. The parameters are not
- * interpretted or modified in any way. They are simply passed along. The object
- * may contain any property/value pairs as long as the calling code is in
- * agreement with the loader callback function as to what those parameters mean.
  * </ul>
  *
  * If this copy of ilib is pre-assembled and all the data is already available,
@@ -69,44 +56,31 @@ import LoaderFactory from 'ilib-loader';
  * the current locale
  */
 class LocaleInfo {
+    /**
+     * @class Create a new instance of LocaleInfo synchronously.<p>
+     *
+     * As with all ilib classes that support asynchronous operation, if the
+     * platform does not support synchronous loading of locale data, then
+     * this constructor can still succeed if the locale data has already been
+     * loaded into memory. This can be accomplished by pre-loading the data
+     * using `LocaleData.ensureLocale` or if another instance has already
+     * loaded it asynchronous and the data is cached.
+     *
+     * @constructor
+     * @param {string} locale
+     * @param {Object} options
+     */
     constructor(locale, options) {
-        let { sync } = options || {};
-        
-        sync = !!sync;  // convert to boolean
+        if (!options || !options._noinit) {
+            this.init(locale, options, true);
+        }
+    }
 
-        /**
-          @private
-          @type {{
-            calendar:string,
-            clock:string,
-            currency:string,
-            delimiter: {quotationStart:string,quotationEnd:string,alternateQuotationStart:string,alternateQuotationEnd:string},
-            firstDayOfWeek:number,
-            meridiems:string,
-            numfmt:{
-                currencyFormats:{common:string,commonNegative:string,iso:string,isoNegative:string},
-                decimalChar:string,
-                exponential:string,
-                groupChar:string,
-                negativenumFmt:string,
-                negativepctFmt:string,
-                pctChar:string,
-                pctFmt:string,
-                prigroupSize:number,
-                roundingMode:string,
-                script:string,
-                secgroupSize:number,
-                useNative:boolean
-            },
-            timezone:string,
-            units:string,
-            weekendEnd:number,
-            weekendStart:number,
-            paperSizes:{regular:string}
-          }}
-        */
-        this.info = LocaleInfo.defaultInfo;
-    
+    /**
+     * Initialize this instance.
+     * @private
+     */
+    init(locale, options, sync) {
         switch (typeof(locale)) {
             case "string":
                 this.locale = new Locale(locale);
@@ -119,29 +93,60 @@ class LocaleInfo {
                 this.locale = locale;
                 break;
         }
-        var manipulateLocale = ["pa-PK", "ha-CM", "ha-SD"];
 
-        const loader = LoaderFactory({
-            name: "LocaleInfo",
-            paths: ""
+        var manipulateLocale = ["pa-PK", "ha-CM", "ha-SD"];
+        if (manipulateLocale.indexOf(this.locale.getSpec()) > -1) {
+            const lm = new LocaleMatcher({
+                locale: this.locale.getSpec(),
+                sync
+            });
+            this.locale = new Locale(lm.getLikelyLocale());
+        }
+
+        const locData = getLocaleData("LocaleInfo", {
+            basename: "localeinfo",
+            path: Path.join(module.path, "..", "locale"),
+            sync
         });
-        const result = new LocaleMatcher({
-            locale: this.locale.getSpec(),
-            sync:sync
-        });
-        if (!sync) {
-            return result.then(
-                lm => this._init(lm, sync)
-            ).then((info) => {
+
+        // ensure that we can grab the data we need
+        if (!sync && !LocaleData.checkCache("LocaleInfo", this.locale)) {
+            throw new Exception("Locale data not available");
+        }
+
+        if (sync) {
+            this.info = locData.loadData({
+                basename: "localeinfo",
+                locale: this.locale,
+                sync: sync
+            }) || LocaleInfo.defaultInfo;
+        } else {
+            return locData.loadData({
+                basename: "localeinfo",
+                locale: this.locale,
+                sync: sync
+            }).then((info) => {
                 this.info = info || LocaleInfo.defaultInfo;
                 return this;
             });
         }
-
-        const info = this._init(result, sync);
-        this.info = info || LocaleInfo.defaultInfo;
     }
-    
+
+    /**
+     * Factory method to create a new instance of LocaleInfo asynchronously.
+     * The parameters are the same as for the constructor, but it returns
+     * a `Promise` instead of the instance directly.
+     *
+     * @param {string} locale the locale to get the info for
+     * @param {Object} options the same objects you would send to a constructor
+     * @returns {Promise} a promise to load a LocaleInfo instance. The resolved
+     * value of the promise is the new instance of LocaleInfo,
+     */
+    static create(locale, options) {
+        const li = new LocaleInfo(undefined, { ...options, _noinit: true });
+        return li.init(locale, options, false);
+    }
+
     static {
         const defaultInfo = {
             "calendar": "gregorian",
@@ -183,21 +188,6 @@ class LocaleInfo {
             "weekendEnd": 0,
             "weekendStart": 6
         };
-    }
-
-    /**
-     * @private
-     * initialize the instance.
-     */
-    _init(lm, sync) {
-        if (manipulateLocale.indexOf(this.locale.getSpec()) != -1) {
-            this.locale = new Locale(lm.getLikelyLocale());
-        }
-        return loader.loadData({
-            locale: this.locale,
-            name: "localeinfo.json",
-            sync: sync
-        });
     }
 
     /**

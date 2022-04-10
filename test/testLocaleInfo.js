@@ -18,8 +18,8 @@
  */
 
 import LocaleInfo from '../lib/index';
-import { setPlatform } from 'ilib-env';
-import LoaderFactory, { registerLoader, Loader } from 'ilib-loader';
+import { setPlatform, setLocale } from 'ilib-env';
+import { registerLoader, Loader } from 'ilib-loader';
 import MockLoader from './MockLoader';
 
 // locale with no script
@@ -33,16 +33,15 @@ ilib.data.localeinfo_fr_FR_overseas = {
 
 module.exports.testlocaleinfo = {
     setUp: function(callback) {
-        registerLoader(MockLoader);
-        setPlatform("mock");
-
-        var loader = LoaderFactory();
+        //registerLoader(MockLoader);
+        //setPlatform("mock");
+        setLocale("en-US");
+        callback();
     },
 
     testLocaleInfoConstructor: function(test) {
         test.expect(1);
         var loc = new LocaleInfo();
-
         test.ok(loc !== null);
         test.done();
     },
@@ -12287,9 +12286,6 @@ module.exports.testlocaleinfo = {
         test.done();
     },
 
-    /************************************************end 04-JUN-2013**********************************************************/
-    /** Add negative format test cases (08-NOV-2016) **/
-
     testLocaleInfoGetGroupingSeparator1: function(test) {
         test.expect(2);
         var info = new LocaleInfo();
@@ -12379,6 +12375,7 @@ module.exports.testlocaleinfo = {
         test.done();
     },
 
+/*
     testLocaleInfoLoadMissingDataAsynch: function(test) {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
@@ -12546,6 +12543,7 @@ module.exports.testlocaleinfo = {
         test.equal(li.getTimeZone(), "Pacific/Tahiti");
         test.done();
     },
+*/
 
     testLocaleInfoGetAllScriptsSingle: function(test) {
         test.expect(2);
@@ -12785,7 +12783,7 @@ module.exports.testlocaleinfo = {
         test.equal(li.getDigitsStyle(), "native");
         test.done();
     },
-    /*Get weekend Data*/
+
     testLocaleInfoGetWeekendUS: function(test) {
         test.expect(3);
         var info = new LocaleInfo("en-US");
