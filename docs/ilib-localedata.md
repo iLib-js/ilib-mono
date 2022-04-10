@@ -62,7 +62,7 @@ found in the cache, a promise is
 still returned, even though is resolved immediately.
 <li>by looking for files that contain data about an entire locale.
 <li>by looking for files that contain data about parts of a locale.
-<ol>
+</ol>
 
 <h2>Caching</h2>
 
@@ -200,7 +200,7 @@ in synchronous mode.<p></p>
 the data is already cached. The data can get into the cache in multiple ways:</p>
 <ul>
 <li>Using `ensureLocale`. Some locale data can be pre-loaded from js files using the
-`ensureLocale` method which will load the files asynchronously. 
+`ensureLocale` method which will load the files asynchronously.
 
 <li>Using `cacheData`. Data can be explicitly cached as well if you have some statically
 loaded data in your
@@ -213,7 +213,7 @@ completes, you can then create other instances for the same locale synchronously
 example, if you load a date formatter for locale "de-DE" that formats the date and time
 together, you can then synchronously create another data formatter for the same "de-DE"
 locale that only formats the date or the time by itself, since they rely on the same
-date formatting data.  
+date formatting data.
 </ul>
 
 <p>The cache for locale data is shared amongst all instances of LocaleData in the global
@@ -425,7 +425,7 @@ found in the cache, a promise is
 still returned, even though is resolved immediately.
 <li>by looking for files that contain data about an entire locale.
 <li>by looking for files that contain data about parts of a locale.
-<ol>
+</ol>
 
 <h2>Caching</h2>
 
@@ -579,7 +579,7 @@ the data is already cached. The data can get into the cache in multiple ways:
 
 <ul>
 <li>Using `ensureLocale`. Some locale data can be pre-loaded from js files using the
-`ensureLocale` method which will load the files asynchronously. 
+`ensureLocale` method which will load the files asynchronously.
 
 <li>Using `cacheData`. Data can be explicitly cached as well if you have some statically
 loaded data in your
@@ -592,7 +592,7 @@ completes, you can then create other instances for the same locale synchronously
 example, if you load a date formatter for locale "de-DE" that formats the date and time
 together, you can then synchronously create another data formatter for the same "de-DE"
 locale that only formats the date or the time by itself, since they rely on the same
-date formatting data.  
+date formatting data.
 </ul>
 
 The cache for locale data is shared amongst all instances of LocaleData in the global
@@ -614,8 +614,8 @@ asynchronous mode, because the locale data they need is already cached.
         * [.isSync()](#LocaleData+isSync) ⇒ <code>boolean</code>
         * [.loadData(params)](#LocaleData+loadData) ⇒ <code>Promise</code> \| <code>Object</code>
     * _static_
-        * [.ensureLocale(the)](#LocaleData.ensureLocale) ⇒ <code>Promise</code>
-        * [.checkCache(basename, locale)](#LocaleData.checkCache) ⇒ <code>boolean</code>
+        * [.ensureLocale(locale)](#LocaleData.ensureLocale) ⇒ <code>Promise</code>
+        * [.checkCache(packageName, locale, basename)](#LocaleData.checkCache) ⇒ <code>boolean</code>
         * [.cacheData()](#LocaleData.cacheData)
         * [.clearCache()](#LocaleData.clearCache)
 
@@ -700,7 +700,7 @@ objects. When false, the arrays in child objects are concatenated with the array
 
 <a name="LocaleData.ensureLocale"></a>
 
-### LocaleData.ensureLocale(the) ⇒ <code>Promise</code>
+### LocaleData.ensureLocale(locale) ⇒ <code>Promise</code>
 Ensure that the data for a particular locale is loaded into the
 cache so that it is available for future synchronous use.<p>
 
@@ -735,14 +735,14 @@ value of true if the load was successful, and false if not
 
 | Param | Type | Description |
 | --- | --- | --- |
-| the | <code>Locale</code> \| <code>string</code> | Locale object or a string containing the locale spec |
+| locale | <code>Locale</code> \| <code>string</code> | the Locale object or a string containing the locale spec |
 
 
 * * *
 
 <a name="LocaleData.checkCache"></a>
 
-### LocaleData.checkCache(basename, locale) ⇒ <code>boolean</code>
+### LocaleData.checkCache(packageName, locale, basename) ⇒ <code>boolean</code>
 Check to see if the given data type for the given locale is available in the cache.
 
 **Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
@@ -750,8 +750,9 @@ Check to see if the given data type for the given locale is available in the cac
 
 | Param | Type |
 | --- | --- |
-| basename | <code>string</code> | 
+| packageName | <code>string</code> | 
 | locale | <code>string</code> | 
+| basename | <code>string</code> | 
 
 
 * * *
@@ -760,7 +761,8 @@ Check to see if the given data type for the given locale is available in the cac
 
 ### LocaleData.cacheData()
 The prepopulated data should have the following structure:
-<code>
+
+<pre>
 {
    "locale": {
        "basename": {
@@ -768,7 +770,7 @@ The prepopulated data should have the following structure:
        }
    }
 }
-</code>
+</pre>
 
 Replace the following in the above structure:
 <ul>

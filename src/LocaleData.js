@@ -75,7 +75,7 @@ function getIlib() {
  * still returned, even though is resolved immediately.
  * <li>by looking for files that contain data about an entire locale.
  * <li>by looking for files that contain data about parts of a locale.
- * <ol>
+ * </ol>
  *
  * <h2>Caching</h2>
  *
@@ -477,7 +477,7 @@ class LocaleData {
      * If there was an error loading the files, or if no files were found to
      * load, the Promise will resolve to `false`.<p>
      *
-     * @param {Locale|string} the Locale object or a string containing
+     * @param {Locale|string} locale the Locale object or a string containing
      * the locale spec
      * @returns {Promise} a promise to load the data with the resolved
      * value of true if the load was successful, and false if not
@@ -493,18 +493,20 @@ class LocaleData {
     /**
      * Check to see if the given data type for the given locale is available in the cache.
      *
-     * @param {string} basename
+     * @param {string} packageName
      * @param {string} locale
+     * @param {string} basename
      * @returns {boolean} true if the data is available, false otherwise
      */
-    static checkCache(basename, locale) {
+    static checkCache(packageName, locale, basename) {
         // TODO: not implemented yet
         return true;
     }
 
     /**
      * The prepopulated data should have the following structure:
-     * <code>
+     *
+     * <pre>
      * {
      *    "locale": {
      *        "basename": {
@@ -512,7 +514,7 @@ class LocaleData {
      *        }
      *    }
      * }
-     * </code>
+     * </pre>
      *
      * Replace the following in the above structure:
      * <ul>
