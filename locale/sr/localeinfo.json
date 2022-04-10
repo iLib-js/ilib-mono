@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "quotationEnd": "“",
+        "quotationStart": "„"
+    },
+    "language.name": "Serbian",
+    "locale": "sr",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Cyrl",
+        "Latn"
+    ]
+}

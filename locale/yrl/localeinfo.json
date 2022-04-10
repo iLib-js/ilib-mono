@@ -1,0 +1,11 @@
+{
+    "language.name": "Nheengatu",
+    "locale": "yrl",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "’",
+        "quotationStart": "‘"
+    },
+    "language.name": "Friulian",
+    "locale": "fur",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

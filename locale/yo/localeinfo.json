@@ -1,0 +1,13 @@
+{
+    "language.name": "Yoruba",
+    "locale": "yo",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "language.name": "Dzongkha",
+    "locale": "dz",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "digits": "༠༡༢༣༤༥༦༧༨༩",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %",
+        "script": "Tibt",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "scripts": [
+        "Tibt"
+    ]
+}

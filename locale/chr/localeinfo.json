@@ -1,0 +1,13 @@
+{
+    "language.name": "Cherokee",
+    "locale": "chr",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Cher"
+    ]
+}

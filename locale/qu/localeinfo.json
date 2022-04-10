@@ -1,0 +1,11 @@
+{
+    "language.name": "Quechua",
+    "locale": "qu",
+    "numfmt": {
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

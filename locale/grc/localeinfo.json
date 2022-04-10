@@ -1,0 +1,9 @@
+{
+    "language.name": "Ancient Greek",
+    "locale": "grc",
+    "scripts": [
+        "Cprt",
+        "Grek",
+        "Linb"
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "language.name": "Rwa",
+    "locale": "rwk",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

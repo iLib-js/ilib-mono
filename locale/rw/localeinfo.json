@@ -1,0 +1,15 @@
+{
+    "delimiter": {
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Kinyarwanda",
+    "locale": "rw",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

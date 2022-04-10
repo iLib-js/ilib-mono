@@ -1,0 +1,8 @@
+{
+    "language.name": "Lingua Franca Nova",
+    "locale": "lfn",
+    "scripts": [
+        "Cyrl",
+        "Latn"
+    ]
+}

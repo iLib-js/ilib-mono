@@ -1,0 +1,11 @@
+{
+    "language.name": "Esperanto",
+    "locale": "eo",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}
