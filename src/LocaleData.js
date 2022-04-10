@@ -463,6 +463,9 @@ class LocaleData {
      * the locale spec
      * @returns {Promise} a promise to load the data with the resolved
      * value of true if the load was successful, and false if not
+     * @fulfil {boolean} true if the locale data was successfully loaded or
+     * false if it could be found
+     * @reject {Error} if there was an error while loading the data
      */
     static ensureLocale(locale) {
         if (this.loader.isSync()) {

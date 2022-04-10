@@ -27,7 +27,9 @@ import LocaleData from './LocaleData';
  *
  * @param {string} pkg name of the package that needs a locale
  * data object.
- * @param {Object} options
+ * @param {Object} options Options for the construction of the LocaleData
+ * instance. See the docs for the LocaleData constructor for details as
+ * to what this can contain.
  * @returns {LocaleData|undefined} a locale data instance you can use
  * to load locale data, or undefined if it could not be created
  * or if the package name was not specified
@@ -51,6 +53,11 @@ function getLocaleData(pkg, options) {
     return globalScope.ilib.localeDataCache[pkg];
 }
 
+/**
+ * Clear the whole locale data cache. This is mostly used for
+ * unit testing, but can be used in your app if you need to cut
+ * down on memory usage.
+ */
 export function clearLocaleData() {
     const globalScope = top();
     if (!globalScope.ilib) {

@@ -218,6 +218,11 @@ asynchronous mode, because the locale data they need is already cached.</p>
 <dt><a href="#getLocaleData">getLocaleData(pkg, options)</a> ⇒ <code><a href="#LocaleData">LocaleData</a></code> | <code>undefined</code></dt>
 <dd><p>Return the locale data singleton for a package that needs data.</p>
 </dd>
+<dt><a href="#clearLocaleData">clearLocaleData()</a></dt>
+<dd><p>Clear the whole locale data cache. This is mostly used for
+unit testing, but can be used in your app if you need to cut
+down on memory usage.</p>
+</dd>
 </dl>
 
 <a name="DataCache"></a>
@@ -704,6 +709,9 @@ load, the Promise will resolve to `false`.<p>
 **Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
 **Returns**: <code>Promise</code> - a promise to load the data with the resolved
 value of true if the load was successful, and false if not  
+**Fulfil**: <code>boolean</code> true if the locale data was successfully loaded or
+false if it could be found  
+**Reject**: <code>Error</code> if there was an error while loading the data  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -784,8 +792,19 @@ or if the package name was not specified
 | Param | Type | Description |
 | --- | --- | --- |
 | pkg | <code>string</code> | name of the package that needs a locale data object. |
-| options | <code>Object</code> |  |
+| options | <code>Object</code> | Options for the construction of the LocaleData instance. See the docs for the LocaleData constructor for details as to what this can contain. |
 
+
+* * *
+
+<a name="clearLocaleData"></a>
+
+## clearLocaleData()
+Clear the whole locale data cache. This is mostly used for
+unit testing, but can be used in your app if you need to cut
+down on memory usage.
+
+**Kind**: global function  
 
 * * *
 
