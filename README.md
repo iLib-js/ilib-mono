@@ -16,7 +16,7 @@ Full JS Docs
 --------------------
 
 To see a full explanation of the LocaleData class, please see
-the [full API documentation](./docs/ilib-loader.md).
+the [full API documentation](./docs/ilib-localedata.md).
 
 Logging
 --------------------
