@@ -69,9 +69,17 @@ class DataCache {
     /**
      * Create a locale data cache.
      *
+     * The options may contain any of the following properties:
+     *
+     * <ul>
+     * <li>packageName. The unique name of the package for which the locale
+     * data is being cached.
+     * </ul>
+     *
      * @class
      * @param {string} name the unique name for this type of locale data
-     * @param {Object} options
+     * @param {Object} options Options governing the construction of this
+     * cache
      * @constructor
      */
     constructor(options) {
@@ -128,7 +136,7 @@ class DataCache {
      *
      * @param {string} basename the base name of this type of data
      * @param {Locale} locale the full or partial locale of this data
-     * @param {Object|null| data the data to store for this locale
+     * @param {Object} data the data to store for this locale
      */
     storeData(basename, locale, data) {
         this.logger.trace(`Storing data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
@@ -163,7 +171,6 @@ class DataCache {
      *
      * @param {string} basename the base name of this type of data
      * @param {Locale} locale the full or partial locale of this data
-     * @param {Object|null| data the data to store for this locale
      */
     removeData(basename, locale) {
         this.logger.trace(`Removing data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);

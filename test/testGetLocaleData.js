@@ -79,7 +79,7 @@ module.exports.testGetLocaleData = {
         const locData = getLocaleData("test", {
             path: "./test/files",
         });
-        
+
         test.ok(!locData.isSync());
         test.done();
     },

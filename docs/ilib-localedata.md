@@ -274,8 +274,8 @@ any information that it may need.<p>
     * [new DataCache(name, options)](#new_DataCache_new)
     * [.getPackage()](#DataCache+getPackage) ⇒ <code>string</code>
     * [.getData(basename, locale)](#DataCache+getData) ⇒ <code>Object</code> \| <code>null</code> \| <code>undefined</code>
-    * [.storeData(basename, locale, {Object|null|)](#DataCache+storeData)
-    * [.removeData(basename, locale, {Object|null|)](#DataCache+removeData)
+    * [.storeData(basename, locale, data)](#DataCache+storeData)
+    * [.removeData(basename, locale)](#DataCache+removeData)
     * [.size()](#DataCache+size) ⇒ <code>number</code>
     * [.clearData()](#DataCache+clearData)
 
@@ -287,11 +287,18 @@ any information that it may need.<p>
 ### new DataCache(name, options)
 Create a locale data cache.
 
+The options may contain any of the following properties:
+
+<ul>
+<li>packageName. The unique name of the package for which the locale
+data is being cached.
+</ul>
+
 
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | the unique name for this type of locale data |
-| options | <code>Object</code> |  |
+| options | <code>Object</code> | Options governing the construction of this cache |
 
 
 * * *
@@ -326,7 +333,7 @@ cache has no information about this type of data for that locale
 
 <a name="DataCache+storeData"></a>
 
-### dataCache.storeData(basename, locale, {Object|null|)
+### dataCache.storeData(basename, locale, data)
 Store the given data for the given full or partial locale. The data may be given
 as null to indicate explicitly that there is no data for this locale of the the
 given type. This may be because of various reasons. For example, there is no locale
@@ -338,14 +345,14 @@ data file for the locale.
 | --- | --- | --- |
 | basename | <code>string</code> | the base name of this type of data |
 | locale | <code>Locale</code> | the full or partial locale of this data |
-| {Object|null| |  | data the data to store for this locale |
+| data | <code>Object</code> | the data to store for this locale |
 
 
 * * *
 
 <a name="DataCache+removeData"></a>
 
-### dataCache.removeData(basename, locale, {Object|null|)
+### dataCache.removeData(basename, locale)
 Store the given data for the given full or partial locale. The data may be given
 as null to indicate explicitly that there is no data for this locale of the the
 given type. This may be because of various reasons. For example, there is no locale
@@ -357,7 +364,6 @@ data file for the locale.
 | --- | --- | --- |
 | basename | <code>string</code> | the base name of this type of data |
 | locale | <code>Locale</code> | the full or partial locale of this data |
-| {Object|null| |  | data the data to store for this locale |
 
 
 * * *
