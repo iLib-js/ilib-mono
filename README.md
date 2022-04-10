@@ -1,11 +1,22 @@
 # ilib-localedata
 
-These are ilib function that know how to load and cache ilib data.
+A class that knows how to load and cache ilib locale data.
+
+The LocaleData class relies on ilib-loader to be able to
+load files from where-ever they are stored. This may take the
+form of actual files in json form, or other methods, such as
+webpacked lazy-load modules. The locale data class does not
+need to know the details!
+
+The LocaleData class converts a package name, a locale, and
+a basename into the appropriate set of files name to attempt
+to load the requested data.
 
 Full JS Docs
 --------------------
 
-Full API documentation can be found [here](./docs/ilib-loader.md).
+To see a full explanation of the LocaleData class, please see
+the [full API documentation](./docs/ilib-loader.md).
 
 Logging
 --------------------

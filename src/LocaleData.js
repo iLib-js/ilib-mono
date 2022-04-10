@@ -174,7 +174,7 @@ function getIlib() {
  * and progressively overrides it with more specific info if it exists.
  * For example, number formatting is dependent on
  * both language and region. In Italian, the number grouping separator character is
- * a regular period. But Italian as spoken in Switzerland uses the 
+ * a regular period. But Italian as spoken in Switzerland uses the
  * apostrophe ’ character instead. In this case, the "it-CH" locale would use most
  * of the settings from the root or the "it" language except for the grouping character,
  * which uses the more specific data of the apostrophe for the grouping character.<p>
@@ -214,7 +214,48 @@ function getIlib() {
  * as the language is the minimum locale part and is required. The tag "und" stands for
  * the "undefined" language, which ilib uses to mean "all languages".
  *
- * @class
+ * <h2>Synchronicity and Caching</h2>
+ *
+ * Data is loaded using an instance of a Loader from the ilib-loader package.
+ * All locale data can be imported asynchronously, as every loader must support
+ * asynchronous operation. Some loaders, such as the one for Node.js can also support
+ * synchronous operation. When the LocaleData instance is created, you can request to
+ * use synchronous operation, but the loader may not support it. Call the `isSync` method
+ * after the LocaleData instance is created to find out whether or not you can operate
+ * in synchronous mode.<p>
+ *
+ * The LocaleData instance can return data synchronously, even in asynchronous mode, if
+ * the data is already cached. The data can get into the cache in multiple ways:
+ *
+ * <ul>
+ * <li>Using `ensureLocale`. Some locale data can be pre-loaded from js files using the
+ * `ensureLocale` method which will load the files asynchronously.
+ *
+ * <li>Using `cacheData`. Data can be explicitly cached as well if you have some statically
+ * loaded data in your
+ * application and you wish to add it to the cache. Use the `cacheData` method to add
+ * it to the cache.
+ *
+ * <li>With a previous asynchronous call. If you create an ilib class asynchronously, its
+ * data will be loaded into the cache for the requested locale. After the asynchronous call
+ * completes, you can then create other instances for the same locale synchronously. For
+ * example, if you load a date formatter for locale "de-DE" that formats the date and time
+ * together, you can then synchronously create another data formatter for the same "de-DE"
+ * locale that only formats the date or the time by itself, since they rely on the same
+ * date formatting data.
+ * </ul>
+ *
+ * The cache for locale data is shared amongst all instances of LocaleData in the global
+ * scope. This means that if you have 2 copies of an ilib class loaded into your app,
+ * they will share the same cache. Having 2 copies happens under nodejs for example if
+ * those two copies are located in different paths with your application or if there are
+ * two slightly different versions of the same ilib class.<p>
+ *
+ * If you are not sure whether or not data for your ilib class has been loaded yet, you
+ * can use the `checkData` method to check. Ilib classes will use this method as well
+ * to check if they can operate synchronously at the moment, even when the loader is in
+ * asynchronous mode, because the locale data they need is already cached.
+ *
  */
 class LocaleData {
     /**
@@ -320,7 +361,7 @@ class LocaleData {
                 if (count) {
                     const fileNames = files.map((file) => {
                         return file.data ? undefined : Path.join(root, file.name);
-                    }); 
+                    });
                     const data = this.loader.loadFiles(fileNames, {sync});
                     data.forEach((datum, i) => {
                         if (datum) {
@@ -329,7 +370,7 @@ class LocaleData {
                     });
                 }
             });
-            
+
             const merged = files.map(file => file.data).reduce((previous, current) => {
                 return JSUtils.merge(previous, current || {});
             }, {});
@@ -343,7 +384,7 @@ class LocaleData {
                     if (count) {
                         const fileNames = files.map((file) => {
                             return file.data ? undefined : Path.join(root, file.name);
-                        }); 
+                        });
                         return this.loader.loadFiles(fileNames, {sync}).then((data) => {
                             data.forEach((datum, i) => {
                                 if (datum) {
