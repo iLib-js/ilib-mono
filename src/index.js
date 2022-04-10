@@ -59,5 +59,5 @@ export function clearLocaleData() {
     globalScope.ilib.localeDataCache = {};
 }
 
-export * from './LocaleData';
+export { default as LocaleData } from './LocaleData';
 export default getLocaleData;

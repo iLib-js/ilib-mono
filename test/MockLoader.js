@@ -54,8 +54,10 @@ class MockLoader extends Loader {
     }
 
     loadFile(pathName, options) {
+        let returnValue;
+
         if (pathName.search("fr/localeinfo.json$") !== -1) {
-            return `
+            returnValue = `
             {
                 "language.name": "French",
                 "numfmt": {
@@ -77,7 +79,7 @@ class MockLoader extends Loader {
             }
             `;
         } else if (pathName.search("FR/localeinfo.json$") !== -1) {
-            return `
+            returnValue = `
             {
                 "currency": "EUR",
                 "firstDayOfWeek": 1,
@@ -87,7 +89,7 @@ class MockLoader extends Loader {
             }
             `;
         } else if (pathName.search("yyy/localeinfo.json$") !== -1) {
-            return (pathName.indexOf('yyy') === -1) ? undefined : `
+            returnValue = (pathName.indexOf('yyy') === -1) ? undefined : `
             {
                 "clock": "24",
                 "units": "metric",
@@ -110,7 +112,7 @@ class MockLoader extends Loader {
             }
             `;
         } else if (pathName === "qq/localeinfo.json") {
-            return `
+            returnValue = `
             {
                 "calendar": "gregorian",
                 "clock": "24",
@@ -134,7 +136,7 @@ class MockLoader extends Loader {
                 "units": "metric"
             }`;
         }
-        return undefined;
+        return (options && options.sync) ? returnValue : Promise.resolve(returnValue);
     }
 };
 

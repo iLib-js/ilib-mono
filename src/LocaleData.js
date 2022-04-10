@@ -220,7 +220,22 @@ class LocaleData {
     /**
      * Create a locale data instance.
      *
-     * @param {Object} options
+     * The options can contain the following properties:
+     *
+     * <ul>
+     * <li>path {string} (required) - The path to the local package's locale data on disk
+     * <li>sync {boolean} - whether this locale data instance should operate in synchronous
+     * mode by default. (Default value: false)
+     * <li>useCache {boolean} - whether this locale data instance should use the locale
+     * data cache or it should load the data each time. Specifying `false` for this option
+     * will slow down constructors as it loads the same files again and again but it reduces
+     * the memory footprint which may be more important than speed for small low-memory
+     * devices. Default value: true
+     * </ul>
+     *
+     * @param {string} packageName the unique name of the calling package. (eg. "LocaleInfo")
+     * @param {Object} options options controlling the operation of this locale data
+     * instance, as detailed above
      * @constructor
      */
     constructor(packageName, options) {
@@ -393,16 +408,66 @@ class LocaleData {
     }
 
     /**
+     * Ensure that the data for a particular locale is loaded into the
+     * cache so that it is available for future synchronous use.<p>
+     *
+     * If the method completes successfully, future callers are not required
+     * to call `loadData` asynchronously, even though the loader does not
+     * support synchronous loading. If the loader for the current platform
+     * supports synchronous loading, this method will return a Promise that
+     * resolves to true immediately because `loadData` can return the data
+     * on-demand and it does not need to be pre-loaded.<p>
+     *
+     * This method will look for files that are named [locale].js or
+     * [locale].json where the locale is given as the full locale
+     * specification. It looks for these files in the same list of roots
+     * that `loadData` uses and merges the data it finds together. Data
+     * from roots earlier in the list take precedence over data from roots
+     * later in the list.<p>
+     *
+     * The files named for the locale should contain the data of multiple
+     * types. The first level of properties in the data should be the basename
+     * for the type of data, and the value of that property is the actual
+     * locale data. For javascript files, the file should be a commonjs or
+     * ESM style module that exports a function that takes no parameters.
+     * This function should return this type of data.<p>
+     *
+     * If the data is loaded successfully, the Promise will resolve to `true`.
+     * If there was an error loading the files, or if no files were found to
+     * load, the Promise will resolve to `false`.<p>
+     *
+     * @param {Locale|string} the Locale object or a string containing
+     * the locale spec
+     * @returns {Promise} a promise to load the data with the resolved
+     * value of true if the load was successful, and false if not
+     */
+    static ensureLocale(locale) {
+        if (this.loader.isSync()) {
+            return Promise.resolve(true);
+        }
+        // TODO: not implemented yet
+        return Promise.resolve(false);
+    }
+
+    /**
+     * Check to see if the given data type for the given locale is available in the cache.
+     *
+     * @param {string} basename
+     * @param {string} locale
+     * @returns {boolean} true if the data is available, false otherwise
+     */
+    static checkCache(basename, locale) {
+        // TODO: not implemented yet
+        return true;
+    }
+
+    /**
      * The prepopulated data should have the following structure:
      * <code>
      * {
-     *    "language: {
-     *        "script: {
-     *            "region: {
-     *                "datatype": {
-     *                    [ ... whatever data ... ]
-     *                }
-     *            }
+     *    "locale": {
+     *        "basename": {
+     *            [ ... whatever data ... ]
      *        }
      *    }
      * }
@@ -410,24 +475,19 @@ class LocaleData {
      *
      * Replace the following in the above structure:
      * <ul>
-     * <li>language: the language part of the locale specifier. Every piece of locale
-     * data needs at least a language. Data that is only dependent on the language, and not
-     * the country or region should go into this level.
-     * <li>script: the script part of the locale spec. This can be left out if
-     * the locale does not have a script in it. eg. "en-US" has no script tag in it,
-     * so it should have an "en" language object, with a "US" region object directly
-     * inside of it.
-     * <li>region: the region part of the locale spec. Thus can be left out if
-     * the locale does not have a region in it. (eg. "da" is only a language tag with
-     * no region or script in it.) Data that is only dependent on a region and not the language
+     * <li>locale: the full locale specifier for the data. The data may have multiple
+     * locales at the top level. Data that is only dependent on a region and not the language
      * or script, such as the time zone for the region, should use the language tag "und" (meaning
      * "undefined" language). eg. the timezone for the Netherlands should appear in
-     * und.NL.timezone.
-     * <li>datatype: the type of data. This should be an object that contains the settings
-     * for the locale.
+     * "und-NL".timezone.
+     * <li>basename: the type of this particular data. This should be an object that contains
+     * the settings for that locale. A locale property can contain data for multiple base
+     * names at the same time. For example, it may contain data about phone number parsing
+     * (basename "PhoneNumber") and phone number formatting (base name "PhoneFmt").
      * </ul>
      */
     static cacheData(data) {
+        // TODO: not implemented yet
     }
 
     /**
@@ -435,6 +495,7 @@ class LocaleData {
      * to guarantee that the cache is clear before starting a new test.
      */
     static clearCache() {
+        // TODO: not implemented yet
     }
 }
 
