@@ -1,6 +1,6 @@
 {
     "name": "ilib-loader",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "main": "./lib/index.js",
     "description": "Loader to load text files in a cross-platform manner",
     "keywords": [
@@ -59,6 +59,7 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
+        "core-js": "^3.21.1",
         "ilib-env": "^1.1.0"
     },
     "devDependencies": {
@@ -71,7 +72,6 @@
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.3",
         "babel-plugin-add-module-exports": "^1.0.4",
-        "core-js": "^3.21.1",
         "docdash": "^1.2.0",
         "grunt": "^1.4.1",
         "grunt-babel": "^8.0.0",

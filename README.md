@@ -179,6 +179,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.3
+
+- add core-js to the dependencies so that this works properly as a package
+
 ### v1.0.2
 
 - use correct package name for the node fs packages for promises so that
