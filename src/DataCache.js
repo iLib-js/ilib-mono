@@ -21,6 +21,7 @@
 import log4js from '@log4js-node/log4js-api';
 
 import { getLocFiles, Path } from 'ilib-common';
+import { top } from 'ilib-env';
 
 /**
  * @private
@@ -62,8 +63,6 @@ function getLocaleSpec(locale) {
  * on another package's data is dangerous. Instead, that other package should
  * be designed to provide a stable API for the current package to get
  * any information that it may need.<p>
- *
- * @class
  */
 class DataCache {
     /**
@@ -76,7 +75,7 @@ class DataCache {
      * data is being cached.
      * </ul>
      *
-     * @class
+     * @private
      * @param {string} name the unique name for this type of locale data
      * @param {Object} options Options governing the construction of this
      * cache
@@ -93,6 +92,26 @@ class DataCache {
 
         this.count = 0;
         this.data = {};
+    }
+
+    static getDataCache(options) {
+        if (!options || typeof(options.packageName) !== 'string') return;
+
+	    const globalScope = top();
+	
+	    if (!globalScope.ilib) {
+	        globalScope.ilib = {};
+	    }
+
+        if (!globalScope.ilib.dataCache) {
+            globalScope.ilib.dataCache = {};
+        }
+        
+        if (!globalScope.ilib.dataCache[options.packageName]) {
+            globalScope.ilib.dataCache[options.packageName] = new DataCache(options);
+        }
+        
+        return globalScope.ilib.dataCache[options.packageName];
     }
 
     /**
