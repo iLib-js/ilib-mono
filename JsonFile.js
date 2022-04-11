@@ -37,7 +37,7 @@ var logger = log4js.getLogger("loctool.plugin.JsonFile");
  */
 var JsonFile = function(options) {
     this.project = options.project;
-    this.pathName = options.pathName || "";
+    this.pathName = path.normalize(options.pathName || "");
     this.type = options.type;
 
     this.API = this.project.getAPI();
