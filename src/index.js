@@ -1,7 +1,7 @@
 /*
  * index.js - detect various things in the runtime environment
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,6 +172,8 @@ export function isGlobal(name) {
 let locale;
 
 /**
+ * Do a quick parsing of the locale ourselves instead of relying on
+ * ilib-locale so that ilib-env does not have any dependencies.
  * @private
  */
 function parseLocale(str) {
@@ -302,7 +304,24 @@ export function getLocale() {
 };
 
 /**
- * Return the default time zone for this platform if there is one. 
+ * Set the default locale for ilib. This overrides the locale from the
+ * platform. To clear the locale again and cause `getLocale` to
+ * get the locale from the platform again, call `setLocale` with no
+ * parameters.<p>
+ *
+ * @static
+ * @param {string} locale the BCP-47 locale specifier to set as the default locale
+ */
+export function setLocale(locale) {
+    if (typeof(locale) !== 'string' && typeof(locale) !== 'undefined') {
+        return;
+    }
+    let globalScope = top();
+    globalScope.locale = typeof(locale) === 'undefined' ? locale : parseLocale(locale);
+};
+
+/**
+ * Return the default time zone for this platform if there is one.
  * If not, it will default to the the zone "local".<p>
  *
  * @static
@@ -355,6 +374,23 @@ export function getTimeZone() {
     }
 
     return globalScope.tz;
+};
+
+/**
+ * Set the default time zone for ilib. This overrides the time zone from the
+ * platform. To clear the time zone again and cause `getTimeZone` to
+ * get the time zone from the platform again, call `setTimeZone` with no
+ * parameters.<p>
+ *
+ * @static
+ * @param {string} zoneName the IANA name of the time zone
+ */
+export function setTimeZone(zoneName) {
+    if (typeof(zoneName) !== 'string' && typeof(zoneName) !== 'undefined') {
+        return;
+    }
+    let globalScope = top();
+    globalScope.tz = zoneName;
 };
 
 /**
