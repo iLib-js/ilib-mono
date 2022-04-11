@@ -466,7 +466,7 @@ module.exports.jsonfiletype = {
         test.done();
     },
 
-    testJsonFileTypeHandlesTrueWithDorDir: function(test) {
+    testJsonFileTypeHandlesTrueWithDotDir: function(test) {
         test.expect(2);
 
         var jft = new JsonFileType(p);
