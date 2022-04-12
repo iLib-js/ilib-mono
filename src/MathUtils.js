@@ -18,6 +18,10 @@
  */
 
 /**
+ * @module MathUtils
+ */
+
+/**
  * Return the sign of the given number. If the sign is negative, this function
  * returns -1. If the sign is positive or zero, this function returns 1.
  * @static

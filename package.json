@@ -1,8 +1,7 @@
 {
     "name": "ilib-common",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./lib/index.js",
-    "module": "./src/index.js",
     "description": "Common utility functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
         "internationalization",
@@ -58,7 +57,7 @@
         "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d *",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
@@ -88,6 +87,7 @@
         "webpack-cli": "^4.9.2"
     },
     "dependencies": {
+        "@log4js-node/log4js-api": "^1.0.2",
         "ilib-env": "^1.0.2",
         "ilib-locale": "^1.1.0"
     }

@@ -18,6 +18,10 @@
  * limitations under the License.
  */
 
+/**
+ * @module Path
+ */
+
 export default class Path {
     constructor() {}
 }

@@ -17,8 +17,16 @@
  * limitations under the License.
  */
 
+import log4js from '@log4js-node/log4js-api';
+
+const logger = log4js.getLogger("ilib-common");
+
 /**
- * Polyfile to test whether an object is an javascript array.
+ * @module JSUtils
+ */
+
+/**
+ * Polyfill to test whether an object is an javascript array.
  *
  * @static
  * @param {*} object The object to test
@@ -252,7 +260,7 @@ export function merge(object1, object2, replace, name1, name2) {
             } else {
                 // for debugging. Used to determine whether or not json files are overriding their parents unnecessarily
                 if (name1 && name2 && newObj[prop] == object2[prop]) {
-                    console.log("Property " + prop + " in " + name1 + " is being overridden by the same value in " + name2);
+                    logger.debug("Property " + prop + " in " + name1 + " is being overridden by the same value in " + name2);
                 }
                 newObj[prop] = object2[prop];
             }
@@ -385,15 +393,15 @@ export function extend(object1, object2) {
             // don't extend object with undefined or functions
             if (prop && typeof(object2[prop]) !== 'undefined' && typeof(object2[prop]) !== "function") {
                 if (isArray(object1[prop]) && isArray(object2[prop])) {
-                    //console.log("Merging array prop " + prop);
+                    logger.trace("Merging array prop " + prop);
                     object1[prop] = object1[prop].concat(object2[prop]);
                 } else if (typeof(object1[prop]) === 'object' && typeof(object2[prop]) === 'object') {
-                    //console.log("Merging object prop " + prop);
+                    logger.trace("Merging object prop " + prop);
                     if (prop !== "ilib") {
                         object1[prop] = extend(object1[prop], object2[prop]);
                     }
                 } else {
-                    //console.log("Copying prop " + prop);
+                    logger.trace("Copying prop " + prop);
                     // for debugging. Used to determine whether or not json files are overriding their parents unnecessarily
                     object1[prop] = object2[prop];
                 }
@@ -410,15 +418,15 @@ export function extend2(object1, object2) {
             // don't extend object with undefined or functions
             if (prop && typeof(object2[prop]) !== 'undefined') {
                 if (isArray(object1[prop]) && isArray(object2[prop])) {
-                    //console.log("Merging array prop " + prop);
+                    logger.trace("Merging array prop " + prop);
                     object1[prop] = object1[prop].concat(object2[prop]);
                 } else if (typeof(object1[prop]) === 'object' && typeof(object2[prop]) === 'object') {
-                    //console.log("Merging object prop " + prop);
+                    logger.trace("Merging object prop " + prop);
                     if (prop !== "ilib") {
                         object1[prop] = extend2(object1[prop], object2[prop]);
                     }
                 } else {
-                    //console.log("Copying prop " + prop);
+                    logger.trace("Copying prop " + prop);
                     // for debugging. Used to determine whether or not json files are overriding their parents unnecessarily
                     object1[prop] = object2[prop];
                 }

@@ -21,6 +21,10 @@ import Locale from 'ilib-locale';
 import Path from './Path';
 
 /**
+ * @module Utils
+ */
+
+/**
  * Return an array of locales that represent the sublocales of
  * the given locale. These sublocales are intended to be used
  * to load locale data. Each sublocale might be represented
