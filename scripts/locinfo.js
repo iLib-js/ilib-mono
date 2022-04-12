@@ -25,6 +25,7 @@ import genDelimiters from './delimiters';
 import genWeekData from './weekdata';
 import genMeasurements from './measurements';
 import genMeridiems from './meridiems';
+import genPaperSizes from './papersizes';
 
 let root = {};
 
@@ -34,6 +35,7 @@ genDelimiters(root);
 genWeekData(root);
 genMeasurements(root);
 genMeridiems(root);
+genPaperSizes(root);
 
 console.log("----------------");
 console.log("root is:\n" + stringify(root, {space: 4}));
