@@ -73,6 +73,7 @@
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.2",
         "cldr-core": "^41.0.0",
+        "cldr-misc-full": "^41.0.0",
         "cldr-numbers-full": "^41.0.0",
         "grunt": "^1.4.1",
         "grunt-babel": "^8.0.0",
