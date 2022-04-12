@@ -302,6 +302,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.2.4
+
+- normalize the path before matching against the mappings so that the matching
+  works better
+
 ### v1.2.3
 - fix issue of the parser that resulted in skipping objects with
   single boolean field which equals `false`

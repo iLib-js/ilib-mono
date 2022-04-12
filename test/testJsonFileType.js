@@ -396,6 +396,21 @@ module.exports.jsonfiletype = {
         test.done();
     },
 
+     testJsonFileTypeGetMapping3: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.deepEqual(jft.getMapping("./messages.json"), {
+            "schema": "http://www.lge.com/json/messages",
+            "method": "copy",
+            "template": "resources/[localeDir]/messages.json"
+        });
+
+        test.done();
+    },
+
      testJsonFileTypeGetMappingNoMatch: function(test) {
         test.expect(2);
 
@@ -447,6 +462,17 @@ module.exports.jsonfiletype = {
         test.ok(jft);
 
         test.ok(jft.handles("x/y/z/messages.json"));
+
+        test.done();
+    },
+
+    testJsonFileTypeHandlesTrueWithDotDir: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.ok(jft.handles("./messages.json"));
 
         test.done();
     },
