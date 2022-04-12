@@ -1,5 +1,5 @@
 /*
- * firstdow.js - generate the first day of the week information
+ * weekdata.js - generate the week information
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -24,8 +24,10 @@ import { setValue } from './common';
 
 const dayProperties = {"sun":0, "mon":1, "tue":2, "wed":3, "thu":4, "fri":5, "sat":6};
 const firstDayOfWeekData = supplemental.weekData.firstDay;
+const weekendStartData = supplemental.weekData.weekendStart;
+const weekendEndData = supplemental.weekData.weekendEnd;
 
-export default function genDelimiters(root) {
+export default function genWeekData(root) {
     let value = dayProperties[firstDayOfWeekData["001"]];
     setValue(root, [], "firstDayOfWeek", value);
     console.log(`FirstDOW: root -> ${value}`);
@@ -39,7 +41,41 @@ export default function genDelimiters(root) {
             ];
             value = dayProperties[firstDayOfWeekData[loc]];
             setValue(root, names, "firstDayOfWeek", value);
-            console.log(`FirstDOW: ${loc} -> ${value}`);
+            console.log(`FirstDOW: und-${loc} -> ${value}`);
+        }
+    }
+
+    value = dayProperties[weekendStartData["001"]];
+    setValue(root, [], "weekendStart", value);
+    console.log(`WeekendStart: root -> ${value}`);
+
+    for (var loc in weekendStartData) {
+        if (loc !== "001") {
+            const locale = new Locale(loc);
+            const names = [
+                locale.getLanguage() || "und",
+                locale.getRegion()
+            ];
+            value = dayProperties[weekendStartData[loc]];
+            setValue(root, names, "weekendStart", value);
+            console.log(`WeekendStart: und-${loc} -> ${value}`);
+        }
+    }
+
+    value = dayProperties[weekendEndData["001"]];
+    setValue(root, [], "weekendEnd", value);
+    console.log(`WeekendEnd: root -> ${value}`);
+
+    for (var loc in weekendEndData) {
+        if (loc !== "001") {
+            const locale = new Locale(loc);
+            const names = [
+                locale.getLanguage() || "und",
+                locale.getRegion()
+            ];
+            value = dayProperties[weekendEndData[loc]];
+            setValue(root, names, "weekendEnd", value);
+            console.log(`WeekendEnd: und-${loc} -> ${value}`);
         }
     }
 };

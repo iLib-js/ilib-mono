@@ -22,7 +22,8 @@ import stringify from 'json-stable-stringify';
 import genClock from './clock';
 import genCurrencies from './currencies';
 import genDelimiters from './delimiters';
-import genFirstDOW from './firstdow';
+import genWeekData from './weekdata';
+import genMeasurements from './measurements';
 import genMeridiems from './meridiems';
 
 let root = {};
@@ -30,7 +31,9 @@ let root = {};
 genClock(root);
 genCurrencies(root);
 genDelimiters(root);
-genFirstDOW(root);
+genWeekData(root);
+genMeasurements(root);
 genMeridiems(root);
 
+console.log("----------------");
 console.log("root is:\n" + stringify(root, {space: 4}));
