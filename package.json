@@ -50,13 +50,13 @@
         "node": ">=8.0"
     },
     "dependencies": {
-        "ilib": "^14.9.0",
-        "ilib-loctool-ghfm": "^1.7.1",
-        "ilib-loctool-json": "^1.2.0",
-        "log4js": "^4.5.1"
+        "ilib": "^14.14.0",
+        "ilib-loctool-ghfm": "^1.10.0",
+        "ilib-loctool-json": "^1.2.4",
+        "log4js": "^6.4.4"
     },
     "devDependencies": {
-        "loctool": "^2.13.0",
+        "loctool": "^2.16.2",
         "nodeunit": "^0.11.3"
     }
 }

@@ -27,7 +27,7 @@ var Locale = require('ilib/lib/Locale.js');
 var logger = log4js.getLogger('loctool.plugin.OpenAPIFile');
 
 var OpenAPIFile = function(options) {
-    this.pathName = options.pathName;
+    this.pathName = path.normalize(options.pathName || "");
     this.project = options.project;
     this.targetLocale = options.targetLocale;
 
