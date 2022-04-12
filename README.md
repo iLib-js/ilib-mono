@@ -58,6 +58,13 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.4
+
+- fixed a problem with paths that contain "." or ".." dir not being
+  recognized as handled by this plugin
+- Update dependencies
+- minimum node version is now v10
+
 ### v1.0.3
 - Add missing `tags` section to the defaults schema
 
