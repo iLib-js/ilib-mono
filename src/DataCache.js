@@ -27,12 +27,12 @@ import { top } from 'ilib-env';
  * @private
  */
 function getLocaleSpec(locale) {
-    if (!locale) {
-        return "root";
-    } else {
-        return [locale.getLanguage(), locale.getScript(), locale.getRegion(), locale.getVariant()].join('_');
-    }
+    return !locale || locale.getRegion() === "001" ? "root" : locale.getSpec();
 }
+
+/**
+ * @module DataCache
+ */
 
 /**
  * @class A locale data cache.
@@ -94,6 +94,12 @@ class DataCache {
         this.data = {};
     }
 
+    /**
+     * Factory method to create a new DataCache singleton.
+     * @param {Object} options options to pass to the constructor. (See
+     * the constructor's documentation for details.
+     * @returns {DataCache} the data cache for the given package
+     */
     static getDataCache(options) {
         if (!options || typeof(options.packageName) !== 'string') return;
 
@@ -112,6 +118,20 @@ class DataCache {
         }
 
         return globalScope.ilib.dataCache[options.packageName];
+    }
+
+    /**
+     * Clear the data cache. This clears the cached data for all packages at
+     * once.
+     */
+    static clearDataCache() {
+        const globalScope = top();
+
+        if (!globalScope.ilib) {
+            globalScope.ilib = {};
+        }
+
+        globalScope.ilib.dataCache = {};
     }
 
     /**
@@ -205,7 +225,7 @@ class DataCache {
     }
 
     /**
-     * Clear all the data from this cache. This is mostly intended to be used by unit
+     * Clear all the data from this cache instance. This is mostly intended to be used by unit
      * testing.
      */
     clearData() {
