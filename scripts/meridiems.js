@@ -1,5 +1,5 @@
 /*
- * locinfo.js - the overall loc info generator
+ * meridiems.js - generate the meridiems information
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -17,20 +17,16 @@
  * limitations under the License.
  */
 
-import stringify from 'json-stable-stringify';
+import { setValue } from './common';
 
-import genClock from './clock';
-import genCurrencies from './currencies';
-import genDelimiters from './delimiters';
-import genFirstDOW from './firstdow';
-import genMeridiems from './meridiems';
+export default function genMeridiems(root) {
+    // hard code
 
-let root = {};
+    let value = "gregorian";
+    setValue(root, [], "meridiems", value);
+    console.log(`Meridiem: root -> ${value}`);
 
-genClock(root);
-genCurrencies(root);
-genDelimiters(root);
-genFirstDOW(root);
-genMeridiems(root);
-
-console.log("root is:\n" + stringify(root, {space: 4}));
+    value = "ethiopic";
+    setValue(root, ["am"], "meridiems", value);
+    console.log(`Meridiem: am -> ${value}`);
+};
