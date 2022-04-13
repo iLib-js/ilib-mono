@@ -23,11 +23,12 @@
  */
 export default class WeightVector {
     /**
+     * Create a new weight vector instance.
      * @constructor
-     * @param {Array.<number>|string|number?} primary
-     * @param {string|number?} secondary
-     * @param {string|number?} tertiary
-     * @param {string|number?} quaternary
+     * @param {Array.<number>|string|number} primary
+     * @param {string|number} secondary
+     * @param {string|number} tertiary
+     * @param {string|number} quaternary
      */
     constructor(primary, secondary, tertiary, quaternary) {
         this.weights = [0, 0, 0, 0];

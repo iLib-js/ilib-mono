@@ -170,7 +170,7 @@ export function toHexString(string) {
  * after that, but the extra elements are ignored. They may be used to 
  * indicate other information about the range, such as a name for example. 
  * 
- * @param {Array.<{Array.<number>|number}>} arr array of number or array of number to search
+ * @param {Array.<Array.<number>|number>} arr array of number or array of number to search
  * @param {number} num value to search for
  * @return {number} the index in the array of the matching element or -1 to indicate no
  * match
@@ -208,7 +208,7 @@ export function findMember(arr, num) {
  * Do a binary search of an array of ranges and single values to determine
  * whether or not the given character is encoded in that array.
  * 
- * @param {Array.<{Array.<number>|number}>} arr 
+ * @param {Array.<Array.<number>|number>} arr 
  * @param {number} num number to search for
  * @return {boolean} true if the number is in the array or within a range in the array
  */
