@@ -1,0 +1,90 @@
+{
+    "name": "ilib-data-utils",
+    "version": "1.0.0",
+    "main": "./lib/index.js",
+    "module": "./src/index.js",
+    "description": "Utilities used to generate locale data for ilib packages",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "date",
+        "time",
+        "format",
+        "locale",
+        "translation"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-data-utils",
+    "bugs": "https://github.com/iLib-js/ilib-data-utils/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "lib",
+        "docs",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:iLib-js/iLib-data-utils.git"
+    },
+    "scripts": {
+        "build": "npm run build:prod",
+        "build:prod": "grunt babel --mode=prod",
+        "build:dev": "grunt babel --mode=dev",
+        "dist": "npm run doc ; npm run build:prod ; npm pack",
+        "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
+        "testall": "LANG=en_US.UTF8 npm run test",
+        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d * ; rm -rf lib",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-data-utils.md",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.17.9",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/register": "^7.17.7",
+        "@babel/runtime": "^7.17.9",
+        "acorn": "^8.7.0",
+        "acorn-jsx": "^5.3.2",
+        "assertextras": "^1.1.0",
+        "babel-loader": "^8.2.4",
+        "cldr-core": "^41.0.0",
+        "cldr-misc-full": "^41.0.0",
+        "cldr-numbers-full": "^41.0.0",
+        "grunt": "^1.5.2",
+        "grunt-babel": "^8.0.0",
+        "grunt-cli": "^1.4.3",
+        "grunt-contrib-clean": "^2.0.0",
+        "grunt-contrib-jshint": "^3.2.0",
+        "grunt-contrib-nodeunit": "^4.0.0",
+        "grunt-contrib-uglify": "^5.1.0",
+        "jsdoc": "^3.6.10",
+        "jsdoc-to-markdown": "^7.1.1",
+        "json-stable-stringify": "^1.0.1",
+        "load-grunt-tasks": "^5.1.0",
+        "nodeunit": "^0.11.3"
+    },
+    "dependencies": {
+        "ilib-locale": "^1.1.0"
+    }
+}
