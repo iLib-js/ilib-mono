@@ -1,5 +1,5 @@
 /*
- * index.js - Encode locale-specific defaults
+ * index.js - Export all the functions and classes from this package
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -16,8 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// !data localeinfo
 
 export { default as CharacterInfo } from './CharacterInfo';
 export { default as CharmapFile } from './CharmapFile';
