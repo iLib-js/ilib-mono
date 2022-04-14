@@ -90,8 +90,8 @@
         "webpack-cli": "^4.7.0"
     },
     "dependencies": {
-        "ilib-common": "^1.0.1",
-        "ilib-env": "^1.0.2",
+        "ilib-common": "^1.0.2",
+        "ilib-env": "^1.2.0",
         "ilib-locale": "^1.1.0",
         "ilib-localematcher": "^1.1.0"
     }

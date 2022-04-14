@@ -110,7 +110,7 @@ class LocaleInfo {
         });
 
         // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache("LocaleInfo", this.locale)) {
+        if (!sync && !LocaleData.checkCache("LocaleInfo", this.locale.getSpec(), "localeinfo")) {
             throw new Exception("Locale data not available");
         }
 
