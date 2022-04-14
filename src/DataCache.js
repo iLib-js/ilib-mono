@@ -97,20 +97,20 @@ class DataCache {
     static getDataCache(options) {
         if (!options || typeof(options.packageName) !== 'string') return;
 
-	    const globalScope = top();
-	
-	    if (!globalScope.ilib) {
-	        globalScope.ilib = {};
-	    }
+        const globalScope = top();
+
+        if (!globalScope.ilib) {
+            globalScope.ilib = {};
+        }
 
         if (!globalScope.ilib.dataCache) {
             globalScope.ilib.dataCache = {};
         }
-        
+
         if (!globalScope.ilib.dataCache[options.packageName]) {
             globalScope.ilib.dataCache[options.packageName] = new DataCache(options);
         }
-        
+
         return globalScope.ilib.dataCache[options.packageName];
     }
 

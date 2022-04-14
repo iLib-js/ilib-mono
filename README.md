@@ -43,6 +43,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.1
+
+- update documentation
+- Cache the data in the global scope so that it can be shared with
+all instances of LocaleData
+
 ### v1.0.0
 
 - Initial version
