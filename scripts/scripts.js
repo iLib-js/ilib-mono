@@ -31,7 +31,7 @@ export default function genScripts(root) {
             names = language.split(/-/g);
             names = [ names[0] ];
             let scripts = getValue(root, names, "scripts");
-            
+
             scripts = scripts ? scripts.concat(languagesData[language]._scripts) : languagesData[language]._scripts;
 
             setValue(root, names, "scripts", scripts);

@@ -1,6 +1,6 @@
 /*
  * timezones.js - generate time zone info
- * 
+ *
  * Copyright © 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,7 @@ function setUpTimeZones() {
         path: '../tz/zone.tab',
         splitChar: /\t+/g
     });
-    
+
     const backwardsFile = new UnicodeFile({
         path: '../tz/backward',
         splitChar: /\t+/g

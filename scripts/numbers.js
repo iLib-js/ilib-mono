@@ -70,7 +70,7 @@ function getNumberDecimals(root, numberingSystem, data) {
         const secondarySize = (commas.length > 1) ? (decimalFormat.lastIndexOf(",") - (decimalFormat.indexOf(",") + 1)) : 0;
         if (secondarySize) {
             data.secgroupSize = secondarySize;
-        } 
+        }
     }
 
     data.negativenumFmt = (decimalFormatPositive !== decimalFormatNegative) ?
