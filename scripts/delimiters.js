@@ -35,11 +35,11 @@ function getLocaleData(dirname) {
 };
 
 export default function genDelimiters(root) {
-    setValue(root, [], "delimiters", getLocaleData("en-001"));
+    setValue(root, [], "delimiter", getLocaleData("en-001"));
     console.log(`Delimiter: root`);
     for (let dir of localeDirs) {
         const names = getLocaleParts(dir);
-        setValue(root, names, "delimiters", getLocaleData(dir));
+        setValue(root, names, "delimiter", getLocaleData(dir));
         console.log(`Delimiter: ${dir}`);
     }
 };

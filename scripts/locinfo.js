@@ -17,7 +17,10 @@
  * limitations under the License.
  */
 
+import fs from 'fs';
+import path from 'path';
 import stringify from 'json-stable-stringify';
+import { Utils } from 'ilib-data-utils';
 
 import genClock from './clock';
 import genCurrencies from './currencies';
@@ -26,6 +29,11 @@ import genWeekData from './weekdata';
 import genMeasurements from './measurements';
 import genMeridiems from './meridiems';
 import genPaperSizes from './papersizes';
+import genNumbers from './numbers';
+import genLanguages from './languages';
+import genRegions from './regions';
+import genScripts from './scripts';
+import genLocales from './locales';
 
 let root = {};
 
@@ -35,7 +43,43 @@ genDelimiters(root);
 genWeekData(root);
 genMeasurements(root);
 genMeridiems(root);
+genNumbers(root);
 genPaperSizes(root);
+genLanguages(root);
+genRegions(root);
+genScripts(root);
+genLocales(root); // should always be last
 
 console.log("----------------");
 console.log("root is:\n" + stringify(root, {space: 4}));
+
+console.log("----------------");
+console.log("Merging and pruning locale data...");
+
+Utils.mergeAndPrune(root);
+
+console.log("----------------");
+console.log("\nWriting formats...");
+
+function writeFile(dir, data) {
+    const dirName = path.join("../locale", ...dir);
+    const pathName = path.join(dirName, "localeinfo.json");
+
+    console.log("Writing " + pathName);
+
+    Utils.makeDirs(dirName);
+    fs.writeFileSync(pathName, stringify(data, {space: 4}), "utf-8");
+}
+
+function write(names, root) {
+    for (let property in root) {
+        if (property === "data" && root.data && !Utils.isEmpty(root.data)) {
+            writeFile(names, root.data);
+        } else if (property !== "merged") {
+           write(names.concat([property]), root[property]);
+        }
+    }
+}
+
+// write it all out to the individual files
+write([], root);

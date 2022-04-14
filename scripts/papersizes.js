@@ -19,7 +19,7 @@
 
 import { supplemental } from 'cldr-core/supplemental/measurementData.json';
 
-import { getLocaleParts, setValue } from './common';
+import { setValue } from './common';
 
 const paperSizeData = supplemental.measurementData.paperSize;
 
@@ -30,14 +30,14 @@ const sizeMap = {
 
 export default function genPaperSizes(root) {
     let value = sizeMap[paperSizeData["001"]];
-    setValue(root, [], "papersizes", value);
+    setValue(root, [], "paperSizes", value);
     console.log(`PaperSizes: root -> ${value.regular}`);
 
     for (let region in paperSizeData) {
         if (region !== "001") {
             const names = [ "und", region ];
             let value = sizeMap[paperSizeData[region]];
-            setValue(root, names, "papersizes", value);
+            setValue(root, names, "paperSizes", value);
             console.log(`PaperSizes: und-${region} -> ${value.regular}`);
         }
     }

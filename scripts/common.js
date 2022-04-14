@@ -51,3 +51,25 @@ export function setValue(root, names, property, value) {
     }
     target[property] = value;
 }
+
+/**
+ * Get the value of the named property within the locale name within
+ * the whole structure.
+ *
+ * @param {Object} root object that contains all the data
+ * @param {Array.<string>} an array of locale parts
+ * @param {string} property the name of the property to get
+ * @returns {Object} the value in that property
+ */
+export function getValue(root, names, property) {
+    let target = root;
+    // have to make sure that we put it in the "data" property of the target
+    let full = names.concat(["data"]);
+    for (let name of full) {
+        if (!target[name]) {
+            return undefined;
+        }
+        target = target[name];
+    }
+    return target[property];
+}

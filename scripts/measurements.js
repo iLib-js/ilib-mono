@@ -30,12 +30,12 @@ var systems = {
 
 export default function genMeasurements(root) {
     let value = "metric";
-    setValue(root, [], "measurements", value);
+    setValue(root, [], "units", value);
     console.log(`Measurements: root -> ${value}`);
 
     for (let value in systems) {
         for (let region of systems[value]) {
-            setValue(root, ["und", region], "measurements", value);
+            setValue(root, ["und", region], "units", value);
             console.log(`Measurements: und-${region} -> ${value}`);
         }
     }

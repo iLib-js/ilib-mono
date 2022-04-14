@@ -30,8 +30,14 @@ const currencyDispData = main['en'].numbers.currencies;
  * Find the last one by the _from date
  */
 function getUsingCurrency(currencies) {
-    const curObj = currencies.map((curObj) => {
+    const curObj = currencies.filter((curObj) => {
         for (let currency in curObj) {
+            // only take the first one
+            return curObj[currency]._from && !curObj[currency]._tender;
+        }
+    }).map((curObj) => {
+        for (let currency in curObj) {
+            // only take the first one
             return {
                 date: new Date(curObj[currency]._from).getTime(),
                 code: currency
@@ -40,7 +46,7 @@ function getUsingCurrency(currencies) {
     }).sort((left, right) => {
         return right.date - left.date;
     });
-    return curObj[0].code;
+    return curObj && curObj.length && curObj[0].code;
 }
 
 export default function genCurrencies(root) {
@@ -50,7 +56,7 @@ export default function genCurrencies(root) {
 
     for (var region in currencyData.region) {
         if (region && currencyData.region[region]) {
-           let names = ["und", region];
+            let names = ["und", region];
 
             const cur = getUsingCurrency(currencyData.region[region]);
 
