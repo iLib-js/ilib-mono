@@ -40,10 +40,6 @@ function getIlib() {
 }
 
 /**
- * @module LocaleData
- */
-
-/**
  * @class A locale data instance.
  *
  * This class is a repository for locale-sensitive data only. For

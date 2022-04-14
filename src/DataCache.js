@@ -31,10 +31,6 @@ function getLocaleSpec(locale) {
 }
 
 /**
- * @module DataCache
- */
-
-/**
  * @class A locale data cache.
  *
  * This class is a repository for locale-sensitive data only. For
