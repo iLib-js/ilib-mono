@@ -51,6 +51,8 @@
     },
     "scripts": {
         "build": "npm run build:prod",
+        "build:tz": "rm -r tz ; mkdir tz ; cd tz; wget https://data.iana.org/time-zones/releases/tzdata2022a.tar.gz ; tar zxovf *.tar.gz",
+        "build:data": "cd scripts ; node genlocinfo.js",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:web": "webpack-cli",
@@ -59,7 +61,7 @@
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
         "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d * ; rm -rf lib",
+        "clean": "git clean -f -d * ; rm -rf lib tz",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/iliblocaleinfo.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
