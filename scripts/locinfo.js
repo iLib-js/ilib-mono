@@ -22,6 +22,7 @@ import path from 'path';
 import stringify from 'json-stable-stringify';
 import { Utils } from 'ilib-data-utils';
 
+import genCalendars from './calendars';
 import genClock from './clock';
 import genCurrencies from './currencies';
 import genDelimiters from './delimiters';
@@ -37,6 +38,7 @@ import genLocales from './locales';
 
 let root = {};
 
+genCalendars(root);
 genClock(root);
 genCurrencies(root);
 genDelimiters(root);
