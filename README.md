@@ -43,11 +43,12 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.0.1
+### v1.1.0
 
-- update documentation
+- Add caching support so that data is only loaded once
 - Cache the data in the global scope so that it can be shared with
 all instances of LocaleData
+- update documentation
 
 ### v1.0.0
 
