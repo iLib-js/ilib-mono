@@ -79,7 +79,7 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.0.1",
-        "ilib-loader": "^1.0.0",
+        "ilib-loader": "^1.0.3",
         "jsdoc": "^3.6.10",
         "jsdoc-to-markdown": "^7.1.1",
         "json-stable-stringify": "^1.0.1",
@@ -93,6 +93,7 @@
         "ilib-common": "^1.0.2",
         "ilib-env": "^1.2.0",
         "ilib-locale": "^1.1.0",
+        "ilib-localedata": "^1.0.0",
         "ilib-localematcher": "^1.1.0"
     }
 }
