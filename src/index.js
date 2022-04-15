@@ -22,7 +22,29 @@
 import Locale from 'ilib-locale';
 import LocaleMatcher from 'ilib-localematcher';
 import { Utils, Path } from 'ilib-common';
+import { getPlatform } from 'ilib-env';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
+
+function localeDir() {
+    switch (getPlatform()) {
+        case "nodejs":
+            if (typeof(process) !== 'undefined' && process.version) {
+                const result = /^v(\d+)\./.exec(process.version);
+                if (result !== null) {
+                    const majorVersion = parseInt(result[1]);
+                    return Path.join((majorVersion >= 13) ? module.path : Path.dirname(module.id), "../locale");
+                }
+            }
+            // guess
+            return Path.join(module.path, "../locale");
+
+        //case "browser":
+        //    return Path.join(Path.dirname(import.meta.url), "../locale");
+
+        default:
+            return "../locale";
+    }
+}
 
 /**
  * @class
@@ -105,7 +127,7 @@ class LocaleInfo {
 
         const locData = getLocaleData("LocaleInfo", {
             basename: "localeinfo",
-            path: Path.join(module.path, "..", "locale"),
+            path: localeDir(),
             sync
         });
 
