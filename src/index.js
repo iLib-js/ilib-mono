@@ -28,15 +28,7 @@ import getLocaleData, { LocaleData } from 'ilib-localedata';
 function localeDir() {
     switch (getPlatform()) {
         case "nodejs":
-            if (typeof(process) !== 'undefined' && process.version) {
-                const result = /^v(\d+)\./.exec(process.version);
-                if (result !== null) {
-                    const majorVersion = parseInt(result[1]);
-                    return Path.join((majorVersion >= 13) ? module.path : Path.dirname(module.id), "../locale");
-                }
-            }
-            // guess
-            return Path.join(module.path, "../locale");
+            return Path.join(Path.dirname(module.id), "../locale");
 
         //case "browser":
         //    return Path.join(Path.dirname(import.meta.url), "../locale");
