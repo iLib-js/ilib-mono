@@ -82,28 +82,26 @@ class WebpackLoader extends Loader {
      */
     loadFile(pathName, options) {
         if (!pathName) return undefined;
-        this.logger.trace(`Loading file ${pathName} from webpack`);
+        this.logger.trace(`Loading file ${pathName} from webpack asynchronously`);
 
-        let promise;
-
-        switch (pathName) {
-            // This special macro will get replaced in the ilibdata-webpack-loader with
-            // case statements for each locale js file so that webpack can make separate
-            // bundles for each one of those files when in dynamic load mode. In static
-            // (assembled) mode, this will get replaced with require calls that cause
-            // the data to be put into one giant webpack bundle.
-
-            // !loadLocaleData
-
-            default:
-                // This is just here to prevent webpack from removing the contents if
-                // there are no cases. Otherwise, it will think this switch statement
-                // is "unused" or "dead" code.
-                this.logger.warn("WebpackLoader.loadFile: Should never happen");
-                break;
-        }
-
-        return promise;
+        // Assuming this module is in <yourapp>/node_modules/ilib-loader/src/WebpackLoader.js,
+        // then the path to the locale data modules included below will be <yourapp>/locale
+        // Make sure all your locale data modules are located there and are named
+        // [full-locale-spec].js in order to be included
+        return import(
+            /* webpackInclude: /[a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?.js/ */
+            /* webpackMode: "lazy" */
+            /* webpackPrefetch: false */
+            /* webpackPreload: false */
+            `../../../../locale/${pathName}.js`
+        ).then((Module) => {
+            // locale modules must export a function named getLocaleData
+            if (typeof(Module.getLocaleData) === 'function') {
+                return Module.getLocaleData();
+            }
+            // not the right type of module
+            return undefined;
+        });
     }
 };
 
