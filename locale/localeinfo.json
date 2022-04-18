@@ -1,0 +1,37 @@
+{
+    "calendar": "gregorian",
+    "clock": "24",
+    "currency": "USD",
+    "delimiter": {
+        "alternateQuotationEnd": "’",
+        "alternateQuotationStart": "‘",
+        "quotationEnd": "”",
+        "quotationStart": "“"
+    },
+    "firstDayOfWeek": 1,
+    "meridiems": "gregorian",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        },
+        "decimalChar": ".",
+        "exponential": "E",
+        "groupChar": ",",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Latn",
+        "useNative": false
+    },
+    "paperSizes": {
+        "regular": "A4"
+    },
+    "timezone": "Etc/UTC",
+    "units": "metric",
+    "weekendEnd": 0,
+    "weekendStart": 6
+}

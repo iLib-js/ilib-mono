@@ -1,0 +1,16 @@
+{
+    "language.name": "Burmese",
+    "locale": "my",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "digits": "၀၁၂၃၄၅၆၇၈၉",
+        "script": "Mymr",
+        "useNative": true
+    },
+    "scripts": [
+        "Mymr"
+    ]
+}

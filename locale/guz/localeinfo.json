@@ -1,0 +1,13 @@
+{
+    "language.name": "Gusii",
+    "locale": "guz",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

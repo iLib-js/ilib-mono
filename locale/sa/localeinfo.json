@@ -1,0 +1,21 @@
+{
+    "language.name": "Sanskrit",
+    "locale": "sa",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "digits": "०१२३४५६७८९",
+        "script": "Deva",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "scripts": [
+        "Deva",
+        "Gran",
+        "Shrd",
+        "Sidd",
+        "Sinh"
+    ]
+}

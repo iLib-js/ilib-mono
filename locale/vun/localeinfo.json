@@ -1,0 +1,13 @@
+{
+    "language.name": "Vunjo",
+    "locale": "vun",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

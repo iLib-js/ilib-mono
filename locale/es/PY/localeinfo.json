@@ -1,0 +1,15 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "’",
+        "alternateQuotationStart": "‘",
+        "quotationEnd": "”",
+        "quotationStart": "“"
+    },
+    "locale": "es-PY",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "{s} -{n}"
+        }
+    }
+}

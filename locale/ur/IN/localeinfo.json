@@ -1,0 +1,16 @@
+{
+    "locale": "ur-IN",
+    "numfmt": {
+        "currencyFormats": {
+            "commonNegative": "‎-‎{s} {n}"
+        },
+        "decimalChar": "٫",
+        "digits": "۰۱۲۳۴۵۶۷۸۹",
+        "exponential": "×۱۰^",
+        "groupChar": "٬",
+        "negativenumFmt": "‎-‎{n}",
+        "negativepctFmt": "‎-‎{n}%",
+        "script": "arabext",
+        "useNative": true
+    }
+}

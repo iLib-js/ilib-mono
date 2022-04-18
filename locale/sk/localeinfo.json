@@ -1,0 +1,24 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "‚",
+        "quotationEnd": "“",
+        "quotationStart": "„"
+    },
+    "language.name": "Slovak",
+    "locale": "sk",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "exponential": "e",
+        "groupChar": " ",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

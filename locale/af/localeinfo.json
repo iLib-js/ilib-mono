@@ -1,0 +1,15 @@
+{
+    "language.name": "Afrikaans",
+    "locale": "af",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

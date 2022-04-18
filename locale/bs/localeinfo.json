@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "quotationStart": "„"
+    },
+    "language.name": "Bosnian",
+    "locale": "bs",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": ".",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Cyrl",
+        "Latn"
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "calendar": "coptic",
+    "language.name": "Coptic",
+    "locale": "cop",
+    "scripts": [
+        "Arab",
+        "Copt",
+        "Grek"
+    ]
+}

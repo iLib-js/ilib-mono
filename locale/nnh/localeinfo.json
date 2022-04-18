@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Ngiemboon",
+    "locale": "nnh",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

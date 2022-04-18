@@ -1,0 +1,13 @@
+{
+    "language.name": "Nyankole",
+    "locale": "nyn",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

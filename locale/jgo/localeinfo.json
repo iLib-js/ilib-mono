@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "›",
+        "alternateQuotationStart": "‹",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Ngomba",
+    "locale": "jgo",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

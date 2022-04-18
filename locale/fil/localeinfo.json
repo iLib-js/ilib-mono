@@ -1,0 +1,14 @@
+{
+    "language.name": "Filipino",
+    "locale": "fil",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn",
+        "Tglg"
+    ]
+}

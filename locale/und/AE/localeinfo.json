@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "AED",
+    "firstDayOfWeek": 6,
+    "locale": "AE",
+    "region.name": "United Arab Emirates",
+    "timezone": "Asia/Dubai",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "’",
+        "alternateQuotationStart": "‘",
+        "quotationEnd": "”",
+        "quotationStart": "“"
+    },
+    "locale": "es-SV",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ".",
+        "groupChar": ","
+    }
+}
