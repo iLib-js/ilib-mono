@@ -1,32 +1,6 @@
 ## Classes
 
 <dl>
-<dt><a href="#DataCache">DataCache</a></dt>
-<dd><p>A locale data cache.</p>
-<p>This class is a repository for locale-sensitive data only. For
-non-locale data (ie. data that is not specific to a particular
-locale), a class should load that data directly using a regular
-javascript <code>import</code> statement or the asynchronous <code>import()</code>
-function. This allows packagers like webpack
-to include that data directly into the bundle.<p></p>
-<p>Locale data instances should not be created directly. Instead,
-use the <code>getLocaleData()</code> factory method, which returns a locale
-data singleton specific to the caller&#39;s package. The caller must
-pass in its unique package name and the path to the module so
-that the locale data class can load data from it.<p></p>
-<p>Any classes within
-the same package can share the same locale data. For example, within
-the ilib-phone package, both the phone number parser and formatter
-need information about numbering plans, so they can share the
-locale data about those plans.<p></p>
-<p>Packages should not attempt to load any
-locale data of another package. The other package may change what
-data it stores, or how it is stored or encoded, without notice,
-so depending
-on another package&#39;s data is dangerous. Instead, that other package should
-be designed to provide a stable API for the current package to get
-any information that it may need.<p></p>
-</dd>
 <dt><a href="#LocaleData">LocaleData</a></dt>
 <dd><p>A locale data instance.</p>
 <p>This class is a repository for locale-sensitive data only. For
@@ -224,158 +198,6 @@ unit testing, but can be used in your app if you need to cut
 down on memory usage.</p>
 </dd>
 </dl>
-
-<a name="DataCache"></a>
-
-## DataCache
-A locale data cache.
-
-This class is a repository for locale-sensitive data only. For
-non-locale data (ie. data that is not specific to a particular
-locale), a class should load that data directly using a regular
-javascript `import` statement or the asynchronous `import()`
-function. This allows packagers like webpack
-to include that data directly into the bundle.<p>
-
-Locale data instances should not be created directly. Instead,
-use the `getLocaleData()` factory method, which returns a locale
-data singleton specific to the caller's package. The caller must
-pass in its unique package name and the path to the module so
-that the locale data class can load data from it.<p>
-
-Any classes within
-the same package can share the same locale data. For example, within
-the ilib-phone package, both the phone number parser and formatter
-need information about numbering plans, so they can share the
-locale data about those plans.<p>
-
-Packages should not attempt to load any
-locale data of another package. The other package may change what
-data it stores, or how it is stored or encoded, without notice,
-so depending
-on another package's data is dangerous. Instead, that other package should
-be designed to provide a stable API for the current package to get
-any information that it may need.<p>
-
-**Kind**: global class  
-
-* [DataCache](#DataCache)
-    * [new DataCache(name, options)](#new_DataCache_new)
-    * [.getPackage()](#DataCache+getPackage) ⇒ <code>string</code>
-    * [.getData(basename, locale)](#DataCache+getData) ⇒ <code>Object</code> \| <code>null</code> \| <code>undefined</code>
-    * [.storeData(basename, locale, data)](#DataCache+storeData)
-    * [.removeData(basename, locale)](#DataCache+removeData)
-    * [.size()](#DataCache+size) ⇒ <code>number</code>
-    * [.clearData()](#DataCache+clearData)
-
-
-* * *
-
-<a name="new_DataCache_new"></a>
-
-### new DataCache(name, options)
-Create a locale data cache.
-
-The options may contain any of the following properties:
-
-<ul>
-<li>packageName. The unique name of the package for which the locale
-data is being cached.
-</ul>
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | the unique name for this type of locale data |
-| options | <code>Object</code> | Options governing the construction of this cache |
-
-
-* * *
-
-<a name="DataCache+getPackage"></a>
-
-### dataCache.getPackage() ⇒ <code>string</code>
-Return the name of the package for which this is a cache.
-
-**Kind**: instance method of [<code>DataCache</code>](#DataCache)  
-**Returns**: <code>string</code> - the package name  
-
-* * *
-
-<a name="DataCache+getData"></a>
-
-### dataCache.getData(basename, locale) ⇒ <code>Object</code> \| <code>null</code> \| <code>undefined</code>
-Get locale data from the cache or information about data that may be missing.<p>
-
-**Kind**: instance method of [<code>DataCache</code>](#DataCache)  
-**Returns**: <code>Object</code> \| <code>null</code> \| <code>undefined</code> - the requested data, or null to explicitly indicate
-that no data of this type exists for this locale, or undefined to indicate that the
-cache has no information about this type of data for that locale  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| basename | <code>string</code> | the base name of this type of data |
-| locale | <code>Locale</code> | the full or partial locale for this particular data |
-
-
-* * *
-
-<a name="DataCache+storeData"></a>
-
-### dataCache.storeData(basename, locale, data)
-Store the given data for the given full or partial locale. The data may be given
-as null to indicate explicitly that there is no data for this locale of the the
-given type. This may be because of various reasons. For example, there is no locale
-data file for the locale.
-
-**Kind**: instance method of [<code>DataCache</code>](#DataCache)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| basename | <code>string</code> | the base name of this type of data |
-| locale | <code>Locale</code> | the full or partial locale of this data |
-| data | <code>Object</code> | the data to store for this locale |
-
-
-* * *
-
-<a name="DataCache+removeData"></a>
-
-### dataCache.removeData(basename, locale)
-Store the given data for the given full or partial locale. The data may be given
-as null to indicate explicitly that there is no data for this locale of the the
-given type. This may be because of various reasons. For example, there is no locale
-data file for the locale.
-
-**Kind**: instance method of [<code>DataCache</code>](#DataCache)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| basename | <code>string</code> | the base name of this type of data |
-| locale | <code>Locale</code> | the full or partial locale of this data |
-
-
-* * *
-
-<a name="DataCache+size"></a>
-
-### dataCache.size() ⇒ <code>number</code>
-Return how many items are stored in this cache.
-
-**Kind**: instance method of [<code>DataCache</code>](#DataCache)  
-**Returns**: <code>number</code> - how many items are stored in this cache  
-
-* * *
-
-<a name="DataCache+clearData"></a>
-
-### dataCache.clearData()
-Clear all the data from this cache. This is mostly intended to be used by unit
-testing.
-
-**Kind**: instance method of [<code>DataCache</code>](#DataCache)  
-
-* * *
 
 <a name="LocaleData"></a>
 
@@ -590,10 +412,15 @@ asynchronous mode, because the locale data they need is already cached.
     * _instance_
         * [.isSync()](#LocaleData+isSync) ⇒ <code>boolean</code>
         * [.loadData(params)](#LocaleData+loadData) ⇒ <code>Promise</code> \| <code>Object</code>
+        * [.getRoots()](#LocaleData+getRoots) ⇒ <code>Array.&lt;string&gt;</code>
     * _static_
+        * [.getGlobalRoots()](#LocaleData.getGlobalRoots) ⇒ <code>Array.&lt;string&gt;</code>
+        * [.addGlobalRoot(the)](#LocaleData.addGlobalRoot)
+        * [.removeGlobalRoot(the)](#LocaleData.removeGlobalRoot)
+        * [.clearGlobalRoots()](#LocaleData.clearGlobalRoots)
         * [.ensureLocale(locale)](#LocaleData.ensureLocale) ⇒ <code>Promise</code>
         * [.checkCache(packageName, locale, basename)](#LocaleData.checkCache) ⇒ <code>boolean</code>
-        * [.cacheData()](#LocaleData.cacheData)
+        * [.cacheData(packageName, data)](#LocaleData.cacheData)
         * [.clearCache()](#LocaleData.clearCache)
 
 
@@ -675,6 +502,71 @@ objects. When false, the arrays in child objects are concatenated with the array
 
 * * *
 
+<a name="LocaleData+getRoots"></a>
+
+### localeData.getRoots() ⇒ <code>Array.&lt;string&gt;</code>
+Return the list of roots that this LocaleData instance is using to load data.
+The roots returned by this method always has the package path at the end of
+it as the last-chance fallback for locale data. All the other roots override
+it.
+
+**Kind**: instance method of [<code>LocaleData</code>](#LocaleData)  
+**Returns**: <code>Array.&lt;string&gt;</code> - the list of roots, in order  
+
+* * *
+
+<a name="LocaleData.getGlobalRoots"></a>
+
+### LocaleData.getGlobalRoots() ⇒ <code>Array.&lt;string&gt;</code>
+Return the list of roots shared by all of the instances of LocaleData. Entries
+earlier in the list take precedence over entries later in the list.
+
+**Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
+**Returns**: <code>Array.&lt;string&gt;</code> - the list of roots shared by all instances of LocaleData  
+
+* * *
+
+<a name="LocaleData.addGlobalRoot"></a>
+
+### LocaleData.addGlobalRoot(the)
+Add the path name to the beginning of the list of roots shared by all instances of
+LocaleData. This method is static so that you can call it right at the beginning
+of your app without creating an instance of LocaleData for any package.
+
+**Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| the | <code>string</code> | path to add at the beginning of the list |
+
+
+* * *
+
+<a name="LocaleData.removeGlobalRoot"></a>
+
+### LocaleData.removeGlobalRoot(the)
+Remove the path from the list of roots shared by all instances of LocaleData.
+If the path appears in the middle of the list, it will be removed from there
+and the rest of the array will move down one.
+
+**Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| the | <code>string</code> | path to remove |
+
+
+* * *
+
+<a name="LocaleData.clearGlobalRoots"></a>
+
+### LocaleData.clearGlobalRoots()
+Clear the list of roots shared by all instances of LocaleData.
+
+**Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
+
+* * *
+
 <a name="LocaleData.ensureLocale"></a>
 
 ### LocaleData.ensureLocale(locale) ⇒ <code>Promise</code>
@@ -723,23 +615,47 @@ false if it could be found
 <a name="LocaleData.checkCache"></a>
 
 ### LocaleData.checkCache(packageName, locale, basename) ⇒ <code>boolean</code>
-Check to see if the given data type for the given locale is available in the cache.
+Check to see if the given data basename for the given locale is available
+in the cache. This method will return true if the locale data exists in the
+the cache already or if it is known that the requested data does not exist.<p>
+
+The following situations can occur:
+
+<ul>
+<li>Data available. The data for the locale was previously loaded and is
+available. Returns true.
+<li>No data. The data for the locale was previously loaded, but there was
+specific data for this locale. Still returns true.
+<li>Not available. The data for the locale was not previously loaded by
+any of the methods and the next call to `loadData` will attempt to load
+it. Returns false.
+</ul>
+
+Data can be considered to be "previously loaded" through any of the following:
+
+<ul>
+<li>`loadData` already attempted to load it, whether or not that attempt
+succeeded
+<li>The entire locale was already loaded using `ensureLocale`
+<li>All the data was already provided statically from the application
+using a call to `cacheData`.
+</ul>
 
 **Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
 **Returns**: <code>boolean</code> - true if the data is available, false otherwise  
 
-| Param | Type |
-| --- | --- |
-| packageName | <code>string</code> | 
-| locale | <code>string</code> | 
-| basename | <code>string</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| packageName | <code>string</code> | Name of the package to check for data |
+| locale | <code>string</code> | full locale of the data to check |
+| basename | <code>string</code> | the basename of the data to check |
 
 
 * * *
 
 <a name="LocaleData.cacheData"></a>
 
-### LocaleData.cacheData()
+### LocaleData.cacheData(packageName, data)
 The prepopulated data should have the following structure:
 
 <pre>
@@ -766,6 +682,12 @@ names at the same time. For example, it may contain data about phone number pars
 </ul>
 
 **Kind**: static method of [<code>LocaleData</code>](#LocaleData)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| packageName | <code>string</code> | name of the package for this data |
+| data | <code>Object</code> | the locale date in the above format |
+
 
 * * *
 

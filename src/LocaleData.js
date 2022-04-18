@@ -19,14 +19,18 @@
  */
 
 import log4js from '@log4js-node/log4js-api';
+import JSON5 from 'json5';
 
 import { getPlatform, getLocale, top } from 'ilib-env';
 import LoaderFactory from 'ilib-loader';
 import { Utils, JSUtils, Path } from 'ilib-common';
-import JSON5 from 'json5';
+import Locale from 'ilib-locale';
 
 import DataCache from './DataCache';
 
+/**
+ * @private
+ */
 function getIlib() {
     var globalScope = top();
     if (!globalScope.ilib) {
@@ -34,6 +38,7 @@ function getIlib() {
     }
     return globalScope.ilib;
 }
+
 /**
  * @class A locale data instance.
  *
@@ -272,7 +277,7 @@ class LocaleData {
 
         this.loader = LoaderFactory();
         this.sync = typeof(sync) === "boolean" && sync && (!this.loader || this.loader.supportsSync());
-        this.cache = new DataCache({packageName});
+        this.cache = DataCache.getDataCache({packageName});
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
     }
@@ -327,13 +332,21 @@ class LocaleData {
 
         // then check how to load it
         // then load it
-        const files = Utils.getLocFiles(locale, basename + ".json").map(
-            file => {
-                return {
-                    name: file
-                };
+        const fileName = basename + ".json";
+        const files = Utils.getSublocales(locale).map((spec) => {
+            const loc = new Locale(spec);
+            const pathName = (spec === "root") ? fileName : Path.join(spec.replace(/-/g, "/"), fileName);
+            const retValue = {
+                name: pathName,
+                locale: loc
+            };
+            const data = this.cache.getData(basename, loc);
+            if (data) {
+                retValue.data = data;
             }
-        );
+            return retValue;
+        });
+
         const roots = this.getRoots(); // includes this.path at the end of it
         let promise;
 
@@ -346,8 +359,12 @@ class LocaleData {
                     });
                     const data = this.loader.loadFiles(fileNames, {sync});
                     data.forEach((datum, i) => {
-                        if (datum) {
-                            files[i].data = JSON5.parse(datum);
+                        if (!files[i].data) {
+                            // null indicates we attempted to load the file, but
+                            // there was no data or the file did not exist
+                            const parsed = datum ? JSON5.parse(datum) : null;
+                            this.cache.storeData(basename, files[i].locale, parsed);
+                            files[i].data = parsed;
                         }
                     });
                 }
@@ -369,8 +386,12 @@ class LocaleData {
                         });
                         return this.loader.loadFiles(fileNames, {sync}).then((data) => {
                             data.forEach((datum, i) => {
-                                if (datum) {
-                                    files[i].data = JSON5.parse(datum);
+                                if (!files[i].data) {
+                                    // null indicates we attempted to load the file, but
+                                    // there was no data or the file did not exist
+                                    const parsed = datum ? JSON5.parse(datum) : null;
+                                    this.cache.storeData(basename, files[i].locale, parsed);
+                                    files[i].data = parsed;
                                 }
                             });
                         });
@@ -388,11 +409,26 @@ class LocaleData {
         // extract the relevants parts and return it
     };
 
+    /**
+     * Return the list of roots that this LocaleData instance is using to load data.
+     * The roots returned by this method always has the package path at the end of
+     * it as the last-chance fallback for locale data. All the other roots override
+     * it.
+     *
+     * @returns {Array.<string>} the list of roots, in order
+     */
     getRoots() {
         // this.path always goes at the end
         return LocaleData.getGlobalRoots().concat([this.path]);
     }
 
+    /**
+     * Return the list of roots shared by all of the instances of LocaleData. Entries
+     * earlier in the list take precedence over entries later in the list.
+     *
+     * @static
+     * @returns {Array.<string>} the list of roots shared by all instances of LocaleData
+     */
     static getGlobalRoots() {
         var ilib = getIlib();
         if (!ilib.roots) {
@@ -402,6 +438,13 @@ class LocaleData {
         return ilib.roots;
     }
 
+    /**
+     * Add the path name to the beginning of the list of roots shared by all instances of
+     * LocaleData. This method is static so that you can call it right at the beginning
+     * of your app without creating an instance of LocaleData for any package.
+     *
+     * @param {string} the path to add at the beginning of the list
+     */
     static addGlobalRoot(pathName) {
         if (typeof(pathName) !== 'string') return;
         var ilib = getIlib();
@@ -412,6 +455,13 @@ class LocaleData {
         ilib.roots = [pathName].concat(ilib.roots);
     }
 
+    /**
+     * Remove the path from the list of roots shared by all instances of LocaleData.
+     * If the path appears in the middle of the list, it will be removed from there
+     * and the rest of the array will move down one.
+     *
+     * @param {string} the path to remove
+     */
     static removeGlobalRoot(pathName) {
         if (typeof(pathName) !== 'string') return;
         var ilib = getIlib();
@@ -421,10 +471,13 @@ class LocaleData {
         }
         const element = ilib.roots.indexOf(pathName);
         if (element > -1) {
-            ilib.roots.splice(element, 1);
+            return ilib.roots.splice(element, 1);
         }
     }
 
+    /**
+     * Clear the list of roots shared by all instances of LocaleData.
+     */
     static clearGlobalRoots() {
         var ilib = getIlib();
         ilib.roots = [];
@@ -476,16 +529,48 @@ class LocaleData {
     }
 
     /**
-     * Check to see if the given data type for the given locale is available in the cache.
+     * Check to see if the given data basename for the given locale is available
+     * in the cache. This method will return true if the locale data exists in the
+     * the cache already or if it is known that the requested data does not exist.<p>
      *
-     * @param {string} packageName
-     * @param {string} locale
-     * @param {string} basename
+     * The following situations can occur:
+     *
+     * <ul>
+     * <li>Data available. The data for the locale was previously loaded and is
+     * available. Returns true.
+     * <li>No data. The data for the locale was previously loaded, but there was
+     * specific data for this locale. Still returns true.
+     * <li>Not available. The data for the locale was not previously loaded by
+     * any of the methods and the next call to `loadData` will attempt to load
+     * it. Returns false.
+     * </ul>
+     *
+     * Data can be considered to be "previously loaded" through any of the following:
+     *
+     * <ul>
+     * <li>`loadData` already attempted to load it, whether or not that attempt
+     * succeeded
+     * <li>The entire locale was already loaded using `ensureLocale`
+     * <li>All the data was already provided statically from the application
+     * using a call to `cacheData`.
+     * </ul>
+     *
+     * @param {string} packageName Name of the package to check for data
+     * @param {string} locale full locale of the data to check
+     * @param {string} basename the basename of the data to check
      * @returns {boolean} true if the data is available, false otherwise
      */
     static checkCache(packageName, locale, basename) {
-        // TODO: not implemented yet
-        return true;
+        if (typeof(packageName) !== 'string' || typeof(locale) !== 'string'  || typeof(basename) !== 'string') {
+            return false;
+        }
+        const cache = DataCache.getDataCache({packageName});
+
+        // use slice(1) because we don't need to check the root locale
+        return Utils.getSublocales(locale).slice(1).some((sublocale) => {
+            const value = cache.getData(basename, new Locale(sublocale));
+            return typeof(value) !== 'undefined';
+        });
     }
 
     /**
@@ -513,9 +598,23 @@ class LocaleData {
      * names at the same time. For example, it may contain data about phone number parsing
      * (basename "PhoneNumber") and phone number formatting (base name "PhoneFmt").
      * </ul>
+     *
+     * @param {string} packageName name of the package for this data
+     * @param {Object} data the locale date in the above format
      */
-    static cacheData(data) {
-        // TODO: not implemented yet
+    static cacheData(packageName, data) {
+        if (typeof(packageName) !== 'string' || typeof(data) !== 'object') {
+            return;
+        }
+        const cache = DataCache.getDataCache({packageName});
+
+        for (let locale in data) {
+            const localeData = data[locale];
+            for (let basename in localeData) {
+                const any = localeData[basename];
+                cache.storeData(basename, new Locale(locale), any);
+            }
+        }
     }
 
     /**
@@ -523,7 +622,7 @@ class LocaleData {
      * to guarantee that the cache is clear before starting a new test.
      */
     static clearCache() {
-        // TODO: not implemented yet
+        DataCache.clearDataCache();
     }
 }
 

@@ -21,16 +21,13 @@
 import log4js from '@log4js-node/log4js-api';
 
 import { getLocFiles, Path } from 'ilib-common';
+import { top } from 'ilib-env';
 
 /**
  * @private
  */
 function getLocaleSpec(locale) {
-    if (!locale) {
-        return "root";
-    } else {
-        return [locale.getLanguage(), locale.getScript(), locale.getRegion(), locale.getVariant()].join('_');
-    }
+    return !locale || locale.getRegion() === "001" ? "root" : locale.getSpec();
 }
 
 /**
@@ -62,8 +59,6 @@ function getLocaleSpec(locale) {
  * on another package's data is dangerous. Instead, that other package should
  * be designed to provide a stable API for the current package to get
  * any information that it may need.<p>
- *
- * @class
  */
 class DataCache {
     /**
@@ -76,7 +71,7 @@ class DataCache {
      * data is being cached.
      * </ul>
      *
-     * @class
+     * @private
      * @param {string} name the unique name for this type of locale data
      * @param {Object} options Options governing the construction of this
      * cache
@@ -93,6 +88,46 @@ class DataCache {
 
         this.count = 0;
         this.data = {};
+    }
+
+    /**
+     * Factory method to create a new DataCache singleton.
+     * @param {Object} options options to pass to the constructor. (See
+     * the constructor's documentation for details.
+     * @returns {DataCache} the data cache for the given package
+     */
+    static getDataCache(options) {
+        if (!options || typeof(options.packageName) !== 'string') return;
+
+        const globalScope = top();
+
+        if (!globalScope.ilib) {
+            globalScope.ilib = {};
+        }
+
+        if (!globalScope.ilib.dataCache) {
+            globalScope.ilib.dataCache = {};
+        }
+
+        if (!globalScope.ilib.dataCache[options.packageName]) {
+            globalScope.ilib.dataCache[options.packageName] = new DataCache(options);
+        }
+
+        return globalScope.ilib.dataCache[options.packageName];
+    }
+
+    /**
+     * Clear the data cache. This clears the cached data for all packages at
+     * once.
+     */
+    static clearDataCache() {
+        const globalScope = top();
+
+        if (!globalScope.ilib) {
+            globalScope.ilib = {};
+        }
+
+        globalScope.ilib.dataCache = {};
     }
 
     /**
@@ -186,7 +221,7 @@ class DataCache {
     }
 
     /**
-     * Clear all the data from this cache. This is mostly intended to be used by unit
+     * Clear all the data from this cache instance. This is mostly intended to be used by unit
      * testing.
      */
     clearData() {
