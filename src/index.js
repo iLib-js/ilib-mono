@@ -22,11 +22,21 @@ import log4js from '@log4js-node/log4js-api';
 
 import { getPlatform, top } from 'ilib-env';
 import Loader from './Loader';
+
 import NodeLoader from './NodeLoader';
 import WebpackLoader from './WebpackLoader';
 // import QtLoader from './QtLoader';
 // import RhinoLoader from './RhinoLoader';
 // import RingoLoader from './RingoLoader';
+
+switch (getPlatform()) {
+    case 'nodejs':
+        registerLoader(NodeLoader);
+        break;
+    case 'browser':
+        registerLoader(WebpackLoader);
+        break;
+}
 
 const logger = log4js.getLogger("ilib-loader");
 
@@ -61,8 +71,8 @@ export function registerLoader(loaderClass) {
 // and register it to have your own loader for your own platform, or
 // even override the loader for a known platform.
 
-registerLoader(NodeLoader);
-registerLoader(WebpackLoader);
+
+
 // registerLoader(QtLoader);
 // registerLoader(RhinoLoader);
 // registerLoader(RingoLoader);
