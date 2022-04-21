@@ -86,7 +86,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('resources/[localeDir]/strings.json', "x/y/strings.json", "de-DE"), "resources/de/DE/strings.json");
+        test.equals(jft.getLocalizedPath({template: 'resources/[localeDir]/strings.json'}, "x/y/strings.json", "de-DE"), "resources/de/DE/strings.json");
 
         test.done();
     },
@@ -97,7 +97,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[localeDir]/strings.json', "x/y/strings.json", "de-DE"), "x/y/de/DE/strings.json");
+        test.equals(jft.getLocalizedPath({template: '[dir]/[localeDir]/strings.json'}, "x/y/strings.json", "de-DE"), "x/y/de/DE/strings.json");
 
         test.done();
     },
@@ -108,7 +108,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-[basename].j', "x/y/strings.json", "de-DE"), "de/DE/tr-strings.j");
+        test.equals(jft.getLocalizedPath({template: '[localeDir]/tr-[basename].j'}, "x/y/strings.json", "de-DE"), "de/DE/tr-strings.j");
 
         test.done();
     },
@@ -119,7 +119,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-[filename]', "x/y/strings.json", "de-DE"), "de/DE/tr-strings.json");
+        test.equals(jft.getLocalizedPath({template: '[localeDir]/tr-[filename]'}, "x/y/strings.json", "de-DE"), "de/DE/tr-strings.json");
 
         test.done();
     },
@@ -130,7 +130,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[localeDir]/tr-foobar.[extension]', "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
+        test.equals(jft.getLocalizedPath({template: '[localeDir]/tr-foobar.[extension]'}, "x/y/strings.jsn", "de-DE"), "de/DE/tr-foobar.jsn");
 
         test.done();
     },
@@ -141,7 +141,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[locale]/strings.json', "x/y/strings.json", "de-DE"), "x/y/de-DE/strings.json");
+        test.equals(jft.getLocalizedPath({template: '[dir]/[locale]/strings.json'}, "x/y/strings.json", "de-DE"), "x/y/de-DE/strings.json");
 
         test.done();
     },
@@ -152,7 +152,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[language]/strings.json', "x/y/strings.json", "de-DE"), "x/y/de/strings.json");
+        test.equals(jft.getLocalizedPath({template: '[dir]/[language]/strings.json'}, "x/y/strings.json", "de-DE"), "x/y/de/strings.json");
 
         test.done();
     },
@@ -163,7 +163,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[region]/strings.json', "x/y/strings.json", "de-DE"), "x/y/DE/strings.json");
+        test.equals(jft.getLocalizedPath({template: '[dir]/[region]/strings.json'}, "x/y/strings.json", "de-DE"), "x/y/DE/strings.json");
 
         test.done();
     },
@@ -174,7 +174,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/[script]/strings.json', "x/y/strings.json", "zh-Hans-CN"), "x/y/Hans/strings.json");
+        test.equals(jft.getLocalizedPath({template: '[dir]/[script]/strings.json'}, "x/y/strings.json", "zh-Hans-CN"), "x/y/Hans/strings.json");
 
         test.done();
     },
@@ -185,183 +185,7 @@ module.exports.jsonfiletype = {
         var jft = new JsonFileType(p);
         test.ok(jft);
 
-        test.equals(jft.getLocalizedPath('[dir]/strings_[localeUnder].json', "x/y/strings.json", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.json");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathDir: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/strings.json', "x/y/strings.json"), "");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathBasename: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[basename].json', "x/y/strings.json"), "");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathFilename: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[filename]', "x/y/strings.json"), "");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathLocale: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[locale]/strings.json', "x/y/de-DE/strings.json"), "de-DE");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathLocaleLong: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[locale]/strings.json', "x/y/zh-Hans-CN/strings.json"), "zh-Hans-CN");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathLocaleShort: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[locale]/strings.json', "x/y/fr/strings.json"), "fr");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathLanguage: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[language]/strings.json', "x/y/de/strings.json"), "de");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathScript: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[language]-[script]/strings.json', "x/y/zh-Hans/strings.json"), "zh-Hans");
-
-        test.done();
-    },
-
-    testJsonFileTypeGetLocaleFromPathRegion: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[region]/strings.json', "x/y/JP/strings.json"), "JP");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleDir: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[localeDir]/strings.json', "x/y/de/DE/strings.json"), "de-DE");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleDirShort: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[localeDir]/strings.json', "x/y/de/strings.json"), "de");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleDirLong: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/[localeDir]/strings.json', "x/y/zh/Hans/CN/strings.json"), "zh-Hans-CN");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleDirStart: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[localeDir]/strings.json', "de/DE/strings.json"), "de-DE");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleUnder: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/strings_[localeUnder].json', "x/y/strings_de_DE.json"), "de-DE");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleUnderShort: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/strings_[localeUnder].json', "x/y/strings_de.json"), "de");
-
-        test.done();
-    },
-
-     testJsonFileTypeGetLocaleFromPathLocaleUnderLong: function(test) {
-        test.expect(2);
-
-        var jft = new JsonFileType(p);
-        test.ok(jft);
-
-        test.equals(jft.getLocaleFromPath('[dir]/strings_[localeUnder].json', "x/y/strings_zh_Hans_CN.json"), "zh-Hans-CN");
+        test.equals(jft.getLocalizedPath({template: '[dir]/strings_[localeUnder].json'}, "x/y/strings.json", "zh-Hans-CN"), "x/y/strings_zh_Hans_CN.json");
 
         test.done();
     },

@@ -302,6 +302,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.3.0
+
+- use the logger provided by the loctool instead of trying to log things on our own
+- use the formatPath and getLocaleFromPath functions provided by the loctool instead
+  of our own
+
 ### v1.2.4
 
 - normalize the path before matching against the mappings so that the matching
