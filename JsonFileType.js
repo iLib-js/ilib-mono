@@ -21,11 +21,8 @@ var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 var mm = require("micromatch");
 var JsonFile = require("./JsonFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.JsonFileType");
 
 var JsonFileType = function(project) {
     this.type = "json";
@@ -33,6 +30,8 @@ var JsonFileType = function(project) {
 
     this.project = project;
     this.API = project.getAPI();
+
+    this.logger = this.API.getLogger("loctool.plugin.JsonFileType");
 
     this.extensions = [ ".json", ".jso", ".jsn" ];
 
@@ -67,8 +66,7 @@ JsonFileType.prototype.loadSchemaFile = function(pathName) {
         this.schemas[pathName] = schemaObj;
         this.refs[schemaObj["$id"]] = schemaObj;
     } catch (e) {
-        logger.fatal("Error while parsing schema file " + pathName);
-        console.log("Error while parsing schema file " + pathName);
+        this.logger.fatal("Error while parsing schema file " + pathName);
         throw e;
     }
 };
@@ -263,7 +261,7 @@ JsonFileType.prototype.getMapping = function(pathName) {
  * otherwise
  */
 JsonFileType.prototype.handles = function(pathName) {
-    logger.debug("JsonFileType handles " + pathName + "?");
+    this.logger.debug("JsonFileType handles " + pathName + "?");
     var ret = false;
     var normalized = pathName;
 
@@ -299,7 +297,7 @@ JsonFileType.prototype.handles = function(pathName) {
             }
         }
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
