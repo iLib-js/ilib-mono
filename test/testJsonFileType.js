@@ -1,7 +1,7 @@
 /*
  * testJsonFileType.js - test the json file type handler object.
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
