@@ -18,9 +18,9 @@
  */
 
 var fs = require("fs");
-var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
+var mm = require("micromatch");
 
 var JavaScriptFile = require("./JavaScriptFile.js");
 var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
@@ -97,10 +97,10 @@ JavaScriptFileType.prototype.handles = function(pathName) {
 
     // now match at least one of the mapping patterns
     if (ret) {
-        ret = false;
         // first check if it is a source file
         var jsSettings = this.project.settings.javascript;
         if (jsSettings) {
+            ret = false;
             var mappings = (jsSettings && jsSettings.mappings) ? jsSettings.mappings : defaultMappings;
             var patterns = Object.keys(mappings);
             ret = mm.isMatch(pathName, patterns);

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+var fs = require("fs");
 var path = require("path");
 
 /**
@@ -38,7 +39,7 @@ var JavaScriptFile = function(props) {
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.mapping = this.type.getMapping(this.pathName);
 
-    this.localeSpec = options.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
+    this.localeSpec = props.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
     this.locale = new Locale(this.localeSpec);
 
     this.resourceIndex = 0;

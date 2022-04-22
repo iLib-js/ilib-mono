@@ -1,7 +1,7 @@
 /*
  * testJavaScriptFile.js - test the JavaScript file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2022 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,10 @@ module.exports.javascriptfile = {
     testJavaScriptFileConstructor: function(test) {
         test.expect(1);
 
-        var j = new JavaScriptFile({project: p});
+        var j = new JavaScriptFile({
+            project: p,
+            type: jsft
+        });
         test.ok(j);
 
         test.done();
