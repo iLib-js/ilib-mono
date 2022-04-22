@@ -51,12 +51,12 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.4.0",
-        "ilib-loctool-javascript-resource": "^1.0.1",
-        "log4js": "^5.0.0"
+        "ilib": "^14.14.0",
+        "ilib-loctool-javascript-resource": "^1.0.3",
+        "log4js": "^6.4.5"
     },
     "devDependencies": {
-        "loctool": "^2.10.1",
+        "loctool": "^2.16.2",
         "nodeunit": "^0.11.3"
     }
 }
