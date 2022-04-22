@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
 
 /**
- * Create a new java file with the given path name and within
+ * Create a new javascript file with the given path name and within
  * the given project.
  *
  * @param {Project} project the project object
@@ -33,10 +32,16 @@ var JavaScriptFile = function(props) {
     this.project = props.project;
     this.pathName = props.pathName;
     this.type = props.type;
-    this.API = props.project.getAPI();
+    this.API = this.project.getAPI();
 
     this.logger = this.API.getLogger("loctool.plugin.JavaScriptFile");
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.mapping = this.type.getMapping(this.pathName);
+
+    this.localeSpec = options.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
+    this.locale = new Locale(this.localeSpec);
+
+    this.resourceIndex = 0;
 };
 
 /**
