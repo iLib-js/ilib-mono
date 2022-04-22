@@ -52,8 +52,7 @@
     },
     "dependencies": {
         "ilib": "^14.14.0",
-        "ilib-loctool-javascript-resource": "^1.0.3",
-        "log4js": "^6.4.5"
+        "ilib-loctool-javascript-resource": "^1.0.3"
     },
     "devDependencies": {
         "loctool": "^2.16.2",
