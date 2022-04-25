@@ -1,7 +1,7 @@
 /*
  * JsonFileType.js - Represents a collection of json files
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@ var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 var mm = require("micromatch");
 var JsonFile = require("./JsonFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.JsonFileType");
 
 var JsonFileType = function(project) {
     this.type = "json";
@@ -33,6 +30,8 @@ var JsonFileType = function(project) {
 
     this.project = project;
     this.API = project.getAPI();
+
+    this.logger = this.API.getLogger("loctool.plugin.JsonFileType");
 
     this.extensions = [ ".json", ".jso", ".jsn" ];
 
@@ -67,8 +66,7 @@ JsonFileType.prototype.loadSchemaFile = function(pathName) {
         this.schemas[pathName] = schemaObj;
         this.refs[schemaObj["$id"]] = schemaObj;
     } catch (e) {
-        logger.fatal("Error while parsing schema file " + pathName);
-        console.log("Error while parsing schema file " + pathName);
+        this.logger.fatal("Error while parsing schema file " + pathName);
         throw e;
     }
 };
@@ -263,7 +261,7 @@ JsonFileType.prototype.getMapping = function(pathName) {
  * otherwise
  */
 JsonFileType.prototype.handles = function(pathName) {
-    logger.debug("JsonFileType handles " + pathName + "?");
+    this.logger.debug("JsonFileType handles " + pathName + "?");
     var ret = false;
     var normalized = pathName;
 
@@ -291,7 +289,7 @@ JsonFileType.prototype.handles = function(pathName) {
         // source locale, then we don't need to extract those strings
         if (ret) {
             for (var i = 0; i < patterns.length; i++) {
-                var locale = this.getLocaleFromPath(mappings[patterns[i]].template, pathName);
+                var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
                 if (locale && locale !== this.project.sourceLocale) {
                     ret = false;
                     break;
@@ -299,134 +297,12 @@ JsonFileType.prototype.handles = function(pathName) {
             }
         }
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
 JsonFileType.prototype.name = function() {
     return "Json File Type";
-};
-
-var matchExprs = {
-    "dir": {
-        regex: ".*?",
-        brackets: 0,
-    },
-    "locale": {
-        regex: "([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?",
-        brackets: 5,
-        groups: {
-            language: 1,
-            script: 3,
-            region: 5
-        }
-    },
-    "language": {
-        regex: "([a-z][a-z][a-z]?)",
-        brackets: 1,
-        groups: {
-            language: 1
-        }
-    },
-    "script": {
-        regex: "([A-Z][a-z][a-z][a-z])",
-        brackets: 1,
-        groups: {
-            script: 1
-        }
-    },
-    "region": {
-        regex: "([A-Z][A-Z]|[0-9][0-9][0-9])",
-        brackets: 1,
-        groups: {
-            region: 1
-        }
-    },
-    "localeDir": {
-        regex: "([a-z][a-z][a-z]?)(/([A-Z][a-z][a-z][a-z]))?(/([A-Z][A-Z]|[0-9][0-9][0-9]))?",
-        brackets: 5,
-        groups: {
-            language: 1,
-            script: 3,
-            region: 5
-        }
-    },
-    "localeUnder": {
-        regex: "([a-z][a-z][a-z]?)(_([A-Z][a-z][a-z][a-z]))?(_([A-Z][A-Z]|[0-9][0-9][0-9]))?",
-        brackets: 5,
-        groups: {
-            language: 1,
-            script: 3,
-            region: 5
-        }
-    },
-};
-
-/**
- * Return a locale encoded in the path using template to parse that path.
- * @param {String} template template for the output file
- * @param {String} pathname path to the source file
- * @returns {String} the locale within the path
- */
-JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
-    var regex = "";
-    var matchGroups = {};
-    var totalBrackets = 0;
-
-    if (!template) {
-        template = defaultMappings["**/*.json"].template;
-    }
-
-    for (var i = 0; i < template.length; i++) {
-        if ( template[i] !== '[' ) {
-            regex += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'filename':
-                    regex += path.basename(pathname);
-                    break;
-                case 'extension':
-                    var base = path.basename(pathname);
-                    regex += base.substring(base.lastIndexOf('.')+1);
-                    break;
-                case 'basename':
-                    regex += path.basename(pathname, ".json");
-                    break;
-                default:
-                    regex += matchExprs[keyword].regex;
-                    for (var prop in matchExprs[keyword].groups) {
-                        matchGroups[prop] = totalBrackets + matchExprs[keyword].groups[prop];
-                    }
-                    totalBrackets += matchExprs[keyword].brackets;
-                    break;
-            }
-        }
-    }
-
-    var re = new RegExp(regex, "u");
-    var match;
-
-    if ((match = re.exec(pathname)) !== null) {
-        var groups = {};
-        var found = false;
-        for (var groupName in matchGroups) {
-            if (match[matchGroups[groupName]]) {
-                groups[groupName] = match[matchGroups[groupName]];
-                found = true;
-            }
-        }
-        if (found) {
-            var l = new Locale(groups.language, groups.region, undefined, groups.script);
-            return l.getSpec();
-        }
-    }
-
-    return "";
 };
 
 /**
@@ -437,61 +313,19 @@ JsonFileType.prototype.getLocaleFromPath = function(template, pathname) {
  * @param {String} locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-JsonFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
-    var output = "";
+JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
+    var template = mapping && mapping.template;
+    // var l = this.getOutputLocale(mapping, locale);
     var l = new Locale(locale);
 
     if (!template) {
         template = defaultMappings["**/*.json"].template;
     }
 
-    for (var i = 0; i < template.length; i++) {
-        if ( template[i] !== '[' ) {
-            output += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'dir':
-                    output += path.dirname(pathname);
-                    break;
-                case 'filename':
-                    output += path.basename(pathname);
-                    break;
-                case 'extension':
-                    var base = path.basename(pathname);
-                    output += base.substring(base.lastIndexOf('.')+1);
-                    break;
-                case 'basename':
-                    output += path.basename(pathname, ".json");
-                    break;
-                default:
-                case 'locale':
-                    output += locale;
-                    break;
-                case 'language':
-                    output += l.getLanguage();
-                    break;
-                case 'script':
-                    output += l.getScript();
-                    break;
-                case 'region':
-                    output += l.getRegion();
-                    break;
-                case 'localeDir':
-                    output += l.getSpec().replace(/-/g, '/');
-                    break;
-                case 'localeUnder':
-                    output += l.getSpec().replace(/-/g, '_');
-                    break;
-            }
-        }
-    }
-
-    return output;
+    return path.normalize(this.API.utils.formatPath(template, {
+        sourcepath: pathname,
+        locale: l
+    }));
 };
 
 /**

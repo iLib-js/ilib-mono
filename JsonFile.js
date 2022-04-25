@@ -1,7 +1,7 @@
 /*
  * JsonFile.js - plugin to extract resources from an Json file
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,9 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var JSON5 = require("json5");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-
-var logger = log4js.getLogger("loctool.plugin.JsonFile");
 
 /**
  * Create a new Json file with the given path name and within
@@ -42,6 +39,7 @@ var JsonFile = function(options) {
 
     this.API = this.project.getAPI();
 
+    this.logger = this.API.getLogger("loctool.plugin.JsonFile");
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.mapping = this.type.getMapping(this.pathName);
     this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
@@ -320,7 +318,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                 translatedText = translated.getTarget();
                             } else {
                                 if (this.type && this.API.utils.containsActualText(text)) {
-                                    logger.trace("New string found: " + text);
+                                    this.logger.trace("New string found: " + text);
                                     this.type.newres.add(this.API.newResource({
                                         resType: "string",
                                         project: this.project.getProjectId(),
@@ -364,7 +362,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                 } else {
                     // no way to parse the additional items beyond the end of the array,
                     // so just ignore them
-                    logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
+                    this.logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
                     returnValue = this.sparseValue(json);
                 }
             } else {
@@ -378,7 +376,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
 
         case "object":
             if (typeof(json) !== "object") {
-               logger.warn(this.pathName + '/' + ref + " is a " +
+               this.logger.warn(this.pathName + '/' + ref + " is a " +
                    typeof(json) + " but should be an object according to the schema...  skipping.");
                 return;
             }
@@ -421,7 +419,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                                 translatedPlurals = translated.getTargetPlurals();
                             } else {
                                 if (this.type) {
-                                    logger.trace("New string found: " + text);
+                                    this.logger.trace("New string found: " + text);
                                     this.type.newres.add(this.API.newResource({
                                         resType: "plural",
                                         project: this.project.getProjectId(),
@@ -506,7 +504,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
 
 JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, localizable, translations, locale) {
     if (!ilib.isArray(json)) {
-        logger.warn(this.pathName + '/' + ref + " is a " +
+        this.logger.warn(this.pathName + '/' + ref + " is a " +
                 typeof(json) + " but should be an array according to the schema... skipping.");
         return null;
     }
@@ -606,7 +604,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
         return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
     }
 
-    logger.trace("New strings found: " + sourceArray.toString());
+    this.logger.trace("New strings found: " + sourceArray.toString());
 
     this.type.newres.add(this.API.newResource({
         resType: "array",
@@ -640,7 +638,7 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
  * @param {String} data the string to parse
  */
 JsonFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
 
     this.json = JSON5.parse(data);
 
@@ -653,7 +651,7 @@ JsonFile.prototype.parse = function(data) {
  * project's translation set.
  */
 JsonFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -662,8 +660,8 @@ JsonFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
@@ -688,7 +686,7 @@ JsonFile.prototype.write = function() {};
  * @returns {String} the localized path name
  */
 JsonFile.prototype.getLocalizedPath = function(locale) {
-    return this.type.getLocalizedPath(this.mapping.template, this.pathName, locale);
+    return this.type.getLocalizedPath(this.mapping, this.pathName, locale);
 };
 
 /**
@@ -721,7 +719,7 @@ JsonFile.prototype.localize = function(translations, locales) {
             var l = new Locale(locales[i]);
             if (!l.getVariant()) {
                 var pathName = this.getLocalizedPath(locales[i]);
-                logger.debug("Writing file " + pathName);
+                this.logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
                 this.API.utils.makeDirs(d);
