@@ -302,12 +302,8 @@ file for more details.
 
 ## Release Notes
 
-### v1.3.0
+### v1.2.5
 
-### v1.3.0
-
-- Added addResource() method to the JsonFile object so that this plugin can be used
-  as a resource file type
 - Use the logger provided by the loctool instead of trying to log things on our own
 - Use the formatPath and getLocaleFromPath functions provided by the loctool instead
   of our own
