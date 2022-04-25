@@ -38,6 +38,21 @@ var JavaScriptFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.settings && project.settings.locales && project.settings.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
 };
 
 var defaultMappings = {
@@ -140,6 +155,45 @@ JavaScriptFileType.prototype.handles = function(pathName) {
 
 JavaScriptFileType.prototype.name = function() {
     return "JavaScript File Type";
+};
+
+/**
+ * Return the alternate output locale or the shared output locale for the given
+ * mapping. If there are no locale mappings, it returns the locale parameter.
+ *
+ * @param {Object} mapping the mapping for this source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {Locale} the output locale
+ */
+JavaScriptFileType.prototype.getOutputLocale = function(mapping, locale) {
+    // we can remove the replace() call after upgrading to
+    // ilib 14.10.0 or later because it can parse locale specs
+    // with underscores in them
+    return new Locale(
+        (mapping && mapping.localeMap && mapping.localeMap[locale] && mapping.localeMap[locale]) ||
+        this.project.getOutputLocale(locale));
+};
+
+/**
+ * Return the location on disk where the version of this file localized
+ * for the given locale should be written.
+ * @param {String} template template for the output file
+ * @param {String} pathname path to the source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {String} the localized path name
+ */
+JavaScriptFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
+    var template = mapping && mapping.template;
+    var l = this.getOutputLocale(mapping, locale);
+
+    if (!template) {
+        template = defaultMappings["**/*.js"].template;
+    }
+
+    return path.normalize(this.API.utils.formatPath(template, {
+        sourcepath: pathname,
+        locale: l
+    }));
 };
 
 /**
