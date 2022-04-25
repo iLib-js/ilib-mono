@@ -287,6 +287,65 @@ For strings that have an `enum` keyword, each of the values in the `enum` will
 not be translated as well, as the code that reads this json file is explicitly
 expecting one of the given fixed values.
 
+## JSON File Generation
+
+When you create a new, empty JsonFile instance that is not backed
+by a json file on disk, this plugin can generate the json file
+text automatically. This allows this plugin to be used as a resource
+file type for other plugins.
+
+```javascript
+    // path does not have to exist
+    var jsonFile = jsonFileType.newFile(path, {locale: "fr-FR"});
+
+    // the string, plural and array resource added in this example
+    // already have translations in them to fr-FR
+    jsonFile.addResource(stringResource);
+    jsonFile.addResource(pluralResource);
+    jsonFile.addResource(arrayResource);
+
+    // first param is the translation set from the xliff files
+    // and can be undefined for generated json files because
+    // the resources already have the translations in them
+    var text = jsonFile.getLocalizedText(undefined, "fr-FR");
+```
+
+### Generation of Each Resource Type
+
+The generation of resources into json has a hard-coded schema for now.
+(This may change in the future.) The hard-coded format is one that
+works with ilib's ResBundle class so that the output json can be
+loaded as string resources.
+
+For strings, they are output as simple key/value pairs:
+
+```json
+{
+    "key": "value"
+}
+```
+
+For arrays, they are output as json arrays:
+
+```json
+{
+    "key": [
+        "value at index 0",
+        "value at index 1",
+        etc
+        "value at index N"
+    ]
+}
+```
+
+For plurals, they are output as ilib plural strings:
+
+```json
+{
+    "key": "one#'one' category string|few#'few' category string|#'other' category string"
+}
+```
+
 ## Not a Validator
 
 Please note that this plugin is *not* a json schema validator, though it
@@ -301,6 +360,14 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.3.0
+
+- added the ability to use this plugin as the output resource file format for other
+  plugins
+    - added addResource() to the JsonFile
+    - changed write so that if there is no existing json, it will generate
+      a new json file using hard-coded output templates
 
 ### v1.2.5
 

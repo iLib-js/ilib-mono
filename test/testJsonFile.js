@@ -2480,5 +2480,287 @@ module.exports.jsonfile = {
         test.equal(content, expected);
 
         test.done();
+    },
+
+    testJsonFileGetLocalizedTextGeneratedString: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "x/y/str.json",
+            type: t,
+            locale: "fr-FR"
+        });
+        test.ok(jf);
+
+        jf.addResource(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(undefined, "fr-FR");
+        
+        var expected =
+           '{\n' +
+           '    "string 1": "C\'est la chaîne numéro 1"\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileGetLocalizedTextGeneratedPlural: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "x/y/str.json",
+            type: t,
+            locale: "fr-FR"
+        });
+        test.ok(jf);
+
+        jf.addResource(new ResourcePlural({
+            project: "foo",
+            key: "string 1",
+            sourceStrings: {
+                "one": "this is the one string",
+                "few": "this is the few string",
+                "other": "this is the other string"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "Ceci est la chaîne 'one'",
+                "few": "Ceci est la chaîne 'few'",
+                "other": "Ceci est la chaîne 'other'"
+            },
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(undefined, "fr-FR");
+        
+        var expected =
+           '{\n' +
+           '    "string 1": "one#Ceci est la chaîne \'one\'|few#Ceci est la chaîne \'few\'|#Ceci est la chaîne \'other\'"\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileGetLocalizedTextGeneratedArray: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "x/y/str.json",
+            type: t,
+            locale: "fr-FR"
+        });
+        test.ok(jf);
+
+        jf.addResource(new ResourceArray({
+            project: "foo",
+            key: "string 1",
+            sourceArray: [
+                "this is string one",
+                "this is string two",
+                "this is string three"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "C'est la chaîne numéro 1",
+                "C'est la chaîne numéro 2",
+                "C'est la chaîne numéro 3"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(undefined, "fr-FR");
+        
+        var expected =
+           '{\n' +
+           '    "string 1": [\n' +
+           '        "C\'est la chaîne numéro 1",\n' +
+           '        "C\'est la chaîne numéro 2",\n' +
+           '        "C\'est la chaîne numéro 3"\n' +
+           '    ]\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileGetLocalizedTextGeneratedAll: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "x/y/str.json",
+            type: t,
+            locale: "fr-FR"
+        });
+        test.ok(jf);
+
+        jf.addResource(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        jf.addResource(new ResourcePlural({
+            project: "foo",
+            key: "string 2",
+            sourceStrings: {
+                "one": "this is the one string",
+                "few": "this is the few string",
+                "other": "this is the other string"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "Ceci est la chaîne 'one'",
+                "few": "Ceci est la chaîne 'few'",
+                "other": "Ceci est la chaîne 'other'"
+            },
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        jf.addResource(new ResourceArray({
+            project: "foo",
+            key: "string 3",
+            sourceArray: [
+                "this is string one",
+                "this is string two",
+                "this is string three"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "C'est la chaîne numéro 1",
+                "C'est la chaîne numéro 2",
+                "C'est la chaîne numéro 3"
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(undefined, "fr-FR");
+        
+        var expected =
+           '{\n' +
+           '    "string 1": "C\'est la chaîne numéro 1",\n' +
+           '    "string 2": "one#Ceci est la chaîne \'one\'|few#Ceci est la chaîne \'few\'|#Ceci est la chaîne \'other\'",\n' +
+           '    "string 3": [\n' +
+           '        "C\'est la chaîne numéro 1",\n' +
+           '        "C\'est la chaîne numéro 2",\n' +
+           '        "C\'est la chaîne numéro 3"\n' +
+           '    ]\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testJsonFileGetLocalizedTextGeneratedEscapeDoubleQuotes: function(test) {
+        test.expect(2);
+
+        var base = path.dirname(module.id);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "x/y/str.json",
+            type: t,
+            locale: "fr-FR"
+        });
+        test.ok(jf);
+
+        jf.addResource(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "this is string one",
+            sourceLocale: "en-US",
+            target: "C'est la \"chaîne\" numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        jf.addResource(new ResourcePlural({
+            project: "foo",
+            key: "string 2",
+            sourceStrings: {
+                "one": "this is the one string",
+                "few": "this is the few string",
+                "other": "this is the other string"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "Ceci est la chaîne \"one\"",
+                "few": "Ceci est la chaîne \"few\"",
+                "other": "Ceci est la chaîne \"other\""
+            },
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        jf.addResource(new ResourceArray({
+            project: "foo",
+            key: "string 3",
+            sourceArray: [
+                "this is string one",
+                "this is string two",
+                "this is string three"
+            ],
+            sourceLocale: "en-US",
+            targetArray: [
+                "C'est la chaîne numéro \"1\"",
+                "C'est la chaîne numéro \"2\"",
+                "C'est la chaîne numéro \"3\""
+            ],
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(undefined, "fr-FR");
+        
+        // need to escape the double quotes for json syntax
+        var expected =
+           '{\n' +
+           '    "string 1": "C\'est la \\\"chaîne\\\" numéro 1",\n' +
+           '    "string 2": "one#Ceci est la chaîne \\\"one\\\"|few#Ceci est la chaîne \\\"few\\\"|#Ceci est la chaîne \\\"other\\\"",\n' +
+           '    "string 3": [\n' +
+           '        "C\'est la chaîne numéro \\\"1\\\"",\n' +
+           '        "C\'est la chaîne numéro \\\"2\\\"",\n' +
+           '        "C\'est la chaîne numéro \\\"3\\\""\n' +
+           '    ]\n' +
+           '}\n';
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
     }
+
 };

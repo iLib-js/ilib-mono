@@ -38,7 +38,7 @@ var JsonFile = function(options) {
     this.type = options.type;
 
     this.API = this.project.getAPI();
-
+    this.locale = new Locale((options && options.locale) || this.project.sourceLocale);
     this.logger = this.API.getLogger("loctool.plugin.JsonFile");
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.mapping = this.type.getMapping(this.pathName);
@@ -679,6 +679,55 @@ JsonFile.prototype.getTranslationSet = function() {
 //we don't write Json source files
 JsonFile.prototype.write = function() {};
 
+
+/**
+ * Get all resources from this file. This will return all resources
+ * of mixed types (strings, arrays, or plurals).
+ *
+ * @returns {Resource} all of the resources available in this resource file.
+ */
+JsonFile.prototype.getAll = function() {
+    return this.set.getAll();
+};
+
+/**
+ * Add a resource to this file. The locale of the resource
+ * should correspond to the locale of the file, and the
+ * context of the resource should match the context of
+ * the file.
+ *
+ * @param {Resource} res a resource to add to this file
+ */
+JsonFile.prototype.addResource = function(res) {
+    this.logger.trace("JsonFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    var resLocale = res.getTargetLocale() || res.getSourceLocale();
+    if (res && res.getProject() === this.project.getProjectId() && resLocale === this.locale.getSpec()) {
+        this.logger.trace("correct project, context, and locale. Adding.");
+        this.set.add(res);
+    } else {
+        if (res) {
+            if (res.getProject() !== this.project.getProjectId()) {
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+            } else {
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.locale.getSpec());
+            }
+        } else {
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
+        }
+    }
+};
+
+/**
+ * Return true if this resource file has been modified
+ * since it was loaded from disk.
+ *
+ * @returns {boolean} true if this resource file has been
+ * modified since it was loaded
+ */
+JsonFile.prototype.isDirty = function() {
+    return this.set.isDirty();
+};
+
 /**
  * Return the location on disk where the version of this file localized
  * for the given locale should be written.
@@ -689,6 +738,34 @@ JsonFile.prototype.getLocalizedPath = function(locale) {
     return this.type.getLocalizedPath(this.mapping, this.pathName, locale);
 };
 
+
+JsonFile.prototype.generateText = function(locale) {
+    var returnValue = {};
+    var resources = this.set.getAll();
+    resources.forEach(function(res) {
+        switch (res.getType()) {
+            case 'plural':
+                var strings = res.getTargetPlurals() || res.getSourcePlurals();
+                var categories = Object.keys(pluralCategories);
+                returnValue[res.getKey()] = categories.filter(function(cat) {
+                    return strings[cat];
+                }).map(function(cat) {
+                    return (cat !== "other" ? cat : "") + "#" + strings[cat];
+                }).join("|");
+                break;
+
+            case 'array':
+                returnValue[res.getKey()] = res.getTargetArray();
+                break;
+
+            default:
+                returnValue[res.getKey()] = res.getTarget();
+                break;
+        }
+    });
+    return returnValue;
+}
+
 /**
  * Localize the text of the current file to the given locale and return
  * the results.
@@ -698,8 +775,10 @@ JsonFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 JsonFile.prototype.localizeText = function(translations, locale) {
-        // "#" is the root reference
-    var returnValue = this.parseObj(this.json, this.schema, this.schema, "#", "root", false, translations, locale);
+    // "#" is the root reference
+    var returnValue = (!this.json && this.set.size() > 0) ?
+        this.generateText(locale) :
+        this.parseObj(this.json, this.schema, this.schema, "#", "root", false, translations, locale);
     return JSON.stringify(returnValue, undefined, 4) + '\n';
 };
 

@@ -178,7 +178,7 @@ JsonFileType.prototype.getDefaultSchema = function() {
  * that schema is not defined
  */
 JsonFileType.prototype.getSchema = function(uri) {
-    return this.refs[uri] || this.getDefaultSchema();
+    return uri && this.refs[uri] || this.getDefaultSchema();
 };
 
 /**
@@ -197,18 +197,7 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
         }
     } else {
         // default schema for all json files with key/value pairs
-        this.schemas = {
-            "default": {
-                "$schema": "http://json-schema.org/draft-07/schema",
-                "$id": "strings-schema",
-                "type": "object",
-                "description": "A collection of properties with localizable values",
-                "additionalProperties": {
-                    "type": "string",
-                    "localizable": true
-                }
-            }
-        }
+        this.schemas = this.getDefaultSchema();
         this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
     }
 
@@ -236,7 +225,7 @@ var defaultMappings = {
  */
 JsonFileType.prototype.getMapping = function(pathName) {
     if (typeof(pathName) === "undefined") {
-        return undefined;
+        return defaultMappings["**/*.json"];
     }
     var jsonSettings = this.project.settings.json;
     var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
