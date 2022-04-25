@@ -5,23 +5,30 @@ allows it to read and localize javascript files.
 
 ## Release Notes
 
-v1.0.4
+### v1.0.5
 
-Updated dependencies to avoid security problems
+- updated dependencies
+- Use the logger provided by the loctool instead of using log4js directly (which doesn't
+  work well)
+- minimum version of node is now v10
 
-v1.0.3
+### v1.0.4
 
-Fixed so that JavaScriptFileType.write passes the right name when asking for the resource
+- Updated dependencies to avoid security problems
+
+### v1.0.3
+
+- Fixed so that JavaScriptFileType.write passes the right name when asking for the resource
 file type for javascript files.
 
-v1.0.2
+### v1.0.2
 
-Fixed so that JavaScriptFileType passes the right props to
+- Fixed so that JavaScriptFileType passes the right props to
 the JavaScriptFile constructor.
 
 ## License
 
-Copyright © 2019, JEDLSoft
+Copyright © 2019, 2022 JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
