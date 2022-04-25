@@ -19,6 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
+var Locale = require("ilib/lib/Locale");
 
 /**
  * Create a new javascript file with the given path name and within
