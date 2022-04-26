@@ -336,10 +336,10 @@ JsonFileType.prototype.write = function() {
     }
 };
 
-JsonFileType.prototype.newFile = function(path, options) {
+JsonFileType.prototype.newFile = function(pathName, options) {
     return new JsonFile({
         project: this.project,
-        pathName: path,
+        pathName: pathName,
         type: this,
         locale: options.locale
     });
@@ -351,16 +351,17 @@ JsonFileType.prototype.newFile = function(path, options) {
  *
  * @param {String} locale the name of the locale in which the resource
  * file will reside
+ * @param {String} pathName path to the resource file, if known, or undefined otherwise
  * @return {JavaScriptResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-JsonFileType.prototype.getResourceFile = function(locale) {
+JsonFileType.prototype.getResourceFile = function(locale, pathName) {
     var key = locale || this.project.sourceLocale;
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
-        resfile = this.resourceFiles[key] = this.newFile(undefined, {
+        resfile = this.resourceFiles[key] = this.newFile(pathName, {
             project: this.project,
             locale: key
         });
