@@ -2506,7 +2506,7 @@ module.exports.jsonfile = {
         }));
 
         var actual = jf.localizeText(undefined, "fr-FR");
-        
+
         var expected =
            '{\n' +
            '    "string 1": "C\'est la chaîne numéro 1"\n' +
@@ -2550,7 +2550,7 @@ module.exports.jsonfile = {
         }));
 
         var actual = jf.localizeText(undefined, "fr-FR");
-        
+
         var expected =
            '{\n' +
            '    "string 1": "one#Ceci est la chaîne \'one\'|few#Ceci est la chaîne \'few\'|#Ceci est la chaîne \'other\'"\n' +
@@ -2594,7 +2594,7 @@ module.exports.jsonfile = {
         }));
 
         var actual = jf.localizeText(undefined, "fr-FR");
-        
+
         var expected =
            '{\n' +
            '    "string 1": [\n' +
@@ -2668,7 +2668,7 @@ module.exports.jsonfile = {
         }));
 
         var actual = jf.localizeText(undefined, "fr-FR");
-        
+
         var expected =
            '{\n' +
            '    "string 1": "C\'est la chaîne numéro 1",\n' +
@@ -2744,7 +2744,7 @@ module.exports.jsonfile = {
         }));
 
         var actual = jf.localizeText(undefined, "fr-FR");
-        
+
         // need to escape the double quotes for json syntax
         var expected =
            '{\n' +

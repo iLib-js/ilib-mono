@@ -104,7 +104,7 @@ used within the json property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - schema: schema to use with that matcher. The schema is 
+    - schema: schema to use with that matcher. The schema is
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above. The default schema is "strings-schema"
       which is given in the previous section.
@@ -124,7 +124,7 @@ used within the json property:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.json" -> "foo/bar"
-        - [filename] the file name of the matching file. 
+        - [filename] the file name of the matching file.
           eg. "foo/bar/strings.json" -> "strings.json"
         - [basename] the basename of the matching file without any extension
           eg. "foo/bar/strings.json" -> "strings"
@@ -210,7 +210,7 @@ When the `localizable` keyword is given for arrays,
 every item in the array is localizable and must be of a primitive type
 (string, integer, number, or boolean). If any array entries are not of
 a primitive type, an exception will be thrown and the localization will
-be halted. 
+be halted.
 
 When the `localizable` keyword
 is given for an object type, that object encodes a plural string. The
@@ -296,7 +296,7 @@ file type for other plugins.
 
 ```javascript
     // path does not have to exist
-    var jsonFile = jsonFileType.newFile(path, {locale: "fr-FR"});
+    var jsonFile = jsonFileType.newFile(undefined, {locale: "fr-FR"});
 
     // the string, plural and array resource added in this example
     // already have translations in them to fr-FR
@@ -309,6 +309,14 @@ file type for other plugins.
     // the resources already have the translations in them
     var text = jsonFile.getLocalizedText(undefined, "fr-FR");
 ```
+
+### Generated File Name
+
+If the `newFile` method is called without a path name, as in the above example,
+the default mapping will apply, and the output file will follow the default
+mapping's template. If a path name is given, but does not match any mapping,
+it will also use the default mapping. Otherwise, it will use the matched mapping
+to find the output file name.
 
 ### Generation of Each Resource Type
 

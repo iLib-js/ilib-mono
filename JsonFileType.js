@@ -54,6 +54,7 @@ var JsonFileType = function(project) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
 
+    this.resourceFiles = {};
     this.schemas = {};
     this.refs = {};
     this.loadSchemas(".");
@@ -197,7 +198,9 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
         }
     } else {
         // default schema for all json files with key/value pairs
-        this.schemas = this.getDefaultSchema();
+        this.schemas = {
+            "default": this.getDefaultSchema()
+        };
         this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
     }
 
@@ -326,16 +329,56 @@ JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
  * are no aggregated strings.
  */
 JsonFileType.prototype.write = function() {
-    // templates are localized individually, so we don't have to
-    // write out the resources
+    this.logger.trace("Now writing out " + Object.keys(this.resourceFiles).length + " resource files");
+    for (var hash in this.resourceFiles) {
+        var file = this.resourceFiles[hash];
+        file.write();
+    }
 };
 
-JsonFileType.prototype.newFile = function(path) {
+JsonFileType.prototype.newFile = function(path, options) {
     return new JsonFile({
         project: this.project,
         pathName: path,
-        type: this
+        type: this,
+        locale: options.locale
     });
+};
+
+/**
+ * Find or create the resource file object for the given project, context,
+ * and locale.
+ *
+ * @param {String} locale the name of the locale in which the resource
+ * file will reside
+ * @return {JavaScriptResourceFile} the Android resource file that serves the
+ * given project, context, and locale.
+ */
+JsonFileType.prototype.getResourceFile = function(locale) {
+    var key = locale || this.project.sourceLocale;
+
+    var resfile = this.resourceFiles && this.resourceFiles[key];
+
+    if (!resfile) {
+        resfile = this.resourceFiles[key] = this.newFile(undefined, {
+            project: this.project,
+            locale: key
+        });
+
+        this.logger.trace("Defining new resource file");
+    }
+
+    return resfile;
+};
+
+/**
+ * Return all resource files known to this file type instance.
+ *
+ * @returns {Array.<JavaScriptResourceFile>} an array of resource files
+ * known to this file type instance
+ */
+JsonFileType.prototype.getAll = function() {
+    return this.resourceFiles;
 };
 
 JsonFileType.prototype.getDataType = function() {

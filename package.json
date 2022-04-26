@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-json",
-    "version": "1.2.5",
+    "version": "1.3.0",
     "main": "./JsonFileType.js",
     "description": "A loctool plugin that knows how to localize json files",
     "license": "Apache-2.0",
@@ -49,7 +49,7 @@
         "clean": "git clean -f -d test"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=10.0"
     },
     "dependencies": {
         "ilib": "^14.14.0",

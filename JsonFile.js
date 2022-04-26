@@ -676,8 +676,18 @@ JsonFile.prototype.getTranslationSet = function() {
     return this.set;
 }
 
-//we don't write Json source files
-JsonFile.prototype.write = function() {};
+JsonFile.prototype.write = function() {
+    if (!this.json && this.isDirty()) {
+        var locale = this.locale.getSpec();
+        var pathName = this.getLocalizedPath(locale);
+        this.logger.debug("Writing file " + pathName);
+        var p = path.join(this.project.target, pathName);
+        var d = path.dirname(p);
+        this.API.utils.makeDirs(d);
+
+        fs.writeFileSync(p, this.localizeText(undefined, locale), "utf-8");
+    }
+};
 
 
 /**
