@@ -117,7 +117,8 @@ be localized, and the loctool will continue on to the next file.
 
 ### v1.1.0
 
-- added the ability to specify output file mappings, localeMaps, and
+- added the ability to use ilib-loctool-json as a resource file
+- added the ability to specify output file mappings and
   output file name templates, similar to the other loctool plugins
 - updated dependencies
 - can now specify a regular expression to match the function wrapper of
