@@ -1,7 +1,7 @@
 /*
  * testJavaScriptResourceFileType.js - test the HTML template file type handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2022 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,6 +100,23 @@ module.exports.javascriptresourcefiletype = {
         test.equal(jsrf2.getLocale(), "fr-FR");
 
         test.deepEqual(jsrf1, jsrf2);
+
+        test.done();
+    },
+
+    testJavaScriptResourceFileTypeGetResourceFileDifferentOneForDifferentPaths: function(test) {
+        test.expect(4);
+
+        var htf = new JavaScriptResourceFileType(p);
+        test.ok(htf);
+
+        var jsrf1 = htf.getResourceFile("fr-FR", "fr/FR/foo.json");
+        test.equal(jsrf1.getLocale(), "fr-FR");
+
+        var jsrf2 = htf.getResourceFile("fr-FR", "sublibrary/fr/FR/foo.json");
+        test.equal(jsrf2.getLocale(), "fr-FR");
+
+        test.notEqual(jsrf1, jsrf2);
 
         test.done();
     }
