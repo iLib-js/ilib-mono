@@ -174,6 +174,8 @@ debugger;
                 datatype: this.type.datatype,
                 index: this.resourceIndex++
             });
+            // for use later when we write out resources
+            r.mapping = this.mapping;
             this.set.add(r);
         } else {
             this.logger.warn("Warning: Bogus empty string in get string call: ");
@@ -217,6 +219,8 @@ debugger;
                 datatype: this.type.datatype,
                 index: this.resourceIndex++
             });
+            // for use later when we write out resources
+            r.mapping = this.mapping;
             this.set.add(r);
         } else {
             this.logger.warn("Warning: Bogus empty string in get string call: ");

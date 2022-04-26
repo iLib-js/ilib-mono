@@ -18,6 +18,7 @@
  */
 
 var fs = require("fs");
+var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 var mm = require("micromatch");
@@ -57,13 +58,13 @@ var JavaScriptFileType = function(project) {
 
 var defaultMappings = {
     "**/*.js": {
-        template: "[dir]/[localeDir]/strings.json"
+        template: "resources/[localeDir]/strings.json"
     },
     "**/*.html.haml": {
-        template: "[dir]/[localeDir]/strings.json"
+        template: "resources/[localeDir]/strings.json"
     },
     "**/*.tmpl.html": {
-        template: "[dir]/[localeDir]/strings.json"
+        template: "resources/[localeDir]/strings.json"
     }
 };
 
@@ -250,7 +251,7 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
                         r.reskey = res.reskey;
                     }
 
-                    file = resFileType.getResourceFile(locale);
+                    file = resFileType.getResourceFile(locale, this.getLocalizedPath(res.mapping, res.getPath(), locale));
                     file.addResource(r);
                     this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
@@ -265,7 +266,7 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale());
+            file = resFileType.getResourceFile(res.getTargetLocale(), this.getLocalizedPath(res.mapping, res.getPath(), locale));
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
