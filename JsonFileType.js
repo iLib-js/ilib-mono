@@ -54,6 +54,7 @@ var JsonFileType = function(project) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
 
+    this.resourceFiles = {};
     this.schemas = {};
     this.refs = {};
     this.loadSchemas(".");
@@ -178,7 +179,7 @@ JsonFileType.prototype.getDefaultSchema = function() {
  * that schema is not defined
  */
 JsonFileType.prototype.getSchema = function(uri) {
-    return this.refs[uri] || this.getDefaultSchema();
+    return uri && this.refs[uri] || this.getDefaultSchema();
 };
 
 /**
@@ -198,17 +199,8 @@ JsonFileType.prototype.loadSchemas = function(pathName) {
     } else {
         // default schema for all json files with key/value pairs
         this.schemas = {
-            "default": {
-                "$schema": "http://json-schema.org/draft-07/schema",
-                "$id": "strings-schema",
-                "type": "object",
-                "description": "A collection of properties with localizable values",
-                "additionalProperties": {
-                    "type": "string",
-                    "localizable": true
-                }
-            }
-        }
+            "default": this.getDefaultSchema()
+        };
         this.refs[this.schemas["default"]["$id"]] = this.schemas["default"];
     }
 
@@ -236,14 +228,16 @@ var defaultMappings = {
  */
 JsonFileType.prototype.getMapping = function(pathName) {
     if (typeof(pathName) === "undefined") {
-        return undefined;
+        return defaultMappings["**/*.json"];
     }
     var jsonSettings = this.project.settings.json;
     var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
-    var normalized = pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
-        pathName.substring(0, pathName.length - 4) + ".json" :
-        pathName;
+    var normalized = path.normalize(
+        pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
+            pathName.substring(0, pathName.length - 4) + ".json" :
+            pathName
+    );
 
     var match = patterns.find(function(pattern) {
         return mm.isMatch(pathName, pattern) || mm.isMatch(normalized, pattern);
@@ -263,7 +257,7 @@ JsonFileType.prototype.getMapping = function(pathName) {
 JsonFileType.prototype.handles = function(pathName) {
     this.logger.debug("JsonFileType handles " + pathName + "?");
     var ret = false;
-    var normalized = pathName;
+    var normalized = path.normalize(pathName);
 
     if (pathName.length > 4 &&
         (pathName.substring(pathName.length - 4) === ".jso" || pathName.substring(pathName.length - 4) === ".jsn")) {
@@ -337,16 +331,57 @@ JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
  * are no aggregated strings.
  */
 JsonFileType.prototype.write = function() {
-    // templates are localized individually, so we don't have to
-    // write out the resources
+    this.logger.trace("Now writing out " + Object.keys(this.resourceFiles).length + " resource files");
+    for (var hash in this.resourceFiles) {
+        var file = this.resourceFiles[hash];
+        file.write();
+    }
 };
 
-JsonFileType.prototype.newFile = function(path) {
+JsonFileType.prototype.newFile = function(pathName, options) {
     return new JsonFile({
         project: this.project,
-        pathName: path,
-        type: this
+        pathName: pathName,
+        type: this,
+        locale: options.locale
     });
+};
+
+/**
+ * Find or create the resource file object for the given project, context,
+ * and locale.
+ *
+ * @param {String} locale the name of the locale in which the resource
+ * file will reside
+ * @param {String} pathName path to the resource file, if known, or undefined otherwise
+ * @return {JavaScriptResourceFile} the Android resource file that serves the
+ * given project, context, and locale.
+ */
+JsonFileType.prototype.getResourceFile = function(locale, pathName) {
+    var key = locale || this.project.sourceLocale;
+
+    var resfile = this.resourceFiles && this.resourceFiles[key];
+
+    if (!resfile) {
+        resfile = this.resourceFiles[key] = this.newFile(pathName, {
+            project: this.project,
+            locale: key
+        });
+
+        this.logger.trace("Defining new resource file");
+    }
+
+    return resfile;
+};
+
+/**
+ * Return all resource files known to this file type instance.
+ *
+ * @returns {Array.<JavaScriptResourceFile>} an array of resource files
+ * known to this file type instance
+ */
+JsonFileType.prototype.getAll = function() {
+    return this.resourceFiles;
 };
 
 JsonFileType.prototype.getDataType = function() {

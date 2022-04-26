@@ -104,7 +104,7 @@ used within the json property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - schema: schema to use with that matcher. The schema is 
+    - schema: schema to use with that matcher. The schema is
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above. The default schema is "strings-schema"
       which is given in the previous section.
@@ -124,7 +124,7 @@ used within the json property:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.json" -> "foo/bar"
-        - [filename] the file name of the matching file. 
+        - [filename] the file name of the matching file.
           eg. "foo/bar/strings.json" -> "strings.json"
         - [basename] the basename of the matching file without any extension
           eg. "foo/bar/strings.json" -> "strings"
@@ -210,7 +210,7 @@ When the `localizable` keyword is given for arrays,
 every item in the array is localizable and must be of a primitive type
 (string, integer, number, or boolean). If any array entries are not of
 a primitive type, an exception will be thrown and the localization will
-be halted. 
+be halted.
 
 When the `localizable` keyword
 is given for an object type, that object encodes a plural string. The
@@ -287,6 +287,73 @@ For strings that have an `enum` keyword, each of the values in the `enum` will
 not be translated as well, as the code that reads this json file is explicitly
 expecting one of the given fixed values.
 
+## JSON File Generation
+
+When you create a new, empty JsonFile instance that is not backed
+by a json file on disk, this plugin can generate the json file
+text automatically. This allows this plugin to be used as a resource
+file type for other plugins.
+
+```javascript
+    // path does not have to exist
+    var jsonFile = jsonFileType.newFile(undefined, {locale: "fr-FR"});
+
+    // the string, plural and array resource added in this example
+    // already have translations in them to fr-FR
+    jsonFile.addResource(stringResource);
+    jsonFile.addResource(pluralResource);
+    jsonFile.addResource(arrayResource);
+
+    // first param is the translation set from the xliff files
+    // and can be undefined for generated json files because
+    // the resources already have the translations in them
+    var text = jsonFile.getLocalizedText(undefined, "fr-FR");
+```
+
+### Generated File Name
+
+If the `newFile` method is called without a path name, as in the above example,
+the default mapping will apply, and the output file will follow the default
+mapping's template. If a path name is given, but does not match any mapping,
+it will also use the default mapping. Otherwise, it will use the matched mapping
+to find the output file name.
+
+### Generation of Each Resource Type
+
+The generation of resources into json has a hard-coded schema for now.
+(This may change in the future.) The hard-coded format is one that
+works with ilib's ResBundle class so that the output json can be
+loaded as string resources.
+
+For strings, they are output as simple key/value pairs:
+
+```json
+{
+    "key": "value"
+}
+```
+
+For arrays, they are output as json arrays:
+
+```json
+{
+    "key": [
+        "value at index 0",
+        "value at index 1",
+        etc
+        "value at index N"
+    ]
+}
+```
+
+For plurals, they are output as ilib plural strings:
+
+```json
+{
+    "key": "one#'one' category string|few#'few' category string|#'other' category string"
+}
+```
+
 ## Not a Validator
 
 Please note that this plugin is *not* a json schema validator, though it
@@ -301,6 +368,14 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.3.0
+
+- added the ability to use this plugin as the output resource file format for other
+  plugins
+    - added addResource() to the JsonFile
+    - changed write so that if there is no existing json, it will generate
+      a new json file using hard-coded output templates
 
 ### v1.2.5
 
