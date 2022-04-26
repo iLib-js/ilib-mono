@@ -233,9 +233,11 @@ JsonFileType.prototype.getMapping = function(pathName) {
     var jsonSettings = this.project.settings.json;
     var mappings = (jsonSettings && jsonSettings.mappings) ? jsonSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
-    var normalized = pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
-        pathName.substring(0, pathName.length - 4) + ".json" :
-        pathName;
+    var normalized = path.normalize(
+        pathName.endsWith(".jso") || pathName.endsWith(".jsn") ?
+            pathName.substring(0, pathName.length - 4) + ".json" :
+            pathName
+    );
 
     var match = patterns.find(function(pattern) {
         return mm.isMatch(pathName, pattern) || mm.isMatch(normalized, pattern);
@@ -255,7 +257,7 @@ JsonFileType.prototype.getMapping = function(pathName) {
 JsonFileType.prototype.handles = function(pathName) {
     this.logger.debug("JsonFileType handles " + pathName + "?");
     var ret = false;
-    var normalized = pathName;
+    var normalized = path.normalize(pathName);
 
     if (pathName.length > 4 &&
         (pathName.substring(pathName.length - 4) === ".jso" || pathName.substring(pathName.length - 4) === ".jsn")) {
