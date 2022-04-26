@@ -56,7 +56,14 @@ var JavaScriptFile = function(props) {
     var wrapper = (jsSettings && jsSettings.wrapper) || "(^R|\\WR)B\\s*\\.\\s*getString(JS)?";
 
     if (wrapper) {
-        this.wrapperCaptureGroupCount = wrapper.replaceAll(/[^\(]*/g, "").length;
+        this.wrapperCaptureGroupCount = 0;
+        for (var i = 0; i < wrapper.length; i++) {
+            if (wrapper[i] === '\\') {
+                i++;
+            } else if (wrapper[i] === '(') {
+                this.wrapperCaptureGroupCount++;
+            }
+        }
     }
     this.reGetString = new RegExp(wrapper + strGetString, "g");
     this.reGetStringWithId = new RegExp(wrapper + strGetStringWithId, "g");
