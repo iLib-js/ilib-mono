@@ -21,6 +21,14 @@ var fs = require("fs");
 var path = require("path");
 var Locale = require("ilib/lib/Locale");
 
+
+var strGetStringBogusConcatenation1 = "\\s*\\(\\s*(\"[^\"]*\"|'[^']*')\\s*\\+";
+var strGetStringBogusConcatenation2 = "\\s*\\([^\\)]*\\+\\s*(\"[^\"]*\"|'[^']*')\\s*\\)";
+var strGetStringBogusParam = "\\s*\\([^\"'\\)]*\\)/";
+
+var strGetString = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*\\)";
+var strGetStringWithId = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*,\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*\\)";
+
 /**
  * Create a new javascript file with the given path name and within
  * the given project.
@@ -42,6 +50,19 @@ var JavaScriptFile = function(props) {
 
     this.localeSpec = props.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
     this.locale = new Locale(this.localeSpec);
+
+    // get the regexp that finds the function call that wraps strings to translate
+    var jsSettings = this.project.settings && this.project.settings.javascript;
+    var wrapper = (jsSettings && jsSettings.wrapper) || "(^R|\\WR)B\\s*\\.\\s*getString(JS)?";
+
+    if (wrapper) {
+        this.wrapperCaptureGroupCount = wrapper.replaceAll(/[^\(]*/g, "").length;
+    }
+    this.reGetString = new RegExp(wrapper + strGetString, "g");
+    this.reGetStringWithId = new RegExp(wrapper + strGetStringWithId, "g");
+    this.reGetStringBogusConcatenation1 = new RegExp(wrapper + strGetStringBogusConcatenation1, "g");
+    this.reGetStringBogusConcatenation2 = new RegExp(wrapper + strGetStringBogusConcatenation2, "g");
+    this.reGetStringBogusParam = new RegExp(wrapper + strGetStringBogusParam, "g");
 
     this.resourceIndex = 0;
 };
@@ -108,13 +129,6 @@ JavaScriptFile.prototype.makeKey = function(source) {
     return JavaScriptFile.unescapeString(source);
 };
 
-var reGetStringBogusConcatenation1 = new RegExp(/(^R|\WR)B\.getString(JS)?\s*\(\s*("[^"]*"|'[^']*')\s*\+/g);
-var reGetStringBogusConcatenation2 = new RegExp(/(^R|\WR)B\.getString(JS)?\s*\([^\)]*\+\s*("[^"]*"|'[^']*')\s*\)/g);
-var reGetStringBogusParam = new RegExp(/(^R|\WR)B\.getString(JS)?\s*\([^"'\)]*\)/g);
-
-var reGetString = new RegExp(/(^R|\WR)B\.getString(JS)?\s*\(\s*("((\\"|[^"])*)"|'((\\'|[^'])*)')\s*\)/g);
-var reGetStringWithId = new RegExp(/(^R|\WR)B\.getString(JS)?\s*\(\s*("((\\"|[^"])*)"|'((\\'|[^'])*)')\s*,\s*("((\\"|[^"])*)"|'((\\'|[^'])*)')\s*\)/g);
-
 var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
 
 /**
@@ -127,19 +141,23 @@ JavaScriptFile.prototype.parse = function(data) {
     this.resourceIndex = 0;
 
     var comment, match, key;
+debugger;
+    reI18nComment.lastIndex = 0;
+    this.reGetString.lastIndex = 0; // just to be safe
 
-    reGetString.lastIndex = 0; // just to be safe
-    var result = reGetString.exec(data);
-    while (result && result.length > 1 && result[3]) {
+    var result = this.reGetString.exec(data);
+    while (result && result.length > 1 && result[this.wrapperCaptureGroupCount+1]) {
         // different matches for single and double quotes
-        match = (result[3][0] === '"') ? result[4] : result[6];
+        match = (result[this.wrapperCaptureGroupCount+1][0] === '"') ?
+            result[this.wrapperCaptureGroupCount+2] :
+            result[this.wrapperCaptureGroupCount+4];
 
         if (match && match.length) {
             this.logger.trace("Found string key: " + this.makeKey(match) + ", string: '" + match + "'");
 
-            var last = data.indexOf('\n', reGetString.lastIndex);
+            var last = data.indexOf('\n', this.reGetString.lastIndex);
             last = (last === -1) ? data.length : last;
-            var line = data.substring(reGetString.lastIndex, last);
+            var line = data.substring(this.reGetString.lastIndex, last);
             var commentResult = reI18nComment.exec(line);
             comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
 
@@ -159,25 +177,29 @@ JavaScriptFile.prototype.parse = function(data) {
             this.set.add(r);
         } else {
             this.logger.warn("Warning: Bogus empty string in get string call: ");
-            this.logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
+            this.logger.warn("... " + data.substring(result.index, this.reGetString.lastIndex) + " ...");
         }
-        result = reGetString.exec(data);
+        result = this.reGetString.exec(data);
     }
 
     // just to be safe
     reI18nComment.lastIndex = 0;
-    reGetStringWithId.lastIndex = 0;
+    this.reGetStringWithId.lastIndex = 0;
 
-    result = reGetStringWithId.exec(data);
-    while (result && result.length > 2 && result[3] && result[8]) {
+    result = this.reGetStringWithId.exec(data);
+    while (result && result.length > 2 && result[this.wrapperCaptureGroupCount+1] && result[this.wrapperCaptureGroupCount+6]) {
         // different matches for single and double quotes
-        match = (result[3][0] === '"') ? result[4] : result[6];
-        key = (result[8][0] === '"') ? result[9] : result[11];
+        match = (result[this.wrapperCaptureGroupCount+1][0] === '"') ?
+            result[this.wrapperCaptureGroupCount+2] :
+            result[this.wrapperCaptureGroupCount+4];
+        key = (result[this.wrapperCaptureGroupCount+6][0] === '"') ?
+            result[this.wrapperCaptureGroupCount+7] :
+            result[this.wrapperCaptureGroupCount+9];
 
         if (match && key && match.length && key.length) {
-            var last = data.indexOf('\n', reGetStringWithId.lastIndex);
+            var last = data.indexOf('\n', this.reGetStringWithId.lastIndex);
             last = (last === -1) ? data.length : last;
-            var line = data.substring(reGetStringWithId.lastIndex, last);
+            var line = data.substring(this.reGetStringWithId.lastIndex, last);
             var commentResult = reI18nComment.exec(line);
             comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
 
@@ -198,23 +220,23 @@ JavaScriptFile.prototype.parse = function(data) {
             this.set.add(r);
         } else {
             this.logger.warn("Warning: Bogus empty string in get string call: ");
-            this.logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
+            this.logger.warn("... " + data.substring(result.index, this.reGetString.lastIndex) + " ...");
         }
-        result = reGetStringWithId.exec(data);
+        result = this.reGetStringWithId.exec(data);
     }
 
     // now check for and report on errors in the source
-    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation1,
+    this.API.utils.generateWarnings(data, this.reGetStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the RB.getString() parameters:",
         this.logger,
         this.pathName);
 
-    this.API.utils.generateWarnings(data, reGetStringBogusConcatenation2,
+    this.API.utils.generateWarnings(data, this.reGetStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the RB.getString() parameters:",
         this.logger,
         this.pathName);
 
-    this.API.utils.generateWarnings(data, reGetStringBogusParam,
+    this.API.utils.generateWarnings(data, this.reGetStringBogusParam,
         "Warning: non-string arguments are not allowed in the RB.getString() parameters:",
         this.logger,
         this.pathName);

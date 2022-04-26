@@ -25,13 +25,27 @@ if (!JavaScriptFile) {
 
 var p = new CustomProject({
     id: "app",
-    plugins: ["../."],
+    plugins: [require.resolve("../.")],
     sourceLocale: "en-US"
 }, "./test/testfiles", {
     locales:["en-GB"]
 });
 
 var jsft = new JavaScriptFileType(p);
+
+// test a different wrapper
+var p2 = new CustomProject({
+    id: "app",
+    plugins: [require.resolve("../.")],
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    javascript: {
+        wrapper: "(^r|\\Wr)b\\s*\\.\\s*getString(JS)?"
+    }
+});
+
+var jsft2 = new JavaScriptFileType(p2);
 
 module.exports.javascriptfile = {
     testJavaScriptFileConstructor: function(test) {
@@ -985,12 +999,12 @@ module.exports.javascriptfile = {
         test.equal(r.getSource(), "Hand-held Devices");
         test.equal(r.getKey(), "Hand-held Devices");
 
-        var r = set.getBySource("Tablets");
+        r = set.getBySource("Tablets");
         test.ok(r);
         test.equal(r.getSource(), "Tablets");
         test.equal(r.getKey(), "Tablets");
 
-        var r = set.getBySource("Smart Watches");
+        r = set.getBySource("Smart Watches");
         test.ok(r);
         test.equal(r.getSource(), "Smart Watches");
         test.equal(r.getKey(), "Smart Watches");
@@ -1036,5 +1050,98 @@ module.exports.javascriptfile = {
         test.equal(set.size(), 0);
 
         test.done();
+    },
+
+    testJavaScriptFileParseWithAlternateWrapper: function(test) {
+        test.expect(9);
+
+        var j = new JavaScriptFile({
+            project: p2,
+            pathName: undefined,
+            type: jsft2
+        });
+        test.ok(j);
+
+        j.parse(
+            "if (subcat === 'Has types') {\n" +
+            "    buttonText = rb\n" +
+            "                . getStringJS   (\n" +
+            "                     'Start Download'\n" +
+            "                ) ;\n" +
+            "    title = rb\n" +
+            "                .  getString (\n" +
+            "                     'Types of {topic}',\n" +
+            "                     'unique key'\n" +
+            "                )\n" +
+            "                .format({\n" +
+            "                    topic: topic.attribute.name\n" +
+            "                });\n" +
+            "}\n"
+        );
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBy({
+            reskey: "unique key"
+        });
+        test.ok(r);
+        test.equal(r.length, 1);
+        test.equal(r[0].getSource(), "Types of {topic}");
+        test.equal(r[0].getKey(), "unique key");
+
+        r = set.getBySource("Start Download");
+        test.ok(r);
+        test.equal(r.getSource(), "Start Download");
+        test.equal(r.getKey(), "Start Download");
+
+        test.done();
+    },
+
+    testJavaScriptFileParseWithAlternateWrapperAndEmbeddedQuote: function(test) {
+        test.expect(9);
+
+        var j = new JavaScriptFile({
+            project: p2,
+            pathName: undefined,
+            type: jsft2
+        });
+        test.ok(j);
+
+        j.parse(
+            "if (subcat === 'Has types') {\n" +
+            "    buttonText = rb\n" +
+            "                . getStringJS   (\n" +
+            "                     'Start \\\"Download'\n" +
+            "                ) ;\n" +
+            "    title = rb\n" +
+            "                .  getString (\n" +
+            "                     'Types of {topic}',\n" +
+            "                     'unique key'\n" +
+            "                )\n" +
+            "                .format({\n" +
+            "                    topic: topic.attribute.name\n" +
+            "                });\n" +
+            "}\n"
+        );
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBy({
+            reskey: "unique key"
+        });
+        test.ok(r);
+        test.equal(r.length, 1);
+        test.equal(r[0].getSource(), "Types of {topic}");
+        test.equal(r[0].getKey(), "unique key");
+
+        r = set.getBySource("Start \"Download");
+        test.ok(r);
+        test.equal(r.getSource(), "Start \"Download");
+        test.equal(r.getKey(), "Start \"Download");
+
+        test.done();
     }
+
 };

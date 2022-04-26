@@ -78,7 +78,7 @@ Example configuration:
 {
     "settings": {
         "json": {
-            "wrapper": "rb\w*\.getString(JS)?",
+            "wrapper": "rb\\s*\\.getString(JS)?",
             "schemas": "./json/schemas",
             "mappings": {
                 "**/appinfo.json": {
@@ -120,6 +120,8 @@ be localized, and the loctool will continue on to the next file.
 - added the ability to specify output file mappings, localeMaps, and
   output file name templates, similar to the other loctool plugins
 - updated dependencies
+- can now specify a regular expression to match the function wrapper of
+  strings
 - Use the logger provided by the loctool instead of using log4js directly (which doesn't
   work well)
 - minimum version of node is now v10
