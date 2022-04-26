@@ -30,7 +30,7 @@ used within the json property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - schema: schema to use with that matcher. The schema is 
+    - schema: schema to use with that matcher. The schema is
       specified using the `$id` of one of the schemas loaded in the
       `schemas` property above. The default schema is "strings-schema"
       which is given in the previous section.
@@ -50,7 +50,7 @@ used within the json property:
         - [dir] the original directory where the matched source file
           came from. This is given as a directory that is relative
           to the root of the project. eg. "foo/bar/strings.json" -> "foo/bar"
-        - [filename] the file name of the matching file. 
+        - [filename] the file name of the matching file.
           eg. "foo/bar/strings.json" -> "strings.json"
         - [basename] the basename of the matching file without any extension
           eg. "foo/bar/strings.json" -> "strings"
