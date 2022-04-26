@@ -5,11 +5,23 @@ allows it to read and localize javascript files.
 
 ## Configuring the Plugin
 
+### Standard Settings
+
+To use this plugin, you should set these two settings:
+
+- The `projectType` setting should be set to `custom`
+- The `resourceFileTypes` setting should be set to an object that
+  includes the `javascript` property. The value names the plugin
+  that will be used as a resource file format.
+
+### Custom Settings
+
 The plugin will look for the `javascript` property within the `settings`
 of your `project.json` file. The following settings are
 used within the json property:
 
-- wrapper: 
+- wrapper: specify a regular expression that matches the wrapper function
+  that contains strings to extract and unique ids
 - mappings: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
   json files within the project to be processed with different schema.
@@ -66,6 +78,7 @@ Example configuration:
 {
     "settings": {
         "json": {
+            "wrapper": "rb\w*\.getString(JS)?",
             "schemas": "./json/schemas",
             "mappings": {
                 "**/appinfo.json": {

@@ -20,23 +20,35 @@
 if (!JavaScriptFileType) {
     var JavaScriptFileType = require("../JavaScriptFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
+    var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
+    var JsonFileType = require("ilib-loctool-json");
 }
 
 var p = new CustomProject({
     id: "app",
-    plugins: ["../."],
+    plugins: [require.resolve("../.")],
     sourceLocale: "en-US"
 }, "./testfiles", {
     locales:["en-GB"]
+});
+
+// trying using ilib-loctool-json as the output for resource files
+var p2 = new CustomProject({
+    id: "app",
+    resourceFileTypes: { "javascript": "ilib-loctool-json" },
+    plugins: [require.resolve("../."), "ilib-loctool-json"],
+    sourceLocale: "en-US"
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "fr-FR"]
 });
 
 module.exports.javascriptfiletype = {
     testJavaScriptFileTypeConstructor: function(test) {
         test.expect(1);
 
-        var htf = new JavaScriptFileType(p);
+        var jtf = new JavaScriptFileType(p);
 
-        test.ok(htf);
+        test.ok(jtf);
 
         test.done();
     },
@@ -44,10 +56,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesJSTrue: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("foo.js"));
+        test.ok(jtf.handles("foo.js"));
 
         test.done();
     },
@@ -55,10 +67,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesJSXTrue: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("foo.jsx"));
+        test.ok(jtf.handles("foo.jsx"));
 
         test.done();
     },
@@ -66,10 +78,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesHamlTrue: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("foo.html.haml"));
+        test.ok(jtf.handles("foo.html.haml"));
 
         test.done();
     },
@@ -77,10 +89,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesTemplatesTrue: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("foo.tmpl.html"));
+        test.ok(jtf.handles("foo.tmpl.html"));
 
         test.done();
     },
@@ -88,10 +100,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesJSFalseClose: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("foojs"));
+        test.ok(!jtf.handles("foojs"));
 
         test.done();
     },
@@ -100,10 +112,10 @@ module.exports.javascriptfiletype = {
         test.expect(2);
 
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("foohtml.haml"));
+        test.ok(!jtf.handles("foohtml.haml"));
 
         test.done();
     },
@@ -111,10 +123,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesTemplateFalseClose: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("footmpl.html"));
+        test.ok(!jtf.handles("footmpl.html"));
 
         test.done();
     },
@@ -122,10 +134,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesFalse: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("foo.html"));
+        test.ok(!jtf.handles("foo.html"));
 
         test.done();
     },
@@ -134,10 +146,10 @@ module.exports.javascriptfiletype = {
         test.expect(2);
 
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("a/b/c/foo.js"));
+        test.ok(jtf.handles("a/b/c/foo.js"));
 
         test.done();
     },
@@ -146,10 +158,10 @@ module.exports.javascriptfiletype = {
         test.expect(2);
 
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("a/b/c/foo.html.haml"));
+        test.ok(jtf.handles("a/b/c/foo.html.haml"));
 
         test.done();
     },
@@ -158,10 +170,10 @@ module.exports.javascriptfiletype = {
         test.expect(2);
 
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("a/b/c/foo.en-US.html.haml"));
+        test.ok(jtf.handles("a/b/c/foo.en-US.html.haml"));
 
         test.done();
     },
@@ -169,10 +181,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesTemplateSourceLocale: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("a/b/c/strings.en-US.tmpl.html"));
+        test.ok(jtf.handles("a/b/c/strings.en-US.tmpl.html"));
 
         test.done();
     },
@@ -180,10 +192,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesHamlTrueWithDir: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(htf.handles("a/b/c/foo.tmpl.html"));
+        test.ok(jtf.handles("a/b/c/foo.tmpl.html"));
 
         test.done();
     },
@@ -191,10 +203,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesJSAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.en-GB.js"));
+        test.ok(!jtf.handles("a/b/c/strings.en-GB.js"));
 
         test.done();
     },
@@ -202,10 +214,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesHamlAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.en-GB.html.haml"));
+        test.ok(!jtf.handles("a/b/c/strings.en-GB.html.haml"));
 
         test.done();
     },
@@ -213,10 +225,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesTemplateAlreadyLocalizedGB: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.en-GB.tmpl.html"));
+        test.ok(!jtf.handles("a/b/c/strings.en-GB.tmpl.html"));
 
         test.done();
     },
@@ -224,10 +236,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandlesJSAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.zh-Hans-CN.js"));
+        test.ok(!jtf.handles("a/b/c/strings.zh-Hans-CN.js"));
 
         test.done();
     },
@@ -235,21 +247,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandleHamlAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.zh-Hans-CN.html.haml"));
-
-        test.done();
-    },
-
-    testJavaScriptFileTypeHandleTemplateAlreadyLocalizedCN: function(test) {
-        test.expect(2);
-
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
-
-        test.ok(!htf.handles("a/b/c/strings.zh-Hans-CN.tmpl.html"));
+        test.ok(!jtf.handles("a/b/c/strings.zh-Hans-CN.html.haml"));
 
         test.done();
     },
@@ -257,10 +258,21 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandleTemplateAlreadyLocalizedCN: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.zh-Hans-CN.tmpl.html"));
+        test.ok(!jtf.handles("a/b/c/strings.zh-Hans-CN.tmpl.html"));
+
+        test.done();
+    },
+
+    testJavaScriptFileTypeHandleTemplateAlreadyLocalizedCN: function(test) {
+        test.expect(2);
+
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
+
+        test.ok(!jtf.handles("a/b/c/strings.zh-Hans-CN.tmpl.html"));
 
         test.done();
     },
@@ -268,10 +280,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandleTemplateAlreadyLocalizedES: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.es-US.tmpl.html"));
+        test.ok(!jtf.handles("a/b/c/strings.es-US.tmpl.html"));
 
         test.done();
     },
@@ -279,10 +291,10 @@ module.exports.javascriptfiletype = {
     testJavaScriptFileTypeHandleTemplateAlreadyLocalizedES: function(test) {
         test.expect(2);
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.es-US.tmpl.html"));
+        test.ok(!jtf.handles("a/b/c/strings.es-US.tmpl.html"));
 
         test.done();
     },
@@ -298,10 +310,10 @@ module.exports.javascriptfiletype = {
             flavors: ["ASDF"]
         });
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.en-ZA-ASDF.js"));
+        test.ok(!jtf.handles("a/b/c/strings.en-ZA-ASDF.js"));
 
         test.done();
     },
@@ -317,10 +329,10 @@ module.exports.javascriptfiletype = {
             flavors: ["ASDF"]
         });
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.en-ZA-ASDF.html.haml"));
+        test.ok(!jtf.handles("a/b/c/strings.en-ZA-ASDF.html.haml"));
 
         test.done();
     },
@@ -336,10 +348,89 @@ module.exports.javascriptfiletype = {
             flavors: ["ASDF"]
         });
 
-        var htf = new JavaScriptFileType(p);
-        test.ok(htf);
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
 
-        test.ok(!htf.handles("a/b/c/strings.en-ZA-ASDF.tmpl.html"));
+        test.ok(!jtf.handles("a/b/c/strings.en-ZA-ASDF.tmpl.html"));
+
+        test.done();
+    },
+
+    testJavaScriptFileTypeGetResourceFile: function(test) {
+        test.expect(3);
+
+        var jtf = new JavaScriptFileType(p);
+        test.ok(jtf);
+
+        var resFileType = p.getResourceFileType("javascript");
+        test.ok(resFileType instanceof JavaScriptResourceFileType);
+
+        var resfile = resFileType.getResourceFile("de-DE");
+
+        test.ok(resfile);
+        test.equal(resfile.locale.getSpec(), "de-DE");
+        test.done();
+    },
+
+    testJavaScriptFileTypeGetResourceFile: function(test) {
+        test.expect(4);
+
+        p2.defineFileTypes();
+        var jtf = new JavaScriptFileType(p2);
+        test.ok(jtf);
+
+        var resFileType = p2.getResourceFileType("javascript");
+        test.ok(resFileType instanceof JsonFileType);
+
+        var resfile = resFileType.getResourceFile("de-DE");
+
+        test.ok(resfile);
+        test.equal(resfile.locale.getSpec(), "de-DE");
+        test.done();
+    },
+
+    testJavaScriptFileTypeGetResourceFileSameForSameLocale: function(test) {
+        test.expect(5);
+
+        p2.defineFileTypes();
+        var jtf = new JavaScriptFileType(p2);
+        test.ok(jtf);
+
+        var resFileType = p2.getResourceFileType("javascript");
+        test.ok(resFileType instanceof JsonFileType);
+
+        var resfile1 = resFileType.getResourceFile("de-DE");
+
+        test.ok(resfile1);
+
+        var resfile2 = resFileType.getResourceFile("de-DE");
+
+        test.ok(resfile2);
+
+        test.equal(resfile1, resfile2);
+
+        test.done();
+    },
+
+    testJavaScriptFileTypeGetResourceFileDifferentForDifferentLocales: function(test) {
+        test.expect(5);
+
+        p2.defineFileTypes();
+        var jtf = new JavaScriptFileType(p2);
+        test.ok(jtf);
+
+        var resFileType = p2.getResourceFileType("javascript");
+        test.ok(resFileType instanceof JsonFileType);
+
+        var resfile1 = resFileType.getResourceFile("de-DE");
+
+        test.ok(resfile1);
+
+        var resfile2 = resFileType.getResourceFile("fr-FR");
+
+        test.ok(resfile2);
+
+        test.notEqual(resfile1, resfile2);
 
         test.done();
     }
