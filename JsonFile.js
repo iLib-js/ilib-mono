@@ -679,7 +679,7 @@ JsonFile.prototype.getTranslationSet = function() {
 JsonFile.prototype.write = function() {
     if (!this.json && this.isDirty()) {
         var locale = this.locale.getSpec();
-        var pathName = this.getLocalizedPath(locale);
+        var pathName = this.pathName || this.getLocalizedPath(locale);
         this.logger.debug("Writing file " + pathName);
         var p = path.join(this.project.target, pathName);
         var d = path.dirname(p);
