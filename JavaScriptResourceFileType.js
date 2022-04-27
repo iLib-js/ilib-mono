@@ -110,7 +110,7 @@ JavaScriptResourceFileType.prototype.newFile = function(pathName, options) {
  * @param {String} locale the name of the locale in which the resource
  * file will reside
  * @param {String} pathName the optional path to the resource file if the
- * caller has already calculated what it should be 
+ * caller has already calculated what it should be
  * @return {JavaScriptResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
