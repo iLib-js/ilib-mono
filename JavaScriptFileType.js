@@ -18,9 +18,10 @@
  */
 
 var fs = require("fs");
-var ilib = require("ilib");
+var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
+var mm = require("micromatch");
 
 var JavaScriptFile = require("./JavaScriptFile.js");
 var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
@@ -38,7 +39,55 @@ var JavaScriptFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.pseudos = {};
+
+    // generate all the pseudo bundles we'll need
+    project.settings && project.settings.locales && project.settings.locales.forEach(function(locale) {
+        var pseudo = this.API.getPseudoBundle(locale, this, project);
+        if (pseudo) {
+            this.pseudos[locale] = pseudo;
+        }
+    }.bind(this));
+
+    // for use with missing strings
+    if (!project.settings.nopseudo) {
+        this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
+    }
 };
+
+var defaultMappings = {
+    "**/*.js": {
+        template: "resources/[localeDir]/strings.json"
+    },
+    "**/*.html.haml": {
+        template: "resources/[localeDir]/strings.json"
+    },
+    "**/*.tmpl.html": {
+        template: "resources/[localeDir]/strings.json"
+    }
+};
+
+/**
+ * Return the mapping corresponding to this path.
+ * @param {String} pathName the path to check
+ * @returns {Object} the mapping object corresponding to the
+ * path or undefined if none of the mappings match
+ */
+JavaScriptFileType.prototype.getMapping = function(pathName) {
+    if (typeof(pathName) === "undefined") {
+        return undefined;
+    }
+    var jsSettings = this.project.settings.javascript;
+    var mappings = (jsSettings && jsSettings.mappings) ? jsSettings.mappings : defaultMappings;
+    var patterns = Object.keys(mappings);
+
+    var match = patterns.find(function(pattern) {
+        return mm.isMatch(pathName, pattern);
+    });
+
+    return match && mappings[match];
+}
 
 var alreadyLocJS = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.js$/);
 var alreadyLocHaml = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
@@ -55,21 +104,49 @@ var alreadyLocTmpl = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-
 JavaScriptFileType.prototype.handles = function(pathName) {
     this.logger.debug("JavaScriptFileType handles " + pathName + "?");
     var ret = false;
-
+debugger;
     // resource files should be handled by the JavaScriptResourceType instead
     if (this.project.isResourcePath("js", pathName)) return false;
 
-    if ((pathName.length > 3  && pathName.substring(pathName.length - 3) === ".js") ||
-        (pathName.length > 4  && pathName.substring(pathName.length - 4) === ".jsx")) {
-        var match = alreadyLocJS.exec(pathName);
-        ret = (match && match.length) ? match[1] === this.project.sourceLocale : true;
-    } else if (pathName.length > 10) {
-        if (pathName.substring(pathName.length - 10) === ".html.haml") {
-            var match = alreadyLocHaml.exec(pathName);
-            ret = (match && match.length) ? match[1] === this.project.sourceLocale : true;
-        } else if (pathName.substring(pathName.length - 10) === ".tmpl.html") {
-            var match = alreadyLocTmpl.exec(pathName);
-            ret = (match && match.length) ? match[1] === this.project.sourceLocale : true;
+    ret = (pathName.endsWith(".js") || pathName.endsWith(".jsx") ||
+        pathName.endsWith(".html.haml") || pathName.endsWith(".tmpl.html"));
+
+    // now match at least one of the mapping patterns
+    if (ret) {
+        // first check if it is a source file
+        var jsSettings = this.project.settings.javascript;
+        if (jsSettings) {
+            ret = false;
+            var mappings = (jsSettings && jsSettings.mappings) ? jsSettings.mappings : defaultMappings;
+            var patterns = Object.keys(mappings);
+            ret = mm.isMatch(pathName, patterns);
+            // now check if it is an already-localized file, and if it has a different locale than the
+            // source locale, then we don't need to extract those strings
+            if (ret) {
+                for (var i = 0; i < patterns.length; i++) {
+                    var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, "./" + pathName);
+                    if (locale && this.isValidLocale(locale) && locale !== this.project.sourceLocale) {
+                        ret = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            // no js settings, so check for the locale in the path manually for backwards compatibility
+            var match = alreadyLocJS.exec(pathName);
+            if (match) {
+                ret = match.length ? match[1] === this.project.sourceLocale : true;
+            } else {
+                match = alreadyLocHaml.exec(pathName);
+                if (match) {
+                    ret = match.length ? match[1] === this.project.sourceLocale : true;
+                } else {
+                    match = alreadyLocTmpl.exec(pathName);
+                    if (match) {
+                        ret = match.length ? match[1] === this.project.sourceLocale : true;
+                    }
+                }
+            }
         }
     }
 
@@ -79,6 +156,45 @@ JavaScriptFileType.prototype.handles = function(pathName) {
 
 JavaScriptFileType.prototype.name = function() {
     return "JavaScript File Type";
+};
+
+/**
+ * Return the alternate output locale or the shared output locale for the given
+ * mapping. If there are no locale mappings, it returns the locale parameter.
+ *
+ * @param {Object} mapping the mapping for this source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {Locale} the output locale
+ */
+JavaScriptFileType.prototype.getOutputLocale = function(mapping, locale) {
+    // we can remove the replace() call after upgrading to
+    // ilib 14.10.0 or later because it can parse locale specs
+    // with underscores in them
+    return new Locale(
+        (mapping && mapping.localeMap && mapping.localeMap[locale] && mapping.localeMap[locale]) ||
+        this.project.getOutputLocale(locale));
+};
+
+/**
+ * Return the location on disk where the version of this file localized
+ * for the given locale should be written.
+ * @param {String} template template for the output file
+ * @param {String} pathname path to the source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {String} the localized path name
+ */
+JavaScriptFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
+    var template = mapping && mapping.template;
+    var l = this.getOutputLocale(mapping, locale);
+
+    if (!template) {
+        template = defaultMappings["**/*.js"].template;
+    }
+
+    return path.normalize(this.API.utils.formatPath(template, {
+        sourcepath: pathname,
+        locale: l
+    }));
 };
 
 /**
@@ -135,7 +251,7 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
                         r.reskey = res.reskey;
                     }
 
-                    file = resFileType.getResourceFile(locale);
+                    file = resFileType.getResourceFile(locale, this.getLocalizedPath(res.mapping, res.getPath(), locale));
                     file.addResource(r);
                     this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
@@ -150,18 +266,19 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale());
+            file = resFileType.getResourceFile(res.getTargetLocale(), this.getLocalizedPath(res.mapping, res.getPath(), locale));
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
     }
 };
 
-JavaScriptFileType.prototype.newFile = function(path) {
+JavaScriptFileType.prototype.newFile = function(path, options) {
     return new JavaScriptFile({
         project: this.project,
         pathName: path,
-        type: this
+        type: this,
+        locale: options && options.targetLocale
     });
 };
 
@@ -171,6 +288,16 @@ JavaScriptFileType.prototype.getDataType = function() {
 
 JavaScriptFileType.prototype.getResourceTypes = function() {
     return {};
+};
+
+/**
+ * Return the list of file name extensions that this plugin can
+ * process.
+ *
+ * @returns {Array.<string>} the list of file name extensions
+ */
+JavaScriptFileType.prototype.getExtensions = function() {
+    return this.extensions;
 };
 
 /**
@@ -226,16 +353,6 @@ JavaScriptFileType.prototype.getNew = function() {
  */
 JavaScriptFileType.prototype.getPseudo = function() {
     return this.pseudo;
-};
-
-/**
- * Return the list of file name extensions that this plugin can
- * process.
- *
- * @returns {Array.<string>} the list of file name extensions
- */
-JavaScriptFileType.prototype.getExtensions = function() {
-    return this.extensions;
 };
 
 module.exports = JavaScriptFileType;
