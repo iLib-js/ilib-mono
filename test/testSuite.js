@@ -18,7 +18,8 @@
  */
 
 var nodeunit = require("nodeunit");
-require("./assertExtras.js");
+var assert = require("nodeunit/lib/assert");
+require("assertextras")(assert);
 
 var reporter = nodeunit.reporters.minimal;
 var modules = {};

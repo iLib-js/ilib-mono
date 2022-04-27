@@ -191,6 +191,13 @@ file for more details.
 
 ## Release Notes
 
+### v1.11.0
+
+- Now uses newest yaml parser which puts a hash of the source path name in the
+  key for each frontmatter field. This way, the Title field in different
+  md files will have different resource keys and therefore can be translated
+  separately.
+
 ### v1.10.0
 
 - added localeMaps to the mappings
@@ -335,6 +342,7 @@ to translate.
 
 - The plugin now adds a translator comment/note for inline code so that the
   translator can know what the text of the self-closing components is.
+- Minimum node version to run this plugin is now v10
 
 ### 1.2.6
 
@@ -349,13 +357,13 @@ to translate.
 
 ### 1.2.4
 
-- The previous fix where HTML comments were not recognized and skipped properly 
+- The previous fix where HTML comments were not recognized and skipped properly
 was only fixed for the parsing side of this plugin. Now it is fixed for the
 localization side as well.
 
 ### 1.2.3
 
-- Fixed a bug where HTML comments were not recognized and skipped properly 
+- Fixed a bug where HTML comments were not recognized and skipped properly
 if there was whitespace/indentation before them in the source file.
 
 ### 1.2.2

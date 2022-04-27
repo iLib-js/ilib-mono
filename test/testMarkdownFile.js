@@ -1,7 +1,7 @@
 /*
  * testMarkdownFile.js - test the Markdown file handler object.
  *
- * Copyright © 2019-2021, Box, Inc.
+ * Copyright © 2019-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2024,7 +2024,7 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseWithFrontMatter: function(test) {
+    testMarkdownFileParseWithFrontMatterNotParsed: function(test) {
         test.expect(10);
 
         var mf = new MarkdownFile({
@@ -2066,8 +2066,8 @@ module.exports.markdown = {
         test.done();
     },
 
-    testMarkdownFileParseWithFrontMatterExtract: function(test) {
-        test.expect(8);
+    testMarkdownFileParseWithFrontMatterExtracted: function(test) {
+        test.expect(14);
 
         var mf = new MarkdownFile({
             project: p3,
@@ -2089,17 +2089,23 @@ module.exports.markdown = {
         var set = mf.getTranslationSet();
         test.ok(set);
 
-        // the front matter should be extracted because p3 has fm settings.
-        // the front matter is in yaml format
-        r = set.getBySource("This is a test of the front matter");
+        // the front matter should be extracted because p3 has fm settings
+        // turned on. The front matter is in yaml format
+        var r = set.getBySource("This is a test of the front matter");
         test.ok(r);
         test.equal(r.getSource(), "This is a test of the front matter");
-        test.equal(r.getKey(), "Title");
+        test.equal(r.getSourceLocale(), "en-US");
+        test.equal(r.getKey(), "r777132775.Title");
+        test.equal(r.getPath(), "foo/bar/x/foo.md"); // should come from this file
+        test.equal(r.getDataType(), "x-yaml");
+        test.equal(r.getProject(), "foo");
+        test.equal(r.getType(), "string");
 
         r = set.getBySource("another front matter description\nwith extended text\n");
         test.ok(r);
         test.equal(r.getSource(), "another front matter description\nwith extended text\n");
-        test.equal(r.getKey(), "Description");
+        test.equal(r.getKey(), "r777132775.Description");
+        test.equal(r.getPath(), "foo/bar/x/foo.md"); // should come from this file
 
         test.done();
     },
@@ -2125,25 +2131,100 @@ module.exports.markdown = {
             'This is a test\n\n' +
             'This is also a test\n');
 
-        var set = mf.getTranslationSet();
+        set = mf.getTranslationSet();
         test.ok(set);
 
         // the front matter should be extracted because p3 has fm settings.
         // the front matter is in yaml format
-        r = set.getBySource("This is a test of the front matter");
+        var r = set.getBySource("This is a test of the front matter");
         test.ok(r);
         test.equal(r.getSource(), "This is a test of the front matter");
-        test.equal(r.getKey(), "Title");
+        test.equal(r.getKey(), "r318739619.Title");
 
         r = set.getBySource("another front matter description\nwith extended text\n");
         test.ok(r);
         test.equal(r.getSource(), "another front matter description\nwith extended text\n");
-        test.equal(r.getKey(), "Description");
+        test.equal(r.getKey(), "r318739619.Description");
 
         r = set.getBySource("asdf asdf asdf");
         test.ok(r);
         test.equal(r.getSource(), "asdf asdf asdf");
-        test.equal(r.getKey(), "Foobar");
+        test.equal(r.getKey(), "r318739619.Foobar");
+
+        test.done();
+    },
+
+    testMarkdownFileParseWithFrontMatterExtractedTwoFiles: function(test) {
+        test.expect(21);
+
+        mdft3.getExtracted().clear();
+
+        test.equal(mdft3.getExtracted().size(), 0);
+
+        var mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar/x/foo.md"
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        mdft3.addSet(mf.getTranslationSet());
+
+        mf = new MarkdownFile({
+            project: p3,
+            type: mdft3,
+            pathName: "foo/bar/x/foobar.md"
+        });
+        test.ok(mf);
+
+        mf.parse(
+            '---\n' +
+            'Title: This is another test of the front matter\n' +
+            'Description: |\n' +
+            '  another front matter description\n' +
+            '  with extended text\n' +
+            '---\n\n' +
+            'This is a test\n\n' +
+            'This is also a test\n');
+
+        mdft3.addSet(mf.getTranslationSet());
+
+        var set = mdft3.getExtracted();
+        test.ok(set);
+
+        test.equal(set.size(), 6);
+
+        // the front matter should be extracted because p3 has fm settings
+        // turned on. The front matter is in yaml format
+        var r = set.getBySource("This is a test of the front matter");
+        test.ok(r);
+        test.equal(r.getSource(), "This is a test of the front matter");
+        test.equal(r.getSourceLocale(), "en-US");
+        test.equal(r.getKey(), "r777132775.Title");
+        test.equal(r.getPath(), "foo/bar/x/foo.md"); // should come from this file
+        test.equal(r.getDataType(), "x-yaml");
+        test.equal(r.getProject(), "foo");
+        test.equal(r.getType(), "string");
+
+        r = set.getBySource("This is another test of the front matter");
+        test.ok(r);
+        test.equal(r.getSource(), "This is another test of the front matter");
+        test.equal(r.getSourceLocale(), "en-US");
+        test.equal(r.getKey(), "r456669421.Title");
+        test.equal(r.getPath(), "foo/bar/x/foobar.md"); // should come from this file
+        test.equal(r.getDataType(), "x-yaml");
+        test.equal(r.getProject(), "foo");
+        test.equal(r.getType(), "string");
 
         test.done();
     },
@@ -2169,7 +2250,7 @@ module.exports.markdown = {
 
         test.equal(set.size(), 6);
 
-        r = set.getBySource("Query description");
+        var r = set.getBySource("Query description");
         test.ok(r);
         test.equal(r.getSource(), "Query description");
         test.equal(r.getKey(), "r744039504");
@@ -2179,7 +2260,7 @@ module.exports.markdown = {
         test.equal(r.getSource(), "Returns column");
         test.equal(r.getKey(), "r595024848");
 
-        var r = set.getBySource("asdf");
+        r = set.getBySource("asdf");
         test.ok(r);
         test.equal(r.getSource(), "asdf");
         test.equal(r.getKey(), "r976104267");
@@ -2189,7 +2270,7 @@ module.exports.markdown = {
         test.equal(r.getSource(), "fdsa");
         test.equal(r.getKey(), "r486555110");
 
-        var r = set.getBySource("foo");
+        r = set.getBySource("foo");
         test.ok(r);
         test.equal(r.getSource(), "foo");
         test.equal(r.getKey(), "r941132140");
@@ -2223,7 +2304,7 @@ module.exports.markdown = {
 
         test.equal(set.size(), 4);
 
-        r = set.getBySource("Query description");
+        var r = set.getBySource("Query description");
         test.ok(r);
         test.equal(r.getSource(), "Query description");
         test.equal(r.getKey(), "r744039504");
@@ -2233,7 +2314,7 @@ module.exports.markdown = {
         test.equal(r.getSource(), "Returns column");
         test.equal(r.getKey(), "r595024848");
 
-        var r = set.getBySource("foo");
+        r = set.getBySource("foo");
         test.ok(r);
         test.equal(r.getSource(), "foo");
         test.equal(r.getKey(), "r941132140");
@@ -2270,7 +2351,7 @@ module.exports.markdown = {
 
         test.equal(set.size(), 4);
 
-        r = set.getBySource("Query description");
+        var r = set.getBySource("Query description");
         test.ok(r);
         test.equal(r.getSource(), "Query description");
         test.equal(r.getKey(), "r744039504");
@@ -2280,7 +2361,7 @@ module.exports.markdown = {
         test.equal(r.getSource(), "Returns column");
         test.equal(r.getKey(), "r595024848");
 
-        var r = set.getBySource("Heading Title");
+        r = set.getBySource("Heading Title");
         test.ok(r);
         test.equal(r.getSource(), "Heading Title");
         test.equal(r.getKey(), "r931719890");
@@ -4029,7 +4110,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Title",
+            key: "r536069958.Title",
             source: "This is a test of the front matter",
             sourceLocale: "en-US",
             target: "Ceci est aussi un essai de la question en face",
@@ -4038,7 +4119,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Description",
+            key: "r536069958.Description",
             source: "another front matter description\nwith extended text\n",
             sourceLocale: "en-US",
             target: "aussi une description de la question en face\navec texte étendu\n",
@@ -4097,7 +4178,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Title",
+            key: "r536069958.Title",
             source: "This is a test of the front matter",
             sourceLocale: "en-US",
             target: "Ceci est aussi un essai de la question en face",
@@ -4125,7 +4206,7 @@ module.exports.markdown = {
         var resources = newset.getAll();
         test.equal(resources.length, 2);
 
-        test.equal(resources[0].getKey(), "Description");
+        test.equal(resources[0].getKey(), "r536069958.Description");
         test.equal(resources[0].getSource(), "another front matter description\nwith extended text\n");
         test.equal(resources[0].getSourceLocale(), "en-US");
         test.equal(resources[0].getPath(), "a/b/x/foo.md");
@@ -4180,7 +4261,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Title",
+            key: "r536069958.Title",
             source: "This is a test of the front matter",
             sourceLocale: "en-US",
             target: "Ceci est aussi un essai de la question en face",
@@ -4189,7 +4270,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Description",
+            key: "r536069958.Description",
             source: "another front matter description\nwith extended text\n",
             sourceLocale: "en-US",
             target: "aussi une description de la question en face\navec texte étendu\n",
@@ -4257,7 +4338,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Title",
+            key: "r77676802.Title",
             source: "This is a test of the front matter",
             sourceLocale: "en-US",
             target: "Ceci est aussi un essai de la question en face",
@@ -4266,7 +4347,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Description",
+            key: "r77676802.Description",
             source: "another front matter description\nwith extended text\n",
             sourceLocale: "en-US",
             target: "aussi une description de la question en face\navec texte étendu\n",
@@ -4275,7 +4356,7 @@ module.exports.markdown = {
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "Foobar",
+            key: "r77676802.Foobar",
             source: "asdf asdf asdf",
             sourceLocale: "en-US",
             target: "fdsa fdsa fdsa",

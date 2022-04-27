@@ -1,7 +1,7 @@
 /*
  * MarkdownFile.js - plugin to extract resources from an Markdown file
  *
- * Copyright © 2019-2021, Box, Inc.
+ * Copyright © 2019-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var MessageAccumulator = require("message-accumulator").default;
 var Node = require("ilib-tree-node").default;
 var Locale = require("ilib/lib/Locale.js");
@@ -36,8 +35,6 @@ var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
 var rehype = require("rehype-parse");
-
-var logger = log4js.getLogger("loctool.lib.MarkdownFile");
 
 // load the data for these
 isAlnum._init();
@@ -132,6 +129,7 @@ var MarkdownFile = function(options) {
 
     this.API = this.project.getAPI();
     this.type = options.type;
+    this.logger = this.API.getLogger("loctool.lib.MarkdownFile");
 
     this.mapping = this.type.getMapping(this.pathName);
 
@@ -267,7 +265,7 @@ function trim(API, text) {
 
     ret.text = text;
 
-    logger.trace('text: pre is "' + ret.pre + '" value is "' + ret.text + '" and post is "' + ret.post + '"');
+    // console.log('text: pre is "' + ret.pre + '" value is "' + ret.text + '" and post is "' + ret.post + '"');
 
     return ret;
 }
@@ -309,7 +307,7 @@ MarkdownFile.prototype._emitText = function(escape) {
 
     var text = this.message.getMinimalString();
 
-    logger.trace('text using message accumulator is: ' + text);
+    this.logger.trace('text using message accumulator is: ' + text);
 
     if (this.message.isTranslatable || this.isTranslatable(text)) {
         this._addTransUnit(text, this.comment);
@@ -813,8 +811,13 @@ MarkdownFile.prototype._walk = function(node) {
                 this.yamlfile.parse(node.value);
                 var resources = this.yamlfile.getAll();
                 if (resources) {
+                    var fileNameHash = this.pathName && this.API.utils.hashKey(this.pathName);
                     resources.forEach(function(res) {
-                        if (typeof(this.mapping.frontmatter) === 'boolean' || this.mapping.frontmatter.indexOf(res.getKey()) > -1) {
+                        var modifiedResKey = res.getKey();
+                        if (modifiedResKey.startsWith(fileNameHash)) {
+                            modifiedResKey = modifiedResKey.substring(fileNameHash.length+1);
+                        }
+                        if (typeof(this.mapping.frontmatter) === 'boolean' || this.mapping.frontmatter.indexOf(modifiedResKey) > -1) {
                             this.set.add(res);
                         }
                     }.bind(this));
@@ -839,7 +842,7 @@ MarkdownFile.prototype._walk = function(node) {
  * @param {String} data the string to parse
  */
 MarkdownFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
 
     // massage the broken headers and code blocks a bit first so that the parser
     // works as expected
@@ -866,7 +869,7 @@ MarkdownFile.prototype.parse = function(data) {
  * project's translation set.
  */
 MarkdownFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -875,8 +878,8 @@ MarkdownFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
@@ -919,7 +922,7 @@ MarkdownFile.prototype.getOutputLocale = function(mapping, locale) {
  * @returns {String} the localized path name
  */
 MarkdownFile.prototype.getLocalizedPath = function(locale) {
-    var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
+    var mapping = this.mapping || this.type.getMapping(path.normalize(this.pathName)) || this.type.getDefaultMapping();
     var l = this.getOutputLocale(mapping, locale);
 
     return path.normalize(this.API.utils.formatPath(mapping.template, {
@@ -961,7 +964,7 @@ MarkdownFile.prototype._localizeString = function(source, locale, translations, 
             }
             translation = this.type.pseudos[locale].getString(source);
         } else {
-            logger.trace("New string found: " + source);
+            this.logger.trace("New string found: " + source);
             this.type.newres.add(this.API.newResource({
                 resType: "string",
                 project: this.project.getProjectId(),
@@ -1261,7 +1264,7 @@ MarkdownFile.prototype._getTranslationNodes = function(locale, translations, ma)
            }
         }
         if (mismatch) {
-            logger.warn("Warning! Translation of\n'" + text + "' (key: " + key + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
+            this.logger.warn("Warning! Translation of\n'" + text + "' (key: " + key + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
         }
 
         if (this.project.settings.identify) {
@@ -1315,7 +1318,7 @@ function mapToNodes(astNode) {
 MarkdownFile.prototype.localizeText = function(translations, locale) {
     this.resourceIndex = 0;
 
-    logger.debug("Localizing strings for locale " + locale);
+    this.logger.debug("Localizing strings for locale " + locale);
 
     // copy the ast for this locale so that we don't modify the original
     var ast = unistFilter(this.ast, function(node) {
@@ -1413,7 +1416,7 @@ MarkdownFile.prototype.localize = function(translations, locales) {
             pathName = "";
             if (!l.getVariant()) {
                 pathName = this.getLocalizedPath(locales[i]);
-                logger.debug("Writing file " + pathName);
+                this.logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
                 this.API.utils.makeDirs(d);

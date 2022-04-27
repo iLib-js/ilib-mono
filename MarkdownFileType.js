@@ -19,18 +19,17 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var mm = require("micromatch");
 var MarkdownFile = require("./MarkdownFile.js");
 var YamlFileType = require('ilib-loctool-yaml');
-
-var logger = log4js.getLogger("loctool.lib.MarkdownFileType");
 
 var MarkdownFileType = function(project) {
     this.type = "md";
     this.datatype = "markdown";
     this.project = project;
     this.API = project.getAPI();
+
+    this.logger = this.API.getLogger("loctool.lib.MarkdownFileType");
 
     this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd" ];
 
@@ -107,7 +106,7 @@ var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-([A-Z]
  * otherwise
  */
 MarkdownFileType.prototype.handles = function(pathName) {
-    logger.debug("MarkdownFileType handles " + pathName + "?");
+    this.logger.debug("MarkdownFileType handles " + pathName + "?");
     var extension = path.extname(pathName).toLowerCase();
     var ret = (this.extensions.indexOf(extension) > -1);
     var normalized = pathName;
@@ -159,7 +158,7 @@ MarkdownFileType.prototype.handles = function(pathName) {
         }
     }
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
