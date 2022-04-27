@@ -41,6 +41,7 @@ var JavaScriptResourceFile = function(props) {
         this.pathName = props.pathName;
         this.locale = new Locale(props.locale);
         this.API = props.project.getAPI();
+        this.type = props.type;
     }
 
     this.logger = this.API.getLogger("loctool.plugin.JavaScriptResourceFile");

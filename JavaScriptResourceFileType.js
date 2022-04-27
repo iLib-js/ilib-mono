@@ -89,12 +89,12 @@ JavaScriptResourceFileType.prototype.name = function() {
  * @return {JavaScriptResourceFile} a resource file instance for the
  * given path
  */
-JavaScriptResourceFileType.prototype.newFile = function(pathName) {
+JavaScriptResourceFileType.prototype.newFile = function(pathName, options) {
     var file = new JavaScriptResourceFile({
         project: this.project,
         pathName: pathName,
         type: this,
-        API: this.API
+        locale: options.locale
     });
 
     var locale = file.getLocale() || this.project.sourceLocale;
@@ -109,18 +109,23 @@ JavaScriptResourceFileType.prototype.newFile = function(pathName) {
  *
  * @param {String} locale the name of the locale in which the resource
  * file will reside
+ * @param {String} pathName the optional path to the resource file if the
+ * caller has already calculated what it should be
  * @return {JavaScriptResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-JavaScriptResourceFileType.prototype.getResourceFile = function(locale) {
-    var key = locale || this.project.sourceLocale;
+JavaScriptResourceFileType.prototype.getResourceFile = function(locale, pathName) {
+    var loc = locale || this.project.sourceLocale;
+    var key = [loc, pathName].join("_");
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
         resfile = this.resourceFiles[key] = new JavaScriptResourceFile({
             project: this.project,
-            locale: key
+            locale: loc,
+            pathName: pathName,
+            type: this
         });
 
         this.logger.trace("Defining new resource file");
