@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFileType.js - manages a collection of android resource files
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@
  */
 
 var path = require("path");
-var log4js = require("log4js");
 
 var JavaScriptResourceFile = require("./JavaScriptResourceFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.JavaScriptResourceFileType");
 
 /**
  * @class Manage a collection of Android resource files.
@@ -37,6 +34,8 @@ var JavaScriptResourceFileType = function(project) {
     this.API = project.getAPI();
 
     this.extensions = [ ".js" ];
+
+    this.logger = this.API.getLogger("loctool.plugin.JavaScriptResourceFileType");
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
@@ -58,9 +57,9 @@ JavaScriptResourceFileType.prototype.constructor = JavaScriptResourceFileType;
  */
 JavaScriptResourceFileType.prototype.handles = function(pathName) {
     // js resource files are only generated. Existing ones are never read in.
-    logger.debug("JavaScriptResourceFileType handles " + pathName + "?");
+    this.logger.debug("JavaScriptResourceFileType handles " + pathName + "?");
 
-    logger.debug("No");
+    this.logger.debug("No");
     return false;
 };
 
@@ -71,7 +70,7 @@ JavaScriptResourceFileType.prototype.handles = function(pathName) {
  * each to write out.
  */
 JavaScriptResourceFileType.prototype.write = function() {
-    logger.trace("Now writing out " + Object.keys(this.resourceFiles).length + " resource files");
+    this.logger.trace("Now writing out " + Object.keys(this.resourceFiles).length + " resource files");
     for (var hash in this.resourceFiles) {
         var file = this.resourceFiles[hash];
         file.write();
@@ -124,7 +123,7 @@ JavaScriptResourceFileType.prototype.getResourceFile = function(locale) {
             locale: key
         });
 
-        logger.trace("Defining new resource file");
+        this.logger.trace("Defining new resource file");
     }
 
     return resfile;
@@ -147,12 +146,12 @@ JavaScriptResourceFileType.prototype.generatePseudo = function(locale, pb) {
     var resources = this.extracted.getBy({
         sourceLocale: pb.getSourceLocale()
     });
-    logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
+    this.logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
     var resource;
 
     resources.forEach(function(resource) {
         if (resource && resource.getKey() !== "app_id" && resource.getKey() !== "live_sdk_client_id") {
-            logger.trace("Generating pseudo for " + resource.getKey());
+            this.logger.trace("Generating pseudo for " + resource.getKey());
             var res = resource.generatePseudo(locale, pb);
             if (res && res.getSource() !== res.getTarget()) {
                 this.pseudo.add(res);
