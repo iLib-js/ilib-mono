@@ -1142,6 +1142,51 @@ module.exports.javascriptfile = {
         test.equal(r.getKey(), "Start \"Download");
 
         test.done();
-    }
+    },
 
+    testJavaScriptFileParseParametersWithExtraTrailingCommas: function(test) {
+        test.expect(9);
+
+        var j = new JavaScriptFile({
+            project: p,
+            pathName: undefined,
+            type: jsft
+        });
+        test.ok(j);
+
+        // eslint has this nasty habit of inserting useless extra commas at the end
+        // of parameter lists
+        j.parse(
+            "if (subcat === 'Has types') {\n" +
+            "    buttonText = RB.getStringJS(\n" +
+            "        'Start Download',\n" +
+            "    );\n" +
+            "    title = RB.getString(\n" +
+            "        'Types of {topic}',\n" +
+            "        'unique key',\n" +
+            "    )\n" +
+            "    .format({\n" +
+            "        topic: topic.attribute.name\n" +
+            "    });\n" +
+            "}\n"
+        );
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        var r = set.getBy({
+            reskey: "unique key"
+        });
+        test.ok(r);
+        test.equal(r.length, 1);
+        test.equal(r[0].getSource(), "Types of {topic}");
+        test.equal(r[0].getKey(), "unique key");
+
+        r = set.getBySource("Start Download");
+        test.ok(r);
+        test.equal(r.getSource(), "Start Download");
+        test.equal(r.getKey(), "Start Download");
+
+        test.done();
+    }
 };

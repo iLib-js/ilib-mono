@@ -148,7 +148,7 @@ JavaScriptFile.prototype.parse = function(data) {
     this.resourceIndex = 0;
 
     var comment, match, key;
-debugger;
+
     reI18nComment.lastIndex = 0;
     this.reGetString.lastIndex = 0; // just to be safe
 

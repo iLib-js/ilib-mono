@@ -115,6 +115,11 @@ be localized, and the loctool will continue on to the next file.
 
 ## Release Notes
 
+### v1.1.1
+
+- deal with eslint's propensity of putting extra commas at the end of parameter lists
+  where they shouldn't be. This causes single-parameter strings not to be extracted.
+
 ### v1.1.0
 
 - added the ability to use ilib-loctool-json as a resource file
