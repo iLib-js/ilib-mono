@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "ilib": "^14.14.0",
-        "ilib-loctool-javascript-resource": "^1.0.3"
+        "ilib-loctool-javascript-resource": "^1.0.4"
     },
     "devDependencies": {
         "assertextras": "^1.1.0",
