@@ -935,7 +935,34 @@ module.exports.javascriptfile = {
         });
         test.ok(j);
 
-        j.parse("var subcats = [RB.getStringJS(''), RB.getString(''), RB.getStringJS('', 'foo'), RB.getStringJS('foo', '')];\n");
+        j.parse("var subcats = [RB.getStringJS(''), RB.getString(''), RB.getStringJS('', 'foo')];\n");
+
+        var set = j.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 0);
+
+        test.done();
+    },
+
+    testJavaScriptFileParseNonString: function(test) {
+        test.expect(3);
+
+        var j = new JavaScriptFile({
+            project: p,
+            pathName: undefined,
+            type: jsft
+        });
+        test.ok(j);
+
+        j.parse("var subcats = [\n" +
+        "    RB.getStringJS(variableName),\n" +
+        "    RB.getString(undefined),\n" +
+        "    RB.getStringJS(variableName, 'foo')\n" +
+        "    RB.getString(function(x) {\n" +
+        "       return foo.getId(x);\n" +
+        "    }),\n" +
+        "];\n");
 
         var set = j.getTranslationSet();
         test.ok(set);

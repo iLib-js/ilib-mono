@@ -104,7 +104,7 @@ var alreadyLocTmpl = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-
 JavaScriptFileType.prototype.handles = function(pathName) {
     this.logger.debug("JavaScriptFileType handles " + pathName + "?");
     var ret = false;
-debugger;
+
     // resource files should be handled by the JavaScriptResourceType instead
     if (this.project.isResourcePath("js", pathName)) return false;
 
