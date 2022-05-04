@@ -27,7 +27,7 @@ var strGetStringBogusConcatenation2 = "\\s*\\([^\\)]*\\+\\s*(\"[^\"]*\"|'[^']*')
 var strGetStringBogusParam = "\\s*\\([^\"'\\)]*\\)/";
 
 var strGetString = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*\\)";
-var strGetStringWithId = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*,\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*\\)";
+var strGetStringWithId = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*,\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')?\\s*,?\\s*\\)";
 
 /**
  * Create a new javascript file with the given path name and within
@@ -148,7 +148,7 @@ JavaScriptFile.prototype.parse = function(data) {
     this.resourceIndex = 0;
 
     var comment, match, key;
-debugger;
+
     reI18nComment.lastIndex = 0;
     this.reGetString.lastIndex = 0; // just to be safe
 
@@ -196,14 +196,19 @@ debugger;
     this.reGetStringWithId.lastIndex = 0;
 
     result = this.reGetStringWithId.exec(data);
-    while (result && result.length > 2 && result[this.wrapperCaptureGroupCount+1] && result[this.wrapperCaptureGroupCount+6]) {
+    while (result && result.length > 2 && result[this.wrapperCaptureGroupCount+1]) {
         // different matches for single and double quotes
+        var autoKey = false;
         match = (result[this.wrapperCaptureGroupCount+1][0] === '"') ?
             result[this.wrapperCaptureGroupCount+2] :
             result[this.wrapperCaptureGroupCount+4];
-        key = (result[this.wrapperCaptureGroupCount+6][0] === '"') ?
+        key = (result[this.wrapperCaptureGroupCount+6] && result[this.wrapperCaptureGroupCount+6][0] === '"') ?
             result[this.wrapperCaptureGroupCount+7] :
             result[this.wrapperCaptureGroupCount+9];
+        if (!key) {
+            key = JavaScriptFile.unescapeString(match);
+            autoKey = true;
+        }
 
         if (match && key && match.length && key.length) {
             var last = data.indexOf('\n', this.reGetStringWithId.lastIndex);
@@ -224,7 +229,8 @@ debugger;
                 state: "new",
                 comment: comment,
                 datatype: this.type.datatype,
-                index: this.resourceIndex++
+                index: this.resourceIndex++,
+                autoKey: autoKey
             });
             // for use later when we write out resources
             r.mapping = this.mapping;
