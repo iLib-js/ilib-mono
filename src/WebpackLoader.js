@@ -1,5 +1,5 @@
 /*
- * WebpackLoader.js - Loader implementation for webpack'ed ilib on the web
+ * WebpackLoader.js - Loader implementation for webpack'ed ilib
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -22,7 +22,7 @@ import log4js from '@log4js-node/log4js-api';
 import Loader from './Loader';
 
 /**
- * Class that loads files under nodejs.
+ * Class that loads files under Webpack.
  *
  * All loaders must support asynchronous operation. That is, they take
  * a file name or a list of file names and return a promise to load
@@ -66,15 +66,27 @@ class WebpackLoader extends Loader {
      * content. If the file does not exist or could not be loaded, this method
      * will return undefined.<p>
      *
-     * The options object may contain any of these properties:
-     * <ul>
-     * <li>sync {boolean} - when true, load the file synchronously, else load
-     * it asynchronously. Loaders that do not support synchronous loading will
-     * ignore this option.
-     * <li>test {boolean} - when true, use the current directory to find the
-     * location of the locale files. When not specified, or when false, this
-     * loader looks 4 directories up for a "locale" directory
-     * </ul>
+     * There are no options that this loader uses, so the options parameter is
+     * ignored.<p>
+     *
+     * The file loaded must be a javascript file named for the full BCP-47 locale
+     * spec (eg. "zh-Hans-CN.js") or "root.js" for the generic shared data. The
+     * files should be constructed before webpack is
+     * called. In order to include the data file automatically in webpack, you must
+     * create a resolver alias called "calling-module" to point to the location where
+     * the file was generated. Example setting in webpack.config.js
+     *
+     * <code>
+     *    "resolve": {
+     *        "alias": {
+     *            "calling-module": "my-module/locale"
+     *        }
+     *    }
+     * </code>
+     *
+     * The value may be the name of your module with an optional subpath, or the
+     * absolute path to the directory where the files are stored. Without this alias,
+     * no files will be included and the webpack build will fail.
      *
      * @param {string} pathName a file name to load
      * @param {Object} options options guiding the load, as per above
@@ -85,32 +97,17 @@ class WebpackLoader extends Loader {
      */
     loadFile(pathName, options) {
         if (!pathName) return undefined;
+        if (options && options.sync) {
+            throw "The webpack loader does not support synchronous loading of data.";
+        }
         this.logger.trace(`Loading file ${pathName} from webpack asynchronously`);
 
-        return ((options.test) ?
-            // for testing, we should look in the current directory's "locale"" dir because
-            // the current loader is not located in a node_modules
-            import(
-                /* webpackInclude: /[a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?.js/ */
-                /* webpackMode: "lazy" */
-                `../test/locale/${pathName}.js`
-            ) :
-            // Assuming this module is in <yourapp>/node_modules/ilib-loader/src/WebpackLoader.js,
-            // then the path to the locale data modules included below will be <yourapp>/locale
-            // Make sure all your locale data modules are located there and are named
-            // [full-locale-spec].js in order to be included
-            import(
-                /* webpackInclude: /[a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?.js/ */
-                /* webpackMode: "lazy" */
-                `../../../../locale/${pathName}.js`
-            )).then((Module) => {
-                // locale modules must export a function named getLocaleData
-                if (typeof(Module.getLocaleData) === 'function') {
-                    return Module.getLocaleData();
-                }
-                // not the right type of module
-                return undefined;
-            });
+        return import(
+            /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root).js$/ */
+            /* webpackChunkName: "ilib.[request]" */
+            /* webpackMode: "lazy" */
+            `calling-module/${pathName}`
+        );
     }
 };
 

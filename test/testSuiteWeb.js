@@ -19,7 +19,8 @@
 
 var tests = [
     require('./testLoader.js'),
-    require('./testLoaderFactory.js')
+    require('./testLoaderFactory.js'),
+    require('./testWebpackLoader.js')
 ];
 
 module.exports = tests;

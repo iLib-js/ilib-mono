@@ -64,7 +64,7 @@ export function registerLoader(loaderClass) {
             globalScope.ilib.classCache[platform] = loader;
         });
     }
-    logger.trace(`Registered loader ${loader.getName()}`);
+    //logger.trace(`Registered loader ${loader.getName()}`);
 };
 
 // Known loaders that ship with this package. You can write your own

@@ -18,25 +18,20 @@
  */
 
 import { setPlatform } from 'ilib-env';
-import LoaderFactory, { registerLoader } from 'ilib-loader';
+import LoaderFactory, { registerLoader } from '../src/index';
 
-var testWebpackLoader = {
-    setUp: function(callback) {
-        setPlatform("nodejs");
-        callback();
-    },
-
+export const testWebpackLoader = {
     testLoaderGetName: function(test) {
         test.expect(1);
         var loader = LoaderFactory();
-        test.equal(loader.getName(), "Nodejs Loader");
+        test.equal(loader.getName(), "Webpack Loader");
         test.done();
     },
 
     testLoaderSupportsSync: function(test) {
         test.expect(1);
         var loader = LoaderFactory();
-        test.ok(loader.supportsSync());
+        test.ok(!loader.supportsSync());
         test.done();
     },
 
@@ -45,44 +40,9 @@ var testWebpackLoader = {
 
         var loader = LoaderFactory();
 
-        var content = loader.loadFile("./test/files/test.json", {sync: true});
-        test.equal(content,
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`        );
-        test.done();
-    },
-
-    testLoadFileSyncUndefinedFileName: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFile(undefined, {sync: true});
-        test.ok(!content);
-        test.done();
-    },
-
-    testLoadFileSyncEmptyFileName: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFile("", {sync: true});
-        test.ok(!content);
-        test.done();
-    },
-
-    testLoadFileSyncUnknownFileName: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFile("unknown.json", {sync: true});
-        test.ok(!content);
+        test.throws(() => {
+            return loader.loadFile("./test/files/test.json", {sync: true});
+        });
         test.done();
     },
 
@@ -91,15 +51,19 @@ var testWebpackLoader = {
 
         var loader = LoaderFactory();
 
-        var promise = loader.loadFile("./test/files/test.json", {sync: false});
-        promise.then((content) => {
-            test.equal(content, 
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`            );
+        var promise = loader.loadFile("root.js", {sync: false});
+        promise.then((module) => {
+            test.deepEqual(module.getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+
             test.done();
         });
     },
@@ -109,279 +73,490 @@ var testWebpackLoader = {
 
         var loader = LoaderFactory();
 
-        var promise = loader.loadFile("./test/files/test.json");
-        promise.then((content) => {
-            test.equal(content, 
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`            );
+        var promise = loader.loadFile("root.js");
+        promise.then((module) => {
+            test.deepEqual(module.getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+
             test.done();
         });
-    },
-
-    testLoadFilesSync: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFiles([
-            "./test/files/test.json",
-            "./test/files/a/asdf.json"
-        ], {sync: true});
-        test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`        ]);
-        test.done();
     },
 
     testLoadFilesAsync: function(test) {
-        test.expect(1);
+        test.expect(3);
 
         var loader = LoaderFactory();
 
         var promise = loader.loadFiles([
-            "./test/files/test.json",
-            "./test/files/a/asdf.json"
+            "root.js",
+            "de-DE.js"
         ], {sync: false});
         promise.then((content) => {
-            test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`            ]);
+        console.dir(content);
+            test.equal(content.length, 2);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.deepEqual(content[1].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
             test.done();
         });
     },
 
-    testLoadFilesSyncUndefinedFileName: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFiles([
-            "./test/files/test.json",
-            undefined,
-            "./test/files/a/asdf.json"
-        ], {sync: true});
-        test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`        ]);
-        test.done();
-    },
-
-    testLoadFilesSyncEmptyFileName: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFiles([
-            "./test/files/test.json",
-            "",
-            "./test/files/a/asdf.json"
-        ], {sync: true});
-        test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`        ]);
-        test.done();
-    },
-
     testLoadFilesAsyncUndefinedFileName: function(test) {
-        test.expect(1);
+        test.expect(4);
 
         var loader = LoaderFactory();
 
         var promise = loader.loadFiles([
-            "./test/files/test.json",
+            "root.js",
             undefined,
-            "./test/files/a/asdf.json"
+            "de-DE.js"
         ], {sync: false});
         promise.then((content) => {
-            test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`            ]);
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLoadFilesAsyncNullFileName: function(test) {
+        test.expect(4);
+
+        var loader = LoaderFactory();
+
+        var promise = loader.loadFiles([
+            "root.js",
+            null,
+            "de-DE.js"
+        ], {sync: false});
+        promise.then((content) => {
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLoadFilesAsyncBooleanFileName: function(test) {
+        test.expect(4);
+
+        var loader = LoaderFactory();
+
+        var promise = loader.loadFiles([
+            "root.js",
+            true,
+            "de-DE.js"
+        ], {sync: false});
+        promise.then((content) => {
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLoadFilesAsyncNumericFileName: function(test) {
+        test.expect(4);
+
+        var loader = LoaderFactory();
+
+        var promise = loader.loadFiles([
+            "root.js",
+            4,
+            "de-DE.js"
+        ], {sync: false});
+        promise.then((content) => {
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
             test.done();
         });
     },
 
     testLoadFilesAsyncEmptyFileName: function(test) {
-        test.expect(1);
+        test.expect(4);
 
         var loader = LoaderFactory();
 
         var promise = loader.loadFiles([
-            "./test/files/test.json",
+            "root.js",
             "",
-            "./test/files/a/asdf.json"
+            "de-DE.js"
         ], {sync: false});
         promise.then((content) => {
-            test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`            ]);
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
             test.done();
         });
-    },
-
-    testLoadFilesSyncUnknownFileName: function(test) {
-        test.expect(1);
-
-        var loader = LoaderFactory();
-
-        var content = loader.loadFiles([
-            "./test/files/test.json",
-            "./test/files/testasdf.json",
-            "./test/files/a/asdf.json"
-        ], {sync: true});
-        test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`        ]);
-        test.done();
     },
 
     testLoadFilesAsyncUnknownFileName: function(test) {
-        test.expect(1);
+        test.expect(4);
 
         var loader = LoaderFactory();
 
         var promise = loader.loadFiles([
-            "./test/files/test.json",
-            "./test/files/testasdf.json",
-            "./test/files/a/asdf.json"
+            "root.js",
+            "ja-JP.js",
+            "de-DE.js"
         ], {sync: false});
         promise.then((content) => {
-            test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`            ]);
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
             test.done();
         });
     },
 
-    testLoadFilesSyncMode: function(test) {
-        test.expect(1);
+    testLoadFilesAsyncUnknownPath: function(test) {
+        test.expect(4);
 
         var loader = LoaderFactory();
-        loader.setSyncMode();
 
-        var content = loader.loadFiles([
-            "./test/files/test.json",
-            "./test/files/testasdf.json",
-            "./test/files/a/asdf.json"
-        ]);
-        test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-            undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`
-        ]);
-
-        test.done();
+        var promise = loader.loadFiles([
+            "root.js",
+            "foo/bar/ja-JP.js",
+            "de-DE.js"
+        ], {sync: false});
+        promise.then((content) => {
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.ok(!content[1]);
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
+            test.done();
+        });
     },
 
-    testLoadFilesAsync: function(test) {
-        test.expect(1);
+    testLoadFilesAsyncMultiple: function(test) {
+        test.expect(4);
 
         var loader = LoaderFactory();
         loader.setAsyncMode();
 
         var promise = loader.loadFiles([
-            "./test/files/test.json",
-            "./test/files/testasdf.json",
-            "./test/files/a/asdf.json"
+            "root.js",
+            "en-US.js",
+            "de-DE.js"
         ]);
         promise.then((content) => {
-            test.equalIgnoringOrder(content, [
-`{
-    "test": "this is a test",
-    "test2": {
-        "test3": "this is only a test"
-    }
-}`,
-                undefined,
-`{
-    "name": "foo",
-    "value": "asdf"
-}`
-            ]);
+            test.equal(content.length, 3);
+            test.deepEqual(content[0].getLocaleData(), {
+               "root": {
+                   "localeinfo": {
+                       "thousandsSeparator": ",",
+                       "decimalSeparator": ".",
+                       "clock": "24",
+                       "timezone": "Etc/UTC"
+                   }
+               }
+            });
+            test.deepEqual(content[1].getLocaleData(), {
+                "en": {
+                    "localeinfo": {
+                        "language.name": "English",
+                        "locale": "en"
+                    }
+                },
+                "en-US": {
+                    "localeinfo": {
+                        "clock": "12",
+                        "locale": "en-US"
+                    }
+                },
+                "und-US": {
+                    "localeinfo": {
+                        "timezone": "America/New_York",
+                        "region.name": "United States of America",
+                        "locale": "und-US"
+                    }
+                }
+            });
+            test.deepEqual(content[2].getLocaleData(), {
+                "de": {
+                    "localeinfo": {
+                        "thousandsSeparator": ".",
+                        "decimalSeparator": ",",
+                        "language.name": "German",
+                        "locale": "de"
+                    }
+                },
+                "de-DE": {
+                    "localeinfo": {
+                        "clock": "24",
+                        "locale": "de-DE"
+                    }
+                },
+                "und-DE": {
+                    "localeinfo": {
+                        "timezone": "Europe/Berlin",
+                        "region.name": "Germany",
+                        "locale": "und-DE"
+                    }
+                }
+            });
             test.done();
         });
     }
 };
-
-module.exports.testWebpackLoader = (typeof(__webpack_require__) !== 'undefined') ? testWebpackLoader : {};

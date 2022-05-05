@@ -57,6 +57,9 @@ module.exports = {
     resolve: {
         fallback: {
             buffer: require.resolve("buffer")
+        },
+        alias: {
+            "calling-module": "../test/locale"
         }
     }
 };
