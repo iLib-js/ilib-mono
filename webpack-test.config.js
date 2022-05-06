@@ -32,7 +32,11 @@ module.exports = {
     },
     externals: {
         "./NodeLoader": "NodeLoader",
-        "log4js": "log4js",
+        "./QtLoader": "QtLoader",
+        "./RhinoLoader": "RhinoLoader",
+        "./NashornLoader": "NashornLoader",
+        "./RingoLoader": "RingoLoader",
+        "log4js": "log4js"
         "nodeunit": "nodeunit"
     },
     module: {
