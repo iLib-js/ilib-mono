@@ -20,7 +20,7 @@
 import log4js from '@log4js-node/log4js-api';
 
 import { getLocale, getPlatform } from 'ilib-env';
-import { Utils, MathUtils, Path } from 'ilib-common';
+import { Utils, JSUtils, MathUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 
@@ -58,347 +58,6 @@ const plurals_default = {
 };
 
 /**
- * @private
- * @static
- */
-const _fncs = {
-    /**
-     * @private
-     * @param {Object} obj
-     * @return {string|undefined}
-     */
-    firstProp: function (obj) {
-        for (var p in obj) {
-            if (p && obj[p]) {
-                return p;
-            }
-        }
-        return undefined; // should never get here
-    },
-
-    /**
-     * @private
-     * @param {Object} obj
-     * @return {string|undefined}
-     */
-    firstPropRule: function (obj) {
-        if (Object.prototype.toString.call(obj) === '[object Array]') {
-            return "inrange";
-        } else if (Object.prototype.toString.call(obj) === '[object Object]') {
-            for (var p in obj) {
-                if (p && obj[p]) {
-                    return p;
-                }
-            }
-
-        }
-        return undefined; // should never get here
-    },
-
-    /**
-     * @private
-     * @param {Object} obj
-     * @param {number|Object} n
-     * @return {?}
-     */
-    getValue: function (obj, n) {
-        if (typeof(obj) === 'object') {
-            var subrule = _fncs.firstPropRule(obj);
-            if (subrule === "inrange") {
-                return _fncs[subrule](obj, n);
-            }
-            return _fncs[subrule](obj[subrule], n);
-        } else if (typeof(obj) === 'string') {
-            if (typeof(n) === 'object'){
-                return n[obj];
-            }
-            return n;
-        } else {
-            return obj;
-        }
-    },
-
-    /**
-     * @private
-     * @param {number|Object} n
-     * @param {Array.<number|Array.<number>>|Object} range
-     * @return {boolean}
-     */
-    matchRangeContinuous: function(n, range) {
-
-        for (var num in range) {
-            if (typeof(num) !== 'undefined' && typeof(range[num]) !== 'undefined') {
-                var obj = range[num];
-                if (typeof(obj) === 'number') {
-                    if (n === range[num]) {
-                        return true;
-                    } else if (n >= range[0] && n <= range[1]) {
-                        return true;
-                    }
-                } else if (Object.prototype.toString.call(obj) === '[object Array]') {
-                    if (n >= obj[0] && n <= obj[1]) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    },
-
-    /**
-     * @private
-     * @param {*} number
-     * @return {Object}
-     */
-    calculateNumberDigits: function(number) {
-        var numberToString = number.toString();
-        var parts = [];
-        var numberDigits =  {};
-        var operandSymbol =  {};
-
-        var exponentialNum = number.toExponential();
-        var exponentialIndex = exponentialNum.indexOf("e");
-        if (exponentialIndex != -1) {
-            operandSymbol.c = parseInt(exponentialNum[exponentialIndex+2]);
-            operandSymbol.e = parseInt(exponentialNum[exponentialIndex+2]);
-        } else {
-            operandSymbol.c = 0;
-            operandSymbol.e = 0;
-        }
-
-        if (numberToString.indexOf('.') !== -1) { //decimal
-            parts = numberToString.split('.', 2);
-            numberDigits.integerPart = parseInt(parts[0], 10);
-            numberDigits.decimalPartLength = parts[1].length;
-            numberDigits.decimalPart = parseInt(parts[1], 10);
-
-            operandSymbol.n = parseFloat(number);
-            operandSymbol.i = numberDigits.integerPart;
-            operandSymbol.v = numberDigits.decimalPartLength;
-            operandSymbol.w = numberDigits.decimalPartLength;
-            operandSymbol.f = numberDigits.decimalPart;
-            operandSymbol.t = numberDigits.decimalPart;
-
-        } else {
-            numberDigits.integerPart = number;
-            numberDigits.decimalPartLength = 0;
-            numberDigits.decimalPart = 0;
-
-            operandSymbol.n = parseInt(number, 10);
-            operandSymbol.i = numberDigits.integerPart;
-            operandSymbol.v = 0;
-            operandSymbol.w = 0;
-            operandSymbol.f = 0;
-            operandSymbol.t = 0;
-
-        }
-        return operandSymbol
-    },
-
-    /**
-     * @private
-     * @param {number|Object} n
-     * @param {Array.<number|Array.<number>>|Object} range
-     * @return {boolean}
-     */
-    matchRange: function(n, range) {
-        return _fncs.matchRangeContinuous(n, range);
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number} n
-     * @return {boolean}
-     */
-    is: function(rule, n) {
-        var left = _fncs.getValue(rule[0], n);
-        var right = _fncs.getValue(rule[1], n);
-        return left == right;
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number} n
-     * @return {boolean}
-     */
-    isnot: function(rule, n) {
-        return _fncs.getValue(rule[0], n) != _fncs.getValue(rule[1], n);
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number|Object} n
-     * @return {boolean}
-     */
-    inrange: function(rule, n) {
-        if (typeof(rule[0]) === 'number') {
-            if(typeof(n) === 'object') {
-                return _fncs.matchRange(n.n,rule);
-            }
-            return _fncs.matchRange(n,rule);
-        } else if (typeof(rule[0]) === 'undefined') {
-            var subrule = _fncs.firstPropRule(rule);
-            return _fncs[subrule](rule[subrule], n);
-        } else {
-            return _fncs.matchRange(_fncs.getValue(rule[0], n), rule[1]);
-        }
-    },
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number} n
-     * @return {boolean}
-     */
-    notin: function(rule, n) {
-        return !_fncs.matchRange(_fncs.getValue(rule[0], n), rule[1]);
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number} n
-     * @return {boolean}
-     */
-    within: function(rule, n) {
-        return _fncs.matchRangeContinuous(_fncs.getValue(rule[0], n), rule[1]);
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number} n
-     * @return {number}
-     */
-    mod: function(rule, n) {
-        return MathUtils.mod(_fncs.getValue(rule[0], n), _fncs.getValue(rule[1], n));
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number} n
-     * @return {number}
-     */
-    n: function(rule, n) {
-        return n;
-    },
-
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number|Object} n
-     * @return {boolean}
-     */
-    or: function(rule, n) {
-        var ruleLength = rule.length;
-        var result, i;
-        for (i=0; i < ruleLength; i++) {
-            result = _fncs.getValue(rule[i], n);
-            if (result) {
-                return true;
-            }
-        }
-        return false;
-    },
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number|Object} n
-     * @return {boolean}
-     */
-    and: function(rule, n) {
-        var ruleLength = rule.length;
-        var result, i;
-        for (i=0; i < ruleLength; i++) {
-            result= _fncs.getValue(rule[i], n);
-            if (!result) {
-                return false;
-            }
-        }
-        return true;
-    },
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number|Object} n
-     * @return {boolean}
-     */
-    eq: function(rule, n) {
-        var valueLeft = _fncs.getValue(rule[0], n);
-        var valueRight;
-
-        if (typeof(rule[0]) === 'string') {
-            if (typeof(n) === 'object'){
-                valueRight = n[rule[0]];
-                if (typeof(rule[1])=== 'number'){
-                    valueRight = _fncs.getValue(rule[1], n);
-                } else if (typeof(rule[1])=== 'object' && (_fncs.firstPropRule(rule[1]) === "inrange" )){
-                    valueRight = _fncs.getValue(rule[1], n);
-                }
-            }
-        } else {
-            if (_fncs.firstPropRule(rule[1]) === "inrange") { // mod
-                valueRight = _fncs.getValue(rule[1], valueLeft);
-            } else {
-                valueRight = _fncs.getValue(rule[1], n);
-            }
-        }
-        if(typeof(valueRight) === 'boolean') {
-            return (valueRight ? true : false);
-        } else {
-            return (valueLeft == valueRight ? true :false);
-        }
-    },
-    /**
-     * @private
-     * @param {Object} rule
-     * @param {number|Object} n
-     * @return {boolean}
-     */
-    neq: function(rule, n) {
-        var valueLeft = _fncs.getValue(rule[0], n);
-        var valueRight;
-        var leftRange;
-        var rightRange;
-
-        if (typeof(rule[0]) === 'string') {
-            valueRight = n[rule[0]];
-            if (typeof(rule[1])=== 'number'){
-                valueRight = _fncs.getValue(rule[1], n);
-            } else if (typeof(rule[1]) === 'object') {
-                leftRange = rule[1][0];
-                rightRange =  rule[1][1];
-                if (typeof(leftRange) === 'number' &&
-                    typeof(rightRange) === 'number'){
-
-                    if (valueLeft >= leftRange && valueRight <= rightRange) {
-                        return false
-                    } else {
-                        return true;
-                    }
-                }
-            }
-        } else {
-            if (_fncs.firstPropRule(rule[1]) === "inrange") { // mod
-                valueRight = _fncs.getValue(rule[1], valueLeft);
-            } else {
-                valueRight = _fncs.getValue(rule[1], n);
-            }
-        }
-
-        if(typeof(valueRight) === 'boolean') {//mod
-            return (valueRight? false : true);
-        } else {
-            return (valueLeft !== valueRight ? true :false);
-        }
-
-    }
-};
-
-/**
  * @class
  * Create a new ilib string instance. This string inherits from and
  * extends the Javascript String class. It can be
@@ -421,7 +80,11 @@ class IString {
             this.init(string, options, true);
         }
     }
-    
+
+    /**
+     * @private
+     * Initialize the string
+     */
     init(string, options, sync) {
         if (typeof(string) === 'object') {
             if (string instanceof IString) {
@@ -436,7 +99,7 @@ class IString {
         }
         this.length = this.str.length;
         this.cpLength = -1;
-        
+
         const {locale} = options || { locale: getLocale() };
         this.locale = new Locale(locale || getLocale());
 
@@ -468,6 +131,347 @@ class IString {
             });
         }
     }
+
+    /**
+     * @private
+     * @static
+     */
+    static _fncs = {
+        /**
+         * @private
+         * @param {Object} obj
+         * @return {string|undefined}
+         */
+        firstProp: function (obj) {
+            for (var p in obj) {
+                if (p && obj[p]) {
+                    return p;
+                }
+            }
+            return undefined; // should never get here
+        },
+    
+        /**
+         * @private
+         * @param {Object} obj
+         * @return {string|undefined}
+         */
+        firstPropRule: function (obj) {
+            if (Object.prototype.toString.call(obj) === '[object Array]') {
+                return "inrange";
+            } else if (Object.prototype.toString.call(obj) === '[object Object]') {
+                for (var p in obj) {
+                    if (p && obj[p]) {
+                        return p;
+                    }
+                }
+    
+            }
+            return undefined; // should never get here
+        },
+    
+        /**
+         * @private
+         * @param {Object} obj
+         * @param {number|Object} n
+         * @return {?}
+         */
+        getValue: function (obj, n) {
+            if (typeof(obj) === 'object') {
+                var subrule = IString._fncs.firstPropRule(obj);
+                if (subrule === "inrange") {
+                    return IString._fncs[subrule](obj, n);
+                }
+                return IString._fncs[subrule](obj[subrule], n);
+            } else if (typeof(obj) === 'string') {
+                if (typeof(n) === 'object'){
+                    return n[obj];
+                }
+                return n;
+            } else {
+                return obj;
+            }
+        },
+    
+        /**
+         * @private
+         * @param {number|Object} n
+         * @param {Array.<number|Array.<number>>|Object} range
+         * @return {boolean}
+         */
+        matchRangeContinuous: function(n, range) {
+    
+            for (var num in range) {
+                if (typeof(num) !== 'undefined' && typeof(range[num]) !== 'undefined') {
+                    var obj = range[num];
+                    if (typeof(obj) === 'number') {
+                        if (n === range[num]) {
+                            return true;
+                        } else if (n >= range[0] && n <= range[1]) {
+                            return true;
+                        }
+                    } else if (Object.prototype.toString.call(obj) === '[object Array]') {
+                        if (n >= obj[0] && n <= obj[1]) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        },
+    
+        /**
+         * @private
+         * @param {*} number
+         * @return {Object}
+         */
+        calculateNumberDigits: function(number) {
+            var numberToString = number.toString();
+            var parts = [];
+            var numberDigits =  {};
+            var operandSymbol =  {};
+    
+            var exponentialNum = number.toExponential();
+            var exponentialIndex = exponentialNum.indexOf("e");
+            if (exponentialIndex != -1) {
+                operandSymbol.c = parseInt(exponentialNum[exponentialIndex+2]);
+                operandSymbol.e = parseInt(exponentialNum[exponentialIndex+2]);
+            } else {
+                operandSymbol.c = 0;
+                operandSymbol.e = 0;
+            }
+    
+            if (numberToString.indexOf('.') !== -1) { //decimal
+                parts = numberToString.split('.', 2);
+                numberDigits.integerPart = parseInt(parts[0], 10);
+                numberDigits.decimalPartLength = parts[1].length;
+                numberDigits.decimalPart = parseInt(parts[1], 10);
+    
+                operandSymbol.n = parseFloat(number);
+                operandSymbol.i = numberDigits.integerPart;
+                operandSymbol.v = numberDigits.decimalPartLength;
+                operandSymbol.w = numberDigits.decimalPartLength;
+                operandSymbol.f = numberDigits.decimalPart;
+                operandSymbol.t = numberDigits.decimalPart;
+    
+            } else {
+                numberDigits.integerPart = number;
+                numberDigits.decimalPartLength = 0;
+                numberDigits.decimalPart = 0;
+    
+                operandSymbol.n = parseInt(number, 10);
+                operandSymbol.i = numberDigits.integerPart;
+                operandSymbol.v = 0;
+                operandSymbol.w = 0;
+                operandSymbol.f = 0;
+                operandSymbol.t = 0;
+    
+            }
+            return operandSymbol
+        },
+    
+        /**
+         * @private
+         * @param {number|Object} n
+         * @param {Array.<number|Array.<number>>|Object} range
+         * @return {boolean}
+         */
+        matchRange: function(n, range) {
+            return IString._fncs.matchRangeContinuous(n, range);
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number} n
+         * @return {boolean}
+         */
+        is: function(rule, n) {
+            var left = IString._fncs.getValue(rule[0], n);
+            var right = IString._fncs.getValue(rule[1], n);
+            return left == right;
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number} n
+         * @return {boolean}
+         */
+        isnot: function(rule, n) {
+            return IString._fncs.getValue(rule[0], n) != IString._fncs.getValue(rule[1], n);
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number|Object} n
+         * @return {boolean}
+         */
+        inrange: function(rule, n) {
+            if (typeof(rule[0]) === 'number') {
+                if(typeof(n) === 'object') {
+                    return IString._fncs.matchRange(n.n,rule);
+                }
+                return IString._fncs.matchRange(n,rule);
+            } else if (typeof(rule[0]) === 'undefined') {
+                var subrule = IString._fncs.firstPropRule(rule);
+                return IString._fncs[subrule](rule[subrule], n);
+            } else {
+                return IString._fncs.matchRange(IString._fncs.getValue(rule[0], n), rule[1]);
+            }
+        },
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number} n
+         * @return {boolean}
+         */
+        notin: function(rule, n) {
+            return !IString._fncs.matchRange(IString._fncs.getValue(rule[0], n), rule[1]);
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number} n
+         * @return {boolean}
+         */
+        within: function(rule, n) {
+            return IString._fncs.matchRangeContinuous(IString._fncs.getValue(rule[0], n), rule[1]);
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number} n
+         * @return {number}
+         */
+        mod: function(rule, n) {
+            return MathUtils.mod(IString._fncs.getValue(rule[0], n), IString._fncs.getValue(rule[1], n));
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number} n
+         * @return {number}
+         */
+        n: function(rule, n) {
+            return n;
+        },
+    
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number|Object} n
+         * @return {boolean}
+         */
+        or: function(rule, n) {
+            var ruleLength = rule.length;
+            var result, i;
+            for (i=0; i < ruleLength; i++) {
+                result = IString._fncs.getValue(rule[i], n);
+                if (result) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number|Object} n
+         * @return {boolean}
+         */
+        and: function(rule, n) {
+            var ruleLength = rule.length;
+            var result, i;
+            for (i=0; i < ruleLength; i++) {
+                result= IString._fncs.getValue(rule[i], n);
+                if (!result) {
+                    return false;
+                }
+            }
+            return true;
+        },
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number|Object} n
+         * @return {boolean}
+         */
+        eq: function(rule, n) {
+            var valueLeft = IString._fncs.getValue(rule[0], n);
+            var valueRight;
+    
+            if (typeof(rule[0]) === 'string') {
+                if (typeof(n) === 'object'){
+                    valueRight = n[rule[0]];
+                    if (typeof(rule[1])=== 'number'){
+                        valueRight = IString._fncs.getValue(rule[1], n);
+                    } else if (typeof(rule[1])=== 'object' && (IString._fncs.firstPropRule(rule[1]) === "inrange" )){
+                        valueRight = IString._fncs.getValue(rule[1], n);
+                    }
+                }
+            } else {
+                if (IString._fncs.firstPropRule(rule[1]) === "inrange") { // mod
+                    valueRight = IString._fncs.getValue(rule[1], valueLeft);
+                } else {
+                    valueRight = IString._fncs.getValue(rule[1], n);
+                }
+            }
+            if(typeof(valueRight) === 'boolean') {
+                return (valueRight ? true : false);
+            } else {
+                return (valueLeft == valueRight ? true :false);
+            }
+        },
+        /**
+         * @private
+         * @param {Object} rule
+         * @param {number|Object} n
+         * @return {boolean}
+         */
+        neq: function(rule, n) {
+            var valueLeft = IString._fncs.getValue(rule[0], n);
+            var valueRight;
+            var leftRange;
+            var rightRange;
+    
+            if (typeof(rule[0]) === 'string') {
+                valueRight = n[rule[0]];
+                if (typeof(rule[1])=== 'number'){
+                    valueRight = IString._fncs.getValue(rule[1], n);
+                } else if (typeof(rule[1]) === 'object') {
+                    leftRange = rule[1][0];
+                    rightRange =  rule[1][1];
+                    if (typeof(leftRange) === 'number' &&
+                        typeof(rightRange) === 'number'){
+    
+                        if (valueLeft >= leftRange && valueRight <= rightRange) {
+                            return false
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                if (IString._fncs.firstPropRule(rule[1]) === "inrange") { // mod
+                    valueRight = IString._fncs.getValue(rule[1], valueLeft);
+                } else {
+                    valueRight = IString._fncs.getValue(rule[1], n);
+                }
+            }
+    
+            if(typeof(valueRight) === 'boolean') {//mod
+                return (valueRight? false : true);
+            } else {
+                return (valueLeft !== valueRight ? true :false);
+            }
+    
+        }
+    };
 
     /**
      * Return true if the given character is a Unicode surrogate character,
@@ -510,7 +514,7 @@ class IString {
         } else {
             var high = Math.floor(codepoint / 0x10000) - 1;
             var low = codepoint & 0xFFFF;
-    
+
             return String.fromCharCode(0xD800 | ((high & 0x000F) << 6) |  ((low & 0xFC00) >> 10)) +
                 String.fromCharCode(0xDC00 | (low & 0x3FF));
         }
@@ -543,7 +547,7 @@ class IString {
         } else {
             code = high;
         }
-    
+
         return code;
     }
 
@@ -645,7 +649,7 @@ class IString {
 
         switch (typeof(index)) {
             case 'number':
-                operandValue = _fncs.calculateNumberDigits(index);
+                operandValue = IString._fncs.calculateNumberDigits(index);
 
                 if (limit.substring(0,2) === "<=") {
                     limit = parseFloat(limit.substring(2));
@@ -668,10 +672,10 @@ class IString {
                         case "few":
                         case "many":
                             // CLDR locale-dependent number classes
-                            var ruleset = ilib.data["plurals_" + this.locale.getLanguage()+ "_" + this.locale.getRegion()] || ilib.data["plurals_" + this.locale.getLanguage()]|| plurals_default;
+                            var ruleset = this.plurals;
                             if (ruleset) {
                                 var rule = ruleset[limit];
-                                return _fncs.getValue(rule, operandValue);
+                                return IString._fncs.getValue(rule, operandValue);
                             }
                             break;
                         case "":
@@ -872,7 +876,7 @@ class IString {
             }
         }
 
-        var args = (ilib.isArray(argIndex)) ? argIndex : [argIndex];
+        var args = (JSUtils.isArray(argIndex)) ? argIndex : [argIndex];
 
         // then apply the argument index (or indices)
         for (i = 0; i < limits.length; i++) {
@@ -1047,7 +1051,7 @@ class IString {
      * @return {IString} the requested substring
      */
     substr(start, length) {
-        var plat = ilib._getPlatform();
+        var plat = getPlatform();
         if (plat === "qt" || plat === "rhino" || plat === "trireme") {
             // qt and rhino have a broken implementation of substr(), so
             // work around it
@@ -1414,30 +1418,6 @@ class IString {
     }
 
     /**
-     * Set the locale to use when processing choice formats. The locale
-     * affects how number classes are interpretted. In some cultures,
-     * the limit "few" maps to "any integer that ends in the digits 2 to 9" and
-     * in yet others, "few" maps to "any integer that ends in the digits
-     * 3 or 4".
-     * @param {Locale|string} locale locale to use when processing choice
-     * formats with this string
-     * @param {boolean=} sync [optional] whether to load the locale data synchronously
-     * or not
-     * @param {Object=} loadParams [optional] parameters to pass to the loader function
-     * @param {function(*)=} onLoad [optional] function to call when the loading is done
-     */
-    setLocale(locale, sync, loadParams, onLoad) {
-        if (typeof(locale) === 'object') {
-            this.locale = locale;
-        } else {
-            this.localeSpec = locale;
-            this.locale = new Locale(locale);
-        }
-
-        IString.loadPlurals(typeof(sync) !== 'undefined' ? sync : true, this.locale, loadParams, onLoad);
-    }
-
-    /**
      * Return the locale to use when processing choice formats. The locale
      * affects how number classes are interpretted. In some cultures,
      * the limit "few" maps to "any integer that ends in the digits 2 to 9" and
@@ -1447,7 +1427,7 @@ class IString {
      * formats with this string
      */
     getLocale() {
-        return (this.locale ? this.locale.getSpec() : this.localeSpec) || ilib.getLocale();
+        return (this.locale ? this.locale.getSpec() : this.localeSpec) || getLocale()();
     }
 
     /**
