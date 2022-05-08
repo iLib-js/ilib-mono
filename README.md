@@ -43,6 +43,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.0
+
+- added support for the `mostSpecific` and `returnOne` flags to `loadData`.
+  When `mostSpecific` is true, only the most specific locale data is returned.
+  When `returnOne` is true, only the least specific locale data is returned.
+  When these are false, the locale data is merged with all of the parent locales
+  to create superset data.
+
 ### v1.1.0
 
 - Add caching support so that data is only loaded once

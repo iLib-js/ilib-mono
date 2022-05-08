@@ -313,6 +313,10 @@ class LocaleData {
      * objects. When false, the arrays in child objects are concatenated with the arrays in parent objects.
      * <li><i>returnOne</i> - return only the first file found. Do not merge many locale data files into one.
      * <li><i>sync</i> - boolean. Whether or not to load the data synchronously
+     * <li><i>mostSpecific</i> - boolean. When true, only the most specific locale data is returned. Multiple
+     * locale data files are not merged into one. This is similar to returnOne except this one retuns the last
+     * file, which is specific to the full locale, rather than the first one found which is specific to the
+     * least specific locale (often the root).
      * </ul>
      *
      * @param {Object} params Parameters configuring how to load the files (see above)
@@ -324,7 +328,9 @@ class LocaleData {
         const {
             sync = this.sync,
             locale = getLocale(),
-            basename
+            basename,
+            mostSpecific,
+            returnOne
         } = params || {};
 
         // first check if it's in the cache
@@ -370,9 +376,15 @@ class LocaleData {
                 }
             });
 
-            const merged = files.map(file => file.data).reduce((previous, current) => {
-                return JSUtils.merge(previous, current || {});
-            }, {});
+            const merged = mostSpecific ?
+                files.reduce((previous, current) => {
+                    return (current && current.data) ? current.data : previous;
+                }, {}) :
+                (returnOne ?
+                    files.map(file => file.data).find(file => file) :
+                    files.map(file => file.data).reduce((previous, current) => {
+                        return JSUtils.merge(previous, current || {});
+                    }, {}));
 
             return merged;
         } else {
@@ -399,9 +411,15 @@ class LocaleData {
                 });
             });
             return promise.then(() => {
-                return files.map(file => file.data).reduce((previous, current) => {
-                    return JSUtils.merge(previous, current || {});
-                }, {});
+                return mostSpecific ?
+                    files.reduce((previous, current) => {
+                        return (current && current.data) ? current.data : previous;
+                    }, {}) :
+                    (returnOne ?
+                        files.map(file => file.data).find(file => file) :
+                        files.map(file => file.data).reduce((previous, current) => {
+                            return JSUtils.merge(previous, current || {});
+                        }, {}));
             });
         }
 

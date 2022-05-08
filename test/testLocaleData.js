@@ -1019,5 +1019,302 @@ module.exports.testLocaleData = {
         test.ok(!LocaleData.checkCache("test", "de-DE", "tester"));
 
         test.done();
+    },
+
+    testLocaleDataNodeSyncMostSpecificFullLocale: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "ja-JP",
+            mostSpecific: true
+        });
+
+        // should not merge. It should only get the most specific
+        // file
+        test.deepEqual(actual, {
+            "a": "b ja-JP",
+            "x": {
+               "m": "n ja-JP"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeSyncMostSpecificPartLocale: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "ja",
+            mostSpecific: true
+        });
+
+        // should not merge. It should only get the most specific
+        // file
+        test.deepEqual(actual, {
+            "a": "b ja",
+            "c": "d ja",
+            "x": {
+               "m": "n ja",
+               "o": "p ja"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeAsyncMostSpecific: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: false
+        });
+
+        test.ok(locData);
+
+        // should not merge. It should only get the most specific
+        // file
+        locData.loadData({
+            basename: "tester",
+            locale: "ja-JP",
+            mostSpecific: true
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b ja-JP",
+                "x": {
+                   "m": "n ja-JP"
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeAsyncMostSpecificPartLocale: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: false
+        });
+
+        test.ok(locData);
+
+        // should not merge. It should only get the most specific
+        // file
+        locData.loadData({
+            basename: "tester",
+            locale: "ja",
+            mostSpecific: true
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b ja",
+                "c": "d ja",
+                "x": {
+                   "m": "n ja",
+                   "o": "p ja"
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeSyncReturnOneFullLocale: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "ja-JP",
+            returnOne: true
+        });
+
+        // should not merge. It should only get the root file
+        test.deepEqual(actual, {
+            "a": "b",
+            "c": "d",
+            "x": {
+               "m": "n",
+               "o": "p"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeSyncReturnOnePartLocale: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: true
+        });
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "tester",
+            locale: "ja",
+            returnOne: true
+        });
+
+        // should not merge. It should only return the root
+        test.deepEqual(actual, {
+            "a": "b",
+            "c": "d",
+            "x": {
+               "m": "n",
+               "o": "p"
+            }
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeAsyncReturnOne: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: false
+        });
+
+        test.ok(locData);
+
+        // should not merge. It should only get the most specific
+        // file
+        locData.loadData({
+            basename: "tester",
+            locale: "ja-JP",
+            returnOne: true
+        }).then((actual) => {
+            // should not merge. It should only get the root file
+            test.deepEqual(actual, {
+                "a": "b",
+                "c": "d",
+                "x": {
+                   "m": "n",
+                   "o": "p"
+                }
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeAsyncReturnOnePartLocale: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData("test", {
+            path: "./test/files",
+            sync: false
+        });
+
+        test.ok(locData);
+
+        // should not merge. It should only get the most specific
+        // file
+        locData.loadData({
+            basename: "tester",
+            locale: "ja",
+            returnOne: true
+        }).then((actual) => {
+            // should not merge. It should only get the root file
+            test.deepEqual(actual, {
+                "a": "b",
+                "c": "d",
+                "x": {
+                   "m": "n",
+                   "o": "p"
+                }
+            });
+            test.done();
+        });
     }
+
 };
