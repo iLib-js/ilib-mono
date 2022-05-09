@@ -41,7 +41,7 @@ export const testWebpackLoader = {
         var loader = LoaderFactory();
 
         test.throws(() => {
-            return loader.loadFile("./test/files/test.json", {sync: true});
+            return loader.loadFile("root.js", {sync: true});
         });
         test.done();
     },

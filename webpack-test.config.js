@@ -36,7 +36,7 @@ module.exports = {
         "./RhinoLoader": "RhinoLoader",
         "./NashornLoader": "NashornLoader",
         "./RingoLoader": "RingoLoader",
-        "log4js": "log4js"
+        "log4js": "log4js",
         "nodeunit": "nodeunit"
     },
     module: {
