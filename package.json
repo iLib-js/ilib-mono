@@ -1,6 +1,6 @@
 {
     "name": "ilib-loader",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "main": "./lib/index.js",
     "description": "Loader to load text files in a cross-platform manner",
     "keywords": [
@@ -51,7 +51,8 @@
         "build:test": "webpack-cli --config webpack-test.config.js",
         "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
-        "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "testall": "npm run test ; npm run test:web",
+        "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d * ; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-loader.md",
@@ -59,7 +60,7 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "core-js": "^3.21.1",
+        "core-js": "^3.22.4",
         "ilib-env": "^1.1.0"
     },
     "devDependencies": {

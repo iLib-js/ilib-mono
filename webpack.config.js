@@ -29,6 +29,10 @@ module.exports = {
     },
     externals: {
         "./NodeLoader": "NodeLoader",
+        "./QtLoader": "QtLoader",
+        "./RhinoLoader": "RhinoLoader",
+        "./NashornLoader": "NashornLoader",
+        "./RingoLoader": "RingoLoader",
         "log4js": "log4js"
     },
     module: {
@@ -40,12 +44,33 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3,
+                                    proposals: true
+                                }
+                            }
+                        ]],
+                        plugins: [
+                            //"add-module-exports",
+                            "@babel/plugin-transform-regenerator"
+                        ],
                         minified: true,
                         comments: false
                     }
                 }
             }
         ]
+    },
+    resolve: {
+        fallback: {
+            buffer: require.resolve("buffer")
+        },
+        alias: {
+            "calling-module": "../locale"
+        }
     }
 };

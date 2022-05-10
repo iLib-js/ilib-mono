@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import 'core-js/actual/promise';
 import log4js from '@log4js-node/log4js-api';
 
 /**

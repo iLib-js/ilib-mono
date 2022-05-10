@@ -1,17 +1,17 @@
 # ilib-loader
 
-These are ilib classes that know how to load file in various platforms. The files can
+These are ilib classes that know how to load files in various platforms. The files can
 be arbitrary files.
 
 Usage
 -----
 
-You start out by create a loader instance using the LoaderFactory function. This loader
-is a singleton so you only get one loader per run. The type of the loader that is
-created from the loader factory is dependent on the platform given by the
-`getPlatform()` function in the `ilib-env` package.
+First, create a loader instance using the LoaderFactory function. This loader
+is a singleton so you only get one loader per run of your app. The type of the
+loader that is created from the loader factory is dependent on the platform
+as returned by the `getPlatform()` function in the `ilib-env` package.
 
-Creating a new loader from the factory:
+To create a new loader from the factory:
 
 ```
 import LoaderFactory from 'ilib-loader';
@@ -112,17 +112,21 @@ okay as well. The log4js output will just go to the bitbucket instead.
 Using this Module in Webpack
 --------------------
 
-If you are using this module with your Webpacked application, Webpack will read and
-chase down all dependencies and include them in the bundle. Unfortunately, since
-this is a js-engine dependent module, some of the subclasses of Loader rely on
-other modules that are not available and which cannot and should not be included
-in the bundle. This causes errors when Webpack runs.
+### Unnecessary Loader Subclasses
 
-The solution is to declare that these unused dependencies are external. That is,
+If you are using this module with your Webpacked application, Webpack will read and
+chase down all dependencies and include them in the bundle, including all of the
+subclasses of Loader intended for other platforms. Unfortunately, since
+this package is a js-engine dependent module, some of the subclasses of Loader rely on
+modules and code which are not available in a browser. These subclasses cannot therefore
+be included in your app's webpack bundle.
+
+The solution is to declare that these Loader subclasses are external. That is,
 Webpack will assume that the environment that your app is running in will provide
-these dependencies already. In our case, we won't actually provide the dependencies,
-because we don't have to -- code that uses those dependencies will never run
-because it is for a different engine.
+these dependencies already so it doesn't need to include them. In our case, we won't
+actually provide those dependencies, because we don't have to -- code that uses those
+dependencies will never run because it is only used on other platforms. The only loader
+subclass we really need is the one for webpack.
 
 Add the following to your webpack.config.js file:
 
@@ -143,6 +147,8 @@ The last external, "log4js", should only be added if your app does not use log4j
 already. If it does, then it will be in your Webpack bundle already, so you don't
 have to pretend it is external.
 
+### Including Ilib Classes
+
 In addition to preparing the externals, you should make sure to include all of
 the ilib modules into the package. Fortunately, all of the ilib modules have names
 that start with the prefix "ilib-" so they are easy to recognize:
@@ -154,11 +160,51 @@ that start with the prefix "ilib-" so they are easy to recognize:
                 test: /\.js$/,
                 exclude: /node_modules/,
                 include: /node_modules\/ilib-/,
-                ...
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3,
+                                    proposals: true
+                                }
+                            }
+                        ]],
+                        plugins: [
+                            //"add-module-exports",
+                            "@babel/plugin-transform-regenerator"
+                        ]
+                    }
+                }
             }
         ]
     }
 ```
+
+### Point Webpack to Your Data Files
+
+Finally, the files containing locale data for ilib classes or containing the translations
+of strings extracted from your app should be assembled using [ilib-scanner](https://github.com/iLib-js/ilib-scanner)
+into individual files per locale.
+These files should go into a directory inside your app and the name of that directory
+should go into a resolve alias called "calling-module" in your webpack configuration:
+
+```js
+    resolve: {
+        alias: {
+            "calling-module": "<your directory here>"
+        }
+    }
+```
+
+The webpack loader uses this alias to locate the data files so that it can include them into
+the webpacked bundle. The webpack loader will create a chunk for each
+of the files it finds in this directory. In this way, you are not loading the data for all
+locales into memory at the same time when the bundle is loaded. It will dynamically load
+only the locale data needed for the locales that are being used.
 
 ## License
 
@@ -178,6 +224,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.1.0
+
+- Add webpack loader subclass
+- Minimum version of node is now v10
+- Added babel configuration to polyfill Promise.allSettled on older versions of node
+  or older browsers
 
 ### v1.0.3
 

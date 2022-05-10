@@ -72,7 +72,6 @@ export const testLoaderFactory = {
         test.done();
     },
 
-/*
     testLoaderFactoryWeb: function(test) {
         setPlatform(undefined); // clear whatever other tests put there
         if (getPlatform() !== "browser") {
@@ -84,8 +83,7 @@ export const testLoaderFactory = {
         test.expect(2);
         var loader = LoaderFactory();
         test.equal(loader.getName(), "Webpack Loader");
-        test.equalIgnoringOrder(loader.getPlatforms(), ["web"]);
+        test.equalIgnoringOrder(loader.getPlatforms(), ["browser"]);
         test.done();
     }
-*/
 };
