@@ -4,7 +4,6 @@ jobs:
     parameters:
         docker_image:
           type: string
-          default: cimg/node:current-browsers
     docker:
       - image: << parameters.docker_image >>
     steps:
