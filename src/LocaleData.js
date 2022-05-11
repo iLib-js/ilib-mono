@@ -520,11 +520,34 @@ class LocaleData {
      * later in the list.<p>
      *
      * The files named for the locale should contain the data of multiple
-     * types. The first level of properties in the data should be the basename
-     * for the type of data, and the value of that property is the actual
+     * types. The first level of properties in the data should be the package
+     * name for the type of data, and within that is basename for the file.
+     * The value of the basename property is the actual
      * locale data. For javascript files, the file should be a commonjs or
      * ESM style module that exports a function that takes no parameters.
      * This function should return this type of data.<p>
+     *
+     * Example file:
+     *
+     * <code>
+     * export default function getLocaleData() {
+     *     return {
+     *         "Phone": {
+     *             "phonefmt": {
+     *                 "default": {
+     *                     "example": "(211) 555-1212",
+     *                     etc.
+     *                 }
+     *             },
+     *             "numplan": {
+     *                 "region": "US",
+     *                 "countryCode": "1",
+     *                 etc.
+     *             }
+     *         }
+     *     };
+     * };
+     * </code>
      *
      * If the data is loaded successfully, the Promise will resolve to `true`.
      * If there was an error loading the files, or if no files were found to
@@ -542,8 +565,32 @@ class LocaleData {
         if (this.loader.isSync()) {
             return Promise.resolve(true);
         }
-        // TODO: not implemented yet
-        return Promise.resolve(false);
+
+        const spec = locale.getSpec();
+
+        let files = [];
+        const subLocales = Utils.getSublocales(locale);
+        const files = subLocales.map((spec) => {
+            return `${spec}.js`;
+        }).concat(subLocales.map((spec) => {
+            return `${spec}.json`;
+        });
+
+        return this.loader.loadFiles(files, {sync: false}).then(data => {
+            data.forEach((part) => {
+                const localeData = (typeof(part) === 'object' && typeof(part.getLocaleData) === 'function') ?
+                    part.getLocaleData() :
+                    part;
+                for (let packageName in localeData) {
+                    for (let basename in localeData[packageName]) {
+                        let datum = {};
+                        datum[locale] = {};
+                        datum[locale][basename] = localeData[packageName][basename];
+                        LocaleData.cacheData(packageName, datum);
+                    }
+                }
+            });
+        });
     }
 
     /**
