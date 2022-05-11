@@ -1,9 +1,6 @@
 version: 2.1
 jobs:
   test:
-    parameters:
-        docker_image:
-          type: string
     docker:
       - image: << parameters.docker_image >>
     steps:
@@ -28,8 +25,6 @@ workflows:
           docker_image: circleci/node:10-browsers
       - test:
           docker_image: circleci/node:12-browsers
-      - test:
-          docker_image: circleci/node:13-browsers
       - test:
           docker_image: circleci/node:14-browsers
       - test:
