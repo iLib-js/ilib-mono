@@ -35,6 +35,18 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.3
+
+* updated dependencies
+* make sure to target node 10 and older browser when running babel and adding
+  polyfills
+
+### v1.0.2
+
+* updated dependencies
+* updated docs
+* add log4js library support
+
 ### v1.0.1
 
 - API documentation updates
