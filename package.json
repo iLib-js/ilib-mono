@@ -1,6 +1,6 @@
 {
     "name": "ilib-common",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "main": "./lib/index.js",
     "description": "Common utility functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
