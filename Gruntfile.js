@@ -42,6 +42,9 @@ module.exports = function(grunt) {
                     '@babel/preset-env',
                     {
                         useBuiltIns: 'usage',
+                        targets: {
+                            node: "current"
+                        },
                         corejs: {
                             version: 3,
                             proposals: true
