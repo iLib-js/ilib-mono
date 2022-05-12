@@ -203,6 +203,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.1
+
+* Updated to use polyfills with babel for node 10 and for older browsers
+* Updated dependencies
+
 ### v1.2.0
 
 * Added `setLocale` and `setTimeZone` functions. These override the values
