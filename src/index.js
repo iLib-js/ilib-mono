@@ -283,7 +283,7 @@ export function getLocale() {
                 break;
             case 'nodejs':
                 // running under nodejs
-                let lang = global.process.env.LANG || global.process.env.LC_ALL;
+                lang = global.process.env.LANG || global.process.env.LC_ALL;
                 // the LANG variable on unix is in the form "lang_REGION.CHARSET"
                 // where language and region are the correct ISO codes separated by
                 // an underscore. This translate it back to the BCP-47 form.
