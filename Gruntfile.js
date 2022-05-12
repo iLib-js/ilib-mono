@@ -43,7 +43,8 @@ module.exports = function(grunt) {
                     {
                         useBuiltIns: 'usage',
                         targets: {
-                            node: "current"
+                            node: "10",
+                            browsers: "cover 99.5%"
                         },
                         corejs: {
                             version: 3,
