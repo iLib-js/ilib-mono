@@ -2,7 +2,7 @@
  * Gruntfile.js - build this project
  *
  * @license
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,20 @@ module.exports = function(grunt) {
         babel: {
             options: {
                 sourceMap: true,
-                presets: ['@babel/preset-env'],
+                presets: [[
+                    '@babel/preset-env',
+                    {
+                        useBuiltIns: 'usage',
+                        targets: {
+                            node: "10",
+                            browsers: "cover 99.5%"
+                        },
+                        corejs: {
+                            version: 3,
+                            proposals: true
+                        }
+                    }
+                ]],
                 plugins: ["add-module-exports"],
                 minified: !debug,
                 comments: false
