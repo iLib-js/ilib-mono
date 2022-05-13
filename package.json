@@ -85,10 +85,10 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-common": "^1.0.2",
-        "ilib-env": "^1.2.0",
-        "ilib-loader": "^1.1.0",
-        "ilib-locale": "^1.1.0",
+        "ilib-common": "^1.0.3",
+        "ilib-env": "^1.2.1",
+        "ilib-loader": "^1.1.1",
+        "ilib-locale": "^1.1.1",
         "json5": "^2.2.1"
     }
 }
