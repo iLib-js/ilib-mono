@@ -225,6 +225,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.1
+
+- the npm package for the previous version was built with the wrong babel target on
+  a later version of node that didn't require most polyfills, so many things were not
+  polyfilled properly for older node or older browsers
+
 ### v1.1.0
 
 - Add webpack loader subclass
