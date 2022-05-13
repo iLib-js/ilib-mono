@@ -89,7 +89,7 @@
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
         "core-js": "^3.22.5",
-        "ilib-env": "^1.2.0",
-        "ilib-locale": "^1.1.0"
+        "ilib-env": "^1.2.1",
+        "ilib-locale": "^1.1.1"
     }
 }
