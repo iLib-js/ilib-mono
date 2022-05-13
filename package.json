@@ -1,6 +1,6 @@
 {
     "name": "ilib-env",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "main": "./lib/index.js",
     "description": "Common environment detection functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
@@ -61,30 +61,32 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.8",
-        "@babel/preset-env": "^7.16.11",
+        "@babel/core": "^7.17.10",
+        "@babel/preset-env": "^7.17.10",
         "@babel/register": "^7.17.7",
-        "@babel/runtime": "^7.17.8",
-        "acorn": "^8.7.0",
+        "@babel/runtime": "^7.17.9",
+        "acorn": "^8.7.1",
         "acorn-jsx": "^5.3.2",
         "assertextras": "^1.1.0",
-        "babel-loader": "^8.2.3",
+        "babel-loader": "^8.2.5",
         "babel-plugin-add-module-exports": "^1.0.4",
-        "core-js": "^3.21.1",
         "docdash": "^1.2.0",
-        "grunt": "^1.4.1",
+        "grunt": "^1.5.3",
         "grunt-babel": "^8.0.0",
         "grunt-cli": "^1.4.3",
-        "grunt-contrib-clean": "^2.0.0",
+        "grunt-contrib-clean": "^2.0.1",
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
-        "grunt-contrib-uglify": "^5.0.1",
+        "grunt-contrib-uglify": "^5.2.1",
         "jsdoc": "^3.6.10",
         "jsdoc-to-markdown": "^7.1.1",
         "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3",
         "open-cli": "^7.0.1",
-        "webpack": "^5.70.0",
+        "webpack": "^5.72.1",
         "webpack-cli": "^4.9.2"
+    },
+    "dependencies": {
+        "core-js": "^3.22.5"
     }
 }
