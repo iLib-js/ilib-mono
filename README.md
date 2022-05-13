@@ -117,7 +117,11 @@ limitations under the License.
 
 # Release Notes
 
-## v1.1.0
+### v1.1.1
+
+* Update dependencies and target the right node & browser versions with babel
+
+### v1.1.0
 
 - added the ability to parse locale specs that contain underscores
   instead of dashes. Some locale specs for Java properties file names
@@ -125,18 +129,18 @@ limitations under the License.
   (ie. "zh_Hans_CN" === "zh-Hans-CN" now)
 - updated dependencies
 
-## v1.0.2
+### v1.0.2
 
 - fixed some incorrect unit tests
 
-## v1.0.1
+### v1.0.1
 
 - do not put the module name into the package.json, because it screws
 up the import of ilib-locale in other apps that use webpack
 - added API documentation
 - added new way of doing web testing using a webpacked version of the tests
 
-## v1.0.0
+### v1.0.0
 
 - Code taken from ilib 14.7.0 and converts to an ES6 module.
 - Use babel to transpile it back to ES2015 so it can be used in either ES215 or 
