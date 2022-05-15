@@ -1,6 +1,6 @@
 /*
  * Utils.js - common routines shared amongst the cldr/unicode tools
- * 
+ *
  * Copyright © 2013, 2018, 2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,15 @@
  */
 
 import fs from 'fs';
+import { Utils } from 'ilib-common';
 
 /**
  * @module Utils
  */
 
 /**
- * Test whether an object is an javascript array. 
- * 
+ * Test whether an object is an javascript array.
+ *
  * @param {*} object The object to test
  * @return {boolean} return true if the object is an array
  * and false otherwise
@@ -42,10 +43,10 @@ export function isArray(object) {
 /*
  * The 32-bit Unicode value:
  * 000u uuuu xxxx   xxxx xxxx xxxx
- * 
+ *
  * Is translated to the following UTF-16 sequence:
  * 1101 10ww wwxx xxxx   1101 11xx xxxx xxxx
- * 
+ *
  * Where wwww = uuuuu - 1
  */
 export function codePointToUTF16(codepoint) {
@@ -95,8 +96,8 @@ export function charIterator(string) {
         let ch = undefined;
         if (this.index < string.length) {
             ch = string.charAt(this.index);
-            if (isSurrogate(ch) && 
-                    this.index+1 < string.length && 
+            if (isSurrogate(ch) &&
+                    this.index+1 < string.length &&
                     isSurrogate(string.charAt(this.index+1))) {
                 this.index++;
                 ch += string.charAt(this.index);
@@ -109,7 +110,7 @@ export function charIterator(string) {
 
 /**
  * Return the character that is represented by the given hexadecimal encoding.
- * 
+ *
  * @param {string} hex the hexadecimal encoding of the code point of the character
  * @return {string} the character that is equivalent to the hexadecimal
  */
@@ -119,10 +120,10 @@ export function hexToChar(hex) {
 
 /**
  * Return a string created by interpretting the space-separated Unicode characters
- * encoded as hex digits. 
- * 
+ * encoded as hex digits.
+ *
  * Example: "0065 0066"  -> "ab"
- * 
+ *
  * @param {string} hex the string of characters encoded as hex digits
  * @return {string} the equivalent string as regular UTF-16 Unicode characters
  */
@@ -140,8 +141,8 @@ export function hexStringUTF16String(hex) {
 /**
  * Re-encode the characters in a string as a space-separated sequence of 16-bit
  * hex values.
- * 
- * @param {string} string string to re-encode 
+ *
+ * @param {string} string string to re-encode
  * @return {string} the re-encoded string
  */
 export function toHexString(string) {
@@ -167,9 +168,9 @@ export function toHexString(string) {
  * as a match. If the element is a range array, then the range array
  * has the low end of the range encoded in the 0th element, and the
  * high end in the 1st element. The range array may contain more elements
- * after that, but the extra elements are ignored. They may be used to 
- * indicate other information about the range, such as a name for example. 
- * 
+ * after that, but the extra elements are ignored. They may be used to
+ * indicate other information about the range, such as a name for example.
+ *
  * @param {Array.<Array.<number>|number>} arr array of number or array of number to search
  * @param {number} num value to search for
  * @return {number} the index in the array of the matching element or -1 to indicate no
@@ -207,8 +208,8 @@ export function findMember(arr, num) {
 /**
  * Do a binary search of an array of ranges and single values to determine
  * whether or not the given character is encoded in that array.
- * 
- * @param {Array.<Array.<number>|number>} arr 
+ *
+ * @param {Array.<Array.<number>|number>} arr
  * @param {number} num number to search for
  * @return {boolean} true if the number is in the array or within a range in the array
  */
@@ -218,17 +219,17 @@ export function isMember(arr, num) {
 
 /**
  * Coelesce ranges to shorten files and to make searching it more efficient. There are 4 cases:
- * 
+ *
  * 1. [A] followed by [A+1]       -> [A, A+1]
  * 2. [A] followed by [A+1, B]    -> [A, B]
  * 3. [A, B] followed by [B+1]    -> [A, B+1]
  * 4. [A, B] followed by [B+1, C] -> [A, C]
- * 
+ *
  * where A, B, and C represent particular values. Handle each case properly.
- * 
+ *
  * @param {Array.<{Array.<string|number>}>} ranges an array of range arrays
- * @param {number} skip the number of elements to skip before the range.  
- * If it is 0, look at elements 0 and 1, and if it is 1, then the range is 
+ * @param {number} skip the number of elements to skip before the range.
+ * If it is 0, look at elements 0 and 1, and if it is 1, then the range is
  * in elements 1 and 2.
  * @return {Array.<{Array.<string|number>}>} a coelesced array of ranges
  */
@@ -266,10 +267,10 @@ export function coelesce(ranges, skip) {
  * the value in object1. If a property exists in object1, but not in object2, its value
  * will not be touched. If a property exists in object2, but not in object1, it will be
  * added to the merged result.<p>
- * 
+ *
  * Name1 and name2 are for creating debug output only. They are not necessary.<p>
- * 
- * 
+ *
+ *
  * @param {*} object1 the object to merge into
  * @param {*} object2 the object to merge
  * @param {string=} name1 name of the object being merged into
@@ -350,6 +351,86 @@ export function mergeAndPrune(localeData) {
             }
         }
     }
+};
+
+/**
+ * This merge and prune uses the locale hierarchy to determine which
+ * locales are parents and which are children. This is the same hierarchy that
+ * ilib itself uses, which allows us to get the right merging and pruning.
+ *
+ * The function getSublocales in ilib-common lists out the locale hierarchy
+ * that ilib uses, and we follow this hierarchy here.
+ *
+ * The input is an object where the property name is the locale spec (partial
+ * or full) and the value is an object containing the property "data" which
+ * contains the raw data as loaded from CLDR.
+ *
+ * Once the merge and prune is done, each one will have three properties:
+ *
+ * <ol>
+ * <li>data - the raw data as loaded from the CLDR files. Should not be
+ * be modified from the original input data.
+ * <li>merged - the fully merged data. This merges the highest level data
+ * (root) into successively lower levels along the locale hierarchy such
+ * that the most specific locale has a superset of all the data of all
+ * its ancestors.
+ * <li>pruned - the pruned version of the merged data where the data is
+ * the children nodes is removed if it is the same as its immediate parent
+ * node. That is, merging from the root locale down to a particular locale
+ * should produce the same thing as what the merged property above contains,
+ * but with a smaller footprint because duplicates are removed.
+ * </ol>
+ *
+ * After this function is done, the caller should read the "pruned" property
+ * for each locale.
+ *
+ * @param {Object} localeData data to merge and prune
+ * @returns {Object} merged/pruned object
+ */
+export function localeMergeAndPrune(localeData) {
+    // root is special
+    if (localeData.root && localeData.root.data) {
+        // for the root, there is no difference between the raw data, the merged
+        // data and the pruned data.
+        localeData.root.merged = localeData.root.pruned = localeData.root.data;
+    }
+    let parent;
+    // do the longest locale specs first
+    Object.keys(localeData).sort(function(left, right) {
+        return right.length - left.length;
+    }).forEach(function (spec) {
+        const sublocales = Utils.getSublocales(spec);
+
+        if (localeData[spec]) {
+            if (!localeData[spec].merged) {
+                // first, merge forward where necessary
+                parent = localeData.root;
+                sublocales.forEach(locale => {
+                    if (localeData[locale] && !localeData[locale].merged) {
+                        let { data } = localeData[locale] || {};
+                        if (data) {
+                            localeData[locale].merged = merge(parent.merged, data);
+                            parent = localeData[locale];
+                        }
+                    }
+                });
+            }
+
+            if (!localeData[spec].pruned) {
+                // then, prune forward
+                parent = localeData.root;
+                sublocales.forEach(locale => {
+                    if (localeData[locale] && !localeData[locale].pruned) {
+                        let { merged } = localeData[locale] || {};
+                        if (merged) {
+                            localeData[locale].pruned = prune(parent.merged, merged);
+                            parent = localeData[locale];
+                        }
+                    }
+                });
+            }
+        }
+    });
 };
 
 export function makeDirs(path) {

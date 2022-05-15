@@ -870,5 +870,107 @@ export const testUtils = {
         test.expect(1)
         test.equal(Utils.hexToChar("016FF0"), '𖿰');
         test.done();
+    },
+
+    testLocaleMergeAndPruneAddProps: function(test) {
+        test.expect(1)
+
+        var data = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh": {
+                data: {
+                    "a": "x"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b"
+                }
+            },
+            "zh-Hans": {
+                data: {
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "n": "m"
+                }
+            }
+        };
+
+        Utils.localeMergeAndPrune(data);
+        var expected = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh": {
+                data: {
+                    "a": "x"
+                },
+                merged: {
+                    "a": "x",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "x"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b"
+                }
+            },
+            "zh-Hans": {
+                data: {
+                    "c": "y"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "y"
+                },
+                pruned: {
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "n": "m"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "y",
+                    "n": "m"
+                },
+                pruned: {
+                    "n": "m"
+                }
+            }
+        };
+        test.deepEqual(data, expected);
+        test.done();
     }
 };
