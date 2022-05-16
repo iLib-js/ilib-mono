@@ -34,6 +34,7 @@ import genNumbers from './numbers';
 import genLanguages from './languages';
 import genRegions from './regions';
 import genScripts from './scripts';
+import genTimeZones from './timezones';
 import genLocales from './locales';
 
 let root = {};
@@ -50,6 +51,7 @@ genPaperSizes(root);
 genLanguages(root);
 genRegions(root);
 genScripts(root);
+genTimeZones(root);
 genLocales(root); // should always be last
 
 console.log("----------------");
