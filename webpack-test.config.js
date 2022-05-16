@@ -26,13 +26,18 @@ module.exports = {
         path: path.resolve(__dirname, 'test'),
         filename: "ilib-localedata-test.js",
         library: {
-            name: "ilibLoadDataTest",
+            name: "ilibLocaleDataTest",
             type: "umd"
         }
     },
     externals: {
-        './NodeLoader': 'NodeLoader',
-        'nodeunit': 'nodeunit'
+        "./NodeLoader": "NodeLoader",
+        "./QtLoader": "QtLoader",
+        "./RhinoLoader": "RhinoLoader",
+        "./NashornLoader": "NashornLoader",
+        "./RingoLoader": "RingoLoader",
+        "log4js": "log4js",
+        "nodeunit": "nodeunit"
     },
     module: {
         rules: [
@@ -43,7 +48,16 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3,
+                                    proposals: true
+                                }
+                            }
+                        ]],
                         plugins: [
                             //"add-module-exports",
                             "@babel/plugin-transform-regenerator"
@@ -56,6 +70,9 @@ module.exports = {
     resolve: {
         fallback: {
             buffer: require.resolve("buffer")
+        },
+        alias: {
+            "calling-module": "../test/locale"
         }
     }
 };
