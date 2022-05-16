@@ -1,6 +1,6 @@
 {
     "name": "ilib-data-utils",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "description": "Utilities used to generate locale data for ilib packages",
@@ -85,6 +85,7 @@
         "nodeunit": "^0.11.3"
     },
     "dependencies": {
+        "ilib-common": "^1.0.2",
         "ilib-locale": "^1.1.0"
     }
 }

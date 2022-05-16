@@ -870,5 +870,486 @@ export const testUtils = {
         test.expect(1)
         test.equal(Utils.hexToChar("016FF0"), '𖿰');
         test.done();
-    }
+    },
+
+    testLocaleMergeAndPrune: function(test) {
+        test.expect(1)
+
+        var data = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh": {
+                data: {
+                    "a": "x"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b"
+                }
+            },
+            "zh-Hans": {
+                data: {
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "n": "m"
+                }
+            }
+        };
+
+        Utils.localeMergeAndPrune(data);
+        var expected = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh": {
+                data: {
+                    "a": "x"
+                },
+                merged: {
+                    "a": "x",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "x"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b"
+                }
+            },
+            "zh-Hans": {
+                data: {
+                    "c": "y"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "y"
+                },
+                pruned: {
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "n": "m"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "y",
+                    "n": "m"
+                },
+                pruned: {
+                    "n": "m"
+                }
+            }
+        };
+        test.deepEqual(data, expected);
+        test.done();
+    },
+
+    testLocaleMergeAndPruneDoPruneExtraSettings: function(test) {
+        test.expect(1)
+
+        var data = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh": {
+                data: {
+                    "a": "x",
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh-Hans": {
+                data: {
+                    "a": "x",
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": "x",
+                    "c": "y",
+                    "n": "m"
+                }
+            }
+        };
+
+        Utils.localeMergeAndPrune(data);
+        var expected = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh": {
+                data: {
+                    "a": "x",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "x",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "x"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b"
+                }
+            },
+            "zh-Hans": {
+                data: {
+                    "a": "x",
+                    "c": "y"
+                },
+                merged: {
+                    "a": "x",
+                    "c": "y"
+                },
+                pruned: {
+                    "a": "x",
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": "x",
+                    "c": "y",
+                    "n": "m"
+                },
+                merged: {
+                    "a": "x",
+                    "c": "y",
+                    "n": "m"
+                },
+                pruned: {
+                    "n": "m"
+                }
+            }
+        };
+        test.deepEqual(data, expected);
+        test.done();
+    },
+
+    testLocaleMergeAndPruneMissingLocales: function(test) {
+        test.expect(1)
+
+        var data = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b",
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": "x",
+                    "n": "m"
+                }
+            }
+        };
+
+        Utils.localeMergeAndPrune(data);
+        var expected = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b",
+                    "c": "y"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "y"
+                },
+                pruned: {
+                    "c": "y"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": "x",
+                    "n": "m"
+                },
+                merged: {
+                    "a": "x",
+                    "c": "y",
+                    "n": "m"
+                },
+                pruned: {
+                    "a": "x",
+                    "n": "m"
+                }
+            }
+        };
+        test.deepEqual(data, expected);
+        test.done();
+    },
+
+    testLocaleMergeAndPruneNoChangeFromParentMeansEmptyPruned: function(test) {
+        test.expect(1)
+
+        var data = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                }
+            }
+        };
+
+        Utils.localeMergeAndPrune(data);
+        var expected = {
+            "root": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                    "a": "b",
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": "b",
+                    "c": "d"
+                },
+                merged: {
+                    "a": "b",
+                    "c": "d"
+                },
+                pruned: {
+                }
+            }
+        };
+        test.deepEqual(data, expected);
+        test.done();
+    },
+
+    testLocaleMergeAndPruneDeepMerge: function(test) {
+        test.expect(1)
+
+        var data = {
+            "root": {
+                data: {
+                    "a": {
+                        "m": "n",
+                        "x": {
+                            "y": "z"
+                        }
+                    },
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": {
+                        "m": "q",
+                    },
+                    "c": "d"
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": {
+                        "x": {
+                            "y": "q",
+                            "u": "i"
+                        }
+                    },
+                    "c": "d"
+                }
+            }
+        };
+
+        Utils.localeMergeAndPrune(data);
+        var expected = {
+            "root": {
+                data: {
+                    "a": {
+                        "m": "n",
+                        "x": {
+                            "y": "z"
+                        }
+                    },
+                    "c": "d"
+                },
+                merged: {
+                    "a": {
+                        "m": "n",
+                        "x": {
+                            "y": "z"
+                        }
+                    },
+                    "c": "d"
+                },
+                pruned: {
+                    "a": {
+                        "m": "n",
+                        "x": {
+                            "y": "z"
+                        }
+                    },
+                    "c": "d"
+                }
+            },
+            "und-CN": {
+                data: {
+                    "a": {
+                        "m": "q",
+                    },
+                    "c": "d"
+                },
+                merged: {
+                    "a": {
+                        "m": "q",
+                        "x": {
+                            "y": "z"
+                        }
+                    },
+                    "c": "d"
+                },
+                pruned: {
+                    "a": {
+                        "m": "q",
+                    }
+                }
+            },
+            "zh-Hans-CN": {
+                data: {
+                    "a": {
+                        "x": {
+                            "y": "q",
+                            "u": "i"
+                        }
+                    },
+                    "c": "d"
+                },
+                merged: {
+                    "a": {
+                        "m": "q",
+                        "x": {
+                            "y": "q",
+                            "u": "i"
+                        }
+                    },
+                    "c": "d"
+                },
+                pruned: {
+                    "a": {
+                        "x": {
+                            "y": "q",
+                            "u": "i"
+                        }
+                    }
+                }
+            }
+        };
+        test.deepEqual(data, expected);
+        test.done();
+    },
+
 };
