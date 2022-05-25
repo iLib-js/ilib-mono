@@ -22,12 +22,14 @@
 
 import OptionsParser from 'options-parser';
 import Locale from 'ilib-locale';
+import { JSUtils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
 
 import walk from './walk.mjs';
 import scan from './scan.mjs';
+import scanModule from './scanmodule.mjs';
 
 const optionConfig = {
     help: {
@@ -100,7 +102,9 @@ if (paths.length === 0) {
     paths.push(".");
 }
 
-console.log(`Scanning input paths: ${JSON.stringify(paths)}`);
+console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
+
+console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
 
 let files = [];
 
@@ -111,12 +115,28 @@ paths.forEach((pathName) => {
 
 let ilibModules = new Set();
 
+console.log(`\n\nScanning files...`);
+
 files.forEach((file) => {
     console.log(`Scanning file ${file} ...`);
     scan(file, ilibModules);
 });
 
-console.log(`Ilib modules found are: `);
-for (let module of ilibModules) {
-    console.log(module);
-}
+let localeData = {};
+
+console.log(`\n\nScanning ilib modules for locale data`);
+let promise = Promise.resolve(true);
+ilibModules.forEach((module) => {
+    console.log(`Scanning module ${module} ...`);
+    promise = promise.then(() => {
+        return scanModule(module, options.opt).then(data => {
+            console.log(`Merging data ${JSON.stringify(data)}`);
+            localeData = JSUtils.merge(localeData, data);
+        });
+    });
+});
+
+promise.then(() => {
+    console.log("Final data is ");
+    console.log(JSON.stringify(localeData, undefined, 4));
+});

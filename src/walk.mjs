@@ -43,6 +43,7 @@ function walk(dir) {
 
     stat = statSync(dir);
     if (stat && !stat.isDirectory()) {
+        extension = path.extname(dir);
         if (extensionsToScan[extension]) {
             results.push(dir);
         }
@@ -52,7 +53,7 @@ function walk(dir) {
             list.sort().forEach((file) => {
                 extension = path.extname(file);
                 pathName = path.join(dir, file);
-    
+
                 if (existsSync(pathName)) {
                     stat = statSync(pathName);
                     if (stat && stat.isDirectory()) {

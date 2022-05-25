@@ -66,6 +66,7 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.2.1",
+        "ilib-mock": "file:test/ilib-mock/ilib-mock-1.0.0.tgz",
         "jsdoc": "^3.6.10",
         "jsdoc-to-markdown": "^7.1.1",
         "load-grunt-tasks": "^5.1.0",
@@ -77,6 +78,7 @@
     "dependencies": {
         "ilib-common": "^1.0.3",
         "ilib-locale": "^1.1.1",
+        "json5": "^2.2.1",
         "options-parser": "^0.4.0"
     }
 }
