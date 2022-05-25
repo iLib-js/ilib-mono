@@ -146,11 +146,12 @@ const testscan = {
     },
 
     testScanImportStatement: function(test) {
-        test.expect(2);
+        test.expect(3);
         let set = new Set();
         scan("./src/index.mjs", set);
-        test.equal(set.size, 1);
+        test.equal(set.size, 2);
         test.ok(set.has("ilib-locale"));
+        test.ok(set.has("ilib-common"));
 
         test.done();
     },
