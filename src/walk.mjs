@@ -41,31 +41,36 @@ function walk(dir) {
     let results = [];
     let pathName, included, stat, extension;
 
-    stat = statSync(dir);
-    if (stat && !stat.isDirectory()) {
-        extension = path.extname(dir);
-        if (extensionsToScan[extension]) {
-            results.push(dir);
-        }
-    } else {
-        const list = readdirSync(dir);
-        if (list && list.length !== 0) {
-            list.sort().forEach((file) => {
-                extension = path.extname(file);
-                pathName = path.join(dir, file);
-
-                if (existsSync(pathName)) {
-                    stat = statSync(pathName);
-                    if (stat && stat.isDirectory()) {
-                        results = results.concat(walk(pathName));
-                    } else if (extensionsToScan[extension]) {
-                        results.push(pathName);
+    try {
+        stat = statSync(dir);
+        if (stat && !stat.isDirectory()) {
+            extension = path.extname(dir);
+            if (extensionsToScan[extension]) {
+                results.push(dir);
+            }
+        } else {
+            const list = readdirSync(dir);
+            if (list && list.length !== 0) {
+                list.sort().forEach((file) => {
+                    extension = path.extname(file);
+                    pathName = path.join(dir, file);
+    
+                    if (existsSync(pathName)) {
+                        stat = statSync(pathName);
+                        if (stat && stat.isDirectory()) {
+                            results = results.concat(walk(pathName));
+                        } else if (extensionsToScan[extension]) {
+                            results.push(pathName);
+                        }
+                    } else {
+                        console.log(`File ${pathName} does not exist or is inaccessible.`);
                     }
-                } else {
-                    console.log(`File ${pathName} does not exist or is inaccessible.`);
-                }
-            });
+                });
+            }
         }
+    } catch (e) {
+        // ignore
+        console.log(`Could not access path ${dir}`);
     }
 
     return results;

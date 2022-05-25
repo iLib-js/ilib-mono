@@ -18,7 +18,8 @@
  */
 
 const files = [
-    "testscan.mjs"
+    "testscan.mjs",
+    "testwalk.mjs"
     //"testassemble.js"
 ];
 

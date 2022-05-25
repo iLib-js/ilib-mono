@@ -19,7 +19,7 @@
 
 import scan, { scanString } from '../src/scan.mjs';
 
-const testscan = {
+export const testscan = {
     testScanStringImportStatement: function(test) {
         test.expect(2);
         let set = new Set();
@@ -165,8 +165,5 @@ const testscan = {
         test.ok(set.has("ilib-locale"));
 
         test.done();
-    },
-
+    }
 };
-
-export default testscan;

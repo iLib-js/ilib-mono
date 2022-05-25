@@ -30,7 +30,7 @@ let modules = {};
 
 let promise = Promise.resolve(true);
 
-suites.forEach(function (path) {
+suites.forEach(path => {
     promise = promise.then(() => {
         return import("./" + path).then((test) => {
             for (var suite in test) {
