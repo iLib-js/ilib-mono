@@ -17,7 +17,11 @@
  * limitations under the License.
  */
 
-import { readFileSync } from 'node:fs';
+import { createRequire } from 'module';
+import { existsSync } from 'node:fs';
+import path from 'path';
+
+const require = createRequire(import.meta.url);
 
 /**
  * Scan an ilib module for locale data. This operates by loading
@@ -61,7 +65,7 @@ import { readFileSync } from 'node:fs';
  *
  * Locale data should be returned from the promise in a localeData
  * object in the following simple format:
- * 
+ *
  * <code>
  * {
  *   "locale": {
@@ -86,20 +90,31 @@ import { readFileSync } from 'node:fs';
  * data, and return it in the format documented above
  */
 function scanModule(module, options) {
+    let resolved;
+    try {
+        resolved = require.resolve(module);
+        const i = resolved.indexOf(module);
+        resolved = resolved.substring(0, i + module.length);
+    } catch (e) {
+        console.log(`Error: could not find module ${module}`);
+        return Promise.resolve(false);
+    }
+
+    if (!existsSync(path.join(resolved, "assemble.mjs")) || !existsSync(path.join(resolved, "locale"))) {
+        console.log(`    No locale data available for module ${module}`);
+        return Promise.resolve(true);
+    }
+
     return import(`${module}/assemble.mjs`).then(module => {
         const assemble = module && module.default;
         if (assemble && typeof(assemble) === 'function') {
             // should return a promise of its own
-            console.log("found the module and it has an assemble function");
             return assemble(options);
-        } else {
-            console.log("assemble is ");
-            console.dir(assemble);
         }
-        return {};
+        return Promise.resolve(false);
     }).catch(err => {
-        console.log(`No locale data available for module ${module}`);
         console.log(err);
+        return Promise.resolve(false);
     });
 }
 

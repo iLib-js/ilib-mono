@@ -35,7 +35,7 @@ const optionConfig = {
     help: {
         short: "h",
         help: "This help message",
-        showHelp: { 
+        showHelp: {
             banner: 'Usage: ilib-assemble [-h] [options] outputPath [input_file_or_directory ...]',
             output: console.log
         }
@@ -83,7 +83,11 @@ if (options.args.length < 1) {
 console.log("ilib-assemble - Copyright (c) 2022 JEDLsoft, All rights reserved.");
 
 const outputPath = options.args[0];
-const stat = fs.statSync(outputPath);
+let stat;
+try {
+    stat = fs.statSync(outputPath);
+} catch (e) {}
+
 if (!stat) {
     // file not found, so let's make it
     mkdirp(outputPath);
@@ -94,7 +98,7 @@ if (!stat) {
     process.exit(2);
 } else if (!stat.isDirectory()) {
     console.log(`${outputPath} is a file, not a directory.`);
-    process.exit(3); 
+    process.exit(3);
 }
 
 let paths = options.args.slice(1);
@@ -109,16 +113,16 @@ console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
 let files = [];
 
 paths.forEach((pathName) => {
-    console.log(`Scanning ${pathName} for Javascript files...`);
+    console.log(`  Scanning ${pathName} for Javascript files...`);
     files = files.concat(walk(pathName));
 });
 
 let ilibModules = new Set();
 
-console.log(`\n\nScanning files...`);
+console.log(`\n\nScanning javascript files...`);
 
 files.forEach((file) => {
-    console.log(`Scanning file ${file} ...`);
+    console.log(`  ${file} ...`);
     scan(file, ilibModules);
 });
 
@@ -127,16 +131,39 @@ let localeData = {};
 console.log(`\n\nScanning ilib modules for locale data`);
 let promise = Promise.resolve(true);
 ilibModules.forEach((module) => {
-    console.log(`Scanning module ${module} ...`);
+    console.log(`  Scanning module ${module} ...`);
     promise = promise.then(() => {
         return scanModule(module, options.opt).then(data => {
-            console.log(`Merging data ${JSON.stringify(data)}`);
-            localeData = JSUtils.merge(localeData, data);
+            if (data) {
+                localeData = JSUtils.merge(localeData, data);
+                return true;
+            }
+            return false;
         });
     });
 });
 
-promise.then(() => {
-    console.log("Final data is ");
-    console.log(JSON.stringify(localeData, undefined, 4));
+promise.then(result => {
+    //console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
+
+    let hadOutput = false;
+    if (result) {
+        console.log("\n\nWriting out data...");
+
+        for (let locale in localeData) {
+            const contents = localeData[locale];
+            const outputName = path.join(outputPath, `${locale}.js`);
+            const contentStr = JSON.stringify(contents, undefined, 4);
+            if (contentStr.length) {
+                fs.writeFileSync(outputName, contentStr, "utf-8");
+                hadOutput = true;
+            }
+        }
+        if (hadOutput) {
+            console.log(`Done. Output is in ${outputPath}.`);
+            return true;
+        }
+    }
+    console.log("Done. No locale data found.");
 });
+

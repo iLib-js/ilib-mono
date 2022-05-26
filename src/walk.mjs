@@ -34,9 +34,9 @@ const extensionsToScan = {
  * @param {string} dir top level of the tree to start searching
  * @returns {Array<string>} an array of relative paths to all the
  * javascript files
- */ 
+ */
 function walk(dir) {
-    console.log("Searching " + dir);
+    console.log("    Searching " + dir);
 
     let results = [];
     let pathName, included, stat, extension;
@@ -54,7 +54,7 @@ function walk(dir) {
                 list.sort().forEach((file) => {
                     extension = path.extname(file);
                     pathName = path.join(dir, file);
-    
+
                     if (existsSync(pathName)) {
                         stat = statSync(pathName);
                         if (stat && stat.isDirectory()) {
@@ -63,14 +63,14 @@ function walk(dir) {
                             results.push(pathName);
                         }
                     } else {
-                        console.log(`File ${pathName} does not exist or is inaccessible.`);
+                        console.log(`    File ${pathName} does not exist or is inaccessible.`);
                     }
                 });
             }
         }
     } catch (e) {
         // ignore
-        console.log(`Could not access path ${dir}`);
+        console.log(`    Could not access path ${dir}`);
     }
 
     return results;
