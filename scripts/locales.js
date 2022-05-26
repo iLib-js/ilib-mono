@@ -19,6 +19,20 @@
 
 import { setValue } from './common';
 
+/**
+ * Remove a locale if the only thing in the locale is the locale name.
+ */
+export function pruneLocales(root) {
+    if (root.data && Object.keys(root.data).length === 1 && root.data.locale) {
+        root.data = {};
+    }
+    for (let property in root) {
+        if (property !== "data" && typeof(root[property]) === 'object') {
+            pruneLocales(root[property]);
+        }
+    }
+}
+
 function addLocale(names, root) {
     if (names.length) {
         root.data.locale = names.join("-");

@@ -10,6 +10,7 @@
         "digits": "꧐꧑꧒꧓꧔꧕꧖꧗꧘꧙",
         "exponential": "E",
         "groupChar": ".",
+        "minus": "-",
         "negativenumFmt": "-{n}",
         "negativepctFmt": "-{n}%",
         "pctChar": "%",

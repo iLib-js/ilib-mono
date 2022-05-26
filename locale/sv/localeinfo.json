@@ -13,6 +13,7 @@
         "decimalChar": ",",
         "exponential": "×10^",
         "groupChar": " ",
+        "minus": "−",
         "negativenumFmt": "−{n}",
         "negativepctFmt": "−{n} %",
         "pctFmt": "{n} %"

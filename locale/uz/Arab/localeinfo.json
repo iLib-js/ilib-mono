@@ -1,4 +1,8 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "’",
+        "alternateQuotationStart": "‘"
+    },
     "locale": "uz-Arab",
     "numfmt": {
         "currencyFormats": {
@@ -9,11 +13,12 @@
         "digits": "۰۱۲۳۴۵۶۷۸۹",
         "exponential": "×۱۰^",
         "groupChar": "٬",
+        "minus": "‎-‎",
         "negativenumFmt": "‎-‎{n}",
         "negativepctFmt": "‎-‎{n}٪",
         "pctChar": "٪",
         "pctFmt": "{n}٪",
-        "script": "arabext",
+        "script": "Arab",
         "useNative": true
     }
 }

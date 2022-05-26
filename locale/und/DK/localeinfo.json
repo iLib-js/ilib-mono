@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "DKK",
     "firstDayOfWeek": 1,
-    "locale": "DK",
+    "locale": "und-DK",
     "region.name": "Denmark",
     "timezone": "Europe/Copenhagen"
 }

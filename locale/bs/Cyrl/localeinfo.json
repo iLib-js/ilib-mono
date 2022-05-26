@@ -1,4 +1,9 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "‚",
+        "quotationEnd": "“"
+    },
     "locale": "bs-Cyrl",
     "numfmt": {
         "negativepctFmt": "-{n}%",

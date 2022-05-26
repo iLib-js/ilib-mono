@@ -1,7 +1,7 @@
 {
     "clock": "12",
     "currency": "TND",
-    "locale": "TN",
+    "locale": "und-TN",
     "region.name": "Tunisia",
     "timezone": "Africa/Tunis"
 }

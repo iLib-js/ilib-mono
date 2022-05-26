@@ -1,4 +1,28 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "’",
+        "alternateQuotationStart": "‘",
+        "quotationEnd": "”",
+        "quotationStart": "“"
+    },
     "language.name": "Unknown language",
-    "locale": "und"
+    "locale": "und",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        },
+        "decimalChar": ".",
+        "exponential": "E",
+        "groupChar": ",",
+        "minus": "-",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Latn",
+        "useNative": false
+    }
 }

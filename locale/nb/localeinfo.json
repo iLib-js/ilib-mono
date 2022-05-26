@@ -11,6 +11,7 @@
         },
         "decimalChar": ",",
         "groupChar": " ",
+        "minus": "−",
         "negativenumFmt": "−{n}",
         "negativepctFmt": "−{n} %",
         "pctFmt": "{n} %"

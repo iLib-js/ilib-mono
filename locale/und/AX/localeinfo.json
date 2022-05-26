@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "AX",
+    "locale": "und-AX",
     "region.name": "Åland Islands",
     "timezone": "Europe/Mariehamn"
 }

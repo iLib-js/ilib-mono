@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "GEL",
     "firstDayOfWeek": 1,
-    "locale": "GE",
+    "locale": "und-GE",
     "region.name": "Georgia",
     "timezone": "Asia/Tbilisi"
 }

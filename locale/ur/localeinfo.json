@@ -16,19 +16,21 @@
         "digits": "۰۱۲۳۴۵۶۷۸۹",
         "exponential": "×۱۰^",
         "groupChar": "٬",
+        "minus": "‎-‎",
         "negativenumFmt": "‎-‎{n}",
         "negativepctFmt": "‎-‎{n}%",
         "pctChar": "%",
         "pctFmt": "{n}%",
         "prigroupSize": 3,
         "roundingMode": "halfdown",
-        "script": "arabext",
+        "script": "Arab",
         "useNative": true
     },
     "numfmt": {
         "currencyFormats": {
             "commonNegative": "‎-{s} {n}"
         },
+        "minus": "‎-",
         "negativenumFmt": "‎-{n}",
         "negativepctFmt": "‎-{n}%"
     },

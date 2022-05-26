@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "FKP",
-    "locale": "FK",
+    "locale": "und-FK",
     "region.name": "Falkland Islands",
     "timezone": "Atlantic/Stanley"
 }

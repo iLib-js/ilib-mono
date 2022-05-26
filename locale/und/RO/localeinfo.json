@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "RON",
     "firstDayOfWeek": 1,
-    "locale": "RO",
+    "locale": "und-RO",
     "region.name": "Romania",
     "timezone": "Europe/Bucharest"
 }

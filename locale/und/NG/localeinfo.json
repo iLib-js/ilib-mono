@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "NGN",
-    "locale": "NG",
+    "locale": "und-NG",
     "region.name": "Nigeria",
     "timezone": "Africa/Lagos"
 }

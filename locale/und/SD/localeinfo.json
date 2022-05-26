@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "SDG",
     "firstDayOfWeek": 6,
-    "locale": "SD",
+    "locale": "und-SD",
     "region.name": "Sudan",
     "timezone": "Africa/Khartoum",
     "weekendEnd": 6,

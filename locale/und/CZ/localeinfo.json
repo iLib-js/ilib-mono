@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "CZK",
     "firstDayOfWeek": 1,
-    "locale": "CZ",
+    "locale": "und-CZ",
     "region.name": "Czechia",
     "timezone": "Europe/Prague"
 }

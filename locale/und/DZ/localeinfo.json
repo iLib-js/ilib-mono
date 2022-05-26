@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "DZD",
     "firstDayOfWeek": 6,
-    "locale": "DZ",
+    "locale": "und-DZ",
     "region.name": "Algeria",
     "timezone": "Africa/Algiers",
     "weekendEnd": 6,

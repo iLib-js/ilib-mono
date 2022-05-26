@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "VES",
     "firstDayOfWeek": 0,
-    "locale": "VE",
+    "locale": "und-VE",
     "paperSizes": {
         "regular": "8x11"
     },

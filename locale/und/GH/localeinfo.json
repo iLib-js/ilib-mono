@@ -1,7 +1,7 @@
 {
     "clock": "12",
     "currency": "GHS",
-    "locale": "GH",
+    "locale": "und-GH",
     "region.name": "Ghana",
     "timezone": "Africa/Accra"
 }

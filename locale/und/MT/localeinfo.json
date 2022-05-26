@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 0,
-    "locale": "MT",
+    "locale": "und-MT",
     "region.name": "Malta",
     "timezone": "Europe/Malta"
 }

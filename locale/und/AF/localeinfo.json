@@ -3,7 +3,7 @@
     "clock": "24",
     "currency": "AFN",
     "firstDayOfWeek": 6,
-    "locale": "AF",
+    "locale": "und-AF",
     "region.name": "Afghanistan",
     "timezone": "Asia/Kabul",
     "weekendEnd": 5,

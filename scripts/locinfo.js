@@ -35,9 +35,10 @@ import genLanguages from './languages';
 import genRegions from './regions';
 import genScripts from './scripts';
 import genTimeZones from './timezones';
-import genLocales from './locales';
+import genLocales, { pruneLocales } from './locales';
 
 let root = {};
+let region = {};
 
 genCalendars(root);
 genClock(root);
@@ -57,10 +58,24 @@ genLocales(root); // should always be last
 console.log("----------------");
 console.log("root is:\n" + stringify(root, {space: 4}));
 
+// Move the language dependent parts away from the region
+// dependent parts and merge and prune them separately
+
 console.log("----------------");
-console.log("Merging and pruning locale data...");
+console.log("Merging and pruning language locale data...");
+
+region.und = root.und;
+region.data = {};
+root.und = undefined;
 
 Utils.mergeAndPrune(root);
+Utils.mergeAndPrune(region);
+
+root.und = region.und;
+
+// now remove any locales where the only thing in it is
+// the name of the locale
+pruneLocales(root);
 
 console.log("----------------");
 console.log("\nWriting formats...");

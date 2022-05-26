@@ -13,6 +13,7 @@
             "commonNegative": "−{n} {s}"
         },
         "groupChar": "’",
+        "minus": "−",
         "negativenumFmt": "−{n}",
         "negativepctFmt": "−{n} %",
         "pctFmt": "{n} %"

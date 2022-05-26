@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "SI",
+    "locale": "und-SI",
     "region.name": "Slovenia",
     "timezone": "Europe/Ljubljana"
 }

@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "PKR",
     "firstDayOfWeek": 0,
-    "locale": "PK",
+    "locale": "und-PK",
     "region.name": "Pakistan",
     "timezone": "Asia/Karachi"
 }

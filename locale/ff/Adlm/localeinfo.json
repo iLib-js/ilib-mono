@@ -1,4 +1,8 @@
 {
+    "delimiter": {
+        "alternateQuotationStart": "‘",
+        "quotationStart": "“"
+    },
     "locale": "ff-Adlm",
     "numfmt": {
         "currencyFormats": {

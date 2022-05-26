@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "HUF",
     "firstDayOfWeek": 1,
-    "locale": "HU",
+    "locale": "und-HU",
     "region.name": "Hungary",
     "timezone": "Europe/Budapest"
 }

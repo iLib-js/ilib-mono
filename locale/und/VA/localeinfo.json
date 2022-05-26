@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "VA",
+    "locale": "und-VA",
     "region.name": "Vatican City",
     "timezone": "Europe/Vatican"
 }

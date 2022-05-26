@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "IDR",
     "firstDayOfWeek": 0,
-    "locale": "ID",
+    "locale": "und-ID",
     "region.name": "Indonesia",
     "timezone": "Asia/Jakarta"
 }

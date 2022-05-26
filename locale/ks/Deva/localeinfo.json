@@ -1,0 +1,19 @@
+{
+    "locale": "ks-Deva",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        },
+        "decimalChar": ".",
+        "exponential": "E",
+        "groupChar": ",",
+        "minus": "-",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "script": "Latn",
+        "useNative": false
+    }
+}

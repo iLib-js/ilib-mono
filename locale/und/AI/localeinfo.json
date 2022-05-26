@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "XCD",
     "firstDayOfWeek": 1,
-    "locale": "AI",
+    "locale": "und-AI",
     "region.name": "Anguilla",
     "timezone": "America/Anguilla"
 }

@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "BOB",
-    "locale": "BO",
+    "locale": "und-BO",
     "region.name": "Bolivia",
     "timezone": "America/La_Paz"
 }

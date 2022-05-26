@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "LU",
+    "locale": "und-LU",
     "region.name": "Luxembourg",
     "timezone": "Europe/Luxembourg"
 }

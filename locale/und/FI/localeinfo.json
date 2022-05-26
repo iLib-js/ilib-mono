@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "FI",
+    "locale": "und-FI",
     "region.name": "Finland",
     "timezone": "Europe/Helsinki"
 }

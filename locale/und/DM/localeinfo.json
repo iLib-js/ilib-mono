@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "XCD",
     "firstDayOfWeek": 0,
-    "locale": "DM",
+    "locale": "und-DM",
     "region.name": "Dominica",
     "timezone": "America/Dominica"
 }

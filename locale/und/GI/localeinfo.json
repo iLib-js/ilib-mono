@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "GIP",
-    "locale": "GI",
+    "locale": "und-GI",
     "region.name": "Gibraltar",
     "timezone": "Europe/Gibraltar"
 }

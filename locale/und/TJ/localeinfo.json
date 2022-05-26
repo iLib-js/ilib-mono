@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "TJS",
     "firstDayOfWeek": 1,
-    "locale": "TJ",
+    "locale": "und-TJ",
     "region.name": "Tajikistan",
     "timezone": "Asia/Dushanbe"
 }

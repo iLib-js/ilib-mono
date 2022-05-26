@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "LT",
+    "locale": "und-LT",
     "region.name": "Lithuania",
     "timezone": "Europe/Vilnius"
 }

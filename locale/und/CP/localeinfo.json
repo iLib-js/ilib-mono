@@ -1,5 +1,6 @@
 {
     "clock": "24",
-    "locale": "CP",
+    "currency": 0,
+    "locale": "und-CP",
     "region.name": "Clipperton Island"
 }

@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "GF",
+    "locale": "und-GF",
     "region.name": "French Guiana",
     "timezone": "America/Cayenne"
 }

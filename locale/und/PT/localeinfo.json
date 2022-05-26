@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 0,
-    "locale": "PT",
+    "locale": "und-PT",
     "region.name": "Portugal",
     "timezone": "Europe/Lisbon"
 }

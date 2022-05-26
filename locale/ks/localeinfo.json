@@ -3,18 +3,19 @@
     "locale": "ks",
     "numfmt": {
         "currencyFormats": {
-            "commonNegative": "‎-‎{s} {n}"
+            "common": "{s}{n}",
+            "commonNegative": "‎-‎{s}{n}"
         },
         "decimalChar": "٫",
         "digits": "۰۱۲۳۴۵۶۷۸۹",
         "exponential": "×۱۰^",
         "groupChar": "٬",
+        "minus": "‎-‎",
         "negativenumFmt": "‎-‎{n}",
         "negativepctFmt": "‎-‎{n}٪",
         "pctChar": "٪",
         "pctFmt": "{n}٪",
-        "script": "arabext",
-        "secgroupSize": 2,
+        "script": "Arab",
         "useNative": true
     },
     "scripts": [

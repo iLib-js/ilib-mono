@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "IE",
+    "locale": "und-IE",
     "region.name": "Ireland",
     "timezone": "Europe/Dublin"
 }

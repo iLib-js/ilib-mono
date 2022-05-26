@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "USD",
     "firstDayOfWeek": 1,
-    "locale": "EC",
+    "locale": "und-EC",
     "region.name": "Ecuador",
     "timezone": "America/Guayaquil"
 }

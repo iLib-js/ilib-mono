@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "CRC",
     "firstDayOfWeek": 1,
-    "locale": "CR",
+    "locale": "und-CR",
     "paperSizes": {
         "regular": "8x11"
     },

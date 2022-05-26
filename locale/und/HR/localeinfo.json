@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "HRK",
     "firstDayOfWeek": 1,
-    "locale": "HR",
+    "locale": "und-HR",
     "region.name": "Croatia",
     "timezone": "Europe/Zagreb"
 }

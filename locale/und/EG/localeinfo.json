@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "EGP",
     "firstDayOfWeek": 6,
-    "locale": "EG",
+    "locale": "und-EG",
     "region.name": "Egypt",
     "timezone": "Africa/Cairo",
     "weekendEnd": 6,

@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "USD",
     "firstDayOfWeek": 0,
-    "locale": "UM",
+    "locale": "und-UM",
     "region.name": "U.S. Outlying Islands",
     "timezone": "Pacific/Midway"
 }
