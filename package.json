@@ -37,6 +37,8 @@
         }
     ],
     "files": [
+        "assemble.mjs",
+        "locale",
         "src",
         "lib",
         "docs",
@@ -94,6 +96,7 @@
         "ilib-env": "^1.2.0",
         "ilib-locale": "^1.1.0",
         "ilib-localedata": "^1.0.0",
-        "ilib-localematcher": "^1.1.0"
+        "ilib-localematcher": "^1.1.0",
+        "json5": "^2.2.1"
     }
 }
