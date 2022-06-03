@@ -1,24 +1,115 @@
-# ilib-common
+# ilib-assemble
 
-Various utility classes for the ilib packages.
+Tool to assemble ilib locale data from various ilib packages into single
+files so that they can be loaded quickly or included in webpack.
 
 ## Installation
 
 ```
-npm install ilib-common
+npm install ilib-assemble
 
 or
 
-yarn add ilib-common
+yarn add ilib-assemble
 ```
-## API Reference
 
-You can see the [generated API reference docs](./docs/ilibCommon.md)
-for full details.
+Then, in your package.json, add a script:
+
+```
+"scripts": {
+    "assemble": "ilib-assemble"
+}
+```
+
+## Purpose
+
+The purpose of the ilib-assemble tool is to find out which ilib packages
+your application uses, and then assemble together the locale data from those
+ilib packages for the requested list of locales into single files so
+that they can be loaded quickly or so that they can be included into webpack
+bundles easily.
+
+The idea is that your build system should run this tool each time you build
+your product so that it has the correct locale data each time. This way, if
+you start using a new ilib package, it will automatically include the locale
+data for that package into your files, and from there in your webpack
+bundles. (See ilib-loader and ilib-localedata)
+
+N.B. Currently, this tool only works with the independent ilib-* packages, not
+the monolithic "ilib" package itself.
+
+## Basic Operation
+
+The basic operation of the tool is this:
+
+1. Scan your app for js files, including within the node_modules.
+2. Read each js file it finds in the given directories, and remember all imports and requires
+   of packages that start with "ilib-"
+3. For each ilib package found in step 2, figure out whether or not that package publishes
+   an `assemble.mjs` file. If so, load it, and find the default function it exports. Call
+   that function with the list of locales as a parameter, and it should return all of the
+   locale data required for the given locales. The data returned should look like this:
+    ```json
+    {
+      "en-US": {
+        "package-basename": { American locale data here }
+      },
+      "ko-KR": {
+        "package-basename": { Korean locale data here }
+      },
+      [etc]
+    }
+    ```
+4. Merge the data from each call in step 3 together into one big piece of data. This creates
+   data like this (with 3 example basenames):
+    ```json
+    {
+      "en-US": {
+        "localeinfo": { American locale info },
+        "datefmt": { American date formats },
+        "numfmt": { American number formats }
+      },
+      "ko-KR": {
+        "localeinfo": { Korean locale info },
+        "datefmt": { Korean date formats },
+        "numfmt": { Korean number formats }
+      }
+    }
+    ```
+5. For each locale from step 4, write out a file with that data either in json form
+    or as an ESM or CommonJS module. ie. outputDir/en-US.js, outputDir/ko-KR.js
+
+The data can then be loaded by the ilib-localedata package for use in the various ilib-*
+packages.
+
+## Usage
+
+```
+ilib-assemble [options] output-dir [input-dir-or-file ...]
+```
+
+The ilib-assemble tool takes the following options:
+
+- --format or -f. Specify the format of the output files. This can be one of:
+    - json: the output files should be written in plain json form
+    - js: the output should be written as an ESM module that exports a
+      default function which returns the locale data for that locale
+    - cjs: the output should be written as a CommonJS module that
+      exports function which returns the locale data for that locale
+- --compressed or -c. The data should appear in compressed/minified form
+- --locales or -l. A comma separated list of locale specifiers in BCP-47 format
+  for the locales that your app supports.
+
+The output-dir is required and specifies the directory where the output is
+written. If it does not exist, it will be created first.
+
+The input directories are optional. If not specified, the ilib-assemble tool will
+start in the current directory and recursively search the directory tree from
+there. If individual files are specified, only those files are searched.
 
 ## License
 
-Copyright © 2021-2022, JEDLSoft
+Copyright © 2022, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,27 +126,8 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.0.3
-
-* updated dependencies
-* make sure to target node 10 and older browser when running babel and adding
-  polyfills
-
-### v1.0.2
-
-* updated dependencies
-* updated docs
-* add log4js library support
-
-### v1.0.1
-
-- API documentation updates
-- now can test on web browsers easily
-- fixed bug in `MathUtils.significant()` where it was calling functions
-  using the "MathUtils" namespace instead of local functions
-- fixed tests for hash codes to work inside of a webpacked test
-
 ### v1.0.0
 
 - initial version
-- copied from ilib 14.7.0
+- Code to replace the ilib-webpack-loader and ilib-webpack-plugin by
+  performing the same task, but outside of webpack.
