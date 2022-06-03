@@ -43,7 +43,7 @@ const optionConfig = {
     format: {
         short: "f",
         "default": "js",
-        help: "What format do you want the output data to be in. Choices are 'js' or 'json'. Default is 'js'."
+        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'."
     },
     compressed: {
         short: "c",
@@ -97,6 +97,9 @@ if (paths.length === 0) {
 if (options.opt.locales) {
     options.opt.locales = options.opt.locales.split(/,/g);
 }
+if (!options.opt.format) {
+    options.opt.format = "js";
+}
 
 console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
 
@@ -148,8 +151,13 @@ promise.then(result => {
             let contentStr = options.opt.compressed ?
                 JSON.stringify(contents) :
                 JSON.stringify(contents, undefined, 4);
-            if (!options.opt.format || options.opt.format !== "json") {
-                contentStr = `export default const data = ${contentStr};`
+            switch (options.opt.format) {
+                case 'js':
+                    contentStr = `export default const data = ${contentStr};`;
+                    break;
+                case 'cjs':
+                    contentStr = `module.exports = ${contentStr};`;
+                    break;
             }
             if (contentStr.length) {
                 fs.writeFileSync(outputName, contentStr, "utf-8");
