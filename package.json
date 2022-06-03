@@ -45,13 +45,9 @@
         "url": "git@github.com:iLib-js/ilib-assemble.git"
     },
     "scripts": {
-        "build": "npm run build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
-        "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
+        "dist": "npm run doc ; npm pack",
         "test": "LANG=en_US.UTF8 node test/testSuite.mjs",
-        "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
-        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "debug": "node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d *",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
@@ -59,17 +55,9 @@
     "devDependencies": {
         "assertextras": "^1.1.0",
         "docdash": "^1.2.0",
-        "grunt": "^1.5.3",
-        "grunt-babel": "^8.0.0",
-        "grunt-cli": "^1.4.3",
-        "grunt-contrib-clean": "^2.0.1",
-        "grunt-contrib-jshint": "^3.2.0",
-        "grunt-contrib-nodeunit": "^4.0.0",
-        "grunt-contrib-uglify": "^5.2.1",
         "ilib-mock": "file:test/ilib-mock/ilib-mock-1.0.0.tgz",
         "jsdoc": "^3.6.10",
         "jsdoc-to-markdown": "^7.1.1",
-        "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3"
     },
     "engines": {
