@@ -22,7 +22,7 @@ import walk from '../src/walk.mjs';
 export const testwalk = {
     testWalkDir: function(test) {
         test.expect(3);
-        const files = walk("test/ilib-mock").sort();
+        const files = walk("test/ilib-mock", {quiet: true}).sort();
         test.equal(files.length, 2);
         test.equal(files[0], "test/ilib-mock/assemble.mjs");
         test.equal(files[1], "test/ilib-mock/index.js");
@@ -32,7 +32,7 @@ export const testwalk = {
 
     testWalkFile: function(test) {
         test.expect(2);
-        const files = walk("test/ilib-mock/index.js").sort();
+        const files = walk("test/ilib-mock/index.js", {quiet: true}).sort();
         test.equal(files.length, 1);
         test.equal(files[0], "test/ilib-mock/index.js");
 
@@ -41,7 +41,7 @@ export const testwalk = {
 
     testWalkNonExistentDir: function(test) {
         test.expect(1);
-        const files = walk("test/ilib-mock/asdf").sort();
+        const files = walk("test/ilib-mock/asdf", {quiet: true}).sort();
         test.equal(files.length, 0);
 
         test.done();
@@ -49,7 +49,7 @@ export const testwalk = {
 
     testWalkFileNonJSFile: function(test) {
         test.expect(1);
-        const files = walk("test/ilib-mock/locale/mockdata.json").sort();
+        const files = walk("test/ilib-mock/locale/mockdata.json", {quiet: true}).sort();
         test.equal(files.length, 0);
 
         test.done();
@@ -57,7 +57,7 @@ export const testwalk = {
 
     testWalkBadParamsUndefined: function(test) {
         test.expect(1);
-        const files = walk().sort();
+        const files = walk({quiet: true}).sort();
         test.equal(files.length, 0);
 
         test.done();
@@ -65,7 +65,7 @@ export const testwalk = {
 
     testWalkBadParamsBoolean: function(test) {
         test.expect(1);
-        const files = walk(true).sort();
+        const files = walk(true, {quiet: true}).sort();
         test.equal(files.length, 0);
 
         test.done();
@@ -73,7 +73,7 @@ export const testwalk = {
 
     testWalkBadParamsNumber: function(test) {
         test.expect(1);
-        const files = walk(3).sort();
+        const files = walk(3, {quiet: true}).sort();
         test.equal(files.length, 0);
 
         test.done();

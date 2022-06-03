@@ -35,8 +35,8 @@ const extensionsToScan = {
  * @returns {Array<string>} an array of relative paths to all the
  * javascript files
  */
-function walk(dir) {
-    console.log("    Searching " + dir);
+function walk(dir, options) {
+    if (options && !options.quiet) console.log("    Searching " + dir);
 
     let results = [];
     let pathName, included, stat, extension;

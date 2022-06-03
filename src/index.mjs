@@ -40,20 +40,25 @@ const optionConfig = {
             output: console.log
         }
     },
-    format: {
-        short: "f",
-        "default": "js",
-        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'."
-    },
     compressed: {
         short: "c",
         flag: true,
         help: "Whether you want the output to be compressed/minified."
     },
+    format: {
+        short: "f",
+        "default": "js",
+        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'."
+    },
     locales: {
         short: "l",
         "default": "en-AU,en-CA,en-GB,en-IN,en-NG,en-PH,en-PK,en-US,en-ZA,de-DE,fr-CA,fr-FR,es-AR,es-ES,es-MX,id-ID,it-IT,ja-JP,ko-KR,pt-BR,ru-RU,tr-TR,vi-VN,zxx-XX,zh-Hans-CN,zh-Hant-HK,zh-Hant-TW,zh-Hans-SG",
         help: "Locales you want your webapp to support. Value is a comma-separated list of BCP-47 style locale tags. Default: the top 20 locales on the internet by traffic."
+    },
+    quiet: {
+        short: "q",
+        flag: true,
+        help: "Produce no progress output during the run, except for error messages."
     }
 };
 
@@ -68,7 +73,7 @@ if (options.args.length < 1) {
     process.exit(1);
 }
 
-console.log("ilib-assemble - Copyright (c) 2022 JEDLsoft, All rights reserved.");
+if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022 JEDLsoft, All rights reserved.");
 
 const outputPath = options.args[0];
 let stat;
@@ -79,7 +84,7 @@ try {
 if (!stat) {
     // file not found, so let's make it
     mkdirp(outputPath);
-    console.log(`Created output path: ${outputPath}`);
+    if (!options.opt.quiet) console.log(`Created output path: ${outputPath}`);
 } else if (stat.errno) {
     console.log(`Could not access ${outputPath}`);
     console.log(stat);
@@ -101,32 +106,32 @@ if (!options.opt.format) {
     options.opt.format = "js";
 }
 
-console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
+if (!options.opt.quiet) console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
 
-console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
+if (!options.opt.quiet) console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
 
 let files = [];
 
 paths.forEach((pathName) => {
-    console.log(`  Scanning ${pathName} for Javascript files...`);
-    files = files.concat(walk(pathName));
+    if (!options.opt.quiet) console.log(`  Scanning ${pathName} for Javascript files...`);
+    files = files.concat(walk(pathName, options.opt));
 });
 
 let ilibModules = new Set();
 
-console.log(`\n\nScanning javascript files...`);
+if (!options.opt.quiet) console.log(`\n\nScanning javascript files...`);
 
 files.forEach((file) => {
-    console.log(`  ${file} ...`);
+    if (!options.opt.quiet) console.log(`  ${file} ...`);
     scan(file, ilibModules);
 });
 
 let localeData = {};
 
-console.log(`\n\nScanning ilib modules for locale data`);
+if (!options.opt.quiet) console.log(`\n\nScanning ilib modules for locale data`);
 let promise = Promise.resolve(false);
 ilibModules.forEach((module) => {
-    console.log(`  Scanning module ${module} ...`);
+    if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
     promise = promise.then(result => {
         return scanModule(module, options.opt).then(data => {
             if (data) {
@@ -143,7 +148,7 @@ promise.then(result => {
 
     let hadOutput = false;
     if (result) {
-        console.log("\n\nWriting out data...");
+        if (!options.opt.quiet) console.log("\n\nWriting out data...");
 
         for (let locale in localeData) {
             const contents = localeData[locale];
@@ -165,10 +170,10 @@ promise.then(result => {
             }
         }
         if (hadOutput) {
-            console.log(`Done. Output is in ${outputPath}.`);
+            if (!options.opt.quiet) console.log(`Done. Output is in ${outputPath}.`);
             return true;
         }
     }
-    console.log("Done. No locale data found.");
+    if (!options.opt.quiet) console.log("Done. No locale data found.");
 });
 

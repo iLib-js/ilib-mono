@@ -101,12 +101,12 @@ function scanModule(moduleName, options) {
     }
 
     if (!existsSync(path.join(resolved, "assemble.mjs")) || !existsSync(path.join(resolved, "locale"))) {
-        console.log(`    No locale data available for module ${moduleName}`);
+        if (!options || !options.quiet) console.log(`    No locale data available for module ${moduleName}`);
         return Promise.resolve(true);
     }
 
     return import(`${moduleName}/assemble.mjs`).then(module => {
-        console.log(`    Returning data for module ${moduleName}`);
+        if (!options || !options.quiet) console.log(`    Returning data for module ${moduleName}`);
         const assemble = module && module.default;
         if (assemble && typeof(assemble) === 'function') {
             // should return a promise of its own
