@@ -84,28 +84,29 @@ const require = createRequire(import.meta.url);
  * documentation for the `ilib-localedata` package for more details
  * on how this data is structured and loaded.<p>
  *
- * @param {string} module the name of the ilib module to scan
+ * @param {string} moduleName the name of the ilib module to scan
  * @param {Object} options options from the command-line
  * @returns {Promise} a promise to scan and load all the locale
  * data, and return it in the format documented above
  */
-function scanModule(module, options) {
+function scanModule(moduleName, options) {
     let resolved;
     try {
-        resolved = require.resolve(module);
-        const i = resolved.indexOf(module);
-        resolved = resolved.substring(0, i + module.length);
+        resolved = require.resolve(moduleName);
+        const i = resolved.indexOf(moduleName);
+        resolved = resolved.substring(0, i + moduleName.length);
     } catch (e) {
-        console.log(`Error: could not find module ${module}`);
+        console.log(`    Error: could not find module ${moduleName}`);
         return Promise.resolve(false);
     }
 
     if (!existsSync(path.join(resolved, "assemble.mjs")) || !existsSync(path.join(resolved, "locale"))) {
-        console.log(`    No locale data available for module ${module}`);
+        console.log(`    No locale data available for module ${moduleName}`);
         return Promise.resolve(true);
     }
 
-    return import(`${module}/assemble.mjs`).then(module => {
+    return import(`${moduleName}/assemble.mjs`).then(module => {
+        console.log(`    Returning data for module ${moduleName}`);
         const assemble = module && module.default;
         if (assemble && typeof(assemble) === 'function') {
             // should return a promise of its own

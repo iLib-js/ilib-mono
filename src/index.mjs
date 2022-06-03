@@ -45,11 +45,11 @@ const optionConfig = {
         "default": "js",
         help: "What format do you want the output data to be in. Choices are 'js' or 'json'. Default is 'js'."
     },
-    compilation: {
+    compressed: {
         short: "c",
         flag: true,
-        "default": "compressed",
-        help: "Whether you want the output to be compressed with uglify-js."
+        "default": false,
+        help: "Whether you want the output to be compressed/minified."
     },
     locales: {
         short: "l",
@@ -61,11 +61,6 @@ const optionConfig = {
             "zh-Hans-CN", "zh-Hant-HK", "zh-Hant-TW", "zh-Hans-SG"
         ],
         help: "Locales you want your webapp to support. Value is a comma-separated list of BCP-47 style locale tags. Default: the top 20 locales on the internet by traffic."
-    },
-    ilibRoot: {
-        short: "i",
-        varName: "ilibRoot",
-        help: "Explicitly specify the location of the root of ilib. If not specified, this assemble will rely on node to find the ilib instance in the node_modules directory."
     }
 };
 
@@ -129,16 +124,16 @@ files.forEach((file) => {
 let localeData = {};
 
 console.log(`\n\nScanning ilib modules for locale data`);
-let promise = Promise.resolve(true);
+let promise = Promise.resolve(false);
 ilibModules.forEach((module) => {
     console.log(`  Scanning module ${module} ...`);
-    promise = promise.then(() => {
+    promise = promise.then(result => {
         return scanModule(module, options.opt).then(data => {
             if (data) {
                 localeData = JSUtils.merge(localeData, data);
                 return true;
             }
-            return false;
+            return result;
         });
     });
 });
@@ -153,7 +148,12 @@ promise.then(result => {
         for (let locale in localeData) {
             const contents = localeData[locale];
             const outputName = path.join(outputPath, `${locale}.js`);
-            const contentStr = JSON.stringify(contents, undefined, 4);
+            let contentStr = options.opt.compressed ?
+                JSON.stringify(contents) :
+                JSON.stringify(contents, undefined, 4);
+            if (!options.opt.format || options.opt.format !== "json") {
+                contentStr = `export default const data = ${contentStr};`
+            }
             if (contentStr.length) {
                 fs.writeFileSync(outputName, contentStr, "utf-8");
                 hadOutput = true;
