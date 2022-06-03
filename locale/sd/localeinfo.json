@@ -10,7 +10,6 @@
         "digits": "٠١٢٣٤٥٦٧٨٩",
         "exponential": "اس",
         "groupChar": "٬",
-        "minus": "؜-",
         "negativenumFmt": "؜-{n}",
         "negativepctFmt": "؜-{n}٪؜",
         "pctChar": "٪؜",

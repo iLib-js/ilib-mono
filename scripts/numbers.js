@@ -40,13 +40,14 @@ function getNumberSymbols(root, numberingSystem, data) {
     data.pctChar = symbols.percentSign;
     //data.pmlChar = symbols.perMille;
     data.exponential = symbols.exponential;
-    data.minus = symbols.minusSign;
+    //data.minus = symbols.minusSign;
     //data.plus = symbols.plusSign;
     data.roundingMode = "halfdown";
 }
 
 function getNumberDecimals(root, numberingSystem, data) {
     const decimals = root["decimalFormats-numberSystem-" + numberingSystem];
+    const symbols = root["symbols-numberSystem-" + numberingSystem];
     const decimalFormat = decimals.standard.replace(/'.+'/g, "");
     const decimalFormatPositive = decimalFormat.replace(/.*;/g, "");
     const decimalFormatNegative = decimalFormat.replace(/;.*/g, "");
@@ -75,11 +76,12 @@ function getNumberDecimals(root, numberingSystem, data) {
 
     data.negativenumFmt = (decimalFormatPositive !== decimalFormatNegative) ?
         decimalFormatNegative.replace(/[0#,\.]+/, "{n}").trim() :
-        data.minus + decimalFormatPositive.replace(/[0#,\.]+/, "{n}").trim();
+        symbols.minusSign + decimalFormatPositive.replace(/[0#,\.]+/, "{n}").trim();
 }
 
 function getNumberPercentages(root, numberingSystem, data) {
     const percents = root["percentFormats-numberSystem-" + numberingSystem].standard;
+    const symbols = root["symbols-numberSystem-" + numberingSystem];
 
     const percentFormat = percents.replace(/'.+'/g, "");
     const percentFormatPositive = percentFormat.replace(/.*;/g, "");
@@ -89,11 +91,12 @@ function getNumberPercentages(root, numberingSystem, data) {
 
     data.negativepctFmt = (percentFormatPositive !== percentFormatNegative) ?
         percentFormatNegative.replace(/[0#,\.]+/, "{n}").replace("%", data.pctChar).trim() :
-        data.minus + data.pctFmt;
+        symbols.minusSign + data.pctFmt;
 }
 
 function getNumberCurrencies(root, numberingSystem, data) {
     const currencies = root["currencyFormats-numberSystem-" + numberingSystem].standard;
+    const symbols = root["symbols-numberSystem-" + numberingSystem];
 
     const currencyFormat = currencies.replace(/'.+'/g, "");
     const currencyFormatPositive = currencyFormat.replace(/;.*/g, "");
@@ -104,7 +107,7 @@ function getNumberCurrencies(root, numberingSystem, data) {
         common: positive,
         commonNegative: (currencyFormatPositive !== currencyFormatNegative) ?
             currencyFormatNegative.replace(/[0#,\.]+/, "{n}").replace(/¤/g, "{s}") :
-            data.minus + positive
+            symbols.minusSign + positive
     };
 }
 

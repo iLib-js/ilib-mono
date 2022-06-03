@@ -10,7 +10,6 @@
         "digits": "۰۱۲۳۴۵۶۷۸۹",
         "exponential": "×۱۰^",
         "groupChar": "٬",
-        "minus": "‎-‎",
         "negativenumFmt": "‎-‎{n}",
         "negativepctFmt": "‎-‎{n}٪",
         "pctChar": "٪",

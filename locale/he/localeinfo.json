@@ -10,7 +10,6 @@
             "common": "‏{n} {s}",
             "commonNegative": "‏-{n} {s}"
         },
-        "minus": "‎-",
         "negativenumFmt": "‎-{n}",
         "negativepctFmt": "‎-{n}%"
     },
