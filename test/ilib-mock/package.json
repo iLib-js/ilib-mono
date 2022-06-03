@@ -1,0 +1,15 @@
+{
+    "name": "ilib-mock",
+    "version": "1.0.0",
+    "main": "./index.js",
+    "description": "mock ilib package used for testing the scan module function",
+    "files": [
+        "locale",
+        "index.js",
+        "assemble.mjs"
+    ],
+    "dependencies": {
+        "ilib-common": "^1.0.3",
+        "ilib-locale": "^1.1.1"
+    }
+}
