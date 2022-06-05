@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "NIO",
     "firstDayOfWeek": 0,
-    "locale": "NI",
+    "locale": "und-NI",
     "paperSizes": {
         "regular": "8x11"
     },

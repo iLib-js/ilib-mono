@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "MKD",
     "firstDayOfWeek": 1,
-    "locale": "MK",
+    "locale": "und-MK",
     "region.name": "North Macedonia",
     "timezone": "Europe/Skopje"
 }

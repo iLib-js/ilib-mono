@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "OMR",
     "firstDayOfWeek": 6,
-    "locale": "OM",
+    "locale": "und-OM",
     "region.name": "Oman",
     "timezone": "Asia/Muscat",
     "weekendEnd": 6,

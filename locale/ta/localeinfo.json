@@ -16,7 +16,7 @@
         "pctFmt": "{n}%",
         "prigroupSize": 3,
         "roundingMode": "halfdown",
-        "script": "tamldec",
+        "script": "Taml",
         "secgroupSize": 2,
         "useNative": true
     },

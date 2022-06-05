@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "MC",
+    "locale": "und-MC",
     "region.name": "Monaco",
     "timezone": "Europe/Monaco"
 }

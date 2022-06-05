@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "BGN",
     "firstDayOfWeek": 1,
-    "locale": "BG",
+    "locale": "und-BG",
     "region.name": "Bulgaria",
     "timezone": "Europe/Sofia"
 }

@@ -22,7 +22,7 @@
         "pctFmt": "{n}٪",
         "prigroupSize": 3,
         "roundingMode": "halfdown",
-        "script": "arabext",
+        "script": "Arab",
         "useNative": true
     },
     "numfmt": {

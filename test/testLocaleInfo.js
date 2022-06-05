@@ -6116,7 +6116,7 @@ module.exports.testlocaleinfo = {
         var info = new LocaleInfo("ks-Arab-IN");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -6143,7 +6143,7 @@ module.exports.testlocaleinfo = {
         var info = new LocaleInfo("ks-Arab-IN");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "‎-‎{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, "‎-‎{s}{n}");
         test.done();
     },
 
@@ -6161,7 +6161,7 @@ module.exports.testlocaleinfo = {
         var info = new LocaleInfo("ks-Arab-IN");
         test.ok(info !== null);
 
-        test.equal(info.getSecondaryGroupingDigits(), 2);
+        test.equal(info.getSecondaryGroupingDigits(), 0);
         test.done();
     },
 
@@ -12820,8 +12820,8 @@ module.exports.testlocaleinfo = {
         var info = new LocaleInfo("ar-AE");
         test.ok(info !== null);
 
-        test.equal(info.getWeekEndStart(), 5);
-        test.equal(info.getWeekEndEnd(), 6);
+        test.equal(info.getWeekEndStart(), 6);
+        test.equal(info.getWeekEndEnd(), 0);
         test.done();
     },
 

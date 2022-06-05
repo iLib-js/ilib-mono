@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "NOK",
     "firstDayOfWeek": 1,
-    "locale": "NO",
+    "locale": "und-NO",
     "region.name": "Norway",
     "timezone": "Europe/Oslo"
 }

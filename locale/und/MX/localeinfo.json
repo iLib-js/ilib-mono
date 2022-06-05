@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "MXN",
     "firstDayOfWeek": 0,
-    "locale": "MX",
+    "locale": "und-MX",
     "paperSizes": {
         "regular": "8x11"
     },

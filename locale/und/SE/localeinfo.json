@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "SEK",
     "firstDayOfWeek": 1,
-    "locale": "SE",
+    "locale": "und-SE",
     "region.name": "Sweden",
     "timezone": "Europe/Stockholm"
 }

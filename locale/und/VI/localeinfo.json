@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "USD",
     "firstDayOfWeek": 0,
-    "locale": "VI",
+    "locale": "und-VI",
     "region.name": "U.S. Virgin Islands",
     "timezone": "America/St_Thomas",
     "units": "uscustomary"

@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "BTN",
     "firstDayOfWeek": 0,
-    "locale": "BT",
+    "locale": "und-BT",
     "region.name": "Bhutan",
     "timezone": "Asia/Thimphu"
 }

@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "CY",
+    "locale": "und-CY",
     "region.name": "Cyprus",
     "timezone": "Asia/Nicosia"
 }

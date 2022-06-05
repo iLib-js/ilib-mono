@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "USD",
     "firstDayOfWeek": 0,
-    "locale": "PR",
+    "locale": "und-PR",
     "paperSizes": {
         "regular": "8x11"
     },

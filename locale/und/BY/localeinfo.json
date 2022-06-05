@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "BYN",
     "firstDayOfWeek": 1,
-    "locale": "BY",
+    "locale": "und-BY",
     "region.name": "Belarus",
     "timezone": "Europe/Minsk"
 }

@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "FJD",
     "firstDayOfWeek": 1,
-    "locale": "FJ",
+    "locale": "und-FJ",
     "region.name": "Fiji",
     "timezone": "Pacific/Fiji"
 }

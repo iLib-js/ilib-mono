@@ -22,7 +22,7 @@
         "pctFmt": "{n}%",
         "prigroupSize": 3,
         "roundingMode": "halfdown",
-        "script": "hanidec",
+        "script": "Hani",
         "useNative": true
     },
     "numfmt": {

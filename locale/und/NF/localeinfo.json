@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "AUD",
-    "locale": "NF",
+    "locale": "und-NF",
     "region.name": "Norfolk Island",
     "timezone": "Pacific/Norfolk"
 }

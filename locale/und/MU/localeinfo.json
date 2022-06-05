@@ -1,6 +1,7 @@
 {
+    "clock": "24",
     "currency": "MUR",
-    "locale": "MU",
+    "locale": "und-MU",
     "region.name": "Mauritius",
     "timezone": "Indian/Mauritius"
 }

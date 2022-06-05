@@ -1,4 +1,8 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "’",
+        "alternateQuotationStart": "‘"
+    },
     "locale": "uz-Arab",
     "numfmt": {
         "currencyFormats": {
@@ -13,7 +17,7 @@
         "negativepctFmt": "‎-‎{n}٪",
         "pctChar": "٪",
         "pctFmt": "{n}٪",
-        "script": "arabext",
+        "script": "Arab",
         "useNative": true
     }
 }

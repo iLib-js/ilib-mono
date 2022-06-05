@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "AUD",
-    "locale": "NR",
+    "locale": "und-NR",
     "region.name": "Nauru",
     "timezone": "Pacific/Nauru"
 }

@@ -1,4 +1,5 @@
 {
-    "locale": "ZZ",
+    "currency": 0,
+    "locale": "und-ZZ",
     "region.name": "Unknown Region"
 }

@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "MVR",
     "firstDayOfWeek": 5,
-    "locale": "MV",
+    "locale": "und-MV",
     "region.name": "Maldives",
     "timezone": "Indian/Maldives"
 }

@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "EUR",
     "firstDayOfWeek": 1,
-    "locale": "LV",
+    "locale": "und-LV",
     "region.name": "Latvia",
     "timezone": "Europe/Riga"
 }

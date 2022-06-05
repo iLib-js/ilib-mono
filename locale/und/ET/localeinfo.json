@@ -3,7 +3,7 @@
     "clock": "12",
     "currency": "ETB",
     "firstDayOfWeek": 0,
-    "locale": "ET",
+    "locale": "und-ET",
     "region.name": "Ethiopia",
     "timezone": "Africa/Addis_Ababa"
 }

@@ -12,7 +12,7 @@
         "negativepctFmt": "‎-‎{n}٪",
         "pctChar": "٪",
         "pctFmt": "{n}٪",
-        "script": "arabext",
+        "script": "Arab",
         "useNative": true
     }
 }

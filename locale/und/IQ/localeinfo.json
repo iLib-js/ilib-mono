@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "IQD",
     "firstDayOfWeek": 6,
-    "locale": "IQ",
+    "locale": "und-IQ",
     "region.name": "Iraq",
     "timezone": "Asia/Baghdad",
     "weekendEnd": 6,

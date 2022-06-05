@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "MZN",
     "firstDayOfWeek": 0,
-    "locale": "MZ",
+    "locale": "und-MZ",
     "region.name": "Mozambique",
     "timezone": "Africa/Maputo"
 }

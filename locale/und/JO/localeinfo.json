@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "JOD",
     "firstDayOfWeek": 6,
-    "locale": "JO",
+    "locale": "und-JO",
     "region.name": "Jordan",
     "timezone": "Asia/Amman",
     "weekendEnd": 6,

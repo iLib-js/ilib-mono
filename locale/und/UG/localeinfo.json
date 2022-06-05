@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "UGX",
-    "locale": "UG",
+    "locale": "und-UG",
     "region.name": "Uganda",
     "timezone": "Africa/Kampala",
     "weekendStart": 0

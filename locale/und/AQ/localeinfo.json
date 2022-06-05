@@ -1,5 +1,6 @@
 {
-    "locale": "AQ",
+    "currency": 0,
+    "locale": "und-AQ",
     "region.name": "Antarctica",
     "timezone": "Antarctica/Casey"
 }

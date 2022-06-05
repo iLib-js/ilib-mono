@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "BMD",
     "firstDayOfWeek": 1,
-    "locale": "BM",
+    "locale": "und-BM",
     "region.name": "Bermuda",
     "timezone": "Atlantic/Bermuda"
 }

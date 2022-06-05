@@ -1,7 +1,8 @@
 {
+    "clock": "24",
     "currency": "VND",
     "firstDayOfWeek": 1,
-    "locale": "VN",
+    "locale": "und-VN",
     "region.name": "Vietnam",
     "timezone": "Asia/Ho_Chi_Minh"
 }

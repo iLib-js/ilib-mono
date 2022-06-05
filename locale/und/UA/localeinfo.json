@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "UAH",
     "firstDayOfWeek": 1,
-    "locale": "UA",
+    "locale": "und-UA",
     "region.name": "Ukraine",
     "timezone": "Europe/Kiev"
 }

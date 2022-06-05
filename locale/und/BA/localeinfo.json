@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "BAM",
     "firstDayOfWeek": 1,
-    "locale": "BA",
+    "locale": "und-BA",
     "region.name": "Bosnia & Herzegovina",
     "timezone": "Europe/Sarajevo"
 }

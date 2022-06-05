@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "JPY",
     "firstDayOfWeek": 0,
-    "locale": "JP",
+    "locale": "und-JP",
     "region.name": "Japan",
     "timezone": "Asia/Tokyo"
 }

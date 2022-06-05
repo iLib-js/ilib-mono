@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "GTQ",
     "firstDayOfWeek": 0,
-    "locale": "GT",
+    "locale": "und-GT",
     "paperSizes": {
         "regular": "8x11"
     },

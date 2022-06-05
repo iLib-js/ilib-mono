@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "XAF",
     "firstDayOfWeek": 1,
-    "locale": "CM",
+    "locale": "und-CM",
     "region.name": "Cameroon",
     "timezone": "Africa/Douala"
 }

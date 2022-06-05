@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "TWD",
     "firstDayOfWeek": 0,
-    "locale": "TW",
+    "locale": "und-TW",
     "region.name": "Taiwan",
     "timezone": "Asia/Taipei"
 }

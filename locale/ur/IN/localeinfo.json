@@ -10,7 +10,7 @@
         "groupChar": "٬",
         "negativenumFmt": "‎-‎{n}",
         "negativepctFmt": "‎-‎{n}%",
-        "script": "arabext",
+        "script": "Arab",
         "useNative": true
     }
 }

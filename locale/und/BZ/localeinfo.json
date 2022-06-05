@@ -2,7 +2,7 @@
     "clock": "24",
     "currency": "BZD",
     "firstDayOfWeek": 0,
-    "locale": "BZ",
+    "locale": "und-BZ",
     "paperSizes": {
         "regular": "8x11"
     },

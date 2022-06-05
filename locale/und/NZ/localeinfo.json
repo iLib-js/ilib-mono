@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "NZD",
     "firstDayOfWeek": 1,
-    "locale": "NZ",
+    "locale": "und-NZ",
     "region.name": "New Zealand",
     "timezone": "Pacific/Auckland"
 }

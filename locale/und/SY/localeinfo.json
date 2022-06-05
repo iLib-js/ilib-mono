@@ -2,7 +2,7 @@
     "clock": "12",
     "currency": "SYP",
     "firstDayOfWeek": 6,
-    "locale": "SY",
+    "locale": "und-SY",
     "region.name": "Syria",
     "timezone": "Asia/Damascus",
     "weekendEnd": 6,
