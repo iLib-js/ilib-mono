@@ -225,6 +225,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.2
+
+- Fix incorrect call to logger
+
 ### v1.1.1
 
 - the npm package for the previous version was built with the wrong babel target on
