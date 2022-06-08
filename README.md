@@ -89,13 +89,18 @@ loader.loadFiles(["path1", "non-existent-file", "path3"]).then((content) => {
 Assumptions About the Loaded Files
 -------------------
 
-No assumptions are made about the contents of the files other than these:
+For files with a ".js" or ".mjs" extension, the file is treated as
+a Javascript file. It will be loaded as code, and the module will be returned
+to the caller.
+
+For other file extensions, no assumptions are made about the contents
+of the files other than these:
 
 - the file is a text file
 - the text is encoded in UTF-8
 
 Specifically, no assumption is made as to the format of the file, making it equally
-possible to load json files as well as yaml files.
+possible to load json files, csv files, or yaml files.
 
 Full JS Docs
 --------------------
@@ -224,6 +229,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.2.0
+
+- added the ability to load JS files instead of just json files.
+    - if the file name extension is ".js", the node loader will use
+      `require()` in sync mode and `import()` in async mode
+    - the webpack loader will always use `import()` as it only supports
+      async mode
+    - the value returned is a module
+        - this may be an object, which may include a "default" property
+          that contains a function to call to get the locale data
+        - for some modules (CommonJS), the module may be a function
+          directly which can be called to get the locale data
 
 ### v1.1.2
 

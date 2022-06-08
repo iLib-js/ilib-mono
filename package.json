@@ -1,6 +1,6 @@
 {
     "name": "ilib-loader",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "main": "./lib/index.js",
     "description": "Loader to load text files in a cross-platform manner",
     "keywords": [
