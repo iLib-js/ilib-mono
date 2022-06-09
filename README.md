@@ -19,7 +19,13 @@ import LoaderFactory from 'ilib-loader';
 const loader = LoaderFactory();
 ```
 
-Once you have the loader, you can use it to load single files:
+Once you have the loader, you can use it to load single files. Without parameters,
+the loadFile method defaults to asynchronous mode and returns a Promise. With
+the sync option in the options parameter, you can specify to load the file
+synchronously. In this case, the contents of the file will be returned directly
+from the method.
+
+Examples:
 
 ```
 import LoaderFactory from 'ilib-loader';
@@ -35,7 +41,8 @@ loader.loadFile("pathname").then((content) => {
 const content = loader.loadFile("pathname", { sync: true });
 ```
 
-or an array of files all at once:
+Alternately, you can load an array of files all at once by passing in an
+array of file names:
 
 ```
 import LoaderFactory from 'ilib-loader';
@@ -91,7 +98,8 @@ Assumptions About the Loaded Files
 
 For files with a ".js" or ".mjs" extension, the file is treated as
 a Javascript file. It will be loaded as code, and the module will be returned
-to the caller.
+to the caller. The path name should be relative to the current directory of
+the app, not relative to the module that is calling the `loadFiles` method.
 
 For other file extensions, no assumptions are made about the contents
 of the files other than these:
@@ -100,7 +108,9 @@ of the files other than these:
 - the text is encoded in UTF-8
 
 Specifically, no assumption is made as to the format of the file, making it equally
-possible to load json files, csv files, or yaml files.
+possible to load json files, csv files, or yaml files. The contents are returned
+as a string, and it is up to the caller to interpret the format of that string
+with the appropriate parser.
 
 Full JS Docs
 --------------------
