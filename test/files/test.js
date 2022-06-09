@@ -5,4 +5,4 @@ module.exports = function() {
             "test3": "this is only a test"
         }
     };
-}; 
+};

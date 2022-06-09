@@ -242,9 +242,6 @@ limitations under the License.
           that contains a function to call to get the locale data
         - for some modules (CommonJS), the module may be a function
           directly which can be called to get the locale data
-
-### v1.1.2
-
 - Fix incorrect call to logger
 
 ### v1.1.1
