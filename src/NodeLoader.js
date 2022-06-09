@@ -123,7 +123,7 @@ class NodeLoader extends Loader {
         let { sync } = options || {};
         sync = typeof(sync) === "boolean" ? sync : this.sync;
         const isJs = pathName.endsWith(".js") || pathName.endsWith(".mjs");
-        const fullPath = isJs && pathName[0] === "." ? path.join(process.cwd(), pathName) : pathName;
+        const fullPath = isJs && pathName[0] !== "/" ? path.join(process.cwd(), pathName) : pathName;
 
         if (sync) {
             try {
