@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import log4js from '@log4js-node/log4js-api';
+//import log4js from '@log4js-node/log4js-api';
 
 import { getPlatform, top } from 'ilib-env';
 import Loader from './Loader';
@@ -38,7 +38,7 @@ switch (getPlatform()) {
         break;
 }
 
-const logger = log4js.getLogger("ilib-loader");
+//const logger = log4js.getLogger("ilib-loader");
 
 /**
  * Register a loader with the loader factory. The loader must return

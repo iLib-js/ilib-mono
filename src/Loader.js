@@ -172,7 +172,7 @@ class Loader {
                         values[i] = this.loadFile(paths[i], options);
                     } catch (e) {
                         // ignore for now
-                        logger.trace(e);
+                        this.logger.trace(e);
                     }
                 }
                 return values;
