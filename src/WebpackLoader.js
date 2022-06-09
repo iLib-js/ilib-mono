@@ -111,7 +111,10 @@ class WebpackLoader extends Loader {
             /* webpackChunkName: "ilib.[request]" */
             /* webpackMode: "lazy" */
             `calling-module/${pathName}`
-        );
+        ).catch((e) => {
+            this.logger.trace(e);
+            return undefined;
+        });
     }
 };
 

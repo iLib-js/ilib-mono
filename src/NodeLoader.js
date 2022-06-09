@@ -130,15 +130,15 @@ class NodeLoader extends Loader {
                 this.logger.trace(`loadFile: loading file ${pathName} synchronously.`);
                 return isJs ? require(fullPath) : fs.readFileSync(pathName, "utf-8");
             } catch (e) {
+                this.logger.trace(e);
                 return undefined;
             }
         }
         this.logger.trace(`loadFile: loading file ${pathName} asynchronously.`);
-        return isJs ?
-            import(fullPath) :
-            this.readFile(pathName, "utf-8").catch((e) => {
-                this.logger.trace(e);
-            });
+        return (isJs ? import(fullPath) : this.readFile(pathName, "utf-8")).catch((e) => {
+            this.logger.trace(e);
+            return undefined;
+        });
     }
 };
 
