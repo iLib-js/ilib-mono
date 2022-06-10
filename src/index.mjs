@@ -55,6 +55,11 @@ const optionConfig = {
         "default": "en-AU,en-CA,en-GB,en-IN,en-NG,en-PH,en-PK,en-US,en-ZA,de-DE,fr-CA,fr-FR,es-AR,es-ES,es-MX,id-ID,it-IT,ja-JP,ko-KR,pt-BR,ru-RU,tr-TR,vi-VN,zxx-XX,zh-Hans-CN,zh-Hant-HK,zh-Hant-TW,zh-Hans-SG",
         help: "Locales you want your webapp to support. Value is a comma-separated list of BCP-47 style locale tags. Default: the top 20 locales on the internet by traffic."
     },
+    module: {
+        short: "m",
+        multi: true,
+        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add." 
+    },
     quiet: {
         short: "q",
         flag: true,
@@ -125,6 +130,13 @@ files.forEach((file) => {
     if (!options.opt.quiet) console.log(`  ${file} ...`);
     scan(file, ilibModules);
 });
+
+if (options.opt.module) {
+    options.opt.module.forEach(module => {
+        if (!options.opt.quiet) console.log(`\nAdding module ${module} to the list of modules to search`);
+        ilibModules.add((module[0] === '.') ? path.join(process.cwd(), module) : module);
+    });
+}
 
 let localeData = {};
 
