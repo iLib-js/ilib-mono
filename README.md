@@ -1,7 +1,10 @@
 # ilib-assemble
 
 Tool to assemble ilib locale data from various ilib packages into single
-files so that they can be loaded quickly or included in webpack.
+locale files so that all of the data for a single locale can be loaded
+quickly and efficiently. The single files are also useful for webpack, and
+replace the functionality previously provided by the old ilib-webpack-loader
+and ilib-webpack-plugin extensions to webpack.
 
 ## Installation
 
@@ -17,9 +20,12 @@ Then, in your package.json, add a script:
 
 ```
 "scripts": {
-    "assemble": "ilib-assemble"
+    "assemble": "ilib-assemble locale"
 }
 ```
+
+Please note: nodejs version 16 or above is required to run this tool, as it
+is written with ESM modules.
 
 ## Purpose
 
@@ -36,13 +42,15 @@ data for that package into your files, and from there in your webpack
 bundles. (See ilib-loader and ilib-localedata)
 
 N.B. Currently, this tool only works with the independent ilib-* packages, not
-the monolithic "ilib" package itself.
+the monolithic "ilib" package itself. To include the locale data for the ilib
+package into webpack, you have to use the ilib-webpack-loader and
+ilib-webpack-plugin extensions to webpack.
 
 ## Basic Operation
 
 The basic operation of the tool is this:
 
-1. Scan your app for js files, including within the node_modules.
+1. Scan your app for javascript files, including those within the node_modules.
 2. Read each js file it finds in the given directories, and remember all imports and requires
    of packages that start with "ilib-"
 3. For each ilib package found in step 2, figure out whether or not that package publishes
@@ -60,6 +68,9 @@ The basic operation of the tool is this:
       [etc]
     }
     ```
+   The idea is that the `assemble.mjs` module that comes with each ilib-* package contains
+   the know-how of assembling the locale data for that package so that the ilib-assemble
+   tool doesn't need deep knowledge of each ilib-* package.
 4. Merge the data from each call in step 3 together into one big piece of data. This creates
    data like this (with 3 example basenames):
     ```json
@@ -106,6 +117,46 @@ written. If it does not exist, it will be created first.
 The input directories are optional. If not specified, the ilib-assemble tool will
 start in the current directory and recursively search the directory tree from
 there. If individual files are specified, only those files are searched.
+
+## Using the ilib-assemble Output With Webpack
+
+If you would like to use the output from ilib-assemble with webpack, you can
+do so by first running the tool and putting the output into a subdirectory of your
+app. The suggested directory is "locale" but you can name it anything you like.
+
+Then, you will have to modify your webpack configuration to point the
+webpack locale data loader within ilib at your directory. You do this by
+creating a resolve alias in your `webpack.config.js` file:
+
+```json
+    "resolve": {
+        "alias": {
+            "calling-module": "./locale"
+        }
+    }
+```
+
+The "calling-module" alias should point to the path where the directory full
+of locale files are located which were created using ilib-assemble.
+
+Additionally, the ilib-* packages depend on a package called `ilib-loader`
+which knows how to load files on various platforms. Under webpack, most of
+those loader subclasses are not useful and do not need to be included in
+the webpack bundles. In order to exclude them, add the following to your
+`webpack.config.js`:
+
+```json
+    "externals": {
+        "./NodeLoader": "NodeLoader",
+        "./QtLoader": "QtLoader",
+        "./RhinoLoader": "RhinoLoader",
+        "./NashornLoader": "NashornLoader",
+        "./RingoLoader": "RingoLoader"
+    },
+```
+
+See the documentation for [ilib-loader](https://github.com/ilib-js/ilib-loader)
+for more details.
 
 ## License
 

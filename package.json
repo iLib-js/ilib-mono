@@ -1,10 +1,10 @@
 {
     "name": "ilib-assemble",
     "version": "1.0.0",
-    "main": "./src/index.js",
+    "main": "./src/index.mjs",
     "bin": {
-        "ilib-assemble": "./src/index.js",
-        "ilib-assemble.bat": "./ilib-scanner.bat"
+        "ilib-assemble": "./src/index.mjs",
+        "ilib-assemble.bat": "./ilib-assemble.bat"
     },
     "description": "Utility to assemble locale data and resource files into single files for webpack to include",
     "keywords": [
@@ -35,8 +35,7 @@
     ],
     "files": [
         "src",
-        "lib",
-        "docs",
+        "assemble.bat",
         "README.md",
         "LICENSE"
     ],
@@ -45,7 +44,7 @@
         "url": "git@github.com:iLib-js/ilib-assemble.git"
     },
     "scripts": {
-        "dist": "npm run doc ; npm pack",
+        "dist": "npm pack",
         "test": "LANG=en_US.UTF8 node test/testSuite.mjs",
         "debug": "node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d *",
