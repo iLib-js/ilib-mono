@@ -19,7 +19,13 @@ import LoaderFactory from 'ilib-loader';
 const loader = LoaderFactory();
 ```
 
-Once you have the loader, you can use it to load single files:
+Once you have the loader, you can use it to load single files. Without parameters,
+the loadFile method defaults to asynchronous mode and returns a Promise. With
+the sync option in the options parameter, you can specify to load the file
+synchronously. In this case, the contents of the file will be returned directly
+from the method.
+
+Examples:
 
 ```
 import LoaderFactory from 'ilib-loader';
@@ -35,7 +41,8 @@ loader.loadFile("pathname").then((content) => {
 const content = loader.loadFile("pathname", { sync: true });
 ```
 
-or an array of files all at once:
+Alternately, you can load an array of files all at once by passing in an
+array of file names:
 
 ```
 import LoaderFactory from 'ilib-loader';
@@ -89,13 +96,21 @@ loader.loadFiles(["path1", "non-existent-file", "path3"]).then((content) => {
 Assumptions About the Loaded Files
 -------------------
 
-No assumptions are made about the contents of the files other than these:
+For files with a ".js" or ".mjs" extension, the file is treated as
+a Javascript file. It will be loaded as code, and the module will be returned
+to the caller. The path name should be relative to the current directory of
+the app, not relative to the module that is calling the `loadFiles` method.
+
+For other file extensions, no assumptions are made about the contents
+of the files other than these:
 
 - the file is a text file
 - the text is encoded in UTF-8
 
 Specifically, no assumption is made as to the format of the file, making it equally
-possible to load json files as well as yaml files.
+possible to load json files, csv files, or yaml files. The contents are returned
+as a string, and it is up to the caller to interpret the format of that string
+with the appropriate parser.
 
 Full JS Docs
 --------------------
@@ -225,8 +240,18 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.1.2
+### v1.2.0
 
+- added the ability to load JS files instead of just json files.
+    - if the file name extension is ".js", the node loader will use
+      `require()` in sync mode and `import()` in async mode
+    - the webpack loader will always use `import()` as it only supports
+      async mode
+    - the value returned is a module
+        - this may be an object, which may include a "default" property
+          that contains a function to call to get the locale data
+        - for some modules (CommonJS), the module may be a function
+          directly which can be called to get the locale data
 - Fix incorrect call to logger
 
 ### v1.1.1

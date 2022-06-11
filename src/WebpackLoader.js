@@ -86,7 +86,11 @@ class WebpackLoader extends Loader {
      *
      * The value may be the name of your module with an optional subpath, or the
      * absolute path to the directory where the files are stored. Without this alias,
-     * no files will be included and the webpack build will fail.
+     * no files will be included and the webpack build will fail.<p>
+     *
+     * For files that end with a ".js" or ".mjs" extension, this method should
+     * treat the file as a Javascript module and load it accordingly. All other
+     * file types will be loaded as UTF-8 text.
      *
      * @param {string} pathName a file name to load
      * @param {Object} options options guiding the load, as per above
@@ -107,7 +111,10 @@ class WebpackLoader extends Loader {
             /* webpackChunkName: "ilib.[request]" */
             /* webpackMode: "lazy" */
             `calling-module/${pathName}`
-        );
+        ).catch((e) => {
+            this.logger.trace(e);
+            return undefined;
+        });
     }
 };
 

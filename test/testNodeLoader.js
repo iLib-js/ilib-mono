@@ -381,5 +381,142 @@ module.exports.testNodeLoader = {
             ]);
             test.done();
         });
+    },
+
+    testLoadFilesJsSyncModeRightTypeCommonJs: function(test) {
+        test.expect(2);
+
+        var loader = LoaderFactory();
+        loader.setSyncMode();
+
+        var content = loader.loadFiles([
+            "./test/files/test.js"
+        ]);
+        test.equal(content.length, 1);
+        test.equal(typeof(content[0]), 'function');
+
+        test.done();
+    },
+
+    testLoadFilesJsSyncModeRightTypeESModule: function(test) {
+        test.expect(2);
+
+        var loader = LoaderFactory();
+        loader.setSyncMode();
+
+        var content = loader.loadFiles([
+            "./test/files/a/asdf.mjs"
+        ]);
+        test.equal(content.length, 1);
+        test.equal(typeof(content[0]), 'object');
+
+        test.done();
+    },
+
+    testLoadFilesJsSyncModeNonExistantFile: function(test) {
+        test.expect(2);
+
+        var loader = LoaderFactory();
+        loader.setSyncMode();
+
+        var content = loader.loadFiles([
+            "./test/files/testasdf.js"
+        ]);
+        test.equal(content.length, 1);
+        test.equal(typeof(content[0]), 'undefined');
+
+        test.done();
+    },
+
+    testLoadFilesJsSyncModeRightTypesMultiple: function(test) {
+        test.expect(3);
+
+        var loader = LoaderFactory();
+        loader.setSyncMode();
+
+        var content = loader.loadFiles([
+            "./test/files/test.js",
+            "./test/files/a/asdf.mjs"
+        ]);
+        test.equal(content.length, 2);
+        test.equal(typeof(content[0]), 'function');
+
+        // transpiled by babel into an esModule structure
+        // instead of a function
+        test.equal(typeof(content[1]), 'object');
+
+        test.done();
+    },
+
+    testLoadFilesJsSyncModeRightContent: function(test) {
+        test.expect(2);
+
+        var loader = LoaderFactory();
+        loader.setSyncMode();
+
+        var content = loader.loadFiles([
+            "./test/files/test.js",
+            "./test/files/testasdf.js",
+            "./test/files/a/asdf.mjs"
+        ]);
+        test.deepEqual(content[0](), {
+            "test": "this is a test",
+            "test2": {
+                "test3": "this is only a test"
+            }
+        });
+        test.deepEqual(content[2].default(), {
+            "name": "foo",
+            "value": "asdf"
+        });
+
+        test.done();
+    },
+
+    testLoadFilesJsAsyncRightTypesMultiple: function(test) {
+        test.expect(3);
+
+        var loader = LoaderFactory();
+        loader.setAsyncMode();
+
+        loader.loadFiles([
+            "./test/files/test.js",
+            "./test/files/a/asdf.mjs"
+        ]).then(content => {
+            test.equal(content.length, 2);
+            test.equal(typeof(content[0]), 'object');
+
+            // transpiled by babel into an esModule structure
+            // instead of a function
+            test.equal(typeof(content[1]), 'object');
+
+            test.done();
+        });
+    },
+
+    testLoadFilesJsAsyncRightContent: function(test) {
+        test.expect(2);
+
+        var loader = LoaderFactory();
+        loader.setAsyncMode();
+
+        var content = loader.loadFiles([
+            "./test/files/test.js",
+            "./test/files/testasdf.js",
+            "./test/files/a/asdf.mjs"
+        ]).then(content => {
+            test.deepEqual(content[0].default(), {
+                "test": "this is a test",
+                "test2": {
+                    "test3": "this is only a test"
+                }
+            });
+            test.deepEqual(content[2].default(), {
+                "name": "foo",
+                "value": "asdf"
+            });
+
+            test.done();
+        });
     }
 };

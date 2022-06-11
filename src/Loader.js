@@ -124,6 +124,16 @@ class Loader {
      * ignore this option.
      * </ul>
      *
+     * For files that end with a ".js" or ".mjs" extension, this method should
+     * treat the file as a Javascript module and load it accordingly. All other
+     * file types will be loaded as UTF-8 text.<p>
+     *
+     * For Javascript modules, the module is returned from this method. This
+     * may either be a function exported from the module, or an object containing
+     * a "default" property which is a function exported from the module. This
+     * exported function should be called with no arguments and should return
+     * the locale data for the locale.
+     *
      * @abstract
      * @param {string} pathName a file name to load
      * @param {Object} options options guiding the load, as per above
