@@ -51,39 +51,18 @@ function getLocaleSpec(locale) {
  * the ilib-phone package, both the phone number parser and formatter
  * need information about numbering plans, so they can share the
  * locale data about those plans.<p>
- *
- * Packages should not attempt to load any
- * locale data of another package. The other package may change what
- * data it stores, or how it is stored or encoded, without notice,
- * so depending
- * on another package's data is dangerous. Instead, that other package should
- * be designed to provide a stable API for the current package to get
- * any information that it may need.<p>
  */
 class DataCache {
     /**
      * Create a locale data cache.
      *
-     * The options may contain any of the following properties:
-     *
-     * <ul>
-     * <li>packageName. The unique name of the package for which the locale
-     * data is being cached.
-     * </ul>
-     *
      * @private
      * @param {string} name the unique name for this type of locale data
-     * @param {Object} options Options governing the construction of this
-     * cache
      * @constructor
      */
-    constructor(options) {
+    constructor() {
         this.logger = log4js.getLogger("ilib-localedata");
-        let {
-            packageName
-        } = options || {};
 
-        this.packageName = packageName;
         this.logger.trace("new DataCache instance");
 
         this.count = 0;
@@ -96,9 +75,7 @@ class DataCache {
      * the constructor's documentation for details.
      * @returns {DataCache} the data cache for the given package
      */
-    static getDataCache(options) {
-        if (!options || typeof(options.packageName) !== 'string') return;
-
+    static getDataCache() {
         const globalScope = top();
 
         if (!globalScope.ilib) {
@@ -106,14 +83,10 @@ class DataCache {
         }
 
         if (!globalScope.ilib.dataCache) {
-            globalScope.ilib.dataCache = {};
+            globalScope.ilib.dataCache = new DataCache();
         }
 
-        if (!globalScope.ilib.dataCache[options.packageName]) {
-            globalScope.ilib.dataCache[options.packageName] = new DataCache(options);
-        }
-
-        return globalScope.ilib.dataCache[options.packageName];
+        return globalScope.ilib.dataCache;
     }
 
     /**
@@ -127,15 +100,7 @@ class DataCache {
             globalScope.ilib = {};
         }
 
-        globalScope.ilib.dataCache = {};
-    }
-
-    /**
-     * Return the name of the package for which this is a cache.
-     * @returns {string} the package name
-     */
-    getPackage() {
-        return this.packageName;
+        globalScope.ilib.dataCache = new DataCache();
     }
 
     /**

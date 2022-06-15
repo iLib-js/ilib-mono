@@ -26,7 +26,7 @@ import getLocaleData, { clearLocaleData } from '../src/index';
 module.exports.testGetLocaleData = {
     testGetLocaleData: function(test) {
         test.expect(1);
-        const locData = getLocaleData("test", {
+        const locData = getLocaleData({
             path: "./test/files"
         });
         test.ok(locData);
@@ -36,28 +36,8 @@ module.exports.testGetLocaleData = {
     testGetLocaleDataNoPath: function(test) {
         test.expect(1);
         test.throws((test) => {
-            getLocaleData("test", {
+            getLocaleData({
                 name: "test"
-            });
-        });
-        test.done();
-    },
-
-    testGetLocaleDataEmptyPackage: function(test) {
-        test.expect(1);
-        test.throws(() => {
-            getLocaleData("", {
-                path: "./test/files"
-            });
-        });
-        test.done();
-    },
-
-    testGetLocaleDataNoPackage: function(test) {
-        test.expect(1);
-        test.throws(() => {
-            getLocaleData(undefined, {
-                path: "./test/files"
             });
         });
         test.done();
@@ -66,7 +46,7 @@ module.exports.testGetLocaleData = {
     testGetLocaleDataNoOptions: function(test) {
         test.expect(1);
         test.throws(() => {
-            getLocaleData("test");
+            getLocaleData();
         });
         test.done();
     },
@@ -76,7 +56,7 @@ module.exports.testGetLocaleData = {
 
         clearLocaleData();
 
-        const locData = getLocaleData("test", {
+        const locData = getLocaleData({
             path: "./test/files",
         });
 
@@ -90,7 +70,7 @@ module.exports.testGetLocaleData = {
         setPlatform("nodejs");
         clearLocaleData();
 
-        const locData = getLocaleData("test", {
+        const locData = getLocaleData({
             path: "./test/files",
             sync: true
         });
@@ -106,14 +86,14 @@ module.exports.testGetLocaleData = {
         test.expect(3);
         clearLocaleData();
 
-        const locData1 = getLocaleData("test", {
+        const locData1 = getLocaleData({
             path: "./test/files",
             sync: false
         });
         test.ok(locData1);
 
         // same params means same instance
-        const locData2 = getLocaleData("test", {
+        const locData2 = getLocaleData({
             path: "./test/files",
             sync: false
         });
@@ -121,5 +101,5 @@ module.exports.testGetLocaleData = {
 
         test.equal(locData1, locData2);
         test.done();
-    },
+    }
 };

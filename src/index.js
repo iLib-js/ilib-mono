@@ -25,8 +25,6 @@ import LocaleData from './LocaleData';
 /**
  * Return the locale data singleton for a package that needs data.
  *
- * @param {string} pkg name of the package that needs a locale
- * data object.
  * @param {Object} options Options for the construction of the LocaleData
  * instance. See the docs for the LocaleData constructor for details as
  * to what this can contain.
@@ -34,8 +32,8 @@ import LocaleData from './LocaleData';
  * to load locale data, or undefined if it could not be created
  * or if the package name was not specified
  */
-function getLocaleData(pkg, options) {
-    if (!options || !options.path || !pkg) {
+function getLocaleData(options) {
+    if (!options || !options.path) {
         throw "Missing options to LocaleData constructor";
     }
 
@@ -43,14 +41,11 @@ function getLocaleData(pkg, options) {
     if (!globalScope.ilib) {
         globalScope.ilib = {};
     }
-    if (!globalScope.ilib.localeDataCache) {
-        globalScope.ilib.localeDataCache = {};
-    }
 
-    if (!globalScope.ilib.localeDataCache[pkg]) {
-        globalScope.ilib.localeDataCache[pkg] = new LocaleData(pkg, options);
+    if (!globalScope.ilib.localeDataCache) {
+        globalScope.ilib.localeDataCache = new LocaleData(options);
     }
-    return globalScope.ilib.localeDataCache[pkg];
+    return globalScope.ilib.localeDataCache;
 }
 
 /**
@@ -63,7 +58,7 @@ export function clearLocaleData() {
     if (!globalScope.ilib) {
         globalScope.ilib = {};
     }
-    globalScope.ilib.localeDataCache = {};
+    globalScope.ilib.localeDataCache = undefined;
 }
 
 export { default as LocaleData } from './LocaleData';

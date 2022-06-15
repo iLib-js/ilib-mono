@@ -72,7 +72,7 @@ module.exports = {
             buffer: require.resolve("buffer")
         },
         alias: {
-            "calling-module": "../test/locale"
+            "calling-module": "../test/files3"
         }
     }
 };

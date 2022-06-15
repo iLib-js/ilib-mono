@@ -23,10 +23,9 @@ import DataCache from '../src/DataCache';
 
 module.exports.testDataCache = {
     testDataCacheConstructor: function(test) {
-        test.expect(2);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        test.expect(1);
+        let cache = DataCache.getDataCache();
 
-        test.equal(cache.getPackage(), "test");
         test.equal(cache.size(), 0);
 
         test.done();
@@ -34,9 +33,9 @@ module.exports.testDataCache = {
 
     testDataCacheConstructorIsGlobal: function(test) {
         test.expect(1);
-        let cache1 = DataCache.getDataCache({packageName: "test"});
+        let cache1 = DataCache.getDataCache();
 
-        let cache2 = DataCache.getDataCache({packageName: "test"});
+        let cache2 = DataCache.getDataCache();
 
         // should be the exact same instance
         test.equal(cache1, cache2);
@@ -46,7 +45,7 @@ module.exports.testDataCache = {
 
     testDataCacheGetDataEmpty: function(test) {
         test.expect(1);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
 
         const data = cache.getData("basename", new Locale("en-US"));
 
@@ -58,7 +57,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreData: function(test) {
         test.expect(2);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
 
         cache.storeData("basename", new Locale("en-US"), { x: "string" });
 
@@ -72,7 +71,7 @@ module.exports.testDataCache = {
 
     testDataCacheClearData: function(test) {
         test.expect(2);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
 
         cache.storeData("basename", new Locale("en-US"), { x: "string" });
 
@@ -90,7 +89,7 @@ module.exports.testDataCache = {
 
     testDataCacheClearDataMultiple: function(test) {
         test.expect(12);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -124,7 +123,7 @@ module.exports.testDataCache = {
 
     testDataCacheClearDataRightSize: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -141,7 +140,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataDifferentLocales: function(test) {
         test.expect(4);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.storeData("basename", new Locale("en-US"), { x: "string" });
@@ -162,7 +161,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataDifferentBasenames: function(test) {
         test.expect(4);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.storeData("basename1", new Locale("en-US"), { x: "string" });
@@ -183,7 +182,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataNoBasename: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -199,7 +198,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataNoLocaleMeansRoot: function(test) {
         test.expect(4);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -217,7 +216,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataNull: function(test) {
         test.expect(2);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.storeData("basename", new Locale("en-US"), null);
@@ -233,7 +232,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataRightSize: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -247,7 +246,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataOverride: function(test) {
         test.expect(4);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.storeData("basename", new Locale("en-US"), { x: "string" });
@@ -269,7 +268,7 @@ module.exports.testDataCache = {
 
     testDataCacheStoreDataOverrideRightSize: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -287,7 +286,7 @@ module.exports.testDataCache = {
 
     testDataCacheRemoveData: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.storeData("basename", new Locale("en-US"), { x: "string" });
@@ -308,7 +307,7 @@ module.exports.testDataCache = {
 
     testDataCacheRemoveDataRightSize: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -325,7 +324,7 @@ module.exports.testDataCache = {
 
     testDataCacheRemoveDataNoBasename: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -342,7 +341,7 @@ module.exports.testDataCache = {
 
     testDataCacheRemoveDataNoLocale: function(test) {
         test.expect(3);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
@@ -359,7 +358,7 @@ module.exports.testDataCache = {
 
     testDataCacheRemoveDataRootLocale: function(test) {
         test.expect(5);
-        let cache = DataCache.getDataCache({packageName: "test"});
+        let cache = DataCache.getDataCache();
         cache.clearData();
 
         test.equal(cache.size(), 0);
