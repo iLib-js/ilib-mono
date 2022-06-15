@@ -1332,8 +1332,8 @@ module.exports.testLocaleData = {
 
         LocaleData.addGlobalRoot("./test/files3");
         LocaleData.ensureLocale("nl-NL").then(result => {
-            // there is no nl-NL file there, so result should be false
-            test.ok(!result);
+            // there is no nl-NL file there
+            test.ok(result);
             test.done();
         });
     },
@@ -1447,6 +1447,80 @@ module.exports.testLocaleData = {
             test.deepEqual(data, {
                 "a": "b",
                 "c": "d"
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataEnsureLocaleNonExistantLocaleMeansNothingCached: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(13);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        test.ok(!LocaleData.checkCache("en-US", "info"));
+        test.ok(!LocaleData.checkCache("en-US", "foo"));
+        test.ok(!LocaleData.checkCache("de-DE", "info"));
+        test.ok(!LocaleData.checkCache("de-DE", "foo"));
+        test.ok(!LocaleData.checkCache("fr-FR", "info"));
+        test.ok(!LocaleData.checkCache("fr-FR", "foo"));
+
+        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.ensureLocale("fr-FR").then(result => {
+            // true because root was loaded
+            test.ok(result);
+
+            // still no locale data because there was none to load
+            test.ok(!LocaleData.checkCache("en-US", "info"));
+            test.ok(!LocaleData.checkCache("en-US", "foo"));
+            test.ok(!LocaleData.checkCache("de-DE", "info"));
+            test.ok(!LocaleData.checkCache("de-DE", "foo"));
+            test.ok(!LocaleData.checkCache("fr-FR", "info"));
+            test.ok(!LocaleData.checkCache("fr-FR", "foo"));
+            test.done();
+        });
+    },
+
+    testLocaleDataEnsureLocaleNonExistantDataUsesRoot: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.ensureLocale("fr-FR").then(result => {
+            test.ok(result);
+
+            const locData = new LocaleData({
+                path: "./test/files",
+                sync: false
+            });
+
+            // loads the root data only because fr-FR does
+            // not exist
+            let data = locData.loadData({
+                sync: true,
+                locale: "fr-FR",
+                basename: "info"
+            });
+
+            test.deepEqual(data, {
+                "a": "b root",
+                "c": "d root"
             });
             test.done();
         });
