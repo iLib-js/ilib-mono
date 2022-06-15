@@ -1482,8 +1482,8 @@ module.exports.testLocaleData = {
             test.ok(!LocaleData.checkCache("en-US", "foo"));
             test.ok(!LocaleData.checkCache("de-DE", "info"));
             test.ok(!LocaleData.checkCache("de-DE", "foo"));
-            test.ok(!LocaleData.checkCache("fr-FR", "info"));
-            test.ok(!LocaleData.checkCache("fr-FR", "foo"));
+            test.ok(LocaleData.checkCache("fr-FR", "info"));
+            test.ok(LocaleData.checkCache("fr-FR", "foo"));
             test.done();
         });
     },
