@@ -1526,4 +1526,111 @@ module.exports.testLocaleData = {
         });
     },
 
+    testLocaleDataEnsureLocaleUndefined: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        test.throws(() => {
+            LocaleData.ensureLocale().then(result => {
+                test.fail();
+            });
+        });
+        test.done();
+    },
+
+    testLocaleDataEnsureLocaleNull: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        test.throws(() => {
+            LocaleData.ensureLocale(null).then(result => {
+                test.fail();
+            });
+        });
+        test.done();
+    },
+
+    testLocaleDataEnsureLocaleBoolean: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        test.throws(() => {
+            LocaleData.ensureLocale(true).then(result => {
+                test.fail();
+            });
+        });
+        test.done();
+    },
+
+    testLocaleDataEnsureLocaleNumber: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        test.throws(() => {
+            LocaleData.ensureLocale(4).then(result => {
+                test.fail();
+            });
+        });
+        test.done();
+    },
+
+    testLocaleDataEnsureLocaleBadRoot: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/filesasfdasfd");
+        LocaleData.ensureLocale("en-US").then(result => {
+            test.ok(!result);
+            test.done();
+        });
+    }
 };

@@ -551,6 +551,9 @@ class LocaleData {
      * @reject {Error} if there was an error while loading the data
      */
     static ensureLocale(locale) {
+        if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
+            throw "Invalid parameter to ensureLocale";
+        }
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
         const spec = loc.getSpec();
 
