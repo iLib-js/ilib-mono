@@ -23,7 +23,7 @@ import { registerLoader } from 'ilib-loader';
 import MockLoader from './MockLoader';
 import LocaleData from '../src/LocaleData';
 
-module.exports.testLocaleData = {
+export const testLocaleData = {
     testLocaleDataConstructor: function(test) {
         test.expect(1);
         const locData = new LocaleData({
@@ -73,9 +73,7 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeSyncRoot: function(test) {
-       test.expect(3);
-
-       setPlatform();
+        setPlatform();
 
         // only do this test on nodejs
         if (getPlatform() !== "nodejs") {
@@ -107,8 +105,6 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeSyncen: function(test) {
-        test.expect(3);
-
         setPlatform();
 
         // only do this test on nodejs
@@ -141,8 +137,6 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeSyncenUS: function(test) {
-        test.expect(3);
-
         setPlatform();
 
         // only do this test on nodejs
@@ -175,8 +169,6 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeAsyncRoot: function(test) {
-        test.expect(3);
-
         setPlatform();
 
         // only do this test on nodejs
@@ -209,8 +201,6 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeAsyncen: function(test) {
-        test.expect(3);
-
         setPlatform();
 
         // only do this test on nodejs
@@ -243,8 +233,6 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataNodeAsyncenUS: function(test) {
-        test.expect(3);
-
         setPlatform();
 
         // only do this test on nodejs
@@ -277,9 +265,8 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataGetGlobalRootsEmpty: function(test) {
-        test.expect(1);
-
         setPlatform();
+        test.expect(1);
 
         // should have the path of caller in it only
         test.deepEqual(LocaleData.getGlobalRoots(), []);

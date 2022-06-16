@@ -48,7 +48,7 @@
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:web": "webpack-cli",
-        "build:test": "webpack-cli --config webpack-test.config.js",
+        "build:test": "webpack-cli --stats-error-details --config webpack-test.config.js",
         "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
         "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
         "testall": "npm run test ; npm run test:web",

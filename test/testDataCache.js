@@ -21,7 +21,7 @@ import Locale from 'ilib-locale';
 
 import DataCache from '../src/DataCache';
 
-module.exports.testDataCache = {
+export const testDataCache = {
     testDataCacheConstructor: function(test) {
         test.expect(1);
         let cache = DataCache.getDataCache();

@@ -23,7 +23,7 @@ import { registerLoader } from 'ilib-loader';
 import MockLoader from './MockLoader';
 import getLocaleData, { clearLocaleData } from '../src/index';
 
-module.exports.testGetLocaleData = {
+export const testGetLocaleData = {
     testGetLocaleData: function(test) {
         test.expect(1);
         const locData = getLocaleData({

@@ -72,7 +72,7 @@ module.exports = {
             buffer: require.resolve("buffer")
         },
         alias: {
-            "calling-module": "../test/files3"
+            "calling-module": path.resolve(__dirname, "test/files3")
         }
     }
 };

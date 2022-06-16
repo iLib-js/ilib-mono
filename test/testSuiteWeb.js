@@ -17,9 +17,12 @@
  * limitations under the License.
  */
 
-var tests = [
-    require('./testLocaleInfo.js'),
-    require('./testLocaleInfoAsync.js')
-];
+import { testDataCache } from './testDataCache.js';
+import { testGetLocaleData } from './testGetLocaleData.js';
+import { testLocaleData } from './testLocaleData.js';
 
-module.exports = tests;
+export const tests = [
+    testDataCache,
+    testGetLocaleData,
+    testLocaleData
+];
