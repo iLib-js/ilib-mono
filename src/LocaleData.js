@@ -460,6 +460,11 @@ class LocaleData {
         var ilib = getIlib();
         if (!ilib.roots) {
             ilib.roots = [];
+        } else {
+            if (ilib.roots.indexOf(pathName) > -1) {
+                // Already there. Don't need to add it again.
+                return;
+            }
         }
         // prepend it
         ilib.roots = [pathName].concat(ilib.roots);

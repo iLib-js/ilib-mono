@@ -306,7 +306,7 @@ module.exports.testLocaleData = {
     },
 
     testLocaleDataAddGlobalRoot: function(test) {
-        test.expect(2);
+        test.expect(1);
 
         setPlatform();
 
@@ -319,7 +319,23 @@ module.exports.testLocaleData = {
         test.done();
     },
 
-    testLocaleDataAddGlobalRoot: function(test) {
+    testLocaleDataAddGlobalRootTwice: function(test) {
+        test.expect(1);
+
+        setPlatform();
+
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("foobar/asf");
+        // should not add the second one because it's already there
+        LocaleData.addGlobalRoot("foobar/asf");
+
+        test.deepEqual(LocaleData.getGlobalRoots(), ["foobar/asf"]);
+
+        test.done();
+    },
+
+    testLocaleDataAddGlobalRootInLocData: function(test) {
         test.expect(2);
 
         setPlatform();
