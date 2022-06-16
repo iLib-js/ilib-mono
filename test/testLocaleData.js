@@ -1632,5 +1632,160 @@ module.exports.testLocaleData = {
             test.ok(!result);
             test.done();
         });
-    }
+    },
+
+    testLocaleDataEnsureLocaleJson: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files4");
+        LocaleData.ensureLocale("en-US").then(result => {
+            test.ok(result);
+            test.done();
+        });
+    },
+
+    testLocaleDataEnsureLocaleJsonNoDataAvailable: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files4");
+        LocaleData.ensureLocale("nl-NL").then(result => {
+            // there is no nl-NL file there
+            test.ok(result);
+            test.done();
+        });
+    },
+
+    testLocaleDataEnsureLocaleJsonDataIsCached: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(14);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files4");
+        LocaleData.ensureLocale("en-US").then(result => {
+            test.ok(result);
+
+            test.ok(LocaleData.checkCache("en-US", "info"));
+            test.ok(LocaleData.checkCache("en-US", "foo"));
+            test.ok(!LocaleData.checkCache("de-DE", "info"));
+            test.ok(!LocaleData.checkCache("de-DE", "foo"));
+            test.ok(!LocaleData.checkCache("fr-FR", "info"));
+            test.ok(!LocaleData.checkCache("fr-FR", "foo"));
+
+            LocaleData.ensureLocale("de-DE").then(result2 => {
+                test.ok(result2);
+
+                // make sure the English is still there after loading the German too
+                test.ok(LocaleData.checkCache("en-US", "info"));
+                test.ok(LocaleData.checkCache("en-US", "foo"));
+                test.ok(LocaleData.checkCache("de-DE", "info"));
+                test.ok(LocaleData.checkCache("de-DE", "foo"));
+                test.ok(!LocaleData.checkCache("fr-FR", "info"));
+                test.ok(!LocaleData.checkCache("fr-FR", "foo"));
+                test.done();
+            });
+        });
+    },
+
+    testLocaleDataEnsureLocaleJsonRightDataAsync: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files4");
+        LocaleData.ensureLocale("en-US").then(result => {
+            test.ok(result);
+
+            const locData = new LocaleData({
+                path: "./test/files",
+                sync: false
+            });
+
+            locData.loadData({
+                sync: false,
+                locale: "en-US",
+                basename: "info"
+            }).then(data => {
+                test.deepEqual(data, {
+                    "a": "b",
+                    "c": "d"
+                });
+                test.done();
+            });
+        });
+    },
+
+    testLocaleDataEnsureLocaleJsonRightDataSync: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files4");
+        LocaleData.ensureLocale("en-US").then(result => {
+            test.ok(result);
+
+            const locData = new LocaleData({
+                path: "./test/files",
+                sync: false
+            });
+
+            // can load synchronously after the ensureLocale
+            // is done, even though the loader does not support
+            // synchronous operation because the data is cached
+            let data = locData.loadData({
+                sync: true,
+                locale: "en-US",
+                basename: "info"
+            });
+
+            test.deepEqual(data, {
+                "a": "b",
+                "c": "d"
+            });
+            test.done();
+        });
+    },
 };
