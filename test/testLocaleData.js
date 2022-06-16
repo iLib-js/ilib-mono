@@ -1787,5 +1787,5 @@ module.exports.testLocaleData = {
             });
             test.done();
         });
-    },
+    }
 };
