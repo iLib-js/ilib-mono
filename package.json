@@ -1,7 +1,8 @@
 {
     "name": "ilib-locale",
-    "version": "1.1.1",
-    "main": "./lib/Locale.js",
+    "version": "1.2.0",
+    "main": "./src/Locale.js",
+    "module": "./lib/Locale.js",
     "description": "A BCP-47/IETF locale specifier parser/validator",
     "keywords": [
         "internationalization",
@@ -57,22 +58,25 @@
         "build:web": "webpack-cli",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "generate": "node generate.js",
-        "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
-        "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
-        "testall": "LANG=en_US.UTF8 npm run test; npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "dist": "npm-run-all doc build:prod build:web; npm pack",
+        "test": "LANG=en_US.UTF8 npm-run-all build:dev test:cli",
+        "test:cli": "LANG=en_US.UTF8 node test/testSuite.js",
+        "test:all": "LANG=en_US.UTF8 npm-run-all test build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test:web": "LANG=en_US.UTF8",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d *",
-        "doc": "jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/Locale.md",
+        "clean": "git clean -f -d * ; rm -rf lib tz",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/Locale.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.10",
-        "@babel/preset-env": "^7.17.10",
+        "@babel/core": "^7.18.5",
+        "@babel/preset-env": "^7.18.2",
         "@babel/register": "^7.17.7",
-        "@babel/runtime": "^7.17.9",
+        "@babel/runtime": "^7.18.3",
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.5",
         "babel-plugin-add-module-exports": "^1.0.4",
+        "core-js": "^3.23.1",
         "docdash": "^1.2.0",
         "grunt": "^1.5.3",
         "grunt-babel": "^8.0.0",
@@ -85,12 +89,12 @@
         "jsdoc-to-markdown": "^7.1.1",
         "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3",
+        "npm-run-all": "^4.1.5",
         "open-cli": "^7.0.1",
-        "webpack": "^5.72.1",
-        "webpack-cli": "^4.9.2"
+        "webpack": "^5.73.0",
+        "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "core-js": "^3.22.5",
         "ilib-env": "^1.2.1"
     }
 }
