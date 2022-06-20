@@ -19,7 +19,7 @@
 
 import * as ilibEnv from '../src/index';
 
-export const testenv = {
+export const testEnv = {
     testGetLocaleDefault: function(test) {
         test.expect(1);
         test.equal(ilibEnv.getLocale(), "en-US");
