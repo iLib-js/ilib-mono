@@ -1,7 +1,7 @@
 /*
  * webpack.config.js - webpack configuration script for ilib-env
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,24 +24,44 @@ module.exports = {
     entry: "./test/testSuiteWeb.js",
     output: {
         path: path.resolve(__dirname, 'test'),
-        filename: "locale-test.js",
+        filename: "ilib-locale-web.js",
         library: {
             name: "ilibLocaleTest",
             type: "umd"
         }
     },
     externals: {
-        'nodeunit': 'nodeunit'
+        "log4js": "log4js",
+        "nodeunit": "nodeunit"
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules\/(?!(ilib-env))/,
+                exclude: /node_modules/,
+                include: /node_modules\/ilib-/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        minified: false,
+                        compact: false,
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3,
+                                    proposals: true
+                                }
+                            }
+                        ]],
+                        options: {
+                            "exclude": [
+                                // \\ for Windows, \/ for Mac OS and Linux
+                                /node_modules[\\\/]core-js/,
+                                /node_modules[\\\/]webpack[\\\/]buildin/,
+                            ],
+                        },
                         plugins: [
                             //"add-module-exports",
                             "@babel/plugin-transform-regenerator"
@@ -55,5 +75,8 @@ module.exports = {
         fallback: {
             buffer: require.resolve("buffer")
         }
+    },
+    optimization: {
+        minimize: false
     }
 };

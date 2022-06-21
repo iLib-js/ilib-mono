@@ -117,6 +117,12 @@ limitations under the License.
 
 # Release Notes
 
+### v1.2.0
+
+* Now ships both the ES6 modules in the src directory and the commonjs code
+  (transpiled with babel) in the lib directory. Callers can choose which one
+  they would like to use.
+
 ### v1.1.1
 
 * Update dependencies and target the right node & browser versions with babel
