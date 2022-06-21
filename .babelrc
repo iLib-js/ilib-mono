@@ -3,7 +3,8 @@
 		"@babel/preset-env", {
 			"useBuiltIns": "usage",
 			"targets": {
-				"node": "current"
+				"node": "current",
+				"browsers": "cover 99.5%"
 			},
 			"corejs": {
 				"version": 3,
