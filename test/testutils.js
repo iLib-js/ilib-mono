@@ -1,7 +1,7 @@
 /*
  * testutils.js - test the utility routines
  * 
- * Copyright © 2012-2015, 2017-2019, 2021 JEDLSoft
+ * Copyright © 2012-2015, 2017-2019, 2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1012,7 +1012,7 @@ export const testUtils = {
     testHashCodeEqualFunctionDifferentSpacing: function(test) {
         test.expect(1);
         let plat = ilibEnv.getPlatform(); 
-        if (plat === "qt" || plat === "rhino" || plat === "trireme") {
+        if (plat === "qt" || plat === "rhino" || plat === "trireme" || plat === "browser") {
             // the qt javascript engine doesn't allow you to see the code of a function, so all 
             // functions should have the same hash. On Rhino, you can see the code, but the white
             // space is all normalized nicely to the same thing, so logically equivalent functions
