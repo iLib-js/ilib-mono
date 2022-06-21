@@ -1,7 +1,7 @@
 /*
- * testSuite.js - test suite for this directory
+ * testSuiteWeb.js - test suite for this directory
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,20 @@
  * limitations under the License.
  */
 
-var tests = [
-    require("./testsearch.js"),
-    require("./testmath.js"),
-    require("./testglobal.js"),
-    require("./testset.js"),
-    require("./testpath.js"),
-    require("./testutils.js"),
-    require("./teststrings.js")
-];
+import { testSearch } from './testsearch';
+import { testMathUtils } from './testmath';
+import { testGlobal } from './testglobal';
+import { testSet } from './testset';
+import { testPath } from './testpath';
+import { testUtils } from './testutils';
+import { testStrings } from './teststrings';
 
-module.exports = tests;
+export const tests = [
+    testSearch,
+    testMathUtils,
+    testGlobal,
+    testSet,
+    testPath,
+    testUtils,
+    testStrings
+];

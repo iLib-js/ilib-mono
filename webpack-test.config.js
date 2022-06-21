@@ -1,7 +1,7 @@
 /*
  * webpack.config.js - webpack configuration script for ilib-env
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ module.exports = {
         }
     },
     externals: {
+        'log4js': 'log4js',
         'nodeunit': 'nodeunit'
     },
     module: {
@@ -41,7 +42,18 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        minified: false,
+                        compact: false,
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3,
+                                    proposals: true
+                                }
+                            }
+                        ]],
                         plugins: [
                             //"add-module-exports",
                             "@babel/plugin-transform-regenerator"
@@ -55,5 +67,8 @@ module.exports = {
         fallback: {
             buffer: require.resolve("buffer")
         }
+    },
+    optimization: {
+        minimize: false
     }
 };

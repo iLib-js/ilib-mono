@@ -1,7 +1,7 @@
 /*
  * testmath.js - test the math utility routines
  * 
- * Copyright © 2012-2015, 2017-2019, 2021 JEDLSoft
+ * Copyright © 2012-2015, 2017-2019, 2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,29 +17,20 @@
  * limitations under the License.
  */
 
-if (typeof(Utils) === "undefined") {
-    var Utils = require("../lib/Utils.js");
-}
-if (typeof(MathUtils) === "undefined") {
-    var MathUtils = require("../lib/MathUtils.js");
-}
-if (typeof(Locale) === "undefined") {
-    var Locale = require("ilib-locale");
-}
-if (typeof(JSUtils) === "undefined") {
-    var JSUtils = require("../lib/JSUtils.js");
-}
-if (typeof(ISet) === "undefined") {
-    var ISet = require("../lib/ISet.js");
-}
+import Locale from 'ilib-locale';
+
+import * as Utils from '../src/Utils';
+import * as MathUtils from '../src/MathUtils';
+import * as JSUtils from '../src/JSUtils';
+import ISet from '../src/ISet';
 
 function strcmp(left, right) {
     return left.localeCompare(right);
 }
 
-var set = new ISet();
+let set = new ISet();
 
-module.exports.testutils = {
+export const testMathUtils = {
     testModSimple: function(test) {
         test.expect(1);
         test.equal(MathUtils.mod(2, 4), 2);
@@ -72,19 +63,19 @@ module.exports.testutils = {
     
     testModReal: function(test) {
         test.expect(1);
-        var actual = MathUtils.mod(2.234231, 4);
+        let actual = MathUtils.mod(2.234231, 4);
         test.roughlyEqual(actual, 2.234231, 0.0000001);
         test.done();
     },
     testModRealWrap: function(test) {
         test.expect(1);
-        var actual = MathUtils.mod(6.234231, 4);
+        let actual = MathUtils.mod(6.234231, 4);
         test.roughlyEqual(actual, 2.234231, 0.0000001);
         test.done();
     },
     testModRealNeg: function(test) {
         test.expect(1);
-        var actual = MathUtils.mod(-6.3, 4);
+        let actual = MathUtils.mod(-6.3, 4);
         test.roughlyEqual(actual, 1.7, 0.0000001);
         test.done();
     },
@@ -121,19 +112,19 @@ module.exports.testutils = {
     
     testAmodReal: function(test) {
         test.expect(1);
-        var actual = MathUtils.amod(2.234231, 4);
+        let actual = MathUtils.amod(2.234231, 4);
         test.roughlyEqual(actual, 2.234231, 0.0000001);
         test.done();
     },
     testAmodRealWrap: function(test) {
         test.expect(1);
-        var actual = MathUtils.amod(6.234231, 4);
+        let actual = MathUtils.amod(6.234231, 4);
         test.roughlyEqual(actual, 2.234231, 0.0000001);
         test.done();
     },
     testAmodRealNeg: function(test) {
         test.expect(1);
-        var actual = MathUtils.amod(-6.3, 4);
+        let actual = MathUtils.amod(-6.3, 4);
         test.roughlyEqual(actual, 1.7, 0.0000001);
         test.done();
     },

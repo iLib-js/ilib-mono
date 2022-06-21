@@ -1,7 +1,7 @@
 /*
  * testJSUtils.js - test the ilibCommon common
  *
- * Copyright © 2012-2015, 2017-2019, 2021 JEDLSoft
+ * Copyright © 2012-2015, 2017-2019, 2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-if (typeof(ilibCommon) === "undefined") {
-    var JSUtils = require("../lib/JSUtils.js");
-}
+import * as JSUtils from '../src/JSUtils';
 
-module.exports.testglobal = {
+export const testGlobal = {
     testIsArrayNewArrayObj: function(test) {
         test.expect(1);
         var a = new Array();

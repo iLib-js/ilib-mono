@@ -1,7 +1,7 @@
 /*
  * testutils.js - test the utility routines
  * 
- * Copyright © 2012-2015, 2017-2019, 2021 JEDLSoft
+ * Copyright © 2012-2015, 2017-2019, 2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,261 +17,252 @@
  * limitations under the License.
  */
 
-if (typeof(Utils) === "undefined") {
-    var Utils = require("../lib/Utils.js");
-}
-if (typeof(ilibEnv) === "undefined") {
-    var ilibEnv = require("ilib-env");
-}
-if (typeof(Locale) === "undefined") {
-    var Locale = require("ilib-locale");
-}
-if (typeof(JSUtils) === "undefined") {
-    var JSUtils = require("../lib/JSUtils.js");
-}
-if (typeof(ISet) === "undefined") {
-    var ISet = require("../lib/ISet.js");
-}
+import * as ilibEnv from 'ilib-env';
+import Locale from 'ilib-locale';
 
-var set = new ISet();
+import * as Utils from '../src/Utils';
+import * as JSUtils from '../src/JSUtils';
+import ISet from '../src/ISet';
 
-module.exports.testutils = {
+let set = new ISet();
+
+export const testUtils = {
     testMergeSimple: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": "B"},
+        let object1 = {"a": "A", "b": "B"},
             object2 = {"c": "C", "d": "D"};
         
-        var expected = {"a": "A", "b": "B", "c": "C", "d": "D"};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "A", "b": "B", "c": "C", "d": "D"};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeSimpleNoSideEffects: function(test) {
         test.expect(2);
-        var object1 = {"a": "A", "b": "B"},
+        let object1 = {"a": "A", "b": "B"},
             object2 = {"c": "C", "d": "D"};
         
-        var x = JSUtils.merge(object1, object2);
+        let x = JSUtils.merge(object1, object2);
         
         test.ok(typeof(x) !== "undefined");
-        var expected = {"a": "A", "b": "B"};
+        let expected = {"a": "A", "b": "B"};
         test.deepEqual(object1, expected);
         test.done();
     },
     
     testMergeArrays: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": ["d"]};
     
-        var expected = {"a": ["b", "c", "d"]};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": ["b", "c", "d"]};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeArraysDups: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": ["c", "d"]};
         
-        var expected = {"a": ["b", "c", "c", "d"]};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": ["b", "c", "c", "d"]};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeArraysEmptySource: function(test) {
         test.expect(1);
-        var object1 = {"a": []},
+        let object1 = {"a": []},
             object2 = {"a": ["d"]};
         
-        var expected = {"a": ["d"]};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": ["d"]};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeArraysEmptyTarget: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": []};
         
-        var expected = {"a": ["b", "c"]};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": ["b", "c"]};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeArraysIncongruentTypes1: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": "d"};
         
-        var expected = {"a": "d"};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "d"};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeArraysIncongruentTypes2: function(test) {
         test.expect(1);
-        var object1 = {"a": "b"},
+        let object1 = {"a": "b"},
             object2 = {"a": ["d"]};
         
-        var expected = {"a": ["d"]};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": ["d"]};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeSimpleProperty: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": "B"},
+        let object1 = {"a": "A", "b": "B"},
             object2 = {"b": "X"};
         
-        var expected = {"a": "A", "b": "X"};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "A", "b": "X"};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeComplexProperty: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "B"}},
+        let object1 = {"a": "A", "b": {"x": "B"}},
             object2 = {"b": "X"};
         
-        var expected = {"a": "A", "b": "X"};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "A", "b": "X"};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeSubobjects: function(test) {
         test.expect(1);
-        var object1 = {"b": {"x": "X", "y": "Y"}},
+        let object1 = {"b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N"}};
         
-        var expected = {"b": {"x": "M", "y": "N"}};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"b": {"x": "M", "y": "N"}};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeSubobjectsLeaveObj1PropsUntouched: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y", "z": "Z"}},
+        let object1 = {"a": "A", "b": {"x": "X", "y": "Y", "z": "Z"}},
             object2 = {"b": {"x": "M", "y": "N"}};
         
-        var expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeSubobjectsAddProps: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
+        let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
         
-        var expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeSubobjectsAddProps: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
+        let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
         
-        var expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeBooleans: function(test) {
         test.expect(1);
-        var object1 = {"a": true, "b": true},
+        let object1 = {"a": true, "b": true},
             object2 = {"b": false};
         
-        var expected = {"a": true, "b": false};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": true, "b": false};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeAddBooleans: function(test) {
         test.expect(1);
-        var object1 = {"a": true, "b": true},
+        let object1 = {"a": true, "b": true},
             object2 = {"c": false};
         
-        var expected = {"a": true, "b": true, "c": false};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": true, "b": true, "c": false};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeNumbers: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = {"b": 3};
         
-        var expected = {"a": 1, "b": 3};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": 1, "b": 3};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeNumbersWithZero: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = {"b": 0};
         
-        var expected = {"a": 1, "b": 0};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": 1, "b": 0};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testMergeNumbersAddZero: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = {"c": 0};
         
-        var expected = {"a": 1, "b": 2, "c": 0};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": 1, "b": 2, "c": 0};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
 
     testMergeUndefined: function(test) {
         test.expect(1);
-        var object1 = undefined,
+        let object1 = undefined,
             object2 = {"a": 1, "b": 2};
 
-        var expected = {"a": 1, "b": 2};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": 1, "b": 2};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
 
     testMergeUndefined2: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = undefined;
 
-        var expected = {"a": 1, "b": 2};
-        var actual = JSUtils.merge(object1, object2);
+        let expected = {"a": 1, "b": 2};
+        let actual = JSUtils.merge(object1, object2);
         test.deepEqual(actual, expected);
         test.done();
     },
     
     testIsEmptyFalse: function(test) {
         test.expect(1);
-        var object = {"a": "A"};
+        let object = {"a": "A"};
         
         test.ok(!JSUtils.isEmpty(object));
         test.done();
@@ -279,7 +270,7 @@ module.exports.testutils = {
     
     testIsEmptyTrue: function(test) {
         test.expect(1);
-        var object = {};
+        let object = {};
         
         test.ok(JSUtils.isEmpty(object));
         test.done();
@@ -293,7 +284,7 @@ module.exports.testutils = {
     
     testIsEmptyUndefinedProperties: function(test) {
         test.expect(1);
-        var object = {"a": undefined};
+        let object = {"a": undefined};
         
         test.ok(JSUtils.isEmpty(object));
         test.done();
@@ -301,7 +292,7 @@ module.exports.testutils = {
     
     testIsEmptyFalsyValues: function(test) {
         test.expect(1);
-        var object = {"a": false, "b": 0};
+        let object = {"a": false, "b": 0};
         
         test.ok(!JSUtils.isEmpty(object));
         test.done();
@@ -309,8 +300,8 @@ module.exports.testutils = {
     
     testShallowCopy: function(test) {
         test.expect(2);
-        var src = {"a": "b"};
-        var tgt = {};
+        let src = {"a": "b"};
+        let tgt = {};
         
         test.ok(typeof(tgt.a) === "undefined");
         
@@ -322,14 +313,14 @@ module.exports.testutils = {
     
     testShallowCopyRightValues: function(test) {
         test.expect(4);
-        var src = {
+        let src = {
             "a": "b", 
             "c": {
                 "d": "e", 
                 "f": 23
             }
         };
-        var tgt = {};
+        let tgt = {};
         
         test.ok(typeof(tgt.a) === "undefined");
         
@@ -343,8 +334,8 @@ module.exports.testutils = {
     
     testShallowCopyUndefined: function(test) {
         test.expect(4);
-        var src = undefined;
-        var tgt = {};
+        let src = undefined;
+        let tgt = {};
         
         test.ok(typeof(tgt) !== "undefined");
         test.ok(JSUtils.isEmpty(tgt));
@@ -357,14 +348,14 @@ module.exports.testutils = {
     },
     
     testShallowCopyToUndefined: function(test) {
-        var src = {
+        let src = {
             "a": "b", 
             "c": {
                 "d": "e", 
                 "f": 23
             }
         };
-        var tgt = undefined;
+        let tgt = undefined;
         
         test.ok(typeof(tgt) === "undefined");
         
@@ -379,8 +370,8 @@ module.exports.testutils = {
     
     testShallowCopyEmpty: function(test) {
         test.expect(2);
-        var src = {};
-        var tgt = {};
+        let src = {};
+        let tgt = {};
         
         test.ok(JSUtils.isEmpty(tgt));
         JSUtils.shallowCopy(src, tgt);
@@ -390,13 +381,13 @@ module.exports.testutils = {
     
     testShallowCopyEmptyValues: function(test) {
         test.expect(4);
-        var src = {
+        let src = {
             "a": 0, 
             "b": "",
             "c": null,
             "d": undefined
         };
-        var tgt = {};
+        let tgt = {};
         
         JSUtils.shallowCopy(src, tgt);
         
@@ -462,8 +453,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("de-DE-Latn-SAP");
-        var m = Utils.mergeLocData("foobar", locale);
+        let locale = new Locale("de-DE-Latn-SAP");
+        let m = Utils.mergeLocData("foobar", locale);
         test.equal(m.a, "e");
         test.equal(m.c, "f");
         test.equal(m.g, "i");
@@ -493,8 +484,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("-");
-        var m = Utils.mergeLocData("foobar", locale);
+        let locale = new Locale("-");
+        let m = Utils.mergeLocData("foobar", locale);
         test.equal(m.a, "b");
         test.equal(m.c, "d");
         test.ok(typeof(m.g) === "undefined");
@@ -524,8 +515,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("de-DE");
-        var m = Utils.mergeLocData("foobar", locale);
+        let locale = new Locale("de-DE");
+        let m = Utils.mergeLocData("foobar", locale);
         test.equal(m.a, "e");
         test.equal(m.c, "f");
         test.ok(typeof(m.g) === "undefined");
@@ -555,8 +546,8 @@ module.exports.testutils = {
            g: "i"
         };
     
-        var locale = new Locale("de-DE-Latn-SAP");
-        var m = Utils.mergeLocData("asdf", locale);
+        let locale = new Locale("de-DE-Latn-SAP");
+        let m = Utils.mergeLocData("asdf", locale);
         test.ok(m);
         
         // clean up for the other tests
@@ -584,8 +575,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("de-DE-Latn-SAP");
-        var m = Utils.mergeLocData(undefined, locale);
+        let locale = new Locale("de-DE-Latn-SAP");
+        let m = Utils.mergeLocData(undefined, locale);
         test.ok(m);
         
         // clean up for the other tests
@@ -613,7 +604,7 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var m = Utils.mergeLocData("foobar"); // use the current locale -- en-US
+        let m = Utils.mergeLocData("foobar"); // use the current locale -- en-US
         test.ok(typeof(m) !== "undefined");
         
         test.equal(m.a, "e");
@@ -645,8 +636,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("de-DE-Latn-SAP");
-        var m = Utils.mergeLocData("foobar", locale);
+        let locale = new Locale("de-DE-Latn-SAP");
+        let m = Utils.mergeLocData("foobar", locale);
         test.ok(typeof(m) !== "undefined");
         test.equal(ilib.data.foobar.a, "b");
         test.equal(ilib.data.foobar.c, "d");
@@ -673,8 +664,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("de-DE-Latn-SAP");
-        var m = Utils.mergeLocData("asdf", locale);
+        let locale = new Locale("de-DE-Latn-SAP");
+        let m = Utils.mergeLocData("asdf", locale);
         test.equal(m.a, "e");
         test.equal(m.c, "f");
         test.equal(m.g, "i");
@@ -697,8 +688,8 @@ module.exports.testutils = {
             g: "i"
         };
     
-        var locale = new Locale("de-Latn");
-        var m = Utils.mergeLocData("foobar", locale);
+        let locale = new Locale("de-Latn");
+        let m = Utils.mergeLocData("foobar", locale);
         test.equal(m.a, "e");
         test.equal(m.c, "d");
         test.equal(m.g, "i");
@@ -712,9 +703,9 @@ module.exports.testutils = {
     
     testGetLocFilesLanguageOnly: function(test) {
         test.expect(2);
-        var locale = new Locale("en");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json"
         ];
@@ -726,9 +717,9 @@ module.exports.testutils = {
     
     testGetLocFilesRegionOnly: function(test) {
         test.expect(2);
-        var locale = new Locale("US");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("US");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "und/US/localeinfo.json"
         ];
@@ -740,9 +731,9 @@ module.exports.testutils = {
     
     testGetLocFilesLangScript: function(test) {
         test.expect(2);
-        var locale = new Locale("en-Latn");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-Latn");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "en/Latn/localeinfo.json"
@@ -755,9 +746,9 @@ module.exports.testutils = {
     
     testGetLocFilesLangRegion: function(test) {
         test.expect(2);
-        var locale = new Locale("en-US");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-US");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "und/US/localeinfo.json",
@@ -771,9 +762,9 @@ module.exports.testutils = {
     
     testGetLocFilesLangVariant: function(test) {
         test.expect(2);
-        var locale = new Locale("en-govt");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-govt");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json"
         ];
@@ -785,9 +776,9 @@ module.exports.testutils = {
     
     testGetLocFilesScriptRegion: function(test) {
         test.expect(2);
-        var locale = new Locale("Latn-US");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("Latn-US");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "und/US/localeinfo.json"
         ];
@@ -799,9 +790,9 @@ module.exports.testutils = {
     
     testGetLocFilesRegionVariant: function(test) {
         test.expect(2);
-        var locale = new Locale("US-GOVT");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("US-GOVT");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "und/US/localeinfo.json",
             "und/US/GOVT/localeinfo.json"
@@ -814,9 +805,9 @@ module.exports.testutils = {
     
     testGetLocFilesLangScriptRegion: function(test) {
         test.expect(2);
-        var locale = new Locale("en-Latn-US");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-Latn-US");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "und/US/localeinfo.json",
@@ -832,9 +823,9 @@ module.exports.testutils = {
     
     testGetLocFilesLangScriptVariant: function(test) {
         test.expect(2);
-        var locale = new Locale("en-Latn-govt");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-Latn-govt");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "en/Latn/localeinfo.json"
@@ -847,9 +838,9 @@ module.exports.testutils = {
     
     testGetLocFilesLangRegionVariant: function(test) {
         test.expect(2);
-        var locale = new Locale("en-US-govt");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-US-govt");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "und/US/localeinfo.json",
@@ -865,9 +856,9 @@ module.exports.testutils = {
     
     testGetLocFilesAll: function(test) {
         test.expect(2);
-        var locale = new Locale("en-US-Latn-govt");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("en-US-Latn-govt");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "und/US/localeinfo.json",
@@ -886,9 +877,9 @@ module.exports.testutils = {
     
     testGetLocFilesNoLocale: function(test) {
         test.expect(2);
-        var locale = new Locale("-");
-        var f = Utils.getLocFiles(locale, "localeinfo.json");
-        var expected = [
+        let locale = new Locale("-");
+        let f = Utils.getLocFiles(locale, "localeinfo.json");
+        let expected = [
             "localeinfo.json"
         ];
         
@@ -899,9 +890,9 @@ module.exports.testutils = {
     
     testGetLocFilesNoBasename: function(test) {
         test.expect(2);
-        var locale = new Locale("en-US-Latn-govt");
-        var f = Utils.getLocFiles(locale, undefined);
-        var expected = [
+        let locale = new Locale("en-US-Latn-govt");
+        let f = Utils.getLocFiles(locale, undefined);
+        let expected = [
             "resources.json",
             "en/resources.json",
             "und/US/resources.json",
@@ -920,8 +911,8 @@ module.exports.testutils = {
     
     testGetLocFilesDefaultLocale: function(test) {
         test.expect(2);
-        var f = Utils.getLocFiles(undefined, "localeinfo.json");
-        var expected = [
+        let f = Utils.getLocFiles(undefined, "localeinfo.json");
+        let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
             "und/US/localeinfo.json",
@@ -1013,24 +1004,24 @@ module.exports.testutils = {
     
     testHashCodeEqualFunction: function(test) {
         test.expect(1);
-        var expected = JSUtils.hashCode(function a() { return "a"; });
+        let expected = JSUtils.hashCode(function a() { return "a"; });
         test.equal(JSUtils.hashCode(function a() { return "a"; }), expected);
         test.done();
     },
     
     testHashCodeEqualFunctionDifferentSpacing: function(test) {
         test.expect(1);
-        var plat = ilibEnv.getPlatform(); 
-        if (plat === "qt" || plat === "rhino" || plat === "trireme") {
+        let plat = ilibEnv.getPlatform(); 
+        if (plat === "qt" || plat === "rhino" || plat === "trireme" || plat === "browser") {
             // the qt javascript engine doesn't allow you to see the code of a function, so all 
             // functions should have the same hash. On Rhino, you can see the code, but the white
             // space is all normalized nicely to the same thing, so logically equivalent functions
             // that only differ in white space compare the same. (This seems the most logical to 
             // me out of all of these!)
-            var expected = JSUtils.hashCode(function a () { return "a"; });
+            let expected = JSUtils.hashCode(function a () { return "a"; });
             test.equal(JSUtils.hashCode(function a(){return "a";}), expected);
         } else {
-            var expected = JSUtils.hashCode(eval("module.exports = function a () { return \"a\"; }"));
+            let expected = JSUtils.hashCode(eval("module.exports = function a () { return \"a\"; }"));
             test.notEqual(JSUtils.hashCode(eval("module.exports=function a(){return \"a\";}")), expected);
         }
         test.done();
@@ -1038,7 +1029,7 @@ module.exports.testutils = {
     
     testHashCodeNotEqualFunctionDifferentNames: function(test) {
         test.expect(1);
-        var expected = JSUtils.hashCode(function a() { return "a"; });
+        let expected = JSUtils.hashCode(function a() { return "a"; });
         test.notEqual(JSUtils.hashCode(function b() { return "a"; }), expected);
         test.done();
     },
@@ -1047,10 +1038,10 @@ module.exports.testutils = {
         if (ilibEnv.getPlatform() === "qt") {
             // the qt javascript engine doesn't allow you to see the code of a function, so all 
             // functions should have the same hash
-            var expected = JSUtils.hashCode(function a() { return "a"; });
+            let expected = JSUtils.hashCode(function a() { return "a"; });
             test.equal(JSUtils.hashCode(function a() { return "b"; }), expected);
         } else {
-            var expected = JSUtils.hashCode(function a() { return "a"; });
+            let expected = JSUtils.hashCode(function a() { return "a"; });
             test.notEqual(JSUtils.hashCode(function a() { return "b"; }), expected);
         }
         test.done();
@@ -1058,7 +1049,7 @@ module.exports.testutils = {
     
     testHashCodeEqualObjects: function(test) {
         test.expect(1);
-        var expected = JSUtils.hashCode({name: "abcdef"});
+        let expected = JSUtils.hashCode({name: "abcdef"});
         test.equal(JSUtils.hashCode({name: "abcdef"}), expected);
         test.done();
     },
@@ -1083,14 +1074,14 @@ module.exports.testutils = {
     
     testHashCodeEqualObjectScrambledProperties: function(test) {
         test.expect(1);
-        var expected = JSUtils.hashCode({name: "abcdef", num: 3, value: "asdf"});
+        let expected = JSUtils.hashCode({name: "abcdef", num: 3, value: "asdf"});
         test.equal(JSUtils.hashCode({value: "asdf", name: "abcdef", num: 3}), expected);
         test.done();
     },
     
     testHashCodeNotEqualObjectValuesComplex: function(test) {
         test.expect(1);
-        var expected = JSUtils.hashCode({num: 3, apple: "jacks", type: false, name: "abcXdef"});
+        let expected = JSUtils.hashCode({num: 3, apple: "jacks", type: false, name: "abcXdef"});
         test.notEqual(JSUtils.hashCode({name: "abcdef", apple: "jacks", num: 3, type: false}), expected);
         test.done();
     },
@@ -1139,7 +1130,7 @@ module.exports.testutils = {
             sync: true,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "b", "c": "m", "e": "y"};
+                let expected = {"a": "b", "c": "m", "e": "y"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1165,7 +1156,7 @@ module.exports.testutils = {
             sync: true,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "a1", "c": "de2", "e": "f"};
+                let expected = {"a": "a1", "c": "de2", "e": "f"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1191,7 +1182,7 @@ module.exports.testutils = {
             sync: true,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "b", "c": "fr1", "e": "f"};
+                let expected = {"a": "b", "c": "fr1", "e": "f"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1216,7 +1207,7 @@ module.exports.testutils = {
             sync: true,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "b", "c": "m", "e": "y"};
+                let expected = {"a": "b", "c": "m", "e": "y"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1245,7 +1236,7 @@ module.exports.testutils = {
             sync: true,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"e": "y"};
+                let expected = {"e": "y"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1273,7 +1264,7 @@ module.exports.testutils = {
             sync: false,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "b", "c": "m", "e": "y"};
+                let expected = {"a": "b", "c": "m", "e": "y"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1295,7 +1286,7 @@ module.exports.testutils = {
             name: "foo.json",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "b", "c": "m", "e": "y"};
+                let expected = {"a": "b", "c": "m", "e": "y"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1471,7 +1462,7 @@ module.exports.testutils = {
             locale: "de-DE",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                var expected = {"a": "a1", "c": "de2", "e": "f"};
+                let expected = {"a": "a1", "c": "de2", "e": "f"};
                 test.expect(1);
                 test.deepEqual(results, expected);
                 test.done();
@@ -1541,7 +1532,7 @@ module.exports.testutils = {
     testLoadDataCacheResultAlreadyMerged: function(test) {
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
         ilib.setLoaderCallback(mockLoaderNoMulti);
-        var cacheMerged = ilib._cacheMerged;
+        let cacheMerged = ilib._cacheMerged;
         set = new ISet(); // clear the mock loader's cache
         try {
             test.expect(2);
@@ -1575,7 +1566,7 @@ module.exports.testutils = {
 */
     testMapStringDigits: function(test) {
         test.expect(1);
-        var map = "abcdefghij".split("");
+        let map = "abcdefghij".split("");
     
         test.equal(JSUtils.mapString("9876543210", map), "jihgfedcba");
         test.done();
@@ -1583,7 +1574,7 @@ module.exports.testutils = {
     
     testMapStringDigitsUnknown: function(test) {
         test.expect(1);
-        var map = "abcde".split("");
+        let map = "abcde".split("");
     
         test.equal(JSUtils.mapString("9876543210", map), "98765edcba");
         test.done();
@@ -1591,7 +1582,7 @@ module.exports.testutils = {
     
     testMapStringHash: function(test) {
         test.expect(1);
-        var map = {
+        let map = {
             "a": "x",
             "b": "y",
             "c": "z"
@@ -1603,7 +1594,7 @@ module.exports.testutils = {
     
     testMapStringUndefined: function(test) {
         test.expect(1);
-        var map = {
+        let map = {
             "a": "x",
             "b": "y",
             "c": "z"
@@ -1621,7 +1612,7 @@ module.exports.testutils = {
     
     testMapStringHashUnknown: function(test) {
         test.expect(1);
-        var map = {
+        let map = {
             "a": "x",
             "b": "y",
             "c": "z"
@@ -1633,7 +1624,7 @@ module.exports.testutils = {
     
     testMapStringHashMulti: function(test) {
         test.expect(1);
-        var map = {
+        let map = {
             "a": "xm",
             "b": "yn",
             "c": "zo"
@@ -1645,49 +1636,49 @@ module.exports.testutils = {
     
     testIndexOf: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, "b"), 1);
         test.done();
     },
     
     testIndexOfNeg: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, "d"), -1);
         test.done();
     },
     
     testIndexOfBeginning: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, "a"), 0);
         test.done();
     },
     
     testIndexOfEnd: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, "c"), 2);
         test.done();
     },
     
     testIndexOfCaseSensitive: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, "C"), -1);
         test.done();
     },
     
     testIndexOfWrongObjectType: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, 2), -1);
         test.done();
     },
     
     testIndexOfUndefinedSearchTerm: function(test) {
         test.expect(1);
-        var arr = ["a", "b", "c"];
+        let arr = ["a", "b", "c"];
         test.equal(JSUtils.indexOf(arr, undefined), -1);
         test.done();
     },
