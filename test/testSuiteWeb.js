@@ -1,5 +1,5 @@
 /*
- * testSuite.js - test suite for this directory
+ * testSuiteWeb.js - test suite for this directory
  *
  * Copyright © 2022, JEDLSoft
  *
