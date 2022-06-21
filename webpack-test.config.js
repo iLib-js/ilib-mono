@@ -31,7 +31,8 @@ module.exports = {
         }
     },
     externals: {
-        'nodeunit': 'nodeunit'
+        "log4js": "log4js",
+        "nodeunit": "nodeunit"
     },
     module: {
         rules: [
