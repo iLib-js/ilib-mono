@@ -21,13 +21,13 @@ var nodeunit = require("nodeunit");
 var assert = require("nodeunit/lib/assert");
 require("assertextras")(assert);
 
-var reporter = nodeunit.reporters.minimal;
-var modules = {};
-var suites = require("./testSuiteFiles.js").files;
-
 // this processes all subsequent requires using babel
 process.env.BABEL_ENV = "test";
 require("@babel/register");
+
+var reporter = nodeunit.reporters.minimal;
+var modules = {};
+var suites = require("./testSuiteFiles.js").files;
 
 suites.forEach(function (path) {
     var test = require("./" + path);

@@ -43,7 +43,25 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        minified: false,
+                        compact: false,
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3,
+                                    proposals: true
+                                }
+                            }
+                        ]],
+                        options: {
+                            "exclude": [
+                                // \\ for Windows, \/ for Mac OS and Linux
+                                /node_modules[\\\/]core-js/,
+                                /node_modules[\\\/]webpack[\\\/]buildin/,
+                            ],
+                        },
                         plugins: [
                             //"add-module-exports",
                             "@babel/plugin-transform-regenerator"
