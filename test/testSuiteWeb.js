@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-var tests = [
-    require('./testLoader.js'),
-    require('./testLoaderFactory.js'),
-    require('./testWebpackLoader.js')
-];
+import { testLoader } from './testLoader';
+import { testLoaderFactory } from './testLoaderFactory';
+import { testWebpackLoader } from './testWebpackLoader';
 
-module.exports = tests;
+export const tests = [
+    testLoader,
+    testLoaderFactory,
+    testWebpackLoader
+];

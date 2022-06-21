@@ -20,7 +20,7 @@
 import { setPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index';
 
-module.exports.testNodeLoader = {
+export const testNodeLoader = {
     setUp: function(callback) {
         setPlatform("nodejs");
         callback();
@@ -400,7 +400,7 @@ module.exports.testNodeLoader = {
 
     testLoadFilesJsSyncModeRightTypeESModule: function(test) {
         test.expect(2);
-
+debugger;
         var loader = LoaderFactory();
         loader.setSyncMode();
 
@@ -408,7 +408,7 @@ module.exports.testNodeLoader = {
             "./test/files/a/asdf.mjs"
         ]);
         test.equal(content.length, 1);
-        test.equal(typeof(content[0]), 'object');
+        test.equal(typeof(content[0]), 'function');
 
         test.done();
     },
@@ -440,10 +440,7 @@ module.exports.testNodeLoader = {
         ]);
         test.equal(content.length, 2);
         test.equal(typeof(content[0]), 'function');
-
-        // transpiled by babel into an esModule structure
-        // instead of a function
-        test.equal(typeof(content[1]), 'object');
+        test.equal(typeof(content[1]), 'function');
 
         test.done();
     },
@@ -465,7 +462,7 @@ module.exports.testNodeLoader = {
                 "test3": "this is only a test"
             }
         });
-        test.deepEqual(content[2].default(), {
+        test.deepEqual(content[2](), {
             "name": "foo",
             "value": "asdf"
         });
