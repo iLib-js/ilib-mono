@@ -17,6 +17,6 @@
  * limitations under the License.
  */
 
-exports const files = [
+export const files = [
     "./testenv.js"
 ];
