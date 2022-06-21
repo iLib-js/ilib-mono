@@ -1,7 +1,7 @@
 /*
  * testsearch.js - test the search utility routines
  * 
- * Copyright © 2012-2015, 2017-2019, 2021 JEDLSoft
+ * Copyright © 2012-2015, 2017-2019, 2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,13 @@
  * limitations under the License.
  */
 
-if (typeof(SearchUtils) === "undefined") {
-    var SearchUtils = require("../lib/SearchUtils.js");
-}
+import * as SearchUtils from '../src/SearchUtils';
 
 function strcmp(left, right) {
     return left.localeCompare(right);
 }
 
-module.exports.testsearch = {
+export const testSearch = {
     testBsearch: function(test) {
         test.expect(1);
         var array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];

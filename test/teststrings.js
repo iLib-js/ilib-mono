@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-if (typeof(JSUtils) === "undefined") {
-    var JSUtils = require("../lib/JSUtils.js");
-}
+import * as JSUtils from '../src/JSUtils';
 
-module.exports.teststrings = {
+export const testStrings = {
     testCodePointToUTF: function(test) {
         test.expect(3);
         var str = JSUtils.fromCodePoint(0x10302);

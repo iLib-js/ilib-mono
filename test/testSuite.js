@@ -1,7 +1,7 @@
 /*
  * testSuite.js - test suite for this directory
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2021-2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,10 @@
 var nodeunit = require("nodeunit");
 var assert = require("nodeunit/lib/assert");
 require("assertextras")(assert);
+
+// this processes all subsequent requires using babel
+process.env.BABEL_ENV = "test";
+require("@babel/register");
 
 var reporter = nodeunit.reporters.minimal;
 var modules = {};

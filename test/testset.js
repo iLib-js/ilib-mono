@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-if (typeof(ISet) === "undefined") {
-    var ISet = require("../lib/ISet.js");
-}
+import ISet from '../src/ISet';
 
-module.exports.testset = {
+export const testSet = {
     testConstructor: function(test) {
         test.expect(1);
         var s = new ISet();
