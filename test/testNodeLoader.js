@@ -400,7 +400,7 @@ export const testNodeLoader = {
 
     testLoadFilesJsSyncModeRightTypeESModule: function(test) {
         test.expect(2);
-debugger;
+
         var loader = LoaderFactory();
         loader.setSyncMode();
 
