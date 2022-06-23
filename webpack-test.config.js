@@ -1,5 +1,5 @@
 /*
- * webpack.config.js - webpack configuration script for ilib-env
+ * webpack.config.js - webpack configuration script for testing ilib-localedata
  *
  * Copyright © 2022, JEDLSoft
  *

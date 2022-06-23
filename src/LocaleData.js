@@ -599,8 +599,14 @@ class LocaleData {
                                         } else if (typeof(datum.getLocaleData) === 'function') {
                                             localeData = datum.getLocaleData();
                                         } else {
-                                            // nothing to call
-                                            return previous;
+                                            // if it is a json file we loaded, then this object
+                                            // IS the data
+                                            if (!files[i].path.endsWith(".js") && !files[i].path.endsWith(".mjs")) {
+                                                localeData = datum;
+                                            } else {
+                                                // nothing to return
+                                                return previous;
+                                            }
                                         }
                                         break;
                                     case 'string':

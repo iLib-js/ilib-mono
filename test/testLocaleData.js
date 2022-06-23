@@ -1301,14 +1301,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocale: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1321,14 +1313,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleNoDataAvailable: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1342,14 +1326,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleDataIsCached: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(14);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1381,14 +1357,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleRightDataAsync: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1417,14 +1385,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleRightDataSync: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1456,14 +1416,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleNonExistantLocaleMeansNothingCached: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(13);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1492,14 +1444,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleNonExistantDataUsesRoot: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1530,14 +1474,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleUndefined: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1552,14 +1488,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleNull: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1574,14 +1502,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleBoolean: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1596,14 +1516,6 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleNumber: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -1620,8 +1532,8 @@ export const testLocaleData = {
     testLocaleDataEnsureLocaleBadRoot: function(test) {
         setPlatform();
 
-        // only do this test on nodejs
         if (getPlatform() !== "nodejs") {
+            // webpack loader does not use roots, so we don't need this test
             test.done();
             return;
         }
@@ -1631,46 +1543,30 @@ export const testLocaleData = {
         LocaleData.clearGlobalRoots();
 
         LocaleData.addGlobalRoot("./test/filesasfdasfd");
-        LocaleData.ensureLocale("en-US").then(result => {
+        LocaleData.ensureLocale("ja-JP").then(result => {
             test.ok(!result);
             test.done();
         });
     },
 
     testLocaleDataEnsureLocaleJson: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/files4");
-        LocaleData.ensureLocale("en-US").then(result => {
+        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.ensureLocale("ja-JP").then(result => {
             test.ok(result);
             test.done();
         });
     },
 
     testLocaleDataEnsureLocaleJsonNoDataAvailable: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/files4");
+        LocaleData.addGlobalRoot("./test/files3");
         LocaleData.ensureLocale("nl-NL").then(result => {
             // there is no nl-NL file there
             test.ok(result);
@@ -1679,37 +1575,29 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleJsonDataIsCached: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(14);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/files4");
-        LocaleData.ensureLocale("en-US").then(result => {
+        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.ensureLocale("ja-JP").then(result => {
             test.ok(result);
 
-            test.ok(LocaleData.checkCache("en-US", "info"));
-            test.ok(LocaleData.checkCache("en-US", "foo"));
-            test.ok(!LocaleData.checkCache("de-DE", "info"));
-            test.ok(!LocaleData.checkCache("de-DE", "foo"));
+            test.ok(LocaleData.checkCache("ja-JP", "info"));
+            test.ok(LocaleData.checkCache("ja-JP", "foo"));
+            test.ok(!LocaleData.checkCache("zh-Hans-CN", "info"));
+            test.ok(!LocaleData.checkCache("zh-Hans-CN", "foo"));
             test.ok(!LocaleData.checkCache("fr-FR", "info"));
             test.ok(!LocaleData.checkCache("fr-FR", "foo"));
 
-            LocaleData.ensureLocale("de-DE").then(result2 => {
+            LocaleData.ensureLocale("zh-Hans-CN").then(result2 => {
                 test.ok(result2);
 
                 // make sure the English is still there after loading the German too
-                test.ok(LocaleData.checkCache("en-US", "info"));
-                test.ok(LocaleData.checkCache("en-US", "foo"));
-                test.ok(LocaleData.checkCache("de-DE", "info"));
-                test.ok(LocaleData.checkCache("de-DE", "foo"));
+                test.ok(LocaleData.checkCache("ja-JP", "info"));
+                test.ok(LocaleData.checkCache("ja-JP", "foo"));
+                test.ok(LocaleData.checkCache("zh-Hans-CN", "info"));
+                test.ok(LocaleData.checkCache("zh-Hans-CN", "foo"));
                 test.ok(!LocaleData.checkCache("fr-FR", "info"));
                 test.ok(!LocaleData.checkCache("fr-FR", "foo"));
                 test.done();
@@ -1718,35 +1606,26 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleJsonRightDataAsync: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/files4");
-        LocaleData.ensureLocale("en-US").then(result => {
+        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.ensureLocale("ja-JP").then(result => {
             test.ok(result);
 
             const locData = new LocaleData({
-                path: "./test/files",
-                sync: false
+                path: "./test/files3"
             });
 
             locData.loadData({
                 sync: false,
-                locale: "en-US",
+                locale: "ja-JP",
                 basename: "info"
             }).then(data => {
                 test.deepEqual(data, {
-                    "a": "b",
-                    "c": "d"
+                    "a": "b ja",
+                    "c": "d ja"
                 });
                 test.done();
             });
@@ -1754,25 +1633,16 @@ export const testLocaleData = {
     },
 
     testLocaleDataEnsureLocaleJsonRightDataSync: function(test) {
-        setPlatform();
-
-        // only do this test on nodejs
-        if (getPlatform() !== "nodejs") {
-            test.done();
-            return;
-        }
-
         test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/files4");
-        LocaleData.ensureLocale("en-US").then(result => {
+        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.ensureLocale("ja-JP").then(result => {
             test.ok(result);
 
             const locData = new LocaleData({
-                path: "./test/files",
-                sync: false
+                path: "./test/files3"
             });
 
             // can load synchronously after the ensureLocale
@@ -1780,13 +1650,13 @@ export const testLocaleData = {
             // synchronous operation because the data is cached
             let data = locData.loadData({
                 sync: true,
-                locale: "en-US",
+                locale: "ja-JP",
                 basename: "info"
             });
 
             test.deepEqual(data, {
-                "a": "b",
-                "c": "d"
+                "a": "b ja",
+                "c": "d ja"
             });
             test.done();
         });
