@@ -65,6 +65,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.0
+
+- Update to CLDR 41 data
+- Add additional likely locale data for a number of locales not listed in CLDR
+- Updated dependencies
+
 ### v1.1.0
 
 - ship the locale dir too or else this whole package won't work!

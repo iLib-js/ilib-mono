@@ -1,7 +1,7 @@
 /*
  * testlocalematch.js - test the locale matcher object
  *
- * Copyright © 2012-2015,2017,2019-2021 JEDLSoft
+ * Copyright © 2012-2015,2017,2019-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-if (typeof(LocaleMatcher) === "undefined") {
-    var LocaleMatcher = require("../lib/LocaleMatcher.js");
-}
+import LocaleMatcher from '../src/LocaleMatcher.js';
 
-module.exports.testlocalematch = {
+export const testLocaleMatch = {
     testLocaleMatcherConstructor: function(test) {
         test.expect(1);
         var loc = new LocaleMatcher();
@@ -1237,6 +1235,83 @@ module.exports.testlocalematch = {
         var locale = lm.getLikelyLocale();
         test.ok(typeof(locale) !== "undefined");
         test.equal(locale.getSpec(), "ca-Latn-ES");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_bn_IN: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "bn-IN"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "bn-Beng-IN");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_en_KR: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "en-KR"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "en-Latn-KR");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_hr_HU: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "hr-HU"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "hr-Latn-HU");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_ka_IR: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "ka-IR"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "ka-Geor-IR");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_ku_IQ: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "ku-IQ"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "ku-Arab-IQ");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_ps_PK: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "ps-PK"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "ps-Arab-PK");
+        test.done();
+    },
+    testLocaleMatcherGetLikelyLocaleByLocaleCode_pt_MO: function(test) {
+        test.expect(3);
+        var lm = new LocaleMatcher({
+            locale: "pt-MO"
+        });
+        test.ok(typeof(lm) !== "undefined");
+        var locale = lm.getLikelyLocale();
+        test.ok(typeof(locale) !== "undefined");
+        test.equal(locale.getSpec(), "pt-Latn-MO");
         test.done();
     },
     testLocaleMatcherGetLikelyLocaleByLocaleCodehy: function(test) {
