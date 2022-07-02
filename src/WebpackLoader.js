@@ -18,6 +18,7 @@
  */
 
 import log4js from '@log4js-node/log4js-api';
+import { Path } from 'ilib-common';
 
 import Loader from './Loader';
 
@@ -106,11 +107,13 @@ class WebpackLoader extends Loader {
         }
         this.logger.trace(`Loading file ${pathName} from webpack asynchronously`);
 
+        const fileName = Path.basename(pathName);
+
         return import(
-            /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root).js$/ */
+            /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root).js(on)?$/ */
             /* webpackChunkName: "ilib.[request]" */
             /* webpackMode: "lazy" */
-            `calling-module/${pathName}`
+            `calling-module/${fileName}`
         ).catch((e) => {
             this.logger.trace(e);
             return undefined;

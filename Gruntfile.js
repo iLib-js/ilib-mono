@@ -53,6 +53,7 @@ module.exports = function(grunt) {
                     }
                 ]],
                 plugins: ["add-module-exports"],
+                compact: !debug,
                 minified: !debug
             },
             dist: {
