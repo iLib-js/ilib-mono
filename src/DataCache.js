@@ -108,7 +108,8 @@ class DataCache {
      * Get locale data from the cache or information about data that may be missing.
      * If the basename is missing, get all the data for the locale.
      *
-     * @param {string|undefined} basename the base name of this type of data
+     * @param {string|undefined} basename the base name of this type of data. If this
+     * is undefined, return all basenames for the locale
      * @param {Locale} locale the full or partial locale for this particular data
      * @returns {Object|null|undefined} the requested data, or null to explicitly indicate
      * that no data of this type exists for this locale, or undefined to indicate that the
@@ -116,10 +117,6 @@ class DataCache {
      */
     getData(basename, locale) {
         this.logger.trace(`Getting data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
-        if (!basename) {
-            this.logger.info(`Attempt to get data from the cache with no basename.`);
-            return;
-        }
 
         let localeSpec = getLocaleSpec(locale);
 

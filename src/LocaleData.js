@@ -717,11 +717,13 @@ class LocaleData {
      *
      * @param {string} packageName Name of the package to check for data
      * @param {string} locale full locale of the data to check
-     * @param {string} basename the basename of the data to check
+     * @param {string|undefined} basename the basename of the data to check. If
+     * undefined, it will check if any data for any basename is available for
+     * the given locale
      * @returns {boolean} true if the data is available, false otherwise
      */
     static checkCache(locale, basename) {
-        if (typeof(locale) !== 'string'  || typeof(basename) !== 'string') {
+        if (typeof(locale) !== 'string' || (basename && typeof(basename) !== 'string')) {
             return false;
         }
         const cache = DataCache.getDataCache();

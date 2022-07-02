@@ -1004,6 +1004,56 @@ export const testLocaleData = {
         test.done();
     },
 
+    testLocaleDataCheckCacheNoBasename: function(test) {
+        setPlatform();
+
+        // only do this test on nodejs
+        if (getPlatform() !== "nodejs") {
+            test.done();
+            return;
+        }
+        test.expect(3);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: true
+        });
+        test.ok(locData);
+        LocaleData.addGlobalRoot("./test/files2");
+
+        // there is no de-DE data, but there is root data which we
+        // should ignore for the purposes of cache checking
+        test.ok(!LocaleData.checkCache("de-DE"));
+
+        LocaleData.cacheData({
+            "de": {
+                "tester": {
+                    "a": "b de",
+                    "x": {
+                        "m": "n de",
+                    }
+                }
+            },
+            "de-DE": {
+                "tester": {
+                    "a": "b de-DE",
+                    "x": {
+                        "o": "p de-DE"
+                    }
+                }
+            }
+        });
+
+        // should work even without the basename by checking for
+        // any data for any basename
+        test.ok(LocaleData.checkCache("de-DE"));
+
+        test.done();
+    },
+
+
     testLocaleDataNodeSyncMostSpecificFullLocale: function(test) {
         setPlatform();
 
