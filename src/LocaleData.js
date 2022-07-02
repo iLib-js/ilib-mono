@@ -327,11 +327,16 @@ class LocaleData {
 
         // first check if it's in the cache
         // const locales = Utils.getSublocales(locale).map((sublocale) => { locale: sublocale });
+        // normalize the spec
+        let loc = new Locale(locale);
+        if (locale && locale !== "root" && !loc.getLanguage()) {
+            loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+        }
 
         // then check how to load it
         // then load it
         const fileName = basename + ".json";
-        const files = Utils.getSublocales(locale).map((spec) => {
+        const files = Utils.getSublocales(loc.getSpec()).map((spec) => {
             const loc = new Locale(spec);
             const pathName = (spec === "root") ? fileName : Path.join(spec.replace(/-/g, "/"), fileName);
             const retValue = {
@@ -353,13 +358,14 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map((file) => {
-                        return file.data ? undefined : Path.join(root, file.name);
+                        return (file.data || this.cache.wasLoaded(file)) ? undefined : Path.join(root, file.name);
                     });
                     const data = this.loader.loadFiles(fileNames, {sync});
                     data.forEach((datum, i) => {
                         if (!files[i].data) {
                             // null indicates we attempted to load the file, but
                             // there was no data or the file did not exist
+                            this.cache.fileLoaded(fileNames[i]);
                             const parsed = datum ? JSON5.parse(datum) : null;
                             this.cache.storeData(basename, files[i].locale, parsed);
                             files[i].data = parsed;
@@ -386,10 +392,12 @@ class LocaleData {
                     const count = files.filter(file => !file.data).length;
                     if (count) {
                         const fileNames = files.map((file) => {
-                            return file.data ? undefined : Path.join(root, file.name);
+                            return (file.data || this.cache.wasLoaded(file)) ? undefined : Path.join(root, file.name);
                         });
                         return this.loader.loadFiles(fileNames, {sync}).then((data) => {
                             data.forEach((datum, i) => {
+                                // record that we already attempted to load this
+                                this.cache.fileLoaded(fileNames[i]);
                                 if (!files[i].data) {
                                     // null indicates we attempted to load the file, but
                                     // there was no data or the file did not exist
@@ -502,9 +510,13 @@ class LocaleData {
      * Ensure that the data for a particular locale is loaded into the
      * cache so that it is available for future synchronous use.<p>
      *
-     * If the method completes successfully, future callers are not required
-     * to call `loadData` asynchronously, even though the loader does not
-     * support synchronous loading. If the loader for the current platform
+     * If the method completes successfully, the data is cached in the
+     * same caching object as if the data was loaded with `loadData` method.
+     * Because of this, future callers are not required
+     * to call `loadData` asynchronously, even when the loader does not
+     * support synchronous loading because the data is already cached.
+     * The idea behind `ensureLocale` is to pre-load the data into the
+     * cache. If the loader for the current platform
      * supports synchronous loading, this method will return a Promise that
      * resolves to true immediately because `loadData` can return the data
      * on-demand and it does not need to be pre-loaded.<p>
@@ -517,33 +529,61 @@ class LocaleData {
      * later in the list.<p>
      *
      * The files named for the locale should contain the data of multiple
-     * types. The first level of properties in the data should be the basename
+     * types. The first level of properties in the data should be the sublocales
+     * of the locale. Within the sublocale property is the the basename
      * of the data. The properties within the basename property are the actual
      * locale data. For javascript files, the file should be a commonjs or
      * ESM style module that exports a function that takes no parameters.
-     * This function should return this type of data.<p>
+     * This function should return the type of data described above.<p>
      *
-     * Example file:
+     * Example file "de-DE.js":
      *
      * <code>
      * export default function getLocaleData() {
      *     return {
-     *         "phonefmt": {
-     *             "default": {
-     *                 "example": "(211) 555-1212",
+     *         "root": {
+     *             "phonefmt": {
+     *                 "default": {
+     *                     "example": "+1 211 555 1212",
+     *                     etc.
+     *                 }
+     *             }
+     *          },
+     *          "de": {
+     *             "localeinfo": {
+     *                 "clock": "24",
      *                 etc.
      *             }
-     *         },
-     *         "numplan": {
-     *             "region": "US",
-     *             "countryCode": "1",
-     *             etc.
+     *          },
+     *          "und-DE": {
+     *             "phonefmt": {
+     *                 "default": {
+     *                     "example": "030 12 34 56 78",
+     *                     etc.
+     *                 }
+     *             },
+     *             "numplan": {
+     *                 "region": "DE",
+     *                 "countryCode": "+49",
+     *                 etc.
+     *             }
      *          }
+     *          "de-DE": {}
      *     };
      * };
      * </code>
      *
-     * If the data is loaded successfully, the Promise will resolve to `true`.
+     * The idea behind the sublocales is that the data for each sublocale can
+     * be cached separately so that if a locale is requested that uses that
+     * sublocale, it is available. For example, if the "de-DE" locale is
+     * loaded with this method (as in the example above), the code may request
+     * locale data for the "de" locale or the "und-DE" locale separately and it
+     * will get the right data. Most
+     * usefully, the root locale is given separately, so any requested locale
+     * that does not match any of the sublocales can use the root locale data.<p>
+     *
+     * If the data is loaded successfully, the Promise returned from this method
+     * will resolve to `true`.
      * If there was an error loading the files, or if no files were found to
      * load, the Promise will resolve to `false`.<p>
      *
@@ -560,30 +600,47 @@ class LocaleData {
             throw "Invalid parameter to ensureLocale";
         }
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
+        if (locale && locale !== "root" && !loc.getLanguage()) {
+            loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+        }
         const spec = loc.getSpec();
 
         const loader = LoaderFactory();
-
+        const cache = DataCache.getDataCache();
         const subLocales = Utils.getSublocales(locale);
         const files = subLocales.map((spec) => {
-            return {
+            let ret = {
                 path: `${spec}.js`
             };
+            // check if the data is already available in the cache
+            const data = cache.getData(undefined, new Locale(spec));
+            if (data) {
+                ret.data = data;
+            }
+            return ret;
         }).concat(subLocales.map((spec) => {
+            // only need to check the cache for the js files otherwise
+            // we have the same data twice in the array
             return {
                 path: `${spec}.json`
             };
         }));
 
         const roots = LocaleData.getGlobalRoots();
+        if (roots.length === 0) {
+            roots.push("./locale");
+        }
         let promise = Promise.resolve(true);
         roots.forEach(root => {
             promise = promise.then(() => {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
-                    const fileNames = files.map(file => file.data ? undefined : Path.join(root, file.path));
+                    const fileNames = files.map(file =>
+                        (file.data || cache.wasLoaded(file)) ? undefined : Path.join(root, file.path)
+                    );
                     return loader.loadFiles(fileNames).then(data => {
                         return data.reduce((previous, datum, i) => {
+                            cache.fileLoaded(fileNames[i]);
                             if (!data[i]) return previous;
                             if (!files[i].data) {
                                 // null indicates we attempted to load the file, but

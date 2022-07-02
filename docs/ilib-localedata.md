@@ -11,14 +11,7 @@ function. This allows packagers like webpack
 to include that data directly into the bundle.<p></p>
 <p>Locale data instances should not be created directly. Instead,
 use the <code>getLocaleData()</code> factory method, which returns a locale
-data singleton specific to the caller&#39;s package. The caller must
-pass in its unique package name and the path to the module so
-that the locale data class can load data from it.<p></p>
-<p>Any classes within
-the same package can share the same locale data. For example, within
-the ilib-phone package, both the phone number parser and formatter
-need information about numbering plans, so they can share the
-locale data about those plans.<p></p>
+data singleton.<p></p>
 <p>Packages should not attempt to load any
 locale data of another package. The other package may change what
 data it stores, or how it is stored or encoded, without notice,
@@ -81,7 +74,7 @@ root for the existance of that data, and skip directly on to the next root.<p></
 locale. There are two styles of locale data:</p>
 <ol>
 <li>Locale data for an entire locale at once
-<li>Locale data split into constiuent locale parts and data types
+<li>Locale data split into constituent locale parts and data types
 </ol>
 
 <p>Files named for the entire locale appear in the top of the root and have
@@ -189,7 +182,7 @@ asynchronous mode, because the locale data they need is already cached.</p>
 ## Functions
 
 <dl>
-<dt><a href="#getLocaleData">getLocaleData(pkg, options)</a> ⇒ <code><a href="#LocaleData">LocaleData</a></code> | <code>undefined</code></dt>
+<dt><a href="#getLocaleData">getLocaleData(options)</a> ⇒ <code><a href="#LocaleData">LocaleData</a></code> | <code>undefined</code></dt>
 <dd><p>Return the locale data singleton for a package that needs data.</p>
 </dd>
 <dt><a href="#clearLocaleData">clearLocaleData()</a></dt>
@@ -213,15 +206,7 @@ to include that data directly into the bundle.<p>
 
 Locale data instances should not be created directly. Instead,
 use the `getLocaleData()` factory method, which returns a locale
-data singleton specific to the caller's package. The caller must
-pass in its unique package name and the path to the module so
-that the locale data class can load data from it.<p>
-
-Any classes within
-the same package can share the same locale data. For example, within
-the ilib-phone package, both the phone number parser and formatter
-need information about numbering plans, so they can share the
-locale data about those plans.<p>
+data singleton.<p>
 
 Packages should not attempt to load any
 locale data of another package. The other package may change what
@@ -293,7 +278,7 @@ locale. There are two styles of locale data:
 
 <ol>
 <li>Locale data for an entire locale at once
-<li>Locale data split into constiuent locale parts and data types
+<li>Locale data split into constituent locale parts and data types
 </ol>
 
 Files named for the entire locale appear in the top of the root and have
@@ -420,7 +405,7 @@ asynchronous mode, because the locale data they need is already cached.
         * [.clearGlobalRoots()](#LocaleData.clearGlobalRoots)
         * [.ensureLocale(locale)](#LocaleData.ensureLocale) ⇒ <code>Promise</code>
         * [.checkCache(packageName, locale, basename)](#LocaleData.checkCache) ⇒ <code>boolean</code>
-        * [.cacheData(packageName, data)](#LocaleData.cacheData)
+        * [.cacheData(data)](#LocaleData.cacheData)
         * [.clearCache()](#LocaleData.clearCache)
 
 
@@ -488,6 +473,10 @@ or have arrays replace each other. If true, arrays in child objects replace the 
 objects. When false, the arrays in child objects are concatenated with the arrays in parent objects.
 <li><i>returnOne</i> - return only the first file found. Do not merge many locale data files into one.
 <li><i>sync</i> - boolean. Whether or not to load the data synchronously
+<li><i>mostSpecific</i> - boolean. When true, only the most specific locale data is returned. Multiple
+locale data files are not merged into one. This is similar to returnOne except this one retuns the last
+file, which is specific to the full locale, rather than the first one found which is specific to the
+least specific locale (often the root).
 </ul>
 
 **Kind**: instance method of [<code>LocaleData</code>](#LocaleData)  
@@ -573,9 +562,13 @@ Clear the list of roots shared by all instances of LocaleData.
 Ensure that the data for a particular locale is loaded into the
 cache so that it is available for future synchronous use.<p>
 
-If the method completes successfully, future callers are not required
-to call `loadData` asynchronously, even though the loader does not
-support synchronous loading. If the loader for the current platform
+If the method completes successfully, the data is cached in the
+same caching object as if the data was loaded with `loadData` method.
+Because of this, future callers are not required
+to call `loadData` asynchronously, even when the loader does not
+support synchronous loading because the data is already cached.
+The idea behind `ensureLocale` is to pre-load the data into the
+cache. If the loader for the current platform
 supports synchronous loading, this method will return a Promise that
 resolves to true immediately because `loadData` can return the data
 on-demand and it does not need to be pre-loaded.<p>
@@ -588,13 +581,61 @@ from roots earlier in the list take precedence over data from roots
 later in the list.<p>
 
 The files named for the locale should contain the data of multiple
-types. The first level of properties in the data should be the basename
-for the type of data, and the value of that property is the actual
+types. The first level of properties in the data should be the sublocales
+of the locale. Within the sublocale property is the the basename
+of the data. The properties within the basename property are the actual
 locale data. For javascript files, the file should be a commonjs or
 ESM style module that exports a function that takes no parameters.
-This function should return this type of data.<p>
+This function should return the type of data described above.<p>
 
-If the data is loaded successfully, the Promise will resolve to `true`.
+Example file "de-DE.js":
+
+<code>
+export default function getLocaleData() {
+    return {
+        "root": {
+            "phonefmt": {
+                "default": {
+                    "example": "+1 211 555 1212",
+                    etc.
+                }
+            }
+         },
+         "de": {
+            "localeinfo": {
+                "clock": "24",
+                etc.
+            }
+         },
+         "und-DE": {
+            "phonefmt": {
+                "default": {
+                    "example": "030 12 34 56 78",
+                    etc.
+                }
+            },
+            "numplan": {
+                "region": "DE",
+                "countryCode": "+49",
+                etc.
+            }
+         }
+         "de-DE": {}
+    };
+};
+</code>
+
+The idea behind the sublocales is that the data for each sublocale can
+be cached separately so that if a locale is requested that uses that
+sublocale, it is available. For example, if the "de-DE" locale is
+loaded with this method (as in the example above), the code may request
+locale data for the "de" locale or the "und-DE" locale separately and it
+will get the right data. Most
+usefully, the root locale is given separately, so any requested locale
+that does not match any of the sublocales can use the root locale data.<p>
+
+If the data is loaded successfully, the Promise returned from this method
+will resolve to `true`.
 If there was an error loading the files, or if no files were found to
 load, the Promise will resolve to `false`.<p>
 
@@ -655,7 +696,7 @@ using a call to `cacheData`.
 
 <a name="LocaleData.cacheData"></a>
 
-### LocaleData.cacheData(packageName, data)
+### LocaleData.cacheData(data)
 The prepopulated data should have the following structure:
 
 <pre>
@@ -685,7 +726,6 @@ names at the same time. For example, it may contain data about phone number pars
 
 | Param | Type | Description |
 | --- | --- | --- |
-| packageName | <code>string</code> | name of the package for this data |
 | data | <code>Object</code> | the locale date in the above format |
 
 
@@ -703,7 +743,7 @@ to guarantee that the cache is clear before starting a new test.
 
 <a name="getLocaleData"></a>
 
-## getLocaleData(pkg, options) ⇒ [<code>LocaleData</code>](#LocaleData) \| <code>undefined</code>
+## getLocaleData(options) ⇒ [<code>LocaleData</code>](#LocaleData) \| <code>undefined</code>
 Return the locale data singleton for a package that needs data.
 
 **Kind**: global function  
@@ -713,7 +753,6 @@ or if the package name was not specified
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pkg | <code>string</code> | name of the package that needs a locale data object. |
 | options | <code>Object</code> | Options for the construction of the LocaleData instance. See the docs for the LocaleData constructor for details as to what this can contain. |
 
 

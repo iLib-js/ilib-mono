@@ -1660,5 +1660,44 @@ export const testLocaleData = {
             });
             test.done();
         });
+    },
+
+    testLocaleDataEnsureLocaleJsonRightDataSyncNoRoots: function(test) {
+        setPlatform();
+
+        // only do this test on browsers with webpack -- nodejs always
+        // requires a global root so we know where to load files from
+        if (getPlatform() !== "browser") {
+            test.done();
+            return;
+        }
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.ensureLocale("ja-JP").then(result => {
+            test.ok(result);
+
+            const locData = new LocaleData({
+                path: "./test/files3"
+            });
+
+            // can load synchronously after the ensureLocale
+            // is done, even though the loader does not support
+            // synchronous operation because the data is cached
+            let data = locData.loadData({
+                sync: true,
+                locale: "ja-JP",
+                basename: "info"
+            });
+
+            test.deepEqual(data, {
+                "a": "b ja",
+                "c": "d ja"
+            });
+            test.done();
+        });
     }
+
 };

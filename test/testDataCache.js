@@ -378,5 +378,76 @@ export const testDataCache = {
         test.equal(typeof(data), 'undefined');
 
         test.done();
+    },
+
+    testDataCacheFileLoaded: function(test) {
+        test.expect(2);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+
+        test.ok(!cache.wasLoaded("a"));
+
+        cache.fileLoaded("a");
+
+        test.ok(cache.wasLoaded("a"));
+
+        test.done();
+    },
+
+    testDataCacheFileLoadedClear: function(test) {
+        test.expect(3);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+
+        test.ok(!cache.wasLoaded("a"));
+
+        cache.fileLoaded("a");
+
+        test.ok(cache.wasLoaded("a"));
+
+        cache.clearData();
+        test.ok(!cache.wasLoaded("a"));
+
+        test.done();
+    },
+
+    testDataCacheFileLoadedEmpty: function(test) {
+        test.expect(1);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+
+        cache.fileLoaded("");
+
+        test.ok(!cache.wasLoaded(""));
+
+        test.done();
+    },
+
+    testDataCacheFileLoadedUndefined: function(test) {
+        test.expect(1);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+
+        cache.fileLoaded();
+
+        test.ok(!cache.wasLoaded());
+
+        test.done();
+    },
+
+    testDataCacheFileLoadedNonString: function(test) {
+        test.expect(3);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+
+        cache.fileLoaded(2);
+        cache.fileLoaded(true);
+        cache.fileLoaded(function() { return true; });
+
+        test.ok(!cache.wasLoaded(2));
+        test.ok(!cache.wasLoaded(true));
+        test.ok(!cache.wasLoaded(function() { return true; }));
+
+        test.done();
     }
 };
