@@ -101,7 +101,7 @@ class WebpackLoader extends Loader {
      * could not be loaded.
      */
     loadFile(pathName, options) {
-        if (!pathName) return undefined;
+        if (!pathName || typeof(pathName) !== 'string') return undefined;
         if (options && options.sync) {
             throw "The webpack loader does not support synchronous loading of data.";
         }
