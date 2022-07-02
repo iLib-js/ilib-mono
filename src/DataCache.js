@@ -67,6 +67,7 @@ class DataCache {
 
         this.count = 0;
         this.data = {};
+        this.loaded = new Set();
     }
 
     /**
@@ -104,9 +105,10 @@ class DataCache {
     }
 
     /**
-     * Get locale data from the cache or information about data that may be missing.<p>
+     * Get locale data from the cache or information about data that may be missing.
+     * If the basename is missing, get all the data for the locale.
      *
-     * @param {string} basename the base name of this type of data
+     * @param {string|undefined} basename the base name of this type of data
      * @param {Locale} locale the full or partial locale for this particular data
      * @returns {Object|null|undefined} the requested data, or null to explicitly indicate
      * that no data of this type exists for this locale, or undefined to indicate that the
@@ -119,13 +121,13 @@ class DataCache {
             return;
         }
 
-        if ( !this.data[basename] ) {
+        let localeSpec = getLocaleSpec(locale);
+
+        if ( !this.data[localeSpec] ) {
             return undefined;
         }
 
-        let localeSpec = getLocaleSpec(locale);
-
-        return this.data[basename][localeSpec];
+        return basename ? this.data[localeSpec][basename] : this.data[localeSpec];
     };
 
     /**
@@ -145,13 +147,14 @@ class DataCache {
             return;
         }
 
-        if ( !this.data[basename] ) {
-            this.data[basename] = {};
-        }
-
         let localeSpec = getLocaleSpec(locale);
 
-        if (this.data[basename][localeSpec]) {
+        if ( !this.data[localeSpec] ) {
+            this.data[localeSpec] = {};
+        }
+
+
+        if (this.data[localeSpec][basename]) {
             if (typeof(data) === 'undefined') {
                 // setting to undefined is the same as removing
                 this.count--;
@@ -160,7 +163,7 @@ class DataCache {
             this.count++;
         }
 
-        this.data[basename][localeSpec] = data;
+        this.data[localeSpec][basename] = data;
     }
 
     /**
@@ -193,6 +196,23 @@ class DataCache {
         this.logger.trace(`The data cache has been cleared.`);
         this.count = 0;
         this.data = {};
+        this.loaded.clear();
+    }
+
+    /**
+     * Record that the given file name has already been loaded.
+     */
+    fileLoaded(fileName) {
+        if (!fileName || typeof(fileName) !== "string") return;
+        this.loaded.add(fileName);
+    }
+
+    /**
+     * Return true if the file has already been loaded before.
+     */
+    wasLoaded(fileName) {
+        if (!fileName || typeof(fileName) !== "string") return false;
+        return this.loaded.has(fileName);
     }
 }
 
