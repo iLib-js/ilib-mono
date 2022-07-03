@@ -26,6 +26,7 @@ import { JSUtils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
+import json5 from 'json5';
 
 import walk from './walk.mjs';
 import scan from './scan.mjs';
@@ -55,10 +56,14 @@ const optionConfig = {
         "default": "en-AU,en-CA,en-GB,en-IN,en-NG,en-PH,en-PK,en-US,en-ZA,de-DE,fr-CA,fr-FR,es-AR,es-ES,es-MX,id-ID,it-IT,ja-JP,ko-KR,pt-BR,ru-RU,tr-TR,vi-VN,zxx-XX,zh-Hans-CN,zh-Hant-HK,zh-Hant-TW,zh-Hans-SG",
         help: "Locales you want your webapp to support. Value is a comma-separated list of BCP-47 style locale tags. Default: the top 20 locales on the internet by traffic."
     },
+    localefile: {
+        short: "x",
+        help: "Name a json file that contains an array that lists the Locales you want your webapp to support. The json should contain a `locales` property which is an array of BCP-47 style locale tags. No default."
+    },
     module: {
         short: "m",
         multi: true,
-        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add." 
+        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add."
     },
     quiet: {
         short: "q",
@@ -104,9 +109,20 @@ if (paths.length === 0) {
     paths.push(".");
 }
 
-if (options.opt.locales) {
+if (options.opt.localefile) {
+    const json = json5.parse(fs.readFileSync(options.opt.localefile, "utf-8"));
+    options.opt.locales = json.locales;
+} else if (options.opt.locales) {
     options.opt.locales = options.opt.locales.split(/,/g);
 }
+// normalize the locale specs
+options.opt.locales = options.opt.locales.map(spec => {
+    let loc = new Locale(spec);
+    if (!loc.getLanguage()) {
+        loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+    }
+    return loc.getSpec();
+});
 if (!options.opt.format) {
     options.opt.format = "js";
 }
@@ -155,6 +171,13 @@ ilibModules.forEach((module) => {
     });
 });
 
+const spaces = "                                                                                                                 ";
+function indent(str, howMany) {
+    return str.split(/\n/g).map(line => {
+        return spaces.substring(0, howMany*4) + line;
+    }).join("\n");
+};
+
 promise.then(result => {
     //console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
 
@@ -170,7 +193,10 @@ promise.then(result => {
                 JSON.stringify(contents, undefined, 4);
             switch (options.opt.format) {
                 case 'js':
-                    contentStr = `export default const data = ${contentStr};`;
+                    contentStr =
+                        "export default function getLocaleData() {\n" +
+                        `    return ${indent(contentStr, 1)};\n` +
+                        "};";
                     break;
                 case 'cjs':
                     contentStr = `module.exports = ${contentStr};`;
