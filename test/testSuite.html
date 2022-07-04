@@ -22,12 +22,15 @@ limitations under the License.
     <title>Test Suite</title>
     <link rel="stylesheet" href="./nodeunit/nodeunit.css" type="text/css" />
     <script src="./nodeunit/nodeunit.js"></script>
-    <script src="./env-test.js"></script>
+    <script>
+    var log4js = null;
+    </script>
+    <script src="./ilib-localeinfo-test.js"></script>
   </head>
   <body>
     <h1 id="nodeunit-header">iLib All Test Suites</h1>
     <script>
-     nodeunit.run(ilibEnvTest);
+     nodeunit.run(ilibLocaleInfoTest);
     </script>
   </body>
 </html>

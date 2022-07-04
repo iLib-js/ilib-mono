@@ -1,7 +1,7 @@
 /*
- * webpack.config.js - webpack configuration script for ilib-env
+ * webpack.config.js - webpack configuration script for testing ilib-localeinfo
  *
- * Copyright © 2021, JEDLSoft
+ * Copyright © 2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,36 +24,98 @@ module.exports = {
     entry: "./test/testSuiteWeb.js",
     output: {
         path: path.resolve(__dirname, 'test'),
-        filename: "env-test.js",
+        filename: "ilib-localeinfo-test.js",
         library: {
-            name: "ilibEnvTest",
+            name: "ilibLocaleInfoTest",
             type: "umd"
         }
     },
     externals: {
-        'nodeunit': 'nodeunit'
+        "./NodeLoader": "NodeLoader",
+        "./QtLoader": "QtLoader",
+        "./RhinoLoader": "RhinoLoader",
+        "./NashornLoader": "NashornLoader",
+        "./RingoLoader": "RingoLoader",
+        "log4js": "log4js",
+        "nodeunit": "nodeunit"
     },
+    devtool: false,
     module: {
         rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: [
-                            //"add-module-exports",
-                            "@babel/plugin-transform-regenerator"
-                        ]
+                include: /node_modules\/ilib-/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            minified: false,
+                            compact: false,
+                            presets: [[
+                                '@babel/preset-env',
+                                {
+                                    useBuiltIns: 'usage',
+                                    corejs: {
+                                        version: 3,
+                                        proposals: true
+                                    }
+                                }
+                            ]],
+                            options: {
+                                "exclude": [
+                                    // \\ for Windows, \/ for Mac OS and Linux
+                                    /node_modules[\\\/]core-js/,
+                                    /node_modules[\\\/]webpack[\\\/]buildin/,
+                                ],
+                            },
+                            plugins: [
+                                "add-module-exports",
+                                "@babel/plugin-transform-regenerator"
+                            ]
+                        }
+                    },
+                    { loader: '@open-wc/webpack-import-meta-loader' }
+                ]
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            minified: false,
+                            compact: false,
+                            presets: [[
+                                '@babel/preset-env',
+                                {
+                                    useBuiltIns: 'usage',
+                                    corejs: {
+                                        version: 3,
+                                        proposals: true
+                                    }
+                                }
+                            ]],
+                            plugins: [
+                                "add-module-exports",
+                                "@babel/plugin-transform-regenerator"
+                            ]
+                        }
                     }
-                }
+                ]
             }
         ]
     },
     resolve: {
         fallback: {
             buffer: require.resolve("buffer")
+        },
+        alias: {
+            "calling-module": "../../../assembled"
         }
+    },
+    optimization: {
+        minimize: false
     }
 };

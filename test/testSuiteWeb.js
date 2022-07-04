@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-var tests = [
-    require('./testLocaleInfo.js'),
-    require('./testLocaleInfoAsync.js')
-];
+import { testLocaleInfo } from './testLocaleInfo';
+import { testLocaleInfoAsync } from './testLocaleInfoAsync';
 
-module.exports = tests;
+export const tests = [
+    testLocaleInfo,
+    testLocaleInfoAsync
+];

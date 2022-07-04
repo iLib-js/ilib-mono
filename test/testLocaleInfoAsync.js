@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import LocaleInfo from '../lib/index';
+import LocaleInfo from '../src/index';
 import { setPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader, Loader } from 'ilib-loader';
 import MockLoader from './MockLoader';
 
-module.exports.testlocaleinfoasync = {
+export const testLocaleInfoAsync = {
     testLocaleInfoAsyncConstructor: function(test) {
         test.expect(5);
         LocaleInfo.create(undefined).then((info) => {

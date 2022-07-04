@@ -25,19 +25,6 @@ import { Utils, Path } from 'ilib-common';
 import { getPlatform } from 'ilib-env';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 
-function localeDir() {
-    switch (getPlatform()) {
-        case "nodejs":
-            return Path.join(Path.dirname(module.id), "../locale");
-
-        //case "browser":
-        //    return Path.join(Path.dirname(import.meta.url), "../locale");
-
-        default:
-            return "../locale";
-    }
-}
-
 /**
  * @class
  * Create a new locale info instance. Locale info instances give information about
@@ -108,24 +95,26 @@ class LocaleInfo {
                 break;
         }
 
-        var manipulateLocale = ["pa-PK", "ha-CM", "ha-SD"];
-        if (manipulateLocale.indexOf(this.locale.getSpec()) > -1) {
-            const lm = new LocaleMatcher({
-                locale: this.locale.getSpec(),
-                sync
-            });
-            this.locale = new Locale(lm.getLikelyLocale());
+        if (this.locale && this.locale.getSpec() !== "root" && !this.locale.getLanguage()) {
+            this.locale = new Locale("und", this.locale.getRegion(), this.locale.getVariant(), this.locale.getScript());
         }
 
-        const locData = getLocaleData("LocaleInfo", {
+        const locData = getLocaleData({
             basename: "localeinfo",
-            path: localeDir(),
+            path: this.localeDir(),
             sync
         });
 
         // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache("LocaleInfo", this.locale.getSpec(), "localeinfo")) {
-            throw new Exception("Locale data not available");
+        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "localeinfo")) {
+            const lm = new LocaleMatcher({
+                locale: this.locale.getSpec(),
+                sync: true
+            });
+            this.locale = new Locale(lm.getLikelyLocale());
+            if (!LocaleData.checkCache(this.locale.getSpec(), "localeinfo")) {
+                throw "Locale data not available";
+            }
         }
 
         if (sync) {
@@ -202,6 +191,19 @@ class LocaleInfo {
             "weekendEnd": 0,
             "weekendStart": 6
         };
+    }
+
+    localeDir() {
+        switch (getPlatform()) {
+            case "nodejs":
+                return Path.join(Path.dirname(module.id), "../locale");
+    
+            case "browser":
+                return "../assembled";
+    
+            default:
+                return "../locale";
+        }
     }
 
     /**
@@ -307,7 +309,7 @@ class LocaleInfo {
      * @returns {string} the decimal separator char
      */
     getDecimalSeparator() {
-        return this.info.numfmt.decimalChar;
+        return this.info.numfmt && this.info.numfmt.decimalChar;
     }
 
     /**
@@ -324,7 +326,7 @@ class LocaleInfo {
      * @returns {string} the grouping separator char
      */
     getGroupingSeparator() {
-        return this.info.numfmt.groupChar;
+        return this.info.numfmt && this.info.numfmt.groupChar;
     }
 
     /**
@@ -344,7 +346,7 @@ class LocaleInfo {
      * @returns {number} the number of digits in a primary grouping, or 0 for no grouping
      */
     getPrimaryGroupingDigits() {
-        return (typeof(this.info.numfmt.prigroupSize) !== 'undefined' && this.info.numfmt.prigroupSize) || 0;
+        return (this.info.numfmt && typeof(this.info.numfmt.prigroupSize) !== 'undefined' && this.info.numfmt.prigroupSize) || 0;
     }
 
     /**
@@ -363,7 +365,7 @@ class LocaleInfo {
      * secondary grouping.
      */
     getSecondaryGroupingDigits() {
-        return this.info.numfmt.secgroupSize || 0;
+        return (this.info.numfmt && this.info.numfmt.secgroupSize) || 0;
     }
 
     /**
@@ -371,7 +373,7 @@ class LocaleInfo {
      * @returns {string} the format template for formatting percentages
      */
     getPercentageFormat() {
-        return this.info.numfmt.pctFmt;
+        return this.info.numfmt && this.info.numfmt.pctFmt;
     }
 
     /**
@@ -380,7 +382,7 @@ class LocaleInfo {
      * @returns {string} the format template for formatting percentages
      */
     getNegativePercentageFormat() {
-        return this.info.numfmt.negativepctFmt;
+        return this.info.numfmt && this.info.numfmt.negativepctFmt;
     }
 
     /**
@@ -388,7 +390,7 @@ class LocaleInfo {
      * @returns {string} the symbol used for percentages in this locale
      */
     getPercentageSymbol() {
-        return this.info.numfmt.pctChar || "%";
+        return (this.info.numfmt && this.info.numfmt.pctChar) || "%";
     }
 
     /**
@@ -396,7 +398,7 @@ class LocaleInfo {
      * @returns {string} the symbol used for exponential in this locale
      */
     getExponential() {
-        return this.info.numfmt.exponential;
+        return this.info.numfmt && this.info.numfmt.exponential;
     }
 
     /**
@@ -420,7 +422,7 @@ class LocaleInfo {
      * @returns {string} the format template for formatting negative numbers
      */
     getNegativeNumberFormat() {
-        return this.info.numfmt.negativenumFmt;
+        return this.info.numfmt && this.info.numfmt.negativenumFmt;
     }
 
     /**
@@ -431,7 +433,7 @@ class LocaleInfo {
      * @returns {Object} an object containing the format templates for currencies
      */
     getCurrencyFormats() {
-        return this.info.numfmt.currencyFormats;
+        return this.info.numfmt && this.info.numfmt.currencyFormats;
     }
 
     /**
@@ -473,7 +475,7 @@ class LocaleInfo {
      * @returns {string|undefined} the digits used in the default script
      */
     getDigits() {
-        return this.info.numfmt.digits;
+        return this.info.numfmt && this.info.numfmt.digits;
     }
 
     /**
@@ -481,7 +483,7 @@ class LocaleInfo {
      * @returns {string|undefined} the digits used in the default script
      */
     getNativeDigits() {
-        return (this.info.numfmt.useNative && this.info.numfmt.digits) || (this.info.native_numfmt && this.info.native_numfmt.digits);
+        return (this.info.numfmt && this.info.numfmt.useNative && this.info.numfmt.digits) || (this.info.native_numfmt && this.info.native_numfmt.digits);
     }
 
     /**
@@ -495,7 +497,7 @@ class LocaleInfo {
      * locale, or "halfdown" if the locale does not override the default
      */
     getRoundingMode() {
-        return this.info.numfmt.roundingMode;
+        return this.info.numfmt ? this.info.numfmt.roundingMode : "halfdown";
     }
 
     /**
