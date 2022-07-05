@@ -232,10 +232,17 @@ be localized, and the loctool will continue on to the next file.
 
 ## License
 
+Copyright © 2019, 2022 JEDLSoft
+
 This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.6.2
+
+- update dependencies
+- remove dependency on log4js. Get the logger from loctool instead.
 
 ### v1.6.1
 

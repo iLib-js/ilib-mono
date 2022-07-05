@@ -25,8 +25,6 @@ var log4js = require("log4js");
 var mm = require("micromatch");
 var POFile = require("./POFile.js");
 
-var logger = log4js.getLogger("loctool.plugin.POFileType");
-
 var POFileType = function(project) {
     this.type = "po";
     this.datatype = "po";
@@ -36,6 +34,7 @@ var POFileType = function(project) {
 
     this.extensions = [ ".po", ".pot" ];
 
+    this.logger = this.API.getLogger("loctool.plugin.POFileType");
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
@@ -108,7 +107,7 @@ POFileType.prototype.isValidLocale = function(locale) {
  * otherwise
  */
 POFileType.prototype.handles = function(pathName) {
-    logger.debug("POFileType handles " + pathName + "?");
+    this.logger.debug("POFileType handles " + pathName + "?");
     var ret = false;
     var normalized = pathName;
 
@@ -137,7 +136,7 @@ POFileType.prototype.handles = function(pathName) {
             }
         }
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 

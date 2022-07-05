@@ -27,8 +27,6 @@ var isAlnum = require("ilib/lib/isAlnum.js");
 var Locale = require("ilib/lib/Locale.js");
 var pluralForms = require("./pluralforms.json");
 
-var logger = log4js.getLogger("loctool.plugin.POFile");
-
 function escapeQuotes(str) {
     if (!str) return "";
     return str ? str.replace(/"/g, '\\"') : str;
@@ -65,6 +63,7 @@ var POFile = function(options) {
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.mapping = this.type.getMapping(this.pathName);
+    this.logger = this.API.getLogger("loctool.plugin.POFile");
 
     this.localeSpec = options.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
     this.locale = new Locale(this.localeSpec);
@@ -242,7 +241,7 @@ var rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
  * @param {String} data the string to parse
  */
 POFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
 
     this.data = data;
     this.index = 0;
@@ -459,7 +458,7 @@ POFile.prototype.parse = function(data) {
  * project's translation set.
  */
 POFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -468,8 +467,8 @@ POFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
@@ -489,7 +488,7 @@ POFile.prototype.getTranslationSet = function() {
  */
 POFile.prototype.write = function() {
     var pathName = this.pathName || this.getLocalizedPath(this.localeSpec);
-    logger.debug("Writing file " + pathName);
+    this.logger.debug("Writing file " + pathName);
     var p = path.join(this.project.target, pathName);
     var d = path.dirname(p);
     this.API.utils.makeDirs(d);
@@ -506,10 +505,10 @@ POFile.prototype.write = function() {
  * @param {Resource} res a resource to add to this file
  */
 POFile.prototype.addResource = function(res) {
-    logger.trace("POFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    this.logger.trace("POFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
     var resLocale = res.getTargetLocale();
     if (res && res.getProject() === this.project.getProjectId()) {
-        logger.trace("correct project. Adding.");
+        this.logger.trace("correct project. Adding.");
         if (resLocale && resLocale !== this.localeSpec) {
             // This one is not the right locale, so add it as a source-only resource
             // so that it can be a placeholder for the real translation later on
@@ -533,12 +532,12 @@ POFile.prototype.addResource = function(res) {
     } else {
         if (res) {
             if (res.getProject() !== this.project.getProjectId()) {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
             } else {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.localeSpec);
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.localeSpec);
             }
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -687,7 +686,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                             translatedText = translated.getTarget();
                         } else {
                             if (this.type && this.API.utils.containsActualText(text)) {
-                                logger.trace("New string found: " + text);
+                                this.logger.trace("New string found: " + text);
                                 this.type.newres.add(this.API.newResource({
                                     resType: "string",
                                     project: r.getProject(),
@@ -753,7 +752,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                             translatedPlurals = translated.getTargetPlurals();
                         } else {
                             if (this.type) {
-                                logger.trace("New string found: " + text);
+                                this.logger.trace("New string found: " + text);
                                 this.type.newres.add(this.API.newResource({
                                     resType: "plural",
                                     project: r.getProject(),
@@ -810,7 +809,7 @@ POFile.prototype.localize = function(translations, locales) {
             var l = new Locale(locales[i]);
             if (!l.getVariant()) {
                 var pathName = this.getLocalizedPath(locales[i]);
-                logger.debug("Writing file " + pathName);
+                this.logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
                 this.API.utils.makeDirs(d);
