@@ -197,10 +197,10 @@ class LocaleInfo {
         switch (getPlatform()) {
             case "nodejs":
                 return Path.join(Path.dirname(module.id), "../locale");
-    
+
             case "browser":
                 return "../assembled";
-    
+
             default:
                 return "../locale";
         }
