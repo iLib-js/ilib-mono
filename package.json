@@ -1,6 +1,6 @@
 {
     "name": "ilib-assemble",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "./src/index.mjs",
     "bin": {
         "ilib-assemble": "./src/index.mjs",
