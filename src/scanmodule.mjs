@@ -90,14 +90,16 @@ const require = createRequire(import.meta.url);
  * data, and return it in the format documented above
  */
 function scanModule(moduleName, options) {
-    let resolved;
-    try {
-        resolved = require.resolve(moduleName);
-        const i = resolved.indexOf(moduleName);
-        resolved = resolved.substring(0, i + moduleName.length);
-    } catch (e) {
-        console.log(`    Error: could not find module ${moduleName}`);
-        return Promise.resolve(false);
+    let resolved = moduleName;
+    if ( moduleName[0] !== '.' && moduleName[0] !== '/') {
+        try {
+            resolved = require.resolve(moduleName);
+            const i = resolved.indexOf(moduleName);
+            resolved = resolved.substring(0, i + moduleName.length);
+        } catch (e) {
+            console.log(`    Error: could not find module ${moduleName}`);
+            return Promise.resolve(false);
+        }
     }
 
     if (!existsSync(path.join(resolved, "assemble.mjs")) || !existsSync(path.join(resolved, "locale"))) {
