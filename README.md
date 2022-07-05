@@ -177,6 +177,18 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.0
+
+- added the ability to add a nodule to the list of modules to include the locale
+  data for. This is often used to include the locale data of the current
+  package for testing.
+- added the ability to get the list of locales to process from a json file
+- locale data in js files now get output as a function that returns the data. That
+  way you don't need any babel plugins to process exported const values.
+  (ie. you don't need babel-plugin-transform-add-module-exports)
+- only resolve paths to modules when they are module references. That is, they are
+  not relative to the current dir nor are they absolute paths
+
 ### v1.0.0
 
 - initial version
