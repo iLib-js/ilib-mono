@@ -54,7 +54,8 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.14.0"
+        "ilib": "^14.14.0",
+        "micromatch": "^4.0.5"
     },
     "devDependencies": {
         "assertextras": "^1.1.0",

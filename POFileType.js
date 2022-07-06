@@ -1,7 +1,7 @@
 /*
  * POFileType.js - Represents a collection of po files
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 var mm = require("micromatch");
 var POFile = require("./POFile.js");
 

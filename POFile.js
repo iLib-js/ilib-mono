@@ -1,7 +1,7 @@
 /*
  * POFile.js - plugin to extract resources from an PO file
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021-2022, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var ilib = require("ilib");
 var isSpace = require("ilib/lib/isSpace.js");
 var isAlpha = require("ilib/lib/isAlpha.js");
