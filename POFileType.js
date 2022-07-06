@@ -74,6 +74,7 @@ POFileType.prototype.getMapping = function(pathName) {
     if (typeof(pathName) === "undefined") {
         return undefined;
     }
+    pathName = path.normalize(pathName);
     var poSettings = this.project.settings.po;
     var mappings = (poSettings && poSettings.mappings) ? poSettings.mappings : defaultMappings;
     var patterns = Object.keys(mappings);
