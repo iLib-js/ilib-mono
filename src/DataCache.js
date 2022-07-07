@@ -198,16 +198,18 @@ class DataCache {
 
     /**
      * Record that the given file name has already been loaded.
+     * @param {string} fileName the path to the file that has been loaded
      */
-    fileLoaded(fileName) {
+    markFileAsLoaded(fileName) {
         if (!fileName || typeof(fileName) !== "string") return;
         this.loaded.add(fileName);
     }
 
     /**
      * Return true if the file has already been loaded before.
+     * @return {boolean} true if the file has already been loaded
      */
-    wasLoaded(fileName) {
+    isLoaded(fileName) {
         if (!fileName || typeof(fileName) !== "string") return false;
         return this.loaded.has(fileName);
     }

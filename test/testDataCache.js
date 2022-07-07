@@ -380,73 +380,73 @@ export const testDataCache = {
         test.done();
     },
 
-    testDataCacheFileLoaded: function(test) {
+    testDataCachemarkFileAsLoaded: function(test) {
         test.expect(2);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.ok(!cache.wasLoaded("a"));
+        test.ok(!cache.isLoaded("a"));
 
-        cache.fileLoaded("a");
+        cache.markFileAsLoaded("a");
 
-        test.ok(cache.wasLoaded("a"));
+        test.ok(cache.isLoaded("a"));
 
         test.done();
     },
 
-    testDataCacheFileLoadedClear: function(test) {
+    testDataCachemarkFileAsLoadedClear: function(test) {
         test.expect(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.ok(!cache.wasLoaded("a"));
+        test.ok(!cache.isLoaded("a"));
 
-        cache.fileLoaded("a");
+        cache.markFileAsLoaded("a");
 
-        test.ok(cache.wasLoaded("a"));
+        test.ok(cache.isLoaded("a"));
 
         cache.clearData();
-        test.ok(!cache.wasLoaded("a"));
+        test.ok(!cache.isLoaded("a"));
 
         test.done();
     },
 
-    testDataCacheFileLoadedEmpty: function(test) {
+    testDataCachemarkFileAsLoadedEmpty: function(test) {
         test.expect(1);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.fileLoaded("");
+        cache.markFileAsLoaded("");
 
-        test.ok(!cache.wasLoaded(""));
+        test.ok(!cache.isLoaded(""));
 
         test.done();
     },
 
-    testDataCacheFileLoadedUndefined: function(test) {
+    testDataCachemarkFileAsLoadedUndefined: function(test) {
         test.expect(1);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.fileLoaded();
+        cache.markFileAsLoaded();
 
-        test.ok(!cache.wasLoaded());
+        test.ok(!cache.isLoaded());
 
         test.done();
     },
 
-    testDataCacheFileLoadedNonString: function(test) {
+    testDataCachemarkFileAsLoadedNonString: function(test) {
         test.expect(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.fileLoaded(2);
-        cache.fileLoaded(true);
-        cache.fileLoaded(function() { return true; });
+        cache.markFileAsLoaded(2);
+        cache.markFileAsLoaded(true);
+        cache.markFileAsLoaded(function() { return true; });
 
-        test.ok(!cache.wasLoaded(2));
-        test.ok(!cache.wasLoaded(true));
-        test.ok(!cache.wasLoaded(function() { return true; }));
+        test.ok(!cache.isLoaded(2));
+        test.ok(!cache.isLoaded(true));
+        test.ok(!cache.isLoaded(function() { return true; }));
 
         test.done();
     }

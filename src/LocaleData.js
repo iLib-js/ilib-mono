@@ -358,14 +358,14 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map((file) => {
-                        return (file.data || this.cache.wasLoaded(file)) ? undefined : Path.join(root, file.name);
+                        return (file.data || this.cache.isLoaded(file)) ? undefined : Path.join(root, file.name);
                     });
                     const data = this.loader.loadFiles(fileNames, {sync});
                     data.forEach((datum, i) => {
                         if (!files[i].data) {
                             // null indicates we attempted to load the file, but
                             // there was no data or the file did not exist
-                            this.cache.fileLoaded(fileNames[i]);
+                            this.cache.markFileAsLoaded(fileNames[i]);
                             const parsed = datum ? JSON5.parse(datum) : null;
                             this.cache.storeData(basename, files[i].locale, parsed);
                             files[i].data = parsed;
@@ -392,12 +392,12 @@ class LocaleData {
                     const count = files.filter(file => !file.data).length;
                     if (count) {
                         const fileNames = files.map((file) => {
-                            return (file.data || this.cache.wasLoaded(file)) ? undefined : Path.join(root, file.name);
+                            return (file.data || this.cache.isLoaded(file)) ? undefined : Path.join(root, file.name);
                         });
                         return this.loader.loadFiles(fileNames, {sync}).then((data) => {
                             data.forEach((datum, i) => {
                                 // record that we already attempted to load this
-                                this.cache.fileLoaded(fileNames[i]);
+                                this.cache.markFileAsLoaded(fileNames[i]);
                                 if (!files[i].data) {
                                     // null indicates we attempted to load the file, but
                                     // there was no data or the file did not exist
@@ -636,11 +636,11 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map(file =>
-                        (file.data || cache.wasLoaded(file)) ? undefined : Path.join(root, file.path)
+                        (file.data || cache.isLoaded(file)) ? undefined : Path.join(root, file.path)
                     );
                     return loader.loadFiles(fileNames).then(data => {
                         return data.reduce((previous, datum, i) => {
-                            cache.fileLoaded(fileNames[i]);
+                            cache.markFileAsLoaded(fileNames[i]);
                             if (!data[i]) return previous;
                             if (!files[i].data) {
                                 // null indicates we attempted to load the file, but

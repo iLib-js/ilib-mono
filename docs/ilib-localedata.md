@@ -689,7 +689,7 @@ using a call to `cacheData`.
 | --- | --- | --- |
 | packageName | <code>string</code> | Name of the package to check for data |
 | locale | <code>string</code> | full locale of the data to check |
-| basename | <code>string</code> | the basename of the data to check |
+| basename | <code>string</code> \| <code>undefined</code> | the basename of the data to check. If undefined, it will check if any data for any basename is available for the given locale |
 
 
 * * *
