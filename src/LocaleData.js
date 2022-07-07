@@ -672,9 +672,7 @@ class LocaleData {
                                     default:
                                         return previous;
                                 }
-                                let temp = {};
-                                temp[spec] = localeData;
-                                LocaleData.cacheData(temp);
+                                LocaleData.cacheData(localeData);
                                 files[i].data = localeData;
                                 return true;
                             }
