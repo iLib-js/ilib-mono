@@ -1,5 +1,5 @@
 /*
- * webpack.config.js - webpack configuration script for ilib-env
+ * webpack.config.js - webpack configuration script for testing ilib-localedata
  *
  * Copyright © 2022, JEDLSoft
  *
@@ -72,7 +72,7 @@ module.exports = {
             buffer: require.resolve("buffer")
         },
         alias: {
-            "calling-module": "../test/locale"
+            "calling-module": path.resolve(__dirname, "test/files3")
         }
     }
 };

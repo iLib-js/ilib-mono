@@ -51,43 +51,23 @@ function getLocaleSpec(locale) {
  * the ilib-phone package, both the phone number parser and formatter
  * need information about numbering plans, so they can share the
  * locale data about those plans.<p>
- *
- * Packages should not attempt to load any
- * locale data of another package. The other package may change what
- * data it stores, or how it is stored or encoded, without notice,
- * so depending
- * on another package's data is dangerous. Instead, that other package should
- * be designed to provide a stable API for the current package to get
- * any information that it may need.<p>
  */
 class DataCache {
     /**
      * Create a locale data cache.
      *
-     * The options may contain any of the following properties:
-     *
-     * <ul>
-     * <li>packageName. The unique name of the package for which the locale
-     * data is being cached.
-     * </ul>
-     *
      * @private
      * @param {string} name the unique name for this type of locale data
-     * @param {Object} options Options governing the construction of this
-     * cache
      * @constructor
      */
-    constructor(options) {
+    constructor() {
         this.logger = log4js.getLogger("ilib-localedata");
-        let {
-            packageName
-        } = options || {};
 
-        this.packageName = packageName;
         this.logger.trace("new DataCache instance");
 
         this.count = 0;
         this.data = {};
+        this.loaded = new Set();
     }
 
     /**
@@ -96,9 +76,7 @@ class DataCache {
      * the constructor's documentation for details.
      * @returns {DataCache} the data cache for the given package
      */
-    static getDataCache(options) {
-        if (!options || typeof(options.packageName) !== 'string') return;
-
+    static getDataCache() {
         const globalScope = top();
 
         if (!globalScope.ilib) {
@@ -106,14 +84,10 @@ class DataCache {
         }
 
         if (!globalScope.ilib.dataCache) {
-            globalScope.ilib.dataCache = {};
+            globalScope.ilib.dataCache = new DataCache();
         }
 
-        if (!globalScope.ilib.dataCache[options.packageName]) {
-            globalScope.ilib.dataCache[options.packageName] = new DataCache(options);
-        }
-
-        return globalScope.ilib.dataCache[options.packageName];
+        return globalScope.ilib.dataCache;
     }
 
     /**
@@ -127,21 +101,15 @@ class DataCache {
             globalScope.ilib = {};
         }
 
-        globalScope.ilib.dataCache = {};
+        globalScope.ilib.dataCache = new DataCache();
     }
 
     /**
-     * Return the name of the package for which this is a cache.
-     * @returns {string} the package name
-     */
-    getPackage() {
-        return this.packageName;
-    }
-
-    /**
-     * Get locale data from the cache or information about data that may be missing.<p>
+     * Get locale data from the cache or information about data that may be missing.
+     * If the basename is missing, get all the data for the locale.
      *
-     * @param {string} basename the base name of this type of data
+     * @param {string|undefined} basename the base name of this type of data. If this
+     * is undefined, return all basenames for the locale
      * @param {Locale} locale the full or partial locale for this particular data
      * @returns {Object|null|undefined} the requested data, or null to explicitly indicate
      * that no data of this type exists for this locale, or undefined to indicate that the
@@ -149,18 +117,14 @@ class DataCache {
      */
     getData(basename, locale) {
         this.logger.trace(`Getting data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
-        if (!basename) {
-            this.logger.info(`Attempt to get data from the cache with no basename.`);
-            return;
-        }
-
-        if ( !this.data[basename] ) {
-            return undefined;
-        }
 
         let localeSpec = getLocaleSpec(locale);
 
-        return this.data[basename][localeSpec];
+        if ( !this.data[localeSpec] ) {
+            return undefined;
+        }
+
+        return basename ? this.data[localeSpec][basename] : this.data[localeSpec];
     };
 
     /**
@@ -180,13 +144,14 @@ class DataCache {
             return;
         }
 
-        if ( !this.data[basename] ) {
-            this.data[basename] = {};
-        }
-
         let localeSpec = getLocaleSpec(locale);
 
-        if (this.data[basename][localeSpec]) {
+        if ( !this.data[localeSpec] ) {
+            this.data[localeSpec] = {};
+        }
+
+
+        if (this.data[localeSpec][basename]) {
             if (typeof(data) === 'undefined') {
                 // setting to undefined is the same as removing
                 this.count--;
@@ -195,7 +160,7 @@ class DataCache {
             this.count++;
         }
 
-        this.data[basename][localeSpec] = data;
+        this.data[localeSpec][basename] = data;
     }
 
     /**
@@ -228,6 +193,25 @@ class DataCache {
         this.logger.trace(`The data cache has been cleared.`);
         this.count = 0;
         this.data = {};
+        this.loaded.clear();
+    }
+
+    /**
+     * Record that the given file name has already been loaded.
+     * @param {string} fileName the path to the file that has been loaded
+     */
+    markFileAsLoaded(fileName) {
+        if (!fileName || typeof(fileName) !== "string") return;
+        this.loaded.add(fileName);
+    }
+
+    /**
+     * Return true if the file has already been loaded before.
+     * @return {boolean} true if the file has already been loaded
+     */
+    isLoaded(fileName) {
+        if (!fileName || typeof(fileName) !== "string") return false;
+        return this.loaded.has(fileName);
     }
 }
 
