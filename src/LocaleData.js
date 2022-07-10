@@ -636,12 +636,12 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map(file =>
-                        (file.data || cache.isLoaded(file)) ? undefined : Path.join(root, file.path)
+                        (file.data || cache.isLoaded(file.path)) ? undefined : Path.join(root, file.path)
                     );
                     return loader.loadFiles(fileNames).then(data => {
                         return data.reduce((previous, datum, i) => {
-                            cache.markFileAsLoaded(fileNames[i]);
-                            if (!data[i]) return previous;
+                            cache.markFileAsLoaded(files[i].path);
+                            if (!datum) return previous;
                             if (!files[i].data) {
                                 // null indicates we attempted to load the file, but
                                 // there was no data or the file did not exist
@@ -729,7 +729,9 @@ class LocaleData {
         // use slice(1) because we don't need to check the root locale
         return Utils.getSublocales(locale).slice(1).some((sublocale) => {
             const value = cache.getData(basename, new Locale(sublocale));
-            return typeof(value) !== 'undefined';
+            return typeof(value) !== 'undefined' ||
+                cache.isLoaded(`${sublocale}.js`) ||
+                cache.isLoaded(`${sublocale}.json`);
         });
     }
 

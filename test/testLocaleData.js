@@ -1426,8 +1426,8 @@ export const testLocaleData = {
                 basename: "info"
             }).then(data => {
                 test.deepEqual(data, {
-                    "a": "b",
-                    "c": "d"
+                    "a": "b en",
+                    "c": "d en"
                 });
                 test.done();
             });
@@ -1458,8 +1458,8 @@ export const testLocaleData = {
             });
 
             test.deepEqual(data, {
-                "a": "b",
-                "c": "d"
+                "a": "b en",
+                "c": "d en"
             });
             test.done();
         });

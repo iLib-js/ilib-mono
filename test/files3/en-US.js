@@ -1,12 +1,24 @@
 export default function getLocaleData() {
     return {
-        "info": {
-            "a": "b",
-            "c": "d"
+        "root": {
+            "info": {
+                "a": "b",
+                "c": "d"
+            },
+            "foo": {
+                "m": "n",
+                "o": "p"
+            }
         },
-        "foo": {
-            "m": "n",
-            "o": "p"
+        "en": {
+            "info": {
+                "a": "b en",
+                "c": "d en"
+            },
+            "foo": {
+                "m": "n en",
+                "o": "p en"
+            }
         }
     };
 };

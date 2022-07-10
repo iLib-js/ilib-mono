@@ -1,10 +1,12 @@
 {
-    "info": {
-        "a": "b zh",
-        "c": "d zh"
-    },
-    "foo": {
-        "m": "n zh",
-        "o": "p zh"
+    "zh": {
+        "info": {
+            "a": "b zh",
+            "c": "d zh"
+        },
+        "foo": {
+            "m": "n zh",
+            "o": "p zh"
+        }
     }
 }

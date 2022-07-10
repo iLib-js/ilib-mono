@@ -1,10 +1,12 @@
 {
-    "info": {
-        "a": "b ja",
-        "c": "d ja"
-    },
-    "foo": {
-        "m": "n ja",
-        "o": "p ja"
+    "ja-JP": {
+        "info": {
+            "a": "b ja",
+            "c": "d ja"
+        },
+        "foo": {
+            "m": "n ja",
+            "o": "p ja"
+        }
     }
 }
