@@ -202,7 +202,7 @@ that start with the prefix "ilib-" so they are easy to recognize:
 ### Point Webpack to Your Data Files
 
 Finally, the files containing locale data for ilib classes or containing the translations
-of strings extracted from your app should be assembled using [ilib-scanner](https://github.com/iLib-js/ilib-scanner)
+of strings extracted from your app should be assembled using [ilib-assemble](https://github.com/iLib-js/ilib-assemble)
 into individual files per locale.
 These files should go into a directory inside your app and the name of that directory
 should go into a resolve alias called "calling-module" in your webpack configuration:
@@ -239,6 +239,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.3.1
+
+- Fixed incorrect documentation
 
 ### v1.3.0
 
