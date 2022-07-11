@@ -58,7 +58,7 @@ the locale info for each locale, this package loads locale data files from disk.
 
 Some platforms can support loading files both synchronously and asynchronously.
 The usage above (calling the constructor) shows the synchronous usage. To
-create a LocaleInfo instance asynchronously, we include a static factory
+create a LocaleInfo instance asynchronously, use the static factory
 method `create` which takes the same parameters as the constructor and returns
 a Promise:
 
@@ -85,24 +85,31 @@ use sync mode under nodejs.
 Caching
 -------
 
-Locale data is cached. That means that after you have loaded the data for
-a particular locale, you can call the synchronous calls from that point
-onwards. The classes will not need to attempt to load the locale data files
-because it can get all of the data from the cache instead.
+Locale data in ilib classes is cached. That means that after you have loaded
+the data for a particular locale the first time, you can create new instances of
+LocaleInfo for the same locale again without reloading those same locale data
+files.
 
-There are two other ways of getting the data into the cache: adding statically
-included data into the cache, and ensuring the locale.
+It also means that you create LocaleInfo instances synchronously for the same
+locale from that point onwards, even if your platform does not support
+synchronous file loading.
+
+There are two other ways of getting the data into the cache:
+
+1. adding statically included data into the cache
+1. ensuring the locale
 
 #### Statically Included Data
 
-If your locale support is very small (4 or less locales), you may want to just
-include the locale data statically in your app. To do this, use
-`ilib-assemble` as per the instructions below to create a single file
-containing all the data for a particular locale. Then, explicitly import
-those files in your app. Then, at the beginning of the app, you can
-explicitly add the data to the cache.
+If your locale support is very small (rule of thumb: 4 or less locales), you may
+want to just include the locale data statically in your app and be done with it.
+To do this, use `ilib-assemble` as per the instructions below to create
+single files containing all the data for particular locales. Then, explicitly
+import those files in your app. At the beginning of the app, you can then
+explicitly add the data to the ilib cache and start instantiating ilib classes
+synchronously.
 
-Example for adding data for only 2 locales to the cache:
+Example of adding data for 2 locales to the cache:
 
 ```javascript
 import { LocaleData } from 'ilib-localedata';
@@ -121,10 +128,10 @@ const li = new LocaleInfo("ja-JP");
 #### Ensuring the Locale
 
 If your locale support is larger (5 or more locales), and you do not want
-to statically include all of the data into your app, but you still want to
-use the ilib classes synchronously, you can use the static method
-`LocaleData.ensureLocale()` to load the files asynchronously, and use
-the ilib classes synchronously after the promise is resolved.
+to statically include all of the data into your app, yet you still want to
+use the ilib classes synchronously, then you can use the static method
+`LocaleData.ensureLocale()` to load the locale data asynchronously,
+and use the ilib classes synchronously after the promise is resolved.
 
 Example:
 
@@ -156,7 +163,7 @@ Using This Package Within Webpack
 You can use this package within your webpacked application as well.
 
 However, as we mentioned in the previous section, the locale data is large,
-so you would not want to include it all in your webpacked application
+so you would probably not want to include it all in your webpacked application
 statically, nor would you want to load it all at once. The strategy to deal
 with this is to extract a subset of that data to include with your
 application, put that data into webpack chunks and then lazy load those
@@ -164,8 +171,9 @@ chunks when needed.
 
 To accomplish extracting the right subset, you would use the new tool
 `ilib-assemble`. This tool will scan the source code for your application
-to find references to ilib packages. It will then ask each of those ilib
-packages to return the requested locale data. If the ilib package has no
+to find references to ilib packages. It will then find each of those ilib
+packages in the `node_modules` directory, and ask each to return the
+requested locale data. If the ilib package has no
 loadable locale data, it will return nothing. If it does, then that package
 will include its own data into set that the assemble tool is collecting. In this
 way, multiple ilib packages can include their own data into the collected
@@ -179,12 +187,12 @@ locales for each package.
 Together, the idea of only scanning the ilib packages your application needs
 and only including the data for the subset of locales that your application
 supports, the actual data included into your webpacked application can be
-quite small.
+much smaller than all of the data for the whole world.
 
 Using ilib-assemble
 -------------------
 
-The tool `ilib-assemble` is used to collect all the locale data your app
+The tool `ilib-assemble` is used to collect all the locale data that your app
 will need. To install it, just use your favorite package manager to add it
 to the "devDependencies" in your `package.json` file.
 
@@ -222,7 +230,8 @@ out one file per locale into the `./locale` directory. You can change the names
 of these directories to best fit your project, and/or scan additional source
 directories.
 
-What an app's directory tree may look like after `ilib-assemble` is done:
+Here's what your app's directory tree may look like after `ilib-assemble` is
+finished running:
 
 ```
 .
@@ -245,8 +254,8 @@ What an app's directory tree may look like after `ilib-assemble` is done:
 ```
 
 You can see that the `locale` directory in the root of your app now contains a
-single file for each locale spec named on the command-line plus an extra file
-named `root.js`. The `root.js` file contains the default locale settings for
+single file for each locale plus an extra file named `root.js`. The `root.js`
+file contains the default locale settings for
 the whole world and can be used as fallback locale data if a locale is requested
 that was not explicitly included in your webpack bundle.
 
@@ -299,7 +308,7 @@ example above, the files would be under the `./locale` directory in root of your
 ```javascript
     resolve: {
         alias: {
-            "calling-module": "<your directory here>"
+            "calling-module": "./locale"
         }
     }
 ```
@@ -309,7 +318,8 @@ including all of the subclasses of the `Loader` class in the `ilib-loader` packa
 which is the class that knows how to load files. Most of the subclasses
 are intended for other platforms, and you only really need the `WebpackLoader`
 class. The other subclasses do not need to be included in your app's webpack bundle
-but they are imported by that package. How can we achieve this?
+but they are imported by that package. How can we leave them out of your webpack
+bundle?
 
 The way you can avoid including these useless subclasses is to declare that they
 are external. That is, Webpack will assume that the environment that your app is
