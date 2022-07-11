@@ -176,7 +176,7 @@ export const testLocaleInfo = {
         test.done();
     },
 
-    testLocaleInfoGetCalendarDE: function(test) {
+    testLocaleInfoGetUnitsDE: function(test) {
         test.expect(2);
         var info = new LocaleInfo("de-DE");
         test.ok(info !== null);
