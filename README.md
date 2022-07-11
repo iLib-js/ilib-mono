@@ -43,6 +43,19 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.1
+
+- fixed a bug where data loaded from webpacked js files was not cached properly
+
+### v1.3.0
+
+- added support for loading files within webpack in a web page
+- implemented LocaleData.ensureLocale()
+- now depends on updated dependencies like ilib-loader which it now loads as es6 code
+    - allows webpack to see the webpack magic comments so that it knows how to bundle the locale data files
+- all unit tests now work on node and on browsers with the webpack loader, including the ensureLocale() tests
+- can now load data from json files as well as js files
+
 ### v1.2.0
 
 - added support for the `mostSpecific` and `returnOne` flags to `loadData`.
