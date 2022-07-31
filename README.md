@@ -117,6 +117,11 @@ limitations under the License.
 
 # Release Notes
 
+### v1.2.1
+
+* Removed dependency on polyfills that are not needed, which should make this
+  easier to depend upon.
+
 ### v1.2.0
 
 * Now ships both the ES6 modules in the src directory and the commonjs code
