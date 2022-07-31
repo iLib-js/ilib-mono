@@ -75,7 +75,6 @@
         "@babel/runtime": "^7.18.3",
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.5",
-        "core-js": "^3.23.1",
         "docdash": "^1.2.0",
         "grunt": "^1.5.3",
         "grunt-babel": "^8.0.0",
