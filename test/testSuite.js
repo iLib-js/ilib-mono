@@ -24,24 +24,15 @@ require("assertextras")(assert);
 // this processes all subsequent requires using babel
 process.env.BABEL_ENV = "test";
 require("@babel/register")({
-    // This will override `node_modules` ignoring - you can alternatively pass
-    // an array of strings to be explicitly matched or a regex / glob
-    ignore: [/core-js/],
     presets: [[
         '@babel/preset-env',
         {
-            useBuiltIns: 'usage',
             targets: {
                 node: "10",
                 browsers: "cover 99.5%"
-            },
-            corejs: {
-                version: 3,
-                proposals: true
             }
         }
     ]],
-    plugins: ["add-module-exports"],
     compact: false,
     minified: false
 });

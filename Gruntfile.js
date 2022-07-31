@@ -41,18 +41,12 @@ module.exports = function(grunt) {
                 presets: [[
                     '@babel/preset-env',
                     {
-                        useBuiltIns: 'usage',
                         targets: {
                             node: "10",
                             browsers: "cover 99.5%"
-                        },
-                        corejs: {
-                            version: 3,
-                            proposals: true
                         }
                     }
                 ]],
-                plugins: ["add-module-exports"],
                 minified: !debug,
                 comments: false
             },

@@ -1,6 +1,6 @@
 {
     "name": "ilib-locale",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "main": "./lib/Locale.js",
     "module": "./src/Locale.js",
     "description": "A BCP-47/IETF locale specifier parser/validator",
@@ -75,7 +75,6 @@
         "@babel/runtime": "^7.18.3",
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.5",
-        "babel-plugin-add-module-exports": "^1.0.4",
         "core-js": "^3.23.1",
         "docdash": "^1.2.0",
         "grunt": "^1.5.3",
