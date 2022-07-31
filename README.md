@@ -65,6 +65,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.1
+
+* Updated dependencies
+
 ### v1.2.0
 
 - Update to CLDR 41 data
