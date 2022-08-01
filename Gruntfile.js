@@ -38,20 +38,9 @@ module.exports = function(grunt) {
         babel: {
             options: {
                 sourceMap: true,
-                presets: [[
-                    '@babel/preset-env',
-                    {
-                        useBuiltIns: 'usage',
-                        targets: {
-                            node: "10",
-                            browsers: "cover 99.5%"
-                        },
-                        corejs: {
-                            version: 3,
-                            proposals: true
-                        }
-                    }
-                ]],
+                presets: [
+                    '@babel/preset-env'
+                ],
                 compact: !debug,
                 minified: !debug
             },
