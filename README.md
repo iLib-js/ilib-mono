@@ -177,6 +177,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.1
+
+- Updated dependencies to avoid the polyfill bloat
+
 ### v1.1.0
 
 - added the ability to add a nodule to the list of modules to include the locale
