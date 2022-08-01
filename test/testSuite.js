@@ -24,15 +24,9 @@ require("assertextras")(assert);
 // this processes all subsequent requires using babel
 process.env.BABEL_ENV = "test";
 require("@babel/register")({
-    presets: [[
+    presets: [
         '@babel/preset-env',
-        {
-            targets: {
-                node: "10",
-                browsers: "cover 99.5%"
-            }
-        }
-    ]],
+    ],
     compact: false,
     minified: false
 });
