@@ -30,14 +30,9 @@ require("@babel/register")({
     presets: [[
         '@babel/preset-env',
         {
-            useBuiltIns: 'usage',
             targets: {
                 node: "10",
                 browsers: "cover 99.5%"
-            },
-            corejs: {
-                version: 3,
-                proposals: true
             }
         }
     ]],
