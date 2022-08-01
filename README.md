@@ -278,16 +278,7 @@ that start with the prefix "ilib-" so they are easy to recognize. Example:
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: [[
-                            '@babel/preset-env',
-                            {
-                                useBuiltIns: 'usage',
-                                corejs: {
-                                    version: 3,
-                                    proposals: true
-                                }
-                            }
-                        ]]
+                        presets: ['@babel/preset-env']
                     }
                 }
             }
