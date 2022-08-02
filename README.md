@@ -20,7 +20,7 @@ Then, in your package.json, add a script:
 
 ```
 "scripts": {
-    "assemble": "ilib-assemble locale"
+    "assemble": "ilib-assemble ./locale"
 }
 ```
 
