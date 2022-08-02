@@ -175,10 +175,11 @@ to find references to ilib packages. It will then find each of those ilib
 packages in the `node_modules` directory, and ask each to return the
 requested locale data. If the ilib package has no
 loadable locale data, it will return nothing. If it does, then that package
-will include its own data into set that the assemble tool is collecting. In this
-way, multiple ilib packages can include their own data into the collected
-set and the superset of all of the data will be loaded in your application
-only once.
+will include its own data into the overall set that the assemble tool is
+collecting. In this
+way, multiple ilib packages can add their own data into the collected
+set and this superset of all of the data will be loaded in your application
+when the locale data for a particular locale is loaded.
 
 The `ilib-assemble` tool is called with a list of locales that your
 application would like to support. It will only include the data for those
@@ -204,9 +205,18 @@ To run `ilib-assemble`, add a script in your package.json similar to this:
     }
 ```
 
+The basic usage for the ilib-assemble tool is:
+
+```
+ilib-assemble target-directory [ source-directory ... ]
+```
+
+See the [ilib-assemble documentation](https://github.com/ilib-js/ilib-assemble)
+for the details of all of the available command-line parameters.
+
 Locales can be specified directly on the command-line with a comma-separated
-list. However, that list could get very long, and out of sync with the list of
-locales your app supports. An alternate method for specifying the list of locales
+list using the `--locales` parameter. However, that list could get very long and
+unwieldy for the command-line. An alternate method for specifying the list of locales
 is to using a `locales.json` file. This file has a very simple format. It contains
 an array called "locales", which lists out the locale specs for all the locales
 you would like your app to support. Example:
