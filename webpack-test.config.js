@@ -44,16 +44,9 @@ module.exports = {
                     options: {
                         minified: false,
                         compact: false,
-                        presets: [[
+                        presets: [
                             '@babel/preset-env',
-                            {
-                                useBuiltIns: 'usage',
-                                corejs: {
-                                    version: 3,
-                                    proposals: true
-                                }
-                            }
-                        ]],
+                        ],
                         plugins: [
                             //"add-module-exports",
                             "@babel/plugin-transform-regenerator"
