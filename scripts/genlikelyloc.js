@@ -24,7 +24,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var Locale = require('ilib-locale');
+var Locale = require('ilib-locale').default;
 
 var likelySubtags = require('cldr-core/supplemental/likelySubtags.json');
 var territoryContainment = require('cldr-core/supplemental/territoryContainment.json');
