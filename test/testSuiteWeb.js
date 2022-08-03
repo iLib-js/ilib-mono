@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
-var tests = [
-    require('./testIString.js')
-];
+import { testIString } from './testIString';
+import { testIStringAsync } from './testIStringAsync';
 
-module.exports = tests;
+export const tests = [
+    testIString,
+    testIStringAsync
+];

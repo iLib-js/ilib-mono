@@ -17,10 +17,7 @@
  * limitations under the License.
  */
 
-var ilibEnv = require("ilib-env");
-
-var files = [
-    "testIString.js"
+export const files = [
+    "testIString.js",
+    "testIStringAsync.js"
 ];
-
-module.exports = { files };

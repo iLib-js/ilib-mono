@@ -108,7 +108,6 @@ class IString {
             this.str = "";
         }
         this.length = this.str.length;
-        this.cpLength = -1;
 
         const {locale} = options || { locale: getLocale() };
         this.locale = new Locale(locale || getLocale());
@@ -120,7 +119,7 @@ class IString {
         });
 
         // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache("IString", this.locale.getSpec(), "localeinfo")) {
+        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "plurals")) {
             throw new Exception("Locale data not available");
         }
 
@@ -142,6 +141,21 @@ class IString {
                 return this;
             });
         }
+    }
+
+    /**
+     * Factory method to create a new instance of IString asynchronously.
+     * The parameters are the same as for the constructor, but it returns
+     * a `Promise` instead of the instance directly.
+     *
+     * @param {string} locale the locale to get the info for
+     * @param {Object} options the same objects you would send to a constructor
+     * @returns {Promise} a promise to load a LocaleInfo instance. The resolved
+     * value of the promise is the new instance of LocaleInfo,
+     */
+    static create(string, options) {
+        const istr = new IString(undefined, { ...options, _noinit: true });
+        return istr.init(string, options, false);
     }
 
     /**
