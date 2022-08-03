@@ -17,10 +17,13 @@
  * limitations under the License.
  */
 
-import LocaleInfo from '../lib/index';
-import { setPlatform, setLocale } from 'ilib-env';
+import LocaleInfo from '../src/index';
+import { setPlatform, getPlatform, setLocale } from 'ilib-env';
 import { registerLoader, Loader } from 'ilib-loader';
+import { LocaleData } from 'ilib-localedata';
 import MockLoader from './MockLoader';
+
+import localeList from './locales.json';
 
 // locale with no script
 /*
@@ -31,12 +34,29 @@ ilib.data.localeinfo_fr_FR_overseas = {
 };
 */
 
-module.exports.testlocaleinfo = {
+let setUpPerformed = false;
+
+export const testLocaleInfo = {
     setUp: function(callback) {
         //registerLoader(MockLoader);
         //setPlatform("mock");
         setLocale("en-US");
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            let promise = Promise.resolve(true);
+            localeList.locales.forEach(locale => {
+                promise = promise.then(() => {
+                    return LocaleData.ensureLocale(locale);
+                });
+            });
+            promise.then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testLocaleInfoConstructor: function(test) {
@@ -156,7 +176,7 @@ module.exports.testlocaleinfo = {
         test.done();
     },
 
-    testLocaleInfoGetCalendarDE: function(test) {
+    testLocaleInfoGetUnitsDE: function(test) {
         test.expect(2);
         var info = new LocaleInfo("de-DE");
         test.ok(info !== null);

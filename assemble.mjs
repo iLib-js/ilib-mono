@@ -32,24 +32,26 @@ function assemble(options) {
     const here = join(dirname(import.meta.url.replace(/file:\/\//, "")), "locale");
 
     options.locales.forEach(locale => {
-        var locFiles = Utils.getLocFiles(locale, "localeinfo.json").map(file => {
+        const locales = Utils.getSublocales(locale);
+        const locFiles = Utils.getLocFiles(locale, "localeinfo.json").map(file => {
             return join(here, file);
         });
         let locData = {};
-        locFiles.forEach(file => {
+        locFiles.forEach((file, i) => {
+            const loc = locales[i];
+            if (!locData[loc]) {
+                locData[loc] = {};
+            }
             if (cache[file]) {
-                locData = JSUtils.merge(locData, cache[file]);
+                locData[loc].localeinfo = cache[file];
             } else if (existsSync(file)) {
                 const data = readFileSync(file, "utf-8");
                 const json = JSON5.parse(data);
-                locData = JSUtils.merge(locData, json);
+                locData[loc].localeinfo = json;
                 cache[file] = json;
             }
         });
-        if (!localeData[locale]) {
-            localeData[locale] = {};
-        }
-        localeData[locale].localeinfo = JSUtils.merge(localeData[locale].localeinfo || {}, locData);
+        localeData[locale] = locData;
     });
 
     return Promise.resolve(localeData);

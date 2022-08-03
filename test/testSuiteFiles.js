@@ -1,6 +1,6 @@
 /*
  * testSuiteFiles.js - list the test files in this directory
- * 
+ *
  * Copyright © 2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-module.exports.files = [
+export const files = [
     "testLocaleInfo.js",
     "testLocaleInfoAsync.js"
 ];
