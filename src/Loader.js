@@ -18,6 +18,7 @@
  */
 
 import log4js from '@log4js-node/log4js-api';
+import allSettled from 'promise.allsettled';
 
 /**
  * @class Superclass of the loader classes that contains shared functionality.
@@ -187,7 +188,7 @@ class Loader {
                 }
                 return values;
             } else {
-                return Promise.allSettled(paths.map((path) => {
+                return allSettled(paths.map((path) => {
                     // should return a Promise
                     return path ? this.loadFile(path, options) : undefined;
                 })).then((values) => {
