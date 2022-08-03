@@ -4346,5 +4346,129 @@ export const testIString = {
         test.ok(str !== null);
         test.equal(str.formatChoice([params.gender, params.num], params), "(many) Él es mi amigo.");
         test.done();
+    },
+
+    testStringIteratorWithOfOperator: function(test) {
+        test.expect(14);
+        var str = new IString("test test test");
+
+        const expected = [
+            "t",
+            "e",
+            "s",
+            "t",
+            " ",
+            "t",
+            "e",
+            "s",
+            "t",
+            " ",
+            "t",
+            "e",
+            "s",
+            "t"
+        ];
+        let index = 0;
+
+        // should automatically call the iterator
+        for (let ch of str) {
+            test.equal(ch, expected[index++]);
+        }
+
+        test.done();
+    },
+
+    testStringIteratorWithOfOperatorWithSurrogates: function(test) {
+        test.expect(16);
+        var str = new IString("test\uD800\uDF02 t\uD800\uDC00est test");
+
+        const expected = [
+            "t",
+            "e",
+            "s",
+            "t",
+            "\uD800\uDF02",
+            " ",
+            "t",
+            "\uD800\uDC00",
+            "e",
+            "s",
+            "t",
+            " ",
+            "t",
+            "e",
+            "s",
+            "t"
+        ];
+        let index = 0;
+
+        // should automatically call the iterator and iterate
+        // through the "astal plane" characters properly
+        for (let ch of str) {
+            test.equal(ch, expected[index++]);
+        }
+
+        test.done();
+    },
+
+    testStringIteratorWithSpreadOperator: function(test) {
+        test.expect(1);
+        var str = new IString("test test test");
+
+        const expected = [
+            "t",
+            "e",
+            "s",
+            "t",
+            " ",
+            "t",
+            "e",
+            "s",
+            "t",
+            " ",
+            "t",
+            "e",
+            "s",
+            "t"
+        ];
+
+        // should automatically call the iterator
+        const actual = [...str];
+
+        test.deepEqual(actual, expected);
+
+        test.done();
+    },
+
+    testStringIteratorWithSpreadOperatorWithSurrogates: function(test) {
+        test.expect(1);
+        var str = new IString("test\uD800\uDF02 t\uD800\uDC00est test");
+
+        const expected = [
+            "t",
+            "e",
+            "s",
+            "t",
+            "\uD800\uDF02",
+            " ",
+            "t",
+            "\uD800\uDC00",
+            "e",
+            "s",
+            "t",
+            " ",
+            "t",
+            "e",
+            "s",
+            "t"
+        ];
+
+        // should automatically call the iterator and iterate
+        // properly over the UTF-16 characters
+        const actual = [...str];
+
+        test.deepEqual(actual, expected);
+
+        test.done();
     }
 };
