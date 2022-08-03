@@ -20,7 +20,7 @@ Then, in your package.json, add a script:
 
 ```
 "scripts": {
-    "assemble": "ilib-assemble locale"
+    "assemble": "ilib-assemble ./locale"
 }
 ```
 
@@ -176,6 +176,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.1.1
+
+- Updated dependencies to avoid the polyfill bloat
 
 ### v1.1.0
 

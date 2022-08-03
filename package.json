@@ -1,6 +1,6 @@
 {
     "name": "ilib-assemble",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "main": "./src/index.mjs",
     "bin": {
         "ilib-assemble": "./src/index.mjs",
@@ -55,7 +55,7 @@
         "assertextras": "^1.1.0",
         "docdash": "^1.2.0",
         "ilib-mock": "file:test/ilib-mock/ilib-mock-1.0.0.tgz",
-        "jsdoc": "^3.6.10",
+        "jsdoc": "^3.6.11",
         "jsdoc-to-markdown": "^7.1.1",
         "nodeunit": "^0.11.3"
     },
@@ -63,8 +63,8 @@
         "node": ">=16.0"
     },
     "dependencies": {
-        "ilib-common": "^1.1.0",
-        "ilib-locale": "^1.2.0",
+        "ilib-common": "^1.1.1",
+        "ilib-locale": "^1.2.1",
         "json5": "^2.2.1",
         "options-parser": "^0.4.0"
     }
