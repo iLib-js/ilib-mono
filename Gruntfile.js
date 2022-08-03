@@ -39,7 +39,11 @@ module.exports = function(grunt) {
             options: {
                 sourceMap: true,
                 presets: ['@babel/preset-env'],
-                plugins: ["add-module-exports"],
+                plugins: [
+                    "add-module-exports",
+                    "@babel/plugin-transform-regenerator"
+                ],
+                comments: debug,
                 minified: !debug
             },
             dist: {

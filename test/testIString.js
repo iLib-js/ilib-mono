@@ -826,6 +826,7 @@ export const testIString = {
 
     testStringFormatChoiceWithMultipleIndexesWithClassesPT2: function(test) {
         test.expect(2);
+
         var str = new IString("one,one#{num} item on {pages} page.|one,other#{num} item on {pages} pages (other).|other,one#{num} items (other) on {pages} page.(one)|other,other#{num} items (other) on {pages} pages (other).", {locale: "pt-PT"});
 
         test.ok(str !== null);
@@ -2984,8 +2985,8 @@ export const testIString = {
 
     testStringFormatChoiceCharClasses4: function(test) {
         test.expect(2);
-        var str = new IString("0#There are no items.|one#The items end in one|two#The items end in two|few#The items is few|#Default items", {locale: "sl-SL"});
 
+        var str = new IString("0#There are no items.|one#The items end in one|two#The items end in two|few#The items is few|#Default items", {locale: "sl-SL"});
         test.ok(str !== null);
 
         test.equal(str.formatChoice(101), "The items end in one");
@@ -3881,9 +3882,7 @@ export const testIString = {
     },
     testStringFormatChoiceDecimal18: function(test) {
         test.expect(2);
-        var str = new IString("0#There are no items.|one#The item is one|few#The items are few|many#The items are many|#Default items");
-
-        str.setLocale("ka-GE");
+        var str = new IString("0#There are no items.|one#The item is one|few#The items are few|many#The items are many|#Default items", { locale: "ka-GE" });
 
         test.ok(str !== null);
 

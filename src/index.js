@@ -23,6 +23,7 @@ import { getLocale, getPlatform } from 'ilib-env';
 import { Utils, JSUtils, MathUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
+import "regenerator-runtime/runtime.js";
 
 function localeDir() {
     switch (getPlatform()) {
@@ -70,11 +71,20 @@ const plurals_default = {
  *
  * This class is named IString ("ilib string") so as not to conflict with the
  * built-in Javascript String class.
- *
- * @constructor
- * @param {string|IString=} string initialize this instance with this string
  */
 class IString {
+    /**
+     * Create a new ilib string instance.<p>
+     *
+     * The options may contain the following properties:
+     * <ul>
+     * <li>locale - the locale of this string
+     * </ul>
+     *
+     * @constructor
+     * @param {string|IString=} string initialize this instance with this string
+     * @param {options=} options options governing the construction of this instance
+     */
     constructor(string, options) {
         if (!options || !options._noinit) {
             this.init(string, options, true);
@@ -103,8 +113,8 @@ class IString {
         const {locale} = options || { locale: getLocale() };
         this.locale = new Locale(locale || getLocale());
 
-        const locData = getLocaleData("IString", {
-            basename: "plural",
+        const locData = getLocaleData({
+            basename: "plurals",
             path: localeDir(),
             sync
         });
@@ -118,12 +128,14 @@ class IString {
             this.plurals = locData.loadData({
                 basename: "plurals",
                 locale: this.locale,
+                mostSpecific: true,
                 sync: sync
             }) || plurals_default;
         } else {
             return locData.loadData({
                 basename: "plurals",
                 locale: this.locale,
+                mostSpecific: true,
                 sync: sync
             }).then((info) => {
                 this.plurals = info || plurals_default;
@@ -552,7 +564,7 @@ class IString {
     }
 
     /**
-     * Return the length of this string in characters. This function defers to the regular
+     * Return the length of this string in Unicode characters. This function defers to the regular
      * Javascript string class in order to perform the length function. Please note that this
      * method is a real method, whereas the length property of Javascript strings is
      * implemented by native code and appears as a property.<p>
@@ -560,7 +572,7 @@ class IString {
      * Example:
      *
      * <pre>
-     * var str = new IString("this is a string");
+     * const str = new IString("this is a string");
      * console.log("String is " + str._length() + " characters long.");
      * </pre>
      * @private
@@ -587,7 +599,7 @@ class IString {
      * Example:
      *
      * <pre>
-     * var str = new IString("There are {num} objects.");
+     * const str = new IString("There are {num} objects.");
      * console.log(str.format({
      *   num: 12
      * });
@@ -608,7 +620,7 @@ class IString {
      * Example:
      *
      * <pre>
-     * var str = new IString("There are {num} objects in the {container}.");
+     * const str = new IString("There are {num} objects in the {container}.");
      * console.log(str.format({
      *   num: 12
      * });
@@ -629,10 +641,10 @@ class IString {
      * out as possible with real values.
      */
     format(params) {
-        var formatted = this.str;
+        let formatted = this.str;
         if (params) {
-            var regex;
-            for (var p in params) {
+            let regex;
+            for (let p in params) {
                 if (typeof(params[p]) !== 'undefined') {
                     regex = new RegExp("\{"+p+"\}", "g");
                     formatted = formatted.replace(regex, params[p]);
@@ -644,8 +656,8 @@ class IString {
 
     /** @private */
     _testChoice(index, limit) {
-        var numberDigits = {};
-        var operandValue = {};
+        let numberDigits = {};
+        let operandValue = {};
 
         switch (typeof(index)) {
             case 'number':
@@ -672,9 +684,9 @@ class IString {
                         case "few":
                         case "many":
                             // CLDR locale-dependent number classes
-                            var ruleset = this.plurals;
+                            const ruleset = this.plurals;
                             if (ruleset) {
-                                var rule = ruleset[limit];
+                                const rule = ruleset[limit];
                                 return IString._fncs.getValue(rule, operandValue);
                             }
                             break;
@@ -683,11 +695,11 @@ class IString {
                             // matches anything
                             return true;
                         default:
-                            var dash = limit.indexOf("-");
+                            const dash = limit.indexOf("-");
                             if (dash !== -1) {
                                 // range
-                                var start = limit.substring(0, dash);
-                                var end = limit.substring(dash+1);
+                                const start = limit.substring(0, dash);
+                                const end = limit.substring(dash+1);
                                 return operandValue.n >= parseInt(start, 10) && operandValue.n <= parseInt(end, 10);
                             } else {
                                 return operandValue.n === parseInt(limit, 10);
@@ -699,7 +711,7 @@ class IString {
                 return (limit === "true" && index === true) || (limit === "false" && index === false);
 
             case 'string':
-                var regexp = new RegExp(limit, "i");
+                const regexp = new RegExp(limit, "i");
                 return regexp.test(index);
 
             case 'object':
@@ -721,8 +733,8 @@ class IString {
      * Example string:
      *
      * <pre>
-     * var num = 2;
-     * var str = new IString("0#There are no objects.|1#There is one object.|2#There are {number} objects.");
+     * const num = 2;
+     * const str = new IString("0#There are no objects.|1#There is one object.|2#There are {number} objects.");
      * console.log(str.formatChoice(num, {
      *   number: num
      * }));
@@ -744,8 +756,8 @@ class IString {
      * Example string:
      *
      * <pre>
-     * var num = 22;
-     * var str = new IString("0#There are no objects.|1#There is one object.|#There are {number} objects.");
+     * const num = 22;
+     * const str = new IString("0#There are no objects.|1#There is one object.|#There are {number} objects.");
      * console.log(str.formatChoice(num, {
      *   number: num
      * }));
@@ -815,8 +827,8 @@ class IString {
      * Example string:
      *
      * <pre>
-     * var str = new IString("zero,zero#There are no objects on zero pages.|one,one#There is 1 object on 1 page.|other,one#There are {number} objects on 1 page.|#There are {number} objects on {pages} pages.");
-     * var num = 4, pages = 1;
+     * const str = new IString("zero,zero#There are no objects on zero pages.|one,one#There is 1 object on 1 page.|other,one#There are {number} objects on 1 page.|#There are {number} objects on {pages} pages.");
+     * const num = 4, pages = 1;
      * console.log(str.formatChoice([num, pages], {
      *   number: num,
      *   pages: pages
@@ -846,14 +858,14 @@ class IString {
      * @return {string} the formatted string
      */
     formatChoice(argIndex, params) {
-        var choices = this.str.split("|");
-        var limits = [];
-        var strings = [];
-        var i;
-        var parts;
-        var limit;
-        var result = undefined;
-        var defaultCase = "";
+        const choices = this.str.split("|");
+        let limits = [];
+        let strings = [];
+        let i;
+        let parts;
+        let limit;
+        let result = undefined;
+        let defaultCase = "";
 
         if (this.str.length === 0) {
             // nothing to do
@@ -876,7 +888,7 @@ class IString {
             }
         }
 
-        var args = (JSUtils.isArray(argIndex)) ? argIndex : [argIndex];
+        const args = (JSUtils.isArray(argIndex)) ? argIndex : [argIndex];
 
         // then apply the argument index (or indices)
         for (i = 0; i < limits.length; i++) {
@@ -884,10 +896,10 @@ class IString {
                 // this is default case
                 defaultCase = new IString(strings[i]);
             } else {
-                var limitsArr = (limits[i].indexOf(",") > -1) ? limits[i].split(",") : [limits[i]];
+                const limitsArr = (limits[i].indexOf(",") > -1) ? limits[i].split(",") : [limits[i]];
 
-                var applicable = true;
-                for (var j = 0; applicable && j < args.length && j < limitsArr.length; j++) {
+                let applicable = true;
+                for (let j = 0; applicable && j < args.length && j < limitsArr.length; j++) {
                     applicable = this._testChoice(args[j], limitsArr[j]);
                 }
 
@@ -909,19 +921,12 @@ class IString {
 
     // delegates
     /**
-     * Same as String.toString()
-     * @return {string} this instance as regular Javascript string
+     * Same as String.at()
+     * @param {number} offset offset into the string
+     * @return {IString} the single UTF-16 code point located at the specified offset
      */
-    toString() {
-        return this.str.toString();
-    }
-
-    /**
-     * Same as String.valueOf()
-     * @return {string} this instance as a regular Javascript string
-     */
-    valueOf() {
-        return this.str.valueOf();
+    at(offset) {
+        return JSUtils.toCodePoint(this.str, offset);
     }
 
     /**
@@ -948,12 +953,67 @@ class IString {
     }
 
     /**
+     * Parse the string into an array of code points.
+     * @private
+     */
+    generateCodePointArray() {
+        let index = 0;
+        this.codePoints = [];
+        while (index < this.str.length) {
+            const num = JSUtils.toCodePoint(this.str, index);
+            index += ((num > 0xFFFF) ? 2 : 1);
+            this.codePoints.push(num);
+        }
+    }
+
+    /**
+     * Return the code point at the given index when the string is viewed
+     * as an array of code points. If the index is beyond the end of the
+     * array of code points or if the index is negative, -1 is returned.
+     * @param {number} index index of the code point
+     * @return {number} code point of the character at the given index into
+     * the string
+     */
+    codePointAt(index) {
+        if (!this.codePoints) {
+            this.generateCodePointArray();
+        }
+        return (index < 0 || index >= this.codePoints.length) ? -1 : this.codePoints[index];
+    }
+
+    /**
      * Same as String.concat()
      * @param {string} strings strings to concatenate to the current one
      * @return {IString} a concatenation of the given strings
      */
     concat(strings) {
         return new IString(this.str.concat(strings));
+    }
+
+    /**
+     * Same as String.endsWith().
+     * @return {boolean} true if the given characters are found at
+     * the end of the string, and false otherwise
+     */
+    endsWith(searchString, length) {
+        /* (note)length is optional. If it is omitted the default value is the length of string.
+        *  But If length is omitted, it returns false on QT. (tested on QT 5.12.4 and 5.13.0)
+        */
+        if (typeof length === "undefined") {
+            length = this.str.length;
+        }
+        return this.str.endsWith(searchString, length);
+    }
+
+    /**
+     * Same as String.includes()
+     * @param {string} searchValue string to search for
+     * @param {number} start index into the string to start searching, or
+     * undefined to search the entire string
+     * @return {boolean}
+     */
+    includes(searchValue, start) {
+        return this.str.includes(searchValue, start);
     }
 
     /**
@@ -981,6 +1041,16 @@ class IString {
     }
 
     /**
+     * Same as String.localeCompare()
+     * @param {String} compareString
+     * @param {String=} locales
+     * @param {Object=} options
+     */
+    localeCompare(compareString, locales, options) {
+        return this.str.localeCompare(compareString, typeof(locales) === 'undefined' ? this.getLocale() : locales, options);
+    }
+
+    /**
      * Same as String.match()
      * @param {string} regexp the regular expression to match
      * @return {Array.<string>} an array of matches
@@ -999,6 +1069,45 @@ class IString {
     }
 
     /**
+     * Same as String.normalize(). If this JS engine does not support
+     * this method, then you can use the NormString class of ilib
+     * to the same thing (albeit a little slower).
+     *
+     * @param {String} form the name of the Unicode Normalization Form
+     * @return {IString} the normalize version of the string
+     */
+    normalize(form) {
+        return typeof(this.str.normalize) === 'function' ? new IString(this.str.normalize(form)) : this;
+    }
+
+    /**
+     * Same as String.padEnd().
+     * @return {IString} a string of the specified length with the
+     * pad string applied at the end of the current string
+     */
+    padEnd(targetLength, padString) {
+        return new IString(this.str.padEnd(targetLength, padString));
+    }
+
+    /**
+     * Same as String.padStart().
+     * @return {IString} a string of the specified length with the
+     * pad string applied at the end of the current string
+     */
+    padStart(targetLength, padString) {
+        return new IString(this.str.padStart(targetLength, padString));
+    }
+
+    /**
+     * Same as String.repeat().
+     * @return {IString} a new string containing the specified number
+     * of copies of the given string
+     */
+    repeat(count) {
+        return new IString(this.str.repeat(count));
+    }
+
+    /**
      * Same as String.replace()
      * @param {string} searchValue a regular expression to search for
      * @param {string} newValue the string to replace the matches with
@@ -1007,6 +1116,17 @@ class IString {
      */
     replace(searchValue, newValue) {
         return new IString(this.str.replace(searchValue, newValue));
+    }
+
+    /**
+     * Same as String.replaceAll()
+     * @param {string} searchValue a regular expression to search for
+     * @param {string} newValue the string to replace the matches with
+     * @return {IString} a new string with all the matches replaced
+     * with the new value
+     */
+    replaceAll(searchValue, newValue) {
+        return new IString(this.str.replaceAll(searchValue, newValue));
     }
 
     /**
@@ -1039,7 +1159,16 @@ class IString {
      * by the separator
      */
     split(separator, limit) {
-        return this.str.split(separator, limit);
+        return this.str.split(separator, limit).map(str => new IString(str));
+    }
+
+    /**
+     * Same as String.startsWith().
+     * @return {boolean} true if the given characters are found at
+     * the beginning of the string, and false otherwise
+     */
+    startsWith(searchString, length) {
+        return this.str.startsWith(searchString, length);
     }
 
     /**
@@ -1051,7 +1180,7 @@ class IString {
      * @return {IString} the requested substring
      */
     substr(start, length) {
-        var plat = getPlatform();
+        const plat = getPlatform();
         if (plat === "qt" || plat === "rhino" || plat === "trireme") {
             // qt and rhino have a broken implementation of substr(), so
             // work around it
@@ -1071,178 +1200,113 @@ class IString {
      * @return {IString} the requested substring
      */
     substring(from, to) {
-        return this.str.substring(from, to);
+        return new IString(this.str.substring(from, to));
+    }
+
+    /**
+     * Same as String.toLocaleLowerCase(). If the JS engine does not support this
+     * method, you can use the ilib CaseMapper class instead.
+     * @return {IString} a new string representing the calling string
+     * converted to lower case, according to any locale-sensitive
+     * case mappings
+     */
+    toLocaleLowerCase(locale) {
+        return new IString(this.str.toLocaleLowerCase(locale));
+    }
+
+    /**
+     * Same as String.toLocaleUpperCase(). If the JS engine does not support this
+     * method, you can use the ilib CaseMapper class instead.
+     * @return {IString} a new string representing the calling string
+     * converted to upper case, according to any locale-sensitive
+     * case mappings
+     */
+    toLocaleUpperCase(locale) {
+        return new IString(this.str.toLocaleUpperCase(locale));
     }
 
     /**
      * Same as String.toLowerCase(). Note that this method is
      * not locale-sensitive.
-     * @return {IString} a string with the first character
+     * @return {IString} a string with all the characters
      * lower-cased
      */
     toLowerCase() {
-        return this.str.toLowerCase();
+        return new IString(this.str.toLowerCase());
+    }
+
+    /**
+     * Same as String.toString()
+     * @return {string} this instance as regular Javascript string
+     */
+    toString() {
+        return this.str.toString();
     }
 
     /**
      * Same as String.toUpperCase(). Note that this method is
      * not locale-sensitive. Use toLocaleUpperCase() instead
      * to get locale-sensitive behaviour.
-     * @return {IString} a string with the first character
+     * @return {IString} a string with all the characters
      * upper-cased
      */
     toUpperCase() {
-        return this.str.toUpperCase();
-    }
-
-    /**
-     * Same as String.endsWith().
-     * @return {boolean} true if the given characters are found at
-     * the end of the string, and false otherwise
-     */
-    endsWith(searchString, length) {
-        /* (note)length is optional. If it is omitted the default value is the length of string.
-        *  But If length is omitted, it returns false on QT. (tested on QT 5.12.4 and 5.13.0)
-        */
-        if (typeof length === "undefined") {
-            length = this.str.length;
-        }
-        return this.str.endsWith(searchString, length);
-    }
-
-    /**
-     * Same as String.startsWith().
-     * @return {boolean} true if the given characters are found at
-     * the beginning of the string, and false otherwise
-     */
-    startsWith(searchString, length) {
-        return this.str.startsWith(searchString, length);
-    }
-
-    /**
-     * Same as String.includes().
-     * @return {boolean} true if the search string is found anywhere
-     * with the given string, and false otherwise
-     */
-    includes(searchString, position) {
-        return this.str.includes(searchString, position);
-    }
-
-    /**
-     * Same as String.normalize(). If this JS engine does not support
-     * this method, then you can use the NormString class of ilib
-     * to the same thing (albeit a little slower).
-     *
-     * @return {string} the string in normalized form
-     */
-    normalize(form) {
-        return this.str.normalize(form);
-    }
-
-    /**
-     * Same as String.padEnd().
-     * @return {string} a string of the specified length with the
-     * pad string applied at the end of the current string
-     */
-    padEnd(targetLength, padString) {
-        return this.str.padEnd(targetLength, padString);
-    }
-
-    /**
-     * Same as String.padStart().
-     * @return {string} a string of the specified length with the
-     * pad string applied at the end of the current string
-     */
-    padStart(targetLength, padString) {
-        return this.str.padStart(targetLength, padString);
-    }
-
-    /**
-     * Same as String.repeat().
-     * @return {string} a new string containing the specified number
-     * of copies of the given string
-     */
-    repeat(count) {
-        return this.str.repeat(count);
-    }
-
-    /**
-     * Same as String.toLocaleLowerCase(). If the JS engine does not support this
-     * method, you can use the ilib CaseMapper class instead.
-     * @return {string} a new string representing the calling string
-     * converted to lower case, according to any locale-sensitive
-     * case mappings
-     */
-    toLocaleLowerCase(locale) {
-        return this.str.toLocaleLowerCase(locale);
-    }
-
-    /**
-     * Same as String.toLocaleUpperCase(). If the JS engine does not support this
-     * method, you can use the ilib CaseMapper class instead.
-     * @return {string} a new string representing the calling string
-     * converted to upper case, according to any locale-sensitive
-     * case mappings
-     */
-    toLocaleUpperCase(locale) {
-        return this.str.toLocaleUpperCase(locale);
+        return new IString(this.str.toUpperCase());
     }
 
     /**
      * Same as String.trim().
-     * @return {string} a new string representing the calling string stripped
+     * @return {IString} a new string representing the calling string stripped
      * of whitespace from both ends.
      */
     trim() {
-        return this.str.trim();
+        return new IString(this.str.trim());
     }
 
     /**
      * Same as String.trimEnd().
-     * @return {string} a new string representing the calling string stripped
+     * @return {IString} a new string representing the calling string stripped
      * of whitespace from its (right) end.
      */
     trimEnd() {
-        return this.str.trimEnd();
-    }
-
-    /**
-     * Same as String.trimRight().
-     * @return {string} a new string representing the calling string stripped
-     * of whitespace from its (right) end.
-     */
-    trimRight() {
-        return this.str.trimRight();
+        return new IString(this.str.trimEnd());
     }
 
     /**
      * Same as String.trimStart().
-     * @return {string} A new string representing the calling string stripped
+     * @return {IString} A new string representing the calling string stripped
      * of whitespace from its beginning (left end).
      */
     trimStart() {
-        return this.str.trimStart();
+        return new IString(this.str.trimStart());
+    }
+
+    /**
+     * Same as String.valueOf()
+     * @return {string} this instance as a regular Javascript string
+     */
+    valueOf() {
+        return this.str.valueOf();
+    }
+
+    // end of delegates
+
+    /**
+     * Same as String.trimRight().
+     * @return {IString} a new string representing the calling string stripped
+     * of whitespace from its (right) end.
+     */
+    trimRight() {
+        return new IString(this.str.trimRight());
     }
 
     /**
      * Same as String.trimLeft().
-     * @return {string} A new string representing the calling string stripped
+     * @return {IString} A new string representing the calling string stripped
      * of whitespace from its beginning (left end).
      */
     trimLeft() {
-        return this.str.trimLeft();
-    }
-
-    /**
-     * Convert the character or the surrogate pair at the given
-     * index into the string to a Unicode UCS-4 code point.
-     * @protected
-     * @param {number} index index into the string
-     * @return {number} code point of the character at the
-     * given index into the string
-     */
-    _toCodePoint(index) {
-        return IString.toCodePoint(this.str, index);
+        return new IString(this.str.trimLeft());
     }
 
     /**
@@ -1268,7 +1332,7 @@ class IString {
      */
     forEach(callback) {
         if (typeof(callback) === 'function') {
-            var it = this.charIterator();
+            const it = this.charIterator();
             while (it.hasNext()) {
                 callback(it.next());
             }
@@ -1296,10 +1360,13 @@ class IString {
      * code point in the current string
      */
     forEachCodePoint(callback) {
+        if (!this.codePoints) {
+            this.generateCodePointArray();
+        }
         if (typeof(callback) === 'function') {
-            var it = this.iterator();
-            while (it.hasNext()) {
-                callback(it.next());
+            let index = 0;
+            while (index < this.codePoints.length) {
+                callback(this.codePoints[index++]);
             }
         }
     }
@@ -1331,21 +1398,62 @@ class IString {
          * @constructor
          */
         function _iterator (istring) {
+            if (!istring.codePoints) {
+                istring.generateCodePointArray();
+            }
             this.index = 0;
             this.hasNext = function () {
-                return (this.index < istring.str.length);
+                return (this.index < istring.codePoints.length);
             };
             this.next = function () {
-                if (this.index < istring.str.length) {
-                    var num = istring._toCodePoint(this.index);
-                    this.index += ((num > 0xFFFF) ? 2 : 1);
-                } else {
-                    num = -1;
-                }
-                return num;
+                return (this.index < istring.codePoints.length) ? istring.codePoints[this.index++] : -1;
             };
         };
         return new _iterator(this);
+    }
+
+    /**
+     *
+     * Implement the iterator protocol over the characters in the string
+     * as a generator function. This allows an IString to be used with
+     * the for..of operator:
+     *
+     * <pre>
+     * const s = new IString("test");
+     * for (let ch of s) {
+     *     console.log(ch);
+     * }
+     * // prints:
+     * // t
+     * // e
+     * // s
+     * // t
+     * </pre>
+     *
+     * It can also be used with the spread operator:
+     * <pre>
+     * const s = new IString("test");
+     * console.log(`Chars are ${...s}`);
+     * // prints:
+     * // Chars are ['t','e','s','t']
+     * </pre>
+     *
+     * This iterator properly skips over UTF-16 surrogate pairs and
+     * return the "astral plane" Unicode characters.
+     *
+     * @generator
+     * @function @@Iterator
+     * @memberof IString
+     * @yields {String} a string containing each character.
+     */
+    *[Symbol.iterator]() {
+        let index = 0;
+        if (!this.codePoints) {
+            this.generateCodePointArray();
+        }
+        while (index < this.codePoints.length) {
+            yield JSUtils.fromCodePoint(this.codePoints[index++]);
+        }
     }
 
     /**
@@ -1374,47 +1482,20 @@ class IString {
          * @constructor
          */
         function _chiterator (istring) {
+            if (!istring.codePoints) {
+                istring.generateCodePointArray();
+            }
             this.index = 0;
             this.hasNext = function () {
-                return (this.index < istring.str.length);
+                return (this.index < istring.codePoints.length);
             };
             this.next = function () {
-                var ch;
-                if (this.index < istring.str.length) {
-                    ch = istring.str.charAt(this.index);
-                    if (IString.isSurrogate(ch) &&
-                            this.index+1 < istring.str.length &&
-                            IString.isSurrogate(istring.str.charAt(this.index+1))) {
-                        this.index++;
-                        ch += istring.str.charAt(this.index);
-                    }
-                    this.index++;
-                }
-                return ch;
+                return (this.index < istring.codePoints.length) ?
+                    JSUtils.fromCodePoint(istring.codePoints[this.index++]) :
+                    undefined;
             };
         };
         return new _chiterator(this);
-    }
-
-    /**
-     * Return the code point at the given index when the string is viewed
-     * as an array of code points. If the index is beyond the end of the
-     * array of code points or if the index is negative, -1 is returned.
-     * @param {number} index index of the code point
-     * @return {number} code point of the character at the given index into
-     * the string
-     */
-    codePointAt(index) {
-        if (index < 0) {
-            return -1;
-        }
-        var count,
-            it = this.iterator(),
-            ch;
-        for (count = index; count >= 0 && it.hasNext(); count--) {
-            ch = it.next();
-        }
-        return (count < 0) ? ch : -1;
     }
 
     /**
@@ -1427,7 +1508,7 @@ class IString {
      * formats with this string
      */
     getLocale() {
-        return (this.locale ? this.locale.getSpec() : this.localeSpec) || getLocale()();
+        return (this.locale ? this.locale.getSpec() : this.localeSpec) || getLocale();
     }
 
     /**
@@ -1441,15 +1522,10 @@ class IString {
      * @return {number} the number of code points in this string
      */
     codePointLength() {
-        if (this.cpLength === -1) {
-            var it = this.iterator();
-            this.cpLength = 0;
-            while (it.hasNext()) {
-                this.cpLength++;
-                it.next();
-            };
+        if (!this.codePoints) {
+            this.generateCodePointArray();
         }
-        return this.cpLength;
+        return this.codePoints.length;
     }
 };
 

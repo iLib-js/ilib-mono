@@ -24,9 +24,9 @@ module.exports = {
     entry: "./test/testSuiteWeb.js",
     output: {
         path: path.resolve(__dirname, 'test'),
-        filename: "ilib-loader-test.js",
+        filename: "ilib-istring-test.js",
         library: {
-            name: "ilibLoaderTest",
+            name: "ilibIStringTest",
             type: "umd"
         }
     },
@@ -43,21 +43,11 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
-                include: /node_modules\/ilib-/,
+                exclude: /node_modules\/(?!(ilib-common|ilib-env|ilib-locale))/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: [[
-                            '@babel/preset-env',
-                            {
-                                useBuiltIns: 'usage',
-                                corejs: {
-                                    version: 3,
-                                    proposals: true
-                                }
-                            }
-                        ]],
+                        presets: ['@babel/preset-env'],
                         plugins: [
                             //"add-module-exports",
                             "@babel/plugin-transform-regenerator"
