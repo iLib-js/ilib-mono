@@ -242,7 +242,8 @@ limitations under the License.
 
 ### v1.3.1
 
-- Fixed incorrect documentation
+* Fixed incorrect documentation
+* removed useless polyfills which were causing code bloat
 
 ### v1.3.0
 
