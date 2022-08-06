@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { testEnv } from './testenv';
+import { testEnv } from './testenv.js';
 
 export const tests = [
     testEnv

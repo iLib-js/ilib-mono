@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as ilibEnv from '../src/index';
+import * as ilibEnv from '../src/index.js';
 
 export const testEnv = {
     testGetLocaleDefault: function(test) {
