@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import ISet from '../src/ISet';
+import ISet from '../src/ISet.js';
 
 export const testSet = {
     testConstructor: function(test) {

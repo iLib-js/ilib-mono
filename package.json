@@ -1,8 +1,14 @@
 {
     "name": "ilib-common",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "main": "./lib/index.js",
     "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        }
+    },
     "description": "Common utility functions for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
         "internationalization",
@@ -52,13 +58,14 @@
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:test": "webpack-cli --config webpack-test.config.js",
-        "dist": "npm-run-all doc build:prod; npm pack",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
         "test": "npm run test:cli",
         "test:cli": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
         "test:all": "npm-run-all test:cli test:web",
         "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d * ; rm -rf lib",
+        "clean": "git clean -f -d src test; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
@@ -89,7 +96,7 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-env": "^1.3.1",
-        "ilib-locale": "^1.2.1"
+        "ilib-env": "file:../../../../../../home/edwin/ht/ilib-env/ilib-env-1.3.2.tgz",
+        "ilib-locale": "file:../../../../../../home/edwin/ht/ilib-locale/ilib-locale-1.2.2.tgz"
     }
 }

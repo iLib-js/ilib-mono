@@ -18,7 +18,7 @@
  */
 
 import Locale from 'ilib-locale';
-import Path from './Path';
+import Path from './Path.js';
 
 /**
  * @module Utils

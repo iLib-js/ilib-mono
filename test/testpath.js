@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Path from '../src/Path';
+import Path from '../src/Path.js';
 
 export const testPath = {
     testDirnameSimple: function(test) {

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as SearchUtils from '../src/SearchUtils';
+import * as SearchUtils from '../src/SearchUtils.js';
 
 function strcmp(left, right) {
     return left.localeCompare(right);
