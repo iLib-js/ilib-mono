@@ -21,10 +21,10 @@
 //import log4js from '@log4js-node/log4js-api';
 
 import { getPlatform, top } from 'ilib-env';
-import Loader from './Loader';
+import Loader from './Loader.js';
 
-import NodeLoader from './NodeLoader';
-import WebpackLoader from './WebpackLoader';
+import NodeLoader from './NodeLoader.js';
+import WebpackLoader from './WebpackLoader.js';
 // import QtLoader from './QtLoader';
 // import RhinoLoader from './RhinoLoader';
 // import RingoLoader from './RingoLoader';

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Loader from '../src/Loader';
+import Loader from '../src/Loader.js';
 
 /**
  * @class

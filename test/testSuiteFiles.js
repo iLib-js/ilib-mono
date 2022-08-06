@@ -19,7 +19,7 @@
 
 import { getPlatform } from  'ilib-env';
 
-let files = [
+export let files = [
     "testLoaderFactory.js",
     "testLoader.js",
 ];
@@ -33,4 +33,3 @@ if (getPlatform() === "nodejs") {
     files.push("testNodeLoader.js");
 }
 
-export default { files };

@@ -18,7 +18,7 @@
  */
 
 import { setPlatform } from 'ilib-env';
-import LoaderFactory, { registerLoader } from '../src/index';
+import LoaderFactory, { registerLoader } from '../src/index.js';
 
 export const testNodeLoader = {
     setUp: function(callback) {
@@ -390,7 +390,7 @@ export const testNodeLoader = {
         loader.setSyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.js"
+            "./test/files/test.cjs"
         ]);
         test.equal(content.length, 1);
         test.equal(typeof(content[0]), 'function');
@@ -435,7 +435,7 @@ export const testNodeLoader = {
         loader.setSyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.js",
+            "./test/files/test.cjs",
             "./test/files/a/asdf.mjs"
         ]);
         test.equal(content.length, 2);
@@ -452,7 +452,7 @@ export const testNodeLoader = {
         loader.setSyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.js",
+            "./test/files/test.cjs",
             "./test/files/testasdf.js",
             "./test/files/a/asdf.mjs"
         ]);
@@ -477,7 +477,7 @@ export const testNodeLoader = {
         loader.setAsyncMode();
 
         loader.loadFiles([
-            "./test/files/test.js",
+            "./test/files/test.cjs",
             "./test/files/a/asdf.mjs"
         ]).then(content => {
             test.equal(content.length, 2);
@@ -498,7 +498,7 @@ export const testNodeLoader = {
         loader.setAsyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.js",
+            "./test/files/test.cjs",
             "./test/files/testasdf.js",
             "./test/files/a/asdf.mjs"
         ]).then(content => {

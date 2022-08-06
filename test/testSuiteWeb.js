@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { testLoader } from './testLoader';
-import { testLoaderFactory } from './testLoaderFactory';
-import { testWebpackLoader } from './testWebpackLoader';
+import { testLoader } from './testLoader.js';
+import { testLoaderFactory } from './testLoaderFactory.js';
+import { testWebpackLoader } from './testWebpackLoader.js';
 
 export const tests = [
     testLoader,

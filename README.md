@@ -240,6 +240,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.2
+
+* This module is now a hybrid ESM/CommonJS package that actually works
+
 ### v1.3.1
 
 * Fixed incorrect documentation

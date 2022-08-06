@@ -18,7 +18,7 @@
  */
 
 import { setPlatform } from 'ilib-env';
-import LoaderFactory, { registerLoader } from '../src/index';
+import LoaderFactory, { registerLoader } from '../src/index.js';
 
 export const testWebpackLoader = {
     testLoaderGetName: function(test) {

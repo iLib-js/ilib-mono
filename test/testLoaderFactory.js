@@ -18,8 +18,8 @@
  */
 
 import { setPlatform, getPlatform } from 'ilib-env';
-import LoaderFactory, { registerLoader } from '../src/index';
-import MockLoader from './MockLoader';
+import LoaderFactory, { registerLoader } from '../src/index.js';
+import MockLoader from './MockLoader.js';
 
 export const testLoaderFactory = {
     testLoaderFactoryNode: function(test) {

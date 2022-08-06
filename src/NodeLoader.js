@@ -20,7 +20,7 @@
 import fs from 'fs';
 import path from 'path';
 import log4js from '@log4js-node/log4js-api';
-import Loader from './Loader';
+import Loader from './Loader.js';
 
 /**
  * Class that loads files under nodejs.
