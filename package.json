@@ -1,8 +1,14 @@
 {
     "name": "ilib-localeinfo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "./lib/index.js",
     "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        }
+    },
     "description": "Encode locale info for various types of data",
     "keywords": [
         "internationalization",
@@ -53,23 +59,25 @@
         "build": "npm run build:prod",
         "build:tz": "rm -r tz ; mkdir tz ; cd tz; wget https://data.iana.org/time-zones/releases/tzdata2022a.tar.gz ; tar zxovf *.tar.gz",
         "build:data": "cd scripts ; node genlocinfo.js",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:assemble": "ilib-assemble -m .  --localefile test/locales.json assembled src",
         "build:webtest": "webpack-cli --env dev --config webpack-test.config.js",
         "build:test": "npm-run-all build:dev build:assemble build:webtest",
-        "dist": "npm-run-all doc build:prod; npm pack",
+        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
         "test:cli": "LANG=en_US.UTF8 node test/testSuite.js",
         "test:web": "LANG=en_US.UTF8 npm-run-all build:assemble build:webtest ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "test": "npm-run-all build:dev test:cli",
         "test:all": "npm-run-all build:dev test:cli test:web",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d * ; rm -rf lib tz",
+        "clean": "git clean -f -d src test ; rm -rf lib tz assembled *.tgz",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/iliblocaleinfo.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
         "@babel/core": "^7.18.10",
+        "@babel/plugin-transform-modules-umd": "^7.18.6",
         "@babel/preset-env": "^7.18.10",
         "@babel/register": "^7.18.9",
         "@babel/runtime": "^7.18.9",
