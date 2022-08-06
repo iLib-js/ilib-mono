@@ -1,7 +1,7 @@
 /*
  * NameFmt.js - Format person names for display
  *
- * Copyright © 2013-2015, 2018-2019, JEDLSoft
+ * Copyright © 2013-2015, 2018-2019, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,79 +19,18 @@
 
 // !data name
 
-var ilib = require("../index.js");
-var Utils = require("./Utils.js");
+import { Utils, JSUtils } from 'ilib-common';
+import Locale from 'ilib-locale';
+import IString from 'ilib-string';
+import LocaleMatcher from 'ilib-localematcher';
+import { isPunct } from 'ilib-ctype';
 
-var Locale = require("./Locale.js");
-
-var IString = require("./IString.js");
-var Name = require("./Name.js");
-var isPunct = require("./isPunct.js");
+import Name from './Name.js';
 
 /**
  * @class
- * Creates a formatter that can format person name instances (Name) for display to
- * a user. The options may contain the following properties:
- *
- * <ul>
- * <li><i>locale</i> - Use the conventions of the given locale to construct the name format.
- * <li><i>style</i> - Format the name with the given style. The value of this property
- * should be one of the following strings:
- *   <ul>
- *     <li><i>short</i> - Format a short name with just the given and family names. eg. "John Smith"
- *     <li><i>medium</i> - Format a medium-length name with the given, middle, and family names.
- *     eg. "John James Smith"
- *     <li><i>long</i> - Format a long name with all names available in the given name object, including
- *     prefixes. eg. "Mr. John James Smith"
- *     <li><i>full</i> - Format a long name with all names available in the given name object, including
- *     prefixes and suffixes. eg. "Mr. John James Smith, Jr."
- *     <li><i>formal_short</i> - Format a name with the honorific or prefix/suffix and the family
- *     name. eg. "Mr. Smith"
- *     <li><i>formal_long</i> - Format a name with the honorific or prefix/suffix and the
- *     given and family name. eg. "Mr. John Smith"
- *     <li><i>familiar</i> - Format a name with the most familiar style that the culture of the locale
- *     will accept. In some locales, it is not rude to address people you just met by their given name.
- *     In others, it is rude to address a person in such a familiar style unless you are previously
- *     invited to do so or unless you have known them for a while. In this case, it will use a more formal
- *     style, but still as familiar as possible so as not to be rude.
- *   </ul>
- * <li><i>components</i> - Format the name with the given components in the correct
- * order for those components. Components are encoded as a string of letters representing
- * the desired components:
- *   <ul>
- *     <li><i>p</i> - prefixes
- *     <li><i>g</i> - given name
- *     <li><i>m</i> - middle names
- *     <li><i>f</i> - family name
- *     <li><i>s</i> - suffixes
- *     <li><i>h</i> - honorifics (selects the prefix or suffix as required by the locale)
- *   </ul>
- * <p>
- *
- * For example, the string "pf" would mean to only format any prefixes and family names
- * together and leave out all the other parts of the name.<p>
- *
- * The components can be listed in any order in the string. The <i>components</i> option
- * overrides the <i>style</i> option if both are specified.
- *
- * <li>onLoad - a callback function to call when the locale info object is fully
- * loaded. When the onLoad option is given, the localeinfo object will attempt to
- * load any missing locale data using the ilib loader callback.
- * When the constructor is done (even if the data is already preassembled), the
- * onLoad function is called with the current instance as a parameter, so this
- * callback can be used with preassembled or dynamic loading or a mix of the two.
- *
- * <li>sync - tell whether to load any missing locale data synchronously or
- * asynchronously. If this option is given as "false", then the "onLoad"
- * callback must be given, as the instance returned from this constructor will
- * not be usable for a while.
- *
- * <li><i>loadParams</i> - an object containing parameters to pass to the
- * loader callback function when locale data is missing. The parameters are not
- * interpretted or modified in any way. They are simply passed along. The object
- * may contain any property/value pairs as long as the calling code is in
- * agreement with the loader callback function as to what those parameters mean.
- * </ul>
+ * Represents a formatter that can format person name instances (Name) for display to
+ * a user.<p>
  *
  * Formatting names is a locale-dependent function, as the order of the components
  * depends on the locale. The following explains some of the details:<p>
@@ -121,115 +60,189 @@ var isPunct = require("./isPunct.js");
  * "Beethoven". This class ensures that the family name is formatted correctly with
  * all auxillary words.
  * </ul>
- *
- *
- * @constructor
- * @param {Object} options A set of options that govern how the formatter will behave
  */
-var NameFmt = function(options) {
-    var sync = true;
-
-    this.style = "short";
-    this.loadParams = {};
-
-    if (options) {
-        if (options.locale) {
-            this.locale = (typeof(options.locale) === 'string') ? new Locale(options.locale) : options.locale;
-        }
-
-        if (options.style) {
-            this.style = options.style;
-        }
-
-        if (options.components) {
-            this.components = options.components;
-        }
-
-        if (typeof(options.sync) !== 'undefined') {
-            sync = !!options.sync;
-        }
-
-        if (typeof(options.loadParams) !== 'undefined') {
-            this.loadParams = options.loadParams;
+class NameFmt {
+    /**
+     * Create an instance of a name formatter.<p>
+     *
+     * The options may contain the following properties:
+     *
+     * <ul>
+     * <li><i>locale</i> - Use the conventions of the given locale to construct the name format.
+     * <li><i>style</i> - Format the name with the given style. The value of this property
+     * should be one of the following strings:
+     *   <ul>
+     *     <li><i>short</i> - Format a short name with just the given and family names. eg. "John Smith"
+     *     <li><i>medium</i> - Format a medium-length name with the given, middle, and family names.
+     *     eg. "John James Smith"
+     *     <li><i>long</i> - Format a long name with all names available in the given name object, including
+     *     prefixes. eg. "Mr. John James Smith"
+     *     <li><i>full</i> - Format a long name with all names available in the given name object, including
+     *     prefixes and suffixes. eg. "Mr. John James Smith, Jr."
+     *     <li><i>formal_short</i> - Format a name with the honorific or prefix/suffix and the family
+     *     name. eg. "Mr. Smith"
+     *     <li><i>formal_long</i> - Format a name with the honorific or prefix/suffix and the
+     *     given and family name. eg. "Mr. John Smith"
+     *     <li><i>familiar</i> - Format a name with the most familiar style that the culture of the locale
+     *     will accept. In some locales, it is not rude to address people you just met by their given name.
+     *     In others, it is rude to address a person in such a familiar style unless you are previously
+     *     invited to do so or unless you have known them for a while. In this case, it will use a more formal
+     *     style, but still as familiar as possible so as not to be rude.
+     *   </ul>
+     * <li><i>components</i> - Format the name with the given components in the correct
+     * order for those components. Components are encoded as a string of letters representing
+     * the desired components:
+     *   <ul>
+     *     <li><i>p</i> - prefixes
+     *     <li><i>g</i> - given name
+     *     <li><i>m</i> - middle names
+     *     <li><i>f</i> - family name
+     *     <li><i>s</i> - suffixes
+     *     <li><i>h</i> - honorifics (selects the prefix or suffix as required by the locale)
+     *   </ul>
+     * </ul>
+     * <p>
+     *
+     * For example, the string "pf" would mean to only format any prefixes and family names
+     * together and leave out all the other parts of the name.<p>
+     *
+     * The components can be listed in any order in the string. The <i>components</i> option
+     * overrides the <i>style</i> option if both are specified.
+     *
+     * @constructor
+     * @param {Object} options A set of options that govern how the formatter will behave
+     */
+    constructor(options) {
+        if (!options || !options._noinit) {
+            this.init(options, true);
         }
     }
 
-    // set up defaults in case we need them
-    this.defaultEuroTemplate = new IString("{prefix} {givenName} {middleName} {familyName}{suffix}");
-    this.defaultAsianTemplate = new IString("{prefix}{familyName}{givenName}{middleName}{suffix}");
-    this.useFirstFamilyName = false;
+    /**
+     * Initialize this instance.
+     * @private
+     */
+    init(options, sync) {
+        this.style = "short";
+        this.loadParams = {};
 
-    switch (this.style) {
-        default:
-        case "s":
-        case "short":
-            this.style = "short";
-            break;
-        case "m":
-        case "medium":
-            this.style = "medium";
-            break;
-        case "l":
-        case "long":
-            this.style = "long";
-            break;
-        case "f":
-        case "full":
-            this.style = "full";
-            break;
-        case "fs":
-        case "formal_short":
-            this.style = "formal_short";
-            break;
-        case "fl":
-        case "formal_long":
-            this.style = "formal_long";
-            break;
-        case "fam":
-        case "familiar":
-            this.style = "familiar";
-            break;
-    }
+        if (options) {
+            if (options.locale) {
+                this.locale = (typeof(options.locale) === 'string') ? new Locale(options.locale) : options.locale;
+            }
 
-    this.locale = this.locale || new Locale();
+            if (options.style) {
+                this.style = options.style;
+            }
 
-    isPunct._init(sync, this.loadParams, ilib.bind(this, function() {
-        Utils.loadData({
-            object: "Name",
-            locale: this.locale,
-            name: "name.json",
-            sync: sync,
-            loadParams: this.loadParams,
-            callback: ilib.bind(this, function (info) {
-                this.info = info || Name.defaultInfo;;
-                this._init();
-                if (options && typeof(options.onLoad) === 'function') {
-                    options.onLoad(this);
-                }
-            })
+            if (options.components) {
+                this.components = options.components;
+            }
+
+            if (typeof(options.sync) !== 'undefined') {
+                sync = !!options.sync;
+            }
+
+            if (typeof(options.loadParams) !== 'undefined') {
+                this.loadParams = options.loadParams;
+            }
+        }
+
+        // set up defaults in case we need them
+        this.defaultEuroTemplate = new IString("{prefix} {givenName} {middleName} {familyName}{suffix}");
+        this.defaultAsianTemplate = new IString("{prefix}{familyName}{givenName}{middleName}{suffix}");
+        this.useFirstFamilyName = false;
+
+        switch (this.style) {
+            default:
+            case "s":
+            case "short":
+                this.style = "short";
+                break;
+            case "m":
+            case "medium":
+                this.style = "medium";
+                break;
+            case "l":
+            case "long":
+                this.style = "long";
+                break;
+            case "f":
+            case "full":
+                this.style = "full";
+                break;
+            case "fs":
+            case "formal_short":
+                this.style = "formal_short";
+                break;
+            case "fl":
+            case "formal_long":
+                this.style = "formal_long";
+                break;
+            case "fam":
+            case "familiar":
+                this.style = "familiar";
+                break;
+        }
+
+        this.locale = this.locale || new Locale();
+
+        const locData = getLocaleData({
+            basename: "name",
+            path: this.localeDir(),
+            sync
         });
-    }));
-};
 
-NameFmt.prototype = {
+        // ensure that we can grab the data we need
+        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "name")) {
+            const lm = new LocaleMatcher({
+                locale: this.locale.getSpec(),
+                sync: true
+            });
+            this.locale = new Locale(lm.getLikelyLocale());
+            if (!LocaleData.checkCache(this.locale.getSpec(), "name")) {
+                throw "Locale data not available";
+            }
+        }
+
+        if (sync) {
+            this.info = locData.loadData({
+                basename: "name",
+                locale: this.locale,
+                sync: sync
+            }) || Name.defaultInfo;
+            this._initialize(name);
+        } else {
+            return locData.loadData({
+                basename: "name",
+                locale: this.locale,
+                sync: sync
+            }).then((info) => {
+                this.info = info || Name.defaultInfo;
+                this._initialize(name);
+                return this;
+            });
+        }
+    }
+
     /**
      * @protected
      */
-    _init: function() {
-        var arr;
+    _initialize() {
+        let arr;
         this.comps = {};
 
         if (this.components) {
-            var valids = {"p":1,"g":1,"m":1,"f":1,"s":1,"h":1};
+            let valids = {"p":1,"g":1,"m":1,"f":1,"s":1,"h":1};
             arr = this.components.split("");
             this.comps = {};
-            for (var i = 0; i < arr.length; i++) {
+            for (let i = 0; i < arr.length; i++) {
                 if (valids[arr[i].toLowerCase()]) {
                     this.comps[arr[i].toLowerCase()] = true;
                 }
             }
         } else {
-            var comps = this.info.components[this.style];
+            let comps = this.info.components[this.style];
             if (typeof(comps) === "string") {
                 comps.split("").forEach(ilib.bind(this, function(c) {
                     this.comps[c] = true;
@@ -246,14 +259,14 @@ NameFmt.prototype = {
         }
 
         this.isAsianLocale = (this.info.nameStyle === "asian");
-    },
+    }
 
     /**
      * adjoin auxillary words to their head words
      * @protected
      */
-    _adjoinAuxillaries: function (parts, namePrefix) {
-        var start, i, prefixArray, prefix, prefixLower;
+    _adjoinAuxillaries(parts, namePrefix) {
+        let start, i, prefixArray, prefix, prefixLower;
 
         //console.info("_adjoinAuxillaries: finding and adjoining aux words in " + parts.join(' '));
 
@@ -280,31 +293,31 @@ NameFmt.prototype = {
         //console.info("_adjoinAuxillaries: done. Result is " + JSON.stringify(parts));
 
         return parts;
-    },
+    }
 
     /**
      * Return the locale for this formatter instance.
      * @return {Locale} the locale instance for this formatter
      */
-    getLocale: function () {
+    getLocale() {
         return this.locale;
-    },
+    }
 
     /**
      * Return the style of names returned by this formatter
      * @return {string} the style of names returned by this formatter
      */
-    getStyle: function () {
+    getStyle() {
         return this.style;
-    },
+    }
 
     /**
      * Return the list of components used to format names in this formatter
      * @return {string} the list of components
      */
-    getComponents: function () {
+    getComponents() {
         return this.components;
-    },
+    }
 
     /**
      * Format the name for display in the current locale with the options set up
@@ -325,9 +338,9 @@ NameFmt.prototype = {
      * @param {Name|Object} name the name instance to format, or an object containing name parts to format
      * @return {string|undefined} the name formatted according to the style of this formatter instance
      */
-    format: function(name) {
-        var formatted, temp, modified, isAsianName;
-        var currentLanguage = this.locale.getLanguage();
+    format(name) {
+        let formatted, temp, modified, isAsianName;
+        let currentLanguage = this.locale.getLanguage();
 
         if (!name || typeof(name) !== 'object') {
             return undefined;
@@ -356,7 +369,7 @@ NameFmt.prototype = {
             }
 
             if (this.useFirstFamilyName && name.familyName) {
-                var familyNameParts = modified.familyName.trim().split(' ');
+                let familyNameParts = modified.familyName.trim().split(' ');
                 if (familyNameParts.length > 1) {
                     familyNameParts = this._adjoinAuxillaries(familyNameParts, name.prefix);
                 }    //in spain and mexico, we parse names differently than in the rest of the world
@@ -389,7 +402,7 @@ NameFmt.prototype = {
             }
         }
 
-        var parts = {
+        let parts = {
             prefix: this.comps["p"] && modified.prefix || "",
             givenName: this.comps["g"] && modified.givenName || "",
             middleName: this.comps["m"] && modified.middleName || "",
@@ -400,6 +413,6 @@ NameFmt.prototype = {
         formatted = temp.format(parts);
         return formatted.replace(/\s+/g, ' ').trim();
     }
-};
+}
 
-module.exports = NameFmt;
+export default NameFmt;
