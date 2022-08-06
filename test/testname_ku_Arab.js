@@ -1,7 +1,7 @@
 /*
  * testname_ku_Arab.js - test the name object in Kurdish
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_ku_Arab = {
+export const testname_ku_Arab = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,140 +28,140 @@ module.exports.testname_ku_Arab = {
 
     testParseSimpleName_ku_Arab: function(test) {
         test.expect(2);
-        var parsed = new Name("جەلال تاڵەبانی", {locale: 'ku-Arab-IQ'});
+        const parsed = new Name("جەلال تاڵەبانی", {locale: 'ku-Arab-IQ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =   {
+
+        const expected =   {
             givenName: "جەلال",
             familyName: "تاڵەبانی"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
-    
-    
+
+
+
+
+
     testParseSingleNameWithPrefixAndAdjunct_ku_Arab: function(test) {
         test.expect(2);
-        var parsed = new Name("بەڕێز و خاتوو تاڵەبانی", {locale: 'ku-Arab-IQ'});
+        const parsed = new Name("بەڕێز و خاتوو تاڵەبانی", {locale: 'ku-Arab-IQ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =  {
+
+        const expected =  {
             prefix: "بەڕێز و خاتوو",
             familyName: "تاڵەبانی"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_ku_Arab: function(test) {
         test.expect(2);
-        var parsed = new Name("جەلال تاڵەبانی کوڕ", {locale: 'ku-Arab-IQ'});
+        const parsed = new Name("جەلال تاڵەبانی کوڕ", {locale: 'ku-Arab-IQ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =    {
+
+        const expected =    {
             suffix: "کوڕ",
             givenName: "جەلال",
             familyName: "تاڵەبانی"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
-    
-    
+
+
+
+
+
     testParseEverything_ku_Arab: function(test) {
         test.expect(2);
-        var parsed = new Name("بەڕێز جەلال تاڵەبانی", {locale: 'ku-Arab-IQ'});
+        const parsed = new Name("بەڕێز جەلال تاڵەبانی", {locale: 'ku-Arab-IQ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =    {
+
+        const expected =    {
             prefix: "بەڕێز",
             givenName: "جەلال",
             familyName: "تاڵەبانی"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_ku_Arab: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "جەلال",
             familyName: "تاڵەبانی"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'ku-Arab-IQ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "جەلال تاڵەبانی";
-        
+
+        const expected = "جەلال تاڵەبانی";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_ku_Arab: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "جەلال",
             familyName: "تاڵەبانی"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'ku-Arab-IQ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "جەلال تاڵەبانی";
-        
+
+        const expected = "جەلال تاڵەبانی";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_ku_Arab: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "جەلال",
-            
+
             familyName: "تاڵەبانی",
             suffix: "کوڕ"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'ku-Arab-IQ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "جەلال تاڵەبانی کوڕ";
-        
+
+        const expected = "جەلال تاڵەبانی کوڕ";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
 };

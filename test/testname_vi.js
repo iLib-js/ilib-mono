@@ -1,7 +1,7 @@
 /*
  * testname_vi.js - test the name object in Vietnamese
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_vi = {
+export const testname_vi = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,315 +28,315 @@ module.exports.testname_vi = {
 
     testParseSimpleName_vi: function(test) {
         test.expect(2);
-        var parsed = new Name("Chau-Giang Thi Nguyen", {locale: 'vi-VN'});
+        const parsed = new Name("Chau-Giang Thi Nguyen", {locale: 'vi-VN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =   {
+
+        const expected =   {
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseAdjunctNames_vi: function(test) {
         test.expect(2);
-        var parsed = new Name("Chau-Giang Thi Nguyen", {locale: 'vi-VN'});
+        const parsed = new Name("Chau-Giang Thi Nguyen", {locale: 'vi-VN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =  {
+
+        const expected =  {
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSingleNameWithPrefixAndAdjunct_vi: function(test) {
         test.expect(2);
-        var parsed = new Name("Ông và Bà Nguyen", {locale: 'vi-VN'});
+        const parsed = new Name("Ông và Bà Nguyen", {locale: 'vi-VN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =   {
+
+        const expected =   {
             prefix: "Ông và Bà",
             familyName: "Nguyen"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_vi: function(test) {
         test.expect(2);
-        var parsed = new Name("Chau-Giang Nguyen Cao cấp", {locale: 'vi-VN'});
+        const parsed = new Name("Chau-Giang Nguyen Cao cấp", {locale: 'vi-VN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =    {
+
+        const expected =    {
             suffix: "Cao cấp",
             givenName: "Chau-Giang",
             familyName: "Nguyen"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitleWithFamilyOnly_vi: function(test) {
         test.expect(2);
-        var parsed = new Name("Thị trưởng Nguyen", {locale: 'vi-VN'});
+        const parsed = new Name("Thị trưởng Nguyen", {locale: 'vi-VN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =   {
+
+        const expected =   {
             prefix: "Thị trưởng",
             familyName: "Nguyen"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseEverything_vi: function(test) {
         test.expect(2);
-        var parsed = new Name("Ông Chau-Giang Thi Nguyen", {locale: 'vi-VN'});
+        const parsed = new Name("Ông Chau-Giang Thi Nguyen", {locale: 'vi-VN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =    {
+
+        const expected =    {
             prefix: "Ông",
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Chau-Giang Nguyen";
-        
+
+        const expected = "Chau-Giang Nguyen";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Chau-Giang Thi Nguyen";
-        
+
+        const expected = "Chau-Giang Thi Nguyen";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen",
             suffix: "Cao cấp"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Chau-Giang Thi Nguyen";
-        
+
+        const expected = "Chau-Giang Thi Nguyen";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "Ông",
             givenName: "Chau-Giang",
             middleName: "Thi",
             familyName: "Nguyen",
             suffix: "Cao cấp"
         });
-        var fmt = new NameFmt({
-            style: "full", 
-            locale: 'vi-VN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Ông Chau-Giang Thi Nguyen Cao cấp";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameShort_vi: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "Ông",
-            givenName: "Chau-Giang",
-            middleName: "Thi",
-            familyName: "Nguyen"
-        });
-        var fmt = new NameFmt({
-            style: "short", 
-            locale: 'vi-VN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Chau-Giang Nguyen";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameMedium_vi: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "Ông",
-            givenName: "Chau-Giang",
-            middleName: "Thi",
-            familyName: "Nguyen"
-        });
-        var fmt = new NameFmt({
-            style: "medium", 
-            locale: 'vi-VN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Chau-Giang Thi Nguyen";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameLong_vi: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "Ông",
-            givenName: "Chau-Giang",
-            middleName: "Thi",
-            familyName: "Nguyen"
-        });
-        var fmt = new NameFmt({
+        let fmt = new NameFmt({
             style: "full",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Ông Chau-Giang Thi Nguyen";
-        
+
+        const expected = "Ông Chau-Giang Thi Nguyen Cao cấp";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
+    testFormatComplexNameShort_vi: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "Ông",
+            givenName: "Chau-Giang",
+            middleName: "Thi",
+            familyName: "Nguyen"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'vi-VN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Chau-Giang Nguyen";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameMedium_vi: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "Ông",
+            givenName: "Chau-Giang",
+            middleName: "Thi",
+            familyName: "Nguyen"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'vi-VN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Chau-Giang Thi Nguyen";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameLong_vi: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "Ông",
+            givenName: "Chau-Giang",
+            middleName: "Thi",
+            familyName: "Nguyen"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'vi-VN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Ông Chau-Giang Thi Nguyen";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
     testFormatAsianNameShort_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "地獸";
-        
+
+        const expected = "地獸";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatAsianNameMedium_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "地獸";
-        
+
+        const expected = "地獸";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatAsianNameLong_vi: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'vi-VN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "小地獸";
-        
+
+        const expected = "小地獸";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 };

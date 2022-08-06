@@ -1,6 +1,6 @@
 /*
  * testname_sk_SK.js - test the name object in slovak
- * 
+ *
  * Copyright © 2013-2015,2017, JEPánSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_sk = {
+export const testname_sk = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,256 +28,256 @@ module.exports.testname_sk = {
 
     testParseSimpleName_sk_SK: function(test) {
         test.expect(2);
-        var parsed = new Name("Iveta Stan", {locale: 'sk-SK'});
+        const parsed = new Name("Iveta Stan", {locale: 'sk-SK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Iveta",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseTitle_sk_SK: function(test) {
         test.expect(2);
-        var parsed = new Name("Iveta Stan dôchodku", {locale: 'sk-SK'});
+        const parsed = new Name("Iveta Stan dôchodku", {locale: 'sk-SK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix: "dôchodku",
             givenName: "Iveta",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitleWithFamilyOnly_sk_SK: function(test) {
         test.expect(2);
-        var parsed = new Name("Pán. Stan", {locale: 'sk-SK'});
+        const parsed = new Name("Pán. Stan", {locale: 'sk-SK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Pán.",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseEverything_sk_SK: function(test) {
         test.expect(2);
-        var parsed = new Name("Pán. a pani. Stan", {locale: 'sk-SK'});
+        const parsed = new Name("Pán. a pani. Stan", {locale: 'sk-SK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Pán. a pani.",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefix_sk_SK: function(test) {
         test.expect(2);
-        var parsed = new Name("Pán. Iveta Stan", {locale: 'sk-SK'});
+        const parsed = new Name("Pán. Iveta Stan", {locale: 'sk-SK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Pán.",
             givenName: "Iveta",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefixAndSuffix_sk_SK: function(test) {
         test.expect(2);
-        var parsed = new Name("Viceprezident Iveta Stan dôchodku", {locale: 'sk-SK'});
+        const parsed = new Name("Viceprezident Iveta Stan dôchodku", {locale: 'sk-SK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Viceprezident",
             givenName: "Iveta",
             familyName: "Stan",
             suffix:"dôchodku"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_sk_SK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Iveta",
             familyName: "Stan"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'sk-SK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Iveta Stan";
-        
+
+        const expected = "Iveta Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_sk_SK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Iveta",
             familyName: "Stan"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'sk-SK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Iveta Stan";
-        
+
+        const expected = "Iveta Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_sk_SK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Iveta",
             familyName: "Stan",
             suffix: "asdf"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'sk-SK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Iveta Stan";
-        
+
+        const expected = "Iveta Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testFormatSurname_sk_SK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "Pán. a pani.",
             familyName: "Stan"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'sk-SK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Pán. a pani. Stan";
-        
+
+        const expected = "Pán. a pani. Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_sk_SK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "princezná",
             givenName: "Iveta",
             familyName: "Stan",
             suffix: "dôchodku"
         });
-        var fmt = new NameFmt({
-            style: "full", 
-            locale: 'sk-SK'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "princezná Iveta Stan dôchodku";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameShort_sk_SK: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "princezná",
-            givenName: "Iveta",
-            familyName: "Stan"
-        });
-        var fmt = new NameFmt({
-            style: "short", 
-            locale: 'sk-SK'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Iveta Stan";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameMedium_sk_SK: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "princezná",
-            givenName: "Iveta",
-            familyName: "Stan"
-        });
-        var fmt = new NameFmt({
-            style: "medium", 
-            locale: 'sk-SK'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Iveta Stan";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameLong_sk_SK: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "princezná",
-            givenName: "Iveta",
-            familyName: "Stan"
-        });
-        var fmt = new NameFmt({
+        let fmt = new NameFmt({
             style: "full",
             locale: 'sk-SK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "princezná Iveta Stan";
-        
+
+        const expected = "princezná Iveta Stan dôchodku";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameShort_sk_SK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "princezná",
+            givenName: "Iveta",
+            familyName: "Stan"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'sk-SK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Iveta Stan";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameMedium_sk_SK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "princezná",
+            givenName: "Iveta",
+            familyName: "Stan"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'sk-SK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Iveta Stan";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameLong_sk_SK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "princezná",
+            givenName: "Iveta",
+            familyName: "Stan"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'sk-SK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "princezná Iveta Stan";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
+
+
+
 };

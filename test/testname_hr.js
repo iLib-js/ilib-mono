@@ -1,7 +1,7 @@
 /*
  * testname_en.js - test the name object in Japanese
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_hr = {
+export const testname_hr = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,274 +28,274 @@ module.exports.testname_hr = {
 
     testParseSimpleName_hr_HR: function(test) {
         test.expect(2);
-        var parsed = new Name("Antonio Pavlović", {locale: 'hr-HR'});
+        const parsed = new Name("Antonio Pavlović", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Antonio",
             familyName: "Pavlović"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSimpleName_hr_HR: function(test) {
         test.expect(2);
-        var parsed = new Name("G. Kertu Pavlović", {locale: 'hr-HR'});
+        const parsed = new Name("G. Kertu Pavlović", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "G.",
             givenName: "Kertu",
             familyName: "Pavlović"
-                   
+
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseSimpleName_hr_HR: function(test) {
         test.expect(2);
-        var parsed = new Name("Gospođa. Kertu Pavlović", {locale: 'hr-HR'});
+        const parsed = new Name("Gospođa. Kertu Pavlović", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "Gospođa.",
             givenName: "Kertu",
             familyName: "Pavlović"
-                   
+
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSingleNameWithPrefixAndAdjunct_hr_HR: function(test) {
         test.expect(2);
-        var parsed = new Name("Antonio Vesna Pavlović mlađi", {locale: 'hr-HR'});
+        const parsed = new Name("Antonio Vesna Pavlović mlađi", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix : "mlađi",
             givenName: "Antonio",
                 middleName : "Vesna",
             familyName: "Pavlović"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_hr_HR1: function(test) {
         test.expect(2);
-        var parsed = new Name("predsjednik Antonio Vesna Pavlović", {locale: 'hr-HR'});
+        const parsed = new Name("predsjednik Antonio Vesna Pavlović", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "predsjednik",
             givenName: "Antonio",
                 middleName : "Vesna",
             familyName: "Pavlović"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_hr_HR_second: function(test) {
         test.expect(2);
-        var parsed = new Name("G. i Gospođa. Pavlović", {locale: 'hr-HR'});
+        const parsed = new Name("G. i Gospođa. Pavlović", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             familyName: "Pavlović"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitleWithFamilyOnlyAndAdjunct_hr_HR: function(test) {
         test.expect(2);
-    
-        var name = new Name({
+
+        let name = new Name({
             prefix: "predsjednik",
             givenName: "Antonio",
             middleName : "Vesna",
             familyName: "Pavlović",
             suffix: "mirovini"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "predsjednik Antonio Vesna Pavlović mirovini";
-        
+
+        const expected = "predsjednik Antonio Vesna Pavlović mirovini";
+
         test.equal(formatted, expected);
         test.done();
-    
+
     },
-    
-    
-    
+
+
+
     testParseCompoundHonorific_hr_HR: function(test) {
         test.expect(2);
-        var parsed = new Name("predsjednik Pavlović", {locale: 'hr-HR'});
+        const parsed = new Name("predsjednik Pavlović", {locale: 'hr-HR'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "predsjednik",
             familyName: "Pavlović"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_hr_HR: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Antonio",
             middleName : "Vesna",
             familyName: "Pavlović"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Antonio Pavlović";
-        
+
+        const expected = "Antonio Pavlović";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_hr_HR: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Antonio",
             middleName : "Vesna",
             familyName: "Pavlović"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Antonio Vesna Pavlović";
-        
+
+        const expected = "Antonio Vesna Pavlović";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_hr_HR: function(test) {
         test.expect(2);
-        var name = new Name({
-            
+        let name = new Name({
+
             givenName: "Antonio",
             middleName : "Vesna",
             familyName: "Pavlović",
             suffix: "mirovini"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Antonio Vesna Pavlović mirovini";
-        
+
+        const expected = "Antonio Vesna Pavlović mirovini";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatComplexNameShort_hr_HR: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             suffix: "mirovini",
             givenName: "Antonio",
             middleName : "Vesna",
             familyName: "Pavlović"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Antonio Pavlović";
-        
+
+        const expected = "Antonio Pavlović";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
+
+
     testFormatAsianNameMedium_hr_HR: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "地獸";
-        
+
+        const expected = "地獸";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatAsianNameLong_hr_HR: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'hr-HR'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "小地獸太太";
-        
+
+        const expected = "小地獸太太";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
-    
+
+
+
+
 };

@@ -1,13 +1,13 @@
-var nodeunit = (function(){
-    var nodeunit = {};
-    var reporter = {};
-    var assert = this.assert = {};
+let nodeunit = (function(){
+    let nodeunit = {};
+    let reporter = {};
+    let assert = this.assert = {};
 
     (function(exports){
         // 1. The assert module provides functions that throw
         // AssertionError's when particular conditions are not met. The
         // assert module must conform to the following interface.
-        var assert = exports;
+        let assert = exports;
 
         // 2. The AssertionError is defined in assert.
         // new assert.AssertionError({message: message, actual: actual, expected: expected})
@@ -17,7 +17,7 @@ var nodeunit = (function(){
             this.actual = options.actual;
             this.expected = options.expected;
             this.operator = options.operator;
-            var stackStartFunction = options.stackStartFunction || fail;
+            let stackStartFunction = options.stackStartFunction || fail;
 
             if (Error.captureStackTrace) {
                 Error.captureStackTrace(this, stackStartFunction);
@@ -108,12 +108,12 @@ var nodeunit = (function(){
         * Added for browser compatibility
         */
 
-        var _keys = function (obj) {
+        let _keys = function (obj) {
             if (Object.keys) {
                 return Object.keys(obj);
             }
-            var keys = [];
-            for (var k in obj) {
+            let keys = [];
+            for (let k in obj) {
                 if (obj.hasOwnProperty(k)) {
                     keys.push(k);
                 }
@@ -121,10 +121,10 @@ var nodeunit = (function(){
             return keys;
         };
 
-        var _copy = function (obj) {
-            var nobj = {};
-            var keys = _keys(obj);
-            for (var i = 0; i <  keys.length; i += 1) {
+        let _copy = function (obj) {
+            let nobj = {};
+            let keys = _keys(obj);
+            for (let i = 0; i <  keys.length; i += 1) {
                 nobj[keys[i]] = obj[keys[i]];
             }
             return nobj;
@@ -146,7 +146,7 @@ var nodeunit = (function(){
               return _deepEqual(a, b);
             }
             try{
-              var ka = _keys(a),
+              let ka = _keys(a),
                 kb = _keys(b),
                 key, i;
             } catch (e) {//happens when one is a string literal and the other isn't
@@ -208,10 +208,10 @@ var nodeunit = (function(){
          * @returns True if every element of the expected array exists in the actual array.
          */
         function isEqualIgnoringOrder(actual, expected) {
-            var found = false;
-            for (var i = 0; i < expected.length; i++) {
-                var found = false;
-                for (var j = 0; j < actual.length; j++) {
+            let found = false;
+            for (let i = 0; i < expected.length; i++) {
+                let found = false;
+                for (let j = 0; j < actual.length; j++) {
                     try {
                         if (_deepEqual(actual[j], expected[i])) {
                             found = true;
@@ -226,11 +226,11 @@ var nodeunit = (function(){
             }
             return true;
         }
-        
+
         function isArray(object) {
             return typeof(object) === 'object' && Object.prototype.toString.call(object) === '[object Array]';
         };
-        
+
         /**
          * Performs a deep comparison of arrays, ignoring the order of the
          * elements of the array. Essentially, this ensure that they have the same
@@ -311,7 +311,7 @@ var nodeunit = (function(){
                 if (typeof(expected) === "object") {
                     fail(actual, expected, message + " Expected is object and actual is array.", "contains", assert.contains);
                 } else if (isArray(expected)) {
-                    for (var i = 0; i < expected.length; i++) {
+                    for (let i = 0; i < expected.length; i++) {
                         if (actual.indexOf(expected[i]) < 0) {
                             fail(actual, expected, message + " Actual array does not contain array index " + i + " of expected.", "contains", assert.contains);
                         }
@@ -324,7 +324,7 @@ var nodeunit = (function(){
                 }
             } else if (typeof(actual) === "object") {
                 if (typeof(expected) === "object") {
-                    for (var p in expected) {
+                    for (let p in expected) {
                         if (p && expected.hasOwnProperty(p)) {
                             if (typeof(actual[p]) === 'undefined') {
                                 // "actual does not contain expected properties";
@@ -357,10 +357,10 @@ var nodeunit = (function(){
     })(assert);
 
     (function(exports){
-        var totalCaseNum = 0, assertionNum = 0;
-        var failNum = 0, successNum = 0;
-        var endTime = 0;
-        var startTime = new Date().getTime();
+        let totalCaseNum = 0, assertionNum = 0;
+        let failNum = 0, successNum = 0;
+        let endTime = 0;
+        let startTime = new Date().getTime();
 
         function getFailureDetails(assertion) {
             if (assertion.error && assertion.error.name === "AssertionError") {
@@ -370,7 +370,7 @@ var nodeunit = (function(){
             }
             return "Unknown reason.";
         }
-        
+
         exports.run = function (modules) {
             exports.runModules(modules, {
                 moduleStart: function (name) {
@@ -379,8 +379,8 @@ var nodeunit = (function(){
                 testDone: function (name, assertions) {
                     totalCaseNum++;
                     assertionNum = assertionNum + assertions.length;
-                    for (var i=0; i < assertions.length; i++) {
-                        var a = assertions[i];
+                    for (let i=0; i < assertions.length; i++) {
+                        let a = assertions[i];
                         if (a.failed()) {
                             failNum++;
                             //console.log("[" + name + "] assertions.failures() " + assertions.failures());
@@ -399,7 +399,7 @@ var nodeunit = (function(){
         };
 
         exports.options = function(opt){
-            var optionalCallback = function(name) {
+            let optionalCallback = function(name) {
                 opt[name] = opt[name] || function() {};
             };
             optionalCallback('moduleStart');
@@ -431,10 +431,10 @@ var nodeunit = (function(){
         */
 
         exports.assertionList = function (arr) {
-            var that = arr || [];
+            let that = arr || [];
             that.failures = function () {
-                var failures = 0;
-                for (var i = 0; i < this.length; i += 1) {
+                let failures = 0;
+                for (let i = 0; i < this.length; i += 1) {
                     if (this[i].failed()) {
                         failures += 1;
                     }
@@ -448,11 +448,11 @@ var nodeunit = (function(){
             return that;
         };
 
-        var assertWrapper = function(callback) {
+        let assertWrapper = function(callback) {
             return function(new_method, assert_method, arity){
                 return function() {
-                    var message = arguments[arity -1];
-                    var a = exports.assertion({method: new_method, message: message});
+                    let message = arguments[arity -1];
+                    let a = exports.assertion({method: new_method, message: message});
                     try {
                        assert[assert_method].apply(null, arguments);
                     } catch (e) {
@@ -465,25 +465,25 @@ var nodeunit = (function(){
         };
 
         exports.test = function(name, options, callback) {
-            var expecting;
-            var a_list = [];
+            let expecting;
+            let a_list = [];
 
-            var wrapAssert = assertWrapper(function (a) {
+            let wrapAssert = assertWrapper(function (a) {
                 a_list.push(a);
             });
 
-            var test = {
+            let test = {
                 done: function (err) {
                     if (expecting !== undefined && expecting !== a_list.length) {
-                        var e = new Error(
+                        let e = new Error(
                             'Expected ' + expecting + ' assertions, ' +
                             a_list.length + ' ran'
                         );
-                        var a1 = exports.assertion({method: 'expect', error: e});
+                        let a1 = exports.assertion({method: 'expect', error: e});
                             a_list.push(a1);
                         }
 
-                    var assertion_list = exports.assertionList(a_list);
+                    let assertion_list = exports.assertionList(a_list);
 
                     options.testDone(name, assertion_list);
                     callback(null, a_list);
@@ -496,7 +496,7 @@ var nodeunit = (function(){
                 }
             }
             // add all functions from the assert module
-            for (var k in assert) {
+            for (let k in assert) {
                 if (assert.hasOwnProperty(k)) {
                     test[k] = wrapAssert(k, k, assert[k].length);
                 }
@@ -506,13 +506,13 @@ var nodeunit = (function(){
         };
 
         exports.runSuite = function (name, fn, opt, callback) {
-            var prop = fn;
-            var options = exports.options(opt);
+            let prop = fn;
+            let options = exports.options(opt);
 
-            for (var prop in fn) {
+            for (let prop in fn) {
                 if (fn.hasOwnProperty(prop)) {
                     if (typeof fn[prop] === 'function') {
-                        var test = exports.test(prop, options, callback);
+                        let test = exports.test(prop, options, callback);
                         try {
                             fn[prop](test);
                         } catch(e) {
@@ -523,7 +523,7 @@ var nodeunit = (function(){
                 }
             }
         };
-        
+
         exports.runModule = function(suite, options) {
             exports.runSuite(null, suite, options, function(err, a_list) {
                 options.moduleDone();
@@ -531,14 +531,14 @@ var nodeunit = (function(){
         };
 
         exports.runModules = function(modules, opt) {
-            var options = exports.options(opt);
-            for(var testSuite in modules) {
+            let options = exports.options(opt);
+            for(let testSuite in modules) {
                 if (modules.hasOwnProperty(testSuite)) {
                     exports.runModule(modules[testSuite], options);
                 }
             }
         };
-        
+
         exports.finish = function() {
             endTime = new Date().getTime();
             console.log("===========================================================================================");

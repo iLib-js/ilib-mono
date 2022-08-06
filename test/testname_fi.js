@@ -1,7 +1,7 @@
 /*
  * testname_en.js - test the name object in Japanese
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_fi = {
+export const testname_fi = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,258 +28,258 @@ module.exports.testname_fi = {
 
     testParseSimpleName_fi_FI: function(test) {
         test.expect(2);
-        var parsed = new Name("Pihla Viitala Mikkeli", {locale: 'fi-FI'});
+        const parsed = new Name("Pihla Viitala Mikkeli", {locale: 'fi-FI'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSimpleName_fi_FI: function(test) {
         test.expect(2);
-        var parsed = new Name("Herra Kertu Mikkeli", {locale: 'fi-FI'});
+        const parsed = new Name("Herra Kertu Mikkeli", {locale: 'fi-FI'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "Herra",
             givenName: "Kertu",
-            familyName: "Mikkeli"               
+            familyName: "Mikkeli"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSingleNameWithPrefixAndAdjunct_fi_FI: function(test) {
         test.expect(2);
-        var parsed = new Name("Pihla Viitala Mikkeli nuorempi", {locale: 'fi-FI'});
+        const parsed = new Name("Pihla Viitala Mikkeli nuorempi", {locale: 'fi-FI'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix : "nuorempi",
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_fi_FI1: function(test) {
         test.expect(2);
-        var parsed = new Name("presidentti Pihla Viitala Mikkeli", {locale: 'fi-FI'});
+        const parsed = new Name("presidentti Pihla Viitala Mikkeli", {locale: 'fi-FI'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "presidentti",
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_fi_FI_second: function(test) {
         test.expect(2);
-        var parsed = new Name("Herra ja Neiti Mikkeli", {locale: 'fi-FI'});
+        const parsed = new Name("Herra ja Neiti Mikkeli", {locale: 'fi-FI'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "Herra ja Neiti",
             familyName: "Mikkeli"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitleWithFamilyOnlyAndAdjunct_fi_FI: function(test) {
         test.expect(2);
-    
-        var name = new Name({
+
+        let name = new Name({
             prefix: "presidentti",
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli",
             suffix: "vanhempi"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "presidentti Pihla Viitala Mikkeli vanhempi";
-        
+
+        const expected = "presidentti Pihla Viitala Mikkeli vanhempi";
+
         test.equal(formatted, expected);
         test.done();
-    
+
     },
-    
-    
-    
+
+
+
     testParseCompoundHonorific_fi_FI: function(test) {
         test.expect(2);
-        var parsed = new Name("presidentti Mikkeli", {locale: 'fi-FI'});
+        const parsed = new Name("presidentti Mikkeli", {locale: 'fi-FI'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "presidentti",
             familyName: "Mikkeli"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_fi_FI: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Pihla Mikkeli";
-        
+
+        const expected = "Pihla Mikkeli";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_fi_FI: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Pihla Viitala Mikkeli";
-        
+
+        const expected = "Pihla Viitala Mikkeli";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_fi_FI: function(test) {
         test.expect(2);
-        var name = new Name({
-            
+        let name = new Name({
+
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli",
             suffix: "vanhempi"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Pihla Viitala Mikkeli vanhempi";
-        
+
+        const expected = "Pihla Viitala Mikkeli vanhempi";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatComplexNameShort_fi_FI: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             suffix: "vanhempi",
             givenName: "Pihla",
             middleName : "Viitala",
             familyName: "Mikkeli"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Pihla Mikkeli";
-        
+
+        const expected = "Pihla Mikkeli";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
+
+
     testFormatAsianNameMedium_fi_FI: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "地獸";
-        
+
+        const expected = "地獸";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatAsianNameLong_fi_FI: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'fi-FI'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "小地獸太太";
-        
+
+        const expected = "小地獸太太";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
-    
+
+
+
+
 };

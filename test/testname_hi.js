@@ -1,7 +1,7 @@
 /*
  * testname_hi_IN.js - test the name object in Hindi
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_hi = {
+export const testname_hi = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,247 +28,247 @@ module.exports.testname_hi = {
 
     testParseSimpleName_hi_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("आदित्य मित्तल", {locale: 'hi-IN'});
+        const parsed = new Name("आदित्य मित्तल", {locale: 'hi-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "आदित्य",
             familyName: "मित्तल"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitle_hi_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("आदित्य मित्तल जूनियर", {locale: 'hi-IN'});
+        const parsed = new Name("आदित्य मित्तल जूनियर", {locale: 'hi-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix: "जूनियर",
             givenName: "आदित्य",
             familyName: "मित्तल"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitleWithFamilyOnly_hi_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("राज्यपाल मित्तल", {locale: 'hi-IN'});
+        const parsed = new Name("राज्यपाल मित्तल", {locale: 'hi-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "राज्यपाल",
             familyName: "मित्तल"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseEverything_hi_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("श्री और श्रीमती मित्तल", {locale: 'hi-IN'});
+        const parsed = new Name("श्री और श्रीमती मित्तल", {locale: 'hi-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "श्री और श्रीमती",
             familyName: "मित्तल"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefix_hi_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("श्री आदित्य मित्तल", {locale: 'hi-IN'});
+        const parsed = new Name("श्री आदित्य मित्तल", {locale: 'hi-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "श्री",
             givenName: "आदित्य",
             familyName: "मित्तल"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_hi_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "आदित्य",
             familyName: "मित्तल"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'hi-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "आदित्य मित्तल";
-        
+
+        const expected = "आदित्य मित्तल";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_hi_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "आदित्य",
-            
+
             familyName: "मित्तल"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'hi-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "आदित्य मित्तल";
-        
+
+        const expected = "आदित्य मित्तल";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_hi_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "आदित्य",
-            
+
             familyName: "मित्तल",
             suffix: "asdf"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'hi-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "आदित्य मित्तल";
-        
+
+        const expected = "आदित्य मित्तल";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSurname_hi_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "श्री और श्रीमती",
-            
+
             familyName: "मित्तल"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'hi-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "श्री और श्रीमती मित्तल";
-        
+
+        const expected = "श्री और श्रीमती मित्तल";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_hi_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "प्रोफेसर",
             givenName: "आदित्य",
-            
+
             familyName: "मित्तल",
             suffix: " वरिष्ठ"
         });
-        var fmt = new NameFmt({
-            style: "full", 
-            locale: 'hi-IN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "प्रोफेसर आदित्य मित्तल वरिष्ठ";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameShort_hi_IN: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "प्रोफेसर",
-            givenName: "आदित्य",
-            familyName: "मित्तल"
-        });
-        var fmt = new NameFmt({
-            style: "short", 
-            locale: 'hi-IN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "आदित्य मित्तल";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameMedium_hi_IN: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "प्रोफेसर",
-            givenName: "आदित्य",
-            familyName: "मित्तल"
-        });
-        var fmt = new NameFmt({
-            style: "medium", 
-            locale: 'hi-IN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "आदित्य मित्तल";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameLong_hi_IN: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "प्रोफेसर",
-            givenName: "आदित्य",
-            familyName: "मित्तल"
-        });
-        var fmt = new NameFmt({
+        let fmt = new NameFmt({
             style: "full",
             locale: 'hi-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "प्रोफेसर आदित्य मित्तल";
-        
+
+        const expected = "प्रोफेसर आदित्य मित्तल वरिष्ठ";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameShort_hi_IN: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "प्रोफेसर",
+            givenName: "आदित्य",
+            familyName: "मित्तल"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'hi-IN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "आदित्य मित्तल";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameMedium_hi_IN: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "प्रोफेसर",
+            givenName: "आदित्य",
+            familyName: "मित्तल"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'hi-IN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "आदित्य मित्तल";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameLong_hi_IN: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "प्रोफेसर",
+            givenName: "आदित्य",
+            familyName: "मित्तल"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'hi-IN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "प्रोफेसर आदित्य मित्तल";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
+
+
+
 };

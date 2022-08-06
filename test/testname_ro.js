@@ -1,7 +1,7 @@
 /*
  * testname_ro_RO.js - test the name object in Romanian
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_ro = {
+export const testname_ro = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,276 +28,276 @@ module.exports.testname_ro = {
 
     testParseSimpleName_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Sebastian Stan", {locale: 'ro-RO'});
+        const parsed = new Name("Sebastian Stan", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Sebastian",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseSimpleNameWithMiddleName_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Alexandra Maria Lara", {locale: 'ro-RO'});
+        const parsed = new Name("Alexandra Maria Lara", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Alexandra",
             middleName: "Maria",
             familyName: "Lara"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseTitle_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Sebastian Stan doctorand", {locale: 'ro-RO'});
+        const parsed = new Name("Sebastian Stan doctorand", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix: "doctorand",
             givenName: "Sebastian",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseTitleWithFamilyOnly_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Dl. Stan", {locale: 'ro-RO'});
+        const parsed = new Name("Dl. Stan", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Dl.",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseEverything_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Dl. și D-na. Stan", {locale: 'ro-RO'});
+        const parsed = new Name("Dl. și D-na. Stan", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Dl. și D-na.",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefix_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Dl. Sebastian Stan", {locale: 'ro-RO'});
+        const parsed = new Name("Dl. Sebastian Stan", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Dl.",
             givenName: "Sebastian",
             familyName: "Stan"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefixAndSuffix_ro_RO: function(test) {
         test.expect(2);
-        var parsed = new Name("Vice-presedinte Sebastian Stan retras", {locale: 'ro-RO'});
+        const parsed = new Name("Vice-presedinte Sebastian Stan retras", {locale: 'ro-RO'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "Vice-presedinte",
             givenName: "Sebastian",
             familyName: "Stan",
             suffix:"retras"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_ro_RO: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Sebastian",
             familyName: "Stan"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'ro-RO'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Sebastian Stan";
-        
+
+        const expected = "Sebastian Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_ro_RO: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Sebastian",
-            
+
             familyName: "Stan"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'ro-RO'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Sebastian Stan";
-        
+
+        const expected = "Sebastian Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_ro_RO: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Sebastian",
-            
+
             familyName: "Stan",
             suffix: "asdf"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'ro-RO'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Sebastian Stan";
-        
+
+        const expected = "Sebastian Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testFormatSurname_ro_RO: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "Dl. i D-na.",
-            
+
             familyName: "Stan"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'ro-RO'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Dl. i D-na. Stan";
-        
+
+        const expected = "Dl. i D-na. Stan";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_ro_RO: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "Administrator",
             givenName: "Sebastian",
-            
+
             familyName: "Stan",
             suffix: "doctorand"
         });
-        var fmt = new NameFmt({
-            style: "full", 
-            locale: 'ro-RO'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Administrator Sebastian Stan doctorand";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameShort_ro_RO: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "Administrator",
-            givenName: "Sebastian",
-            familyName: "Stan"
-        });
-        var fmt = new NameFmt({
-            style: "short", 
-            locale: 'ro-RO'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Sebastian Stan";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameMedium_ro_RO: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "Administrator",
-            givenName: "Sebastian",
-            familyName: "Stan"
-        });
-        var fmt = new NameFmt({
-            style: "medium", 
-            locale: 'ro-RO'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Sebastian Stan";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameLong_ro_RO: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "Administrator",
-            givenName: "Sebastian",
-            familyName: "Stan"
-        });
-        var fmt = new NameFmt({
+        let fmt = new NameFmt({
             style: "full",
             locale: 'ro-RO'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Administrator Sebastian Stan";
-        
+
+        const expected = "Administrator Sebastian Stan doctorand";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameShort_ro_RO: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "Administrator",
+            givenName: "Sebastian",
+            familyName: "Stan"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'ro-RO'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Sebastian Stan";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameMedium_ro_RO: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "Administrator",
+            givenName: "Sebastian",
+            familyName: "Stan"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'ro-RO'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Sebastian Stan";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameLong_ro_RO: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "Administrator",
+            givenName: "Sebastian",
+            familyName: "Stan"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'ro-RO'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Administrator Sebastian Stan";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
+
+
+
 };

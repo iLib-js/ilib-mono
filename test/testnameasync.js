@@ -17,15 +17,9 @@
  * limitations under the License.
  */
 
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
+import Name from '../src/Name.js';
 
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
-
-module.exports.testnameasync = {
+export const testnameasync = {
     testNameAsyncEmptyConstructor: function(test) {
         test.expect(1);
         new Name(undefined, {

@@ -1,7 +1,7 @@
 /*
  * testname_en.js - test the name object in Japanese
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_ga = {
+export const testname_ga = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,251 +28,251 @@ module.exports.testname_ga = {
 
     testParseSimpleName_ga_IE: function(test) {
         test.expect(2);
-        var parsed = new Name("Daniel O'Reilly", {locale: 'ga-IE'});
+        const parsed = new Name("Daniel O'Reilly", {locale: 'ga-IE'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Daniel",
             familyName: "O'Reilly"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSimpleName_ga_IE: function(test) {
         test.expect(2);
-        var parsed = new Name("An tUasal. Kertu O'Reilly", {locale: 'ga-IE'});
+        const parsed = new Name("An tUasal. Kertu O'Reilly", {locale: 'ga-IE'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "An tUasal.",
             givenName: "Kertu",
             familyName: "O'Reilly"
-                   
+
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSingleNameWithPrefixAndAdjunct_ga_IE: function(test) {
         test.expect(2);
-        var parsed = new Name("Daniel O'Reilly sóisearach", {locale: 'ga-IE'});
+        const parsed = new Name("Daniel O'Reilly sóisearach", {locale: 'ga-IE'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
              suffix : "sóisearach",
             givenName: "Daniel",
             familyName: "O'Reilly"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_ga_IE1: function(test) {
         test.expect(2);
-        var parsed = new Name("príomh-aire Daniel O'Reilly", {locale: 'ga-IE'});
+        const parsed = new Name("príomh-aire Daniel O'Reilly", {locale: 'ga-IE'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "príomh-aire",
             givenName: "Daniel",
             familyName: "O'Reilly"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_ga_IE_second: function(test) {
         test.expect(2);
-        var parsed = new Name("An tUasal. agus Mrs. O'Reilly", {locale: 'ga-IE'});
+        const parsed = new Name("An tUasal. agus Mrs. O'Reilly", {locale: 'ga-IE'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "An tUasal. agus Mrs.",
             familyName: "O'Reilly"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitleWithFamilyOnlyAndAdjunct_ga_IE: function(test) {
         test.expect(2);
-    
-        var name = new Name({
+
+        let name = new Name({
             prefix: "príomh-aire",
             givenName: "Daniel",
             familyName: "O'Reilly",
             suffix: "scor"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "príomh-aire Daniel O'Reilly scor";
-        
+
+        const expected = "príomh-aire Daniel O'Reilly scor";
+
         test.equal(formatted, expected);
         test.done();
-    
+
     },
-    
-    
-    
+
+
+
     testParseCompoundHonorific_ga_IE: function(test) {
         test.expect(2);
-        var parsed = new Name("príomh-aire O'Reilly", {locale: 'ga-IE'});
+        const parsed = new Name("príomh-aire O'Reilly", {locale: 'ga-IE'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "príomh-aire",
             familyName: "O'Reilly"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_ga_IE: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Daniel",
             familyName: "O'Reilly"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Daniel O'Reilly";
-        
+
+        const expected = "Daniel O'Reilly";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_ga_IE: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Daniel",
             familyName: "O'Reilly"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Daniel O'Reilly";
-        
+
+        const expected = "Daniel O'Reilly";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_ga_IE: function(test) {
         test.expect(2);
-        var name = new Name({
-            
+        let name = new Name({
+
             givenName: "Daniel",
             familyName: "O'Reilly",
             suffix: "scor"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Daniel O'Reilly scor";
-        
+
+        const expected = "Daniel O'Reilly scor";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatComplexNameShort_ga_IE: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             suffix: "scor",
             givenName: "Daniel",
             familyName: "O'Reilly"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Daniel O'Reilly";
-        
+
+        const expected = "Daniel O'Reilly";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
+
+
     testFormatAsianNameMedium_ga_IE: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "地獸";
-        
+
+        const expected = "地獸";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatAsianNameLong_ga_IE: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'ga-IE'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "小地獸太太";
-        
+
+        const expected = "小地獸太太";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
-    
+
+
+
+
 };

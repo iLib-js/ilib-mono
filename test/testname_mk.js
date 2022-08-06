@@ -1,7 +1,7 @@
 /*
  * testname_mk_MK.js - test the name object in macedonian
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_mk = {
+export const testname_mk = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,259 +28,259 @@ module.exports.testname_mk = {
 
     testParseSimpleName_mk_MK: function(test) {
         test.expect(2);
-        var parsed = new Name("Љубunша Самарџunќ", {locale: 'mk-MK'});
+        const parsed = new Name("Љубunша Самарџunќ", {locale: 'mk-MK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Љубunша",
             familyName: "Самарџunќ"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseSimpleWithHiphen_mk_MK: function(test) {
         test.expect(2);
-        var parsed = new Name("Nikola-Kole Angelovski", {locale: 'mk-MK'});
+        const parsed = new Name("Nikola-Kole Angelovski", {locale: 'mk-MK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Nikola-Kole",
             familyName: "Angelovski"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitle_mk_MK: function(test) {
         test.expect(2);
-        var parsed = new Name("Љубunша Самарџunќ високи", {locale: 'mk-MK'});
+        const parsed = new Name("Љубunша Самарџunќ високи", {locale: 'mk-MK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix: "високи",
             givenName: "Љубunша",
             familyName: "Самарџunќ"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitleWithFamilyOnly_mk_MK: function(test) {
         test.expect(2);
-        var parsed = new Name("г-дин Самарџunќ", {locale: 'mk-MK'});
+        const parsed = new Name("г-дин Самарџunќ", {locale: 'mk-MK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "г-дин",
             familyName: "Самарџunќ"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseEverything_mk_MK: function(test) {
         test.expect(2);
-        var parsed = new Name("г-дин и г-ѓа Самарџunќ", {locale: 'mk-MK'});
+        const parsed = new Name("г-дин и г-ѓа Самарџunќ", {locale: 'mk-MK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "г-дин и г-ѓа",
             familyName: "Самарџunќ"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefix_mk_MK: function(test) {
         test.expect(2);
-        var parsed = new Name("г-дин Љубunша Самарџunќ", {locale: 'mk-MK'});
+        const parsed = new Name("г-дин Љубunша Самарџunќ", {locale: 'mk-MK'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "г-дин",
             givenName: "Љубunша",
             familyName: "Самарџunќ"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_mk_MK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Љубunша",
             familyName: "Самарџunќ"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'mk-MK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Љубunша Самарџunќ";
-        
+
+        const expected = "Љубunша Самарџunќ";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_mk_MK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Љубunша",
             familyName: "Самарџunќ"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'mk-MK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Љубunша Самарџunќ";
-        
+
+        const expected = "Љубunша Самарџunќ";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_mk_MK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Љубunша",
             familyName: "Самарџunќ",
             suffix: "asdf"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'mk-MK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Љубunша Самарџunќ";
-        
+
+        const expected = "Љубunша Самарџunќ";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testFormatSurname_mk_MK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "г-дunн и kundze",
             familyName: "Самарџunќ"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'mk-MK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "г-дunн и kundze Самарџunќ";
-        
+
+        const expected = "г-дunн и kundze Самарџunќ";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_mk_MK: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "претседател",
             givenName: "Љубunша",
             familyName: "Самарџunќ",
             suffix: "помладun"
         });
-        var fmt = new NameFmt({
-            style: "full", 
-            locale: 'mk-MK'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "претседател Љубunша Самарџunќ помладun";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameShort_mk_MK: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "претседател",
-            givenName: "Љубunша",
-            familyName: "Самарџunќ"
-        });
-        var fmt = new NameFmt({
-            style: "short", 
-            locale: 'mk-MK'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Љубunша Самарџunќ";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameMedium_mk_MK: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "претседател",
-            givenName: "Љубunша",
-            familyName: "Самарџunќ"
-        });
-        var fmt = new NameFmt({
-            style: "medium", 
-            locale: 'mk-MK'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Љубunша Самарџunќ";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameLong_mk_MK: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "претседател",
-            givenName: "Љубunша",
-            familyName: "Самарџunќ"
-        });
-        var fmt = new NameFmt({
+        let fmt = new NameFmt({
             style: "full",
             locale: 'mk-MK'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "претседател Љубunша Самарџunќ";
-        
+
+        const expected = "претседател Љубunша Самарџunќ помладun";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameShort_mk_MK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "претседател",
+            givenName: "Љубunша",
+            familyName: "Самарџunќ"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'mk-MK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Љубunша Самарџunќ";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameMedium_mk_MK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "претседател",
+            givenName: "Љубunша",
+            familyName: "Самарџunќ"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'mk-MK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Љубunша Самарџunќ";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameLong_mk_MK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "претседател",
+            givenName: "Љубunша",
+            familyName: "Самарџunќ"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'mk-MK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "претседател Љубunша Самарџunќ";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
+
+
+
 };

@@ -1,7 +1,7 @@
 /*
  * testname_en.js - test the name object in Japanese
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_hu = {
+export const testname_hu = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,268 +28,268 @@ module.exports.testname_hu = {
 
     testParseSimpleName_hu_HU: function(test) {
         test.expect(2);
-        var parsed = new Name("Halász Dorottya", {locale: 'hu-HU'});
+        const parsed = new Name("Halász Dorottya", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "Dorottya",
             familyName: "Halász"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSimpleName_hu_HU1: function(test) {
         test.expect(2);
-        var parsed = new Name("úr. Halász Dorottya", {locale: 'hu-HU'});
+        const parsed = new Name("úr. Halász Dorottya", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "úr.",
             givenName: "Dorottya",
             familyName: "Halász"
-                   
+
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseSimpleNameWom_hu_HU: function(test) {
         test.expect(2);
-        var parsed = new Name("Kisasszony. Kovács Lajos", {locale: 'hu-HU'});
+        const parsed = new Name("Kisasszony. Kovács Lajos", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "Kisasszony.",
             givenName: "Lajos",
             familyName: "Kovács"
-                   
+
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseSingleNameWithPrefixAndAdjunct_hu_HU: function(test) {
         test.expect(2);
-        var parsed = new Name("Halász Dorottya jr.", {locale: 'hu-HU'});
+        const parsed = new Name("Halász Dorottya jr.", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix : "jr.",
             givenName: "Dorottya",
             familyName: "Halász"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_hu_HU1: function(test) {
         test.expect(2);
-        var parsed = new Name("alelnöke Halász Dorottya", {locale: 'hu-HU'});
+        const parsed = new Name("alelnöke Halász Dorottya", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix : "alelnöke",
                 familyName: "Halász",
             givenName: "Dorottya"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_hu_HU_second: function(test) {
         test.expect(2);
-        var parsed = new Name("Úr. és Kisasszony. Halász", {locale: 'hu-HU'});
+        const parsed = new Name("Úr. és Kisasszony. Halász", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             familyName: "Halász",
             prefix: "Úr. és Kisasszony."
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitleWithFamilyOnlyAndAdjunct_hu_HU: function(test) {
         test.expect(2);
-    
-        var name = new Name({
+
+        let name = new Name({
             prefix: "alelnöke",
             givenName: "Dorottya",
-        
+
             familyName: "Halász",
             suffix: "idősebb"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "alelnöke Halász Dorottya idősebb";
-        
+
+        const expected = "alelnöke Halász Dorottya idősebb";
+
         test.equal(formatted, expected);
         test.done();
-    
+
     },
-    
-    
-    
+
+
+
     testParseCompoundHonorific_hu_HU: function(test) {
         test.expect(2);
-        var parsed = new Name("alelnöke Halász", {locale: 'hu-HU'});
+        const parsed = new Name("alelnöke Halász", {locale: 'hu-HU'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "alelnöke",
             familyName: "Halász"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_hu_HU: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Dorottya",
             familyName: "Halász"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Halász Dorottya";
-        
+
+        const expected = "Halász Dorottya";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_hu_HU: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Dorottya",
             familyName: "Halász"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Halász Dorottya";
-        
+
+        const expected = "Halász Dorottya";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_hu_HU: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Dorottya",
             familyName: "Halász",
             suffix: "idősebb"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Halász Dorottya idősebb";
-        
+
+        const expected = "Halász Dorottya idősebb";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatComplexNameShort_hu_HU: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             suffix: "idősebb",
             givenName: "Dorottya",
             familyName: "Halász"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Halász Dorottya";
-        
+
+        const expected = "Halász Dorottya";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
-    
+
+
     testFormatAsianNameMedium_hu_HU: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "地獸";
-        
+
+        const expected = "地獸";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatAsianNameLong_hu_HU: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "小",
             givenName: "獸",
             familyName: "地",
             suffix: "太太"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'hu-HU'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "小地獸太太";
-        
+
+        const expected = "小地獸太太";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
-    
+
+
+
+
 };

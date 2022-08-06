@@ -1,7 +1,7 @@
 /*
  * testname_kk.js - test the name object in Kazahk
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_kk = {
+export const testname_kk = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,149 +28,149 @@ module.exports.testname_kk = {
 
     testParseSimpleName_kk: function(test) {
         test.expect(2);
-        var parsed = new Name("Джордж Буш", {locale: 'kk-KZ'});
+        const parsed = new Name("Джордж Буш", {locale: 'kk-KZ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =   {
+
+        const expected =   {
             givenName: "Джордж",
             familyName: "Буш"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseSingleNameWithPrefixAndAdjunct_kk: function(test) {
         test.expect(2);
-        var parsed = new Name("үлкен Буш", {locale: 'kk-KZ'});
+        const parsed = new Name("үлкен Буш", {locale: 'kk-KZ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =   {
+
+        const expected =   {
             prefix: "үлкен",
             familyName: "Буш"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     testParseTitle_kk: function(test) {
         test.expect(2);
-        var parsed = new Name("Джордж Буш 2-ші", {locale: 'kk-KZ'});
+        const parsed = new Name("Джордж Буш 2-ші", {locale: 'kk-KZ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =    {
+
+        const expected =    {
             suffix: "2-ші",
             givenName: "Джордж",
             familyName: "Буш"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseEverything_kk: function(test) {
         test.expect(2);
-        var parsed = new Name("үлкен Джордж Буш 2-ші", {locale: 'kk-KZ'});
+        const parsed = new Name("үлкен Джордж Буш 2-ші", {locale: 'kk-KZ'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected =    {
+
+        const expected =    {
             prefix: "үлкен",
             givenName: "Джордж",
             familyName: "Буш",
             suffix: "2-ші"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
+
+
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_kk: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Джордж",
             familyName: "Буш"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'kk-KZ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Джордж Буш";
-        
+
+        const expected = "Джордж Буш";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_kk: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Джордж",
             familyName: "Буш"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'kk-KZ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Джордж Буш";
-        
+
+        const expected = "Джордж Буш";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_kk: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "Джордж",
             familyName: "Буш",
             suffix: "2-ші"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'kk-KZ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "Джордж Буш";
-        
+
+        const expected = "Джордж Буш";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_kk: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "үлкен",
             givenName: "Джордж",
             familyName: "Буш",
             suffix: "2-ші"
         });
-        var fmt = new NameFmt({
-            style: "full", 
+        let fmt = new NameFmt({
+            style: "full",
             locale: 'kk-KZ'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "үлкен Джордж Буш 2-ші";
-        
+
+        const expected = "үлкен Джордж Буш 2-ші";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
+
+
+
 };

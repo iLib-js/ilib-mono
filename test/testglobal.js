@@ -22,245 +22,245 @@ import * as JSUtils from '../src/JSUtils.js';
 export const testGlobal = {
     testIsArrayNewArrayObj: function(test) {
         test.expect(1);
-        var a = new Array();
+        let a = new Array();
         test.ok(JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayNewArrayBrackets: function(test) {
         test.expect(1);
-        var a = [];
+        let a = [];
         test.ok(JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayObject: function(test) {
         test.expect(1);
-        var a = {foo:234};
+        let a = {foo:234};
         test.ok(!JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayObjectWithNumericProperties: function(test) {
         test.expect(1);
-        var a = {"0": "d", "1": "c"};
+        let a = {"0": "d", "1": "c"};
         test.ok(!JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayNumber: function(test) {
         test.expect(1);
-        var a = 234;
+        let a = 234;
         test.ok(!JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayString: function(test) {
         test.expect(1);
-        var a = "asdf";
+        let a = "asdf";
         test.ok(!JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayNull: function(test) {
         test.expect(1);
-        var a = null;
+        let a = null;
         test.ok(!JSUtils.isArray(a));
         test.done();
     },
-    
+
     testIsArrayUndefined: function(test) {
         test.expect(1);
-        var a = undefined;
+        let a = undefined;
         test.ok(!JSUtils.isArray(a));
         test.done();
     },
-    
+
     testExtendSimple: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": "B"},
+        let object1 = {"a": "A", "b": "B"},
             object2 = {"c": "C", "d": "D"};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "A", "b": "B", "c": "C", "d": "D"});
         test.done();
     },
-    
+
     testExtendReturnObject1: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": "B"},
+        let object1 = {"a": "A", "b": "B"},
             object2 = {"c": "C", "d": "D"};
-        
-        var x = JSUtils.extend(object1, object2);
+
+        let x = JSUtils.extend(object1, object2);
         test.equal(x, object1);
         test.done();
     },
-    
+
     testExtendArrays: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": ["d"]};
-       
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": ["b", "c", "d"]});
         test.done();
     },
-    
+
     testExtendArraysDups: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": ["c", "d"]};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": ["b", "c", "c", "d"]});
         test.done();
     },
-    
+
     testExtendArraysEmptySource: function(test) {
         test.expect(1);
-        var object1 = {"a": []},
+        let object1 = {"a": []},
             object2 = {"a": ["d"]};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": ["d"]});
         test.done();
     },
-    
+
     testExtendArraysEmptyTarget: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": []};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": ["b", "c"]});
         test.done();
     },
-    
+
     testExtendArraysIncongruentTypes1: function(test) {
         test.expect(1);
-        var object1 = {"a": ["b", "c"]},
+        let object1 = {"a": ["b", "c"]},
             object2 = {"a": "d"};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "d"});
         test.done();
     },
-    
+
     testExtendArraysIncongruentTypes2: function(test) {
         test.expect(1);
-        var object1 = {"a": "b"},
+        let object1 = {"a": "b"},
             object2 = {"a": ["d"]};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": ["d"]});
         test.done();
     },
-    
+
     testExtendSimpleProperty: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": "B"},
+        let object1 = {"a": "A", "b": "B"},
             object2 = {"b": "X"};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "A", "b": "X"});
         test.done();
     },
-    
+
     testExtendComplexProperty: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "B"}},
+        let object1 = {"a": "A", "b": {"x": "B"}},
             object2 = {"b": "X"};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "A", "b": "X"});
         test.done();
     },
-    
+
     testExtendSubobjects: function(test) {
         test.expect(1);
-        var object1 = {"b": {"x": "X", "y": "Y"}},
+        let object1 = {"b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N"}};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"b": {"x": "M", "y": "N"}});
         test.done();
     },
-    
+
     testExtendSubobjectsLeaveObj1PropsUntouched: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y", "z": "Z"}},
+        let object1 = {"a": "A", "b": {"x": "X", "y": "Y", "z": "Z"}},
             object2 = {"b": {"x": "M", "y": "N"}};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
         test.done();
     },
-    
+
     testExtendSubobjectsAddProps: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
+        let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
         test.done();
     },
-    
+
     testExtendSubobjectsAddProps: function(test) {
         test.expect(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
+        let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
         test.done();
     },
-    
+
     testExtendBooleans: function(test) {
         test.expect(1);
-        var object1 = {"a": true, "b": true},
+        let object1 = {"a": true, "b": true},
             object2 = {"b": false};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": true, "b": false});
         test.done();
     },
-    
+
     testExtendAddBooleans: function(test) {
         test.expect(1);
-        var object1 = {"a": true, "b": true},
+        let object1 = {"a": true, "b": true},
             object2 = {"c": false};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": true, "b": true, "c": false});
         test.done();
     },
-    
+
     testExtendNumbers: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = {"b": 3};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": 1, "b": 3});
         test.done();
     },
-    
+
     testExtendNumbersWithZero: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = {"b": 0};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": 1, "b": 0});
         test.done();
     },
-    
+
     testExtendNumbersAddZero: function(test) {
         test.expect(1);
-        var object1 = {"a": 1, "b": 2},
+        let object1 = {"a": 1, "b": 2},
             object2 = {"c": 0};
-        
+
         JSUtils.extend(object1, object2);
         test.deepEqual(object1, {"a": 1, "b": 2, "c": 0});
         test.done();

@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
 
-module.exports.testnamefmtasync = {
+export const testnamefmtasync = {
     testNameFmtAsyncConstructor: function(test) {
         test.expect(1);
         new NameFmt({

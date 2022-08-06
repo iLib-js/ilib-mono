@@ -1,7 +1,7 @@
 /*
  * testname_ur_IN.js - test the name object in Urdu
- * 
- * Copyright © 2013-2015,2017, JEDLSoft
+ *
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,10 @@
  * limitations under the License.
  */
 
-if (typeof(NameFmt) === "undefined") {
-    var NameFmt = require("../../lib/NameFmt.js");
-}
-if (typeof(Name) === "undefined") {
-    var Name = require("../../lib/Name.js");
-}
-if (typeof(ilib) === "undefined") {
-    var ilib = require("../../lib/ilib.js");
-}
+import Name from '../src/NameFmt.js';
+import Name from '../src/Name.js';
 
-module.exports.testname_ur = {
+export const testname_ur = {
     setUp: function(callback) {
         ilib.clearCache();
         callback();
@@ -35,242 +28,242 @@ module.exports.testname_ur = {
 
     testParseSimpleName_ur_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("موہن لال", {locale: 'ur-IN'});
+        const parsed = new Name("موہن لال", {locale: 'ur-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             givenName: "موہن",
             familyName: "لال"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitle_ur_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("موہن لال میں", {locale: 'ur-IN'});
+        const parsed = new Name("موہن لال میں", {locale: 'ur-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             suffix: "میں",
             givenName: "موہن",
             familyName: "لال"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseTitleWithFamilyOnly_ur_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("مسٹر لال", {locale: 'ur-IN'});
+        const parsed = new Name("مسٹر لال", {locale: 'ur-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "مسٹر",
             familyName: "لال"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testParseEverything_ur_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("مسٹر اور مسز لال", {locale: 'ur-IN'});
+        const parsed = new Name("مسٹر اور مسز لال", {locale: 'ur-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "مسٹر اور مسز",
             familyName: "لال"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
-    
+
     testParseprefix_ur_IN: function(test) {
         test.expect(2);
-        var parsed = new Name("مسٹر موہن لال", {locale: 'ur-IN'});
+        const parsed = new Name("مسٹر موہن لال", {locale: 'ur-IN'});
         test.ok(typeof(parsed) !== "undefined");
-        
-        var expected = {
+
+        const expected = {
             prefix: "مسٹر",
             givenName: "موہن",
             familyName: "لال"
         };
-        
+
         test.contains(parsed, expected);
         test.done();
     },
     /*
      * Format Tests
      */
-    
+
     testFormatSimpleNameShort_ur_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "موہن",
             familyName: "لال"
         });
-        var fmt = new NameFmt({
-            style: "short", 
+        let fmt = new NameFmt({
+            style: "short",
             locale: 'ur-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "موہن لال";
-        
+
+        const expected = "موہن لال";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameMedium_ur_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "موہن",
             familyName: "لال"
         });
-        var fmt = new NameFmt({
-            style: "medium", 
+        let fmt = new NameFmt({
+            style: "medium",
             locale: 'ur-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "موہن لال";
-        
+
+        const expected = "موہن لال";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameLong_ur_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             givenName: "موہن",
             familyName: "لال"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'ur-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "موہن لال";
-        
+
+        const expected = "موہن لال";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSurname_ur_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "مسٹر اور مسز",
             familyName: "لال"
         });
-        var fmt = new NameFmt({
-            style: "long", 
+        let fmt = new NameFmt({
+            style: "long",
             locale: 'ur-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "مسٹر اور مسز لال";
-        
+
+        const expected = "مسٹر اور مسز لال";
+
         test.equal(formatted, expected);
         test.done();
     },
-    
+
     testFormatSimpleNameFull_ur_IN: function(test) {
         test.expect(2);
-        var name = new Name({
+        let name = new Name({
             prefix: "ڈاکٹر",
             givenName: "موہن",
             familyName: "لال",
             suffix: "میں"
         });
-        var fmt = new NameFmt({
-            style: "full", 
-            locale: 'ur-IN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "ڈاکٹر موہن لال میں";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameShort_ur_IN: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "ڈاکٹر",
-            givenName: "موہن",
-            familyName: "لال"
-        });
-        var fmt = new NameFmt({
-            style: "short", 
-            locale: 'ur-IN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "موہن لال";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameMedium_ur_IN: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "ڈاکٹر",
-            givenName: "موہن",
-            familyName: "لال"
-        });
-        var fmt = new NameFmt({
-            style: "medium", 
-            locale: 'ur-IN'
-        });
-        var formatted = fmt.format(name);
-        test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "موہن لال";
-        
-        test.equal(formatted, expected);
-        test.done();
-    },
-    
-    testFormatComplexNameLong_ur_IN: function(test) {
-        test.expect(2);
-        var name = new Name({
-            prefix: "ڈاکٹر",
-            givenName: "موہن",
-            familyName: "لال"
-        });
-        var fmt = new NameFmt({
+        let fmt = new NameFmt({
             style: "full",
             locale: 'ur-IN'
         });
-        var formatted = fmt.format(name);
+        let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
-        
-        var expected = "ڈاکٹر موہن لال";
-        
+
+        const expected = "ڈاکٹر موہن لال میں";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameShort_ur_IN: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "ڈاکٹر",
+            givenName: "موہن",
+            familyName: "لال"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'ur-IN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "موہن لال";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameMedium_ur_IN: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "ڈاکٹر",
+            givenName: "موہن",
+            familyName: "لال"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'ur-IN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "موہن لال";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameLong_ur_IN: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "ڈاکٹر",
+            givenName: "موہن",
+            familyName: "لال"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'ur-IN'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "ڈاکٹر موہن لال";
+
         test.equal(formatted, expected);
         test.done();
     }
-    
-    
-    
+
+
+
 };
