@@ -18,7 +18,7 @@
  */
 import * as ilibEnv from 'ilib-env';
 
-import Locale from '../src/Locale';
+import Locale from '../src/Locale.js';
 
 export const testLocale = {
     testLocaleConstructor: function(test) {

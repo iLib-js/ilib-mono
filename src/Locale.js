@@ -1,7 +1,7 @@
 /*
  * Locale.js - Locale specifier definition
  *
- * Copyright © 2012-2015, 2018,2021 JEDLSoft
+ * Copyright © 2012-2015,2018,2021-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
  */
 
 // from http://en.wikipedia.org/wiki/ISO_3166-1
-import a2toa3regmap from "../locale/a2toa3regmap.json";
-import a1toa3langmap from "../locale/a1toa3langmap.json";
+import { a2toa3regmap } from "./a2toa3regmap.js";
+import { a1toa3langmap } from "./a1toa3langmap.js";
 
 // the list below is originally from https://unicode.org/iso15924/iso15924-codes.html
-import iso15924 from "../locale/scripts.json";
+import { iso15924 } from "./scripts.js";
 
 import * as ilibEnv from "ilib-env";
 
