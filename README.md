@@ -205,7 +205,8 @@ limitations under the License.
 
 ### v1.3.2
 
-* This module is now a hybrid ESM/CommonJS package that actually works
+* This module is now a hybrid ESM/CommonJS package that works under node
+  or webpack
 
 ### v1.3.1
 
