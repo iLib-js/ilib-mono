@@ -177,6 +177,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.2
+
+- work with the hybrid commonjs/ESM modules
+
 ### v1.1.1
 
 - Updated dependencies to avoid the polyfill bloat
