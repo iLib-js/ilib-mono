@@ -1,4 +1,4 @@
-export default function getLocaleData() {
+module.exports = function getLocaleData() {
     return {
         "root": {
             "info": {

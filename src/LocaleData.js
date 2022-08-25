@@ -26,7 +26,7 @@ import LoaderFactory from 'ilib-loader';
 import { Utils, JSUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
 
-import DataCache from './DataCache';
+import DataCache from './DataCache.js';
 
 /**
  * @private
@@ -651,8 +651,8 @@ class LocaleData {
                                         localeData = datum();
                                         break;
                                     case 'object':
-                                        if (typeof(datum["default"]) === 'function') {
-                                            localeData = datum["default"]();
+                                        if (typeof(datum["default"]) !== 'undefined') {
+                                            localeData = (typeof(datum["default"]) === 'function') ? datum["default"]() : datum["default"];
                                         } else if (typeof(datum.getLocaleData) === 'function') {
                                             localeData = datum.getLocaleData();
                                         } else {

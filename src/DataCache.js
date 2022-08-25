@@ -20,7 +20,7 @@
 
 import log4js from '@log4js-node/log4js-api';
 
-import { getLocFiles, Path } from 'ilib-common';
+import { Path } from 'ilib-common';
 import { top } from 'ilib-env';
 
 /**
