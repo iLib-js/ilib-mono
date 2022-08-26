@@ -129,7 +129,16 @@ class NodeLoader extends Loader {
         if (sync) {
             try {
                 this.logger.trace(`loadFile: loading file ${pathName} synchronously.`);
-                return isJs ? requireShim(fullPath) : fs.readFileSync(pathName, "utf-8");
+                if (isJs) {
+                    if (pathName.endsWith(".mjs")) {
+                        // cannot load ESM modules synchronously
+                        return undefined;
+                    } else {
+                        return requireShim(fullPath);
+                    }
+                } else {
+                    return fs.readFileSync(pathName, "utf-8");
+                }
             } catch (e) {
                 this.logger.trace(e);
                 return undefined;
