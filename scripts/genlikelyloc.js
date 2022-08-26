@@ -47,7 +47,7 @@ process.argv.forEach(function (val, index, array) {
     }
 });
 
-localeDirName = process.argv[2] || path.join(module.path, "../src");
+localeDirName = process.argv[2] || path.join(module.path || ".", "../src");
 
 console.log("genlikelyloc - generate the localematch.js file.\n" +
         "Copyright (c) 2013-2020, 2022 JEDLSoft");
