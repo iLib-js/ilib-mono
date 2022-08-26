@@ -21,7 +21,7 @@ import fs from 'fs';
 import path from 'path';
 import log4js from '@log4js-node/log4js-api';
 import Loader from './Loader.js';
-import { requireShim } from './RequireShim.cjs';
+import { requireShim } from './shim/RequireShim.js';
 
 /**
  * Class that loads files under nodejs.
