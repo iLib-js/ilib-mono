@@ -47,7 +47,11 @@ module.exports = function(grunt) {
                         }
                     }
                 ]],
-                minified: !debug
+                plugins: [
+                    "add-module-exports"
+                ],
+                minified: !debug,
+                comments: false
             },
             dist: {
                 files: [{
