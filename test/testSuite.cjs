@@ -18,10 +18,6 @@
  * limitations under the License.
  */
 
-var nodeunit = require("nodeunit");
-var assert = require("nodeunit/lib/assert");
-require("assertextras")(assert);
-
 // this processes all subsequent requires using babel
 process.env.BABEL_ENV = "test";
 require("@babel/register")({
@@ -33,6 +29,8 @@ require("@babel/register")({
     plugins: [
         ["module-resolver", {
             "root": "test",
+            // map the src dir to the lib dir so we can
+            // test the commonjs code
             "alias": {
                 "../src": "../lib"
             }
@@ -40,17 +38,6 @@ require("@babel/register")({
     ]
 });
 
-var reporter = nodeunit.reporters.minimal;
-var modules = {};
-var suites = require("./testSuiteFiles.js").files;
-
-suites.forEach(function (path) {
-    var test = require("./" + path);
-    for (var suite in test) {
-        modules[suite] = test[suite];
-    }
-});
-
-reporter.run(modules, undefined, function(err) {
-    process.exit(err ? 1 : 0);
-});
+// call the ESM tests and use babel to make this version of node
+// be able to run it
+require("./testSuite.js");
