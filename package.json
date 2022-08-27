@@ -100,6 +100,6 @@
         "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "ilib-env": "^1.3.1"
+        "ilib-env": "^1.3.2"
     }
 }
