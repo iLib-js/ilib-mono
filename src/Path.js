@@ -24,6 +24,48 @@
 
 export default class Path {
     constructor() {}
+
+    static fileUriToPath(uri) {
+        if (typeof uri !== 'string' || uri.length <= 6 || !uri.startsWith('file:')) {
+            throw new TypeError(
+                'must pass in a file:// URI to convert to a file path'
+            );
+        }
+        const rest = decodeURI(uri.substring(uri.startsWith('file://') ? 7 : 5));
+        const firstSlash = rest.indexOf('/');
+        let host = !rest.startsWith('.') ? rest.substring(0, firstSlash) : '';
+        let path = rest.startsWith('.') ? rest : rest.substring(firstSlash + 1);
+
+        // 2.  Scheme Definition
+        // As a special case, <host> can be the string "localhost" or the empty
+        // string; this is interpreted as "the machine from which the URL is
+        // being interpreted".
+        if (host === 'localhost') {
+            host = '';
+        }
+
+        if (host) {
+            host = '//' + host;
+        }
+
+        // 3.2  Drives, drive letters, mount points, file system root
+        // Drive letters are mapped into the top of a file URI in various ways,
+        // depending on the implementation; some applications substitute
+        // vertical bar ("|") for the colon after the drive letter, yielding
+        // "file:///c|/tmp/test.txt".  In some cases, the colon is left
+        // unchanged, as in "file:///c:/tmp/test.txt".  In other cases, the
+        // colon is simply omitted, as in "file:///c/tmp/test.txt".
+        path = path.replace(/^(.+)\|/, '$1:');
+
+        if (/^.+:/.test(path)) {
+            // has Windows drive at beginning of path
+        } else {
+            // unix path…
+            path = rest.startsWith('.') ? path : '/' + path;
+        }
+
+        return host + path;
+    }
 }
 
 /**

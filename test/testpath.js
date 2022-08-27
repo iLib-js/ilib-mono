@@ -180,5 +180,32 @@ export const testPath = {
         test.expect(1);
         test.equal(Path.join(), "");
         test.done();
-    }
+    },
+
+    testFileUriToPathAbsolute: function(test) {
+        test.expect(1);
+        test.equal(Path.fileUriToPath("file:///a/b/c"), "/a/b/c");
+        test.done();
+    },
+
+    testFileUriToPathRelative: function(test) {
+        test.expect(1);
+        test.equal(Path.fileUriToPath("file:../a/b/c"), "../a/b/c");
+        test.done();
+    },
+
+    testFileUriToPathLocalhost: function(test) {
+        test.expect(1);
+        test.equal(Path.fileUriToPath("file://localhost/a/b/c"), "/a/b/c");
+        test.done();
+    },
+
+    testFileUriToPathNoProtocol: function(test) {
+        test.expect(1);
+        test.throws(function() {
+            var x = Path.fileUriToPath("http://yahoo.com/a/b/c");
+        });
+        test.done();
+    },
+    
 };
