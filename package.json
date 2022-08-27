@@ -64,8 +64,8 @@
         "node": ">=16.0"
     },
     "dependencies": {
-        "ilib-common": "file:../ilib-common/ilib-common-1.1.2.tgz",
-        "ilib-locale": "file:../ilib-locale/ilib-locale-1.2.2.tgz",
+        "ilib-common": "^1.1.2",
+        "ilib-locale": "^1.2.2",
         "json5": "^2.2.1",
         "options-parser": "^0.4.0"
     }
