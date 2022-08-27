@@ -19,6 +19,7 @@
 
 import * as ilibEnv from 'ilib-env';
 import Locale from 'ilib-locale';
+import semver from 'semver';
 
 import * as Utils from '../src/Utils.js';
 import * as JSUtils from '../src/JSUtils.js';
@@ -1021,8 +1022,8 @@ export const testUtils = {
             let expected = JSUtils.hashCode(function a () { return "a"; });
             test.equal(JSUtils.hashCode(function a(){return "a";}), expected);
         } else {
-            let expected = JSUtils.hashCode(eval("function a () { return \"a\"; }"));
-            test.notEqual(JSUtils.hashCode(eval("function a(){return \"a\";}")), expected);
+            let expected = JSUtils.hashCode(Function("function a () { return \"a\"; }"));
+            test.notEqual(JSUtils.hashCode(Function("function a(){return \"a\";}")), expected);
         }
         test.done();
     },

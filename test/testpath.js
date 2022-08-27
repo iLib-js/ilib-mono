@@ -194,9 +194,15 @@ export const testPath = {
         test.done();
     },
 
-    testFileUriToPathLocalhost: function(test) {
+    testFileUriToPathLocalhostOrMountPoint: function(test) {
         test.expect(1);
         test.equal(Path.fileUriToPath("file://localhost/a/b/c"), "/a/b/c");
+        test.done();
+    },
+
+    testFileUriToPathDrive: function(test) {
+        test.expect(1);
+        test.equal(Path.fileUriToPath("file://c:/a/b/c"), "/a/b/c");
         test.done();
     },
 
