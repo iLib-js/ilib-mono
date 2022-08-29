@@ -6,5 +6,6 @@
             "browsers": "cover 99.5%"
          }
       }
-   ]]
+   ]],
+   "plugins": ["add-module-exports"]
 }

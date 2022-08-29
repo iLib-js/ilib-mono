@@ -17,31 +17,30 @@
  * limitations under the License.
  */
 
-var nodeunit = require("nodeunit");
-var assert = require("nodeunit/lib/assert");
-require("assertextras")(assert);
+import nodeunit from 'nodeunit';
+import assert from 'nodeunit/lib/assert.js';
+import assertextras from 'assertextras';
+import { files } from './testSuiteFiles.js';
 
-// this processes all subsequent requires using babel
-process.env.BABEL_ENV = "test";
-require("@babel/register")({
-    presets: [
-        '@babel/preset-env',
-    ],
-    compact: false,
-    minified: false
+assertextras(assert);
+
+const reporter = nodeunit.reporters.minimal;
+let modules = {};
+
+let promise = Promise.resolve(true);
+
+files.forEach(path => {
+    promise = promise.then(() => {
+        return import("./" + path).then(test => {
+            for (let suite in test) {
+                modules[suite] = test[suite];
+            }
+        });
+    });
 });
 
-var reporter = nodeunit.reporters.minimal;
-var modules = {};
-var suites = require("./testSuiteFiles.js").files;
-
-suites.forEach(function (path) {
-    var test = require("./" + path);
-    for (var suite in test) {
-        modules[suite] = test[suite];
-    }
-});
-
-reporter.run(modules, undefined, function(err) {
-    process.exit(err ? 1 : 0);
+promise.then(() => {
+    reporter.run(modules, undefined, err => {
+        process.exit(err ? 1 : 0);
+    });
 });
