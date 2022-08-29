@@ -31,7 +31,7 @@ function getPlatformValue() {
         }
     } catch (e) {}
 
-    if (typeof(global) !== 'undefined' && global.process && global.process.versions && global.process.versions.node && typeof(module) !== 'undefined') {
+    if (typeof(global) !== 'undefined' && global.process && global.process.versions && global.process.versions.node) {
         return "nodejs";
     } else if (typeof(Qt) !== 'undefined') {
         return "qt";

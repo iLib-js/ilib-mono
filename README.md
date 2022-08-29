@@ -203,6 +203,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.2
+
+* This module is now a hybrid ESM/CommonJS package that works under node
+  or webpack
+
 ### v1.3.1
 
 * Removed dependency on polyfills that are not needed, which should make this
