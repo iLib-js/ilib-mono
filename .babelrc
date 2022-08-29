@@ -1,0 +1,9 @@
+{
+    "presets": ["@babel/preset-env"],
+    "plugins": [
+        "add-module-exports",
+        "@babel/plugin-transform-regenerator"
+    ],
+    "comments": false,
+    "compact": true
+}
