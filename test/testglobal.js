@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as JSUtils from '../src/JSUtils';
+import * as JSUtils from '../src/JSUtils.js';
 
 export const testGlobal = {
     testIsArrayNewArrayObj: function(test) {

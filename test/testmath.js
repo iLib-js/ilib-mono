@@ -19,10 +19,10 @@
 
 import Locale from 'ilib-locale';
 
-import * as Utils from '../src/Utils';
-import * as MathUtils from '../src/MathUtils';
-import * as JSUtils from '../src/JSUtils';
-import ISet from '../src/ISet';
+import * as Utils from '../src/Utils.js';
+import * as MathUtils from '../src/MathUtils.js';
+import * as JSUtils from '../src/JSUtils.js';
+import ISet from '../src/ISet.js';
 
 function strcmp(left, right) {
     return left.localeCompare(right);

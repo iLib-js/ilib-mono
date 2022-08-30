@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { testSearch } from './testsearch';
-import { testMathUtils } from './testmath';
-import { testGlobal } from './testglobal';
-import { testSet } from './testset';
-import { testPath } from './testpath';
-import { testUtils } from './testutils';
-import { testStrings } from './teststrings';
+import { testSearch } from './testsearch.js';
+import { testMathUtils } from './testmath.js';
+import { testGlobal } from './testglobal.js';
+import { testSet } from './testset.js';
+import { testPath } from './testpath.js';
+import { testUtils } from './testutils.js';
+import { testStrings } from './teststrings.js';
 
 export const tests = [
     testSearch,

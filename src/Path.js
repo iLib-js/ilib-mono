@@ -24,6 +24,19 @@
 
 export default class Path {
     constructor() {}
+
+    static fileUriToPath(uri) {
+        if (typeof uri !== 'string' || uri.length <= 6 || !uri.startsWith('file:')) {
+            throw new TypeError(
+                'must pass in a file:// URI to convert to a file path'
+            );
+        }
+
+        const re = /^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
+        const match = re.exec(uri);
+
+        return match ? match[5] : '';
+    }
 }
 
 /**
