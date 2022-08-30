@@ -21,7 +21,7 @@
  */
 
 import OptionsParser from 'options-parser';
-import LocalePkg from 'ilib-locale';
+import Locale from 'ilib-locale';
 import { JSUtils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
@@ -31,8 +31,6 @@ import json5 from 'json5';
 import walk from './walk.mjs';
 import scan from './scan.mjs';
 import scanModule from './scanmodule.mjs';
-
-const Locale = LocalePkg.default;
 
 const optionConfig = {
     help: {

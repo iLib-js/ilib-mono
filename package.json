@@ -1,7 +1,8 @@
 {
     "name": "ilib-assemble",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "main": "./src/index.mjs",
+	"type": "module",
     "bin": {
         "ilib-assemble": "./src/index.mjs",
         "ilib-assemble.bat": "./ilib-assemble.bat"
@@ -63,8 +64,8 @@
         "node": ">=16.0"
     },
     "dependencies": {
-        "ilib-common": "^1.1.1",
-        "ilib-locale": "^1.2.1",
+        "ilib-common": "^1.1.2",
+        "ilib-locale": "^1.2.2",
         "json5": "^2.2.1",
         "options-parser": "^0.4.0"
     }
