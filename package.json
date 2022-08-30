@@ -1,8 +1,14 @@
 {
     "name": "ilib-localematcher",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "main": "./lib/LocaleMatcher.js",
     "module": "./src/LocaleMatcher.js",
+    "exports": {
+        ".": {
+            "import": "./src/LocaleMatcher.js",
+            "require": "./lib/LocaleMatcher.js"
+        }
+    },
     "description": "A locale matcher to resolve partial locales or find fallback locales. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
         "internationalization",
@@ -40,7 +46,6 @@
         "src",
         "lib",
         "docs",
-        "locale",
         "README.md",
         "LICENSE"
     ],
@@ -53,14 +58,15 @@
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:test": "webpack-cli --config webpack-test.config.js",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:data": "node scripts/genlikelyloc.js",
-        "dist": "npm-run-all build:data doc doc:html build:prod; npm pack",
+        "dist": "npm-run-all build:data doc doc:html build:prod build:pkg; npm pack",
         "test": "npm run test:cli",
-        "test:cli": "npm run build:dev ; node test/testSuite.js",
+        "test:cli": "LANG=en_US.UTF8 npm run build:dev ; bash test/testSuite.sh",
         "test:web": "npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
-        "test:all": "LANG=en_US.UTF8 npm-run-all build:data test:cli test:web",
-        "debug": "LANG=en_US.UTF8 npm run build:data ; npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d *",
+        "test:all": "npm-run-all build:data test:cli test:web",
+        "debug": "LANG=en_US.UTF8 npm-run-all build:data build:dev ; node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d src test; rm -rf lib/*",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLocaleMatcher.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
@@ -68,10 +74,11 @@
         "@babel/core": "^7.18.10",
         "@babel/preset-env": "^7.18.10",
         "@babel/register": "^7.18.9",
+        "@babel/runtime": "^7.18.9",
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.5",
         "babel-plugin-add-module-exports": "^1.0.4",
-        "babel-plugin-uglify": "^1.0.2",
+        "babel-plugin-module-resolver": "^4.1.0",
         "cldr-core": "^41.0.0",
         "docdash": "^1.2.0",
         "grunt": "^1.5.3",
@@ -91,7 +98,7 @@
         "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "ilib-common": "^1.1.1",
-        "ilib-locale": "^1.2.1"
+        "ilib-common": "^1.1.2",
+        "ilib-locale": "^1.2.2"
     }
 }

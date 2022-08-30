@@ -24,7 +24,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var Locale = require('ilib-locale').default;
+var Locale = require('ilib-locale');
 
 var likelySubtags = require('cldr-core/supplemental/likelySubtags.json');
 var territoryContainment = require('cldr-core/supplemental/territoryContainment.json');
@@ -47,9 +47,9 @@ process.argv.forEach(function (val, index, array) {
     }
 });
 
-localeDirName = process.argv[2] || path.join(module.path, "../locale");
+localeDirName = process.argv[2] || path.join(module.path || ".", "../src");
 
-console.log("genlikelyloc - generate the localematch.json file.\n" +
+console.log("genlikelyloc - generate the localematch.js file.\n" +
         "Copyright (c) 2013-2020, 2022 JEDLSoft");
 
 console.log("locale dir: " + localeDirName);
@@ -262,12 +262,34 @@ var mi = JSON.parse(fs.readFileSync(path.join(module.path, "mutualIntelligibilit
 
 localematch.mutualIntelligibility = mi;
 
-console.log("Writing localematch.json...");
+console.log("Writing localematch.js...");
 
 // now write out the system resources
 
-var filename = path.join(localeDirName, "localematch.json");
-fs.writeFile(filename, JSON.stringify(localematch, true, 4), function (err) {
+var preamble = `
+/*
+ * localematch.js - Locale match mappings
+ *
+ * Copyright © 2022 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+export const matchdata = `;
+
+var filename = path.join(localeDirName, "localematch.js");
+fs.writeFile(filename, preamble + JSON.stringify(localematch, true, 4) + ';\n', function (err) {
     if (err) {
         console.log(err);
         throw err;

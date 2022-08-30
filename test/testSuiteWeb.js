@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { testLocaleMatch } from './testlocalematch';
+import { testLocaleMatch } from './testlocalematch.js';
 
 export const tests = [
     testLocaleMatch
