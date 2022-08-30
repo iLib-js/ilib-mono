@@ -21,6 +21,7 @@ import fs from 'fs';
 import path from 'path';
 import log4js from '@log4js-node/log4js-api';
 import Loader from './Loader.js';
+import { requireShim } from './shim/RequireShim.js';
 
 /**
  * Class that loads files under nodejs.
@@ -122,13 +123,22 @@ class NodeLoader extends Loader {
         if (!pathName) return undefined;
         let { sync } = options || {};
         sync = typeof(sync) === "boolean" ? sync : this.sync;
-        const isJs = pathName.endsWith(".js") || pathName.endsWith(".mjs");
+        const isJs = pathName.endsWith(".js") || pathName.endsWith(".mjs") || pathName.endsWith(".cjs");
         const fullPath = isJs && pathName[0] !== "/" ? path.join(process.cwd(), pathName) : pathName;
 
         if (sync) {
             try {
                 this.logger.trace(`loadFile: loading file ${pathName} synchronously.`);
-                return isJs ? require(fullPath) : fs.readFileSync(pathName, "utf-8");
+                if (isJs) {
+                    if (pathName.endsWith(".mjs")) {
+                        // cannot load ESM modules synchronously
+                        return undefined;
+                    } else {
+                        return requireShim(fullPath);
+                    }
+                } else {
+                    return fs.readFileSync(pathName, "utf-8");
+                }
             } catch (e) {
                 this.logger.trace(e);
                 return undefined;

@@ -31,11 +31,11 @@ module.exports = {
         }
     },
     externals: {
-        "./NodeLoader": "NodeLoader",
-        "./QtLoader": "QtLoader",
-        "./RhinoLoader": "RhinoLoader",
-        "./NashornLoader": "NashornLoader",
-        "./RingoLoader": "RingoLoader",
+        "./NodeLoader.js": "NodeLoader",
+        "./QtLoader.js": "QtLoader",
+        "./RhinoLoader.js": "RhinoLoader",
+        "./NashornLoader.js": "NashornLoader",
+        "./RingoLoader.js": "RingoLoader",
         "log4js": "log4js",
         "nodeunit": "nodeunit"
     },

@@ -96,10 +96,20 @@ loader.loadFiles(["path1", "non-existent-file", "path3"]).then((content) => {
 Assumptions About the Loaded Files
 -------------------
 
-For files with a ".js" or ".mjs" extension, the file is treated as
+Files with a ".js", ".cjs", or ".mjs" extension will be treated as
 a Javascript file. It will be loaded as code, and the module will be returned
-to the caller. The path name should be relative to the current directory of
-the app, not relative to the module that is calling the `loadFiles` method.
+to the caller as a module. The path name should be relative to the current
+directory of the app, not relative to the module that is calling the
+`loadFiles` method.
+
+Files with the extension ".mjs" will be interpretted as ES modules, and as
+such they can only be loaded asynchronously. If you attempt to load it
+synchronously, the `loadFile` method will return undefined for that file.
+
+Files with the extension ".js" and ".cjs" will be interpretted as CommonJS
+files and can be loaded synchronously or asynchronously. As such, if you
+put any ESM code into a ".js" file, it will be a syntax error and `loadFiles`
+will return undefined for that file in both synchronous and asychronous modes.
 
 For other file extensions, no assumptions are made about the contents
 of the files other than these:
@@ -148,11 +158,11 @@ Add the following to your webpack.config.js file:
 ```js
 module.exports = {
     "externals": {
-        "./NodeLoader": "NodeLoader",
-        "./QtLoader": "QtLoader",
-        "./RhinoLoader": "RhinoLoader",
-        "./NashornLoader": "NashornLoader",
-        "./RingoLoader": "RingoLoader",
+        "./NodeLoader.js": "NodeLoader",
+        "./QtLoader.js": "QtLoader",
+        "./RhinoLoader.js": "RhinoLoader",
+        "./NashornLoader.js": "NashornLoader",
+        "./RingoLoader.js": "RingoLoader",
         "log4js": "log4js"
     }
 }
@@ -242,7 +252,10 @@ limitations under the License.
 
 ### v1.3.2
 
-* This module is now a hybrid ESM/CommonJS package that actually works
+* This module is now a hybrid ESM/CommonJS package that actually works.
+  It avoids much of the dual package hazard by explicitly storing the
+  cache of registered loaders in the global scope and having no other
+  package state.
 
 ### v1.3.1
 

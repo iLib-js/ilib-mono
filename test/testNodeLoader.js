@@ -390,7 +390,7 @@ export const testNodeLoader = {
         loader.setSyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.cjs"
+            "./test/files/test.js"
         ]);
         test.equal(content.length, 1);
         test.equal(typeof(content[0]), 'function');
@@ -408,7 +408,9 @@ export const testNodeLoader = {
             "./test/files/a/asdf.mjs"
         ]);
         test.equal(content.length, 1);
-        test.equal(typeof(content[0]), 'function');
+
+        // cannot load ES modules synchronously
+        test.equal(typeof(content[0]), 'undefined');
 
         test.done();
     },
@@ -429,42 +431,39 @@ export const testNodeLoader = {
     },
 
     testLoadFilesJsSyncModeRightTypesMultiple: function(test) {
-        test.expect(3);
+        test.expect(4);
 
         var loader = LoaderFactory();
         loader.setSyncMode();
 
         var content = loader.loadFiles([
+            "./test/files/test.js",
             "./test/files/test.cjs",
             "./test/files/a/asdf.mjs"
         ]);
-        test.equal(content.length, 2);
+        test.equal(content.length, 3);
         test.equal(typeof(content[0]), 'function');
         test.equal(typeof(content[1]), 'function');
+        test.equal(typeof(content[2]), 'undefined');
 
         test.done();
     },
 
     testLoadFilesJsSyncModeRightContent: function(test) {
-        test.expect(2);
+        test.expect(1);
 
         var loader = LoaderFactory();
         loader.setSyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.cjs",
-            "./test/files/testasdf.js",
-            "./test/files/a/asdf.mjs"
+            "./test/files/test.js",
+            "./test/files/testasdf.js"
         ]);
         test.deepEqual(content[0](), {
             "test": "this is a test",
             "test2": {
                 "test3": "this is only a test"
             }
-        });
-        test.deepEqual(content[2](), {
-            "name": "foo",
-            "value": "asdf"
         });
 
         test.done();
@@ -477,14 +476,13 @@ export const testNodeLoader = {
         loader.setAsyncMode();
 
         loader.loadFiles([
-            "./test/files/test.cjs",
+            "./test/files/test.js",
             "./test/files/a/asdf.mjs"
         ]).then(content => {
             test.equal(content.length, 2);
             test.equal(typeof(content[0]), 'object');
 
-            // transpiled by babel into an esModule structure
-            // instead of a function
+            // ES modules can be loaded asynchronously
             test.equal(typeof(content[1]), 'object');
 
             test.done();
@@ -498,7 +496,7 @@ export const testNodeLoader = {
         loader.setAsyncMode();
 
         var content = loader.loadFiles([
-            "./test/files/test.cjs",
+            "./test/files/test.js",
             "./test/files/testasdf.js",
             "./test/files/a/asdf.mjs"
         ]).then(content => {
@@ -508,6 +506,7 @@ export const testNodeLoader = {
                     "test3": "this is only a test"
                 }
             });
+            // ES modules can be loaded asynchronously
             test.deepEqual(content[2].default(), {
                 "name": "foo",
                 "value": "asdf"
