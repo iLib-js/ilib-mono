@@ -358,7 +358,7 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map((file) => {
-                        return (file.data || this.cache.isLoaded(file)) ? undefined : Path.join(root, file.name);
+                        return (file.data || this.cache.isLoaded(file.name)) ? undefined : Path.join(root, file.name);
                     });
                     const data = this.loader.loadFiles(fileNames, {sync});
                     data.forEach((datum, i) => {
