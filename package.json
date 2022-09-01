@@ -67,7 +67,7 @@
         "build:webtest": "webpack-cli --env dev --config webpack-test.config.js",
         "build:test": "npm-run-all build:locales build:dev build:assemble build:webtest",
         "dist": "npm-run-all doc build:prod build:pkg; npm pack",
-        "test:cli": "LANG=en_US.UTF8 npm-run-all build:locales build:assemble ; node test/testSuite.js",
+        "test:cli": "LANG=en_US.UTF8 npm-run-all build:locales build:assemble ; bash test/testSuite.sh",
         "test:web": "LANG=en_US.UTF8 npm-run-all build:assemble build:webtest ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "test": "npm-run-all build:dev test:cli",
         "test:all": "npm-run-all build:dev test:cli test:web",
@@ -86,11 +86,13 @@
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.5",
         "babel-plugin-add-module-exports": "^1.0.4",
+        "babel-plugin-module-resolver": "^4.1.0",
         "babel-plugin-transform-import-meta": "^2.2.0",
         "cldr-core": "^41.0.0",
         "cldr-localenames-full": "^41.0.0",
         "cldr-misc-full": "^41.0.0",
         "cldr-numbers-full": "^41.0.0",
+        "docdash": "^1.2.0",
         "grunt": "^1.5.3",
         "grunt-babel": "^8.0.0",
         "grunt-cli": "^1.4.3",
@@ -98,7 +100,7 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.2.2",
-        "ilib-assemble": "file:../ilib-assemble/ilib-assemble-1.1.2.tgz",
+        "ilib-assemble": "^1.1.2",
         "ilib-data-utils": "^1.1.0",
         "jsdoc": "^3.6.11",
         "jsdoc-to-markdown": "^7.1.1",
@@ -113,11 +115,12 @@
         "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "file-uri-to-path": "^2.0.0",
-        "ilib-common": "file:../ilib-common/ilib-common-1.1.2.tgz",
-        "ilib-env": "file:../ilib-env/ilib-env-1.3.2.tgz",
-        "ilib-locale": "file:../ilib-locale/ilib-locale-1.2.2.tgz",
-        "ilib-localedata": "file:../ilib-localedata/ilib-localedata-1.3.3.tgz",
-        "ilib-localematcher": "file:../ilib-localematcher/ilib-localematcher-1.2.2.tgz"
+        "@log4js-node/log4js-api": "^1.0.2",
+        "ilib-common": "^1.1.2",
+        "ilib-env": "^1.3.2",
+        "ilib-locale": "^1.2.2",
+        "ilib-localedata": "^1.3.3",
+        "ilib-localematcher": "^1.2.2",
+        "json5": "^2.2.1"
     }
 }

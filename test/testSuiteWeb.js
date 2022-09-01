@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { testLocaleInfo } from './testLocaleInfo';
-import { testLocaleInfoAsync } from './testLocaleInfoAsync';
+import { testLocaleInfo } from './testLocaleInfo.js';
+import { testLocaleInfoAsync } from './testLocaleInfoAsync.js';
 
 export const tests = [
     testLocaleInfo,

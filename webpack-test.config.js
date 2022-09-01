@@ -31,11 +31,11 @@ module.exports = {
         }
     },
     externals: {
-        "./NodeLoader": "NodeLoader",
-        "./QtLoader": "QtLoader",
-        "./RhinoLoader": "RhinoLoader",
-        "./NashornLoader": "NashornLoader",
-        "./RingoLoader": "RingoLoader",
+        "./NodeLoader.js": "NodeLoader",
+        "./QtLoader.js": "QtLoader",
+        "./RhinoLoader.js": "RhinoLoader",
+        "./NashornLoader.js": "NashornLoader",
+        "./RingoLoader.js": "RingoLoader",
         "log4js": "log4js",
         "nodeunit": "nodeunit"
     },
@@ -69,26 +69,6 @@ module.exports = {
                     },
                     { loader: '@open-wc/webpack-import-meta-loader' }
                 ]
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            minified: false,
-                            compact: false,
-                            presets: [
-                                '@babel/preset-env'
-                            ],
-                            plugins: [
-                                "add-module-exports",
-                                "@babel/plugin-transform-regenerator"
-                            ]
-                        }
-                    }
-                ]
             }
         ]
     },
@@ -97,7 +77,7 @@ module.exports = {
             buffer: require.resolve("buffer")
         },
         alias: {
-            "calling-module": "../../../assembled"
+            "calling-module": path.join(path.dirname(module.id), "assembled")
         }
     },
     optimization: {

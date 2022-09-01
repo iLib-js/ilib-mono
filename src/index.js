@@ -24,7 +24,6 @@ import LocaleMatcher from 'ilib-localematcher';
 import { Utils, Path } from 'ilib-common';
 import { getPlatform } from 'ilib-env';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
-import fileUriToPath from 'file-uri-to-path';
 
 /**
  * @class
@@ -197,9 +196,8 @@ class LocaleInfo {
     localeDir() {
         switch (getPlatform()) {
             case "nodejs":
-                return (typeof(module) !== 'undefined') ?
-                    Path.join(Path.dirname(module.id), "../locale") :
-                    Path.dirname(fileUriToPath(import.meta.url));
+                return Path.join(Path.dirname((typeof(module) !== 'undefined') ? module.id : Path.fileUriToPath(import.meta.url)),
+                    "../locale");
 
             case "browser":
                 return "../assembled";
