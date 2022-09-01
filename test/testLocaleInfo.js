@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import LocaleInfo from '../src/index';
+import LocaleInfo from '../src/index.js';
 import { setPlatform, getPlatform, setLocale } from 'ilib-env';
 import { registerLoader, Loader } from 'ilib-loader';
 import { LocaleData } from 'ilib-localedata';
-import MockLoader from './MockLoader';
+import MockLoader from './MockLoader.js';
 
-import localeList from './locales.json';
+import { localeList } from './locales.js';
 
 // locale with no script
 /*

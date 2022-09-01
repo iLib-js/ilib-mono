@@ -381,6 +381,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.1
+
+* This module is now a hybrid ESM/CommonJS package that works under node
+  or webpack
+
 ### v1.0.0
 
 - Initial version

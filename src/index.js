@@ -196,7 +196,8 @@ class LocaleInfo {
     localeDir() {
         switch (getPlatform()) {
             case "nodejs":
-                return Path.join(Path.dirname(module.id), "../locale");
+                return Path.join(Path.dirname((typeof(module) !== 'undefined') ? module.id : Path.fileUriToPath(import.meta.url)),
+                    "../locale");
 
             case "browser":
                 return "../assembled";
