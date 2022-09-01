@@ -20,8 +20,8 @@
 import { setPlatform, getPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
 
-import MockLoader from './MockLoader';
-import getLocaleData, { clearLocaleData } from '../src/index';
+import MockLoader from './MockLoader.js';
+import getLocaleData, { clearLocaleData } from '../src/index.js';
 
 export const testGetLocaleData = {
     testGetLocaleData: function(test) {

@@ -43,6 +43,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.2
+
+- This module is now a hybrid ESM/CommonJS package that works under node
+  or webpack
+
 ### v1.3.1
 
 - fixed a bug where data loaded from webpacked js files was not cached properly

@@ -26,7 +26,7 @@ import LoaderFactory from 'ilib-loader';
 import { Utils, JSUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
 
-import DataCache from './DataCache';
+import DataCache from './DataCache.js';
 
 /**
  * @private
@@ -358,7 +358,7 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map((file) => {
-                        return (file.data || this.cache.isLoaded(file)) ? undefined : Path.join(root, file.name);
+                        return (file.data || this.cache.isLoaded(file.name)) ? undefined : Path.join(root, file.name);
                     });
                     const data = this.loader.loadFiles(fileNames, {sync});
                     data.forEach((datum, i) => {
@@ -651,8 +651,8 @@ class LocaleData {
                                         localeData = datum();
                                         break;
                                     case 'object':
-                                        if (typeof(datum["default"]) === 'function') {
-                                            localeData = datum["default"]();
+                                        if (typeof(datum["default"]) !== 'undefined') {
+                                            localeData = (typeof(datum["default"]) === 'function') ? datum["default"]() : datum["default"];
                                         } else if (typeof(datum.getLocaleData) === 'function') {
                                             localeData = datum.getLocaleData();
                                         } else {

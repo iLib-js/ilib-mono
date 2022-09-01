@@ -20,7 +20,7 @@
 import log4js from '@log4js-node/log4js-api';
 import { top } from 'ilib-env';
 
-import LocaleData from './LocaleData';
+import LocaleData from './LocaleData.js';
 
 /**
  * Return the locale data singleton for a package that needs data.
@@ -61,5 +61,5 @@ export function clearLocaleData() {
     globalScope.ilib.localeDataCache = undefined;
 }
 
-export { default as LocaleData } from './LocaleData';
+export { default as LocaleData } from './LocaleData.js';
 export default getLocaleData;

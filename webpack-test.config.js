@@ -31,11 +31,11 @@ module.exports = {
         }
     },
     externals: {
-        "./NodeLoader": "NodeLoader",
-        "./QtLoader": "QtLoader",
-        "./RhinoLoader": "RhinoLoader",
-        "./NashornLoader": "NashornLoader",
-        "./RingoLoader": "RingoLoader",
+        "./NodeLoader.js": "NodeLoader",
+        "./QtLoader.js": "QtLoader",
+        "./RhinoLoader.js": "RhinoLoader",
+        "./NashornLoader.js": "NashornLoader",
+        "./RingoLoader.js": "RingoLoader",
         "log4js": "log4js",
         "nodeunit": "nodeunit"
     },
@@ -59,7 +59,7 @@ module.exports = {
                             }
                         ]],
                         plugins: [
-                            //"add-module-exports",
+                            "add-module-exports",
                             "@babel/plugin-transform-regenerator"
                         ]
                     }
@@ -72,7 +72,7 @@ module.exports = {
             buffer: require.resolve("buffer")
         },
         alias: {
-            "calling-module": path.resolve(__dirname, "test/files3")
+            "calling-module": path.resolve(__dirname, "./test/files3")
         }
     }
 };

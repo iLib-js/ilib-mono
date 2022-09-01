@@ -19,7 +19,7 @@
 
 import Locale from 'ilib-locale';
 
-import DataCache from '../src/DataCache';
+import DataCache from '../src/DataCache.js';
 
 export const testDataCache = {
     testDataCacheConstructor: function(test) {
