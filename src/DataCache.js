@@ -95,13 +95,8 @@ class DataCache {
      * once.
      */
     static clearDataCache() {
-        const globalScope = top();
-
-        if (!globalScope.ilib) {
-            globalScope.ilib = {};
-        }
-
-        globalScope.ilib.dataCache = new DataCache();
+        const cache = DataCache.getDataCache();
+        cache.clearData();
     }
 
     /**

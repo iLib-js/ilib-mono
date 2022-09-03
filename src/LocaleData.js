@@ -25,6 +25,7 @@ import { getPlatform, getLocale, top } from 'ilib-env';
 import LoaderFactory from 'ilib-loader';
 import { Utils, JSUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
+import LocaleMatcher from 'ilib-localematcher';
 
 import DataCache from './DataCache.js';
 
@@ -326,11 +327,21 @@ class LocaleData {
         } = params || {};
 
         // first check if it's in the cache
-        // const locales = Utils.getSublocales(locale).map((sublocale) => { locale: sublocale });
         // normalize the spec
         let loc = new Locale(locale);
         if (locale && locale !== "root" && !loc.getLanguage()) {
             loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+        }
+
+        if (sync && !this.loader.supportsSync() && !LocaleData.checkCache(loc.getSpec(), basename)) {
+            const lm = new LocaleMatcher({
+                locale: loc.getSpec(),
+                sync: true
+            });
+            loc = new Locale(lm.getLikelyLocale());
+            if (!LocaleData.checkCache(loc.getSpec(), basename)) {
+                throw "Locale data not available";
+            }
         }
 
         // then check how to load it
