@@ -340,7 +340,8 @@ class LocaleData {
             });
             loc = new Locale(lm.getLikelyLocale());
             if (!LocaleData.checkCache(loc.getSpec(), basename)) {
-                throw "Locale data not available";
+                throw "Synchronous load was requested with a loader that does not support synchronous operation" +
+                    " and the requested locale data was not already available in the cache.";
             }
         }
 
