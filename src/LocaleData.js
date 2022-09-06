@@ -321,6 +321,26 @@ class LocaleData {
     }
 
     /**
+     * @private
+     */
+    getFilesArray(basename, loc) {
+        const fileName = basename + ".json";
+        return Utils.getSublocales(loc.getSpec()).map((spec) => {
+            const loc = new Locale(spec);
+            const pathName = (spec === "root") ? fileName : Path.join(spec.replace(/-/g, "/"), fileName);
+            const retValue = {
+                name: pathName,
+                locale: loc
+            };
+            const data = this.cache.getData(basename, loc);
+            if (data) {
+                retValue.data = data;
+            }
+            return retValue;
+        });
+    }
+
+    /**
      * Find locale data or load it in. If the data with the given name is preassembled, it will
      * find the data in ilib.data. If the data is not preassembled but there is a loader function,
      * this function will call it to load the data. Otherwise, the callback will be called with
@@ -377,34 +397,6 @@ class LocaleData {
             }
         }
 
-        let promise;
-
-        // for async operation, try loading the assembled locale data file first
-        // so that later, we get the data we need in one shot
-        const assembledFile = `${loc.getSpec()}.js`;
-        if (!sync && !this.cache.isLoaded(assembledFile)) {
-            promise = LocaleData.ensureLocale(loc);
-        }
-
-        // then check how to load it
-        // then load it
-        const fileName = basename + ".json";
-        const files = Utils.getSublocales(loc.getSpec()).map((spec) => {
-            const loc = new Locale(spec);
-            const pathName = (spec === "root") ? fileName : Path.join(spec.replace(/-/g, "/"), fileName);
-            const retValue = {
-                name: pathName,
-                locale: loc
-            };
-            const data = this.cache.getData(basename, loc);
-            if (data) {
-                retValue.data = data;
-            }
-            return retValue;
-        });
-
-        const roots = this.getRoots(); // includes this.path at the end of it
-
         function mergeData(files) {
             return mostSpecific ?
                 files.reduce((previous, current) => {
@@ -417,7 +409,18 @@ class LocaleData {
                     }, {}));
         }
 
+        // for async operation, try loading the assembled locale data file first
+        // so that we don't have to load a bunch of individual files
+        let promise = (!sync && !this.cache.isLoaded(`${loc.getSpec()}.js`)) ? LocaleData.ensureLocale(loc) : Promise.resolve(true);
+
+        // then check how to load it
+        // then load it
+
+        const roots = this.getRoots(); // includes this.path at the end of it
+        let files;
+
         if (sync) {
+            files = this.getFilesArray(basename, loc);
             roots.forEach((root) => {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
@@ -440,7 +443,9 @@ class LocaleData {
 
             return mergeData(files);
         } else {
-            promise = promise || Promise.resolve(true);
+            promise = promise.then(() => {
+                files = this.getFilesArray(basename, loc);
+            });
             roots.forEach((root) => {
                 promise = promise.then(() => {
                     const count = files.filter(file => !file.data).length;
@@ -688,9 +693,9 @@ class LocaleData {
                                 // there was no data or the file did not exist
                                 let localeData = parseData(datum, files[i].path);
                                 if (localeData) {
-	                                LocaleData.cacheData(localeData);
-	                                files[i].data = localeData;
-	                                return true;
+                                    LocaleData.cacheData(localeData);
+                                    files[i].data = localeData;
+                                    return true;
                                 }
                             }
                             return previous;
