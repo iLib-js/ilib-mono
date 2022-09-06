@@ -105,18 +105,6 @@ class LocaleInfo {
             sync
         });
 
-        // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "localeinfo")) {
-            const lm = new LocaleMatcher({
-                locale: this.locale.getSpec(),
-                sync: true
-            });
-            this.locale = new Locale(lm.getLikelyLocale());
-            if (!LocaleData.checkCache(this.locale.getSpec(), "localeinfo")) {
-                throw "Locale data not available";
-            }
-        }
-
         if (sync) {
             this.info = locData.loadData({
                 basename: "localeinfo",
