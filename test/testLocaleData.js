@@ -268,7 +268,9 @@ export const testLocaleData = {
         setPlatform();
         test.expect(1);
 
-        // should have the path of caller in it only
+        LocaleData.clearGlobalRoots();
+
+        // should be empty now
         test.deepEqual(LocaleData.getGlobalRoots(), []);
 
         test.done();

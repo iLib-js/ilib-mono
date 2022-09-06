@@ -41,6 +41,38 @@ function getIlib() {
 }
 
 /**
+ * @private
+ */
+function parseData(data, pathName) {
+    let localeData;
+
+    switch (typeof(data)) {
+        case 'function':
+            localeData = data();
+            break;
+        case 'object':
+            if (typeof(data["default"]) !== 'undefined') {
+                localeData = (typeof(data["default"]) === 'function') ? data["default"]() : data["default"];
+            } else if (typeof(data.getLocaleData) === 'function') {
+                localeData = data.getLocaleData();
+            } else {
+                // if it is a json file we loaded, then this object
+                // IS the data
+                if (!pathName.endsWith(".js") && !pathName.endsWith(".mjs")) {
+                    localeData = data;
+                }
+                // else nothing to return
+            }
+            break;
+        case 'string':
+            localeData = JSON5.parse(data);
+            break;
+    }
+
+    return localeData;
+}
+
+/**
  * @class A locale data instance.
  *
  * This class is a repository for locale-sensitive data only. For
@@ -345,6 +377,15 @@ class LocaleData {
             }
         }
 
+        let promise;
+
+        // for async operation, try loading the assembled locale data file first
+        // so that later, we get the data we need in one shot
+        const assembledFile = `${loc.getSpec()}.js`;
+        if (!sync && !this.cache.isLoaded(assembledFile)) {
+            promise = LocaleData.ensureLocale(loc);
+        }
+
         // then check how to load it
         // then load it
         const fileName = basename + ".json";
@@ -363,7 +404,18 @@ class LocaleData {
         });
 
         const roots = this.getRoots(); // includes this.path at the end of it
-        let promise;
+
+        function mergeData(files) {
+            return mostSpecific ?
+                files.reduce((previous, current) => {
+                    return (current && current.data) ? current.data : previous;
+                }, {}) :
+                (returnOne ?
+                    files.map(file => file.data).find(file => file) :
+                    files.map(file => file.data).reduce((previous, current) => {
+                        return JSUtils.merge(previous, current || {});
+                    }, {}));
+        }
 
         if (sync) {
             roots.forEach((root) => {
@@ -378,7 +430,7 @@ class LocaleData {
                             // null indicates we attempted to load the file, but
                             // there was no data or the file did not exist
                             this.cache.markFileAsLoaded(fileNames[i]);
-                            const parsed = datum ? JSON5.parse(datum) : null;
+                            const parsed = datum ? parseData(datum, fileNames[i]) : null;
                             this.cache.storeData(basename, files[i].locale, parsed);
                             files[i].data = parsed;
                         }
@@ -386,19 +438,9 @@ class LocaleData {
                 }
             });
 
-            const merged = mostSpecific ?
-                files.reduce((previous, current) => {
-                    return (current && current.data) ? current.data : previous;
-                }, {}) :
-                (returnOne ?
-                    files.map(file => file.data).find(file => file) :
-                    files.map(file => file.data).reduce((previous, current) => {
-                        return JSUtils.merge(previous, current || {});
-                    }, {}));
-
-            return merged;
+            return mergeData(files);
         } else {
-            promise = Promise.resolve(true);
+            promise = promise || Promise.resolve(true);
             roots.forEach((root) => {
                 promise = promise.then(() => {
                     const count = files.filter(file => !file.data).length;
@@ -413,7 +455,7 @@ class LocaleData {
                                 if (!files[i].data) {
                                     // null indicates we attempted to load the file, but
                                     // there was no data or the file did not exist
-                                    const parsed = datum ? JSON5.parse(datum) : null;
+                                    const parsed = datum ? parseData(datum, fileNames[i]) : null;
                                     this.cache.storeData(basename, files[i].locale, parsed);
                                     files[i].data = parsed;
                                 }
@@ -422,21 +464,8 @@ class LocaleData {
                     }
                 });
             });
-            return promise.then(() => {
-                return mostSpecific ?
-                    files.reduce((previous, current) => {
-                        return (current && current.data) ? current.data : previous;
-                    }, {}) :
-                    (returnOne ?
-                        files.map(file => file.data).find(file => file) :
-                        files.map(file => file.data).reduce((previous, current) => {
-                            return JSUtils.merge(previous, current || {});
-                        }, {}));
-            });
+            return promise.then(() => mergeData(files));
         }
-
-        // then cache it
-        // extract the relevants parts and return it
     };
 
     /**
@@ -657,36 +686,12 @@ class LocaleData {
                             if (!files[i].data) {
                                 // null indicates we attempted to load the file, but
                                 // there was no data or the file did not exist
-                                let localeData;
-                                switch (typeof(datum)) {
-                                    case 'function':
-                                        localeData = datum();
-                                        break;
-                                    case 'object':
-                                        if (typeof(datum["default"]) !== 'undefined') {
-                                            localeData = (typeof(datum["default"]) === 'function') ? datum["default"]() : datum["default"];
-                                        } else if (typeof(datum.getLocaleData) === 'function') {
-                                            localeData = datum.getLocaleData();
-                                        } else {
-                                            // if it is a json file we loaded, then this object
-                                            // IS the data
-                                            if (!files[i].path.endsWith(".js") && !files[i].path.endsWith(".mjs")) {
-                                                localeData = datum;
-                                            } else {
-                                                // nothing to return
-                                                return previous;
-                                            }
-                                        }
-                                        break;
-                                    case 'string':
-                                        localeData = JSON5.parse(datum);
-                                        break;
-                                    default:
-                                        return previous;
+                                let localeData = parseData(datum, files[i].path);
+                                if (localeData) {
+	                                LocaleData.cacheData(localeData);
+	                                files[i].data = localeData;
+	                                return true;
                                 }
-                                LocaleData.cacheData(localeData);
-                                files[i].data = localeData;
-                                return true;
                             }
                             return previous;
                         }, false);
