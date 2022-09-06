@@ -43,10 +43,21 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.4
+
+- fixed a bug in data caching when the cache is cleared
+- fixed a problem where sync loading is requested but the loader doesn't
+  support sync loading. In this case, if the data is not in the cache, it
+  now throws an exception. If the data is in the cache, it now returns it
+  properly.
+
+### v1.3.3
 ### v1.3.2
 
 - This module is now a hybrid ESM/CommonJS package that works under node
   or webpack
+- accidentally bumped the version to v1.3.3 before publishing the changes for
+  v1.3.2
 
 ### v1.3.1
 

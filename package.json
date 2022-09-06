@@ -1,6 +1,6 @@
 {
     "name": "ilib-localedata",
-    "version": "1.3.3",
+    "version": "1.3.4",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {
@@ -98,6 +98,7 @@
         "ilib-env": "^1.3.2",
         "ilib-loader": "^1.3.2",
         "ilib-locale": "^1.2.2",
+        "ilib-localematcher": "^1.2.2",
         "json5": "^2.2.1"
     }
 }
