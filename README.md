@@ -43,13 +43,18 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.3.4
+### v1.4.0
 
 - fixed a bug in data caching when the cache is cleared
 - fixed a problem where sync loading is requested but the loader doesn't
   support sync loading. In this case, if the data is not in the cache, it
   now throws an exception. If the data is in the cache, it now returns it
   properly.
+- in async mode only, add the ability to load the assembled locale data
+  files automatically before any individual files in order to save time.
+  If there is an assembled locale data file, it loads one file and then
+  returns the data, instead of loading many files and merging the results
+  before returning the data.
 
 ### v1.3.3
 ### v1.3.2
