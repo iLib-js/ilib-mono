@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import IString from '../src/index';
+import IString from '../src/index.js';
 
 import Locale from 'ilib-locale';
 

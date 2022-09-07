@@ -3,6 +3,13 @@
     "version": "1.0.0",
     "main": "./lib/index.js",
     "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        },
+        "./assemble.mjs": "./assemble.mjs"
+    },
     "description": "Formattable string with the same API as an intrinsic string",
     "keywords": [
         "internationalization",
@@ -34,6 +41,8 @@
         }
     ],
     "files": [
+        "assemble.mjs",
+        "locale",
         "src",
         "lib",
         "docs",
@@ -46,29 +55,36 @@
     },
     "scripts": {
         "build": "npm run build:prod",
+        "build:test": "npm-run-all build:locales build:dev build:assemble build:webtest",
+        "build:data": "cd scripts ; node generate.js",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:locales": "echo '{\"locales\":[' $(cat locales.txt) ']}' > locales.json ; echo 'export const localeList = ' > test/locales.js ; cat locales.json >> test/locales.js",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
-        "build:test": "webpack-cli --config webpack-test.config.js",
-        "generate": "node generate.js",
-        "dist": "npm run doc ; npm run build:prod ; npm run build:web; npm pack",
-        "test": "LANG=en_US.UTF8 npm run build:dev ; node test/testSuite.js",
-        "test:all": "npm run test ; npm run test:web",
-        "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "build:assemble": "npm-run-all build:locales ; ilib-assemble -m .  --localefile ./locales.json assembled src",
+        "build:webtest": "webpack-cli --env dev --config webpack-test.config.js",
+        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
+        "test:cli": "LANG=en_US.UTF8 npm-run-all build:locales build:pkg build:dev ; bash test/testSuite.sh",
+        "test:web": "LANG=en_US.UTF8 npm-run-all build:assemble build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test": "npm-run-all build:dev test:cli",
+        "test:all": "npm-run-all test:cli test:web",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d * ; rm -rf lib",
+        "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibIString.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        "@babel/core": "^7.17.8",
+        "@babel/core": "^7.19.0",
         "@babel/plugin-transform-regenerator": "^7.18.6",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/register": "^7.17.7",
-        "@babel/runtime": "^7.17.8",
+        "@babel/preset-env": "^7.19.0",
+        "@babel/register": "^7.18.9",
+        "@babel/runtime": "^7.19.0",
+        "@open-wc/webpack-import-meta-loader": "^0.4.7",
         "assertextras": "^1.1.0",
-        "babel-loader": "^8.2.3",
+        "babel-loader": "^8.2.5",
         "babel-plugin-add-module-exports": "^1.0.4",
-        "babel-plugin-uglify": "^1.0.2",
+        "babel-plugin-module-resolver": "^4.1.0",
+        "babel-plugin-transform-import-meta": "^2.2.0",
         "cldr-core": "^41.0.0",
         "cldr-misc-full": "^41.0.0",
         "cldr-numbers-full": "^41.0.0",
@@ -80,10 +96,14 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.2.2",
+        "ilib-assemble": "^1.1.2",
+        "ilib-data-utils": "^1.1.0",
         "jsdoc": "^3.6.11",
         "jsdoc-to-markdown": "^7.1.1",
+        "json-stable-stringify": "^1.0.1",
         "load-grunt-tasks": "^5.1.0",
         "nodeunit": "^0.11.3",
+        "npm-run-all": "^4.1.5",
         "open-cli": "^7.0.1",
         "regenerator-runtime": "^0.13.9",
         "webpack": "^5.74.0",
@@ -91,9 +111,10 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-common": "^1.1.1",
-        "ilib-env": "^1.3.1",
-        "ilib-locale": "^1.2.1",
-        "ilib-localedata": "^1.3.2"
+        "ilib-common": "^1.1.2",
+        "ilib-env": "^1.3.2",
+        "ilib-locale": "^1.2.2",
+        "ilib-localedata": "^1.4.0",
+        "json5": "^2.2.1"
     }
 }
