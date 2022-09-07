@@ -381,6 +381,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.2
+
+* Did not export the assemble.mjs file so it was not possible to assemble
+  the locale data
+* Remove the incorrect check for synchronous loading of data that is already
+  in the cache. The check is now in ilib-localedata instead.
+* Updated dependencies
+
 ### v1.0.1
 
 * This module is now a hybrid ESM/CommonJS package that works under node

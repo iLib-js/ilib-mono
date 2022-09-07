@@ -1,13 +1,14 @@
 {
     "name": "ilib-localeinfo",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {
         ".": {
             "import": "./src/index.js",
             "require": "./lib/index.js"
-        }
+        },
+        "./assemble.mjs": "./assemble.mjs"
     },
     "description": "Encode locale info for various types of data",
     "keywords": [
@@ -119,7 +120,7 @@
         "ilib-common": "^1.1.2",
         "ilib-env": "^1.3.2",
         "ilib-locale": "^1.2.2",
-        "ilib-localedata": "^1.3.3",
+        "ilib-localedata": "^1.4.0",
         "ilib-localematcher": "^1.2.2",
         "json5": "^2.2.1"
     }
