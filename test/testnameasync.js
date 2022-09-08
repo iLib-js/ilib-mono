@@ -18,13 +18,18 @@
  */
 
 import Name from '../src/Name.js';
-import LocaleData from 'ilib-localedata';
-import { getPlatform } from 'ilib-env';
+import { LocaleData } from 'ilib-localedata';
+import { getPlatform, setLocale } from 'ilib-env';
 
 let setUpPerformed = false;
 
-
 export const testnameasync = {
+    setUp: function(callback) {
+        setLocale("en-US");
+        LocaleData.clearCache();
+        callback();
+    },
+
     testNameAsyncEmptyConstructor: function(test) {
         test.expect(1);
         Name.create().then((name) => {
@@ -42,9 +47,7 @@ export const testnameasync = {
             familyName: "d",
             suffix: "e",
             honorific: "x"
-        }, {
-            sync: false,
-        }).then((name) => {
+        }, {}).then((name) => {
             test.ok(typeof(name) !== "undefined");
 
             test.contains(name, { prefix: "a", givenName: "b", middleName: "c", familyName: "d", suffix: "e", honorific: "x"});
@@ -55,8 +58,7 @@ export const testnameasync = {
     testNameAsyncDEWithMultiplePrefixes: function(test) {
         test.expect(2);
         Name.create("Herr Dr. Josef Hans Jürgen Herzheim", {
-            locale: "de-DE",
-            sync: false,
+            locale: "de-DE"
         }).then((name) => {
             test.ok(typeof(name) !== "undefined");
 
@@ -68,8 +70,7 @@ export const testnameasync = {
     testNameAsyncESFull: function(test) {
         test.expect(2);
         Name.create("Juan Carlos Maria León Arroyo", {
-            locale: "es-ES",
-            sync: false,
+            locale: "es-ES"
         }).then((name) => {
             test.ok(typeof(name) !== "undefined");
 
@@ -81,8 +82,7 @@ export const testnameasync = {
     testNameAsyncZHHonorific: function(test) {
         test.expect(2);
         Name.create("堂哥胡锦涛", {
-            locale: "zh-CN",
-            sync: false,
+            locale: "zh-CN"
         }).then((name) => {
             test.ok(typeof(name) !== "undefined");
 

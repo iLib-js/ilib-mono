@@ -141,7 +141,6 @@ class NameFmt {
      */
     init(options, sync) {
         this.style = "short";
-        this.loadParams = {};
 
         if (options) {
             if (options.locale) {
@@ -158,10 +157,6 @@ class NameFmt {
 
             if (typeof(options.sync) !== 'undefined') {
                 sync = !!options.sync;
-            }
-
-            if (typeof(options.loadParams) !== 'undefined') {
-                this.loadParams = options.loadParams;
             }
         }
 
@@ -209,18 +204,6 @@ class NameFmt {
             path: localeDir(),
             sync
         });
-
-        // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "name")) {
-            const lm = new LocaleMatcher({
-                locale: this.locale.getSpec(),
-                sync: true
-            });
-            this.locale = new Locale(lm.getLikelyLocale());
-            if (!LocaleData.checkCache(this.locale.getSpec(), "name")) {
-                throw "Locale data not available";
-            }
-        }
 
         if (sync) {
             this.info = locData.loadData({

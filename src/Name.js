@@ -125,8 +125,6 @@ class Name {
             return sync ? undefined : Promise.resolve(this);
         }
 
-        this.loadParams = {};
-
         if (options) {
             if (options.locale) {
                 this.locale = (typeof (options.locale) === 'string') ? new Locale(options.locale) : options.locale;
@@ -142,10 +140,6 @@ class Name {
 
             if (typeof(options.sync) === 'boolean') {
                 sync = options.sync;
-            }
-
-            if (typeof(options.loadParams) !== 'undefined') {
-                this.loadParams = options.loadParams;
             }
 
             if (typeof(options.compoundFamilyName) !== 'undefined') {
@@ -207,18 +201,6 @@ class Name {
             path: localeDir(),
             sync
         });
-
-        // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "name")) {
-            const lm = new LocaleMatcher({
-                locale: this.locale.getSpec(),
-                sync: true
-            });
-            this.locale = new Locale(lm.getLikelyLocale());
-            if (!LocaleData.checkCache(this.locale.getSpec(), "name")) {
-                throw "Locale data not available";
-            }
-        }
 
         if (sync) {
             this.info = locData.loadData({

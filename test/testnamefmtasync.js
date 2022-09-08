@@ -19,12 +19,18 @@
 
 import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
-import LocaleData from 'ilib-localedata';
-import { getPlatform } from 'ilib-env';
+import { LocaleData } from 'ilib-localedata';
+import { getPlatform, setLocale } from 'ilib-env';
 
 let setUpPerformed = false;
 
 export const testnamefmtasync = {
+     setUp: function(callback) {
+        setLocale("en-US");
+        LocaleData.clearCache();
+        callback();
+    },
+
     testNameFmtAsyncConstructor: function(test) {
         test.expect(1);
         NameFmt.create().then((fmt) => {
