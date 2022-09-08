@@ -79,6 +79,7 @@
         "assertextras": "^1.1.0",
         "babel-loader": "^8.2.5",
         "babel-plugin-add-module-exports": "^1.0.4",
+        "babel-plugin-module-resolver": "^4.1.0",
         "babel-plugin-transform-import-meta": "^2.2.0",
         "docdash": "^1.2.0",
         "grunt": "^1.5.3",
