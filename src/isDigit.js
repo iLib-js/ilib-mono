@@ -21,9 +21,9 @@
 
 import { JSUtils } from "ilib-common";
 
-import { inRange } from "./CType";
+import { inRange } from "./CType.js";
 
-import ctype_n from "../locale/ctype_n.json";
+import { ctype_n } from "./ctype_n.js";
 
 /**
  * Return whether or not the first character is a digit character in the

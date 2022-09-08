@@ -21,9 +21,9 @@
 
 import { JSUtils } from "ilib-common";
 
-import { inRange } from "./CType";
+import { inRange } from "./CType.js";
 
-import scriptToRange from "../locale/scriptToRange.json";
+import { scriptToRange } from "./scriptToRange.js";
 
 /**
  * Return whether or not the first character in the given string is

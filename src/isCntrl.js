@@ -21,9 +21,9 @@
 
 import { JSUtils } from "ilib-common";
 
-import { inRange } from "./CType";
+import { inRange } from "./CType.js";
 
-import ctype_c from "../locale/ctype_c.json";
+import { ctype_c } from "./ctype_c.js";
 
 /**
  * Return whether or not the first character is a control character.<p>

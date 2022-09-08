@@ -21,9 +21,9 @@
 
 import { JSUtils } from "ilib-common";
 
-import { inRange } from "./CType";
+import { inRange } from "./CType.js";
 
-import ctype_p from "../locale/ctype_p.json";
+import { ctype_p } from "./ctype_p.js";
 
 /**
  * Return whether or not the first character is punctuation.<p>

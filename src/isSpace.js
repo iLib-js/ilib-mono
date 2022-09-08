@@ -21,10 +21,10 @@
 
 import { JSUtils } from "ilib-common";
 
-import { inRange } from "./CType";
+import { inRange } from "./CType.js";
 
-import ctype from "../locale/ctype.json";
-import ctype_z from "../locale/ctype_z.json";
+import { ctype_ranges as ctype } from "./ctype_ranges.js";
+import { ctype_z } from "./ctype_z.js";
 
 /**
  * Return whether or not the first character is a whitespace character.<p>

@@ -21,28 +21,38 @@ var path = require('path');
 
 module.exports = {
     mode: "development",
-    entry: "./src/index.js",
+    entry: "./test/testSuiteWeb.js",
     output: {
-        path: path.resolve(__dirname, 'lib'),
-        filename: "ilib-common-web.js",
-        library: "ilibCommon"
+        path: path.resolve(__dirname, 'test'),
+        filename: "ilib-ctype-test.js",
+        library: {
+            name: "ilibCTypeTest",
+            type: "umd"
+        }
     },
     externals: {
-        'ilib-locale': 'Locale'
+        'log4js': 'log4js'
     },
+    devtool: false,
     module: {
         rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
+                include: /node_modules\/ilib-/,
                 use: {
                     loader: 'babel-loader',
                     options: {
+                        minified: false,
+                        compact: false,
                         presets: ['@babel/preset-env'],
                         plugins: ["add-module-exports"]
                     }
                 }
             }
         ]
+    },
+    optimization: {
+        minimize: false
     }
 };
