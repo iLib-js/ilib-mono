@@ -119,11 +119,6 @@ class IString {
             sync
         });
 
-        // ensure that we can grab the data we need
-        if (!sync && !LocaleData.checkCache(this.locale.getSpec(), "plurals")) {
-            throw new Exception("Locale data not available");
-        }
-
         if (sync) {
             this.plurals = locData.loadData({
                 basename: "plurals",

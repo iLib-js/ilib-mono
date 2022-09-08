@@ -19,6 +19,7 @@
 
 import IString from '../src/index.js';
 
+import { setLocale } from 'ilib-env';
 import Locale from 'ilib-locale';
 import { LocaleData } from 'ilib-localedata';
 
@@ -26,6 +27,7 @@ export const testIStringAsync = {
     setUp: function(callback) {
         setLocale("en-US");
         LocaleData.clearCache();
+        callback();
     },
 
     testStringFactory: function(test) {
