@@ -1,5 +1,5 @@
 /*
- * testname_mr_IN.js - test the name object in Hindi
+ * testname_mr_IN.js - test the name object in Marathi
  *
  * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
@@ -17,13 +17,26 @@
  * limitations under the License.
  */
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 export const testname_mr = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("mr-IN'").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testParseSimpleName_mr_IN: function(test) {

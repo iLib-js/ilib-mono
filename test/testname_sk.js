@@ -1,7 +1,7 @@
 /*
- * testname_sk_SK.js - test the name object in slovak
+ * testname_sk_SK.js - test the name object in Slovak
  *
- * Copyright © 2013-2015,2017, JEPánSoft
+ * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,26 @@
  * limitations under the License.
  */
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 export const testname_sk = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("sk-SK").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testParseSimpleName_sk_SK: function(test) {

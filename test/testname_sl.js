@@ -1,5 +1,5 @@
 /*
- * testname_sl_SI.js - test the name object in slovenian
+ * testname_sl_SI.js - test the name object in Slovenian
  *
  * Copyright © 2013-2015,2017, JEGSoft
  *
@@ -17,13 +17,26 @@
  * limitations under the License.
  */
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 export const testname_sl = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("sl-SI").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testParseSimpleName_sl_SI: function(test) {

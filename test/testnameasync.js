@@ -18,22 +18,24 @@
  */
 
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 export const testnameasync = {
     testNameAsyncEmptyConstructor: function(test) {
         test.expect(1);
-        new Name(undefined, {
-            sync: false,
-            onLoad: function(name) {
-                test.ok(typeof(name) === "undefined");
-                test.done();
-            }
+        Name.create().then((name) => {
+            test.ok(typeof(name) !== "undefined");
+            test.done();
         });
     },
 
     testNameAsyncCopyConstructor: function(test) {
         test.expect(2);
-        new Name({
+        Name.create({
             prefix: "a",
             givenName: "b",
             middleName: "c",
@@ -42,54 +44,50 @@ export const testnameasync = {
             honorific: "x"
         }, {
             sync: false,
-            onLoad: function(name) {
-                test.ok(typeof(name) !== "undefined");
+        }).then((name) => {
+            test.ok(typeof(name) !== "undefined");
 
-                test.contains(name, { prefix: "a", givenName: "b", middleName: "c", familyName: "d", suffix: "e", honorific: "x"});
-                test.done();
-            }
+            test.contains(name, { prefix: "a", givenName: "b", middleName: "c", familyName: "d", suffix: "e", honorific: "x"});
+            test.done();
         });
     },
 
     testNameAsyncDEWithMultiplePrefixes: function(test) {
         test.expect(2);
-        new Name("Herr Dr. Josef Hans Jürgen Herzheim", {
+        Name.create("Herr Dr. Josef Hans Jürgen Herzheim", {
             locale: "de-DE",
             sync: false,
-            onLoad: function(name) {
-                test.ok(typeof(name) !== "undefined");
+        }).then((name) => {
+            test.ok(typeof(name) !== "undefined");
 
-                test.contains(name, { prefix: "Herr Dr.", givenName: "Josef", middleName: "Hans Jürgen", familyName: "Herzheim" });
-                test.done();
-            }
+            test.contains(name, { prefix: "Herr Dr.", givenName: "Josef", middleName: "Hans Jürgen", familyName: "Herzheim" });
+            test.done();
         });
     },
 
     testNameAsyncESFull: function(test) {
         test.expect(2);
-        new Name("Juan Carlos Maria León Arroyo", {
+        Name.create("Juan Carlos Maria León Arroyo", {
             locale: "es-ES",
             sync: false,
-            onLoad: function(name) {
-                test.ok(typeof(name) !== "undefined");
+        }).then((name) => {
+            test.ok(typeof(name) !== "undefined");
 
-                test.contains(name, { givenName: "Juan", middleName: "Carlos Maria", familyName: "León Arroyo" });
-                test.done();
-            }
+            test.contains(name, { givenName: "Juan", middleName: "Carlos Maria", familyName: "León Arroyo" });
+            test.done();
         });
     },
 
     testNameAsyncZHHonorific: function(test) {
         test.expect(2);
-        new Name("堂哥胡锦涛", {
+        Name.create("堂哥胡锦涛", {
             locale: "zh-CN",
             sync: false,
-            onLoad: function(name) {
-                test.ok(typeof(name) !== "undefined");
+        }).then((name) => {
+            test.ok(typeof(name) !== "undefined");
 
-                test.contains(name, { prefix: "堂哥", givenName: "锦涛", familyName: "胡" });
-                test.done();
-            }
+            test.contains(name, { prefix: "堂哥", givenName: "锦涛", familyName: "胡" });
+            test.done();
         });
     }
 };

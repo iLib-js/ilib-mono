@@ -23,12 +23,27 @@
 // http://www.mentalfloss.com/blogs/archives/59277
 // other countries with first name restrictions: Norway, China, New Zealand, Japan, Sweden, Germany, Hungary
 
-import { Utils, JSUtils } from 'ilib-common';
+import { Path, Utils, JSUtils } from 'ilib-common';
 import Locale from 'ilib-locale';
 import IString from 'ilib-istring';
 import LocaleMatcher from 'ilib-localematcher';
-import { CType, isAlpha, isIdeo, isPunct, isSpace } from 'ilib-ctype';
+import { withinRange, isAlpha, isIdeo, isPunct, isSpace } from 'ilib-ctype';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+function localeDir() {
+    switch (getPlatform()) {
+        case "nodejs":
+            return Path.join(Path.dirname((typeof(module) !== 'undefined') ? module.id : Path.fileUriToPath(import.meta.url)),
+                "../locale");
+
+        case "browser":
+            return "../assembled";
+
+        default:
+            return "../locale";
+    }
+}
 
 /**
  * @class
@@ -107,10 +122,7 @@ class Name {
      */
     init(name, options, sync) {
         if (!name || name.length === 0) {
-            if (options && typeof(options.onLoad) === 'function') {
-                options.onLoad(undefined);
-            }
-            return;
+            return sync ? undefined : Promise.resolve(this);
         }
 
         this.loadParams = {};
@@ -192,7 +204,7 @@ class Name {
 
         const locData = getLocaleData({
             basename: "name",
-            path: this.localeDir(),
+            path: localeDir(),
             sync
         });
 
@@ -244,7 +256,7 @@ class Name {
     }
 
     static defaultInfo = {
-        "western": ilib.data.name || {
+        "western": {
             "components": {
                 "short": "gf",
                 "medium": "gmf",
@@ -343,9 +355,9 @@ class Name {
      */
     static _isAsianChar(c) {
         return isIdeo(c) ||
-            CType.withinRange(c, "hangul") ||
-            CType.withinRange(c, "hiragana") ||
-            CType.withinRange(c, "katakana");
+            withinRange(c, "hangul") ||
+            withinRange(c, "hiragana") ||
+            withinRange(c, "katakana");
     }
 
     /**
@@ -459,7 +471,7 @@ class Name {
                     prefix = prefixArray.join(this.isAsianName ? '' : ' ');
                     prefixLower = prefix.toLowerCase();
                     prefixLower = prefixLower.replace(/[,\.]/g, ''); // ignore commas and periods
-                    if (ilib.isArray(this.info.prefixes) &&
+                    if (JSUtils.isArray(this.info.prefixes) &&
                         (JSUtils.indexOf(this.info.prefixes, prefixLower) > -1 || this._isConjunction(prefixLower))) {
                         if (this.prefix) {
                             if (!this.isAsianName) {
@@ -481,7 +493,7 @@ class Name {
                     suffix = suffixArray.join(this.isAsianName ? '' : ' ');
                     suffixLower = suffix.toLowerCase();
                     suffixLower = suffixLower.replace(/[\.]/g, ''); // ignore periods
-                    if (ilib.isArray(this.info.suffixes) && JSUtils.indexOf(this.info.suffixes, suffixLower) > -1) {
+                    if (JSUtils.isArray(this.info.suffixes) && JSUtils.indexOf(this.info.suffixes, suffixLower) > -1) {
                         if (this.suffix) {
                             if (!this.isAsianName && !isPunct(this.suffix.charAt(0))) {
                                 this.suffix = ' ' + this.suffix;
@@ -736,7 +748,7 @@ class Name {
         let prop;
         for (prop in this) {
 
-            if (this[prop] !== undefined && typeof (this[prop]) === 'object' && ilib.isArray(this[prop])) {
+            if (this[prop] !== undefined && typeof (this[prop]) === 'object' && JSUtils.isArray(this[prop])) {
 
                 this[prop] = this._joinArrayOrString(this[prop]);
             }
@@ -795,7 +807,7 @@ class Name {
     _parseJapaneseName(parts) {
         if (this.suffix && this.suffix.length > 1 && this.info.honorifics.indexOf(this.suffix)>-1) {
             if (parts.length === 1) {
-                if (CType.withinRange(parts[0], "cjk")) {
+                if (withinRange(parts[0], "cjk")) {
                     this.familyName = parts[0];
                 } else {
                     this.givenName = parts[0];
@@ -809,9 +821,9 @@ class Name {
         if (parts.length > 1) {
             let fn = "";
             for (let i = 0; i < parts.length; i++) {
-                if (CType.withinRange(parts[i], "cjk")) {
+                if (withinRange(parts[i], "cjk")) {
                     fn += parts[i];
-                } else if (fn.length > 1 && CType.withinRange(parts[i], "hiragana")) {
+                } else if (fn.length > 1 && withinRange(parts[i], "hiragana")) {
                     this.familyName = fn;
                     this.givenName = parts.slice(i,parts.length).join("");
                     return;

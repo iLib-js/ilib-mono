@@ -1,7 +1,7 @@
 /*
- * testname_sq_Al.js - test the name object in Albanian
+ * testname_sq_AL.js - test the name object in Albanian
  *
- * Copyright © 2013-2015,2017, JEZotiSoft
+ * Copyright © 2013-2015,2017, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,31 @@
  * limitations under the License.
  */
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 export const testname_sq = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("sq-AL").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
-    testParseSimpleName_sq_Al: function(test) {
+    testParseSimpleName_sq_AL: function(test) {
         test.expect(2);
-        const parsed = new Name("James Belushi", {locale: 'sq-Al'});
+        const parsed = new Name("James Belushi", {locale: 'sq-AL'});
         test.ok(typeof(parsed) !== "undefined");
 
         const expected = {
@@ -40,13 +53,9 @@ export const testname_sq = {
         test.done();
     },
 
-
-
-
-
-    testParseTitle_sq_Al: function(test) {
+    testParseTitle_sq_AL: function(test) {
         test.expect(2);
-        const parsed = new Name("James Belushi njom", {locale: 'sq-Al'});
+        const parsed = new Name("James Belushi njom", {locale: 'sq-AL'});
         test.ok(typeof(parsed) !== "undefined");
 
         const expected = {
@@ -59,11 +68,9 @@ export const testname_sq = {
         test.done();
     },
 
-
-
-    testParseTitleWithFamilyOnly_sq_Al: function(test) {
+    testParseTitleWithFamilyOnly_sq_AL: function(test) {
         test.expect(2);
-        const parsed = new Name("Zoti. Belushi", {locale: 'sq-Al'});
+        const parsed = new Name("Zoti. Belushi", {locale: 'sq-AL'});
         test.ok(typeof(parsed) !== "undefined");
 
         const expected = {
@@ -77,9 +84,9 @@ export const testname_sq = {
 
 
 
-    testParseEverything_sq_Al: function(test) {
+    testParseEverything_sq_AL: function(test) {
         test.expect(2);
-        const parsed = new Name("Zoti. dhe Zonja. Belushi", {locale: 'sq-Al'});
+        const parsed = new Name("Zoti. dhe Zonja. Belushi", {locale: 'sq-AL'});
         test.ok(typeof(parsed) !== "undefined");
 
         const expected = {
@@ -91,9 +98,9 @@ export const testname_sq = {
         test.done();
     },
 
-    testParseprefix_sq_Al: function(test) {
+    testParseprefix_sq_AL: function(test) {
         test.expect(2);
-        const parsed = new Name("Zoti. James Belushi", {locale: 'sq-Al'});
+        const parsed = new Name("Zoti. James Belushi", {locale: 'sq-AL'});
         test.ok(typeof(parsed) !== "undefined");
 
         const expected = {
@@ -106,9 +113,9 @@ export const testname_sq = {
         test.done();
     },
 
-    testParseprefixAndSuffix_sq_Al: function(test) {
+    testParseprefixAndSuffix_sq_AL: function(test) {
         test.expect(2);
-        const parsed = new Name("Zëvendëspresident James Belushi njom", {locale: 'sq-Al'});
+        const parsed = new Name("Zëvendëspresident James Belushi njom", {locale: 'sq-AL'});
         test.ok(typeof(parsed) !== "undefined");
 
         const expected = {
@@ -125,7 +132,7 @@ export const testname_sq = {
      * Format Tests
      */
 
-    testFormatSimpleNameShort_sq_Al: function(test) {
+    testFormatSimpleNameShort_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             givenName: "James",
@@ -133,7 +140,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "short",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -144,7 +151,7 @@ export const testname_sq = {
         test.done();
     },
 
-    testFormatSimpleNameMedium_sq_Al: function(test) {
+    testFormatSimpleNameMedium_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             givenName: "James",
@@ -152,7 +159,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "medium",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -163,7 +170,7 @@ export const testname_sq = {
         test.done();
     },
 
-    testFormatSimpleNameLong_sq_Al: function(test) {
+    testFormatSimpleNameLong_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             givenName: "James",
@@ -172,7 +179,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "long",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -185,7 +192,7 @@ export const testname_sq = {
 
 
 
-    testFormatSurname_sq_Al: function(test) {
+    testFormatSurname_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             prefix: "Zoti. dhe Zonja.",
@@ -193,7 +200,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "long",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -204,7 +211,7 @@ export const testname_sq = {
         test.done();
     },
 
-    testFormatSimpleNameFull_sq_Al: function(test) {
+    testFormatSimpleNameFull_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             prefix: "Guvernator",
@@ -214,7 +221,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "full",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -225,7 +232,7 @@ export const testname_sq = {
         test.done();
     },
 
-    testFormatComplexNameShort_sq_Al: function(test) {
+    testFormatComplexNameShort_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             prefix: "Guvernator",
@@ -234,7 +241,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "short",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -245,7 +252,7 @@ export const testname_sq = {
         test.done();
     },
 
-    testFormatComplexNameMedium_sq_Al: function(test) {
+    testFormatComplexNameMedium_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             prefix: "Guvernator",
@@ -254,7 +261,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "medium",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");
@@ -265,7 +272,7 @@ export const testname_sq = {
         test.done();
     },
 
-    testFormatComplexNameLong_sq_Al: function(test) {
+    testFormatComplexNameLong_sq_AL: function(test) {
         test.expect(2);
         let name = new Name({
             prefix: "Guvernator",
@@ -274,7 +281,7 @@ export const testname_sq = {
         });
         let fmt = new NameFmt({
             style: "full",
-            locale: 'sq-Al'
+            locale: 'sq-AL'
         });
         let formatted = fmt.format(name);
         test.ok(typeof(formatted) !== "undefined");

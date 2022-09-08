@@ -17,14 +17,27 @@
  * limitations under the License.
  */
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 
 export const testnamefmt = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("en-US").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testNameFmtConstructor: function(test) {

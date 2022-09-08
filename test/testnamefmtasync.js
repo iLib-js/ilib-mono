@@ -17,39 +17,35 @@
  * limitations under the License.
  */
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
 
+let setUpPerformed = false;
 
 export const testnamefmtasync = {
     testNameFmtAsyncConstructor: function(test) {
         test.expect(1);
-        new NameFmt({
-            sync: false,
-            onLoad: function(fmt) {
-                test.ok(typeof(fmt) !== "undefined");
-                test.done();
-            }
+        NameFmt.create().then((fmt) => {
+            test.ok(typeof(fmt) !== "undefined");
+            test.done();
         });
-
     },
 
     testNameFmtAsyncGetBogus: function(test) {
         test.expect(1);
-        new NameFmt({
-            locale: "ii-II",
-            sync: false,
-            onLoad: function(fmt) {
-                test.equal(fmt.getLocale().getSpec(), "ii-II");
-                test.done();
-            }
+        NameFmt.create({
+            locale: "ii-II"
+        }).then((fmt) => {
+            test.equal(fmt.getLocale().getSpec(), "ii-II");
+            test.done();
         });
-
     },
 
     testNameFmtAsyncENFull: function(test) {
         test.expect(1);
-        new Name({
+        Name.create({
             prefix: "Mr.",
             givenName: "John",
             middleName: "Kevin",
@@ -57,23 +53,19 @@ export const testnamefmtasync = {
             suffix: "Phd."
         }, {
             sync: false,
-            onLoad: function(name) {
-                new NameFmt({
-                    style: "full",
-                    sync: false,
-                    onLoad: function(fmt) {
-                        test.equal(fmt.format(name), "Mr. John Kevin Smith Phd.");
-                        test.done();
-                    }
-                });
-
-            }
+        }).then((name) => {
+            return NameFmt.create({
+                style: "full"
+            }).then((fmt) => {
+                test.equal(fmt.format(name), "Mr. John Kevin Smith Phd.");
+                test.done();
+            });
         });
     },
 
     testNameFmtAsyncDEFull: function(test) {
         test.expect(1);
-        new Name({
+        Name.create({
             prefix: "Hr.",
             givenName: "Andreas",
             middleName: "Helmut",
@@ -82,65 +74,53 @@ export const testnamefmtasync = {
         }, {
             locale: "de-DE",
             sync: false,
-            onLoad: function(name) {
-                new NameFmt({
-                    style: "full",
-                    locale: "de-DE",
-                    sync: false,
-                    onLoad: function(fmt) {
-                        test.equal(fmt.format(name), "Hr. Andreas Helmut Schmidt MdB");
-                        test.done();
-                    }
-                });
-            }
+        }).then((name) => {
+            return NameFmt.create({
+                style: "full",
+                locale: "de-DE"
+            }).then((fmt) => {
+                test.equal(fmt.format(name), "Hr. Andreas Helmut Schmidt MdB");
+                test.done();
+            });
         });
     },
 
     testNameFmtAsyncZHFormalLong: function(test) {
         test.expect(1);
-        new Name({
+        Name.create({
             honorific: "医生",
             givenName: "芳",
             familyName: "李"
         }, {
             locale: "zh-Hans-CN",
             sync: false,
-            onLoad: function(name) {
-                new NameFmt({
-                    style: "formal_long",
-                    locale: "zh-Hans-CN",
-                    sync: false,
-                    onLoad: function(fmt) {
-                        test.equal(fmt.format(name), "李芳医生");
-                        test.done();
-                    }
-                });
-
-            }
+        }).then((name) => {
+            return NameFmt.create({
+                style: "formal_long",
+                locale: "zh-Hans-CN"
+            }).then((fmt) => {
+                test.equal(fmt.format(name), "李芳医生");
+                test.done();
+            });
         });
     },
 
     testNameFmtAsyncZHFormalLong: function(test) {
         test.expect(1);
-        new Name({
+        Name.create({
             honorific: "닥터",
             givenName: "은성",
             familyName: "박"
         }, {
-            locale: "ko-KR",
-            sync: false,
-            onLoad: function(name) {
-                new NameFmt({
-                    style: "formal_long",
-                    locale: "ko-KR",
-                    sync: false,
-                    onLoad: function(fmt) {
-                        test.equal(fmt.format(name), "닥터 박은성");
-                        test.done();
-                    }
-                });
-
-            }
+            locale: "ko-KR"
+        }).then((name) => {
+            return NameFmt.create({
+                style: "formal_long",
+                locale: "ko-KR"
+            }).then((fmt) => {
+                test.equal(fmt.format(name), "닥터 박은성");
+                test.done();
+            });
         });
     }
 };

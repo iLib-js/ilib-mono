@@ -21,11 +21,28 @@
 
 import { Utils, JSUtils } from 'ilib-common';
 import Locale from 'ilib-locale';
-import IString from 'ilib-string';
+import IString from 'ilib-istring';
 import LocaleMatcher from 'ilib-localematcher';
+import getLocaleData, { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
 import { isPunct } from 'ilib-ctype';
+import { Path } from 'ilib-common';
 
 import Name from './Name.js';
+
+function localeDir() {
+    switch (getPlatform()) {
+        case "nodejs":
+            return Path.join(Path.dirname((typeof(module) !== 'undefined') ? module.id : Path.fileUriToPath(import.meta.url)),
+                "../locale");
+
+        case "browser":
+            return "../assembled";
+
+        default:
+            return "../locale";
+    }
+}
 
 /**
  * @class
@@ -189,7 +206,7 @@ class NameFmt {
 
         const locData = getLocaleData({
             basename: "name",
-            path: this.localeDir(),
+            path: localeDir(),
             sync
         });
 
@@ -211,7 +228,7 @@ class NameFmt {
                 locale: this.locale,
                 sync: sync
             }) || Name.defaultInfo;
-            this._initialize(name);
+            this._initialize();
         } else {
             return locData.loadData({
                 basename: "name",
@@ -219,10 +236,24 @@ class NameFmt {
                 sync: sync
             }).then((info) => {
                 this.info = info || Name.defaultInfo;
-                this._initialize(name);
+                this._initialize();
                 return this;
             });
         }
+    }
+
+    /**
+     * Factory method to create a new instance of NameFmt asynchronously.
+     * The parameters are the same as for the constructor, but it returns
+     * a `Promise` instead of the instance directly.
+     *
+     * @param {Object} options the same objects you would send to a constructor
+     * @returns {Promise} a promise to load a NameFmt instance. The resolved
+     * value of the promise is the new instance of NameFmt,
+     */
+    static create(options) {
+        const nf = new NameFmt({ ...options, _noinit: true });
+        return nf.init(options, false);
     }
 
     /**
@@ -244,9 +275,9 @@ class NameFmt {
         } else {
             let comps = this.info.components[this.style];
             if (typeof(comps) === "string") {
-                comps.split("").forEach(ilib.bind(this, function(c) {
+                comps.split("").forEach((c) => {
                     this.comps[c] = true;
-                }));
+                });
             } else {
                 this.comps = comps;
             }

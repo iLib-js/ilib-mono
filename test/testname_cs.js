@@ -1,5 +1,5 @@
 /*
- * testname_cs_CZ.js - test the name object in CZECH Republic
+ * testname_cs_CZ.js - test the name object in Czech
  *
  * Copyright © 2013-2015,2017,2022 JEDLSoft
  *
@@ -18,13 +18,26 @@
  */
 
 
-import Name from '../src/NameFmt.js';
+import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
+import LocaleData from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+let setUpPerformed = false;
+
 
 export const testname_cs = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("cs-CZ").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testParseSimpleName_cs_CZ: function(test) {

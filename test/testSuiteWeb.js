@@ -138,5 +138,5 @@ export const tests = [
     testname_zh_Hans,
     testname_zh_Hant,
     testnamefmt,
-    testnamefmtasync,
+    testnamefmtasync
 ];
