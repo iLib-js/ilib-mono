@@ -26,7 +26,6 @@
 import { Path, Utils, JSUtils } from 'ilib-common';
 import Locale from 'ilib-locale';
 import IString from 'ilib-istring';
-import LocaleMatcher from 'ilib-localematcher';
 import { withinRange, isAlpha, isIdeo, isPunct, isSpace } from 'ilib-ctype';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
