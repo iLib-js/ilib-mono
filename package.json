@@ -69,7 +69,7 @@
         "test": "npm-run-all build:dev test:cli",
         "test:all": "npm-run-all test:cli test:web",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz",
+        "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz assembled locales.json",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibIString.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },

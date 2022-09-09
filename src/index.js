@@ -120,12 +120,16 @@ class IString {
         });
 
         if (sync) {
-            this.plurals = locData.loadData({
-                basename: "plurals",
-                locale: this.locale,
-                mostSpecific: true,
-                sync: sync
-            }) || plurals_default;
+            try {
+                this.plurals = locData.loadData({
+                    basename: "plurals",
+                    locale: this.locale,
+                    mostSpecific: true,
+                    sync: sync
+                });
+            } catch (e) {
+                this.plurals = plurals_default;
+            }
         } else {
             return locData.loadData({
                 basename: "plurals",
@@ -134,6 +138,9 @@ class IString {
                 sync: sync
             }).then((info) => {
                 this.plurals = info || plurals_default;
+                return this;
+            }).catch((e) => {
+                this.plurals = plurals_default;
                 return this;
             });
         }
@@ -904,7 +911,7 @@ class IString {
         for (i = 0; i < limits.length; i++) {
             if (limits[i].length === 0) {
                 // this is default case
-                defaultCase = new IString(strings[i]);
+                defaultCase = new IString(strings[i], {locale: this.locale});
             } else {
                 const limitsArr = (limits[i].indexOf(",") > -1) ? limits[i].split(",") : [limits[i]];
 
@@ -914,14 +921,14 @@ class IString {
                 }
 
                 if (applicable) {
-                    result = new IString(strings[i]);
+                    result = new IString(strings[i], {locale: this.locale});
                     i = limits.length;
                 }
             }
         }
 
         if (!result) {
-            result = defaultCase || new IString("");
+            result = defaultCase || new IString("", {locale: this.locale});
         }
 
         result = result.format(params);
@@ -945,7 +952,7 @@ class IString {
      * @return {IString} the character at the given index
      */
     charAt(index) {
-        return new IString(this.str.charAt(index));
+        return new IString(this.str.charAt(index), {locale: this.locale});
     }
 
     /**
@@ -997,7 +1004,7 @@ class IString {
      * @return {IString} a concatenation of the given strings
      */
     concat(strings) {
-        return new IString(this.str.concat(strings));
+        return new IString(this.str.concat(strings), {locale: this.locale});
     }
 
     /**
@@ -1087,7 +1094,7 @@ class IString {
      * @return {IString} the normalize version of the string
      */
     normalize(form) {
-        return typeof(this.str.normalize) === 'function' ? new IString(this.str.normalize(form)) : this;
+        return typeof(this.str.normalize) === 'function' ? new IString(this.str.normalize(form), {locale: this.locale}) : this;
     }
 
     /**
@@ -1096,7 +1103,7 @@ class IString {
      * pad string applied at the end of the current string
      */
     padEnd(targetLength, padString) {
-        return new IString(this.str.padEnd(targetLength, padString));
+        return new IString(this.str.padEnd(targetLength, padString), {locale: this.locale});
     }
 
     /**
@@ -1105,7 +1112,7 @@ class IString {
      * pad string applied at the end of the current string
      */
     padStart(targetLength, padString) {
-        return new IString(this.str.padStart(targetLength, padString));
+        return new IString(this.str.padStart(targetLength, padString), {locale: this.locale});
     }
 
     /**
@@ -1114,7 +1121,7 @@ class IString {
      * of copies of the given string
      */
     repeat(count) {
-        return new IString(this.str.repeat(count));
+        return new IString(this.str.repeat(count), {locale: this.locale});
     }
 
     /**
@@ -1125,7 +1132,7 @@ class IString {
      * with the new value
      */
     replace(searchValue, newValue) {
-        return new IString(this.str.replace(searchValue, newValue));
+        return new IString(this.str.replace(searchValue, newValue), {locale: this.locale});
     }
 
     /**
@@ -1136,7 +1143,7 @@ class IString {
      * with the new value
      */
     replaceAll(searchValue, newValue) {
-        return new IString(this.str.replaceAll(searchValue, newValue));
+        return new IString(this.str.replaceAll(searchValue, newValue), {locale: this.locale});
     }
 
     /**
@@ -1156,7 +1163,7 @@ class IString {
      * @return {IString} a slice of the current string
      */
     slice(start, end) {
-        return new IString(this.str.slice(start, end));
+        return new IString(this.str.slice(start, end), {locale: this.locale});
     }
 
     /**
@@ -1169,7 +1176,7 @@ class IString {
      * by the separator
      */
     split(separator, limit) {
-        return this.str.split(separator, limit).map(str => new IString(str));
+        return this.str.split(separator, limit).map(str => new IString(str, {locale: this.locale}));
     }
 
     /**
@@ -1198,7 +1205,7 @@ class IString {
                 length = this.str.length - start;
             }
         }
-        return new IString(this.str.substr(start, length));
+        return new IString(this.str.substr(start, length), {locale: this.locale});
     }
 
     /**
@@ -1210,7 +1217,7 @@ class IString {
      * @return {IString} the requested substring
      */
     substring(from, to) {
-        return new IString(this.str.substring(from, to));
+        return new IString(this.str.substring(from, to), {locale: this.locale});
     }
 
     /**
@@ -1221,7 +1228,7 @@ class IString {
      * case mappings
      */
     toLocaleLowerCase(locale) {
-        return new IString(this.str.toLocaleLowerCase(locale));
+        return new IString(this.str.toLocaleLowerCase(locale), {locale: this.locale});
     }
 
     /**
@@ -1232,7 +1239,7 @@ class IString {
      * case mappings
      */
     toLocaleUpperCase(locale) {
-        return new IString(this.str.toLocaleUpperCase(locale));
+        return new IString(this.str.toLocaleUpperCase(locale), {locale: this.locale});
     }
 
     /**
@@ -1242,7 +1249,7 @@ class IString {
      * lower-cased
      */
     toLowerCase() {
-        return new IString(this.str.toLowerCase());
+        return new IString(this.str.toLowerCase(), {locale: this.locale});
     }
 
     /**
@@ -1261,7 +1268,7 @@ class IString {
      * upper-cased
      */
     toUpperCase() {
-        return new IString(this.str.toUpperCase());
+        return new IString(this.str.toUpperCase(), {locale: this.locale});
     }
 
     /**
@@ -1270,7 +1277,7 @@ class IString {
      * of whitespace from both ends.
      */
     trim() {
-        return new IString(this.str.trim());
+        return new IString(this.str.trim(), {locale: this.locale});
     }
 
     /**
@@ -1279,7 +1286,7 @@ class IString {
      * of whitespace from its (right) end.
      */
     trimEnd() {
-        return new IString(this.str.trimEnd());
+        return new IString(this.str.trimEnd(), {locale: this.locale});
     }
 
     /**
@@ -1288,7 +1295,7 @@ class IString {
      * of whitespace from its beginning (left end).
      */
     trimStart() {
-        return new IString(this.str.trimStart());
+        return new IString(this.str.trimStart(), {locale: this.locale});
     }
 
     /**
@@ -1307,7 +1314,7 @@ class IString {
      * of whitespace from its (right) end.
      */
     trimRight() {
-        return new IString(this.str.trimRight());
+        return new IString(this.str.trimRight(), {locale: this.locale});
     }
 
     /**
@@ -1316,7 +1323,7 @@ class IString {
      * of whitespace from its beginning (left end).
      */
     trimLeft() {
-        return new IString(this.str.trimLeft());
+        return new IString(this.str.trimLeft(), {locale: this.locale});
     }
 
     /**
