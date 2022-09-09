@@ -202,11 +202,15 @@ class Name {
         });
 
         if (sync) {
-            this.info = locData.loadData({
-                basename: "name",
-                locale: this.locale,
-                sync: sync
-            }) || Name.defaultInfo[this.style || "western"];;
+            try {
+	            this.info = locData.loadData({
+	                basename: "name",
+	                locale: this.locale,
+	                sync: sync
+	            });
+            } catch (e) {
+                this.info = Name.defaultInfo[this.style || "western"];
+            }
             this._initialize(name);
         } else {
             return locData.loadData({
@@ -215,6 +219,10 @@ class Name {
                 sync: sync
             }).then((info) => {
                 this.info = info || Name.defaultInfo[this.style || "western"];
+                this._initialize(name);
+                return this;
+            }).catch((e) => {
+                this.info = Name.defaultInfo[this.style || "western"];
                 this._initialize(name);
                 return this;
             });
@@ -384,7 +392,7 @@ class Name {
      */
     static _isEuroName(name, language) {
         let c,
-            n = new IString(name),
+            n = new IString(name, {locale: language}),
             it = n.charIterator();
 
         while (it.hasNext()) {

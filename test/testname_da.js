@@ -19,7 +19,7 @@
 
 import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
-import LocaleData from 'ilib-localedata';
+import { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
 
 let setUpPerformed = false;
@@ -392,6 +392,380 @@ export const testname_da = {
 
         test.equal(formatted, expected);
         test.done();
-    }
+    },
 
+    testParseSimpleName_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Raeburn van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            givenName: "Raeburn",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+
+    testParseAdjunctNames_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Humphrey Dallas Bogart", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            givenName: "Humphrey",
+            middleName: "Dallas",
+            familyName: "Bogart"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    testParseSingleName_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Armin", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            givenName: "Armin",
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+
+
+    testParseSingleNameWithPrefixAndAdjunct_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("meneer Raeburn van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "meneer",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+
+
+    testParseHypenatedName_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Raeburn van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            givenName: "Raeburn",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    testParseQuadrupleName_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Raeburn Jürgen van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            givenName: "Raeburn",
+            middleName: "Jürgen",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    testParseTitle_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("meneer Dr. Raeburn van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "meneer Dr.",
+            givenName: "Raeburn",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    testParseTitle_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("meneer Dr. Raeburn van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "meneer Dr.",
+            givenName: "Raeburn",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+
+    testParseTitleWithFamilyOnly_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("meneer van Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "meneer",
+            familyName: "van Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+
+    testParseHonorific_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Fr. Julia Maier", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "Fr.",
+            givenName: "Julia",
+            familyName: "Maier"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    testParseEverything_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("guvernør Raeburn Jürgen van Buren pensioneret", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "guvernør",
+            givenName: "Raeburn",
+            middleName: "Jürgen",
+            familyName: "van Buren",
+            suffix: "pensioneret"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    testParseCompoundHonorific_da_DK: function(test) {
+        test.expect(2);
+        const parsed = new Name("Mr. Buren", {locale: 'da-DK'});
+        test.ok(typeof(parsed) !== "undefined");
+
+        const expected = {
+            prefix: "Mr.",
+            familyName: "Buren"
+        };
+
+        test.contains(parsed, expected);
+        test.done();
+    },
+
+    /*
+     * Format Tests
+     */
+
+    testFormatSimpleNameShort_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            givenName: "Raeburn",
+            middleName: "Michael",
+            familyName: "van Buren"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Raeburn van Buren";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatSimpleNameMedium_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            givenName: "Raeburn",
+            familyName: "van Buren"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Raeburn van Buren";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatSimpleNameLong_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            givenName: "Raeburn",
+            familyName: "van Buren",
+            suffix: "asdf"
+        });
+        let fmt = new NameFmt({
+            style: "long",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Raeburn van Buren";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatSimpleNameFull_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "meneer Dr.",
+            givenName: "Raeburn",
+            familyName: "van Buren",
+            suffix: "pensioneret"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "meneer Dr. Raeburn van Buren pensioneret";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatComplexNameShort_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "meneer Dr.",
+            givenName: "Raeburn",
+            middleName: "Michael Uwe",
+            familyName: "von van Buren",
+            suffix: "pensioneret"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "Raeburn von van Buren";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+
+
+    testFormatComplexNameLong_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "meneer Dr.",
+            givenName: "Raeburn",
+            middleName: "Michael Uwe",
+            familyName: "von van Buren",
+            suffix: "pensioneret"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "meneer Dr. Raeburn Michael Uwe von van Buren pensioneret";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatAsianNameShort_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "小",
+            givenName: "獸",
+            familyName: "地",
+            suffix: "太太"
+        });
+        let fmt = new NameFmt({
+            style: "short",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "地獸";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatAsianNameMedium_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "小",
+            givenName: "獸",
+            familyName: "地",
+            suffix: "太太"
+        });
+        let fmt = new NameFmt({
+            style: "medium",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "地獸";
+
+        test.equal(formatted, expected);
+        test.done();
+    },
+
+    testFormatAsianNameLong_da_DK: function(test) {
+        test.expect(2);
+        let name = new Name({
+            prefix: "小",
+            givenName: "獸",
+            familyName: "地",
+            suffix: "太太"
+        });
+        let fmt = new NameFmt({
+            style: "full",
+            locale: 'da-DK'
+        });
+        let formatted = fmt.format(name);
+        test.ok(typeof(formatted) !== "undefined");
+
+        const expected = "小地獸太太";
+
+        test.equal(formatted, expected);
+        test.done();
+    }
 };

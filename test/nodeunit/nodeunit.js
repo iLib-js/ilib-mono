@@ -2107,8 +2107,8 @@ let getSerialCallback = function (fns) {
 let wrapGroup = function (group, setUps, tearDowns) {
     let tests = {};
 
-    let setUps = setUps ? setUps.slice(): [];
-    let tearDowns = tearDowns ? tearDowns.slice(): [];
+    setUps = setUps ? setUps.slice(): [];
+    tearDowns = tearDowns ? tearDowns.slice(): [];
 
     if (group.setUp) {
         setUps.push(group.setUp);

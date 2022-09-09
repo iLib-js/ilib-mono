@@ -18,7 +18,7 @@
  */
 
 import Name from '../src/Name.js';
-import LocaleData from 'ilib-localedata';
+import { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
 
 let setUpPerformed = false;
@@ -30,7 +30,13 @@ export const testname = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("en-US").then(() => {
+            let promise = Promise.resolve(true);
+            ["en-US", "de-DE", "es-ES", "zh-CN"].forEach(locale => {
+                promise = promise.then(() => {
+                    return LocaleData.ensureLocale(locale);
+                });
+            });
+            promise.then(() => {
                 callback();
             });
         } else {

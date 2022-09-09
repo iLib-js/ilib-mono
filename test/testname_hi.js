@@ -19,11 +19,10 @@
 
 import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
-import LocaleData from 'ilib-localedata';
+import { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
 
 let setUpPerformed = false;
-
 
 export const testname_hi = {
     setUp: function(callback) {
@@ -31,7 +30,7 @@ export const testname_hi = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("ar-SA").then(() => {
+            return LocaleData.ensureLocale("hi-IN").then(() => {
                 callback();
             });
         } else {
@@ -281,7 +280,4 @@ export const testname_hi = {
         test.equal(formatted, expected);
         test.done();
     }
-
-
-
 };

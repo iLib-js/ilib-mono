@@ -20,7 +20,7 @@
 
 import NameFmt from '../src/NameFmt.js';
 import Name from '../src/Name.js';
-import LocaleData from 'ilib-localedata';
+import { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
 
 let setUpPerformed = false;

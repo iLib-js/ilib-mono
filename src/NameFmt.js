@@ -159,8 +159,8 @@ class NameFmt {
         }
 
         // set up defaults in case we need them
-        this.defaultEuroTemplate = new IString("{prefix} {givenName} {middleName} {familyName}{suffix}");
-        this.defaultAsianTemplate = new IString("{prefix}{familyName}{givenName}{middleName}{suffix}");
+        this.defaultEuroTemplate = new IString("{prefix} {givenName} {middleName} {familyName}{suffix}", {locale: this.locale});
+        this.defaultAsianTemplate = new IString("{prefix}{familyName}{givenName}{middleName}{suffix}", {locale: this.locale});
         this.useFirstFamilyName = false;
 
         switch (this.style) {
@@ -204,11 +204,15 @@ class NameFmt {
         });
 
         if (sync) {
-            this.info = locData.loadData({
-                basename: "name",
-                locale: this.locale,
-                sync: sync
-            }) || Name.defaultInfo;
+            try {
+	            this.info = locData.loadData({
+	                basename: "name",
+	                locale: this.locale,
+	                sync: sync
+	            });
+            } catch (e) {
+                this.info = Name.defaultInfo;
+            }
             this._initialize();
         } else {
             return locData.loadData({
@@ -217,6 +221,10 @@ class NameFmt {
                 sync: sync
             }).then((info) => {
                 this.info = info || Name.defaultInfo;
+                this._initialize();
+                return this;
+            }).catch((e) => {
+                this.info = Name.defaultInfo;
                 this._initialize();
                 return this;
             });
@@ -264,7 +272,7 @@ class NameFmt {
             }
         }
 
-        this.template = new IString(this.info.format);
+        this.template = new IString(this.info.format, {locale: this.locale});
 
         if (this.locale.language === "es" && (this.style !== "long" && this.style !== "full")) {
             this.useFirstFamilyName = true;    // in spanish, they have 2 family names, the maternal and paternal
