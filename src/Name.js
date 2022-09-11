@@ -196,18 +196,17 @@ class Name {
         }
 
         const locData = getLocaleData({
-            basename: "name",
             path: localeDir(),
             sync
         });
 
         if (sync) {
             try {
-	            this.info = locData.loadData({
-	                basename: "name",
-	                locale: this.locale,
-	                sync: sync
-	            });
+                this.info = locData.loadData({
+                    basename: "name",
+                    locale: this.locale,
+                    sync: sync
+                });
             } catch (e) {
                 this.info = Name.defaultInfo[this.style || "western"];
             }
