@@ -423,14 +423,34 @@ export const testUtils = {
     testGetSublocalesWithVariant: function(test) {
         test.expect(1);
 
-        test.deepEqual(Utils.getSublocales("es-US-ASDF"), ["root", "es", "und-US", "es-US", "und-US-ASDF", "es-US-ASDF"]);
+        test.deepEqual(Utils.getSublocales("es-US-ASDF"), [
+            "root",
+            "es",
+            "und-US",
+            "es-US",
+            "es-ASDF",
+            "und-US-ASDF",
+            "es-US-ASDF"
+        ]);
         test.done();
     },
 
     testGetSublocalesWithScriptAndVariant: function(test) {
         test.expect(1);
 
-        test.deepEqual(Utils.getSublocales("zh-Hans-CN-ASDF"), ["root", "zh", "und-CN", "zh-Hans", "zh-CN", "und-CN-ASDF", "zh-Hans-CN", "zh-CN-ASDF", "zh-Hans-CN-ASDF"]);
+        test.deepEqual(Utils.getSublocales("zh-Hans-CN-ASDF"), [
+            "root",
+            "zh",
+            "und-CN",
+            "zh-Hans",
+            "zh-CN",
+            "zh-ASDF",
+            "und-CN-ASDF",
+            "zh-Hans-CN",
+            "zh-Hans-ASDF",
+            "zh-CN-ASDF",
+            "zh-Hans-CN-ASDF"
+        ]);
         test.done();
     },
 
@@ -767,7 +787,8 @@ export const testUtils = {
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
             "localeinfo.json",
-            "en/localeinfo.json"
+            "en/localeinfo.json",
+            "en/govt/localeinfo.json"
         ];
         
         test.equal(f.length, expected.length);
@@ -829,7 +850,9 @@ export const testUtils = {
         let expected = [
             "localeinfo.json",
             "en/localeinfo.json",
-            "en/Latn/localeinfo.json"
+            "en/Latn/localeinfo.json",
+            "en/govt/localeinfo.json",
+            "en/Latn/govt/localeinfo.json"
         ];
         
         test.equal(f.length, expected.length);
@@ -846,6 +869,7 @@ export const testUtils = {
             "en/localeinfo.json",
             "und/US/localeinfo.json",
             "en/US/localeinfo.json",
+            "en/govt/localeinfo.json",
             "und/US/govt/localeinfo.json",
             "en/US/govt/localeinfo.json"
         ];
@@ -865,8 +889,10 @@ export const testUtils = {
             "und/US/localeinfo.json",
             "en/Latn/localeinfo.json",
             "en/US/localeinfo.json",
+            "en/govt/localeinfo.json",
             "und/US/govt/localeinfo.json",
             "en/Latn/US/localeinfo.json",
+            "en/Latn/govt/localeinfo.json",
             "en/US/govt/localeinfo.json",
             "en/Latn/US/govt/localeinfo.json"
         ];
@@ -899,8 +925,10 @@ export const testUtils = {
             "und/US/resources.json",
             "en/Latn/resources.json",
             "en/US/resources.json",
+            "en/govt/resources.json",
             "und/US/govt/resources.json",
             "en/Latn/US/resources.json",
+            "en/Latn/govt/resources.json",
             "en/US/govt/resources.json",
             "en/Latn/US/govt/resources.json"
         ];

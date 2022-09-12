@@ -122,7 +122,6 @@ export function getSublocales(locale) {
     if (lang) {
         ret.push(lang);
     }
-
     if (region) {
         ret.push('und-' + region);
     }
@@ -131,9 +130,11 @@ export function getSublocales(locale) {
         if (script) {
             ret.push(lang + '-' + script);
         }
-
         if (region) {
             ret.push(lang + '-' + region);
+        }
+        if (variant) {
+            ret.push(lang + '-' + variant);
         }
     }
 
@@ -145,11 +146,12 @@ export function getSublocales(locale) {
         if (script && region) {
             ret.push(lang + '-' + script + '-' + region);
         }
-
+        if (script && variant) {
+            ret.push(lang + '-' + script + '-' + variant);
+        }
         if (region && variant) {
             ret.push(lang + '-' + region + '-' + variant);
         }
-
         if (script && region && variant) {
             ret.push(lang + '-' + script + '-' + region + '-' + variant);
         }
