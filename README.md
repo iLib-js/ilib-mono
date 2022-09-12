@@ -36,6 +36,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.3
+
+* Make Utils.getSublocales work the same way it did under ilib so that
+  variant locales are loaded properly.
+
 ### v1.1.2
 
 * This module is now a hybrid ESM/CommonJS package that works under node
