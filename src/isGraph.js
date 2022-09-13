@@ -19,8 +19,8 @@
 
 import { JSUtils } from "ilib-common";
 
-var isSpace = require("./isSpace.js");
-var isCntrl = require("./isCntrl.js");
+import isSpace from "./isSpace.js";
+import isCntrl from "./isCntrl.js";
 
 /**
  * Return whether or not the first character is any printable character

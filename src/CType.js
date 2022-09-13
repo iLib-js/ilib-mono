@@ -21,7 +21,7 @@
 
 import { SearchUtils, JSUtils } from 'ilib-common';
 
-import ctype from '../locale/ctype.json';
+import { ctype_ranges as ctype } from './ctype_ranges.js';
 
 /**
  * Actual implementation for withinRange. Searches the given object for ranges.

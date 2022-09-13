@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import withinRange from './CType';
-import isAlnum from './isAlnum';
-import isAlpha from './isAlpha';
-import isAscii from './isAscii';
-import isBlank from './isBlank';
-import isCntrl from './isCntrl';
-import isDigit from './isDigit';
-import isGraph from './isGraph';
-import isIdeo from './isIdeo';
-import isLower from './isLower';
-import isPrint from './isPrint';
-import isPunct from './isPunct';
-import isScript from './isScript';
-import isSpace from './isSpace';
-import isUpper from './isUpper';
-import isXdigit from './isXdigit';
+import withinRange from './CType.js';
+import isAlnum from './isAlnum.js';
+import isAlpha from './isAlpha.js';
+import isAscii from './isAscii.js';
+import isBlank from './isBlank.js';
+import isCntrl from './isCntrl.js';
+import isDigit from './isDigit.js';
+import isGraph from './isGraph.js';
+import isIdeo from './isIdeo.js';
+import isLower from './isLower.js';
+import isPrint from './isPrint.js';
+import isPunct from './isPunct.js';
+import isScript from './isScript.js';
+import isSpace from './isSpace.js';
+import isUpper from './isUpper.js';
+import isXdigit from './isXdigit.js';
 
 export {
     withinRange,

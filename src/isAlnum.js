@@ -19,8 +19,8 @@
 
 import { JSUtils } from "ilib-common";
 
-import isAlpha from "./isAlpha";
-import isDigit from "./isDigit";
+import isAlpha from "./isAlpha.js";
+import isDigit from "./isDigit.js";
 
 /**
  * Return whether or not the first character is alphabetic or numeric.<p>

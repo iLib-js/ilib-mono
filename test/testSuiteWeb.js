@@ -1,7 +1,7 @@
 /*
- * isPrint.js - Character type is printable char
+ * testSuiteWeb.js - test suite for this directory
  *
- * Copyright © 2012-2015, 2018, JEDLSoft
+ * Copyright © 2022, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,8 @@
  * limitations under the License.
  */
 
-import isCntrl from "./isCntrl.js";
+import { testctype } from './testctype.js';
 
-/**
- * Return whether or not the first character is any printable character,
- * including space.<p>
- *
- * @static
- * @param {string|IString|number} ch character or code point to examine
- * @return {boolean} true if the first character is printable.
- */
-export default function isPrint(ch) {
-    return typeof(ch) !== 'undefined' && ch.length > 0 && !isCntrl(ch);
-};
+export const tests = [
+    testctype
+];

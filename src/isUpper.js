@@ -21,9 +21,9 @@
 
 import { JSUtils } from "ilib-common";
 
-import { inRange } from "./CType";
+import { inRange } from "./CType.js";
 
-import ctype_l from "../locale/ctype_l.json";
+import { ctype_l } from "./ctype_l.js";
 
 /**
  * Return whether or not the first character is upper-case. For alphabetic

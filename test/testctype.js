@@ -1,7 +1,7 @@
 /*
  * testctype.js - test the character type information functions
  *
- * Copyright © 2012-2015, 2017-2018, 2020-2021 JEDLSoft
+ * Copyright © 2012-2015, 2017-2018, 2020-2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,59 +17,25 @@
  * limitations under the License.
  */
 
-if (typeof(isXdigit) === "undefined") {
-    var isXdigit = require("../lib/isXdigit.js");
-}
-if (typeof(isUpper) === "undefined") {
-    var isUpper = require("../lib/isUpper.js");
-}
-if (typeof(isSpace) === "undefined") {
-    var isSpace = require("../lib/isSpace.js");
-}
-if (typeof(isScript) === "undefined") {
-    var isScript = require("../lib/isScript.js");
-}
-if (typeof(isPunct) === "undefined") {
-    var isPunct = require("../lib/isPunct.js");
-}
-if (typeof(isPrint) === "undefined") {
-    var isPrint = require("../lib/isPrint.js");
-}
-if (typeof(isLower) === "undefined") {
-    var isLower = require("../lib/isLower.js");
-}
-if (typeof(isIdeo) === "undefined") {
-    var isIdeo = require("../lib/isIdeo.js");
-}
-if (typeof(isGraph) === "undefined") {
-    var isGraph = require("../lib/isGraph.js");
-}
-if (typeof(isDigit) === "undefined") {
-    var isDigit = require("../lib/isDigit.js");
-}
-if (typeof(isCntrl) === "undefined") {
-    var isCntrl = require("../lib/isCntrl.js");
-}
-if (typeof(isBlank) === "undefined") {
-    var isBlank = require("../lib/isBlank.js");
-}
-if (typeof(isAscii) === "undefined") {
-    var isAscii = require("../lib/isAscii.js");
-}
-if (typeof(isAlpha) === "undefined") {
-    var isAlpha = require("../lib/isAlpha.js");
-}
-if (typeof(isAlnum) === "undefined") {
-    var isAlnum = require("../lib/isAlnum.js");
-}
-if (typeof(withinRange) === "undefined") {
-    var withinRange = require("../lib/CType.js").default;
-}
-if (typeof(JSUtils) === "undefined") {
-    var JSUtils = require("ilib-common/lib/JSUtils");
-}
+import isXdigit from "../src/isXdigit.js";
+import isUpper from "../src/isUpper.js";
+import isSpace from "../src/isSpace.js";
+import isScript from "../src/isScript.js";
+import isPunct from "../src/isPunct.js";
+import isPrint from "../src/isPrint.js";
+import isLower from "../src/isLower.js";
+import isIdeo from "../src/isIdeo.js";
+import isGraph from "../src/isGraph.js";
+import isDigit from "../src/isDigit.js";
+import isCntrl from "../src/isCntrl.js";
+import isBlank from "../src/isBlank.js";
+import isAscii from "../src/isAscii.js";
+import isAlpha from "../src/isAlpha.js";
+import isAlnum from "../src/isAlnum.js";
+import withinRange from "../src/CType.js";
+import { JSUtils } from "ilib-common";
 
-module.exports.testctype = {
+export const testctype = {
     testIsAlnumTrue: function(test) {
         test.expect(9);
         test.ok(isAlnum('a'));

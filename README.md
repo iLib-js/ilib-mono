@@ -65,24 +65,16 @@ console.log(isAlpha("a"));   // prints true
 console.log(isAlpha("3"));   // prints false
 ```
 
-If you are using ilib-ctype with webpack or any other packaging tool
-and do not want to include the entire package with all of its
-associated data when you only need just one function, then
-you can minimize your footprint by importing that function directly:
-
-```javascript
-import isDigit from 'ilib-ctype/lib/isDigit';
-
-console.log(isDigit("2")); // prints true
-```
-
-That will only drag in the `isDigit` function, the `withinRange` function,
-and the ctype_n.json file (2K compressed). All the rest of the data
-will not be dragged in to your package.
+If you are using this package in a webpack bundle, make sure to
+only import the ctype functions you need in order to minimize
+the final size of your bundle. That is, do not `import *` as that
+will bring in a bunch of data that you probably don't need. Tree
+shaking in the latest webpack will ensure that only the data needed
+for the functions you are using will be included in your bundle.
 
 ## License
 
-Copyright © 2021, JEDLSoft
+Copyright © 2021-2022, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -98,6 +90,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.1.0
+
+- made this package into a true hybrid package that supports both
+  commonjs and ESM
 
 ### v1.0.0
 
