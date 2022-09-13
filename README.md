@@ -1,2 +1,5 @@
 # ilib-resbundle
-A resource bundle/string translation class
+
+Load bundles of translated strings.
+
+

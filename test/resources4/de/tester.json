@@ -1,0 +1,6 @@
+{
+    "Hello from {country}": "Hallo aus {country}",
+    "Hello from {city}": "Hallo aus {city}",
+    "Greetings from {city} in {country}": "Grüße aus {city} in {country}",
+    "key1": "Grüße vom {user}"
+}

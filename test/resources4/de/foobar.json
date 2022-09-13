@@ -1,0 +1,8 @@
+{
+    "first string": "erste String",
+    "second string": "zweite String",
+    "third string": "dritte String",
+    "first string {n}": "erste String {n}",
+    "second string {n}": "zweite String {n}",
+    "third string {n}": "dritte String {n}"
+}

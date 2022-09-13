@@ -1,0 +1,379 @@
+/*
+ * testresourcesasync.js - test the Resources object
+ *
+ * Copyright © 2018-2019, 2022 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import ResBundle from "../src/index.js";
+
+import IString from "ilib-istring";
+import Locale from "ilib-locale";
+import { Path } from "ilib-common";
+
+export const testResourcesAsync = {
+    testResBundleAsyncConstructorEmpty: function(test) {
+        test.expect(2);
+        ilib.clearPseudoLocales();
+
+        new ResBundle({
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                test.equal(rb.getName(), "strings");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncConstructorOtherLocale: function(test) {
+        test.expect(2);
+        new ResBundle({
+            locale: "de-DE",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                var loc = rb.getLocale();
+
+                test.equal(loc.toString(), "de-DE");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncLocaleformatChoice_de_DE: function(test) {
+        if (ilib._getPlatform() !== "nodejs" || !ilib._dyndata || !ilib._dyncode) {
+            test.done();
+            return;
+        }
+
+        test.expect(2);
+        // clear this to be sure it is actually loading something
+        ilib.clearCache();
+        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+        new ResBundle({
+            locale: "de-DE",
+            sync: false,
+            basePath: base,
+            onLoad: function(rb) {
+                var loc = rb.getLocale();
+                test.equal(loc.toString(), "de-DE");
+
+                var str = new IString("one#({N}) file selected|#({N}) files selected");
+                var temp = rb.getString(str);
+                test.equal(temp.formatChoice(2, {N:2}), "(2) Dateien ausgewählt");
+
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncLocaleformatChoice_ko_KR: function(test) {
+        if (ilib._getPlatform() !== "nodejs" || !ilib._dyndata || !ilib._dyncode) {
+            test.done();
+            return;
+        }
+
+        test.expect(2);
+        // clear this to be sure it is actually loading something
+        ilib.clearCache();
+        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+        new ResBundle({
+            locale: "ko-KR",
+            sync: false,
+            basePath: base,
+            onLoad: function(rb) {
+                var loc = rb.getLocale();
+                test.equal(loc.toString(), "ko-KR");
+
+                var str = new IString("one#({N}) file selected|#({N}) files selected");
+                var temp = rb.getString(str);
+                test.equal(temp.formatChoice(1, {N:1}), "(1)개 파일 선택됨(other)");
+
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncGetStringOtherBundleesMX: function(test) {
+        if (ilib._getPlatform() !== "nodejs" || !ilib._dyndata || !ilib._dyncode) {
+            test.done();
+            return;
+        }
+
+        test.expect(4);
+
+        // clear this to be sure it is actually loading something
+        ilib.data.strings = undefined;
+        ilib.data.strings_es = undefined;
+        ilib.data.strings_und_MX = undefined;
+        ilib.data.strings_es_MX = undefined;
+
+        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+
+        new ResBundle({
+            locale: "es-MX",
+            sync: false,
+            loadParams: {
+                base: base
+            },
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                test.equal(rb.getString("Hello from {country}").toString(), "Que tal de {country}");
+                test.equal(rb.getString("Hello from {city}").toString(), "Que tal de {city}");
+                test.equal(rb.getString("Greetings from {city} in {country}").toString(), "Hola de {city} en {country}");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncGetStringWithPathesMX: function(test) {
+        if (ilib._getPlatform() !== "nodejs" || !ilib._dyndata || !ilib._dyncode) {
+            test.done();
+            return;
+        }
+
+        test.expect(4);
+
+        // clear this to be sure it is actually loading something
+        ilib.data.strings = undefined;
+        ilib.data.strings_es = undefined;
+        ilib.data.strings_und_MX = undefined;
+        ilib.data.strings_es_MX = undefined;
+        ilib.clearCache();
+
+        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+
+        new ResBundle({
+            locale: "es-MX",
+            sync: false,
+            basePath: base,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                test.equal(rb.getString("Hello from {country}").toString(), "Que tal de {country}");
+                test.equal(rb.getString("Hello from {city}").toString(), "Que tal de {city}");
+                test.equal(rb.getString("Greetings from {city} in {country}").toString(), "Hola de {city} en {country}");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncGetStringOtherBundlePsuedoRaw: function(test) {
+        test.expect(4);
+        new ResBundle({
+            name: "tester",
+            locale: "zxx-XX",
+            type: "raw",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                // should not pseudo-ize the replacement parameter names
+                test.equal(rb.getString("Hello from {country}").toString(), "Ħëľľõ fŕõm {çõüñţŕÿ}");
+                test.equal(rb.getString("Hello from {city}").toString(), "Ħëľľõ fŕõm {çíţÿ}");
+                test.equal(rb.getString("Greetings from {city} in {country}").toString(), "Ĝŕëëţíñğš fŕõm {çíţÿ} íñ {çõüñţŕÿ}");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncGetStringNonExistantTranslations: function(test) {
+        test.expect(2);
+        new ResBundle({
+            name: "tester",
+            locale: "zh-CN",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                // should return source
+                test.equal(rb.getString("foobar").toString(), "foobar");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncGetStringNoResourcesReturnSource: function(test) {
+        test.expect(2);
+        new ResBundle({
+            name: "tester",
+            locale: "zz-ZZ",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                test.equal(rb.getString("This is a test.").toString(), "This is a test.");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleAsyncGetStringCyrlPsuedoRaw: function(test) {
+        test.expect(4);
+        new ResBundle({
+            name: "tester",
+            locale: "zxx-Cyrl-XX",
+            type: "raw",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                // should pseudo-ize the replacement parameter names
+                test.equal(rb.getString("Hello from {country}").toString(), "Хэлло фром {чоунтря}");
+                test.equal(rb.getString("Hello from {city}").toString(), "Хэлло фром {читя}");
+                test.equal(rb.getString("Greetings from {city} in {country}").toString(), "Грээтингс фром {читя} ин {чоунтря}");
+                test.done();
+            }
+        });
+
+    },
+
+    testResBundleAsyncGetStringHansPsuedoText: function(test) {
+        test.expect(4);
+        new ResBundle({
+            name: "tester",
+            locale: "zxx-Hans-XX",
+            type: "text",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                // should not pseudo-ize the replacement parameter names
+                // for Chinese scripts, remove the spaces to the simulate Chinese writing style
+                test.equal(rb.getString("Hello from {country}").toString(), "和俄了了夥凡熱夥们{country}");
+                test.equal(rb.getString("Hello from {city}").toString(), "和俄了了夥凡熱夥们{city}");
+                test.equal(rb.getString("Greetings from {city} in {country}").toString(), "个熱俄俄推意尼个思凡熱夥们{city}意尼{country}");
+                test.done();
+            }
+        });
+
+    },
+
+    testResBundleAsyncGetStringHebrPsuedoText: function(test) {
+        test.expect(4);
+        new ResBundle({
+            name: "tester",
+            locale: "zxx-Hebr-XX",
+            type: "text",
+            sync: false,
+            onLoad: function(rb) {
+                test.ok(rb !== null);
+
+                // should not pseudo-ize the replacement parameter names
+                test.equal(rb.getString("Hello from {country}").toString(), "הֶללֹ פרֹמ {country}");
+                test.equal(rb.getString("Hello from {city}").toString(), "הֶללֹ פרֹמ {city}");
+                test.equal(rb.getString("Greetings from {city} in {country}").toString(), "גרֶֶטִנגס פרֹמ {city} ִנ {country}");
+                test.done();
+            }
+        });
+
+    },
+
+    testResBundleAsyncPseudo_euES: function(test) {
+        test.expect(1);
+        ilib.clearPseudoLocales();
+        ilib.setAsPseudoLocale("eu-ES");
+        new ResBundle({
+            locale:'eu-ES',
+            sync: false,
+            onLoad: function(rb) {
+                test.equal(rb.getString("This is psuedo string test").toString(), "Ťĥíš íš þšüëðõ šţŕíñğ ţëšţ");
+                test.done();
+                ilib.clearPseudoLocales();
+            }
+        });
+    },
+
+    testResBundleAsyncPseudo_psAF: function(test) {
+        test.expect(1);
+        ilib.clearPseudoLocales();
+        ilib.setAsPseudoLocale("ps-AF");
+        new ResBundle({
+            locale:'ps-AF',
+            sync: false,
+            onLoad: function(rb) {
+                test.equal(rb.getString("This is psuedo string test").toString(), "טהִס ִס פסֶֻדֹ סטרִנג טֶסט");
+                test.done();
+                ilib.clearPseudoLocales();
+            }
+        });
+    },
+    
+        testResBundleConstructAsynchDynamic: function(test) {
+        // uses Mock
+        var onloadcalled = false;
+        var rb = new ResBundle({
+            locale: "de-DE-SAP",
+            name: "foobar",
+            sync: false,
+            onLoad: function(rb) {
+                test.expect(6);
+                test.ok(typeof(rb) !== "undefined");
+
+                test.equal(rb.getString("first string").toString(), "erste String");
+                test.equal(rb.getString("second string").toString(), "zweite String");
+                test.equal(rb.getString("third string").toString(), "dritte String");
+
+                onloadcalled = true;
+            }
+        });
+
+        test.ok(typeof(rb) !== "undefined");
+        test.ok(onloadcalled);
+        test.done();
+    },
+
+    testResBundleConstructAsynchDynamicDefaultName: function(test) {
+        // uses Mock
+        var rb = new ResBundle({
+            locale: "fr-CA-govt",
+            sync: false,
+            onLoad: function(rb) {
+                test.expect(4);
+                test.ok(typeof(rb) !== "undefined");
+
+                test.equal(rb.getString("first string").toString(), "première corde");
+                test.equal(rb.getString("second string").toString(), "deuxième collier");
+                test.equal(rb.getString("third string").toString(), "troisième corde");
+                test.done();
+            }
+        });
+    },
+
+    testResBundleConstructAsynchDynamicNoStrings: function(test) {
+        // uses Mock
+        var rb = new ResBundle({
+            locale: "de-DE-SAP",
+            name: "asdf", // doesn't exist
+            sync: false,
+            onLoad: function(rb) {
+                test.expect(4);
+                test.ok(typeof(rb) !== "undefined");
+
+                test.equal(rb.getString("first string").toString(), "first string");
+                test.equal(rb.getString("second string").toString(), "second string");
+                test.equal(rb.getString("third string").toString(), "third string");
+                test.done();
+
+                onloadcalled = true;
+            }
+        });
+    },
+
+};
