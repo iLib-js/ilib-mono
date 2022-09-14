@@ -43,6 +43,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.4.1
+
+- fixed a bug where getLocaleData was returning the same instance for
+  all paths
+
 ### v1.4.0
 
 - fixed a bug in data caching when the cache is cleared
