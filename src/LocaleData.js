@@ -321,6 +321,14 @@ class LocaleData {
     }
 
     /**
+     * Return the path used to construct this LocaleData
+     * @returns {string} path used to construct this LocaleData
+     */
+    getPath() {
+        return this.path;
+    }
+
+    /**
      * @private
      */
     getFilesArray(basename, loc) {
