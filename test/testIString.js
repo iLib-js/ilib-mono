@@ -17,11 +17,37 @@
  * limitations under the License.
  */
 
-import IString from '../src/index';
+import IString from '../src/index.js';
 
+import { getPlatform, setLocale } from 'ilib-env';
 import Locale from 'ilib-locale';
+import { LocaleData } from 'ilib-localedata';
+
+import { localeList } from './locales.js';
+
+let setUpPerformed = false;
 
 export const testIString = {
+    setUp: function(callback) {
+        setLocale("en-US");
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            let promise = Promise.resolve(true);
+            localeList.locales.forEach(locale => {
+                promise = promise.then(() => {
+                    return LocaleData.ensureLocale(locale);
+                });
+            });
+            promise.then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
+    },
+
     testStringConstructor: function(test) {
         test.expect(1);
         var str = new IString();

@@ -62,6 +62,7 @@ built-in Javascript String class.
         * [.getLocale()](#IString+getLocale) ⇒ <code>string</code>
         * [.codePointLength()](#IString+codePointLength) ⇒ <code>number</code>
     * _static_
+        * [.create(locale, options)](#IString.create) ⇒ <code>Promise</code>
         * [.isSurrogate(ch)](#IString.isSurrogate) ⇒ <code>boolean</code>
         * [.fromCodePoint(codepoint)](#IString.fromCodePoint) ⇒ <code>string</code>
         * [.toCodePoint(str, index)](#IString.toCodePoint) ⇒ <code>number</code>
@@ -929,6 +930,25 @@ same thing as the length() method.
 
 **Kind**: instance method of [<code>IString</code>](#IString)  
 **Returns**: <code>number</code> - the number of code points in this string  
+
+* * *
+
+<a name="IString.create"></a>
+
+### IString.create(locale, options) ⇒ <code>Promise</code>
+Factory method to create a new instance of IString asynchronously.
+The parameters are the same as for the constructor, but it returns
+a `Promise` instead of the instance directly.
+
+**Kind**: static method of [<code>IString</code>](#IString)  
+**Returns**: <code>Promise</code> - a promise to load a LocaleInfo instance. The resolved
+value of the promise is the new instance of LocaleInfo,  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| locale | <code>string</code> | the locale to get the info for |
+| options | <code>Object</code> | the same objects you would send to a constructor |
+
 
 * * *
 

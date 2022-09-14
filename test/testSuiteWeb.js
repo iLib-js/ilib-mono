@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { testIString } from './testIString';
-import { testIStringAsync } from './testIStringAsync';
+import { testIString } from './testIString.js';
+import { testIStringAsync } from './testIStringAsync.js';
 
 export const tests = [
     testIString,

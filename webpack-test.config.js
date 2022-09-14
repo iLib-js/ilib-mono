@@ -31,29 +31,44 @@ module.exports = {
         }
     },
     externals: {
-        "./NodeLoader": "NodeLoader",
-        "./QtLoader": "QtLoader",
-        "./RhinoLoader": "RhinoLoader",
-        "./NashornLoader": "NashornLoader",
-        "./RingoLoader": "RingoLoader",
+        "./NodeLoader.js": "NodeLoader",
+        "./QtLoader.js": "QtLoader",
+        "./RhinoLoader.js": "RhinoLoader",
+        "./NashornLoader.js": "NashornLoader",
+        "./RingoLoader.js": "RingoLoader",
         "log4js": "log4js",
         "nodeunit": "nodeunit"
     },
+    devtool: false,
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules\/(?!(ilib-common|ilib-env|ilib-locale))/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env'],
-                        plugins: [
-                            //"add-module-exports",
-                            "@babel/plugin-transform-regenerator"
-                        ]
-                    }
-                }
+                exclude: /node_modules/,
+                include: /node_modules\/ilib-/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            minified: false,
+                            compact: false,
+                            presets: [
+                                '@babel/preset-env'
+                            ],
+                            options: {
+                                "exclude": [
+                                    // \\ for Windows, \/ for Mac OS and Linux
+                                    /node_modules[\\\/]webpack[\\\/]buildin/,
+                                ],
+                            },
+                            plugins: [
+                                "add-module-exports",
+                                "@babel/plugin-transform-regenerator"
+                            ]
+                        }
+                    },
+                    { loader: '@open-wc/webpack-import-meta-loader' }
+                ]
             }
         ]
     },
@@ -62,7 +77,10 @@ module.exports = {
             buffer: require.resolve("buffer")
         },
         alias: {
-            "calling-module": "../test/locale"
+            "calling-module": path.join(path.dirname(module.id), "assembled")
         }
+    },
+    optimization: {
+        minimize: false
     }
 };
