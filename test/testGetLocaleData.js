@@ -51,6 +51,28 @@ export const testGetLocaleData = {
         test.done();
     },
 
+    testGetLocaleDataEmptyPath: function(test) {
+        test.expect(1);
+        test.throws((test) => {
+            getLocaleData({
+                path: "",
+                name: "test"
+            });
+        });
+        test.done();
+    },
+
+    testGetLocaleDataNullPath: function(test) {
+        test.expect(1);
+        test.throws((test) => {
+            getLocaleData({
+                path: null,
+                name: "test"
+            });
+        });
+        test.done();
+    },
+
     testGetLocaleDataNoSync: function(test) {
         test.expect(1);
 
@@ -100,6 +122,29 @@ export const testGetLocaleData = {
         test.ok(locData2);
 
         test.equal(locData1, locData2);
+        test.done();
+    },
+
+    testLocaleDataSingletonPerPath: function(test) {
+        test.expect(5);
+        clearLocaleData();
+
+        const locData1 = getLocaleData({
+            path: "./test/files",
+            sync: false
+        });
+        test.ok(locData1);
+
+        // different params means different instance
+        const locData2 = getLocaleData({
+            path: "./test/files2",
+            sync: false
+        });
+        test.ok(locData2);
+
+        test.equal(locData1.getPath(), "./test/files");
+        test.equal(locData2.getPath(), "./test/files2");
+        test.notEqual(locData1, locData2);
         test.done();
     }
 };

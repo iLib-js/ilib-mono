@@ -37,15 +37,19 @@ function getLocaleData(options) {
         throw "Missing options to LocaleData constructor";
     }
 
+    const { path } = options;
     const globalScope = top();
     if (!globalScope.ilib) {
         globalScope.ilib = {};
     }
 
     if (!globalScope.ilib.localeDataCache) {
-        globalScope.ilib.localeDataCache = new LocaleData(options);
+        globalScope.ilib.localeDataCache = {};
     }
-    return globalScope.ilib.localeDataCache;
+    if (!globalScope.ilib.localeDataCache[path]) {
+        globalScope.ilib.localeDataCache[path] = new LocaleData(options);
+    }
+    return globalScope.ilib.localeDataCache[path];
 }
 
 /**
