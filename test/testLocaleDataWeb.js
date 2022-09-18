@@ -1,5 +1,5 @@
 /*
- * testLocaleDataSync.js - test the locale data class synchronously
+ * testLocaleDataWeb.js - test the locale data class synchronously
  * on a browser
  *
  * Copyright © 2022 JEDLSoft
@@ -23,7 +23,7 @@ import { registerLoader } from 'ilib-loader';
 
 import LocaleData from '../src/LocaleData.js';
 
-export const testLocaleDataSync = {
+export const testLocaleDataWeb = {
     testLocaleDataConstructorWebLoaderDoesntSupportSync: function(test) {
         test.expect(1);
 
@@ -124,4 +124,37 @@ export const testLocaleDataSync = {
             test.done();
         });
     },
+
+    testLocaleDataEnsureLocaleJsonRightDataSyncNoRoots: function(test) {
+        setPlatform();
+
+        // only do this test on browsers with webpack -- nodejs always
+        // requires a global root so we know where to load files from
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.ensureLocale("ja-JP").then(result => {
+            test.ok(result);
+
+            const locData = new LocaleData({
+                path: "./test/files3"
+            });
+
+            // can load synchronously after the ensureLocale
+            // is done, even though the loader does not support
+            // synchronous operation because the data is cached
+            let data = locData.loadData({
+                sync: true,
+                locale: "ja-JP",
+                basename: "info"
+            });
+
+            test.deepEqual(data, {
+                "a": "b ja",
+                "c": "d ja"
+            });
+            test.done();
+        });
+    }
 };

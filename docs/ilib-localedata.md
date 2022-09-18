@@ -396,6 +396,7 @@ asynchronous mode, because the locale data they need is already cached.
     * [new LocaleData(packageName, options)](#new_LocaleData_new)
     * _instance_
         * [.isSync()](#LocaleData+isSync) ⇒ <code>boolean</code>
+        * [.getPath()](#LocaleData+getPath) ⇒ <code>string</code>
         * [.loadData(params)](#LocaleData+loadData) ⇒ <code>Promise</code> \| <code>Object</code>
         * [.getRoots()](#LocaleData+getRoots) ⇒ <code>Array.&lt;string&gt;</code>
     * _static_
@@ -450,6 +451,16 @@ asynchronously.
 **Kind**: instance method of [<code>LocaleData</code>](#LocaleData)  
 **Returns**: <code>boolean</code> - whether or not the default for this local data instance
 loads data synchronously  
+
+* * *
+
+<a name="LocaleData+getPath"></a>
+
+### localeData.getPath() ⇒ <code>string</code>
+Return the path used to construct this LocaleData
+
+**Kind**: instance method of [<code>LocaleData</code>](#LocaleData)  
+**Returns**: <code>string</code> - path used to construct this LocaleData  
 
 * * *
 
