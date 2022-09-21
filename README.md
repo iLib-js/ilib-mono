@@ -43,6 +43,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.5.0
+
+- added the `crossRoots` option to LocaleData.loadData which will
+  load all of the data in all of the roots (global and local) and
+  merge it all. Normal operation, which is still default, is to use
+  the first data found, no matter which root it is in, and ignore
+  the data in the other roots.
+
 ### v1.4.1
 
 - fixed a bug where getLocaleData was returning the same instance for
