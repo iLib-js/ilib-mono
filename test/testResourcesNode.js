@@ -55,7 +55,7 @@ export const testResourcesNode = {
 
         test.ok(rb !== null);
 
-        test.equal(rb.getString("Hello, {name}").toString(), "{name}, 안녕하세요");
+        test.equal(rb.getStringJS("Hello, {name}"), "{name}, 안녕하세요");
 
         LocaleData.removeGlobalRoot(root);
         test.done();
@@ -75,7 +75,7 @@ export const testResourcesNode = {
 
         test.ok(rb !== null);
 
-        test.equal(rb.getString("Hello, {name}").toString(), "안녕하세요")
+        test.equal(rb.getStringJS("Hello, {name}"), "안녕하세요")
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
@@ -94,7 +94,7 @@ export const testResourcesNode = {
 
         test.ok(rb !== null);
 
-        test.equal(rb.getString("Hello, {name}").toString(), "{name}, 你好");
+        test.equal(rb.getStringJS("Hello, {name}"), "{name}, 你好");
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
@@ -112,7 +112,7 @@ export const testResourcesNode = {
 
         test.ok(rb !== null);
 
-        test.equal(rb.getString("Hello, {name}").toString(), "你好")
+        test.equal(rb.getStringJS("Hello, {name}"), "你好")
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
@@ -154,16 +154,15 @@ export const testResourcesNode = {
 
         test.ok(rb !== null);
 
-        test.equal(rb.getString("Hello from {country}").toString(), "{country}からこんにちは");
-        test.equal(rb.getString("Hello from {city}").toString(), "{city}からこんにちは");
-        test.equal(rb.getString("Greetings from {city} in {country}").toString(), "{city}と{country}からこんにちは");
+        test.equal(rb.getStringJS("Hello from {country}"), "{country}からこんにちは");
+        test.equal(rb.getStringJS("Hello from {city}"), "{city}からこんにちは");
+        test.equal(rb.getStringJS("Greetings from {city} in {country}"), "{city}と{country}からこんにちは");
 
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
 
     testResBundleGetStringWithDifferentBasePath: function(test) {
-
         test.expect(4);
 
         // don't clear the cache
@@ -177,15 +176,14 @@ export const testResourcesNode = {
 
         test.ok(rb !== null);
 
-        test.equal(rb.getString("Hello from {country}").toString(), "{country}からこんにちは2");
-        test.equal(rb.getString("Hello from {city}").toString(), "{city}からこんにちは2");
-        test.equal(rb.getString("Greetings from {city} in {country}").toString(), "{city}と{country}からこんにちは2");
+        test.equal(rb.getStringJS("Hello from {country}"), "{country}からこんにちは2");
+        test.equal(rb.getStringJS("Hello from {city}"), "{city}からこんにちは2");
+        test.equal(rb.getStringJS("Greetings from {city} in {country}"), "{city}と{country}からこんにちは2");
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
     testResBundleMultiPaths_ko_KR: function(test) {
-
-        test.expect(2);
+        test.expect(3);
 
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
@@ -194,14 +192,14 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕하세요!");
+        test.equal(rb.getStringJS("hello"), "안녕하세요!");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
     testResBundleMultiPaths_ko_KR2: function(test) {
-
-        test.expect(2);
+        test.expect(3);
 
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
@@ -212,15 +210,15 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕2");
+        test.equal(rb.getStringJS("hello"), "안녕2");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);
         test.done();
     },
     testResBundleMultiPathsArray_ko_KR3: function(test) {
-
-        test.expect(2);
+        test.expect(3);
 
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
@@ -231,15 +229,15 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕2");
+        test.equal(rb.getStringJS("hello"), "안녕2");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);
         test.done();
     },
     testResBundleMultiPaths_ko_KR4: function(test) {
-
-        test.expect(2);
+        test.expect(3);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
@@ -252,7 +250,8 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕하세요!");
+        test.equal(rb.getStringJS("hello"), "안녕하세요!");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);
@@ -260,8 +259,7 @@ export const testResourcesNode = {
         test.done();
     },
     testResBundleMultiPaths_ko_KR5: function(test) {
-
-        test.expect(2);
+        test.expect(3);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
@@ -269,24 +267,21 @@ export const testResourcesNode = {
         LocaleData.addGlobalRoot(root);
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
-        const root3 = Path.join(__dirname, "./resources3");
-        LocaleData.addGlobalRoot(root3);
 
         var rb = new ResBundle({
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕2");
+        test.equal(rb.getStringJS("hello"), "안녕2");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);
-        LocaleData.removeGlobalRoot(root3);
 
         test.done();
     },
     testResBundleMultiPaths_ko_KR6: function(test) {
-
-        test.expect(2);
+        test.expect(3);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
@@ -301,7 +296,8 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕3");
+        test.equal(rb.getStringJS("hello"), "안녕3");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);
@@ -321,14 +317,36 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕하세요!");
-        test.equal(rb.getString("thanks").toString(), "감사합니다");
+        test.equal(rb.getStringJS("hello"), "안녕하세요!");
+        test.equal(rb.getStringJS("thanks"), "감사합니다");
 
         LocaleData.removeGlobalRoot(root);
         test.done();
     },
     testResBundleMultiPaths_ko_KR8: function(test) {
+        test.expect(4);
+        // clear this to be sure it is actually loading something
+        LocaleData.clearCache();
 
+        const root = Path.join(__dirname, "./resources");
+        LocaleData.addGlobalRoot(root);
+        const root2 = Path.join(__dirname, "./resources2");
+        LocaleData.addGlobalRoot(root2);
+
+        var rb = new ResBundle({
+            locale: "ko-KR"
+        });
+        test.ok(rb !== null);
+        test.equal(rb.getStringJS("hello"), "안녕2");
+        test.equal(rb.getStringJS("thanks"), "고마워2");
+        test.equal(rb.getStringJS("Settings"), "설정");
+
+        LocaleData.removeGlobalRoot(root);
+        LocaleData.removeGlobalRoot(root2);
+
+        test.done();
+    },
+    testResBundleMultiPaths_ko_KR9: function(test) {
         test.expect(3);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
@@ -337,44 +355,16 @@ export const testResourcesNode = {
         LocaleData.addGlobalRoot(root);
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
-        const root3 = Path.join(__dirname, "./resources3");
-        LocaleData.addGlobalRoot(root3);
 
         var rb = new ResBundle({
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕2");
-        test.equal(rb.getString("thanks").toString(), "고마워2");
+        test.equal(rb.getStringJS("hello"), "안녕2");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);
-        LocaleData.removeGlobalRoot(root3);
-
-        test.done();
-    },
-    testResBundleMultiPaths_ko_KR9: function(test) {
-
-        test.expect(2);
-        // clear this to be sure it is actually loading something
-        LocaleData.clearCache();
-
-        const root = Path.join(__dirname, "./resources");
-        LocaleData.addGlobalRoot(root);
-        const root2 = Path.join(__dirname, "./resources2");
-        LocaleData.addGlobalRoot(root2);
-        const root3 = Path.join(__dirname, "./resources3");
-        LocaleData.addGlobalRoot(root3);
-
-        var rb = new ResBundle({
-            locale: "ko-KR"
-        });
-        test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕2");
-
-        LocaleData.removeGlobalRoot(root);
-        LocaleData.removeGlobalRoot(root2);
-        LocaleData.removeGlobalRoot(root3);
         test.done();
     },
 
@@ -392,8 +382,8 @@ export const testResourcesNode = {
             locale: "ko-KR"
         });
         test.ok(rb !== null);
-        test.equal(rb.getString("hello").toString(), "안녕2");
-        test.equal(rb.getString("Settings").toString(), "설정");
+        test.equal(rb.getStringJS("hello"), "안녕2");
+        test.equal(rb.getStringJS("Settings"), "설정");
 
         LocaleData.removeGlobalRoot(root);
         LocaleData.removeGlobalRoot(root2);

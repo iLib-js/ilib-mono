@@ -307,6 +307,7 @@ class ResBundle {
             this.map = locData.loadData({
                 basename: this.baseName,
                 locale: lookupLocale,
+                crossRoots: true,
                 sync
             });
             if (ResBundle.isPseudoLocale(this.locale.getSpec())) {
@@ -320,6 +321,7 @@ class ResBundle {
             return locData.loadData({
                 basename: this.baseName,
                 locale: lookupLocale,
+                crossRoots: true,
                 sync
             }).then((map) => {
                 this.map = map;
