@@ -103,6 +103,7 @@ class DataCache {
      * Get locale data from the cache or information about data that may be missing.
      * If the basename is missing, get all the data for the locale.
      *
+     * @param {string} root the root from which the data was loaded
      * @param {string|undefined} basename the base name of this type of data. If this
      * is undefined, return all basenames for the locale
      * @param {Locale} locale the full or partial locale for this particular data
@@ -110,16 +111,19 @@ class DataCache {
      * that no data of this type exists for this locale, or undefined to indicate that the
      * cache has no information about this type of data for that locale
      */
-    getData(basename, locale) {
+    getData(root, basename, locale) {
         this.logger.trace(`Getting data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
 
         let localeSpec = getLocaleSpec(locale);
 
-        if ( !this.data[localeSpec] ) {
+        if ( !this.data[root] ) {
+            this.data[root] = {};
+        }
+        if ( !this.data[root][localeSpec] ) {
             return undefined;
         }
 
-        return basename ? this.data[localeSpec][basename] : this.data[localeSpec];
+        return basename ? this.data[root][localeSpec][basename] : this.data[root][localeSpec];
     };
 
     /**
@@ -128,11 +132,12 @@ class DataCache {
      * given type. This may be because of various reasons. For example, there is no locale
      * data file for the locale.
      *
+     * @param {string} root the root from which the data was loaded
      * @param {string} basename the base name of this type of data
      * @param {Locale} locale the full or partial locale of this data
      * @param {Object} data the data to store for this locale
      */
-    storeData(basename, locale, data) {
+    storeData(root, basename, locale, data) {
         this.logger.trace(`Storing data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
         if (!basename) {
             this.logger.info(`Attempt to store data in the cache with no basename.`);
@@ -141,12 +146,15 @@ class DataCache {
 
         let localeSpec = getLocaleSpec(locale);
 
-        if ( !this.data[localeSpec] ) {
-            this.data[localeSpec] = {};
+        if ( !this.data[root] ) {
+            this.data[root] = {};
+        }
+        if ( !this.data[root][localeSpec] ) {
+            this.data[root][localeSpec] = {};
         }
 
 
-        if (this.data[localeSpec][basename]) {
+        if (this.data[root][localeSpec][basename]) {
             if (typeof(data) === 'undefined') {
                 // setting to undefined is the same as removing
                 this.count--;
@@ -155,7 +163,7 @@ class DataCache {
             this.count++;
         }
 
-        this.data[localeSpec][basename] = data;
+        this.data[root][localeSpec][basename] = data;
     }
 
     /**
@@ -164,12 +172,13 @@ class DataCache {
      * given type. This may be because of various reasons. For example, there is no locale
      * data file for the locale.
      *
+     * @param {string} root the root from which the data was loaded
      * @param {string} basename the base name of this type of data
      * @param {Locale} locale the full or partial locale of this data
      */
-    removeData(basename, locale) {
+    removeData(root, basename, locale) {
         this.logger.trace(`Removing data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
-        this.storeData(basename, locale, undefined);
+        this.storeData(root, basename, locale, undefined);
     }
 
     /**

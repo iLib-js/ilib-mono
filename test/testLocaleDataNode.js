@@ -27,6 +27,9 @@ export const testLocaleDataNode = {
 
         test.expect(2);
 
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
         const locData = new LocaleData({
             path: "./test/files",
             sync: true
@@ -352,7 +355,7 @@ export const testLocaleDataNode = {
                     }
                 }
             }
-        });
+        }, "./test/files2");
 
         // make sure it used the cache
         actual = locData.loadData({
@@ -406,7 +409,7 @@ export const testLocaleDataNode = {
                     }
                 }
             }
-        });
+        }, "./test/files2");
 
         test.ok(LocaleData.checkCache("de-DE", "tester"));
 
@@ -478,7 +481,7 @@ export const testLocaleDataNode = {
             "de-DE": {
                 "tester": null
             }
-        });
+        }, "./test/files2");
 
         // true = everything that can be loaded is loaded
         test.ok(LocaleData.checkCache("de-DE", "tester"));
@@ -572,7 +575,7 @@ export const testLocaleDataNode = {
                     }
                 }
             }
-        });
+        }, "./test/files2");
 
         test.ok(LocaleData.checkCache("de-DE", "tester"));
 
@@ -619,7 +622,7 @@ export const testLocaleDataNode = {
                     }
                 }
             }
-        });
+        }, "./test/files2");
 
         // should work even without the basename by checking for
         // any data for any basename
@@ -901,4 +904,207 @@ export const testLocaleDataNode = {
             test.done();
         });
     },
+
+    testLocaleDataNodeSyncWithCrossRoots: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: true
+        });
+        LocaleData.addGlobalRoot("./test/files2");
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "merge",
+            locale: "en-US",
+            crossRoots: true
+        });
+
+        test.deepEqual(actual, {
+            "a": "a from files2 en-US",
+            "b": "b from files en-US",
+            "c": "c from files en",
+            "d": "d from files2 en-US",
+            "e": "e from files2 en"
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeSyncWithCrossRootsOnlyRootLocale: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: true
+        });
+        LocaleData.addGlobalRoot("./test/files2");
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "merge2",
+            locale: "en-US",
+            crossRoots: true
+        });
+
+        test.deepEqual(actual, {
+            "a": "a from files2",
+            "b": "b from files",
+            "c": "c from files2",
+            "d": "d from files2"
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeSyncWithCrossRootsNoOverride: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: true
+        });
+        LocaleData.addGlobalRoot("./test/files2");
+
+        test.ok(locData);
+        const actual = locData.loadData({
+            basename: "merge3",
+            locale: "en-US",
+            crossRoots: true
+        });
+
+        test.deepEqual(actual, {
+            "a": "a from files",
+            "b": "b from files"
+        });
+        test.done();
+    },
+
+    testLocaleDataNodeAsyncWithCrossRoots: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: false
+        });
+        LocaleData.addGlobalRoot("./test/files2");
+
+        test.ok(locData);
+        locData.loadData({
+            basename: "merge",
+            locale: "en-US",
+            crossRoots: true
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "a from files2 en-US",
+                "b": "b from files en-US",
+                "c": "c from files en",
+                "d": "d from files2 en-US",
+                "e": "e from files2 en"
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeASyncWithCrossRootsJS: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files3",
+            sync: false
+        });
+        LocaleData.addGlobalRoot("./test/files5");
+
+        test.ok(locData);
+        locData.loadData({
+            basename: "info",
+            locale: "en-US",
+            crossRoots: true
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "b en",
+                "n": "m from files5",
+                "c": "d en",
+                "x": "y from files5"
+            });
+            test.done();
+        });
+    },
+
+
+    testLocaleDataNodeAsyncWithCrossRootsOnlyRootLocale: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: false
+        });
+        LocaleData.addGlobalRoot("./test/files2");
+
+        test.ok(locData);
+        locData.loadData({
+            basename: "merge2",
+            locale: "en-US",
+            crossRoots: true
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "a from files2",
+                "b": "b from files",
+                "c": "c from files2",
+                "d": "d from files2"
+            });
+            test.done();
+        });
+    },
+
+    testLocaleDataNodeAsyncWithCrossRootsNoOverride: function(test) {
+        setPlatform();
+
+        test.expect(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: false
+        });
+        LocaleData.addGlobalRoot("./test/files2");
+
+        test.ok(locData);
+        locData.loadData({
+            basename: "merge3",
+            locale: "en-US",
+            crossRoots: true
+        }).then((actual) => {
+            test.deepEqual(actual, {
+                "a": "a from files",
+                "b": "b from files"
+            });
+            test.done();
+        });
+    }
+
 };
