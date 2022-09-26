@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-module.exports.testassemble = {
+export const testAssemble = {
     testIsArrayNewArrayObj: function(test) {
         test.expect(1);
         var a = new Array();

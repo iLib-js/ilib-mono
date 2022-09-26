@@ -20,7 +20,7 @@
 const files = [
     "testscan.mjs",
     "testwalk.mjs"
-    //"testassemble.js"
+    //"testassemble.mjs"
 ];
 
 export default files;

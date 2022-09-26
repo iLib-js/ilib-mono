@@ -77,5 +77,23 @@ export const testwalk = {
         test.equal(files.length, 0);
 
         test.done();
-    }
+    },
+
+    testWalkDirWithJsonExtension: function(test) {
+        test.expect(8);
+        const extensions = new Set();
+        extensions.add(".json");
+        const files = walk("test/ilib-mock/locale", {quiet: true, extensions }).sort();
+        test.equal(files.length, 7);
+        test.equal(files[0], "test/ilib-mock/locale/de/DE/mockdata.json");
+        test.equal(files[1], "test/ilib-mock/locale/de/mockdata.json");
+        test.equal(files[2], "test/ilib-mock/locale/en/US/mockdata.json");
+        test.equal(files[3], "test/ilib-mock/locale/en/mockdata.json");
+        test.equal(files[4], "test/ilib-mock/locale/mockdata.json");
+        test.equal(files[5], "test/ilib-mock/locale/und/DE/mockdata.json");
+        test.equal(files[6], "test/ilib-mock/locale/und/US/mockdata.json");
+
+        test.done();
+    },
+
 };

@@ -49,7 +49,7 @@ const optionConfig = {
     format: {
         short: "f",
         "default": "js",
-        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'."
+        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'. Note: ESM modules cannot be loaded synchronously with ilib-localedata."
     },
     locales: {
         short: "l",
@@ -63,12 +63,17 @@ const optionConfig = {
     module: {
         short: "m",
         multi: true,
-        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add."
+        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add. VAL is the name of the module to add."
     },
     quiet: {
         short: "q",
         flag: true,
         help: "Produce no progress output during the run, except for error messages."
+    },
+    resources: {
+        short: "r",
+        multi: true,
+        help: "Include translated resource files in the output files such that they can be loaded with ilib-resbundle. The resource files should come from ilib's loctool or other such localization tool which produces a set of translated resource files. VAL is the path to the root of a resource file tree."
     }
 };
 

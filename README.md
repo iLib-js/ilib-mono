@@ -177,6 +177,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.0
+
+- added --resources option to include translated resource files into the
+  output bundle
+- fixed missing dependencies
+
 ### v1.1.2
 
 - work with the hybrid commonjs/ESM modules

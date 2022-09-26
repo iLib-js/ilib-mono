@@ -21,56 +21,59 @@
 import path from 'path';
 import { statSync, readdirSync, existsSync } from 'node:fs';
 
-const extensionsToScan = {
-    ".js": true,
-    ".mjs": true,
-    ".cjs": true
-};
+const extensionsToScan = [
+    ".js",
+    ".mjs",
+    ".cjs"
+];
+
+const javaScriptFiles = new Set();
+extensionsToScan.forEach((ext) => {
+    javaScriptFiles.add(ext);
+});
 
 /**
  * Walk a directory tree and return an array of the relative paths to
  * all javascript files found in that tree.
  *
- * @param {string} dir top level of the tree to start searching
+ * Options can contain any of the following properties:
+ * <ul>
+ * <li>quiet (boolean) - if true, do not emit any output. Just report results.
+ * <li>extensions (Set) - a set of extensions to scan for. If not specified,
+ * this function will search for all Javascript files.
+ * </ul>
+ *
+ * @param {string} dirOrFile top level of the tree to start searching or
+ * a file to consider
+ * @param {Object} options options to control the operation of this function
  * @returns {Array<string>} an array of relative paths to all the
  * javascript files
  */
-function walk(dir, options) {
-    if (options && !options.quiet) console.log("    Searching " + dir);
-
+function walk(dirOrFile, options) {
     let results = [];
     let pathName, included, stat, extension;
+    const extensions = (options && options.extensions) || javaScriptFiles;
 
     try {
-        stat = statSync(dir);
+        stat = statSync(dirOrFile);
         if (stat && !stat.isDirectory()) {
-            extension = path.extname(dir);
-            if (extensionsToScan[extension]) {
-                results.push(dir);
+            extension = path.extname(dirOrFile);
+            if (extensions.has(extension)) {
+                results.push(dirOrFile);
             }
         } else {
-            const list = readdirSync(dir);
+            if (options && !options.quiet) console.log(`    Searching ${dirOrFile}`);
+            const list = readdirSync(dirOrFile);
             if (list && list.length !== 0) {
                 list.sort().forEach((file) => {
-                    extension = path.extname(file);
-                    pathName = path.join(dir, file);
-
-                    if (existsSync(pathName)) {
-                        stat = statSync(pathName);
-                        if (stat && stat.isDirectory()) {
-                            results = results.concat(walk(pathName));
-                        } else if (extensionsToScan[extension]) {
-                            results.push(pathName);
-                        }
-                    } else {
-                        console.log(`    File ${pathName} does not exist or is inaccessible.`);
-                    }
+                    pathName = path.join(dirOrFile, file);
+                    results = results.concat(walk(pathName, options));
                 });
             }
         }
     } catch (e) {
         // ignore
-        console.log(`    Could not access path ${dir}`);
+        if (options && !options.quiet) console.log(`    Could not access path ${dirOrFile}`);
     }
 
     return results;
