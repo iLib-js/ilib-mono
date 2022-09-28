@@ -19,7 +19,8 @@
 
 const files = [
     "testscan.mjs",
-    "testwalk.mjs"
+    "testwalk.mjs",
+    "testscanres.mjs"
     //"testassemble.mjs"
 ];
 

@@ -94,6 +94,5 @@ export const testwalk = {
         test.equal(files[6], "test/ilib-mock/locale/und/US/mockdata.json");
 
         test.done();
-    },
-
+    }
 };

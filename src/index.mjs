@@ -31,6 +31,7 @@ import json5 from 'json5';
 import walk from './walk.mjs';
 import scan from './scan.mjs';
 import scanModule from './scanmodule.mjs';
+import scanResources from './scanres.mjs';
 
 const optionConfig = {
     help: {
@@ -176,6 +177,29 @@ ilibModules.forEach((module) => {
     });
 });
 
+
+if (!options.opt.quiet) {
+    promise.then(result => {
+        console.log(`\n\nScanning directories for resource files`);
+    });
+}
+
+if (options.opt.resources) {
+    options.opt.resources.forEach(resDir => {
+        promise = promise.then(result => {
+            if (!options.opt.quiet) console.log(`  ${resDir} ...`);
+            return scanResources(resDir, options).then(data => {
+                console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
+                if (data) {
+                    localeData = JSUtils.merge(localeData, data);
+                    return true;
+                }
+                return result;
+            });
+        });
+    });
+}
+
 const spaces = "                                                                                                                 ";
 function indent(str, howMany) {
     return str.split(/\n/g).map(line => {
@@ -184,7 +208,7 @@ function indent(str, howMany) {
 };
 
 promise.then(result => {
-    //console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
+    console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
 
     let hadOutput = false;
     if (result) {
