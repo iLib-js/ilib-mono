@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import walk from '../src/walk.mjs';
+import walk from '../src/walk.js';
 
 export const testwalk = {
     testWalkDir: function(test) {

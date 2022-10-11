@@ -24,7 +24,7 @@ import path from 'path';
 import Locale from 'ilib-locale';
 
 const require = createRequire(import.meta.url);
-import walk from './walk.mjs';
+import walk from './walk.js';
 
 const extensions = new Set();
 extensions.add(".json");
@@ -39,8 +39,6 @@ extensions.add(".jsn");
  * file data, and return it in the format documented above
  */
 function scanResources(dir, options) {
-    console.log("scanning " + dir);
-
     let files = walk(dir, { ...options, extensions });
 
     let promise = Promise.resolve(true);
@@ -59,7 +57,7 @@ function scanResources(dir, options) {
             locale = loc.getSpec();
         }
 
-        console.log(`${fileName} locale ${locale}`);
+        // console.log(`${fileName} locale ${locale}`);
         promise = promise.then(result => {
             const data = readFileSync(fileName, "utf-8");
             if (data) {
@@ -76,7 +74,7 @@ function scanResources(dir, options) {
     });
 
     return promise.then(result => {
-        console.log(JSON.stringify(translations, undefined, 4));
+        // console.log(JSON.stringify(translations, undefined, 4));
         return translations;
     });
 }

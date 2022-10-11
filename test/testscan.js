@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import scan, { scanString } from '../src/scan.mjs';
+import scan, { scanString } from '../src/scan.js';
 
 export const testscan = {
     testScanStringImportStatement: function(test) {
@@ -148,7 +148,7 @@ export const testscan = {
     testScanImportStatement: function(test) {
         test.expect(3);
         let set = new Set();
-        scan("./src/index.mjs", set);
+        scan("./src/index.js", set);
         test.equal(set.size, 2);
         test.ok(set.has("ilib-locale"));
         test.ok(set.has("ilib-common"));

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import scanResources from '../src/scanres.mjs';
+import scanResources from '../src/scanres.js';
 
 export const testScanResources = {
     testScanResourcesDir: function(test) {
@@ -31,22 +31,17 @@ export const testScanResources = {
                 },
                 "de": {
                     "strings": {
-                        "a": "b"
+                        "a": "b de"
                     }
                 },
                 "de-DE": {
                     "strings": {
-                        "a": "b"
+                        "a": "b de-DE"
                     }
                 },
                 "en": {
                     "strings": {
-                        "a": "b"
-                    }
-                },
-                "en-US": {
-                    "strings": {
-                        "a": "b"
+                        "a": "x"
                     }
                 }
             };
@@ -55,4 +50,36 @@ export const testScanResources = {
             test.done();
         });
     },
+
+    testScanResourcesDirSubdir: function(test) {
+        test.expect(1);
+        scanResources("test/testfiles/resources/de", {quiet: true}).then(data => {
+            let expected = {
+                "root": {
+                    "strings": {
+                        "a": "b de"
+                    }
+                },
+                "DE": {
+                    "strings": {
+                        "a": "b de-DE"
+                    }
+                }
+            };
+            test.deepEqual(data, expected);
+
+            test.done();
+        });
+    },
+
+    testScanResourcesDirBogusDir: function(test) {
+        test.expect(1);
+        scanResources("test/testfiles/resources34534", {quiet: true}).then(data => {
+            let expected = {};
+            test.deepEqual(data, expected);
+
+            test.done();
+        });
+    },
+
 };

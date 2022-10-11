@@ -28,10 +28,10 @@ import path from 'path';
 import mkdirp from 'mkdirp';
 import json5 from 'json5';
 
-import walk from './walk.mjs';
-import scan from './scan.mjs';
-import scanModule from './scanmodule.mjs';
-import scanResources from './scanres.mjs';
+import walk from './walk.js';
+import scan from './scan.js';
+import scanModule from './scanmodule.js';
+import scanResources from './scanres.js';
 
 const optionConfig = {
     help: {

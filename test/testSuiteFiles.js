@@ -18,10 +18,10 @@
  */
 
 const files = [
-    "testscan.mjs",
-    "testwalk.mjs",
-    "testscanres.mjs"
-    //"testassemble.mjs"
+    "testscan.js",
+    "testwalk.js",
+    "testscanres.js"
+    //"testassemble.js"
 ];
 
 export default files;
