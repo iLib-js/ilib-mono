@@ -1,4 +1,48 @@
-/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>NameFmt.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Name.html">Name</a><ul class='methods'><li data-type='method'><a href="Name.html#.create">create</a></li><li data-type='method'><a href="Name.html#clone">clone</a></li><li data-type='method'><a href="Name.html#getSortFamilyName">getSortFamilyName</a></li></ul></li><li><a href="NameFmt.html">NameFmt</a><ul class='methods'><li data-type='method'><a href="NameFmt.html#.create">create</a></li><li data-type='method'><a href="NameFmt.html#format">format</a></li><li data-type='method'><a href="NameFmt.html#getComponents">getComponents</a></li><li data-type='method'><a href="NameFmt.html#getLocale">getLocale</a></li><li data-type='method'><a href="NameFmt.html#getStyle">getStyle</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">NameFmt.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
  * NameFmt.js - Format person names for display
  *
  * Copyright © 2013-2015, 2018-2019, 2022 JEDLSoft
@@ -45,13 +89,13 @@ function localeDir() {
 /**
  * @class
  * Represents a formatter that can format person name instances (Name) for display to
- * a user.<p>
+ * a user.&lt;p>
  *
  * Formatting names is a locale-dependent function, as the order of the components
- * depends on the locale. The following explains some of the details:<p>
+ * depends on the locale. The following explains some of the details:&lt;p>
  *
- * <ul>
- * <li>In Western countries, the given name comes first, followed by a space, followed
+ * &lt;ul>
+ * &lt;li>In Western countries, the given name comes first, followed by a space, followed
  * by the family name. In Asian countries, the family name comes first, followed immediately
  * by the given name with no space. But, that format is only used with Asian names written
  * in ideographic characters. In Asian countries, especially ones where both an Asian and
@@ -59,70 +103,70 @@ function localeDir() {
  * follow the language of the name. That is, Asian names are written in Asian style, and
  * Western names are written in Western style. This class follows that convention as
  * well.
- * <li>In other Asian countries, Asian names
+ * &lt;li>In other Asian countries, Asian names
  * written in Latin script are written with Asian ordering. eg. "Xu Ping-an" instead
  * of the more Western order "Ping-an Xu", as the order is thought to go with the style
  * that is appropriate for the name rather than the style for the language being written.
- * <li>In some Spanish speaking countries, people often take both their maternal and
+ * &lt;li>In some Spanish speaking countries, people often take both their maternal and
  * paternal last names as their own family name. When formatting a short or medium style
  * of that family name, only the paternal name is used. In the long style, all the names
  * are used. eg. "Juan Julio Raul Lopez Ortiz" took the name "Lopez" from his father and
  * the name "Ortiz" from his mother. His family name would be "Lopez Ortiz". The formatted
  * short style of his name would be simply "Juan Lopez" which only uses his paternal
  * family name of "Lopez".
- * <li>In many Western languages, it is common to use auxillary words in family names. For
+ * &lt;li>In many Western languages, it is common to use auxillary words in family names. For
  * example, the family name of "Ludwig von Beethoven" in German is "von Beethoven", not
  * "Beethoven". This class ensures that the family name is formatted correctly with
  * all auxillary words.
- * </ul>
+ * &lt;/ul>
  */
 class NameFmt {
     /**
-     * Create an instance of a name formatter.<p>
+     * Create an instance of a name formatter.&lt;p>
      *
      * The options may contain the following properties:
      *
-     * <ul>
-     * <li><i>locale</i> - Use the conventions of the given locale to construct the name format.
-     * <li><i>style</i> - Format the name with the given style. The value of this property
+     * &lt;ul>
+     * &lt;li>&lt;i>locale&lt;/i> - Use the conventions of the given locale to construct the name format.
+     * &lt;li>&lt;i>style&lt;/i> - Format the name with the given style. The value of this property
      * should be one of the following strings:
-     *   <ul>
-     *     <li><i>short</i> - Format a short name with just the given and family names. eg. "John Smith"
-     *     <li><i>medium</i> - Format a medium-length name with the given, middle, and family names.
+     *   &lt;ul>
+     *     &lt;li>&lt;i>short&lt;/i> - Format a short name with just the given and family names. eg. "John Smith"
+     *     &lt;li>&lt;i>medium&lt;/i> - Format a medium-length name with the given, middle, and family names.
      *     eg. "John James Smith"
-     *     <li><i>long</i> - Format a long name with all names available in the given name object, including
+     *     &lt;li>&lt;i>long&lt;/i> - Format a long name with all names available in the given name object, including
      *     prefixes. eg. "Mr. John James Smith"
-     *     <li><i>full</i> - Format a long name with all names available in the given name object, including
+     *     &lt;li>&lt;i>full&lt;/i> - Format a long name with all names available in the given name object, including
      *     prefixes and suffixes. eg. "Mr. John James Smith, Jr."
-     *     <li><i>formal_short</i> - Format a name with the honorific or prefix/suffix and the family
+     *     &lt;li>&lt;i>formal_short&lt;/i> - Format a name with the honorific or prefix/suffix and the family
      *     name. eg. "Mr. Smith"
-     *     <li><i>formal_long</i> - Format a name with the honorific or prefix/suffix and the
+     *     &lt;li>&lt;i>formal_long&lt;/i> - Format a name with the honorific or prefix/suffix and the
      *     given and family name. eg. "Mr. John Smith"
-     *     <li><i>familiar</i> - Format a name with the most familiar style that the culture of the locale
+     *     &lt;li>&lt;i>familiar&lt;/i> - Format a name with the most familiar style that the culture of the locale
      *     will accept. In some locales, it is not rude to address people you just met by their given name.
      *     In others, it is rude to address a person in such a familiar style unless you are previously
      *     invited to do so or unless you have known them for a while. In this case, it will use a more formal
      *     style, but still as familiar as possible so as not to be rude.
-     *   </ul>
-     * <li><i>components</i> - Format the name with the given components in the correct
+     *   &lt;/ul>
+     * &lt;li>&lt;i>components&lt;/i> - Format the name with the given components in the correct
      * order for those components. Components are encoded as a string of letters representing
      * the desired components:
-     *   <ul>
-     *     <li><i>p</i> - prefixes
-     *     <li><i>g</i> - given name
-     *     <li><i>m</i> - middle names
-     *     <li><i>f</i> - family name
-     *     <li><i>s</i> - suffixes
-     *     <li><i>h</i> - honorifics (selects the prefix or suffix as required by the locale)
-     *   </ul>
-     * </ul>
-     * <p>
+     *   &lt;ul>
+     *     &lt;li>&lt;i>p&lt;/i> - prefixes
+     *     &lt;li>&lt;i>g&lt;/i> - given name
+     *     &lt;li>&lt;i>m&lt;/i> - middle names
+     *     &lt;li>&lt;i>f&lt;/i> - family name
+     *     &lt;li>&lt;i>s&lt;/i> - suffixes
+     *     &lt;li>&lt;i>h&lt;/i> - honorifics (selects the prefix or suffix as required by the locale)
+     *   &lt;/ul>
+     * &lt;/ul>
+     * &lt;p>
      *
      * For example, the string "pf" would mean to only format any prefixes and family names
-     * together and leave out all the other parts of the name.<p>
+     * together and leave out all the other parts of the name.&lt;p>
      *
-     * The components can be listed in any order in the string. The <i>components</i> option
-     * overrides the <i>style</i> option if both are specified.
+     * The components can be listed in any order in the string. The &lt;i>components&lt;/i> option
+     * overrides the &lt;i>style&lt;/i> option if both are specified.
      *
      * @constructor
      * @param {Object} options A set of options that govern how the formatter will behave
@@ -255,7 +299,7 @@ class NameFmt {
             let valids = {"p":1,"g":1,"m":1,"f":1,"s":1,"h":1};
             arr = this.components.split("");
             this.comps = {};
-            for (let i = 0; i < arr.length; i++) {
+            for (let i = 0; i &lt; arr.length; i++) {
                 if (valids[arr[i].toLowerCase()]) {
                     this.comps[arr[i].toLowerCase()] = true;
                 }
@@ -273,7 +317,7 @@ class NameFmt {
 
         this.template = new IString(this.info.format, {locale: this.locale});
 
-        if (this.locale.language === "es" && (this.style !== "long" && this.style !== "full")) {
+        if (this.locale.language === "es" &amp;&amp; (this.style !== "long" &amp;&amp; this.style !== "full")) {
             this.useFirstFamilyName = true;    // in spanish, they have 2 family names, the maternal and paternal
         }
 
@@ -289,8 +333,8 @@ class NameFmt {
 
         //console.info("_adjoinAuxillaries: finding and adjoining aux words in " + parts.join(' '));
 
-        if ( this.info.auxillaries && (parts.length > 2 || namePrefix) ) {
-            for ( start = 0; start < parts.length-1; start++ ) {
+        if ( this.info.auxillaries &amp;&amp; (parts.length > 2 || namePrefix) ) {
+            for ( start = 0; start &lt; parts.length-1; start++ ) {
                 for ( i = parts.length; i > start; i-- ) {
                     prefixArray = parts.slice(start, i);
                     prefix = prefixArray.join(' ');
@@ -340,19 +384,19 @@ class NameFmt {
 
     /**
      * Format the name for display in the current locale with the options set up
-     * in the constructor of this formatter instance.<p>
+     * in the constructor of this formatter instance.&lt;p>
      *
      * If the name does not contain all the parts required for the style, those parts
-     * will be left blank.<p>
+     * will be left blank.&lt;p>
      *
      * There are two basic styles of formatting: European, and Asian. If this formatter object
      * is set for European style, but an Asian name is passed to the format method, then this
      * method will format the Asian name with a generic Asian template. Similarly, if the
      * formatter is set for an Asian style, and a European name is passed to the format method,
-     * the formatter will use a generic European template.<p>
+     * the formatter will use a generic European template.&lt;p>
      *
      * This means it is always safe to format any name with a formatter for any locale. You should
-     * always get something at least reasonable as output.<p>
+     * always get something at least reasonable as output.&lt;p>
      *
      * @param {Name|Object} name the name instance to format, or an object containing name parts to format
      * @return {string|undefined} the name formatted according to the style of this formatter instance
@@ -369,7 +413,7 @@ class NameFmt {
             name = new Name(name, {locale: this.locale});
         }
 
-        if ((typeof(name.isAsianName) === 'boolean' && !name.isAsianName) ||
+        if ((typeof(name.isAsianName) === 'boolean' &amp;&amp; !name.isAsianName) ||
                 Name._isEuroName([name.givenName, name.middleName, name.familyName].join(""), currentLanguage)) {
             isAsianName = false;    // this is a euro name, even if the locale is asian
             modified = name.clone();
@@ -383,11 +427,11 @@ class NameFmt {
                 console.log("isPunct(modified.suffix.charAt(0)) is " + isPunct(modified.suffix.charAt(0)));
             }
             */
-            if (modified.suffix && isPunct(modified.suffix.charAt(0)) === false) {
+            if (modified.suffix &amp;&amp; isPunct(modified.suffix.charAt(0)) === false) {
                 modified.suffix = ' ' + modified.suffix;
             }
 
-            if (this.useFirstFamilyName && name.familyName) {
+            if (this.useFirstFamilyName &amp;&amp; name.familyName) {
                 let familyNameParts = modified.familyName.trim().split(' ');
                 if (familyNameParts.length > 1) {
                     familyNameParts = this._adjoinAuxillaries(familyNameParts, name.prefix);
@@ -410,7 +454,7 @@ class NameFmt {
 
         // use the honorific as the prefix or the suffix as appropriate for the order of the name
         if (modified.honorific) {
-            if ((this.order === 'fg' || isAsianName) && currentLanguage !== "ko") {
+            if ((this.order === 'fg' || isAsianName) &amp;&amp; currentLanguage !== "ko") {
                 if (!modified.suffix) {
                     modified.suffix = modified.honorific
                 }
@@ -422,11 +466,11 @@ class NameFmt {
         }
 
         let parts = {
-            prefix: this.comps["p"] && modified.prefix || "",
-            givenName: this.comps["g"] && modified.givenName || "",
-            middleName: this.comps["m"] && modified.middleName || "",
-            familyName: this.comps["f"] && modified.familyName || "",
-            suffix: this.comps["s"] && modified.suffix || ""
+            prefix: this.comps["p"] &amp;&amp; modified.prefix || "",
+            givenName: this.comps["g"] &amp;&amp; modified.givenName || "",
+            middleName: this.comps["m"] &amp;&amp; modified.middleName || "",
+            familyName: this.comps["f"] &amp;&amp; modified.familyName || "",
+            suffix: this.comps["s"] &amp;&amp; modified.suffix || ""
         };
 
         formatted = temp.format(parts);
@@ -435,3 +479,28 @@ class NameFmt {
 }
 
 export default NameFmt;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.11</a> on Wed Oct 12 2022 23:55:04 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

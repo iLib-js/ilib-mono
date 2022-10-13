@@ -34,6 +34,7 @@ require("@babel/register")({
     compact: false,
     minified: false,
     plugins: [
+        ["transform-import-meta"],
         ["module-resolver", {
             "root": "test",
             // map the src dir to the lib dir so we can
