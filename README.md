@@ -381,6 +381,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.3
+
+* converted a static initializer into just regular const value that is
+  not exported. That way, this module can run on node < v16.11.0 properly.
+
 ### v1.0.2
 
 * Did not export the assemble.mjs file so it was not possible to assemble

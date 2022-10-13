@@ -25,6 +25,47 @@ import { Utils, Path } from 'ilib-common';
 import { getPlatform } from 'ilib-env';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 
+const defaultInfo = {
+    "calendar": "gregorian",
+    "clock": "24",
+    "currency": "USD",
+    "delimiter": {
+        "quotationStart": "“",
+        "quotationEnd": "”",
+        "alternateQuotationStart": "‘",
+        "alternateQuotationEnd": "’"
+    },
+    "firstDayOfWeek": 1,
+    "meridiems": "gregorian",
+    "numfmt": {
+        "script": "Latn",
+        "decimalChar": ".",
+        "groupChar": ",",
+        "pctChar": "%",
+        "exponential": "E",
+        "prigroupSize": 3,
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}",
+            "iso": "{s} {n}",
+            "isoNegative": "({s} {n})"
+        },
+        "negativenumFmt": "-{n}",
+        "pctFmt": "{n}%",
+        "negativepctFmt": "-{n}%",
+        "roundingMode": "halfdown",
+        "secGroupSize": null,
+        "useNative": false
+    },
+    "paperSizes": {
+        "regular": "A4"
+    },
+    "timezone": "Etc/UTC",
+    "units": "metric",
+    "weekendEnd": 0,
+    "weekendStart": 6
+};
+
 /**
  * @class
  * Create a new locale info instance. Locale info instances give information about
@@ -110,14 +151,14 @@ class LocaleInfo {
                 basename: "localeinfo",
                 locale: this.locale,
                 sync: sync
-            }) || LocaleInfo.defaultInfo;
+            }) || defaultInfo;
         } else {
             return locData.loadData({
                 basename: "localeinfo",
                 locale: this.locale,
                 sync: sync
             }).then((info) => {
-                this.info = info || LocaleInfo.defaultInfo;
+                this.info = info || defaultInfo;
                 return this;
             });
         }
@@ -138,48 +179,6 @@ class LocaleInfo {
         return li.init(locale, options, false);
     }
 
-    static {
-        const defaultInfo = {
-            "calendar": "gregorian",
-            "clock": "24",
-            "currency": "USD",
-            "delimiter": {
-                "quotationStart": "“",
-                "quotationEnd": "”",
-                "alternateQuotationStart": "‘",
-                "alternateQuotationEnd": "’"
-            },
-            "firstDayOfWeek": 1,
-            "meridiems": "gregorian",
-            "numfmt": {
-                "script": "Latn",
-                "decimalChar": ".",
-                "groupChar": ",",
-                "pctChar": "%",
-                "exponential": "E",
-                "prigroupSize": 3,
-                "currencyFormats": {
-                    "common": "{s} {n}",
-                    "commonNegative": "-{s} {n}",
-                    "iso": "{s} {n}",
-                    "isoNegative": "({s} {n})"
-                },
-                "negativenumFmt": "-{n}",
-                "pctFmt": "{n}%",
-                "negativepctFmt": "-{n}%",
-                "roundingMode": "halfdown",
-                "secGroupSize": null,
-                "useNative": false
-            },
-            "paperSizes": {
-                "regular": "A4"
-            },
-            "timezone": "Etc/UTC",
-            "units": "metric",
-            "weekendEnd": 0,
-            "weekendStart": 6
-        };
-    }
 
     localeDir() {
         switch (getPlatform()) {
