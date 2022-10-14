@@ -48,12 +48,13 @@ module.exports = function(grunt) {
                     }
                 ]],
                 plugins: [
+                    "transform-import-meta",
                     "add-module-exports",
                     "@babel/plugin-transform-regenerator"
                 ],
-                comments: debug,
-                compact: !debug,
-                minified: !debug
+                comments: false, // debug,
+                compact: false, // !debug,
+                minified: false, // !debug
             },
             dist: {
                 files: [{
