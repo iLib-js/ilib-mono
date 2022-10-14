@@ -52,9 +52,9 @@ module.exports = function(grunt) {
                     "add-module-exports",
                     "@babel/plugin-transform-regenerator"
                 ],
-                comments: false, // debug,
-                compact: false, // !debug,
-                minified: false, // !debug
+                comments: debug,
+                compact: !debug,
+                minified: !debug
             },
             dist: {
                 files: [{
