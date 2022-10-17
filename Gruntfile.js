@@ -51,6 +51,7 @@ module.exports = function(grunt) {
                     "transform-import-meta",
                     "add-module-exports"
                 ],
+                comments: debug,
                 compact: !debug,
                 minified: !debug
             },
