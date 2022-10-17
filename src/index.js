@@ -22,7 +22,7 @@
 
 import OptionsParser from 'options-parser';
 import Locale from 'ilib-locale';
-import { JSUtils } from 'ilib-common';
+import { JSUtils, Utils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
@@ -168,8 +168,11 @@ ilibModules.forEach((module) => {
     if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
     promise = promise.then(result => {
         return scanModule(module, options.opt).then(data => {
-            if (data) {
-                localeData = JSUtils.merge(localeData, data);
+            if (data && typeof(data) === "object") {
+                // merge in the sublocales separately
+                for (const sublocale in data) {
+                    localeData = JSUtils.merge(localeData, data[sublocale], true);
+                }
                 return true;
             }
             return result;
@@ -191,7 +194,7 @@ if (options.opt.resources) {
             return scanResources(resDir, options).then(data => {
                 console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
                 if (data) {
-                    localeData = JSUtils.merge(localeData, data);
+                    localeData = JSUtils.merge(localeData, data, true);
                     return true;
                 }
                 return result;
@@ -214,8 +217,17 @@ promise.then(result => {
     if (result) {
         if (!options.opt.quiet) console.log("\n\nWriting out data...");
 
-        for (let locale in localeData) {
-            const contents = localeData[locale];
+        for (let i = 0; i < options.opt.locales.length; i++) {
+            const locale = options.opt.locales[i];
+            // assemble all the sublocales into a single file
+            const sublocales = Utils.getSublocales(locale);
+            const contents = {};
+            sublocales.forEach((sublocale) => {
+                if (!JSUtils.isEmpty(localeData[sublocale])) {
+                    contents[sublocale] = localeData[sublocale];
+                }
+            });
+
             const outputName = path.join(outputPath, `${locale}.js`);
             let contentStr = options.opt.compressed ?
                 JSON.stringify(contents) :

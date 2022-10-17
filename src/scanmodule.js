@@ -98,7 +98,7 @@ function scanModule(moduleName, options) {
             resolved = resolved.substring(0, i + moduleName.length);
         } catch (e) {
             console.log(`    Error: could not find module ${moduleName}`);
-            return Promise.resolve(false);
+            return Promise.resolve(null);
         }
     }
 
