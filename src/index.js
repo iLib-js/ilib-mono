@@ -192,7 +192,7 @@ if (options.opt.resources) {
         promise = promise.then(result => {
             if (!options.opt.quiet) console.log(`  ${resDir} ...`);
             return scanResources(resDir, options).then(data => {
-                console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
+                // console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
                 if (data) {
                     localeData = JSUtils.merge(localeData, data, true);
                     return true;
@@ -211,7 +211,7 @@ function indent(str, howMany) {
 };
 
 promise.then(result => {
-    console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
+    // console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
 
     let hadOutput = false;
     if (result) {
