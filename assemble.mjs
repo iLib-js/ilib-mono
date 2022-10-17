@@ -33,7 +33,7 @@ function assemble(options) {
 
     options.locales.forEach(locale => {
         const locales = Utils.getSublocales(locale);
-        const locFiles = Utils.getLocFiles(locale, "name.json").map(file => {
+        const locFiles = Utils.getLocFiles(locale, "pseudomap.json").map(file => {
             return join(here, file);
         });
         let locData = {};
@@ -43,11 +43,11 @@ function assemble(options) {
                 locData[loc] = {};
             }
             if (cache[file]) {
-                locData[loc].name = cache[file];
+                locData[loc].pseudomap = cache[file];
             } else if (existsSync(file)) {
                 const data = readFileSync(file, "utf-8");
                 const json = JSON5.parse(data);
-                locData[loc].name = json;
+                locData[loc].pseudomap = json;
                 cache[file] = json;
             }
         });
