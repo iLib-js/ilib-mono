@@ -45,7 +45,7 @@ function scanResources(dir, options) {
     let translations = {};
 
     files.forEach((fileName) => {
-        const subpath = fileName.substring(dir.length+1);
+        const subpath = fileName.substring(path.normalize(dir).length+1);
         const dirName = path.dirname(subpath);
         const base = path.basename(subpath, ".json");
         let locale;

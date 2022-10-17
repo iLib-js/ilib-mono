@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import path from 'path';
+
 import scanResources from '../src/scanres.js';
 
 export const testScanResources = {
@@ -118,5 +120,112 @@ export const testScanResources = {
         });
     },
 
+    testScanResourcesDirNonNormalizedDir: function(test) {
+        test.expect(1);
+        scanResources("./test/testfiles/resources2", {quiet: true}).then(data => {
+            let expected = {
+                "root": {
+                    "strings": {
+                        "a": "b"
+                    },
+                    "foobar": {
+                       "test": "foobar"
+                    },
+                    "ilibmanifest": {
+                        "files": [
+                            "en/strings.json",
+                            "ko/strings.json",
+                            "strings.json"
+                        ]
+                    }
+                },
+                "ko": {
+                    "strings": {
+                        "a": "b ko"
+                    }
+                },
+                "en": {
+                    "strings": {
+                        "a": "b en"
+                    }
+                },
+            };
+            test.deepEqual(data, expected);
+
+            test.done();
+        });
+    },
+
+    testScanResourcesDirNonNormalizedDir2: function(test) {
+        test.expect(1);
+        scanResources("./test/../test/testfiles/resources2", {quiet: true}).then(data => {
+            let expected = {
+                "root": {
+                    "strings": {
+                        "a": "b"
+                    },
+                    "foobar": {
+                       "test": "foobar"
+                    },
+                    "ilibmanifest": {
+                        "files": [
+                            "en/strings.json",
+                            "ko/strings.json",
+                            "strings.json"
+                        ]
+                    }
+                },
+                "ko": {
+                    "strings": {
+                        "a": "b ko"
+                    }
+                },
+                "en": {
+                    "strings": {
+                        "a": "b en"
+                    }
+                },
+            };
+            test.deepEqual(data, expected);
+
+            test.done();
+        });
+    },
+
+    testScanResourcesDirAbsolutePath: function(test) {
+        test.expect(1);
+        scanResources(path.join(process.cwd(), "test/testfiles/resources2"), {quiet: true}).then(data => {
+            let expected = {
+                "root": {
+                    "strings": {
+                        "a": "b"
+                    },
+                    "foobar": {
+                       "test": "foobar"
+                    },
+                    "ilibmanifest": {
+                        "files": [
+                            "en/strings.json",
+                            "ko/strings.json",
+                            "strings.json"
+                        ]
+                    }
+                },
+                "ko": {
+                    "strings": {
+                        "a": "b ko"
+                    }
+                },
+                "en": {
+                    "strings": {
+                        "a": "b en"
+                    }
+                },
+            };
+            test.deepEqual(data, expected);
+
+            test.done();
+        });
+    },
 
 };
