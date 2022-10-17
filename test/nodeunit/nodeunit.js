@@ -1364,10 +1364,10 @@ function objEquiv (a, b) {
     b = pSlice.call(b);
     return _deepEqual(a, b);
   }
+  let ka, kb, key, i;
   try{
-    let ka = _keys(a),
-      kb = _keys(b),
-      key, i;
+    ka = _keys(a);
+    kb = _keys(b);
   } catch (e) {//happens when one is a string literal and the other isn't
     return false;
   }

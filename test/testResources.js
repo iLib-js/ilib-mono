@@ -25,20 +25,52 @@ import { LocaleData } from 'ilib-localedata';
 import { registerLoader } from 'ilib-loader';
 
 import ResBundle from "../src/index.js";
+import { localeList } from './locales.js';
 
 const __dirname = Path.dirname(Path.fileUriToPath(import.meta.url));
 
 let setupCompleted = false;
 
+function arrayEqual(test, array1, array2) {
+    if (!Array.isArray(array1) || !Array.isArray(array2)) {
+        test.fail("not an array");
+    }
+
+    for (let i = 0; i < array1.length; i++) {
+        test.deepEqual(array1[i], array2[i]);
+    }
+}
+
 export const testResources = {
     setUp: function(callback) {
-        LocaleData.clearCache();
+        setLocale("en-US");
         if (!setupCompleted) {
+            LocaleData.addGlobalRoot("test/resources");
+            LocaleData.addGlobalRoot("test/resources2");
+            LocaleData.addGlobalRoot("test/resources3");
             LocaleData.addGlobalRoot("test/resources4");
             ResBundle.clearPseudoLocales();
-            setupCompleted = true;
+            LocaleData.clearCache();
+            if (getPlatform() === "browser") {
+                // does not support sync, so we have to ensure the locale
+                // data is loaded before we can do all these sync tests
+                let promise = Promise.resolve(true);
+                localeList.locales.forEach(locale => {
+                    promise = promise.then(() => {
+                        return LocaleData.ensureLocale(locale);
+                    });
+                });
+                promise.then(() => {
+                    setupCompleted = true;
+                    callback();
+                });
+            } else {
+                setupCompleted = true;
+                callback();
+            }
+        } else {
+            callback();
         }
-        callback();
     },
 
     testResBundleConstructorEmpty: function(test) {
@@ -1769,10 +1801,10 @@ export const testResources = {
     },
 
     testResBundleLocalizeArray: function(test) {
-        test.expect(1);
+        test.expect(3);
         var rb = new ResBundle({locale: "de-DE"});
 
-        test.deepEqual(rb.getStringJS([
+        arrayEqual(test, rb.getStringJS([
             "first string",
             "second string",
             "third string"
@@ -1786,10 +1818,10 @@ export const testResources = {
     },
 
     testResBundleLocalizeArrayUntranslatedElements: function(test) {
-        test.expect(1);
+        test.expect(4);
         var rb = new ResBundle({locale: "de-DE"});
 
-        test.deepEqual(rb.getStringJS([
+        arrayEqual(test, rb.getStringJS([
             "first string",
             "second string",
             "third string",
@@ -1805,10 +1837,10 @@ export const testResources = {
     },
 
     testResBundleLocalizeArrayUndefinedElements: function(test) {
-        test.expect(1);
+        test.expect(3);
         var rb = new ResBundle({locale: "de-DE"});
 
-        test.deepEqual(rb.getStringJS([
+        arrayEqual(test, rb.getStringJS([
             "first string",
             undefined,
             "third string"
@@ -1822,10 +1854,10 @@ export const testResources = {
     },
 
     testResBundleLocalizeArrayEmptyString: function(test) {
-        test.expect(1);
+        test.expect(3);
         var rb = new ResBundle({locale: "de-DE"});
 
-        test.deepEqual(rb.getStringJS([
+        arrayEqual(test, rb.getStringJS([
             "first string",
             "",
             "third string"
@@ -1840,10 +1872,10 @@ export const testResources = {
 
 
     testResBundleLocalizeArraySkipNonStrings: function(test) {
-        test.expect(1);
+        test.expect(7);
         var rb = new ResBundle({locale: "de-DE"});
 
-        test.deepEqual(rb.getStringJS([
+        arrayEqual(test, rb.getStringJS([
             "first string",
             2,
             "second string",
@@ -1865,10 +1897,10 @@ export const testResources = {
     },
 
     testResBundleLocalizeArrayWithFormat: function(test) {
-        test.expect(1);
+        test.expect(3);
         var rb = new ResBundle({locale: "de-DE"});
 
-        test.deepEqual(rb.getString([
+        arrayEqual(test, rb.getString([
             "first string {n}",
             "second string {n}",
             "third string {n}"

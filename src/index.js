@@ -544,8 +544,9 @@ class ResBundle {
      * @param {null|string=} source the source string to make a key out of
      */
     _makeKey(source) {
-        if (!source) return undefined;
-        const key = source.replace(/\s+/gm, ' ');
+        if (!source || (typeof(source) === 'object' && !(source instanceof IString))) return undefined;
+        const s = source.toString();
+        const key = s.replace(/\s+/gm, ' ');
         return (this.type === "xml" || this.type === "html") ? this._unescapeXml(key) : key;
     }
 
@@ -674,11 +675,11 @@ class ResBundle {
 
         if (JSUtils.isArray(source)) {
             return this.getString(source, key, escapeMode).map((str) => {
-               return (str && str instanceof IString) ? str.toString() : str;
+                return (str && str instanceof IString) ? str.toString() : str;
             });
         } else {
             const s = this.getString(source, key, escapeMode);
-            return s ? s.toString() : undefined;
+            return (s && s instanceof IString) ? s.toString() : undefined;
         }
     }
 

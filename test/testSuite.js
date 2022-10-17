@@ -36,6 +36,8 @@ files.forEach(path => {
                 modules[suite] = test[suite];
             }
         });
+    }).catch((e) => {
+        console.log(`Caught error ${e.stack}`);
     });
 });
 

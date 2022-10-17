@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { testresources } from './testresources.js';
-import { testresourcesasync } from './testresourcesasync.js';
+import { testResources } from './testResources.js';
+import { testResourcesAsync } from './testResourcesAsync.js';
 
 export const tests = [
-    testresources,
-    testresourcesasync
+    testResources,
+    testResourcesAsync
 ];

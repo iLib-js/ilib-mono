@@ -22,11 +22,17 @@ import ResBundle from "../src/index.js";
 import IString from "ilib-istring";
 import Locale from "ilib-locale";
 import { Path } from "ilib-common";
+import { LocaleData } from "ilib-localedata";
 
 export const testResourcesAsync = {
     testResBundleAsyncConstructorEmpty: function(test) {
         test.expect(2);
-        ilib.clearPseudoLocales();
+        LocaleData.addGlobalRoot("test/resources");
+        LocaleData.addGlobalRoot("test/resources2");
+        LocaleData.addGlobalRoot("test/resources3");
+        LocaleData.addGlobalRoot("test/resources4");
+        ResBundle.clearPseudoLocales();
+        LocaleData.clearCache();
 
         ResBundle.create({}).then((rb) => {
             test.ok(rb !== null);
@@ -177,7 +183,7 @@ export const testResourcesAsync = {
             locale: "de-DE-SAP",
             name: "foobar"
         }).then((rb) => {
-            test.expect(6);
+            test.expect(4);
             test.ok(typeof(rb) !== "undefined");
 
             test.equal(rb.getString("first string").toString(), "erste String");
@@ -214,8 +220,6 @@ export const testResourcesAsync = {
             test.equal(rb.getString("second string").toString(), "second string");
             test.equal(rb.getString("third string").toString(), "third string");
             test.done();
-
-            onloadcalled = true;
         });
     }
 };
