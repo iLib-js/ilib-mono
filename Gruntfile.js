@@ -47,7 +47,11 @@ module.exports = function(grunt) {
                         }
                     }
                 ]],
-                plugins: ["add-module-exports"],
+                plugins: [
+                    "transform-import-meta",
+                    "add-module-exports"
+                ],
+                comments: debug,
                 compact: !debug,
                 minified: !debug
             },
