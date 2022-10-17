@@ -25,9 +25,9 @@ export const testScanResources = {
         scanResources("test/testfiles/resources", {quiet: true}).then(data => {
             let expected = {
                 "root": {
-	                "strings": {
-	                    "a": "b"
-	                }
+                    "strings": {
+                        "a": "b"
+                    }
                 },
                 "de": {
                     "strings": {
@@ -81,5 +81,42 @@ export const testScanResources = {
             test.done();
         });
     },
+
+    testScanResourcesDirWithNonStrings: function(test) {
+        test.expect(1);
+        scanResources("test/testfiles/resources2", {quiet: true}).then(data => {
+            let expected = {
+                "root": {
+                    "strings": {
+                        "a": "b"
+                    },
+                    "foobar": {
+                       "test": "foobar"
+                    },
+                    "ilibmanifest": {
+                        "files": [
+                            "en/strings.json",
+                            "ko/strings.json",
+                            "strings.json"
+                        ]
+                    }
+                },
+                "ko": {
+                    "strings": {
+                        "a": "b ko"
+                    }
+                },
+                "en": {
+                    "strings": {
+                        "a": "b en"
+                    }
+                },
+            };
+            test.deepEqual(data, expected);
+
+            test.done();
+        });
+    },
+
 
 };
