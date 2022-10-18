@@ -452,7 +452,7 @@ class LocaleData {
         // for async operation, try loading the assembled locale data file first
         // so that we don't have to load a bunch of individual files
         let promise = (!sync && !this.cache.isLoaded(`${loc.getSpec()}.js`)) ?
-            LocaleData.ensureLocale(loc, [this.path]) : 
+            LocaleData.ensureLocale(loc, [this.path]) :
             Promise.resolve(true);
 
         // then check how to load it
