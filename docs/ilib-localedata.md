@@ -404,9 +404,9 @@ asynchronous mode, because the locale data they need is already cached.
         * [.addGlobalRoot(the)](#LocaleData.addGlobalRoot)
         * [.removeGlobalRoot(the)](#LocaleData.removeGlobalRoot)
         * [.clearGlobalRoots()](#LocaleData.clearGlobalRoots)
-        * [.ensureLocale(locale)](#LocaleData.ensureLocale) ⇒ <code>Promise</code>
+        * [.ensureLocale(locale, [otherRoots])](#LocaleData.ensureLocale) ⇒ <code>Promise</code>
         * [.checkCache(packageName, locale, basename)](#LocaleData.checkCache) ⇒ <code>boolean</code>
-        * [.cacheData(data)](#LocaleData.cacheData)
+        * [.cacheData(data, root)](#LocaleData.cacheData)
         * [.clearCache()](#LocaleData.clearCache)
 
 
@@ -483,11 +483,15 @@ The parameters can specify any of the following properties:<p>
 or have arrays replace each other. If true, arrays in child objects replace the arrays in parent
 objects. When false, the arrays in child objects are concatenated with the arrays in parent objects.
 <li><i>returnOne</i> - return only the first file found. Do not merge many locale data files into one.
+Default is "false".
 <li><i>sync</i> - boolean. Whether or not to load the data synchronously
 <li><i>mostSpecific</i> - boolean. When true, only the most specific locale data is returned. Multiple
 locale data files are not merged into one. This is similar to returnOne except this one retuns the last
 file, which is specific to the full locale, rather than the first one found which is specific to the
-least specific locale (often the root).
+least specific locale (often the root). Default is "false".
+<li><i>crossRoots</i> - boolean. When true, merge the locale data across the various roots. When false,
+only the first data found for a locale is found, and the data for the same locale in other roots is
+ignored. Default is "false" if not specified.
 </ul>
 
 **Kind**: instance method of [<code>LocaleData</code>](#LocaleData)  
@@ -569,7 +573,7 @@ Clear the list of roots shared by all instances of LocaleData.
 
 <a name="LocaleData.ensureLocale"></a>
 
-### LocaleData.ensureLocale(locale) ⇒ <code>Promise</code>
+### LocaleData.ensureLocale(locale, [otherRoots]) ⇒ <code>Promise</code>
 Ensure that the data for a particular locale is loaded into the
 cache so that it is available for future synchronous use.<p>
 
@@ -660,6 +664,7 @@ false if it could be found
 | Param | Type | Description |
 | --- | --- | --- |
 | locale | <code>Locale</code> \| <code>string</code> | the Locale object or a string containing the locale spec |
+| [otherRoots] | <code>Array.&lt;string&gt;</code> | an array of extra roots to search (other than the global roots) or undefined for no other roots |
 
 
 * * *
@@ -707,7 +712,7 @@ using a call to `cacheData`.
 
 <a name="LocaleData.cacheData"></a>
 
-### LocaleData.cacheData(data)
+### LocaleData.cacheData(data, root)
 The prepopulated data should have the following structure:
 
 <pre>
@@ -738,6 +743,7 @@ names at the same time. For example, it may contain data about phone number pars
 | Param | Type | Description |
 | --- | --- | --- |
 | data | <code>Object</code> | the locale date in the above format |
+| root | <code>string</code> | the root from which this data was loaded |
 
 
 * * *
