@@ -381,6 +381,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.4
+
+* use a babel plugin to remove import.meta from the transpiled code for
+  node < v10. Previously, this prevented this package from running properly
+  on node v10
+
 ### v1.0.3
 
 * converted a static initializer into just regular const value that is

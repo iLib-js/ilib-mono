@@ -38,9 +38,19 @@ module.exports = function(grunt) {
         babel: {
             options: {
                 sourceMap: true,
-                presets: [
-                    '@babel/preset-env'
+                presets: [[
+                    '@babel/preset-env',
+                    {
+                        targets: {
+                            node: "10",
+                            browsers: "cover 99.5%"
+                        }
+                    }
+                ]],
+                plugins: [
+                    "transform-import-meta"
                 ],
+                comments: debug,
                 compact: !debug,
                 minified: !debug
             },
@@ -48,7 +58,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src',
-                    src: ['*.js'],
+                    src: ['**/*.js'],
                     dest: 'lib/',
                     ext: '.js'
                 }]
