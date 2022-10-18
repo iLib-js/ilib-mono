@@ -80,7 +80,8 @@ const name = new Name("김인환", {locale: "ko-KR"});
 Or if you are using older Javascript:
 
 ~~~~~~
-var Name = require("ilib-name");
+var NamePkg = require("ilib-name");
+var Name = NamePkg.Name;
 
 var name = new Name("김인환", {locale: "ko-KR"});
 ~~~~~~
@@ -110,7 +111,8 @@ const name = new Name("Dr. John James Smith, Jr.", {locale: "ko-KR"});
 or in older Javascript:
 
 ~~~~~~
-var Name = require("ilib-name");
+var NamePkg = require("ilib-name");
+var Name = NamePkg.Name;
 
 var name = new Name("Dr. John James Smith, Jr.", {locale: "ko-KR"});
 ~~~~~~
@@ -163,8 +165,9 @@ const formatted = nf.format(name);
 or in older Javascript:
 
 ~~~~~~
-var Name = require("ilib-name");
-var NameFmt = Name.NameFmt;
+var NamePkg = require("ilib-name");
+var Name = NamePkg.Name;
+var NameFmt = NamePkg.NameFmt;
 
 // presumably, these parts came from Outlook or some such service
 var name = new Name({
@@ -204,7 +207,8 @@ const formatted = nf.format(name)
 Or in older Javascript:
 
 ~~~~~~
-var Name = require("ilib-name");
+var NamePkg = require("ilib-name");
+var Name = NamePkg.Name;
 var NameFmt = Name.NameFmt;
 
 // presumably, these parts came from Outlook or some such service
@@ -233,7 +237,17 @@ There are two methods of the Name class you can use.
 First, you can get the head word directly:
 
 ~~~~~~
-var Name = require("ilib/lib/Name.js");
+import { Name } from "ilib-name";
+
+var name = new Name("Ludwig von Beethoven", {locale: "de-AT"});
+var headname = name.getHeadFamilyName();
+~~~~~~
+
+or in older Javascript:
+
+~~~~~~
+var NamePkg = require("ilib-name");
+var Name = NamePkg.Name;
 
 var name = new Name("Ludwig von Beethoven", {locale: "de-AT"});
 var headname = name.getHeadFamilyName();
@@ -244,6 +258,15 @@ Now the variable "headname" will contain:
 > Beethoven
 
 Alternately, you can use the method "getSortFamilyName" to get a re-ordered version of the family name that you can use directly for sorting.
+
+~~~~~~
+import { Name } from "ilib-name";
+
+var name = new Name("Pieter van der Veen", {locale: "nl-NL"});
+var sortname = name.getSortFamilyName();
+~~~~~~
+
+or in older Javascript:
 
 ~~~~~~
 var Name = require("ilib/lib/Name.js");
