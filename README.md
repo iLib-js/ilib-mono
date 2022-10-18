@@ -250,6 +250,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.1
+
+* remove references to import.meta in the transpiled code so that it
+  runs properly when you require() this package
+
 ### v1.0.0
 
 - initial version

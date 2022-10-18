@@ -48,6 +48,7 @@ module.exports = function(grunt) {
                     }
                 ]],
                 plugins: [
+                    "transform-import-meta",
                     "add-module-exports",
                     "@babel/plugin-transform-regenerator"
                 ],
