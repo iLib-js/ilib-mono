@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import suites from './testSuiteFiles.mjs';
+import suites from './testSuiteFiles.js';
 
 import nodeunit from 'nodeunit';
 import assert from 'nodeunit/lib/assert.js';

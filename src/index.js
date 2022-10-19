@@ -22,15 +22,16 @@
 
 import OptionsParser from 'options-parser';
 import Locale from 'ilib-locale';
-import { JSUtils } from 'ilib-common';
+import { JSUtils, Utils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
 import mkdirp from 'mkdirp';
 import json5 from 'json5';
 
-import walk from './walk.mjs';
-import scan from './scan.mjs';
-import scanModule from './scanmodule.mjs';
+import walk from './walk.js';
+import scan from './scan.js';
+import scanModule from './scanmodule.js';
+import scanResources from './scanres.js';
 
 const optionConfig = {
     help: {
@@ -49,7 +50,7 @@ const optionConfig = {
     format: {
         short: "f",
         "default": "js",
-        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'."
+        help: "What format do you want the output data to be in. Choices are 'cjs' for a commonjs file, 'js' for an ESM module, or 'json' for a plain json file. Default is 'js'. Note: ESM modules cannot be loaded synchronously with ilib-localedata."
     },
     locales: {
         short: "l",
@@ -63,12 +64,17 @@ const optionConfig = {
     module: {
         short: "m",
         multi: true,
-        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add."
+        help: "Explicitly add the locale data for a module that is not otherwise mentioned in the source code. Parameter gives a relative path to the module, including the leading './'. Typically, this would be in ./node_modules, but it could be anywhere on disk. This option may be specified multiple times, once for each module to add. VAL is the name of the module to add."
     },
     quiet: {
         short: "q",
         flag: true,
         help: "Produce no progress output during the run, except for error messages."
+    },
+    resources: {
+        short: "r",
+        multi: true,
+        help: "Include translated resource files in the output files such that they can be loaded with ilib-resbundle. The resource files should come from ilib's loctool or other such localization tool which produces a set of translated resource files. VAL is the path to the root of a resource file tree."
     }
 };
 
@@ -162,14 +168,40 @@ ilibModules.forEach((module) => {
     if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
     promise = promise.then(result => {
         return scanModule(module, options.opt).then(data => {
-            if (data) {
-                localeData = JSUtils.merge(localeData, data);
+            if (data && typeof(data) === "object") {
+                // merge in the sublocales separately
+                for (const sublocale in data) {
+                    localeData = JSUtils.merge(localeData, data[sublocale], true);
+                }
                 return true;
             }
             return result;
         });
     });
 });
+
+
+if (!options.opt.quiet) {
+    promise.then(result => {
+        console.log(`\n\nScanning directories for resource files`);
+    });
+}
+
+if (options.opt.resources) {
+    options.opt.resources.forEach(resDir => {
+        promise = promise.then(result => {
+            if (!options.opt.quiet) console.log(`  ${resDir} ...`);
+            return scanResources(resDir, options).then(data => {
+                // console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
+                if (data) {
+                    localeData = JSUtils.merge(localeData, data, true);
+                    return true;
+                }
+                return result;
+            });
+        });
+    });
+}
 
 const spaces = "                                                                                                                 ";
 function indent(str, howMany) {
@@ -179,14 +211,23 @@ function indent(str, howMany) {
 };
 
 promise.then(result => {
-    //console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
+    // console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
 
     let hadOutput = false;
     if (result) {
         if (!options.opt.quiet) console.log("\n\nWriting out data...");
 
-        for (let locale in localeData) {
-            const contents = localeData[locale];
+        for (let i = 0; i < options.opt.locales.length; i++) {
+            const locale = options.opt.locales[i];
+            // assemble all the sublocales into a single file
+            const sublocales = Utils.getSublocales(locale);
+            const contents = {};
+            sublocales.forEach((sublocale) => {
+                if (!JSUtils.isEmpty(localeData[sublocale])) {
+                    contents[sublocale] = localeData[sublocale];
+                }
+            });
+
             const outputName = path.join(outputPath, `${locale}.js`);
             let contentStr = options.opt.compressed ?
                 JSON.stringify(contents) :
