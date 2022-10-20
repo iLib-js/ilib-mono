@@ -93,7 +93,7 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^4.0.0",
         "grunt-contrib-uglify": "^5.2.2",
-        "ilib-assemble": "file:../ilib-assemble/ilib-assemble-1.2.0.tgz",
+        "ilib-assemble": "^1.2.0",
         "ilib-data-utils": "^1.1.0",
         "jsdoc": "^3.6.11",
         "jsdoc-to-markdown": "^7.1.1",
@@ -110,9 +110,9 @@
         "ilib-common": "^1.1.3",
         "ilib-ctype": "^1.1.0",
         "ilib-env": "^1.3.2",
-        "ilib-istring": "file:../ilib-istring/ilib-istring-1.0.0.tgz",
+        "ilib-istring": "^1.0.1",
         "ilib-locale": "^1.2.2",
-        "ilib-localedata": "file:../ilib-localedata/ilib-localedata-1.5.0.tgz",
+        "ilib-localedata": "^1.5.0",
         "ilib-localeinfo": "^1.0.2",
         "json5": "^2.2.1"
     }
