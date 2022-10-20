@@ -20,5 +20,6 @@
 export const files = [
     "testDataCache.js",
     "testLocaleData.js",
-    "testGetLocaleData.js"
+    "testGetLocaleData.js",
+    "testLocaleDataNode.js"
 ];

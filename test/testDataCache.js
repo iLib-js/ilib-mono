@@ -47,7 +47,7 @@ export const testDataCache = {
         test.expect(1);
         let cache = DataCache.getDataCache();
 
-        const data = cache.getData("basename", new Locale("en-US"));
+        const data = cache.getData("root", "basename", new Locale("en-US"));
 
         // undefined = no cached information exists
         test.equal(typeof(data), 'undefined');
@@ -59,9 +59,9 @@ export const testDataCache = {
         test.expect(2);
         let cache = DataCache.getDataCache();
 
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        const data = cache.getData("basename", new Locale("en-US"));
+        const data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { x: "string" });
@@ -73,14 +73,14 @@ export const testDataCache = {
         test.expect(2);
         let cache = DataCache.getDataCache();
 
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        let data = cache.getData("basename", new Locale("en-US"));
+        let data = cache.getData("root", "basename", new Locale("en-US"));
         test.ok(data);
 
         cache.clearData();
 
-        data = cache.getData("basename", new Locale("en-US"));
+        data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.ok(!data);
 
@@ -93,29 +93,29 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
-        cache.storeData("basename", new Locale("da-DK"), { x: "string" });
-        cache.storeData("basename", new Locale("ja"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("da-DK"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("ja"), { x: "string" });
         test.equal(cache.size(), 3);
 
-        let data = cache.getData("basename", new Locale("en-US"));
+        let data = cache.getData("root", "basename", new Locale("en-US"));
         test.ok(data);
         test.deepEqual(data, { x: "string" });
-        data = cache.getData("basename", new Locale("da-DK"));
+        data = cache.getData("root", "basename", new Locale("da-DK"));
         test.ok(data);
         test.deepEqual(data, { x: "string" });
-        data = cache.getData("basename", new Locale("ja"));
+        data = cache.getData("root", "basename", new Locale("ja"));
         test.ok(data);
         test.deepEqual(data, { x: "string" });
 
         cache.clearData();
         test.equal(cache.size(), 0);
 
-        data = cache.getData("basename", new Locale("en-US"));
+        data = cache.getData("root", "basename", new Locale("en-US"));
         test.equal(typeof(data), 'undefined');
-        data = cache.getData("basename", new Locale("da-DK"));
+        data = cache.getData("root", "basename", new Locale("da-DK"));
         test.equal(typeof(data), 'undefined');
-        data = cache.getData("basename", new Locale("ja"));
+        data = cache.getData("root", "basename", new Locale("ja"));
         test.equal(typeof(data), 'undefined');
 
         test.done();
@@ -127,9 +127,9 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
-        cache.storeData("basename", new Locale("da-DK"), { x: "string" });
-        cache.storeData("basename", new Locale("ja"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("da-DK"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("ja"), { x: "string" });
         test.equal(cache.size(), 3);
 
         cache.clearData();
@@ -143,15 +143,15 @@ export const testDataCache = {
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
-        cache.storeData("basename", new Locale("en"), { y: "string1" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en"), { y: "string1" });
 
-        let data = cache.getData("basename", new Locale("en-US"));
+        let data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { x: "string" });
 
-        data = cache.getData("basename", new Locale("en"));
+        data = cache.getData("root", "basename", new Locale("en"));
 
         test.ok(data);
         test.deepEqual(data, { y: "string1" });
@@ -164,15 +164,36 @@ export const testDataCache = {
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.storeData("basename1", new Locale("en-US"), { x: "string" });
-        cache.storeData("basename2", new Locale("en-US"), { y: "string1" });
+        cache.storeData("root", "basename1", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename2", new Locale("en-US"), { y: "string1" });
 
-        let data = cache.getData("basename1", new Locale("en-US"));
+        let data = cache.getData("root", "basename1", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { x: "string" });
 
-        data = cache.getData("basename2", new Locale("en-US"));
+        data = cache.getData("root", "basename2", new Locale("en-US"));
+
+        test.ok(data);
+        test.deepEqual(data, { y: "string1" });
+
+        test.done();
+    },
+
+    testDataCacheStoreDataDifferentRoots: function(test) {
+        test.expect(4);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+
+        cache.storeData("root1", "basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root2", "basename", new Locale("en-US"), { y: "string1" });
+
+        let data = cache.getData("root1", "basename", new Locale("en-US"));
+
+        test.ok(data);
+        test.deepEqual(data, { x: "string" });
+
+        data = cache.getData("root2", "basename", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { y: "string1" });
@@ -186,10 +207,10 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData(undefined, new Locale("en-US"), { x: "string" });
+        cache.storeData("root", undefined, new Locale("en-US"), { x: "string" });
         test.equal(cache.size(), 0);
 
-        const data = cache.getData(undefined, new Locale("en-US"));
+        const data = cache.getData("root", undefined, new Locale("en-US"));
 
         test.equal(typeof(data), 'undefined');
 
@@ -203,10 +224,10 @@ export const testDataCache = {
 
         test.equal(cache.size(), 0);
         // empty locale = root
-        cache.storeData("basename", undefined, { x: "string" });
+        cache.storeData("root", "basename", undefined, { x: "string" });
         test.equal(cache.size(), 1);
 
-        const data = cache.getData("basename", undefined);
+        const data = cache.getData("root", "basename", undefined);
 
         test.ok(data);
         test.deepEqual(data, { x: "string" });
@@ -219,12 +240,12 @@ export const testDataCache = {
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.storeData("basename", new Locale("en-US"), null);
+        cache.storeData("root", "basename", new Locale("en-US"), null);
 
-        const data = cache.getData("basename", new Locale("en-US"));
+        const data = cache.getData("root", "basename", new Locale("en-US"));
 
         // null = files for this locale do not exist
-        test.ok(typeof(data) != 'undefined');
+        test.ok(typeof(data) !== 'undefined');
         test.deepEqual(data, null);
 
         test.done();
@@ -236,9 +257,9 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
         test.equal(cache.size(), 1);
-        cache.storeData("basename", new Locale("en-CA"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-CA"), { x: "string" });
         test.equal(cache.size(), 2);
 
         test.done();
@@ -249,16 +270,16 @@ export const testDataCache = {
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        let data = cache.getData("basename", new Locale("en-US"));
+        let data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { x: "string" });
 
-        cache.storeData("basename", new Locale("en-US"), { z: true });
+        cache.storeData("root", "basename", new Locale("en-US"), { z: true });
 
-        data = cache.getData("basename", new Locale("en-US"));
+        data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { z: true });
@@ -272,11 +293,11 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         test.equal(cache.size(), 1);
 
-        cache.storeData("basename", new Locale("en-US"), { z: true });
+        cache.storeData("root", "basename", new Locale("en-US"), { z: true });
 
         // overrides do not increase the size
         test.equal(cache.size(), 1);
@@ -289,16 +310,16 @@ export const testDataCache = {
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        let data = cache.getData("basename", new Locale("en-US"));
+        let data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.ok(data);
         test.deepEqual(data, { x: "string" });
 
-        cache.removeData("basename", new Locale("en-US"));
+        cache.removeData("root", "basename", new Locale("en-US"));
 
-        data = cache.getData("basename", new Locale("en-US"));
+        data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.equal(typeof(data), 'undefined');
 
@@ -311,11 +332,11 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         test.equal(cache.size(), 1);
 
-        cache.removeData("basename", new Locale("en-US"));
+        cache.removeData("root", "basename", new Locale("en-US"));
 
         test.equal(cache.size(), 0);
 
@@ -328,11 +349,11 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         test.equal(cache.size(), 1);
 
-        cache.removeData(undefined, new Locale("en-US"));
+        cache.removeData("root", undefined, new Locale("en-US"));
 
         test.equal(cache.size(), 1);
 
@@ -345,11 +366,11 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", new Locale("en-US"), { x: "string" });
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         test.equal(cache.size(), 1);
 
-        cache.removeData("basename");
+        cache.removeData("root", "basename");
 
         test.equal(cache.size(), 1);
 
@@ -362,18 +383,18 @@ export const testDataCache = {
         cache.clearData();
 
         test.equal(cache.size(), 0);
-        cache.storeData("basename", undefined, { x: "string" });
+        cache.storeData("root", "basename", undefined, { x: "string" });
 
         test.equal(cache.size(), 1);
-        let data = cache.getData("basename", undefined);
+        let data = cache.getData("root", "basename", undefined);
 
         test.deepEqual(data, { x: 'string' });
 
-        cache.removeData("basename");
+        cache.removeData("root", "basename");
 
         test.equal(cache.size(), 0);
 
-        data = cache.getData("basename", new Locale("en-US"));
+        data = cache.getData("root", "basename", new Locale("en-US"));
 
         test.equal(typeof(data), 'undefined');
 

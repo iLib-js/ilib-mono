@@ -20,11 +20,11 @@
 import { testDataCache } from './testDataCache.js';
 import { testGetLocaleData } from './testGetLocaleData.js';
 import { testLocaleData } from './testLocaleData.js';
-import { testLocaleDataSync } from './testLocaleDataSync.js';
+import { testLocaleDataWeb } from './testLocaleDataWeb.js';
 
 export const tests = [
     testDataCache,
     testGetLocaleData,
     testLocaleData,
-    testLocaleDataSync
+    testLocaleDataWeb
 ];
