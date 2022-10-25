@@ -1,6 +1,6 @@
 /*
  * testaddress_LV.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_LV = {
     testParseAddressLVNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas iela 43, Apt 1\nDAUGAVPILS, LV-5417\nLATVIA", {locale: 'lv-LV'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas iela 43, Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -51,11 +51,11 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testParseAddressLVNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas iela 43, Apt 1\nDAUGAVPILS\nLATVIA", {locale: 'lv-LV'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas iela 43, Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -65,11 +65,11 @@ export const testaddress_LV = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressLVNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas iela 43, Apt 1\nDAUGAVPILS, LV-5417", {locale: 'lv-LV'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas iela 43, Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -79,7 +79,7 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testParseAddressLVManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas\niela 43\nApt 1\n\nDAUGAVPILS\n\nLV-5417\nLATVIA\n\n\n", {locale: 'lv-LV'});
@@ -92,11 +92,11 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testParseAddressLVOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas , iela 43 , Apt 1 , DAUGAVPILS , LV-5417 , LATVIA", {locale: 'lv-LV'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas, iela 43, Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -106,11 +106,11 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testParseAddressLVSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tIgors Biedriņš Aglonas\t\t\riela 43\t\t\rApt 1\n\tDAUGAVPILS\n\tLV-5417\n\tLATVIA\n\n\n", {locale: 'lv-LV'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas iela 43 Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -120,11 +120,11 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testParseAddressLVNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas iela 43, Apt 1 DAUGAVPILS, LV-5417 LATVIA", {locale: 'lv-LV'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas iela 43, Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -134,13 +134,13 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testParseAddressLVFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Igors Biedriņš Aglonas iela 43, Apt 1\nDAUGAVPILS, LV-5417\nLATVIA", {locale: 'en-US'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Igors Biedriņš Aglonas iela 43, Apt 1");
         test.equal(parsedAddress.locality, "DAUGAVPILS");
@@ -150,7 +150,7 @@ export const testaddress_LV = {
         test.equal(parsedAddress.countryCode, "LV");
         test.done();
     },
-    
+
     testFormatAddressLV: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,13 +160,13 @@ export const testaddress_LV = {
             country: "LATVIA",
             countryCode: "LV"
         }, {locale: 'lv-LV'});
-        
+
         var expected = "Igors Biedriņš Aglonas iela 43, Apt 1\nDAUGAVPILS, LV-5417\nLATVIA";
         var formatter = new AddressFmt({locale: 'lv-LV'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressLVFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -176,11 +176,11 @@ export const testaddress_LV = {
             country: "LATVIA",
             countryCode: "LV"
         }, {locale: 'en-US'});
-        
+
         var expected = "Igors Biedriņš Aglonas iela 43, Apt 1\nDAUGAVPILS, LV-5417\nLATVIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

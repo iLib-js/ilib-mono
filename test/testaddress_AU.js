@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_AU = {
     testParseAUAddressNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Level 5, 48 Pirrama Road,\nPyrmont, NSW 2009\nAustralia", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Level 5, 48 Pirrama Road");
         test.equal(parsedAddress.locality, "Pyrmont");
@@ -51,11 +51,11 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testParseAUAddressNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Canberra Nara Centre,\n1 Constitution Ave\nCanberra City, Australia", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Canberra Nara Centre, 1 Constitution Ave");
         test.equal(parsedAddress.locality, "Canberra City");
@@ -65,11 +65,11 @@ export const testaddress_AU = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAUAddressNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Trevarrick Rd\nSevenhill SA 5453", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Trevarrick Rd");
         test.equal(parsedAddress.locality, "Sevenhill");
@@ -79,11 +79,11 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testParseAUAddressManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Dept of Treasury\nLangton Crs\nParkes\nACT 2600\nAustralia\n\n\n", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Dept of Treasury, Langton Crs");
         test.equal(parsedAddress.locality, "Parkes");
@@ -93,11 +93,11 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testParseAUAddressOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("630 Beaufort St, Mt Lawley, WA 6050, Australia", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "630 Beaufort St");
         test.equal(parsedAddress.locality, "Mt Lawley");
@@ -107,11 +107,11 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testParseAUAddressSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tPiccadilly\t\t\r  Lot 6B Spring \r\r\tGully Rd\nPiccadilly \n\t\rSA \r\t\n5151\nAustralia    \n\n\n", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Piccadilly Lot 6B Spring Gully Rd");
         test.equal(parsedAddress.locality, "Piccadilly");
@@ -121,11 +121,11 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testParseAUAddressNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("630 Beaufort St Mt Lawley WA 6050 Australia", {locale: 'en-AU'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "630 Beaufort St");
         test.equal(parsedAddress.locality, "Mt Lawley");
@@ -135,13 +135,13 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testParseAUAddressFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Shp1/ Wanneroo Rd\nLandsdale WA 6065\nAustralia", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Shp1/ Wanneroo Rd");
         test.equal(parsedAddress.locality, "Landsdale");
@@ -151,7 +151,7 @@ export const testaddress_AU = {
         test.equal(parsedAddress.countryCode, "AU");
         test.done();
     },
-    
+
     testFormatAddressAU: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -162,13 +162,13 @@ export const testaddress_AU = {
             country: "Australia",
             countryCode: "AU"
         }, {locale: 'en-AU'});
-        
+
         var expected = "Shp1/ Wanneroo Rd\nLandsdale WA 6065\nAustralia";
         var formatter = new AddressFmt({locale: 'en-AU'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressAUFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -179,11 +179,11 @@ export const testaddress_AU = {
             country: "Australia",
             countryCode: "AU"
         }, {locale: 'en-US'});
-        
+
         var expected = "Shp1/ Wanneroo Rd\nLandsdale WA 6065\nAustralia";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_HK = {
     testParseAddressHKHKLatinNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Tower 1, Times Square\n1 Matheson Street\nRoom 1706\nCauseway Bay, Hong Kong", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Tower 1, Times Square, 1 Matheson Street, Room 1706");
         test.equal(parsedAddress.locality, "Causeway Bay");
@@ -51,11 +51,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKLatinNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Tower 1, Times Square\n1 Matheson Street\nRoom 1706\nCauseway Bay", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Tower 1, Times Square, 1 Matheson Street, Room 1706");
         test.equal(parsedAddress.locality, "Causeway Bay");
@@ -65,11 +65,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKLatinDouble: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Room 1301-1302, 13/F, Block A, Sea View Estate,\n2 Watson Road, Hong Kong\nHong Kong", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Room 1301-1302, 13/F, Block A, Sea View Estate, 2 Watson Road");
         test.equal(parsedAddress.locality, "Hong Kong");
@@ -79,11 +79,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKAsianNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("中國香港特別行政區太古城英皇道1111號太古城中心1期19字樓", {locale: 'zh-Hant-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "英皇道1111號太古城中心1期19字樓");
         test.equal(parsedAddress.locality, "太古城");
@@ -93,11 +93,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKAsianNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("太古城英皇道1111號太古城中心1期19字樓", {locale: 'zh-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "英皇道1111號太古城中心1期19字樓");
         test.equal(parsedAddress.locality, "太古城");
@@ -107,14 +107,14 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     /*
     // for DFISH-20855
     testParseAddressHKHKMixed: function(test) {
         test.expect(7);
         // in Hong Kong, it is more likely to be mixed like this
         var parsedAddress = new Address("Hong Kong太古城英皇道1111號太古城中心1期19字樓", {locale: 'zh-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "英皇道1111號太古城中心1期19字樓");
         test.equal(parsedAddress.locality, "太古城");
@@ -125,11 +125,11 @@ export const testaddress_HK = {
         test.done();
     },
     */
-    
+
     testParseAddressHKHKOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Room 1403-5, 14/F, Chinachem Exchange Square, 1 Hoi Wan Street, Quarry Bay, Hong Kong", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Room 1403-5, 14/F, Chinachem Exchange Square, 1 Hoi Wan Street");
         test.equal(parsedAddress.locality, "Quarry Bay");
@@ -139,11 +139,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\t10/F PCCW Tower\n\t\nTaikoo Place\n \r\n\r\r979 King's Road\n    Quarry Bay\r\r\n    Hong Kong\t\n\n\n", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "10/F PCCW Tower, Taikoo Place, 979 King's Road");
         test.equal(parsedAddress.locality, "Quarry Bay");
@@ -153,11 +153,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Tower 1 Times Square 1 Matheson Street Room 1706 Causeway Bay Hong Kong", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Tower 1 Times Square 1 Matheson Street Room 1706");
         test.equal(parsedAddress.locality, "Causeway Bay");
@@ -167,11 +167,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKSpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Suite 19, 1st Floor, Tǎi Gù Chung Zhong Shìn, Hăo 1111, In Huang Street, Dàpǔ Xīn Shìzhèn, Hong Kong", {locale: 'en-HK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Suite 19, 1st Floor, Tǎi Gù Chung Zhong Shìn, Hăo 1111, In Huang Street");
         test.equal(parsedAddress.locality, "Dàpǔ Xīn Shìzhèn");
@@ -181,11 +181,11 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testParseAddressHKHKFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Tower 1, Times Square\n1 Matheson Street\nRoom 1706\nCauseway Bay, Hong Kong", {locale: 'en-US'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Tower 1, Times Square, 1 Matheson Street, Room 1706");
         test.equal(parsedAddress.locality, "Causeway Bay");
@@ -195,7 +195,7 @@ export const testaddress_HK = {
         test.equal(parsedAddress.countryCode, "HK");
         test.done();
     },
-    
+
     testFormatAddressHKHKLatin: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -205,13 +205,13 @@ export const testaddress_HK = {
             countryCode: "HK",
             format: "latin"
         }, {locale: 'en-HK'});
-        
+
         var expected = "Tower 1, Times Square, 1 Matheson Street, Room 1706\nCauseway Bay\nHong Kong";
         var formatter = new AddressFmt({locale: 'en-HK'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressHKHKAsian: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -221,13 +221,13 @@ export const testaddress_HK = {
             countryCode: "HK",
             format: "asian"
         }, {locale: 'en-HK'});
-        
+
         var expected = "香港太古城英皇道1111號太古城中心1期19字樓";
         var formatter = new AddressFmt({locale: 'en-HK'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressHKHKFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -237,11 +237,11 @@ export const testaddress_HK = {
             countryCode: "HK",
             format: "latin"
         }, {locale: 'en-US'});
-        
+
         var expected = "Tower 1, Times Square, 1 Matheson Street, Room 1706\nCauseway Bay\nHong Kong";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

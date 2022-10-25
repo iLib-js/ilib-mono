@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_BJ = {
     testParseAddressBJNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000, COTONOU, BENIN", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -51,11 +51,11 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testParseAddressBJNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("BP 1000, COTONOU, BENIN", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -65,11 +65,11 @@ export const testaddress_BJ = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressBJManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000\nCOTONOU\nBENIN", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -79,11 +79,11 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testParseAddressBJOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000, COTONOU, BENIN", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -93,11 +93,11 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testParseAddressBJSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000  \n\t\n COTONOU\t\n\n BENIN  \n  \t\t\t", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -107,11 +107,11 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testParseAddressBJNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000 COTONOU BENIN", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -121,11 +121,11 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testParseAddressBJSpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000, COTONOU, BENIN", {locale: 'fr-BJ'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -135,13 +135,13 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testParseAddressBJFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("03 BP 1000, COTONOU, BENIN", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "BP 1000");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -151,7 +151,7 @@ export const testaddress_BJ = {
         test.equal(parsedAddress.countryCode, "BJ");
         test.done();
     },
-    
+
     testFormatAddressBJ: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -161,13 +161,13 @@ export const testaddress_BJ = {
             country: "BENIN",
             countryCode: "BJ"
         }, {locale: 'fr-BJ'});
-        
+
         var expected = "03 BP 1000\nCOTONOU\nBENIN";
         var formatter = new AddressFmt({locale: 'fr-BJ'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressBJFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -177,11 +177,11 @@ export const testaddress_BJ = {
             locality: "COTONOU",
             countryCode: "BJ"
         }, {locale: 'en-US'});
-        
+
         var expected = "03 BP 1000\nCOTONOU\nBENIN";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

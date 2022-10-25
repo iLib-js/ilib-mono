@@ -1,6 +1,6 @@
 /*
  * testaddress_GH.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_GH = {
     testParseAddressGHNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah P.O. Box 1234\nACCRA\nGHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. John Mensah P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -51,11 +51,11 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testParseAddressGHNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah P.O. Box 1234\nACCRA\nGHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. John Mensah P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -65,11 +65,11 @@ export const testaddress_GH = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressGHNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah P.O. Box 1234\nACCRA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. John Mensah P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -79,11 +79,11 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testParseAddressGHManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah\nP.O. Box 1234\nACCRA\nGHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Mr. John Mensah, P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -93,11 +93,11 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testParseAddressGHOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah , P.O. Box 1234 , ACCRA , GHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Mr. John Mensah, P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -107,11 +107,11 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testParseAddressGHSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah\n\n\t\r\t\t\rP.O. Box 1234\r\r\n\nACCRA\t\r\n\t\rGHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Mr. John Mensah, P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -121,11 +121,11 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testParseAddressGHNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah P.O. Box 1234 ACCRA GHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. John Mensah P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -135,11 +135,11 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testParseAddressGHFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. John Mensah P.O. Box 1234\nACCRA\nGHANA", {locale: 'en-GH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. John Mensah P.O. Box 1234");
         test.equal(parsedAddress.locality, "ACCRA");
@@ -149,7 +149,7 @@ export const testaddress_GH = {
         test.equal(parsedAddress.countryCode, "GH");
         test.done();
     },
-    
+
     testFormatAddressGH: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -159,13 +159,13 @@ export const testaddress_GH = {
             country: "GHANA",
             countryCode: "GH"
         }, {locale: 'en-GH'});
-        
+
         var expected = "Mr. John Mensah P.O. Box 1234\nACCRA\nGHANA";
         var formatter = new AddressFmt({locale: 'en-GH'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressGHFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -175,11 +175,11 @@ export const testaddress_GH = {
             country: "GHANA",
             countryCode: "GH"
         }, {locale: 'en-US'});
-        
+
         var expected = "Mr. John Mensah P.O. Box 1234\nACCRA\nGHANA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

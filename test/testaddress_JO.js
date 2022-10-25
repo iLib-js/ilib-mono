@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_JO = {
     testParseAddressJONormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب, عمان ١١٩٣٧, الأردن", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -51,11 +51,11 @@ export const testaddress_JO = {
         test.equal(parsedAddress.countryCode, "JO");
         test.done();
     },
-    
+
     testParseAddressJONoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب, عمان, الأردن", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -65,11 +65,11 @@ export const testaddress_JO = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressJOManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب\nعمان ١١٩٣٧\n الأردن", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -79,11 +79,11 @@ export const testaddress_JO = {
         test.equal(parsedAddress.countryCode, "JO");
         test.done();
     },
-    
+
     testParseAddressJOOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب,عمان ١١٩٣٧, الأردن", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -93,11 +93,11 @@ export const testaddress_JO = {
         test.equal(parsedAddress.countryCode, "JO");
         test.done();
     },
-    
+
     testParseAddressJOSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب   \n\t\n عمان ١١٩٣٧\t\n\n  الأردن  \n  \t\t\t", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -107,13 +107,13 @@ export const testaddress_JO = {
         test.equal(parsedAddress.countryCode, "JO");
         test.done();
     },
-    
+
     //needs a precise regular expression top deal with no delimiters for locality
     /*
     testParseAddressJONoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥ آل الحلب  ٢ شارع الاستقلال عمان ١١٩٣٧  الأردن", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥ آل الحلب ٢ شارع الاستقلال");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -124,11 +124,11 @@ export const testaddress_JO = {
         test.done();
     },
     */
-    
+
     testParseAddressJOSpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب,عمان ١١٩٣٧, الأردن", {locale: 'ar-JO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -138,13 +138,13 @@ export const testaddress_JO = {
         test.equal(parsedAddress.countryCode, "JO");
         test.done();
     },
-    
+
     testParseAddressJOFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("رويل ٥, آل الحلب,عمان ١١٩٣٧, Jordan", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "رويل ٥, آل الحلب");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -154,7 +154,7 @@ export const testaddress_JO = {
         test.equal(parsedAddress.countryCode, "JO");
         test.done();
     },
-    
+
     testFormatAddressJO: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -163,13 +163,13 @@ export const testaddress_JO = {
             country: " الأردن",
             countryCode: "JO"
         }, {locale: 'ar-JO'});
-        
+
         var expected = "رويل ٥, آل الحلب\nعمان ١١٩٣٧\nالأردن";
         var formatter = new AddressFmt({locale: 'ar-JO'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressJOARFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -178,11 +178,11 @@ export const testaddress_JO = {
             country: "Jordan",
             countryCode: "JO"
         }, {locale: 'en-US'});
-        
+
         var expected = "رويل ٥, آل الحلب\nعمان ١١٩٣٧\nJordan";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

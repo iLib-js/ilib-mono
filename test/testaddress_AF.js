@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,7 @@ export const testaddress_AF = {
     testParseAFAddressNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید, خیابان، خانه شماره ۰۴۲, کابل, ۱۰۰۱, افغانستان", {locale: 'fa-AF'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید, خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -52,11 +52,11 @@ export const testaddress_AF = {
         test.equal(parsedAddress.countryCode, "AF");
         test.done();
     },
-    
+
     testParseAFAddressNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید,خیابان، خانه شماره ۰۴۲, کابل, افغانستان", {locale: 'fa-AF'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید, خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -66,11 +66,11 @@ export const testaddress_AF = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAFAddressManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید\nخیابان، خانه شماره ۰۴۲\nکابل ۱۰۰۱\nافغانستان", {locale: 'fa-AF'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید, خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -80,11 +80,11 @@ export const testaddress_AF = {
         test.equal(parsedAddress.countryCode, "AF");
         test.done();
     },
-    
+
     testParseAFAddressOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید,خیابان، خانه شماره ۰۴۲,کابل ۱۰۰۱ افغانستان", {locale: 'fa-AF'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید, خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -94,11 +94,11 @@ export const testaddress_AF = {
         test.equal(parsedAddress.countryCode, "AF");
         test.done();
     },
-    
+
     testParseAFAddressSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید,خیابان، خانه شماره ۰۴۲   \n\t\n کابل ۱۰۰۱\t\n\n افغانستان  \n  \t\t\t", {locale: 'fa-AF'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید, خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -108,11 +108,11 @@ export const testaddress_AF = {
         test.equal(parsedAddress.countryCode, "AF");
         test.done();
     },
-    
+
     testParseAFAddressNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید خیابان، خانه شماره ۰۴۲ کابل ۱۰۰۱ افغانستان", {locale: 'fa-AF'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -122,15 +122,15 @@ export const testaddress_AF = {
         test.equal(parsedAddress.countryCode, "AF");
         test.done();
     },
-    
-    
-    
+
+
+
     testParseAFAddressFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("آقای احمد توحید,خیابان، خانه شماره ۰۴۲,کابل ۱۰۰۱,Afghanistan", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "آقای احمد توحید, خیابان، خانه شماره ۰۴۲");
         test.ok(typeof(parsedAddress.locality) === "undefined");
@@ -140,7 +140,7 @@ export const testaddress_AF = {
         test.equal(parsedAddress.countryCode, "AF");
         test.done();
     },
-    
+
     testFormatAddressAF: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -150,13 +150,13 @@ export const testaddress_AF = {
             country: "افغانستان",
             countryCode: "AF"
         }, {locale: 'fa-AF'});
-        
+
         var expected = "آقای احمد توحید,خیابان، خانه شماره ۰۴۲\nکابل\n۱۰۰۱\nافغانستان";
         var formatter = new AddressFmt({locale: 'fa-AF'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressAFFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -165,11 +165,11 @@ export const testaddress_AF = {
             country: "Afghanistan",
             countryCode: "AF"
         }, {locale: 'en-US'});
-        
+
         var expected = "آقای احمد توحید,خیابان، خانه شماره ۰۴۲\n۱۰۰۱\nAfghanistan";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

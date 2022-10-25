@@ -1,6 +1,6 @@
 /*
  * testaddress_SK.js - test the address parsing and formatting routines for Mexico
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_SK = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-SK").then(() => {
                 callback();
             });
         } else {
@@ -40,7 +40,7 @@ export const testaddress_SK = {
 
     testParseAddressSKNormal: function(test) {
         test.expect(7);
-        
+
         var parsedAddress = new Address("Pawel Opatovský Gazdova 4\n010 01 ŽILINA 1\nSLOVAKIA", {locale: 'sk-SK'});
             test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Pawel Opatovský Gazdova 4");
@@ -50,12 +50,12 @@ export const testaddress_SK = {
         test.equal(parsedAddress.country, "SLOVAKIA");
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
-    
+
     },
-    
+
     testParseAddressSKOtherName: function(test) {
         test.expect(7);
-        
+
     var parsedAddress = new Address("Slovenská Pošta, š.p. Partizánska Cesta 9\n975 99 BANSKÁ BYSTRICA 1\nSLOVAKIA", {locale: 'sk-SK'});
             test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Slovenská Pošta, š.p. Partizánska Cesta 9");
@@ -65,9 +65,9 @@ export const testaddress_SK = {
         test.equal(parsedAddress.country, "SLOVAKIA");
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
-    
+
     },
-    
+
     testParseAddressSKNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Pawel Opatovský Gazdova 4\nŽILINA 1\nSLOVAKIA", {locale: 'sk-SK'});
@@ -80,11 +80,11 @@ export const testaddress_SK = {
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
     },
-    
+
     testParseAddressSKNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Pawel Opatovský Gazdova 4\n010 01 ŽILINA 1", {locale: 'sk-SK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Pawel Opatovský Gazdova 4");
         test.equal(parsedAddress.locality, "ŽILINA 1");
@@ -93,13 +93,13 @@ export const testaddress_SK = {
         test.ok(typeof(parsedAddress.country) === "undefined");
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
-        
+
     },
-    
+
     testParseAddressSKManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Pawel Opatovský\nGazdova 4\n010 01\nŽILINA 1\nSLOVAKIA", {locale: 'sk-SK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Pawel Opatovský, Gazdova 4");
         test.equal(parsedAddress.locality, "ŽILINA 1");
@@ -109,11 +109,11 @@ export const testaddress_SK = {
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
     },
-    
+
     testParseAddressSKNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Pawel Opatovský Gazdova 4 010 01 ŽILINA 1 SLOVAKIA", {locale: 'sk-SK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Pawel Opatovský Gazdova 4");
         test.equal(parsedAddress.locality, "ŽILINA 1");
@@ -123,14 +123,14 @@ export const testaddress_SK = {
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
     },
-    
-    
+
+
     testParseAddressSKFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Pawel Opatovský Gazdova 4\n010 01 ŽILINA 1\nSLOVAKIA", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Pawel Opatovský Gazdova 4");
         test.equal(parsedAddress.locality, "ŽILINA 1");
@@ -140,7 +140,7 @@ export const testaddress_SK = {
         test.equal(parsedAddress.countryCode, "SK");
         test.done();
     },
-    
+
     testFormatAddressSK: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -151,13 +151,13 @@ export const testaddress_SK = {
             country: "SLOVAKIA",
             countryCode: "SK"
         }, {locale: 'sk-SK'});
-        
+
         var expected = "Pawel Opatovský Gazdova 4\n010 01 ŽILINA 1\nSLOVAKIA";
         var formatter = new AddressFmt({locale: 'sk-SK'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressSKFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -168,11 +168,11 @@ export const testaddress_SK = {
             country: "SLOVAKIA",
             countryCode: "SK"
         }, {locale: 'en-US'});
-        
+
         var expected = "Pawel Opatovský Gazdova 4\n010 01 ŽILINA 1\nSLOVAKIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

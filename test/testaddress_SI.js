@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_SI = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-SI").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_SI = {
     testParseAddressSINormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Marija Borisek Prvomajska ulica 20\n1270 LITIJA\nSLOVENIA", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Marija Borisek Prvomajska ulica 20");
         test.equal(parsedAddress.locality, "LITIJA");
@@ -51,11 +51,11 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
+
     testParseAddressSINoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Prešernova 31\n1000 Ljubljana\nSlovenia", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Prešernova 31");
         test.equal(parsedAddress.locality, "Ljubljana");
@@ -65,11 +65,11 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
+
     testParseAddressSINoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Marija Borisek , Prvomajska , ulica 20 , 1270 LITIJA", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Marija Borisek, Prvomajska, ulica 20");
         test.equal(parsedAddress.locality, "LITIJA");
@@ -79,11 +79,11 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
+
     testParseAddressSIManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Marija Borisek\nPrvomajska ulica 20\n1270 LITIJA\nSLOVENIA", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Marija Borisek, Prvomajska ulica 20");
         test.equal(parsedAddress.locality, "LITIJA");
@@ -93,11 +93,11 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
+
     testParseAddressSIOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Marija Borisek , Prvomajska ulica 20 , 1270 , LITIJA , SLOVENIA", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Marija Borisek, Prvomajska ulica 20");
         test.equal(parsedAddress.locality, "LITIJA");
@@ -107,13 +107,13 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
-    
-    
+
+
+
     testParseAddressSINoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Marija Borisek Prvomajska ulica 20 1270 LITIJA SLOVENIA", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Marija Borisek Prvomajska ulica 20");
         test.equal(parsedAddress.locality, "LITIJA");
@@ -123,14 +123,14 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
-    
+
+
     testParseAddressSIFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Marija Borisek Prvomajska ulica 20\nLITIJA 1270\nSLOVENIA", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Marija Borisek Prvomajska ulica 20");
         test.equal(parsedAddress.locality, "LITIJA");
@@ -140,7 +140,7 @@ export const testaddress_SI = {
         test.equal(parsedAddress.countryCode, "SI");
         test.done();
     },
-    
+
     testFormatAddressSI: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -151,13 +151,13 @@ export const testaddress_SI = {
             country: "SLOVENIA",
             countryCode: "SI"
         }, {locale: 'sl-SI'});
-        
+
         var expected = "Marija Borisek Prvomajska ulica 20\n1270 LITIJA\nSLOVENIA";
         var formatter = new AddressFmt({locale: 'sl-SI'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressSIFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -168,11 +168,11 @@ export const testaddress_SI = {
             country: "SLOVENIA",
             countryCode: "SI"
         }, {locale: 'en-US'});
-        
+
         var expected = "Marija Borisek Prvomajska ulica 20\n1270 LITIJA\nSLOVENIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

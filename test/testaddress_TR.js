@@ -1,6 +1,6 @@
 /*
  * testaddress_TR.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_TR = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-TR").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_TR = {
     testParseAddressTRNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Orhaniye Street No 14\nSirkeci Istanbul 34120\nTurkey", {locale: 'tr-TR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Orhaniye Street No 14");
         test.equal(parsedAddress.locality, "Sirkeci");
@@ -51,11 +51,11 @@ export const testaddress_TR = {
         test.equal(parsedAddress.countryCode, "TR");
         test.done();
     },
-    
+
     testParseAddressTRNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Teyfikhane Sok No 1\nSultanahmet Istanbul\nTurkey", {locale: 'tr-TR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Teyfikhane Sok No 1");
         test.equal(parsedAddress.locality, "Sultanahmet");
@@ -65,12 +65,12 @@ export const testaddress_TR = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
-    
+
+
     testParseAddressTRNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Orhaniye Street No 14\nSirkeci Istanbul 34120", {locale: 'tr-TR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Orhaniye Street No 14");
         test.equal(parsedAddress.locality, "Sirkeci");
@@ -80,11 +80,11 @@ export const testaddress_TR = {
         test.equal(parsedAddress.countryCode, "TR");
         test.done();
     },
-    
+
     testParseAddressTRNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Orhaniye Street No 14 Sirkeci Istanbul 34120 Turkey", {locale: 'tr-TR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Orhaniye Street No 14");
         test.equal(parsedAddress.locality, "Sirkeci");
@@ -94,12 +94,12 @@ export const testaddress_TR = {
         test.equal(parsedAddress.countryCode, "TR");
         test.done();
     },
-    
-    
+
+
     testParseAddressTROneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Orhaniye Street , No 14 , Sirkeci , Istanbul , 34120 , Turkey", {locale: 'tr-TR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Orhaniye Street, No 14");
         test.equal(parsedAddress.locality, "Sirkeci");
@@ -109,12 +109,12 @@ export const testaddress_TR = {
         test.equal(parsedAddress.countryCode, "TR");
         test.done();
     },
-    
-    
+
+
     testParseAddressTROther: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Alemdag Cad. Yanyol Sok. No 6-8\nÜSKÜDAR  ISTANBUL 34692\nTURKEY", {locale: 'tr-TR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Alemdag Cad. Yanyol Sok. No 6-8");
         test.equal(parsedAddress.locality, "ÜSKÜDAR");
@@ -124,12 +124,12 @@ export const testaddress_TR = {
         test.equal(parsedAddress.countryCode, "TR");
         test.done();
     },
-    
-    
+
+
     testParseAddressTRManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Orhaniye Street\nNo 14\nSirkeci Istanbul 34120\nTurkey", {locale: 'sl-SI'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Orhaniye Street, No 14");
         test.equal(parsedAddress.locality, "Sirkeci");
@@ -139,9 +139,9 @@ export const testaddress_TR = {
         test.equal(parsedAddress.countryCode, "TR");
         test.done();
     },
-    
-    
-    
+
+
+
     testFormatAddressTR: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -152,13 +152,13 @@ export const testaddress_TR = {
             country: "TURKEY",
             countryCode: "TR"
         }, {locale: 'tr-TR'});
-        
+
         var expected = "Alemdag Cad. Yanyol Sok. No 6-8\nÜSKÜDAR ISTANBUL 34692\nTURKEY";
         var formatter = new AddressFmt({locale: 'tr-TR'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressTRFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -169,12 +169,12 @@ export const testaddress_TR = {
             country: "Turkey",
             countryCode: "TR"
         }, {locale: 'en-US'});
-        
+
         var expected = "Orhaniye Street No 14\nSirkeci Istanbul 34120\nTurkey";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
-    
+
+
 };

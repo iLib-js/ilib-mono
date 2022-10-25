@@ -1,6 +1,6 @@
 /*
  * testaddress_GM.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_GM = {
     testParseAddressGMNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay 21 Liberation Avenue\nBANJUL\nGAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -51,11 +51,11 @@ export const testaddress_GM = {
         test.equal(parsedAddress.countryCode, "GM");
         test.done();
     },
-    
+
     testParseAddressGMNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay 21 Liberation Avenue\nBANJUL\nGAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -65,11 +65,11 @@ export const testaddress_GM = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressGMNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay 21 Liberation Avenue\nBANJUL", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -79,11 +79,11 @@ export const testaddress_GM = {
         test.equal(parsedAddress.countryCode, "GM");
         test.done();
     },
-    
+
     testParseAddressGMManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay\n21 Liberation Avenue\nBANJUL\nGAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay, 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -93,11 +93,11 @@ export const testaddress_GM = {
         test.equal(parsedAddress.countryCode, "GM");
         test.done();
     },
-    
+
     testParseAddressGMOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay , 21 Liberation Avenue , BANJUL , GAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay, 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -107,11 +107,11 @@ export const testaddress_GM = {
         test.equal(parsedAddress.countryCode, "GM");
         test.done();
     },
-    
+
     testParseAddressGMSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay\n\n\t\r\t\t\r21 Liberation Avenue\r\r\n\nBANJUL\t\r\n\t\rGAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay, 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -121,12 +121,12 @@ export const testaddress_GM = {
         test.equal(parsedAddress.countryCode, "GM");
         test.done();
     },
-    
+
     /*
     testParseAddressGMNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay 21 Liberation Avenue BANJUL GAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -137,11 +137,11 @@ export const testaddress_GM = {
         test.done();
     },
     */
-    
+
     testParseAddressGMFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. A. Ceesay 21 Liberation Avenue\nBANJUL\nGAMBIA", {locale: 'en-GM'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. A. Ceesay 21 Liberation Avenue");
         test.equal(parsedAddress.locality, "BANJUL");
@@ -151,7 +151,7 @@ export const testaddress_GM = {
         test.equal(parsedAddress.countryCode, "GM");
         test.done();
     },
-    
+
     testFormatAddressGM: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -161,13 +161,13 @@ export const testaddress_GM = {
             country: "GAMBIA",
             countryCode: "GM"
         }, {locale: 'en-GM'});
-        
+
         var expected = "Mr. A. Ceesay 21 Liberation Avenue\nBANJUL\nGAMBIA";
         var formatter = new AddressFmt({locale: 'en-GM'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressGMFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -177,11 +177,11 @@ export const testaddress_GM = {
             country: "GAMBIA",
             countryCode: "GM"
         }, {locale: 'en-US'});
-        
+
         var expected = "Mr. A. Ceesay 21 Liberation Avenue\nBANJUL\nGAMBIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

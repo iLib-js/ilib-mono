@@ -1,6 +1,6 @@
 /*
  * testaddress_LR.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_LR = {
     testParseAddressLRNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications Postal Operations GPO\n1000 MONROVIA 10\nLiberia", {locale: 'en-LR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications Postal Operations GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -51,11 +51,11 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testParseAddressLRNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications Postal Operations GPO\nMONROVIA 10\nLiberia", {locale: 'en-LR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications Postal Operations GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -65,11 +65,11 @@ export const testaddress_LR = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressLRNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications Postal Operations GPO\n1000 MONROVIA 10", {locale: 'en-LR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications Postal Operations GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -79,7 +79,7 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testParseAddressLRManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications\nPostal Operations\nGPO\n\n1000\n\nMONROVIA 10\n\n\nLiberia\n\n\n", {locale: 'en-LR'});
@@ -92,11 +92,11 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testParseAddressLROneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications , Postal Operations , GPO , 1000 , MONROVIA 10 , Liberia", {locale: 'en-LR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications, Postal Operations, GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -106,11 +106,11 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testParseAddressLRSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tMinistry of Posts and Telecommunications\t\t\rPostal Operations\t\t\rGPO\n\n1000\n\nMONROVIA 10\n\t Liberia\n\n\n", {locale: 'en-LR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications Postal Operations GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -120,11 +120,11 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testParseAddressLRNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications Postal Operations GPO 1000 MONROVIA 10 Liberia", {locale: 'en-LR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications Postal Operations GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -134,13 +134,13 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testParseAddressLRFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Ministry of Posts and Telecommunications Postal Operations GPO\n1000 MONROVIA 10\nLiberia", {locale: 'en-US'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Ministry of Posts and Telecommunications Postal Operations GPO");
         test.equal(parsedAddress.locality, "MONROVIA 10");
@@ -150,7 +150,7 @@ export const testaddress_LR = {
         test.equal(parsedAddress.countryCode, "LR");
         test.done();
     },
-    
+
     testFormatAddressLR: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,13 +160,13 @@ export const testaddress_LR = {
             country: "Liberia",
             countryCode: "LR"
         }, {locale: 'en-LR'});
-        
+
         var expected = "Ministry of Posts and Telecommunications Postal Operations GPO\n1000 MONROVIA 10\nLiberia";
         var formatter = new AddressFmt({locale: 'en-LR'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressLRFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -176,11 +176,11 @@ export const testaddress_LR = {
             country: "Liberia",
             countryCode: "LR"
         }, {locale: 'en-US'});
-        
+
         var expected = "Ministry of Posts and Telecommunications Postal Operations GPO\n1000 MONROVIA 10\nLiberia";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

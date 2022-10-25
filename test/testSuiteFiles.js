@@ -1,6 +1,6 @@
 /*
  * testSuiteFiles.js - list the test files in this directory
- * 
+ *
  * Copyright © 2017, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,12 @@
  */
 
 export const files = [
-    //"testaddress.js",
+    "testaddress.js",
     "testaddress_AE.js",
     "testaddress_AF.js",
     "testaddress_AL.js",
     "testaddress_AM.js",
     "testaddress_AO.js",
-    /*
     "testaddress_AR.js",
     "testaddress_AT.js",
     "testaddress_AU.js",
@@ -150,6 +149,6 @@ export const files = [
     "testaddress_YE.js",
     "testaddress_ZA.js",
     "testaddress_ZM.js",
-    "testaddressasync.js"
-    */
+    /*
+    "testaddressasync.js" */
 ];

@@ -1,6 +1,6 @@
 /*
  * testaddress_PY.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_LT = {
     testParseAddressLTNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei Plento g. 17-2 Ariogala\n60249 Raseiniu r.sav\nLITHUANIA", {locale: 'lt-LT'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei Plento g. 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -51,11 +51,11 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testParseAddressLTNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei Plento g. 17-2 Ariogala\nRaseiniu r.sav\nLITHUANIA", {locale: 'lt-LT'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei Plento g. 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -65,11 +65,11 @@ export const testaddress_LT = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressLTNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei Plento g. 17-2 Ariogala\n60249 Raseiniu r.sav", {locale: 'lt-LT'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei Plento g. 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -79,7 +79,7 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testParseAddressLTManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei\nPlento g.\n17-2 Ariogala\n\n60249\n\nRaseiniu r.sav\n\n\nLITHUANIA\n\n\n", {locale: 'lt-LT'});
@@ -92,11 +92,11 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testParseAddressLTOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei , Plento g. , 17-2 Ariogala , 60249 , Raseiniu r.sav , LITHUANIA", {locale: 'lt-LT'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei, Plento g., 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -106,11 +106,11 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testParseAddressLTSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tAdelei Mickienei\t\t\rPlento g.\t\t\r17-2 Ariogala\n\n60249\n\nRaseiniu r.sav\n\t LITHUANIA\n\n\n", {locale: 'lt-LT'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei Plento g. 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -120,11 +120,11 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testParseAddressLTNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei Plento g. 17-2 Ariogala 60249 Raseiniu r.sav LITHUANIA", {locale: 'lt-LT'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei Plento g. 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -134,13 +134,13 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testParseAddressLTFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adelei Mickienei Plento g. 17-2 Ariogala\n60249 Raseiniu r.sav\nLITHUANIA", {locale: 'en-US'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adelei Mickienei Plento g. 17-2 Ariogala");
         test.equal(parsedAddress.locality, "Raseiniu r.sav");
@@ -150,7 +150,7 @@ export const testaddress_LT = {
         test.equal(parsedAddress.countryCode, "LT");
         test.done();
     },
-    
+
     testFormatAddressLT: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,13 +160,13 @@ export const testaddress_LT = {
             country: "LITHUANIA",
             countryCode: "LT"
         }, {locale: 'lt-LT'});
-        
+
         var expected = "Adelei Mickienei Plento g. 17-2 Ariogala\n60249 Raseiniu r.sav\nLITHUANIA";
         var formatter = new AddressFmt({locale: 'lt-LT'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressLTFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -176,11 +176,11 @@ export const testaddress_LT = {
             country: "LITHUANIA",
             countryCode: "LT"
         }, {locale: 'en-US'});
-        
+
         var expected = "Adelei Mickienei Plento g. 17-2 Ariogala\n60249 Raseiniu r.sav\nLITHUANIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

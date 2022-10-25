@@ -1,6 +1,6 @@
 /*
  * testaddress_QA.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_QA = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-QA").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_QA = {
     testParseAddressQANormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣\nﺎﻟﺩﻮﺣﺓ\nقطر", {locale: 'ar-QA'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣");
         test.equal(parsedAddress.locality, "ﺎﻟﺩﻮﺣﺓ");
@@ -51,11 +51,11 @@ export const testaddress_QA = {
         test.equal(parsedAddress.countryCode, "QA");
         test.done();
     },
-    
+
     testParseAddressQANoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣\nﺎﻟﺩﻮﺣﺓ\nقطر", {locale: 'ar-QA'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣");
         test.equal(parsedAddress.locality, "ﺎﻟﺩﻮﺣﺓ");
@@ -65,11 +65,11 @@ export const testaddress_QA = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressQANoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣\n\nﺎﻟﺩﻮﺣﺓ", {locale: 'ar-QA'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣");
         test.equal(parsedAddress.locality, "ﺎﻟﺩﻮﺣﺓ");
@@ -79,7 +79,7 @@ export const testaddress_QA = {
         test.equal(parsedAddress.countryCode, "QA");
         test.done();
     },
-    
+
     testParseAddressQAManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ\nمكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ٣٢٦٣\n\nﺎﻟﺩﻮﺣﺓ\n\nقطر\n\n\n", {locale: 'ar-QA'});
@@ -92,11 +92,11 @@ export const testaddress_QA = {
         test.equal(parsedAddress.countryCode, "QA");
         test.done();
     },
-    
+
     testParseAddressQAOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ , ﻡﺮﺒﻋ ﺮﻘﻣ٣٢٦٣ , ﺎﻟﺩﻮﺣﺓ , قطر", {locale: 'ar-QA'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ, ﻡﺮﺒﻋ ﺮﻘﻣ٣٢٦٣");
         test.equal(parsedAddress.locality, "ﺎﻟﺩﻮﺣﺓ");
@@ -106,11 +106,11 @@ export const testaddress_QA = {
         test.equal(parsedAddress.countryCode, "QA");
         test.done();
     },
-    
+
     testParseAddressQASuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ\n\n\tمكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ٣٢٦٣\n\n\t\n\n\tﺎﻟﺩﻮﺣﺓ\n\n\tقطر\n\n\n", {locale: 'ar-QA'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ, مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ٣٢٦٣");
         test.equal(parsedAddress.locality, "ﺎﻟﺩﻮﺣﺓ");
@@ -120,13 +120,13 @@ export const testaddress_QA = {
         test.equal(parsedAddress.countryCode, "QA");
         test.done();
     },
-    
-    
-    
+
+
+
     testParseAddressQAFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣\n\nﺎﻟﺩﻮﺣﺓ\nQatar", {locale: 'en-US'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣");
         test.equal(parsedAddress.locality, "ﺎﻟﺩﻮﺣﺓ");
@@ -136,7 +136,7 @@ export const testaddress_QA = {
         test.equal(parsedAddress.countryCode, "QA");
         test.done();
     },
-    
+
     testFormatAddressQA: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -145,13 +145,13 @@ export const testaddress_QA = {
             country: "قطر",
             countryCode: "QA"
         }, {locale: 'ar-QA'});
-        
+
         var expected = "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣\nﺎﻟﺩﻮﺣﺓ\nقطر";
         var formatter = new AddressFmt({locale: 'ar-QA'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressQAFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,11 +160,11 @@ export const testaddress_QA = {
             country: "Qatar",
             countryCode: "QA"
         }, {locale: 'en-US'});
-        
+
         var expected = "ﺎﻠﺴﻳﺩ ﻊﺑﺩ ﺎﻠﻠﻫ ﺎﻠﻣﺮﻴﺨﻳ مكتب بريد ﻡﺮﺒﻋ ﺮﻘﻣ ٣٢٦٣\nﺎﻟﺩﻮﺣﺓ\nQatar";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

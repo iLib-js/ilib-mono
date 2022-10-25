@@ -1,6 +1,6 @@
 /*
  * testaddress_MK.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_MK = {
     testParseAddressMKNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски ГРАДСКИ ПАЗАР 5\n6000 ОХРИД\nМАКЕДОНИЈА", {locale: 'mk-MK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски ГРАДСКИ ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -51,11 +51,11 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testParseAddressMKNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски ГРАДСКИ ПАЗАР 5\nОХРИД\nМАКЕДОНИЈА", {locale: 'mk-MK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски ГРАДСКИ ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -65,11 +65,11 @@ export const testaddress_MK = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressMKNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски ГРАДСКИ ПАЗАР 5\n6000 ОХРИД", {locale: 'mk-MK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски ГРАДСКИ ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -79,7 +79,7 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testParseAddressMKManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски\nГРАДСКИ\nПАЗАР 5\n\n6000\n\nОХРИД\n\n\nМАКЕДОНИЈА\n\n\n", {locale: 'mk-MK'});
@@ -92,11 +92,11 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testParseAddressMKOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски , ГРАДСКИ , ПАЗАР 5 , 6000 , ОХРИД , МАКЕДОНИЈА", {locale: 'mk-MK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски, ГРАДСКИ, ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -106,11 +106,11 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testParseAddressMKSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tСања Јанчевски\t\t\rГРАДСКИ\t\t\rПАЗАР 5\n\n6000\n\nОХРИД\n\t МАКЕДОНИЈА\n\n\n", {locale: 'mk-MK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски ГРАДСКИ ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -120,11 +120,11 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testParseAddressMKNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски ГРАДСКИ ПАЗАР 5 6000 ОХРИД МАКЕДОНИЈА", {locale: 'mk-MK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски ГРАДСКИ ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -134,13 +134,13 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testParseAddressMKFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Сања Јанчевски ГРАДСКИ ПАЗАР 5\n6000 ОХРИД\nМАКЕДОНИЈА", {locale: 'en-US'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Сања Јанчевски ГРАДСКИ ПАЗАР 5");
         test.equal(parsedAddress.locality, "ОХРИД");
@@ -150,7 +150,7 @@ export const testaddress_MK = {
         test.equal(parsedAddress.countryCode, "MK");
         test.done();
     },
-    
+
     testFormatAddressMK: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,13 +160,13 @@ export const testaddress_MK = {
             country: "МАКЕДОНИЈА",
             countryCode: "MK"
         }, {locale: 'mk-MK'});
-        
+
         var expected = "Сања Јанчевски ГРАДСКИ ПАЗАР 5\n6000 ОХРИД\nМАКЕДОНИЈА";
         var formatter = new AddressFmt({locale: 'mk-MK'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressMKFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -176,11 +176,11 @@ export const testaddress_MK = {
             country: "МАКЕДОНИЈА",
             countryCode: "MK"
         }, {locale: 'en-US'});
-        
+
         var expected = "Сања Јанчевски ГРАДСКИ ПАЗАР 5\n6000 ОХРИД\nМАКЕДОНИЈА";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

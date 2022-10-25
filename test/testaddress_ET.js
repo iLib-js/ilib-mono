@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ export const testaddress_ET = {
     testParseAddressETNormal: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Mr. Abebe Bekele, P.O. Box 1519, ADDIS ABABA, ETHIOPIA", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele, P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -52,11 +52,11 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testParseAddressETNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Abebe Bekele, P.O. Box 1519, ADDIS ABABA, ETHIOPIA", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele, P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -66,11 +66,11 @@ export const testaddress_ET = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressETManyLines: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Mr. Abebe Bekele\nP.O. Box 1519\nADDIS ABABA\nETHIOPIA", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele, P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -79,11 +79,11 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testParseAddressETOneLine: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Mr. Abebe Bekele, P.O. Box 1519, ADDIS ABABA, ETHIOPIA", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele, P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -92,11 +92,11 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testParseAddressETSuperfluousWhitespace: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Mr. Abebe Bekele\n\tP.O. Box 1519  \n\t\n ADDIS ABABA\t\n\n ETHIOPIA  \n  \t\t\t", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele, P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -105,11 +105,11 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testParseAddressETNoDelimiters: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Mr. Abebe Bekele P.O. Box 1519 ADDIS ABABA ETHIOPIA", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -118,11 +118,11 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testParseAddressETSpecialChars: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Post Office Headquarters, P.O. Box 5555, ADDIS ABABA, ETHIOPIA", {locale: 'en-ET'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Post Office Headquarters, P.O. Box 5555");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -131,13 +131,13 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testParseAddressETFromUS: function(test) {
         test.expect(6);
         var parsedAddress = new Address("Mr. Abebe Bekele, P.O. Box 1519, ADDIS ABABA, ETHIOPIA", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Abebe Bekele, P.O. Box 1519");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -146,7 +146,7 @@ export const testaddress_ET = {
         test.equal(parsedAddress.countryCode, "ET");
         test.done();
     },
-    
+
     testFormatAddressET: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -155,13 +155,13 @@ export const testaddress_ET = {
             country: "ETHIOPIA",
             countryCode: "ET"
         }, {locale: 'en-ET'});
-        
+
         var expected = "Mr. Abebe Bekele\nP.O. Box 1519\nADDIS ABABA\nETHIOPIA";
         var formatter = new AddressFmt({locale: 'en-ET'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressETFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -170,11 +170,11 @@ export const testaddress_ET = {
             country: "ETHIOPIA",
             countryCode: "ET"
         }, {locale: 'en-US'});
-        
+
         var expected = "Mr. Abebe Bekele\nP.O. Box 1519\nADDIS ABABA\nETHIOPIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

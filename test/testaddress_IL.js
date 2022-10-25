@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_IL = {
     testParseAddressILNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Yisrael Yisraeli\nHaDoar 1\nJerusalem 12345\nIsrael", {locale: 'he-IL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Yisrael Yisraeli, HaDoar 1");
         test.equal(parsedAddress.locality, "Jerusalem");
@@ -51,11 +51,11 @@ export const testaddress_IL = {
         test.equal(parsedAddress.countryCode, "IL");
         test.done();
     },
-    
+
     testParseAddressILNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Yisrael Yisraeli, HaDoar 1\nJerusalem 12345", {locale: 'he-IL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Yisrael Yisraeli, HaDoar 1");
         test.equal(parsedAddress.locality, "Jerusalem");
@@ -65,13 +65,13 @@ export const testaddress_IL = {
         test.equal(parsedAddress.countryCode, "IL");
         test.done();
     },
-    
-    
-    
+
+
+
     testParseAddressILOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("R.O.Y. International , PO Box 13056, TEL-AVIV ISL-61130, Israel", {locale: 'he-IL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "R.O.Y. International, PO Box 13056");
         test.equal(parsedAddress.locality, "TEL-AVIV");
@@ -81,11 +81,11 @@ export const testaddress_IL = {
         test.equal(parsedAddress.countryCode, "IL");
         test.done();
     },
-    
+
     testParseAddressILSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tR.O.Y. International\n\t\nPO Box 13056\n \r\n\r\rTEL-AVIV    ISL-61130\r\r\n    Israel\t\n\n\n", {locale: 'he-IL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "R.O.Y. International, PO Box 13056");
         test.equal(parsedAddress.locality, "TEL-AVIV");
@@ -95,11 +95,11 @@ export const testaddress_IL = {
         test.equal(parsedAddress.countryCode, "IL");
         test.done();
     },
-    
+
     testParseAddressILNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("R.O.Y. International PO Box 13056 TEL-AVIV ISL-61130 Israel", {locale: 'he-IL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "R.O.Y. International PO Box 13056");
         test.equal(parsedAddress.locality, "TEL-AVIV");
@@ -109,12 +109,12 @@ export const testaddress_IL = {
         test.equal(parsedAddress.countryCode, "IL");
         test.done();
     },
-    
+
     /*
     testParseAddressILSpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Työpajankatu 13,IL-00580 Helsinki, Israel", {locale: 'he-IL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Työpajankatu 13");
         test.equal(parsedAddress.locality, "Helsinki");
@@ -125,11 +125,11 @@ export const testaddress_IL = {
         test.done();
     },
     */
-    
+
     testParseAddressILFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("R.O.Y. International\nPO Box 13056\nTEL-AVIV, Israel", {locale: 'en-US'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "R.O.Y. International, PO Box 13056");
         test.equal(parsedAddress.locality, "TEL-AVIV");
@@ -139,7 +139,7 @@ export const testaddress_IL = {
         test.equal(parsedAddress.countryCode, "IL");
         test.done();
     },
-    
+
     testFormatAddressIL: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -148,15 +148,15 @@ export const testaddress_IL = {
             country: "Israel",
             countryCode: "IL",
         }, {locale: 'he-IL'});
-        
+
         var expected = "R.O.Y. International, PO Box 13056\nTEL-AVIV\nIsrael";
         var formatter = new AddressFmt({locale: 'he-IL'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
-    
-    
+
+
+
     testFormatAddressILFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -165,11 +165,11 @@ export const testaddress_IL = {
             country: "Israel",
             countryCode: "IL",
         }, {locale: 'en-US'});
-        
+
         var expected = "R.O.Y. International, PO Box 13056, Albertinkatu 36 B\nTEL-AVIV\nIsrael";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_GB = {
     testParseAddressGBNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Belgrave House\n76 Buckingham Palace Road\nLondon SW1W 9TQ\nUnited Kingdom", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Belgrave House, 76 Buckingham Palace Road");
         test.equal(parsedAddress.locality, "London");
@@ -51,11 +51,11 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testParseAddressGBNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Peter House\nOxford Street\nManchester", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Peter House, Oxford Street");
         test.equal(parsedAddress.locality, "Manchester");
@@ -65,11 +65,11 @@ export const testaddress_GB = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressGBNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("88 Wood Street\nLondon\nEC2V 7QT", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "88 Wood Street");
         test.equal(parsedAddress.locality, "London");
@@ -79,11 +79,11 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testParseAddressGBManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("2 Kelvin Close\nBirchwood Science Park North\nNorth Risley\nWarrington\nCheshire\nWA3 7PB\nUK", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "2 Kelvin Close, Birchwood Science Park North, North Risley, Warrington");
         test.equal(parsedAddress.locality, "Cheshire");
@@ -93,11 +93,11 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testParseAddressGBOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Amen Corner, Cain Road, Bracknell, Berkshire, RG12 1HN, England", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Amen Corner, Cain Road, Bracknell");
         test.equal(parsedAddress.locality, "Berkshire");
@@ -107,11 +107,11 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testParseAddressGBSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tAmen Corner\n\t\t\tCain Road, \t\t\t\r\r Bracknell, \n \r \tBerkshire, \n\t\nRG12 1HN\t\n\t England\n\n\n", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Amen Corner, Cain Road, Bracknell");
         test.equal(parsedAddress.locality, "Berkshire");
@@ -121,11 +121,11 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testParseAddressGBNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Amen Corner Cain Road Bracknell Berkshire RG12 1HN England", {locale: 'en-GB'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Amen Corner Cain Road Bracknell");
         test.equal(parsedAddress.locality, "Berkshire");
@@ -135,13 +135,13 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testParseAddressGBFromDE: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Belgrave House\n76 Buckingham Palace Road\nLondon SW1W 9TQ\nVereinigtes Königreich", {locale: 'de-DE'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Belgrave House, 76 Buckingham Palace Road");
         test.equal(parsedAddress.locality, "London");
@@ -151,7 +151,7 @@ export const testaddress_GB = {
         test.equal(parsedAddress.countryCode, "GB");
         test.done();
     },
-    
+
     testFormatAddressGB: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -161,13 +161,13 @@ export const testaddress_GB = {
             country: "Old Blighty",
             countryCode: "GB"
         }, {locale: 'en-GB'});
-        
+
         var expected = "Belgrave House, 76 Buckingham Palace Road\nLondon\nSW1W 9TQ\nOld Blighty";
         var formatter = new AddressFmt({locale: 'en-GB'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressGBFromDE: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -177,11 +177,11 @@ export const testaddress_GB = {
             country: "Old Blighty",
             countryCode: "GB"
         }, {locale: 'de-DE'});
-        
+
         var expected = "Belgrave House, 76 Buckingham Palace Road\nLondon\nSW1W 9TQ\nOld Blighty";
         var formatter = new AddressFmt({locale: 'de-DE'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

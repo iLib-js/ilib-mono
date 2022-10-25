@@ -1,6 +1,6 @@
 /*
  * testaddress_GE.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ export const testaddress_GE = {
     testParseAddressGENormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай Улица Казбеги 19\nТБИЛИСИ 0100\nГРУЗИЯ", {locale: 'ru-GE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -51,11 +51,11 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testParseAddressGENoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай Улица Казбеги 19\nТБИЛИСИ\nГРУЗИЯ", {locale: 'ru-GE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -65,11 +65,11 @@ export const testaddress_GE = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressGENoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай Улица Казбеги 19\nТБИЛИСИ, 0100", {locale: 'ru-GE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -79,7 +79,7 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testParseAddressGEManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай \nУлица Казбеги 19\n\nТБИЛИСИ\n\n0100\nГРУЗИЯ\n\n\n", {locale: 'ru-GE'});
@@ -92,11 +92,11 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testParseAddressGEOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай , Улица Казбеги 19 , ТБИЛИСИ , 0100 , ГРУЗИЯ", {locale: 'ru-GE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай, Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -106,11 +106,11 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testParseAddressGESuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tГ-н Лали Хай \n\t\tУлица Казбеги 19\n\n\nТБИЛИСИ\n\n0100\n\t ГРУЗИЯ\n\n\n", {locale: 'ru-GE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай, Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -120,11 +120,11 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testParseAddressGENoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай Улица Казбеги 19 ТБИЛИСИ 0100 ГРУЗИЯ", {locale: 'ru-GE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -134,11 +134,11 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testParseAddressGEFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Г-н Лали Хай Улица Казбеги 19\nТБИЛИСИ 0100\nGeorgia", {locale: 'en-US'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Г-н Лали Хай Улица Казбеги 19");
         test.equal(parsedAddress.locality, "ТБИЛИСИ");
@@ -148,7 +148,7 @@ export const testaddress_GE = {
         test.equal(parsedAddress.countryCode, "GE");
         test.done();
     },
-    
+
     testFormatAddressGE: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -158,13 +158,13 @@ export const testaddress_GE = {
             country: "ГРУЗИЯ",
             countryCode: "GE"
         }, {locale: 'ru-GE'});
-        
+
         var expected = "Г-н Лали Хай Улица Казбеги 19\nТБИЛИСИ 0100\nГРУЗИЯ";
         var formatter = new AddressFmt({locale: 'ru-GE'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressGEFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -174,11 +174,11 @@ export const testaddress_GE = {
             country: "Georgia",
             countryCode: "GE"
         }, {locale: 'en-US'});
-        
+
         var expected = "Г-н Лали Хай Улица Казбеги 19\nТБИЛИСИ 0100\nGeorgia";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

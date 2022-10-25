@@ -1,6 +1,6 @@
 /*
  * testaddress_TZ.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_TG = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-TG").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_TG = {
     testParseAddressTGNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Nicolas Ayi Patatu B.P. 526\nLome\nTogo", {locale: 'fr-TG'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Nicolas Ayi Patatu B.P. 526");
         test.equal(parsedAddress.locality, "Lome");
@@ -51,12 +51,12 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
-    
+
+
     testParseAddressTGNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Nicolas Ayi Patatu B.P. 526\nLome", {locale: 'fr-TG'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Nicolas Ayi Patatu B.P. 526");
         test.equal(parsedAddress.locality, "Lome");
@@ -66,7 +66,7 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
+
     testParseAddressTGManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Nicolas Ayi Patatu\nB.P. 526\nLome\nTogo\n\n\n", {locale: 'fr-TG'});
@@ -79,11 +79,11 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
+
     testParseAddressTGOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Nicolas Ayi Patatu , B.P. 526 , Lome , Togo", {locale: 'fr-TG'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Nicolas Ayi Patatu, B.P. 526");
         test.equal(parsedAddress.locality, "Lome");
@@ -93,11 +93,11 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
+
     testParseAddressTGSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\t\tM. Nicolas Ayi Patatu\t\t\tB.P.\t\r\r526\t\nLome\n\tTogo\n\n\n", {locale: 'fr-TG'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Nicolas Ayi Patatu B.P. 526");
         test.equal(parsedAddress.locality, "Lome");
@@ -107,11 +107,11 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
+
     testParseAddressTGNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Nicolas Ayi Patatu B.P. 526 Lome Togo", {locale: 'fr-TG'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Nicolas Ayi Patatu B.P. 526");
         test.equal(parsedAddress.locality, "Lome");
@@ -121,11 +121,11 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
+
     testParseAddressTGFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Nicolas Ayi Patatu B.P. 526\nLome\nTogo", {locale: 'en-US'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Nicolas Ayi Patatu B.P. 526");
         test.equal(parsedAddress.locality, "Lome");
@@ -135,7 +135,7 @@ export const testaddress_TG = {
         test.equal(parsedAddress.countryCode, "TG");
         test.done();
     },
-    
+
     testFormatAddressTG: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -144,13 +144,13 @@ export const testaddress_TG = {
             country: "Togo",
             countryCode: "TG"
         }, {locale: 'fr-TG'});
-        
+
         var expected = "M. Nicolas Ayi Patatu B.P. 526\nLome\nTogo";
         var formatter = new AddressFmt({locale: 'fr-TG'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressTGFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -159,11 +159,11 @@ export const testaddress_TG = {
             country: "Togo",
             countryCode: "TG"
         }, {locale: 'en-US'});
-        
+
         var expected = "M. Nicolas Ayi Patatu B.P. 526\nLome\nTogo";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

@@ -19,9 +19,9 @@
 
 /*globals console RegExp */
 
-import { Utils, JSUtils } from 'ilib-common';
+import { Utils, JSUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
-import { CType, isIdeo, isAscii, isDigit } from 'ilib-ctype';
+import { withinRange, isIdeo, isAscii, isDigit } from 'ilib-ctype';
 import IString from 'ilib-istring';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
@@ -43,12 +43,12 @@ function localeDir() {
     }
 }
 
-const defaultAddressInfo = {    
+const defaultAddressInfo = {
     "formats": {
         "default": "{streetAddress}\n{locality} {region} {postalCode}\n{country}",
         "nocountry": "{streetAddress}\n{locality} {region} {postalCode}"
     },
-    
+
     "startAt": "end",
     "fields": [
         {
@@ -206,11 +206,11 @@ class Address {
                     sync
                 });
 
-                const region = this._determineDest(ctrynames);
+                this.countryCode = this._determineDest(ctrynames);
 
                 this.info = locData.loadData({
                     basename: "address",
-                    locale: new Locale(`und-${region}`),
+                    locale: new Locale(`und-${this.countryCode}`),
                     sync
                 });
 
@@ -228,10 +228,10 @@ class Address {
                 locale: this.locale,
                 sync
             }).then((ctrynames) => {
-                const region = this._determineDest(ctrynames);
+                this.countryCode = this._determineDest(ctrynames);
                 return locData.loadData({
                     basename: "address",
-                    locale: new Locale(`und-${region}`),
+                    locale: new Locale(`und-${this.countryCode}`),
                     sync
                 });
             }).then((info) => {
@@ -262,7 +262,8 @@ class Address {
                     const temp = this._findCountry(countryName);
                     if (temp) {
                         match = temp;
-                        match[countryCode] = ctrynames[countryName];
+                        this.country = match.text;
+                        match.countryCode = ctrynames[countryName];
                     }
                 }
             }
@@ -290,7 +291,7 @@ class Address {
         if (localizedCountries) {
             tables.push(localizedCountries);
         }
-        tables.push(nativecountries);
+        tables.push(nativeCountries);
         tables.push(countries);
 
         for (let i = 0; i < tables.length; i++) {
@@ -298,7 +299,7 @@ class Address {
 
             if (match) {
                 this.lines[match.line] = this.lines[match.line].substring(0, match.start) + this.lines[match.line].substring(match.start + match.text.length);
-                return match[countryCode];
+                return match.countryCode;
             }
         }
 
@@ -331,10 +332,10 @@ class Address {
                 while (it.hasNext()) {
                     const c = it.next();
                     if (isIdeo(c) ||
-                            CType.withinRange(c, "hangul") ||
-                            CType.withinRange(c, 'katakana') ||
-                            CType.withinRange(c, 'hiragana') ||
-                            CType.withinRange(c, 'bopomofo')) {
+                            withinRange(c, "hangul") ||
+                            withinRange(c, 'katakana') ||
+                            withinRange(c, 'hiragana') ||
+                            withinRange(c, 'bopomofo')) {
                         asianChars++;
                     } else if (isAscii(c) && !isDigit(c)) {
                         latinChars++;

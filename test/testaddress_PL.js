@@ -1,6 +1,6 @@
 /*
  * testaddress_PL.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_PL = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-PL").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_PL = {
     testParseAddressPLNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski ul. Łączności 1\n82-300 ELBLAG\nPoland", {locale: 'pl-PL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -51,11 +51,11 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testParseAddressPLNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski ul. Łączności 1\nELBLAG\nPoland", {locale: 'pl-PL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -65,11 +65,11 @@ export const testaddress_PL = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressPLNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski ul. Łączności 1\n82-300 ELBLAG", {locale: 'pl-PL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -79,7 +79,7 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testParseAddressPLManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski\nul. Łączności 1\n\n82-300\nELBLAG\nPoland\n\n\n", {locale: 'pl-PL'});
@@ -92,11 +92,11 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testParseAddressPLOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski , ul. Łączności 1 , 82-300 , ELBLAG , Poland", {locale: 'pl-PL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski, ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -106,11 +106,11 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testParseAddressPLSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tAdrian Kieślowski\n\t\t\tul. Łączności 1\n\t\n82-300\t\nELBLAG\n\t Poland\n\n\n", {locale: 'pl-PL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski, ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -120,11 +120,11 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testParseAddressPLNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski ul. Łączności 1 82-300 ELBLAG Poland", {locale: 'pl-PL'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -134,13 +134,13 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testParseAddressPLFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Adrian Kieślowski ul. Łączności 1\n82-300 ELBLAG\nPoland", {locale: 'en-US'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Adrian Kieślowski ul. Łączności 1");
         test.equal(parsedAddress.locality, "ELBLAG");
@@ -150,7 +150,7 @@ export const testaddress_PL = {
         test.equal(parsedAddress.countryCode, "PL");
         test.done();
     },
-    
+
     testFormatAddressPL: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,13 +160,13 @@ export const testaddress_PL = {
             country: "Poland",
             countryCode: "PL"
         }, {locale: 'pl-PL'});
-        
+
         var expected = "Adrian Kieślowski ul. Łączności 1\n82-300 ELBLAG\nPoland";
         var formatter = new AddressFmt({locale: 'pl-PL'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressPLFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -176,11 +176,11 @@ export const testaddress_PL = {
             country: "Poland",
             countryCode: "PL"
         }, {locale: 'en-US'});
-        
+
         var expected = "Adrian Kieślowski ul. Łączności 1\n82-300 ELBLAG\nPoland";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

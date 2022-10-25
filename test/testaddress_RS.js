@@ -1,6 +1,6 @@
 /*
  * testaddress_RS.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_RS = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-RS").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_RS = {
     testParseAddressRSNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Carnojevica 56 Novi Belgradum\n11070 Belgradum\nCentral-Serbia\nSerbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Carnojevica 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
@@ -51,11 +51,11 @@ export const testaddress_RS = {
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testParseAddressRSNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Carnojevica 56 Novi Belgradum\nBelgradum\nCentral-Serbia\nSerbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Carnojevica 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
@@ -65,26 +65,26 @@ export const testaddress_RS = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
-    
+
+
     testParseAddressRSNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Carnojevica 56 Novi Belgradum\n11070 Belgradum\nCentral-Serbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Carnojevica 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
         test.equal(parsedAddress.region, "Central-Serbia");
-        test.equal(parsedAddress.postalCode, "11070");    
+        test.equal(parsedAddress.postalCode, "11070");
         test.ok(typeof(parsedAddress.country) === "undefined");
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testParseAddressRSManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Carnojevica\n56 Novi Belgradum\n11070 Belgradum\nCentral-Serbia\nSerbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Carnojevica, 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
@@ -94,11 +94,11 @@ export const testaddress_RS = {
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testParseAddressRSOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Carnojevica , 56 Novi Belgradum , 11070 , Belgradum , Central-Serbia , Serbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Carnojevica, 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
@@ -108,11 +108,11 @@ export const testaddress_RS = {
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testParseAddressRSSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Чарнојевић\n\n\t56 Novi Belgradum\n\n\r11070\r\r\nBelgradum\t\t\rCentral-Serbia\t\t\rSerbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
           test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Чарнојевић, 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
@@ -122,11 +122,11 @@ export const testaddress_RS = {
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testParseAddressRSNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Boulevard arsenicum Carnojevica 56 Novi Belgradum 11070 Belgradum Central-Serbia Serbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Boulevard arsenicum Carnojevica 56 Novi Belgradum");
         test.equal(parsedAddress.locality, "Belgradum");
@@ -136,11 +136,11 @@ export const testaddress_RS = {
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testParseAddressRSFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Bulevar Arsenija Carnojevica 56 New Belgrade\n11070 Belgrade\nCentral-Serbia\nSerbia", {locale: 'sr-Latn-RS'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Bulevar Arsenija Carnojevica 56 New Belgrade");
         test.equal(parsedAddress.locality, "Belgrade");
@@ -150,7 +150,7 @@ export const testaddress_RS = {
         test.equal(parsedAddress.countryCode, "RS");
         test.done();
     },
-    
+
     testFormatAddressRS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -161,13 +161,13 @@ export const testaddress_RS = {
             country: "Serbia",
             countryCode: "RS"
         }, {locale: 'sr-Latn-RS'});
-        
+
         var expected = "Boulevard arsenicum Carnojevica 56 Novi Belgradum\n11070 Belgradum\nCentral-Serbia\nSerbia";
         var formatter = new AddressFmt({locale: 'sr-Latn-RS'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressRSFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -178,11 +178,11 @@ export const testaddress_RS = {
             country: "Serbia",
             countryCode: "RS"
         }, {locale: 'en-US'});
-        
+
         var expected = "Boulevard arsenicum Carnojevica 56 Novi Belgradum\n11070 Belgradum\nCentral-Serbia\nSerbia";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

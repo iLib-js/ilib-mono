@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,7 @@ export const testaddress_CH = {
     testParseAddressCHNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze Tastentanzenstrasse 5/16\n1234 Zuerich\nSWITZERLAND", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze Tastentanzenstrasse 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -52,11 +52,11 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHNormalWithAccents: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze Tastentanzenstrasse 5/16\n1234 Zürich\nSWITZERLAND", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze Tastentanzenstrasse 5/16");
         test.equal(parsedAddress.locality, "Zürich");
@@ -66,11 +66,11 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHNormalforItaly: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Hans gatto Tastentanz Via 5/16\n1234 Zurich\nSVIZZERA", {locale: 'it-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Hans gatto Tastentanz Via 5/16");
         test.equal(parsedAddress.locality, "Zurich");
@@ -80,12 +80,12 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
-    
+
+
     testParseAddressCHNormalforFrance: function(test) {
         test.expect(7);
         var parsedAddress = new Address("M. Hans chat Tastentanz rue 5/16\n1234 Zurich\nSUISSE", {locale: 'fr-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "M. Hans chat Tastentanz rue 5/16");
         test.equal(parsedAddress.locality, "Zurich");
@@ -95,12 +95,12 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
-    
+
+
     testParseAddressCHNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze Tastentanzenstrasse 5/16\nZuerich\nSWITZERLAND", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze Tastentanzenstrasse 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -110,11 +110,11 @@ export const testaddress_CH = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressCHNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze Tastentanzenstrasse 5/16\n1234 Zuerich", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze Tastentanzenstrasse 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -124,11 +124,11 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze\nTastentanzenstrasse\n5/16\n1234\nZuerich\nSWITZERLAND\n\n", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze, Tastentanzenstrasse, 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -138,7 +138,7 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze , Tastentanzenstrasse , 5/16 , 1234 , Zuerich , SWITZERLAND", {locale: 'de-CH'});
@@ -151,11 +151,11 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\t\Herr Hans Katze\nTastentanzenstrasse\n5/16\n\t1234\n\t\tZuerich\n\t\tSWITZERLAND\t\t", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze, Tastentanzenstrasse, 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -165,11 +165,11 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze Tastentanzenstrasse 5/16 1234 Zuerich SWITZERLAND", {locale: 'de-CH'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze Tastentanzenstrasse 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -179,13 +179,13 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testParseAddressCHFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Herr Hans Katze Tastentanzenstrasse 5/16\n1234 Zuerich\nSWITZERLAND", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Herr Hans Katze Tastentanzenstrasse 5/16");
         test.equal(parsedAddress.locality, "Zuerich");
@@ -195,7 +195,7 @@ export const testaddress_CH = {
         test.equal(parsedAddress.countryCode, "CH");
         test.done();
     },
-    
+
     testFormatAddressCH: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -205,13 +205,13 @@ export const testaddress_CH = {
             country: "SWITZERLAND",
             countryCode: "CH"
         }, {locale: 'de-CH'});
-        
+
         var expected = "Herr Hans Katze Tastentanzenstrasse 5/16\n1234 Zuerich\nSWITZERLAND";
         var formatter = new AddressFmt({locale: 'de-CH'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressCHFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -221,11 +221,11 @@ export const testaddress_CH = {
             country: "SWITZERLAND",
             countryCode: "CH"
         }, {locale: 'en-US'});
-        
+
         var expected = "Herr Hans Katze Tastentanzenstrasse 5/16\n1234 Zuerich\nSWITZERLAND";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

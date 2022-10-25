@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ export const testaddress_GR = {
     testParseAddressGRNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -53,11 +53,11 @@ export const testaddress_GR = {
         test.equal(parsedAddress.countryCode, "GR");
         test.done();
     },
-    
+
     testParseAddressGRNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -67,11 +67,11 @@ export const testaddress_GR = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressGRManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -81,11 +81,11 @@ export const testaddress_GR = {
         test.equal(parsedAddress.countryCode, "GR");
         test.done();
     },
-    
+
     testParseAddressGROneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -95,11 +95,11 @@ export const testaddress_GR = {
         test.equal(parsedAddress.countryCode, "GR");
         test.done();
     },
-    
+
     testParseAddressGRSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -109,11 +109,11 @@ export const testaddress_GR = {
         test.equal(parsedAddress.countryCode, "GR");
         test.done();
     },
-    
+
     testParseAddressGRNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -123,12 +123,12 @@ export const testaddress_GR = {
         test.equal(parsedAddress.countryCode, "GR");
         test.done();
     },
-    
+
     /*
     testParseAddressGRSpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'el-GR'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Botanisk Centralbibliotek,Sølvgade 83, opg. S");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -139,13 +139,13 @@ export const testaddress_GR = {
         test.done();
     },
     */
-    
+
     testParseAddressGRFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("18, Heracleous St., Kifissia, 145 64 Athens,GREECE", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "18, Heracleous St., Kifissia");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -155,7 +155,7 @@ export const testaddress_GR = {
         test.equal(parsedAddress.countryCode, "GR");
         test.done();
     },
-    
+
     testFormatAddressGR: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -165,13 +165,13 @@ export const testaddress_GR = {
             country: "GREECE",
             countryCode: "GR"
         }, {locale: 'el-GR'});
-        
+
         var expected = "18, Heracleous St.,Kifissia\n145 64 Athens\nGREECE";
         var formatter = new AddressFmt({locale: 'el-GR'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressGRFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -181,11 +181,11 @@ export const testaddress_GR = {
             country: "Greece",
             countryCode: "GR"
         }, {locale: 'en-US'});
-        
+
         var expected = "18, Heracleous St.,Kifissia\n145 64 Athens\nGreece";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

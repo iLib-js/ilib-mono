@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ export const testaddress_EE = {
     testParseAddressEENormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House, Rahukohtu 3, 15161 Tallinn, Estonia", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House, Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -53,11 +53,11 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testParseAddressEENoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House, Rahukohtu 3,Tallinn, Estonia", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House, Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -67,11 +67,11 @@ export const testaddress_EE = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressEEManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House\nRahukohtu 3\n15161 Tallinn\nEstonia", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House, Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -81,11 +81,11 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testParseAddressEEOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House, Rahukohtu 3, 15161 Tallinn, Estonia", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House, Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -95,11 +95,11 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testParseAddressEESuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House\n\tRahukohtu 3  \n\t\n 15161 Tallinn\t\n\n Estonia  \n  \t\t\t", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House, Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -109,11 +109,11 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testParseAddressEENoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House Rahukohtu 3 15161 Tallinn Estonia", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -123,11 +123,11 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testParseAddressEESpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Informatics Center, Rävala 5, 15169 Tallinn, Estonia", {locale: 'et-EE'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Informatics Center, Rävala 5");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -137,13 +137,13 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testParseAddressEEFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("The Stenbock House, Rahukohtu 3, 15161 Tallinn, Estonia", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "The Stenbock House, Rahukohtu 3");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -153,7 +153,7 @@ export const testaddress_EE = {
         test.equal(parsedAddress.countryCode, "EE");
         test.done();
     },
-    
+
     testFormatAddressEE: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -163,13 +163,13 @@ export const testaddress_EE = {
             country: "Estonia",
             countryCode: "EE"
         }, {locale: 'et-EE'});
-        
+
         var expected = "The Stenbock House\nRahukohtu 3\n15161 Tallinn\nEstonia";
         var formatter = new AddressFmt({locale: 'et-EE'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressEEFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -179,11 +179,11 @@ export const testaddress_EE = {
             country: "Estonia",
             countryCode: "EE"
         }, {locale: 'en-US'});
-        
+
         var expected = "The Stenbock House\nRahukohtu 3\n15161 Tallinn\nEstonia";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

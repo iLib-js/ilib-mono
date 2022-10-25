@@ -1,6 +1,6 @@
 /*
  * testaddress.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ export const testaddress_CO = {
     testParseAddressCONormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702, ARACATACA–MAGDALENA, COLOMBIA", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -53,11 +53,11 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testParseAddressCONoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702, ARACATACA–MAGDALENA, COLOMBIA", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -67,11 +67,11 @@ export const testaddress_CO = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressCOManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR\nFEDERICO TERRAZAS ARIAS, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702\nARACATACA–MAGDALENA\nCOLOMBIA", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, FEDERICO TERRAZAS ARIAS, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -81,11 +81,11 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testParseAddressCOOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702, ARACATACA–MAGDALENA, COLOMBIA", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -95,11 +95,11 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testParseAddressCOSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702  \n\t\n ARACATACA–MAGDALENA\t\n\n COLOMBIA  \n  \t\t\t", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -109,11 +109,11 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testParseAddressCONoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR Gabriel Garcia Marquez SOCIEDAD DE ESCRITORES COLOMBIANOS Av. 15 no 80–13 oficina 702 ARACATACA–MAGDALENA COLOMBIA", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR Gabriel Garcia Marquez SOCIEDAD DE ESCRITORES COLOMBIANOS Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -123,11 +123,11 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testParseAddressCOSpecialChars: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR, Gabriel García Márquez, SOCIEDAD DE ESCRITORES, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702, ARACATACA–MAGDALENA, COLOMBIA", {locale: 'es-CO'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, Gabriel García Márquez, SOCIEDAD DE ESCRITORES, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -137,13 +137,13 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testParseAddressCOFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702, ARACATACA–MAGDALENA, COLOMBIA", {locale: 'en-US'});
-        
+
         // the country name is in English because this address is for a contact in a US database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702");
         test.ok(typeof(parsedAddress.region) === "undefined");
@@ -153,7 +153,7 @@ export const testaddress_CO = {
         test.equal(parsedAddress.countryCode, "CO");
         test.done();
     },
-    
+
     testFormatAddressCO: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -162,13 +162,13 @@ export const testaddress_CO = {
             country: "COLOMBIA",
             countryCode: "CO"
         }, {locale: 'es-CO'});
-        
+
         var expected = "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702\nARACATACA–MAGDALENA\nCOLOMBIA";
         var formatter = new AddressFmt({locale: 'es-CO'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressCOFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -177,11 +177,11 @@ export const testaddress_CO = {
             locality: "ARACATACA–MAGDALENA",
             countryCode: "CO"
         }, {locale: 'en-US'});
-        
+
         var expected = "SEÑOR, Gabriel Garcia Marquez, SOCIEDAD DE ESCRITORES COLOMBIANOS, Av. 15 no 80–13 oficina 702\nARACATACA–MAGDALENA\nCOLOMBIA";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };

@@ -19,9 +19,8 @@
 
 // !data address addressres regionnames
 
-import { Utils, JSUtils } from 'ilib-common';
+import { Utils, JSUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
-import { CType, isIdeo, isAscii, isDigit } from 'ilib-ctype';
 import IString from 'ilib-istring';
 import ResBundle from 'ilib-resbundle';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
@@ -423,7 +422,7 @@ class AddressFmt {
             sync: false
         }).then((regions) => {
             this.regions = regions;
-            return ResBundle.create({ 
+            return ResBundle.create({
 	            locale: this.locale,
 	            name: "addressres"
 	        });
@@ -439,7 +438,7 @@ class AddressFmt {
             return rows.map((row) => {
                 return row.split("}").filter((component) => {
                     return component.length > 0;
-                }).map(function(component) => {
+                }).map((component) => {
                     var name = component.replace(/.*{/, "");
                     var obj = {
                         component: name,

@@ -1,6 +1,6 @@
 /*
  * testaddress_PY.js - test the address parsing and formatting routines
- * 
+ *
  * Copyright © 2013-2015, 2017, 2022 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ export const testaddress_PK = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-PK").then(() => {
                 callback();
             });
         } else {
@@ -41,7 +41,7 @@ export const testaddress_PK = {
     testParseAddressPKNormal: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1\nISLAMABAD 44000\nPAKISTAN", {locale: 'en-PK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -51,11 +51,11 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testParseAddressPKNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1\nISLAMABAD\nPAKISTAN", {locale: 'en-PK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -65,11 +65,11 @@ export const testaddress_PK = {
         test.ok(typeof(parsedAddress.postalCode) === "undefined");
         test.done();
     },
-    
+
     testParseAddressPKNoCountry: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1\nISLAMABAD 44000", {locale: 'en-PK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -79,7 +79,7 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testParseAddressPKManyLines: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan\nHouse No 17-B\nStreet No 30\n\nSector F-7/1\n\nISLAMABAD\n\n44000\nPAKISTAN\n\n\n", {locale: 'en-PK'});
@@ -92,11 +92,11 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testParseAddressPKOneLine: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan , House No 17-B , Street No 30 , Sector F-7/1 , ISLAMABAD , 44000 , PAKISTAN", {locale: 'en-PK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan, House No 17-B, Street No 30, Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -106,11 +106,11 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testParseAddressPKSuperfluousWhitespace: function(test) {
         test.expect(7);
         var parsedAddress = new Address("\t\t\tMr. Nasratullah Khan\t\t\rHouse No 17-B\t\t\rStreet No 30\n\nSector F-7/1\n\n\nISLAMABAD\n\t\n44000\n\n\tPAKISTAN\n\n\n", {locale: 'en-PK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan House No 17-B Street No 30, Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -120,11 +120,11 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testParseAddressPKNoDelimiters: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1 ISLAMABAD 44000 PAKISTAN", {locale: 'en-PK'});
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -134,13 +134,13 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testParseAddressPKFromUS: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1\nISLAMABAD 44000\nPAKISTAN", {locale: 'en-US'});
-        
+
         // the country name is in German because this address is for a contact in a German database
-        
+
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1");
         test.equal(parsedAddress.locality, "ISLAMABAD");
@@ -150,7 +150,7 @@ export const testaddress_PK = {
         test.equal(parsedAddress.countryCode, "PK");
         test.done();
     },
-    
+
     testFormatAddressPK: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -160,13 +160,13 @@ export const testaddress_PK = {
             country: "PAKISTAN",
             countryCode: "PK"
         }, {locale: 'en-PK'});
-        
+
         var expected = "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1\nISLAMABAD 44000\nPAKISTAN";
         var formatter = new AddressFmt({locale: 'en-PK'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },
-    
+
     testFormatAddressPKFromUS: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
@@ -176,11 +176,11 @@ export const testaddress_PK = {
             country: "PAKISTAN",
             countryCode: "PK"
         }, {locale: 'en-US'});
-        
+
         var expected = "Mr. Nasratullah Khan House No 17-B Street No 30 Sector F-7/1\nISLAMABAD 44000\nPAKISTAN";
         var formatter = new AddressFmt({locale: 'en-US'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     }
-    
+
 };
