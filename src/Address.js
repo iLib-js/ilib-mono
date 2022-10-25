@@ -214,9 +214,9 @@ class Address {
                     sync
                 });
 
-                if (!this.info) {
+                if (!this.info.formats) {
                     // default "unknown" region
-                    this.info = defaultAddressInfo;
+                    this.info = {...this.info, ...defaultAddressInfo};
                 }
             } catch (e) {
                 this.info = defaultAddressInfo;
@@ -235,7 +235,7 @@ class Address {
                     sync
                 });
             }).then((info) => {
-                this.info = info || defaultAddressInfo;
+                this.info = info.formats ? info : { ...info, ...defaultAddressInfo};
                 this._parseAddress();
                 return this;
             }).catch((e) => {

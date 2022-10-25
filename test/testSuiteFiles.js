@@ -149,6 +149,6 @@ export const files = [
     "testaddress_YE.js",
     "testaddress_ZA.js",
     "testaddress_ZM.js",
-    /*
-    "testaddressasync.js" */
+    "testformatinfo.js",
+    //"testaddressasync.js"
 ];
