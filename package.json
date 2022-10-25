@@ -113,6 +113,7 @@
         "ilib-istring": "^1.0.1",
         "ilib-locale": "^1.2.2",
         "ilib-localedata": "^1.4.1",
+        "ilib-resbundle": "file:../ilib-resbundle/ilib-resbundle-1.0.0.tgz",
         "json5": "^2.2.1"
     }
 }
