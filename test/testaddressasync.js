@@ -17,9 +17,13 @@
  * limitations under the License.
  */
 
+import { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
 import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
 
+let setUpPerformed = false;
 
 function searchRegions(array, regionCode) {
     return array.find(function(region) {
@@ -29,8 +33,16 @@ function searchRegions(array, regionCode) {
 
 export const testaddressasync = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("und-AE").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testParseAddressAsyncSimple: function(test) {

@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-exports const files = [
-    "testaddress.js",
+export const files = [
+    //"testaddress.js",
     "testaddress_AE.js",
     "testaddress_AF.js",
     "testaddress_AL.js",
     "testaddress_AM.js",
     "testaddress_AO.js",
+    /*
     "testaddress_AR.js",
     "testaddress_AT.js",
     "testaddress_AU.js",
@@ -150,4 +151,5 @@ exports const files = [
     "testaddress_ZA.js",
     "testaddress_ZM.js",
     "testaddressasync.js"
+    */
 ];

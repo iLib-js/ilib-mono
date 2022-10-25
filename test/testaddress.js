@@ -17,19 +17,32 @@
  * limitations under the License.
  */
 
-import Address '../../lib/Address.js';
+import { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+import Address '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
 
 function searchRegions(array, regionCode) {
-    return array.find(function(region) {
+    return array.find((region) => {
         return region.code === regionCode;
     });
 }
 
+let setUpPerformed = false;
+
 export const testaddress = {
     setUp: function(callback) {
-        ilib.clearCache();
-        callback();
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            // does not support sync, so we have to ensure the locale
+            // data is loaded before we can do all these sync tests
+            setUpPerformed = true;
+            return LocaleData.ensureLocale("und-AE").then(() => {
+                callback();
+            });
+        } else {
+            callback();
+        }
     },
 
     testParseAddressSimple: function(test) {
