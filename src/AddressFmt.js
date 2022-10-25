@@ -24,8 +24,27 @@ import Locale from 'ilib-locale';
 import { CType, isIdeo, isAscii, isDigit } from 'ilib-ctype';
 import IString from 'ilib-istring';
 import ResBundle from 'ilib-resbundle';
+import getLocaleData, { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
 
 import Address from './Address.js';
+
+/**
+ * @private
+ */
+function localeDir() {
+    switch (getPlatform()) {
+        case "nodejs":
+            return Path.join(Path.dirname((typeof(module) !== 'undefined') ? module.id : Path.fileUriToPath(import.meta.url)),
+                "../locale");
+
+        case "browser":
+            return "../assembled";
+
+        default:
+            return "../locale";
+    }
+}
 
 /**
  * Return true if this is an asian locale.
@@ -96,8 +115,7 @@ const defaultData = {
 };
 
 /**
- * @class
- *
+ * @class Format mailing addresses
  */
 class AddressFmt {
 
@@ -118,7 +136,16 @@ class AddressFmt {
      * Returns a formatter instance that can format multiple addresses.
      */
     constructor(options) {
-        this.sync = true;
+        if (!options || !options._noinit) {
+            this.init(options, true);
+        }
+    }
+
+    /**
+     * Initialize this instance.
+     * @private
+     */
+    init(options, sync) {
         this.styleName = 'default';
         this.loadParams = {};
         this.locale = new Locale();
@@ -126,10 +153,6 @@ class AddressFmt {
         if (options) {
             if (options.locale) {
                 this.locale = (typeof(options.locale) === 'string') ? new Locale(options.locale) : options.locale;
-            }
-
-            if (typeof(options.sync) !== 'undefined') {
-                this.sync = !!options.sync;
             }
 
             if (options.style) {
@@ -141,45 +164,45 @@ class AddressFmt {
             }
         }
 
-        // console.log("Creating formatter for region: " + this.locale.region);
-        Utils.loadData({
-            name: "address.json",
-            object: "AddressFmt",
-            locale: this.locale,
-            sync: this.sync,
-            loadParams: this.loadParams,
-            callback: ilib.bind(this, function(info) {
-                if (!info || JSUtils.isEmpty(info)) {
-                    // load the "unknown" locale instead
-                    Utils.loadData({
-                        name: "address.json",
-                        object: "AddressFmt",
-                        locale: new Locale("XX"),
-                        sync: this.sync,
-                        loadParams: this.loadParams,
-                        callback: ilib.bind(this, function(info) {
-                            this.info = info;
-                            this._init();
-                            if (options && typeof(options.onLoad) === 'function') {
-                                options.onLoad(this);
-                            }
-                        })
-                    });
-                } else {
-                    this.info = info;
-                    this._init();
-                    if (options && typeof(options.onLoad) === 'function') {
-                        options.onLoad(this);
-                    }
-                }
-            })
+        this.locale = this.locale || new Locale();
+
+        const locData = getLocaleData({
+            path: localeDir(),
+            sync
         });
+
+        if (sync) {
+            try {
+                this.info = locData.loadData({
+                    basename: "address",
+                    locale: this.locale,
+                    sync
+                });
+            } catch (e) {
+                this.info = defaultData;
+            }
+            this._initialize();
+        } else {
+            return locData.loadData({
+                basename: "address",
+                locale: this.locale,
+                sync
+            }).then((info) => {
+                this.info = info || defaultData;
+                this._initialize();
+                return this;
+            }).catch((e) => {
+                this.info = defaultData;
+                this._initialize();
+                return this;
+            });
+        }
     }
 
     /**
      * @private
      */
-    _init() {
+    _initialize() {
         if (!this.info) this.info = defaultData;
 
         this.style = this.info.formats && this.info.formats[this.styleName];
@@ -362,13 +385,11 @@ class AddressFmt {
      *
      * @param {Locale|string=} locale the locale to translate the labels
      * to. If not given, the locale of the formatter will be used.
-     * @param {boolean=} sync true if this method should load the data
-     * synchronously, false if async
-     * @param {Function=} callback a callback to call when the data
-     * is ready
-     * @returns {Array.<Object>} An array of rows of address components
+     * @returns {Promise} a promise to load the requested info
+     * @accept {Array.<Object>} An array of rows of address components
+     * @reject {undefined} No info available or info could not be loaded
      */
-    getFormatInfo(locale, sync, callback) {
+    getFormatInfo(locale) {
         var info;
         var loc = new Locale(this.locale);
         if (locale) {
@@ -379,75 +400,70 @@ class AddressFmt {
             loc.spec = undefined;
         }
 
-        Utils.loadData({
-            name: "regionnames.json",
-            object: "AddressFmt",
-            locale: loc,
-            sync: this.sync,
-            loadParams: JSUtils.merge(this.loadParams, {returnOne: true}, true),
-            callback: ilib.bind(this, function(regions) {
-                this.regions = regions;
+        var type, format, rb, fields = this.info.fields || defaultData.fields;
+        if (this.info.multiformat) {
+            type = isAsianLocale(this.locale) ? "asian" : "latin";
+            fields = this.info.fields[type];
+        }
 
-                new ResBundle({
-                    locale: loc,
-                    name: "addressres",
-                    sync: this.sync,
-                    loadParams: this.loadParams,
-                    onLoad: ilib.bind(this, function (rb) {
-                        var type, format, fields = this.info.fields || defaultData.fields;
-                        if (this.info.multiformat) {
-                            type = isAsianLocale(this.locale) ? "asian" : "latin";
-                            fields = this.info.fields[type];
-                        }
+        if (typeof(this.style) === 'object') {
+            format = this.style[type || "latin"];
+        } else {
+            format = this.style;
+        }
 
-                        if (typeof(this.style) === 'object') {
-                            format = this.style[type || "latin"];
-                        } else {
-                            format = this.style;
-                        }
-                        new Address(" ", {
-                            locale: loc,
-                            sync: this.sync,
-                            loadParams: this.loadParams,
-                            onLoad: ilib.bind(this, function(localeAddress) {
-                                var rows = format.split(/\n/g);
-                                info = rows.map(ilib.bind(this, function(row) {
-                                    return row.split("}").filter(function(component) {
-                                        return component.length > 0;
-                                    }).map(ilib.bind(this, function(component) {
-                                        var name = component.replace(/.*{/, "");
-                                        var obj = {
-                                            component: name,
-                                            label: rb.getStringJS(this.info.fieldNames[name])
-                                        };
-                                        var field = fields.filter(function(f) {
-                                            return f.name === name;
-                                        });
-                                        if (field && field[0] && field[0].pattern) {
-                                            if (typeof(field[0].pattern) === "string") {
-                                                obj.constraint = field[0].pattern;
-                                            }
-                                        }
-                                        if (name === "country") {
-                                            obj.constraint = invertAndFilter(localeAddress.ctrynames);
-                                        } else if (name === "region" && this.regions[loc.getRegion()]) {
-                                            obj.constraint = this.regions[loc.getRegion()];
-                                        }
-                                        return obj;
-                                    }));
-                                }));
-
-                                if (callback && typeof(callback) === "function") {
-                                    callback(info);
-                                }
-                            })
-                        });
-                    })
-                });
-            })
+        const locData = getLocaleData({
+            path: localeDir(),
+            sync: false
         });
 
-        return info;
+        return locData.loadData({
+            basename: "regionnames",
+            locale: loc,
+            sync: false
+        }).then((regions) => {
+            this.regions = regions;
+            return ResBundle.create({ 
+	            locale: this.locale,
+	            name: "addressres"
+	        });
+        }).then((res) => {
+            rb = res;
+            return locData.loadData({
+	            basename: "ctrynames",
+	            locale: loc,
+	            sync: false
+	        })
+         }).then((ctrynames) => {
+            const rows = format.split(/\n/g);
+            return rows.map((row) => {
+                return row.split("}").filter((component) => {
+                    return component.length > 0;
+                }).map(function(component) => {
+                    var name = component.replace(/.*{/, "");
+                    var obj = {
+                        component: name,
+                        label: rb.getStringJS(this.info.fieldNames[name])
+                    };
+                    var field = fields.filter(function(f) {
+                        return f.name === name;
+                    });
+                    if (field && field[0] && field[0].pattern) {
+                        if (typeof(field[0].pattern) === "string") {
+                            obj.constraint = field[0].pattern;
+                        }
+                    }
+                    if (name === "country") {
+                        obj.constraint = invertAndFilter(ctrynames);
+                    } else if (name === "region" && this.regions[loc.getRegion()]) {
+                        obj.constraint = this.regions[loc.getRegion()];
+                    }
+                    return obj;
+                });
+            });
+        }).catch((e) => {
+            return undefined;
+        });
     }
 }
 

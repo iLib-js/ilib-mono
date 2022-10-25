@@ -19,15 +19,53 @@
 
 /*globals console RegExp */
 
-// !data address countries nativecountries ctrynames
-
 import { Utils, JSUtils } from 'ilib-common';
 import Locale from 'ilib-locale';
 import { CType, isIdeo, isAscii, isDigit } from 'ilib-ctype';
 import IString from 'ilib-istring';
+import getLocaleData, { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+import { nativeCountries } from './NativeCountries.js';
+import { countries } from './Countries.js';
+
+function localeDir() {
+    switch (getPlatform()) {
+        case "nodejs":
+            return Path.join(Path.dirname((typeof(module) !== 'undefined') ? module.id : Path.fileUriToPath(import.meta.url)),
+                "../locale");
+
+        case "browser":
+            return "../assembled";
+
+        default:
+            return "../locale";
+    }
+}
+
+const defaultAddressInfo = {    
+    "formats": {
+        "default": "{streetAddress}\n{locality} {region} {postalCode}\n{country}",
+        "nocountry": "{streetAddress}\n{locality} {region} {postalCode}"
+    },
+    
+    "startAt": "end",
+    "fields": [
+        {
+            "name": "postalCode",
+            "line": "startAtLast",
+            "pattern": "[0-9]+$"
+        },
+        {
+            "name": "locality",
+            "line": "last",
+            "pattern": "[\\wÀÁÂÄÇÈÉÊËÌÍÎÏÒÓÔÙÚÛàáâçèéêëìíîïòóôùúû\\.\\-']+$"
+        }
+    ]
+};
 
 /**
- * @class
+ * @class A class to parse and represent mailing addresses
  */
 class Address {
     /**
@@ -75,8 +113,16 @@ class Address {
      * @param {Object} options options to the parser
      */
     constructor(freeformAddress, options) {
-        var address;
+        if (!options || !options._noinit) {
+            this.init(freeformAddress, options, true);
+        }
+    }
 
+    /**
+     * Initialize this instance.
+     * @private
+     */
+    init(freeformAddress, options, sync) {
         if (!freeformAddress) {
             return undefined;
         }
@@ -139,7 +185,7 @@ class Address {
             return;
         }
 
-        address = freeformAddress.replace(/[ \t\r]+/g, " ").trim();
+        let address = freeformAddress.replace(/[ \t\r]+/g, " ").trim();
         address = address.replace(/[\s\n]+$/, "");
         address = address.replace(/^[\s\n]+/, "");
         //console.log("\n\n-------------\nAddress is '" + address + "'");
@@ -147,67 +193,57 @@ class Address {
         this.lines = address.split(/[,，\n]/g);
         this.removeEmptyLines(this.lines);
 
-        isAscii._init(this.sync, this.loadParams, ilib.bind(this, function() {
-            isIdeo._init(this.sync, this.loadParams, ilib.bind(this, function() {
-                isDigit._init(this.sync, this.loadParams, ilib.bind(this, function() {
-                    if (typeof(ilib.data.nativecountries) === 'undefined') {
-                        Utils.loadData({
-                            object: "Address",
-                            name: "nativecountries.json", // countries in their own language
-                            locale: "-", // only need to load the root file
-                            nonlocale: true,
-                            sync: this.sync,
-                            loadParams: this.loadParams,
-                            callback: ilib.bind(this, function(nativecountries) {
-                                ilib.data.nativecountries = nativecountries;
-                                this._loadCountries(options && options.onLoad);
-                            })
-                        });
-                    } else {
-                        this._loadCountries(options && options.onLoad);
-                    }
-                }));
-            }));
-        }));
-    }
-
-    /**
-     * @private
-     */
-    _loadCountries(onLoad) {
-        if (typeof(ilib.data.countries) === 'undefined') {
-            Utils.loadData({
-                object: "Address",
-                name: "countries.json", // countries in English
-                locale: "-", // only need to load the root file
-                nonlocale: true,
-                sync: this.sync,
-                loadParams: this.loadParams,
-                callback: ilib.bind(this, function(countries) {
-                    ilib.data.countries = countries;
-                    this._loadCtrynames(onLoad);
-                })
-            });
-        } else {
-            this._loadCtrynames(onLoad);
-        }
-    }
-
-    /**
-     * @private
-     */
-    _loadCtrynames(onLoad) {
-        Utils.loadData({
-            name: "ctrynames.json",
-            object: "Address",
-            locale: this.locale,
-            sync: this.sync,
-            loadParams: JSUtils.merge(this.loadParams, {returnOne: true}),
-            callback: ilib.bind(this, function(ctrynames) {
-                this.ctrynames = ctrynames;
-                this._determineDest(ctrynames, onLoad);
-            })
+        const locData = getLocaleData({
+            path: localeDir(),
+            sync
         });
+
+        if (sync) {
+            try {
+                const ctrynames = locData.loadData({
+                    basename: "ctrynames",
+                    locale: this.locale,
+                    sync
+                });
+
+                const region = this._determineDest(ctrynames);
+
+                this.info = locData.loadData({
+                    basename: "address",
+                    locale: new Locale(`und-${region}`),
+                    sync
+                });
+
+                if (!this.info) {
+                    // default "unknown" region
+                    this.info = defaultAddressInfo;
+                }
+            } catch (e) {
+                this.info = defaultAddressInfo;
+            }
+            this._parseAddress();
+        } else {
+            return locData.loadData({
+                basename: "ctrynames",
+                locale: this.locale,
+                sync
+            }).then((ctrynames) => {
+                const region = this._determineDest(ctrynames);
+                return locData.loadData({
+                    basename: "address",
+                    locale: new Locale(`und-${region}`),
+                    sync
+                });
+            }).then((info) => {
+                this.info = info || defaultAddressInfo;
+                this._parseAddress();
+                return this;
+            }).catch((e) => {
+                this.info = defaultAddressInfo;
+                this._parseAddress();
+                return this;
+            });
+        }
     }
 
     /**
@@ -215,19 +251,18 @@ class Address {
      * @param {Object?} ctrynames
      */
     _findDest(ctrynames) {
-        var match;
+        let match;
 
-        for (var countryName in ctrynames) {
+        for (const countryName in ctrynames) {
             if (countryName && countryName !== "generated") {
                 // find the longest match in the current table
                 // ctrynames contains the country names mapped to region code
                 // for efficiency, only test for things longer than the current match
                 if (!match || match.text.length < countryName.length) {
-                    var temp = this._findCountry(countryName);
+                    const temp = this._findCountry(countryName);
                     if (temp) {
                         match = temp;
-                        this.country = match.text;
-                        this.countryCode = ctrynames[countryName];
+                        match[countryCode] = ctrynames[countryName];
                     }
                 }
             }
@@ -238,10 +273,9 @@ class Address {
     /**
      * @private
      * @param {Object?} localizedCountries
-     * @param {function(Address):undefined} callback
      */
-    _determineDest(localizedCountries, callback) {
-        var match;
+    _determineDest(localizedCountries) {
+        let match;
 
         /*
          * First, find the name of the destination country, as that determines how to parse
@@ -252,67 +286,24 @@ class Address {
          * 3. In English
          * We'll try all three.
          */
-        var tables = [];
+        let tables = [];
         if (localizedCountries) {
             tables.push(localizedCountries);
         }
-        tables.push(ilib.data.nativecountries);
-        tables.push(ilib.data.countries);
+        tables.push(nativecountries);
+        tables.push(countries);
 
-        for (var i = 0; i < tables.length; i++) {
+        for (let i = 0; i < tables.length; i++) {
             match = this._findDest(tables[i]);
 
             if (match) {
                 this.lines[match.line] = this.lines[match.line].substring(0, match.start) + this.lines[match.line].substring(match.start + match.text.length);
-
-                this._init(callback);
-                return;
+                return match[countryCode];
             }
         }
 
         // no country, so try parsing it as if we were in the same country
-        this.country = undefined;
-        this.countryCode = this.locale.getRegion();
-        this._init(callback);
-    }
-
-    /**
-     * @private
-     * @param {function(Address):undefined} callback
-     */
-    _init(callback) {
-        Utils.loadData({
-            object: "Address",
-            locale: new Locale(this.countryCode),
-            name: "address.json",
-            sync: this.sync,
-            loadParams: this.loadParams,
-            callback: ilib.bind(this, function(info) {
-                if (!info || JSUtils.isEmpty(info) || !info.fields) {
-                    // load the "unknown" locale instead
-                    Utils.loadData({
-                        object: "Address",
-                        locale: new Locale("XX"),
-                        name: "address.json",
-                        sync: this.sync,
-                        loadParams: this.loadParams,
-                        callback: ilib.bind(this, function(info) {
-                            this.info = info;
-                            this._parseAddress();
-                            if (typeof(callback) === 'function') {
-                                callback(this);
-                            }
-                        })
-                    });
-                } else {
-                    this.info = info;
-                    this._parseAddress();
-                    if (typeof(callback) === 'function') {
-                        callback(this);
-                    }
-                }
-            })
-        });
+        return this.locale.getRegion();
     }
 
     /**
@@ -320,7 +311,7 @@ class Address {
      */
     _parseAddress() {
         // clean it up first
-        var i,
+        let i,
             asianChars = 0,
             latinChars = 0,
             startAt,
@@ -334,11 +325,11 @@ class Address {
         // for locales that support both latin and asian character addresses,
         // decide if we are parsing an asian or latin script address
         if (this.info && this.info.multiformat) {
-            for (var j = 0; j < this.lines.length; j++) {
-                var line = new IString(this.lines[j]);
-                var it = line.charIterator();
+            for (let j = 0; j < this.lines.length; j++) {
+                const line = new IString(this.lines[j]);
+                const it = line.charIterator();
                 while (it.hasNext()) {
-                    var c = it.next();
+                    const c = it.next();
                     if (isIdeo(c) ||
                             CType.withinRange(c, "hangul") ||
                             CType.withinRange(c, 'katakana') ||
@@ -354,7 +345,7 @@ class Address {
             this.format = (asianChars >= latinChars) ? "asian" : "latin";
             startAt = this.info.startAt[this.format];
             infoFields = this.info.fields[this.format];
-            // //console.log("multiformat locale: format is now " + this.format);
+            // console.log("multiformat locale: format is now " + this.format);
         } else {
             startAt = (this.info && this.info.startAt) || "end";
             infoFields = (this.info && this.info.fields) || [];
@@ -421,7 +412,7 @@ class Address {
         if (this.lines.length > 0) {
             //console.log("this.lines is " + JSON.stringify(this.lines) + " and splicing to get streetAddress");
             // Korea uses spaces between words, despite being an "asian" locale
-            var joinString = (this.info.joinString && this.info.joinString[this.format]) || ((this.format && this.format === "asian") ? "" : ", ");
+            const joinString = (this.info.joinString && this.info.joinString[this.format]) || ((this.format && this.format === "asian") ? "" : ", ");
             this.streetAddress = this.lines.join(joinString).trim();
         }
 
@@ -430,11 +421,11 @@ class Address {
     }
 
     /**
-     * @protected
+     * @private
      * Find the named country either at the end or the beginning of the address.
      */
     _findCountry(name) {
-        var start = -1, match, line = 0;
+        let start = -1, match, line = 0;
 
         if (this.lines.length > 0) {
             start = this.startsWith(this.lines[line], name);
@@ -445,8 +436,8 @@ class Address {
             if (start !== -1) {
                 match = {
                     text: this.lines[line].substring(start, start + name.length),
-                    line: line,
-                    start: start
+                    line,
+                    start
                 };
             }
         }
@@ -454,8 +445,11 @@ class Address {
         return match;
     }
 
+    /**
+     * @private
+     */
     endsWith(subject, query) {
-        var start = subject.length-query.length,
+        let start = subject.length-query.length,
             i,
             pat;
         //console.log("endsWith: checking " + query + " against " + subject);
@@ -476,8 +470,11 @@ class Address {
         return start;
     }
 
+    /**
+     * @private
+     */
     startsWith(subject, query) {
-        var i;
+        let i;
         // //console.log("startsWith: checking " + query + " against " + subject);
         for (i = 0; i < query.length; i++) {
             // TODO: use case mapper instead of toLowerCase()
@@ -488,8 +485,11 @@ class Address {
         return 0;
     }
 
+    /**
+     * @private
+     */
     removeEmptyLines(arr) {
-        var i = 0;
+        let i = 0;
 
         while (i < arr.length) {
             if (arr[i]) {
@@ -505,8 +505,11 @@ class Address {
         }
     }
 
+    /**
+     * @private
+     */
     matchRegExp(address, line, expression, matchGroup, startAt) {
-        var lastMatch,
+        let lastMatch,
             match,
             ret = {},
             last;
@@ -548,8 +551,11 @@ class Address {
         return undefined;
     }
 
+    /**
+     * @private
+     */
     matchPattern(address, line, pattern, matchGroup) {
-        var start,
+        let start,
             j,
             ret = {};
 
