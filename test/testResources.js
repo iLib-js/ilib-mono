@@ -1668,9 +1668,9 @@ export const testResources = {
     testResBundlePseudo_euES: function(test) {
         test.expect(1);
         ResBundle.clearPseudoLocales();
-        ResBundle.addPseudoLocale("eu-ES");
+        ResBundle.addPseudoLocale("eu-XX");
         var rb = new ResBundle({
-            locale:'eu-ES'
+            locale:'eu-XX'
         });
         test.equal(rb.getStringJS("This is pseudo string test"), "Ťĥíš íš þšëüðõ šţŕíñğ ţëšţ");
         test.done();
@@ -1680,9 +1680,9 @@ export const testResources = {
     testResBundlePseudo_psAF: function(test) {
         test.expect(1);
         ResBundle.clearPseudoLocales();
-        ResBundle.addPseudoLocale("ps-AF");
+        ResBundle.addPseudoLocale("ps-XX");
         var rb = new ResBundle({
-            locale:'ps-AF'
+            locale:'ps-XX'
         });
         test.equal(rb.getStringJS("This is pseudo string test"), 'טהִס ִס פסֶֻדֹ סטרִנג טֶסט');
 

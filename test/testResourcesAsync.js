@@ -155,9 +155,9 @@ export const testResourcesAsync = {
     testResBundleAsyncPseudo_euES: function(test) {
         test.expect(1);
         ResBundle.clearPseudoLocales();
-        ResBundle.addPseudoLocale("eu-ES");
+        ResBundle.addPseudoLocale("eu-XX");
         ResBundle.create({
-            locale:'eu-ES'
+            locale:'eu-XX'
         }).then((rb) => {
             test.equal(rb.getString("This is psuedo string test").toString(), "Ťĥíš íš þšüëðõ šţŕíñğ ţëšţ");
             test.done();
@@ -168,9 +168,9 @@ export const testResourcesAsync = {
     testResBundleAsyncPseudo_psAF: function(test) {
         test.expect(1);
         ResBundle.clearPseudoLocales();
-        ResBundle.addPseudoLocale("ps-AF");
+        ResBundle.addPseudoLocale("ps-XX");
         ResBundle.create({
-            locale:'ps-AF'
+            locale:'ps-XX'
         }).then((rb) => {
             test.equal(rb.getString("This is psuedo string test").toString(), "טהִס ִס פסֶֻדֹ סטרִנג טֶסט");
             test.done();
