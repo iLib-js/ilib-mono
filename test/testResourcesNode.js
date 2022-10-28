@@ -143,6 +143,57 @@ export const testResourcesNode = {
 
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const root = Path.join(__dirname, "./resources");
+
+        var rb = new ResBundle({
+            basePath: root,
+            locale: "ja-JP",
+            name: "basetest"
+        });
+
+        test.ok(rb !== null);
+
+        test.equal(rb.getStringJS("Hello from {country}"), "{country}からこんにちは");
+        test.equal(rb.getStringJS("Hello from {city}"), "{city}からこんにちは");
+        test.equal(rb.getStringJS("Greetings from {city} in {country}"), "{city}と{country}からこんにちは");
+
+        // put it back again
+        LocaleData.addGlobalRoot("test/resources4");
+        test.done();
+    },
+
+    testResBundleGetStringWithDifferentBasePath: function(test) {
+        test.expect(4);
+
+        LocaleData.clearGlobalRoots();
+        const root = Path.join(__dirname, "./resources2");
+
+        var rb = new ResBundle({
+            basePath: root,
+            locale: "ja-JP",
+            name: "basetest"
+        });
+
+        test.ok(rb !== null);
+
+        test.equal(rb.getStringJS("Hello from {country}"), "{country}からこんにちは2");
+        test.equal(rb.getStringJS("Hello from {city}"), "{city}からこんにちは2");
+        test.equal(rb.getStringJS("Greetings from {city} in {country}"), "{city}と{country}からこんにちは2");
+
+        // put it back again
+        LocaleData.addGlobalRoot("test/resources4");
+        test.done();
+    },
+
+    testResBundleGetStringFromOtherRootPath: function(test) {
+
+        test.expect(4);
+
+        // clear this to be sure it is actually loading something
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
 
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
@@ -159,10 +210,14 @@ export const testResourcesNode = {
         test.equal(rb.getStringJS("Greetings from {city} in {country}"), "{city}と{country}からこんにちは");
 
         LocaleData.removeGlobalRoot(root);
+
+        // put the old one back again
+        LocaleData.addGlobalRoot("test/resources4");
+
         test.done();
     },
 
-    testResBundleGetStringWithDifferentBasePath: function(test) {
+    testResBundleGetStringFromDifferentRootPath: function(test) {
         test.expect(4);
 
         // don't clear the cache
@@ -180,8 +235,10 @@ export const testResourcesNode = {
         test.equal(rb.getStringJS("Hello from {city}"), "{city}からこんにちは2");
         test.equal(rb.getStringJS("Greetings from {city} in {country}"), "{city}と{country}からこんにちは2");
         LocaleData.removeGlobalRoot(root);
+
         test.done();
     },
+
     testResBundleMultiPaths_ko_KR: function(test) {
         test.expect(3);
 

@@ -299,7 +299,7 @@ class ResBundle {
         lookupLocale = ResBundle.isPseudoLocale(this.locale.getSpec()) ? new Locale("en-US") : this.locale;
 
         const locData = getLocaleData({
-            path: localeDir(),
+            path: this.path || localeDir(),
             sync
         });
 
