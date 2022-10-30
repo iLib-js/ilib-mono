@@ -157,10 +157,6 @@ class AddressFmt {
             if (options.style) {
                 this.styleName = options.style;
             }
-
-            if (options.loadParams) {
-                this.loadParams = options.loadParams;
-            }
         }
 
         this.locale = this.locale || new Locale();
@@ -399,6 +395,7 @@ class AddressFmt {
             loc.spec = undefined;
         }
 
+        const locdir = localeDir();
         var type, format, rb, fields = this.info.fields || defaultData.fields;
         if (this.info.multiformat) {
             type = isAsianLocale(this.locale) ? "asian" : "latin";
@@ -412,7 +409,7 @@ class AddressFmt {
         }
 
         const locData = getLocaleData({
-            path: localeDir(),
+            path: locdir,
             sync: false
         });
 
@@ -423,16 +420,17 @@ class AddressFmt {
         }).then((regions) => {
             this.regions = regions;
             return ResBundle.create({
-	            locale: this.locale,
-	            name: "addressres"
-	        });
+                basePath: locdir,
+                name: "addressres",
+                locale
+            });
         }).then((res) => {
             rb = res;
             return locData.loadData({
-	            basename: "ctrynames",
-	            locale: loc,
-	            sync: false
-	        })
+                basename: "ctrynames",
+                locale: loc,
+                sync: false
+            })
          }).then((ctrynames) => {
             const rows = format.split(/\n/g);
             return rows.map((row) => {
