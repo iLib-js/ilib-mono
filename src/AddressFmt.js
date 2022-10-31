@@ -416,20 +416,22 @@ class AddressFmt {
         return locData.loadData({
             basename: "regionnames",
             locale: loc,
-            sync: false
+            sync: false,
+            mostSpecific: true
         }).then((regions) => {
             this.regions = regions;
             return ResBundle.create({
                 basePath: locdir,
                 name: "addressres",
-                locale
+                locale: loc
             });
         }).then((res) => {
             rb = res;
             return locData.loadData({
                 basename: "ctrynames",
                 locale: loc,
-                sync: false
+                sync: false,
+                mostSpecific: true
             })
          }).then((ctrynames) => {
             const rows = format.split(/\n/g);
