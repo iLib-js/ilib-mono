@@ -22,6 +22,7 @@ import { getPlatform } from 'ilib-env';
 
 import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
+import { localeList } from './locales.js';
 
 function searchRegions(array, regionCode) {
     return array.find((region) => {
@@ -37,15 +38,24 @@ export const testaddress = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            let promise = Promise.resolve(true);
-            ["en-CA", "en-GB", "en-HK", "en-JP", "en-QQ", "en-SG", "en-US", "en-XY", "de-DE", "ja-JP", "ru-RU", "zh-Hans-CN", "zh-Hans-SG", "zxx-XX"].forEach(locale => {
-                promise = promise.then(() => {
-                    return LocaleData.ensureLocale(locale);
+            LocaleData.clearCache();
+            if (getPlatform() === "browser") {
+                // does not support sync, so we have to ensure the locale
+                // data is loaded before we can do all these sync tests
+                let promise = Promise.resolve(true);
+                localeList.locales.forEach(locale => {
+                    promise = promise.then(() => {
+                        return LocaleData.ensureLocale(locale);
+                    });
                 });
-            });
-            promise.then(() => {
+                promise.then(() => {
+                    setUpPerformed = true;
+                    callback();
+                });
+            } else {
+                setUpPerformed = true;
                 callback();
-            });
+            }
         } else {
             callback();
         }
