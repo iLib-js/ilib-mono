@@ -1,6 +1,6 @@
 {
     "name": "ilib-resbundle",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {
@@ -70,7 +70,7 @@
         "test:all": "npm-run-all test:cli test:web",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz assembled locales.json",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md ; npm run doc:html",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibResBundle.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
