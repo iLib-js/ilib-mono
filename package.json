@@ -61,7 +61,7 @@
         "build:webtest": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:locales": "echo '{\"locales\":[' $(cat locales.txt) ']}' > locales.json ; echo 'export const localeList = ' > test/locales.js ; cat locales.json >> test/locales.js",
-        "build:assemble": "npm-run-all build:locales ; ilib-assemble -m .  --resources ./locales --localefile ./locales.json assembled src",
+        "build:assemble": "npm-run-all build:locales ; ilib-assemble -m .  --resources ./locale --localefile ./locales.json assembled src",
         "build:test": "npm-run-all build:locales build:dev build:assemble build:webtest",
         "dist": "npm-run-all doc build:prod build:pkg; npm pack",
         "test": "npm-run-all build:dev test:cli",

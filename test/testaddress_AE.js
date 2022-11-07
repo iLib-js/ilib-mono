@@ -32,7 +32,13 @@ export const testaddress_AE = {
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
             LocaleData.clearCache();
-            return LocaleData.ensureLocale("ar-AE").then(() => {
+            let promise = Promise.resolve(true);
+            ["ar-AE", "en-US"].forEach(locale => {
+                promise = promise.then(() => {
+                    return LocaleData.ensureLocale(locale);
+                });
+            });
+            promise.then(() => {
                 callback();
             });
         } else {

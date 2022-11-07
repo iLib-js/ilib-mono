@@ -31,7 +31,13 @@ export const testaddress_AR = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("es-AR").then(() => {
+            let promise = Promise.resolve(true);
+            ["es-AR", "en-US"].forEach(locale => {
+                promise = promise.then(() => {
+                    return LocaleData.ensureLocale(locale);
+                });
+            });
+            promise.then(() => {
                 callback();
             });
         } else {
@@ -182,7 +188,7 @@ export const testaddress_AR = {
             locality: "San Sebastian",
             postalCode: "B1000TBU",
             country: "ARGENTINA",
-            countryCode: "AT"
+            countryCode: "AR"
         }, {locale: 'es-AR'});
 
         var expected = "At. Sr. Hiro Gordo-Globo, Sumo Informática S.A., Calle 39 No 1540\nB1000TBU San Sebastian\nARGENTINA";
@@ -199,7 +205,7 @@ export const testaddress_AR = {
             locality: "San Sebastian",
             postalCode: "B1000TBU",
             country: "Argentina",
-            countryCode: "AT"
+            countryCode: "AR"
         }, {locale: 'en-US'});
 
         var expected = "At. Sr. Hiro Gordo-Globo, Sumo Informática S.A., Calle 39 No 1540\nB1000TBU San Sebastian\nArgentina";

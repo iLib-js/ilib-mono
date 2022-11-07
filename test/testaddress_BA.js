@@ -25,14 +25,13 @@ import AddressFmt from '../src/AddressFmt.js';
 
 let setUpPerformed = false;
 
-
 export const testaddress_BA = {
     setUp: function(callback) {
         if (getPlatform() === "browser" && !setUpPerformed) {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-BA").then(() => {
+            return LocaleData.ensureLocale("bs-Latn-BA").then(() => {
                 callback();
             });
         } else {

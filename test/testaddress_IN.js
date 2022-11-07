@@ -30,6 +30,15 @@ export const testaddress_IN = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
+            let promise = Promise.resolve(true);
+            ["bn-IN", "hi-IN", "gu-IN", "kn-IN", "mr-IN", "te-IN", "ta-IN"].forEach(locale => {
+                promise = promise.then(() => {
+                    return LocaleData.ensureLocale(locale);
+                });
+            });
+            promise.then(() => {
+                callback();
+            });
             return LocaleData.ensureLocale("bn-IN").then(() => {
                 callback();
             });

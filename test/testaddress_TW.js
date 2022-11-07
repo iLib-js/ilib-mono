@@ -30,7 +30,7 @@ export const testaddress_TW = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("en-TW").then(() => {
+            return LocaleData.ensureLocale("zh-Hant-TW").then(() => {
                 callback();
             });
         } else {
