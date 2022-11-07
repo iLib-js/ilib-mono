@@ -24,6 +24,28 @@ import JSON5 from 'json5';
 
 let cache = {};
 
+function getLocFiles(name, locale, locData, here, mostSpecific) {
+    const locales = Utils.getSublocales(locale);
+    const locFiles = Utils.getLocFiles(locale, `${name}.json`).map(file => {
+        return join(here, file);
+    });
+    locFiles.forEach((file, i) => {
+        const loc = locales[i];
+        if (mostSpecific && locales[i] === "root") return;
+        if (!locData[loc]) {
+            locData[loc] = {};
+        }
+        if (cache[file]) {
+            locData[loc][name] = cache[file];
+        } else if (existsSync(file)) {
+            const data = readFileSync(file, "utf-8");
+            const json = JSON5.parse(data);
+            locData[loc][name] = json;
+            cache[file] = json;
+        }
+    });
+}
+
 function assemble(options) {
     let localeData = {};
 
@@ -32,24 +54,12 @@ function assemble(options) {
     const here = join(dirname(import.meta.url.replace(/file:\/\//, "")), "locale");
 
     options.locales.forEach(locale => {
-        const locales = Utils.getSublocales(locale);
-        const locFiles = Utils.getLocFiles(locale, "name.json").map(file => {
-            return join(here, file);
-        });
         let locData = {};
-        locFiles.forEach((file, i) => {
-            const loc = locales[i];
-            if (!locData[loc]) {
-                locData[loc] = {};
-            }
-            if (cache[file]) {
-                locData[loc].name = cache[file];
-            } else if (existsSync(file)) {
-                const data = readFileSync(file, "utf-8");
-                const json = JSON5.parse(data);
-                locData[loc].name = json;
-                cache[file] = json;
-            }
+        ["address", "addressres"].forEach(name => {
+            getLocFiles(name, locale, locData, here, false);
+        });
+        ["ctrynames", "regionnames"].forEach(name => {
+            getLocFiles(name, locale, locData, here, true);
         });
         localeData[locale] = locData;
     });
