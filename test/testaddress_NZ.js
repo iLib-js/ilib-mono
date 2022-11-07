@@ -30,7 +30,7 @@ export const testaddress_NZ = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-NZ").then(() => {
+            return LocaleData.ensureLocale("en-NZ").then(() => {
                 callback();
             });
         } else {

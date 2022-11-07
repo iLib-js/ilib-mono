@@ -30,7 +30,7 @@ export const testaddress_SK = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-SK").then(() => {
+            return LocaleData.ensureLocale("sk-SK").then(() => {
                 callback();
             });
         } else {

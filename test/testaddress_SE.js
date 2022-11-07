@@ -31,7 +31,7 @@ export const testaddress_SE = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-SE").then(() => {
+            return LocaleData.ensureLocale("sv-SE").then(() => {
                 callback();
             });
         } else {

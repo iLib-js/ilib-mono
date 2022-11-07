@@ -30,7 +30,7 @@ export const testaddress_IE = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-IE").then(() => {
+            return LocaleData.ensureLocale("en-IE").then(() => {
                 callback();
             });
         } else {
