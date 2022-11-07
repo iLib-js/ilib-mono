@@ -424,16 +424,16 @@ str = resBundle.getString("It took {n} day" + ((objects === 1) ? "" : "s") + " t
 
 There are multiple problems with the code above:
 
-1. hat type of code assumes English grammar rules. In English, you pluralize by adding "s"
+1. That type of code assumes English grammar rules. In English, you pluralize by adding "s"
 to the end of the word. In other languages, it is not always the case that can add a suffix to pluralize
 a word
-1. In some languages there are more then one type of plural, so the above will not work
-1. You cannot concatenate strings together and expect getString to work properly. The loctool
-will not be able to extract that string and put it in the resource file, so the getString call will
+1. In some languages there are more than one type of plural, so the above will not work
+1. If you concatenate strings together, the loctool
+will not be able to extract that string and put it in the resource file, so the `getString()` call will
 not be able to find it
 
 In other languages, plurality rules can get even more complex. For example, in Russian, numbers that end
-with a 2 through 4 have a different plural than ones that end with than 5 through 9. ie. 22 is a different
+with the digits 2 through 4 have a different plural than ones that end with than 5 through 9. ie. 22 is a different
 plural than 27. That means the above code is not translatable to Russian!
 
 To solve this problem, you should use the `formatChoice()` method of the `IString` class. The
