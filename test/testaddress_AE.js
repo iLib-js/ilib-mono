@@ -31,7 +31,8 @@ export const testaddress_AE = {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            LocaleData.clearCache();
+            return LocaleData.ensureLocale("ar-AE").then(() => {
                 callback();
             });
         } else {

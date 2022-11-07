@@ -40,7 +40,7 @@ export const testaddress_TH = {
 
     testParseAddressTHNormal: function(test) {
         test.expect(7);
-        var parsedAddress = new Address("49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี\nเขตปทุมวัน กรุงเทพฯ 10330\nประเทศไทย", {locale: 'th-Th'});
+        var parsedAddress = new Address("49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี\nเขตปทุมวัน กรุงเทพฯ 10330\nประเทศไทย", {locale: 'th-TH'});
 
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี");
@@ -56,7 +56,7 @@ export const testaddress_TH = {
 
     testParseAddressTHNoZip: function(test) {
         test.expect(7);
-        var parsedAddress = new Address("49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี\nเขตปทุมวัน กรุงเทพฯ\nประเทศไทย", {locale: 'th-Th'});
+        var parsedAddress = new Address("49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี\nเขตปทุมวัน กรุงเทพฯ\nประเทศไทย", {locale: 'th-TH'});
 
         test.ok(typeof(parsedAddress) !== "undefined");
         test.equal(parsedAddress.streetAddress, "49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี");
@@ -140,7 +140,7 @@ export const testaddress_TH = {
         }, {locale: 'th-TH'});
 
         var expected = "49 ซอยร่วมฤดี, ถนนเพลินจิต, ลุมพินี\nเขตปทุมวัน กรุงเทพฯ 10330\nประเทศไทย";
-        var formatter = new AddressFmt({locale: 'tH-TH'});
+        var formatter = new AddressFmt({locale: 'th-TH'});
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
     },

@@ -23,17 +23,14 @@ import { getPlatform } from 'ilib-env';
 import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
 
-// TODO: fill in Belgian addresses here
-
-
-
+let setUpPerformed = false;
 export const testaddress_BE = {
     setUp: function(callback) {
         if (getPlatform() === "browser" && !setUpPerformed) {
             // does not support sync, so we have to ensure the locale
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
-            return LocaleData.ensureLocale("und-AE").then(() => {
+            return LocaleData.ensureLocale("und-BE").then(() => {
                 callback();
             });
         } else {
