@@ -117,7 +117,6 @@ const defaultData = {
  * @class Format mailing addresses
  */
 class AddressFmt {
-
     /**
      * Create a new formatter object to format physical addresses in a particular way.
      *
@@ -138,6 +137,22 @@ class AddressFmt {
         if (!options || !options._noinit) {
             this.init(options, true);
         }
+    }
+
+    /**
+     * Factory method to create a new instance of AddressFmt asynchronously.
+     * The parameters are the same as for the constructor, but it returns
+     * a `Promise` instead of the instance directly.
+     *
+     * @param {string|Address} freeformAddress free-form address to parse, or a
+     * javascript object containing the fields
+     * @param {Object} options the same objects you would send to a constructor
+     * @returns {Promise} a promise to load a AddressFmt instance. The resolved
+     * value of the promise is the new instance of AddressFmt,
+     */
+    static create(options) {
+        const nf = new AddressFmt({ ...options, _noinit: true });
+        return nf.init(options, false);
     }
 
     /**

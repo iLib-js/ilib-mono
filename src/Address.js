@@ -119,6 +119,22 @@ class Address {
     }
 
     /**
+     * Factory method to create a new instance of AddressFmt asynchronously.
+     * The parameters are the same as for the constructor, but it returns
+     * a `Promise` instead of the instance directly.
+     *
+     * @param {string|Address} freeformAddress free-form address to parse, or a
+     * javascript object containing the fields
+     * @param {Object} options the same objects you would send to a constructor
+     * @returns {Promise} a promise to load a AddressFmt instance. The resolved
+     * value of the promise is the new instance of AddressFmt,
+     */
+    static create(freeformAddress, options) {
+        const nf = new Address(freeformAddress, { ...options, _noinit: true });
+        return nf.init(freeformAddress, options, false);
+    }
+
+    /**
      * Initialize this instance.
      * @private
      */
@@ -182,7 +198,7 @@ class Address {
                 this.format = freeformAddress.format;
             }
 
-            return;
+            return !sync ? Promise.resolve(this) : this;
         }
 
         let address = freeformAddress.replace(/[ \t\r]+/g, " ").trim();
