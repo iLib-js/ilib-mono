@@ -66,7 +66,7 @@ In your `myapp/project.json` file, which configures the loctool (only the releva
         "javascript":"ilib-loctool-javascript-resource"
     },
     "settings": {
-    "xliffsDir": "./xliffs",
+        "xliffsDir": "./xliffs",
         "locales":[
             "ko-KR",
             "de-DE"
@@ -247,7 +247,7 @@ To use `ilib-assemble`, add a script to your package.json:
         "ilib-assemble": "^1.0.2"
     },
     "scripts": {
-        "assemble": "ilib-assemble -localefile ./locales.json --resources locale assembled src"
+        "assemble": "ilib-assemble --localefile ./locales.json --resources locale assembled src"
     }
 }
 ```
@@ -550,8 +550,7 @@ all the parameters to the ResBundle and String classes.
 There are some simple sample projects available that illustrate using `ResBundle`, `loctool`,
 and `ilib-assemble` together to localize a project.
 
-* A sample that illustrates ResBundle usage in nodeJS
-* A sample that illustrates the ResBundle usage in webOS
+* A sample that illustrates [ResBundle usage in nodeJS](https://github.com/iLib-js/ilib-loctool-samples/tree/main/js-json)
 
 ## License
 
