@@ -101,15 +101,30 @@ ilib-assemble [options] output-dir [input-dir-or-file ...]
 
 The ilib-assemble tool takes the following options:
 
-- --format or -f. Specify the format of the output files. This can be one of:
+* --compressed or -c. The data should appear in compressed/minified form
+* --format or -f. Specify the format of the output files. This can be one of:
     - json: the output files should be written in plain json form
     - js: the output should be written as an ESM module that exports a
       default function which returns the locale data for that locale
     - cjs: the output should be written as a CommonJS module that
       exports function which returns the locale data for that locale
-- --compressed or -c. The data should appear in compressed/minified form
-- --locales or -l. A comma separated list of locale specifiers in BCP-47 format
-  for the locales that your app supports.
+* --locales or -l. A comma separated list of locale specifiers in BCP-47 format
+    for the locales that your app supports.
+* --localefile or -x. Name a json file that contains an array that lists the
+    locales you want your webapp to support. The json should contain a `locales`
+    property which is an array of BCP-47 style locale tags. No default.
+* --module or -m. Explicitly add the locale data for a module that is not otherwise
+    mentioned in the source code. Parameter gives a relative path to the module,
+    including the leading './'. Typically, this would be in ./node_modules, but
+    it could be anywhere on disk. This option may be specified multiple times,
+    once for each module to add. The value is the name of the module to add.
+  --quiet or -q. Produce no progress output during the run, except for error messages.
+* --resources or -r. Include translated resource files, usually the output from
+    in the output files such that they can be loaded with ilib-resbundle. The
+    resource files should come from ilib's [loctool](http://github.com/ilib-js/loctool)
+    or other such localization tool which produces a set of translated resource
+    files. VAL is the path to the root of a resource file tree. You can specify
+    this option multiple times, once for each resources directory.
 
 The output-dir is required and specifies the directory where the output is
 written. If it does not exist, it will be created first.
