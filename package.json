@@ -59,7 +59,7 @@
         "assertextras": "^1.1.0",
         "docdash": "^1.2.0",
         "ilib-mock": "file:test/ilib-mock/ilib-mock-1.0.0.tgz",
-        "jsdoc": "^3.6.11",
+        "jsdoc": "^4.0.0",
         "jsdoc-to-markdown": "^7.1.1",
         "nodeunit": "^0.11.3"
     },
