@@ -381,6 +381,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.5
+
+* Fixed Taiwan info when the locale spec is "zh-TW" instead of "zh-Hant-TW".
+  Was returning the wrong info previously.
+
 ### v1.0.4
 
 * use a babel plugin to remove import.meta from the transpiled code for

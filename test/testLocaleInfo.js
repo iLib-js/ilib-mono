@@ -625,11 +625,11 @@ export const testLocaleInfo = {
         test.done();
     },
 
-    //test cases fot zh-TW-Hant
+    //test cases for zh-Hant-TW
 
     testLocaleInfoGetDecimalSeparatorfor_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
         test.equal(info.getDecimalSeparator(), ".");
         test.done();
@@ -637,7 +637,7 @@ export const testLocaleInfo = {
 
     testLocaleInfoGetGroupingSeparatorfor_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
 
         test.equal(info.getGroupingSeparator(), ",");
@@ -646,7 +646,7 @@ export const testLocaleInfo = {
 
     testLocaleInfoGetPercentageFormat_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
 
         test.equal(info.getPercentageFormat(), "{n}%");
@@ -655,7 +655,7 @@ export const testLocaleInfo = {
 
     testLocaleInfoGetCurrencyFormat_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
 
         test.equal(info.getCurrencyFormats().common, "{s}{n}");
@@ -664,7 +664,7 @@ export const testLocaleInfo = {
 
     testLocaleInfoGetNegativeNumberFormat_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
 
         test.equal(info.getNegativeNumberFormat(), "-{n}");
@@ -673,7 +673,7 @@ export const testLocaleInfo = {
 
     testLocaleInfoGetNegativePercentageFormat_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
 
         test.equal(info.getNegativePercentageFormat(), "-{n}%");
@@ -682,10 +682,94 @@ export const testLocaleInfo = {
 
     testLocaleInfoGetNegativeCurrencyFormat_zh_TW_Hant: function(test) {
         test.expect(2);
-        var info = new LocaleInfo("zh-TW-Hant");
+        var info = new LocaleInfo("zh-Hant-TW");
         test.ok(info !== null);
 
         test.equal(info.getCurrencyFormats().commonNegative, "-{s}{n}");
+        test.done();
+    },
+
+    testLocaleInfoGetNegativeCurrencyFormat_zh_TW_Hant: function(test) {
+        test.expect(3);
+        var info = new LocaleInfo("zh-Hant-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getDelimiterQuotationStart(), "「");
+        test.equal(info.getDelimiterQuotationEnd(), "」");
+        test.done();
+    },
+
+    //test cases for zh-TW
+
+    testLocaleInfoGetDecimalSeparatorfor_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+        test.equal(info.getDecimalSeparator(), ".");
+        test.done();
+    },
+
+    testLocaleInfoGetGroupingSeparatorfor_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getGroupingSeparator(), ",");
+        test.done();
+    },
+
+    testLocaleInfoGetPercentageFormat_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getPercentageFormat(), "{n}%");
+        test.done();
+    },
+
+    testLocaleInfoGetCurrencyFormat_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
+        test.done();
+    },
+
+    testLocaleInfoGetNegativeNumberFormat_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getNegativeNumberFormat(), "-{n}");
+        test.done();
+    },
+
+    testLocaleInfoGetNegativePercentageFormat_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getNegativePercentageFormat(), "-{n}%");
+        test.done();
+    },
+
+    testLocaleInfoGetNegativeCurrencyFormat_zh_TW: function(test) {
+        test.expect(2);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getCurrencyFormats().commonNegative, "-{s}{n}");
+        test.done();
+    },
+
+    testLocaleInfoGetNegativeCurrencyFormat_zh_TW: function(test) {
+        test.expect(3);
+        var info = new LocaleInfo("zh-TW");
+        test.ok(info !== null);
+
+        test.equal(info.getDelimiterQuotationStart(), "「");
+        test.equal(info.getDelimiterQuotationEnd(), "」");
         test.done();
     },
 
