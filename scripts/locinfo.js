@@ -53,6 +53,15 @@ genLanguages(root);
 genRegions(root);
 genScripts(root);
 genTimeZones(root);
+
+// special cases
+root.zh.TW = {
+    data: Object.assign({}, root.zh.Hant.data)
+};
+root.zh.HK = {
+    data: Object.assign({}, root.zh.Hant.HK.data)
+};
+
 genLocales(root); // should always be last
 
 console.log("----------------");
