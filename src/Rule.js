@@ -150,7 +150,7 @@ class Rule {
      * for a web-based device.
      *
      * @param {Object} options The options object as per the description above
-     * @returns {Object|Array.<Object>|=} an object describing the problem if the rule
+     * @returns {Result|Array.<Result>|undefined} an object describing the problem if the rule
      * does match for this locale, or an array of such Objects if there are multiple
      * problems with the same input, or undefined if the rule does not match
      */
