@@ -3,6 +3,11 @@
     "version": "1.0.0",
     "module": "./src/index.js",
     "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.js"
+        }
+    },
     "description": "Shared code for the i18n linter",
     "keywords": [
         "internationalization",
@@ -35,10 +40,7 @@
     ],
     "files": [
         "src",
-        "lib",
         "docs",
-        "log4js.json",
-        "i18nlint.js",
         "README.md",
         "LICENSE"
     ],
@@ -58,7 +60,7 @@
         "test": "LANG=en_US.UTF8 node test/testSuite.js",
         "debug": "LANG=en_US.UTF8 node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/i18nlint.md ; npm run doc:html",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/i18nlint-common.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
