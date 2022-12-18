@@ -39,6 +39,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.0
+
+- added methods to abstract classes needed for loading and testing the plugins
+
 ### v1.0.0
 
 - initial version

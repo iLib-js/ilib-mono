@@ -26,6 +26,9 @@ class Plugin {
      * Construct a new plugin.
      */
     constructor(options) {
+        if (this.constructor === Plugin) {
+            throw new Error("Cannot instantiate abstract class Plugin directly!");
+        }
     }
 
     /**
@@ -45,21 +48,12 @@ class Plugin {
      * <li>formatter - this plugin formats results for a particular
      * type of output
      * </ul>
-     * 
+     *
      * @returns {String} tells what type of plugin this is
      * @abstract
      */
     getType() {
-    }
-
-    /**
-     * Return the list of extensions of the files that this parser handles.
-     * The extensions are listed without the dot. eg. ["json", "jsn"]
-     *
-     * @returns {Array.<String>} a list of file name extensions
-     */
-    getExtensions() {
-        return [];
+        return this.type;
     }
 
     /**

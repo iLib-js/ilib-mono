@@ -26,10 +26,12 @@ class Rule {
      * Construct an i18nlint rule. Rules in plugins should implement this
      * abstract class.
      */
-    constructor() {
+    constructor(options) {
         if (this.constructor === Rule) {
-            throw new Error("Cannot instantiate abstract class Rule!");
+            throw new Error("Cannot instantiate abstract class Rule directly!");
         }
+        if (!options) return;
+        this.sourceLocale = options.sourceLocale;
     }
 
     /**
@@ -85,6 +87,11 @@ class Rule {
         return "line";
     }
 
+    /**
+     * Get the source locale for this rule.
+     *
+     * @returns {String} the source locale for this rule
+     */
     getSourceLocale() {
         return this.sourceLocale || "en-US";
     }
