@@ -1,5 +1,5 @@
 /*
- * Result.js - Represent an i18nlint rule check result
+ * Result.js - Represent an ilib-lint rule check result
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -18,12 +18,12 @@
  */
 
 /**
- * @class Represent an i18nlint rule check result
+ * @class Represent an ilib-lint rule check result
  * @abstract
  */
 class Result {
     /**
-     * Construct an i18nlint rule check result. Rules should return this
+     * Construct an ilib-lint rule check result. Rules should return this
      * type when reporting issues in the source files. The fields can
      * contain any of the following properties:
      *

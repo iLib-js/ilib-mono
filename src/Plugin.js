@@ -69,7 +69,10 @@ class Plugin {
 
     /**
      * For a "parser" type of plugin, this returns a list of Parser classes
-     * that this plugin implements.
+     * that this plugin implements. Note that the other methods return
+     * instances of rules and formatters, but this method returns the class
+     * itself, as the ilib-lint tool needs to instantiate it multiple times,
+     * once for each file it is parsing.
      *
      * @returns {Array.<Parser>} list of Parser classes implemented by this
      * plugin
