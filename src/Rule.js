@@ -1,5 +1,5 @@
 /*
- * Rule.js - Represent an i18nlint rule
+ * Rule.js - Represent an ilib-lint rule
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -18,18 +18,20 @@
  */
 
 /**
- * @class Represent an i18nlint rule.
+ * @class Represent an ilib-lint rule.
  * @abstract
  */
 class Rule {
     /**
-     * Construct an i18nlint rule. Rules in plugins should implement this
+     * Construct an ilib-lint rule. Rules in plugins should implement this
      * abstract class.
      */
-    constructor() {
+    constructor(options) {
         if (this.constructor === Rule) {
-            throw new Error("Cannot instantiate abstract class Rule!");
+            throw new Error("Cannot instantiate abstract class Rule directly!");
         }
+        if (!options) return;
+        this.sourceLocale = options.sourceLocale;
     }
 
     /**
@@ -85,6 +87,11 @@ class Rule {
         return "line";
     }
 
+    /**
+     * Get the source locale for this rule.
+     *
+     * @returns {String} the source locale for this rule
+     */
     getSourceLocale() {
         return this.sourceLocale || "en-US";
     }
@@ -120,7 +127,7 @@ class Rule {
      *   crash your app in some cases.
      *   </ul>
      * <li>description - a description of the problem to display to the user. In order
-     * to make the i18nlint output useful, this description should attempt to make the
+     * to make the ilib-lint output useful, this description should attempt to make the
      * following things clear:
      *   <ul>
      *   <li>What part is wrong

@@ -27,7 +27,7 @@ class MockRule extends Rule {
         this.description = "mock";
         this.type = "resource";
     }
-    
+
     match(options) {
         return undefined;
     }
@@ -66,7 +66,7 @@ export const testResult = {
         });
 
         test.ok(result);
-        
+
         test.equal(result.severity, "warning");
         test.equal(result.pathName, "a/b/c.js");
         test.equal(result.description, "test");

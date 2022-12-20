@@ -1,6 +1,6 @@
 # i18nlint-common
 
-Common i18nlint routines that the plugins will need.
+Common ilib-lint routines that the plugins will need.
 
 
 ## Installation
@@ -13,8 +13,8 @@ or
 yarn add i18nlint-common
 ```
 
-This package is usually imported by the i18nlint tool itself or plugins for
-the i18nlint tool.
+This package is usually imported by the ilib-lint tool itself or plugins for
+the ilib-lint tool.
 
 ## Full API Docs
 
@@ -38,6 +38,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.1.0
+
+- added methods to abstract classes needed for loading and testing the plugins
 
 ### v1.0.0
 

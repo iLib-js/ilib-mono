@@ -26,6 +26,9 @@ class Plugin {
      * Construct a new plugin.
      */
     constructor(options) {
+        if (this.constructor === Plugin) {
+            throw new Error("Cannot instantiate abstract class Plugin directly!");
+        }
     }
 
     /**
@@ -45,21 +48,12 @@ class Plugin {
      * <li>formatter - this plugin formats results for a particular
      * type of output
      * </ul>
-     * 
+     *
      * @returns {String} tells what type of plugin this is
      * @abstract
      */
     getType() {
-    }
-
-    /**
-     * Return the list of extensions of the files that this parser handles.
-     * The extensions are listed without the dot. eg. ["json", "jsn"]
-     *
-     * @returns {Array.<String>} a list of file name extensions
-     */
-    getExtensions() {
-        return [];
+        return this.type;
     }
 
     /**
@@ -75,7 +69,10 @@ class Plugin {
 
     /**
      * For a "parser" type of plugin, this returns a list of Parser classes
-     * that this plugin implements.
+     * that this plugin implements. Note that the other methods return
+     * instances of rules and formatters, but this method returns the class
+     * itself, as the ilib-lint tool needs to instantiate it multiple times,
+     * once for each file it is parsing.
      *
      * @returns {Array.<Parser>} list of Parser classes implemented by this
      * plugin

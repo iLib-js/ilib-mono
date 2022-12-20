@@ -26,6 +26,9 @@ class Parser {
      * Construct a new plugin.
      */
     constructor(options) {
+        if (this.constructor === Parser) {
+            throw new Error("Cannot instantiate abstract class Plugin directly!");
+        }
     }
 
     /**
@@ -33,6 +36,27 @@ class Parser {
      * @abstract
      */
     init() {}
+
+    /**
+     * Return the name of this type of parser.
+     * Subclasses should assign `this.name` in their constructor.
+     *
+     * @returns {String} return the name of this type of parser
+     */
+    getName() {
+        return this.name;
+    }
+
+    /**
+     * Return the list of extensions of the files that this parser handles.
+     * The extensions are listed without the dot. eg. ["json", "jsn"].
+     * Subclasses should assign `this.extensions` in their constructor.
+     *
+     * @returns {Array.<String>} a list of file name extensions
+     */
+    getExtensions() {
+        return this.extensions;
+    }
 
     /**
      * Parse the current file into an intermediate representation.
