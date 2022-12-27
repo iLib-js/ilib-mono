@@ -1,5 +1,5 @@
 /*
- * ParamRule.js - a rule to match printf-style substition parameters
+ * PrintfMatchRule.js - a rule to match printf-style substition parameters
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -26,7 +26,7 @@ const printfRegExp = /%(\d\$)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[
 /**
  * @class Represent an i18nlint rule.
  */
-class ParamRule extends Rule {
+class PrintfMatchRule extends Rule {
     constructor(options) {
         super(options);
         this.name = "resource-printf-params-match";
@@ -166,4 +166,4 @@ class ParamRule extends Rule {
     return;
 }
 
-export default ParamRule;
+export default PrintfMatchRule;

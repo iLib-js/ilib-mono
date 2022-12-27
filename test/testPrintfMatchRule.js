@@ -1,5 +1,5 @@
 /*
- * testParamRule.js - test the substitution parameter rule
+ * testPrintfMatchRule.js - test the substitution parameter rule
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -18,24 +18,24 @@
  */
 import { ResourceString } from 'ilib-tools-common';
 
-import ParamRule from '../src/ParamRule.js';
+import PrintfMatchRule from '../src/PrintfMatchRule.js';
 
 import { Result } from 'i18nlint-common';
 
-export const testParamRules = {
-    testParamRuleStyle: function(test) {
+export const testPrintfMatchRules = {
+    testPrintfMatchRuleStyle: function(test) {
         test.expect(1);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         test.done();
     },
 
-    testParamRuleStyleName: function(test) {
+    testPrintfMatchRuleStyleName: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         test.equal(rule.getName(), "resource-printf-params-match");
@@ -43,10 +43,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleStyleDescription: function(test) {
+    testPrintfMatchRuleStyleDescription: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         test.equal(rule.getDescription(), "Test that the printf-like substitution parameters match in the source and target strings.");
@@ -54,10 +54,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleStyleSourceLocale: function(test) {
+    testPrintfMatchRuleStyleSourceLocale: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule({
+        const rule = new PrintfMatchRule({
             sourceLocale: "de-DE"
         });
         test.ok(rule);
@@ -67,10 +67,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleStyleGetRuleType: function(test) {
+    testPrintfMatchRuleStyleGetRuleType: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule({
+        const rule = new PrintfMatchRule({
             sourceLocale: "de-DE"
         });
         test.ok(rule);
@@ -80,10 +80,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchMissingInTarget: function(test) {
+    testPrintfMatchRuleMatchMissingInTarget: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         const actual = rule.match({
@@ -113,10 +113,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchNoParams: function(test) {
+    testPrintfMatchRuleMatchNoParams: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         // no parameters in source or target is okay
@@ -137,10 +137,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchExtraParamsInTarget: function(test) {
+    testPrintfMatchRuleMatchExtraParamsInTarget: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         const actual = rule.match({
@@ -170,10 +170,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchMatchingParams: function(test) {
+    testPrintfMatchRuleMatchMatchingParams: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         // no parameters in source or target is okay
@@ -194,10 +194,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchMatchingParamsMultiple: function(test) {
+    testPrintfMatchRuleMatchMatchingParamsMultiple: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         // no parameters in source or target is okay
@@ -218,10 +218,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchMatchingParamsComplicated: function(test) {
+    testPrintfMatchRuleMatchMatchingParamsComplicated: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         // no parameters in source or target is okay
@@ -242,10 +242,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchNonMatchingParamsComplicated: function(test) {
+    testPrintfMatchRuleMatchNonMatchingParamsComplicated: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         // no parameters in source or target is okay
@@ -286,10 +286,10 @@ export const testParamRules = {
         test.done();
     },
 
-    testParamRuleMatchMatchingParamsNumbered: function(test) {
+    testPrintfMatchRuleMatchMatchingParamsNumbered: function(test) {
         test.expect(2);
 
-        const rule = new ParamRule();
+        const rule = new PrintfMatchRule();
         test.ok(rule);
 
         // no parameters in source or target is okay

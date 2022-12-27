@@ -18,7 +18,7 @@
  */
 
 const files = [
-    "testParamRule.js",
+    "testPrintfMatchRule.js",
     "testPythonGnuPlugin.js"
 ];
 

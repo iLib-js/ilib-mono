@@ -19,7 +19,7 @@
 
 import { Plugin } from 'i18nlint-common';
 
-import ParamRule from './ParamRule.js';
+import PrintfMatchRule from './PrintfMatchRule.js';
 
 class PythonPlugin extends Plugin {
     constructor(options) {
@@ -32,7 +32,7 @@ class PythonPlugin extends Plugin {
 
     getRules() {
         //console.log("PythonPlugin.getRules() called");
-        return [ ParamRule ];
+        return [ PrintfMatchRule ];
     }
 }
 
