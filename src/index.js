@@ -19,7 +19,6 @@
 
 import { Plugin } from 'i18nlint-common';
 
-import POParser from './POParser.js';
 import ParamRule from './ParamRule.js';
 
 class PythonPlugin extends Plugin {
@@ -34,11 +33,6 @@ class PythonPlugin extends Plugin {
     getRules() {
         //console.log("PythonPlugin.getRules() called");
         return [ ParamRule ];
-    }
-
-    getParsers() {
-        //console.log("PythonPlugin.getParsers() called");
-        return [ POParser ];
     }
 }
 

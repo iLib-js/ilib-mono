@@ -8,7 +8,7 @@
             "import": "./src/index.js"
         }
     },
-    "description": "ilib-lint plugin to check python resources",
+    "description": "ilib-lint plugin to check python resources using the GNU gettext library",
     "files": [
         "src",
         "package.json",

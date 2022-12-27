@@ -1,5 +1,5 @@
 /*
- * TestRule.js - test an i18nlint Rule plugin
+ * ParamRule.js - a rule to match printf-style substition parameters
  *
  * Copyright © 2022 JEDLSoft
  *
@@ -26,7 +26,7 @@ const printfRegExp = /%(\d\$)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[
 /**
  * @class Represent an i18nlint rule.
  */
-class TestRule extends Rule {
+class ParamRule extends Rule {
     constructor(options) {
         super(options);
         this.name = "resource-printf-params-match";
@@ -166,4 +166,4 @@ class TestRule extends Rule {
     return;
 }
 
-export default TestRule;
+export default ParamRule;
