@@ -19,6 +19,7 @@
 
 const files = [
     "testPrintfMatchRule.js",
+    "testPrintfNumberedRule.js",
     "testPythonGnuPlugin.js"
 ];
 
