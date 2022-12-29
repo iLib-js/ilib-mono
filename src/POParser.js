@@ -18,49 +18,116 @@
  */
 
 import fs from 'node:fs';
+import path from 'node:path';
 
 import { Parser } from 'i18nlint-common';
-import json5 from 'json5';
-import { ResourceString, TranslationSet } from 'ilib-tools-common';
+import {
+    ResourceString,
+    ResourceArray,
+    ResourcePlural,
+    TranslationSet,
+    getLocaleFromPath,
+    makeDirs,
+    containsActualText,
+    objectMap
+} from 'ilib-tools-common';
 
-class TestParser extends Parser {
+import POFileType from 'ilib-loctool-po';
+
+const typeToClass = {
+    'array': ResourceArray,
+    'plural': ResourcePlural,
+    'string': ResourceString
+};
+
+const shimAPI = {
+    newResource: function(props) {
+        const Clazz = typeToClass[props.resType] || ResourceString;
+        return new Clazz(props);
+    },
+    newTranslationSet: function(sourceLocale) {
+        return new TranslationSet(sourceLocale);
+    },
+    utils: {
+        getLocaleFromPath,
+        makeDirs,
+        containsActualText,
+        objectMap
+    },
+    isPseudoLocale: locale => {
+        return false;
+    },
+    newXliff: options => {
+        return undefined;
+    },
+    getPseudoBundle: (locale, filetype, project) => {
+        return undefined;
+    },
+    getResourceFileType: (type) => {
+        return undefined;
+    },
+    getLogger: function(category) {
+        let logger = {};
+        [ 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Fatal', 'Mark' ].forEach((level) => {
+            logger[level.toLowerCase()] = () => {};
+            logger[`is${level}Enabled`] = () => false;
+        });
+        return logger;
+    }
+};
+
+class ShimProject {
+    constructor(options) {
+        this.sourceLocale = options.sourceLocale;
+        this.root = options.root;
+        this.target = options.target;
+        this.settings = {};
+    }
+
+    getAPI() {
+        return shimAPI;
+    }
+
+    getProjectId() {
+        return "ilib-lint";
+    }
+
+    getSourceLocale() {
+        return this.sourceLocale;
+    }
+};
+
+class POParser extends Parser {
     constructor(options) {
         super(options);
-        this.name = "parser-xyz";
+        this.name = "parser-po";
         this.filePath = options && options.filePath;
+        const proj = new ShimProject({
+            sourceLocale: (options && options.sourceLocale) || "en-US",
+            root: ".",
+            target: "."
+        });
+        this.potype = new POFileType(proj);
     }
 
     init() {
-        console.log("TestParser.init called");
+        console.log("POParser.init called");
     }
 
     getExtensions() {
-        return [ "xyz" ];
+        return [ "po", "pot" ];
     }
 
     parseData(data) {
-        const json = json5.parse(data);
-        this.ts = new TranslationSet();
-
-        for (let prop in json) {
-            this.ts.add(new ResourceString({
-                sourceLocale: "en-US",
-                source: prop,
-                reskey: prop,
-                target: json[prop],
-                resType: "x-xyz",
-                pathName: this.filePath
-            }));
-        }
     }
 
     /**
      * Parse the current file into an intermediate representation.
      */
     parse() {
-        // parse the xyz files as json for simplicity
-        const data = fs.readFileSync(this.filePath, "utf-8");
-        this.parseData(data);
+        const pofile = this.potype.newFile(this.filePath);
+        pofile.extract();
+        this.ts = pofile.getTranslationSet();
     }
 
     getResources() {
@@ -68,4 +135,4 @@ class TestParser extends Parser {
     }
 }
 
-export default TestParser;
+export default POParser;
