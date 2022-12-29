@@ -21,6 +21,7 @@ import { Plugin } from 'i18nlint-common';
 
 import POParser from './POParser.js';
 import FStringMatchRule from './FStringMatchRule.js';
+import FStringNumberedRule from './FStringNumberedRule.js';
 
 class PythonPlugin extends Plugin {
     constructor(options) {
@@ -33,7 +34,7 @@ class PythonPlugin extends Plugin {
 
     getRules() {
         //console.log("PythonPlugin.getRules() called");
-        return [ FStringMatchRule ];
+        return [ FStringMatchRule, FStringNumberedRule ];
     }
 
     getParsers() {
