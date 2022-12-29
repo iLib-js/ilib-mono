@@ -81,7 +81,7 @@ class ShimProject {
         this.sourceLocale = options.sourceLocale;
         this.root = options.root;
         this.target = options.target;
-        this.settings = {};
+        this.settings = options.settings;
     }
 
     getAPI() {
@@ -102,11 +102,21 @@ class POParser extends Parser {
         super(options);
         this.name = "parser-po";
         this.filePath = options && options.filePath;
-        const proj = new ShimProject({
+        let projOptions = {
             sourceLocale: (options && options.sourceLocale) || "en-US",
             root: ".",
-            target: "."
-        });
+            target: ".",
+            settings: {}
+        };
+        if (options && options.settings) {
+            projOptions.settings.po = {
+                mappings: {
+                    "**/*.po": options && options.settings,
+                    "**/*.pot": options && options.settings
+                }
+            };
+        }
+        const proj = new ShimProject(projOptions);
         this.potype = new POFileType(proj);
     }
 

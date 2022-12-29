@@ -146,5 +146,57 @@ export const testPOParser = {
         test.done();
     },
 
+    testPOParserParseTranslatedFileWithPathTemplate: function(test) {
+        test.expect(26);
+
+        const parser = new POParser({
+            filePath: "./test/testfiles/test_de_DE.po",
+            settings: {
+                template: "[dir]/test_[localeUnder].po"
+            }
+        });
+        test.ok(parser);
+        parser.parse();
+
+        const resources = parser.getResources();
+        test.ok(resources);
+
+        test.equal(resources[0].getSource(), "string 1");
+        test.equal(resources[0].getTarget(), "Zeichenfolge 1");
+        test.equal(resources[0].getType(), "string");
+        test.equal(resources[0].getKey(), "string 1");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTargetLocale(), "de-DE");
+
+        test.equal(resources[1].getSource(), "string 2");
+        test.equal(resources[1].getTarget(), "Zeichenfolge 2");
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getKey(), "string 2");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        test.equal(resources[1].getTargetLocale(), "de-DE");
+
+        test.deepEqual(resources[2].getSource(), {
+            one: "one string",
+            other: "{count} strings"
+        });
+        test.deepEqual(resources[2].getTarget(), {
+            one: "eine Zeichenfolge",
+            other: "{count} Zeichenfolgen"
+        });
+        test.equal(resources[2].getType(), "plural");
+        test.equal(resources[2].getKey(), "one string");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTargetLocale(), "de-DE");
+
+        test.equal(resources[3].getSource(), "string 3 and 4");
+        test.equal(resources[3].getTarget(), "Zeichenfolgen 3 und 4");
+        test.equal(resources[3].getType(), "string");
+        test.equal(resources[3].getKey(), "string 3 and 4");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTargetLocale(), "de-DE");
+
+        test.done();
+    },
+
 };
 
