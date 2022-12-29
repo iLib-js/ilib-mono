@@ -20,7 +20,7 @@ import { Parser } from 'i18nlint-common';
 
 import PythonPlugin from '../src/index.js';
 
-export const testPythonPlugin = {
+export const testPythonGnuPlugin = {
     testPythonPlugin: function(test) {
         test.expect(1);
 
@@ -38,7 +38,7 @@ export const testPythonPlugin = {
 
         const parsers = xp.getParsers();
         test.ok(parsers);
-        test.equal(parsers.length, 0);
+        test.equal(parsers.length, 1);
 
         test.done();
     },

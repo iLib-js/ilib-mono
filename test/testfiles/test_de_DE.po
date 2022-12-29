@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"#-#-#-#-#  ./de-DE.po  #-#-#-#-#\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: loctool\n"
+"Project-Id-Version: 1\n"
+"Language: de-DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgid "string 1"
+msgstr "Zeichenfolge 1"
+
+msgid "string 2"
+msgstr "Zeichenfolge 2"
+
+msgid "one string"
+msgid_plural "{count} strings"
+msgstr[0] "eine Zeichenfolge"
+msgstr[1] "{count} Zeichenfolgen"
+
+msgid "string 3 and 4"
+msgstr "Zeichenfolgen 3 und 4"

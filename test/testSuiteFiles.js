@@ -18,6 +18,7 @@
  */
 
 const files = [
+    "testPOParser.js",
     "testPrintfMatchRule.js",
     "testPrintfNumberedRule.js",
     "testPythonGnuPlugin.js"
