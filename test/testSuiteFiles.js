@@ -18,7 +18,6 @@
  */
 
 const files = [
-    "testPOParser.js",
     "testFStringMatchRule.js",
     "testFStringNumberedRule.js",
     "testPythonPlugin.js"

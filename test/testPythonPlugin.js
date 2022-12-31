@@ -38,7 +38,7 @@ export const testPythonPlugin = {
 
         const parsers = xp.getParsers();
         test.ok(parsers);
-        test.equal(parsers.length, 1);
+        test.equal(parsers.length, 0);
 
         test.done();
     },
