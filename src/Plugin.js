@@ -23,7 +23,8 @@
  */
 class Plugin {
     /**
-     * Construct a new plugin.
+     * Construct a new plugin. The options can vary depending on the
+     * the plugin.
      */
     constructor(options) {
         if (this.constructor === Plugin) {
@@ -32,35 +33,19 @@ class Plugin {
     }
 
     /**
-     * Initialize the current plugin,
+     * Initialize the current plugin, if necessary.
+     *
      * @abstract
      */
     init() {}
 
     /**
-     * Return the type of this plugin. This can be one of the
-     * following:
+     * For a "rule" type of plugin, this returns a list of Rule classes
+     * that this plugin implements. Note this is the class, not an
+     * instance of the class. The linter may need to instantiate this
+     * rule multiple times.
      *
-     * <ul>
-     * <li>rule - this plugin implements a new rules
-     * <li>parser - this plugin knows how to parse files more deeply
-     * than line-by-line
-     * <li>formatter - this plugin formats results for a particular
-     * type of output
-     * </ul>
-     *
-     * @returns {String} tells what type of plugin this is
-     * @abstract
-     */
-    getType() {
-        return this.type;
-    }
-
-    /**
-     * For a "rule" type of plugin, this returns a list of Rule instances
-     * that this plugin implements.
-     *
-     * @returns {Array.<Rule>} list of Rule instances implemented by this
+     * @returns {Array.<Class>} list of Rule classes implemented by this
      * plugin
      */
     getRules() {
@@ -69,12 +54,11 @@ class Plugin {
 
     /**
      * For a "parser" type of plugin, this returns a list of Parser classes
-     * that this plugin implements. Note that the other methods return
-     * instances of rules and formatters, but this method returns the class
-     * itself, as the ilib-lint tool needs to instantiate it multiple times,
-     * once for each file it is parsing.
+     * that this plugin implements. Note this is the class, not an
+     * instance of the class. The linter may need to instantiate this
+     * parser multiple times.
      *
-     * @returns {Array.<Parser>} list of Parser classes implemented by this
+     * @returns {Array.<Class>} list of Parser classes implemented by this
      * plugin
      */
     getParsers() {
@@ -83,9 +67,11 @@ class Plugin {
 
     /**
      * For a "formatter" type of plugin, this returns a list of Formatter
-     * instances that this plugin implements.
+     * classes that this plugin implements. Note this is the class, not an
+     * instance of the class. The linter may need to instantiate this
+     * formatter multiple times.
      *
-     * @returns {Array.<Formatter>} list of Formatter instances implemented by this
+     * @returns {Array.<Class>} list of Formatter classes implemented by this
      * plugin
      */
     getFormatters() {

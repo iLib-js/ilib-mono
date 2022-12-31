@@ -25,8 +25,11 @@ class Formatter {
     /**
      * Construct an formatter instance. Formatters and formatter plugins
      * should implement this abstract class.
+     *
+     * @param {Object|undefined} options options for this instance of the
+     * formatter from the config file, if any
      */
-    constructor() {
+    constructor(options) {
         if (this.constructor === Formatter) {
             throw new Error("Cannot instantiate abstract class Formatter!");
         }

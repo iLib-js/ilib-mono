@@ -22,7 +22,6 @@ import Plugin from '../src/Plugin.js';
 class MockPlugin extends Plugin {
     constructor() {
         super();
-        this.type = "resource";
     }
 }
 
@@ -43,18 +42,6 @@ export const testPlugin = {
         test.throws(() => {
             new Plugin();
         });
-
-        test.done();
-    },
-
-    testPluginGetType: function(test) {
-        test.expect(2);
-
-        const plugin = new MockPlugin();
-
-        test.ok(plugin);
-
-        test.equal(plugin.getType(), "resource");
 
         test.done();
     },

@@ -39,6 +39,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.0
+
+- update the plugin to return only classes, as the linter may need to instantiate
+  the classes multiple times
+
 ### v1.1.0
 
 - added methods to abstract classes needed for loading and testing the plugins

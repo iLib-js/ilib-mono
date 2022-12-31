@@ -24,6 +24,9 @@
 class Parser {
     /**
      * Construct a new plugin.
+     *
+     * @param {Object|undefined} options options for this instance of the
+     * parser from the config file, if any
      */
     constructor(options) {
         if (this.constructor === Parser) {

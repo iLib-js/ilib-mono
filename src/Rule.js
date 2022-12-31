@@ -25,6 +25,9 @@ class Rule {
     /**
      * Construct an ilib-lint rule. Rules in plugins should implement this
      * abstract class.
+     *
+     * @param {Object|undefined} options options for this instance of the
+     * rule from the config file, if any
      */
     constructor(options) {
         if (this.constructor === Rule) {
