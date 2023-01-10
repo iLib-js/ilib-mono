@@ -369,6 +369,13 @@ file for more details.
 
 ## Release Notes
 
+### v1.4.0
+
+- added the ability to read json files as translated resource files
+    - if the mappings include a template and the path name matches, it
+      will use the locale gleaned from the path name when extracting
+      resources
+
 ### v1.3.0
 
 - added the ability to use this plugin as the output resource file format for other

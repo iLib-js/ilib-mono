@@ -38,12 +38,17 @@ var JsonFile = function(options) {
     this.type = options.type;
 
     this.API = this.project.getAPI();
-    this.locale = new Locale((options && options.locale) || this.project.sourceLocale);
+    this.mapping = this.type.getMapping(this.pathName);
+    this.localeSpec = (options && options.locale) ||
+        (this.mapping && this.pathName && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) ||
+        this.project.sourceLocale ||
+        "en-US";
+    this.locale = new Locale(this.localeSpec);
     this.logger = this.API.getLogger("loctool.plugin.JsonFile");
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
-    this.mapping = this.type.getMapping(this.pathName);
     this.schema = this.mapping ? this.type.getSchema(this.mapping.schema) : this.type.getDefaultSchema();
     this.resourceIndex = 0;
+
 };
 
 /**
@@ -341,22 +346,28 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                             }
                         }
                         if (translatedText) {
-	                        returnValue = convertValueToType(translatedText, type);
+                            returnValue = convertValueToType(translatedText, type);
                         }
                     } else {
-                        // extract this value
-                        this.set.add(this.API.newResource({
+                        // extract this new string
+                        var opts = {
                             resType: "string",
                             project: this.project.getProjectId(),
                             key: key,
                             sourceLocale: this.project.sourceLocale,
-                            source: text,
                             pathName: this.pathName,
                             state: "new",
                             comment: this.comment,
                             datatype: this.type.datatype,
                             index: this.resourceIndex++
-                        }));
+                        };
+                        if (locale !== this.project.sourceLocale) {
+                            opts.target = text;
+                            opts.targetLocale = locale;
+                        } else {
+                            opts.source = text;
+                        }
+                        this.set.add(this.API.newResource(opts));
                         returnValue = this.sparseValue(text);
                     }
                 } else {
@@ -448,19 +459,25 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                         }
                         returnValue = translatedPlurals;
                     } else {
-                        // extract this value
-                        this.set.add(this.API.newResource({
+                        // extract this new resource
+                        var opts = {
                             resType: "plural",
                             project: this.project.getProjectId(),
                             key: JsonFile.unescapeRef(ref).substring(2),
                             sourceLocale: this.project.sourceLocale,
-                            sourceStrings: sourcePlurals,
                             pathName: this.pathName,
                             state: "new",
                             comment: this.comment,
                             datatype: this.type.datatype,
                             index: this.resourceIndex++
-                        }));
+                        }
+                        if (locale !== this.project.sourceLocale) {
+                            opts.targetStrings = sourcePlurals;
+                            opts.targetLocale = locale;
+                        } else {
+                            opts.sourceStrings = sourcePlurals;
+                        }
+                        this.set.add(this.API.newResource(opts));
                         returnValue = this.sparseValue(sourcePlurals);
                     }
                 } else {
@@ -547,18 +564,24 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
 
     if (!translations) {
         // extract this value
-        this.set.add(this.API.newResource({
+        var opts = {
             resType: "array",
             project: this.project.getProjectId(),
             key: JsonFile.unescapeRef(ref).substring(2),
             sourceLocale: this.project.sourceLocale,
-            sourceArray: sourceArray,
             pathName: this.pathName,
             state: "new",
             comment: this.comment,
             datatype: this.type.datatype,
             index: this.resourceIndex++
-        }));
+        };
+        if (locale !== this.project.sourceLocale) {
+            opts.targetArray = sourceArray;
+            opts.targetLocale = locale;
+        } else {
+            opts.sourceArray = sourceArray;
+        }
+        this.set.add(this.API.newResource(opts));
         return convertArrayElementsToType(this.sparseValue(sourceArray), arrayType);
     }
 
@@ -643,7 +666,7 @@ JsonFile.prototype.parse = function(data) {
     this.json = JSON5.parse(data);
 
     // "#" is the root reference
-    this.parseObj(this.json, this.schema, this.schema, "#", "root", false);
+    this.parseObj(this.json, this.schema, this.schema, "#", "root", false, undefined, this.localeSpec);
 };
 
 /**

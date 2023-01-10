@@ -539,6 +539,89 @@ module.exports.jsonfile = {
         test.done();
     },
 
+    testJsonFileParseComplexRightStringsTranslated: function(test) {
+        test.expect(38);
+
+        // when it's named messages.json, it should apply the messages-schema schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "resources/de/DE/messages.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+           '{\n' +
+           '   "plurals": {\n' +
+           '        "bar": {\n' +
+           '            "one": "eins",\n' +
+           '            "many": "vielen",\n' +
+           '            "other": "mehrere"\n' +
+           '        }\n' +
+           '    },\n' +
+           '    "strings": {\n' +
+           '        "a": "b",\n' +
+           '        "c": "d"\n' +
+           '    },\n' +
+           '    "arrays": {\n' +
+           '        "asdf": [\n' +
+           '            "Zeichenfolge 1",\n' +
+           '            "Zeichenfolge 2",\n' +
+           '            "Zeichenfolge 3"\n' +
+           '        ]\n' +
+           '    }\n' +
+           '}\n');
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+
+        test.equal(set.size(), 4);
+        var resources = set.getAll();
+        test.equal(resources.length, 4);
+
+        test.equal(resources[0].getType(), "plural");
+        test.equal(resources[0].getKey(), "plurals/bar");
+        test.equal(resources[0].getSourceLocale(), "en-US");
+        test.equal(resources[0].getTargetLocale(), "de-DE");
+        test.deepEqual(resources[0].getSourcePlurals(), {});
+        var pluralStrings = resources[0].getTargetPlurals();
+        test.ok(pluralStrings);
+        test.equal(pluralStrings.one, "eins");
+        test.equal(pluralStrings.many, "vielen");
+        test.equal(pluralStrings.other, "mehrere");
+        test.ok(!pluralStrings.zero);
+        test.ok(!pluralStrings.two);
+        test.ok(!pluralStrings.few);
+
+        test.equal(resources[1].getType(), "string");
+        test.equal(resources[1].getSourceLocale(), "en-US");
+        test.equal(resources[1].getTargetLocale(), "de-DE");
+        test.ok(!resources[1].getSource());
+        test.equal(resources[1].getTarget(), "b");
+        test.equal(resources[1].getKey(), "strings/a");
+
+        test.equal(resources[2].getType(), "string");
+        test.equal(resources[2].getSourceLocale(), "en-US");
+        test.equal(resources[2].getTargetLocale(), "de-DE");
+        test.ok(!resources[2].getSource());
+        test.equal(resources[2].getTarget(), "d");
+        test.equal(resources[2].getKey(), "strings/c");
+
+        test.equal(resources[3].getType(), "array");
+        test.equal(resources[3].getSourceLocale(), "en-US");
+        test.equal(resources[3].getTargetLocale(), "de-DE");
+        test.equal(resources[3].getKey(), "arrays/asdf");
+        test.deepEqual(!resources[3].getSourceArray(), []);
+        var arrayStrings = resources[3].getTargetArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings.length, 3);
+        test.equal(arrayStrings[0], "Zeichenfolge 1");
+        test.equal(arrayStrings[1], "Zeichenfolge 2");
+        test.equal(arrayStrings[2], "Zeichenfolge 3");
+
+        test.done();
+    },
+
     testJsonFileParseArrayOfStrings: function(test) {
         test.expect(11);
 
