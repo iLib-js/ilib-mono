@@ -144,7 +144,15 @@ used within the json property:
         - [localeUnder] the full BCP-47 locale specification, but using
           underscores to separate the locale parts instead of dashes.
           eg. "zh-Hans-CN" -> "zh_Hans_CN"
-
+    - localeMap: an output locale map that maps the locale used in the
+      translations to a different locale for use in the file name template.
+      For example, an app may wish to use the locale specifier "zh-CN"
+      instead of the full "zh-Hans-CN" for some output files, but not
+      all of them. In this case, a locale map for this template mapping
+      is how this can be achieved. Any locale not listed in the mapping
+      will be used as-is. The overall [shared] locale map is also applied
+      if there is no locale map in the template mapping for a particular
+      locale.
 
 Example configuration:
 
@@ -162,7 +170,10 @@ Example configuration:
                 "src/**/strings.json": {
                     "schema": "http://www.lge.com/json/strings",
                     "method": "copy",
-                    "template": "[dir]/strings.[locale].json"
+                    "template": "[dir]/strings.[locale].json",
+                    "localeMap": {
+                        "zh-Hans-CN": "zh-CN"
+                    }
                 }
             }
         }
@@ -190,7 +201,8 @@ be localized, and the loctool will continue on to the next file.
 ## Extensions to JSON Schema
 
 In regular JSON Schemas, there is no built-in way to indicate that any value
-is localizable. However, the JSON Schema spec allows for creating extensions
+is localizable. However, the [JSON Schema spec](https://json-schema.org/specification.html)
+allows for creating extensions
 to the keywords of your json schema and specifies that implementation must
 ignore any keywords that it does not recognize.
 
@@ -368,6 +380,10 @@ This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.5.0
+
+- added support for locale maps when generating output path names
 
 ### v1.4.0
 

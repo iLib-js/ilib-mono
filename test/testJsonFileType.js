@@ -1,7 +1,7 @@
 /*
  * testJsonFileType.js - test the json file type handler object.
  *
- * Copyright © 2021-2022, Box, Inc.
+ * Copyright © 2021-2023, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,9 @@ var p2 = new CustomProject({
     sourceLocale: "en-US"
 }, "./testfiles", {
     locales:["en-GB"],
+    localeMap: {
+        "de-DE": "de"
+    },
     json: {
         mappings: {
             "**/strings.json": {
@@ -98,6 +101,64 @@ module.exports.jsonfiletype = {
         test.ok(jft);
 
         test.equals(jft.getLocalizedPath({template: '[dir]/[localeDir]/strings.json'}, "x/y/strings.json", "de-DE"), "x/y/de/DE/strings.json");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathDirWithLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template:'[dir]/[localeDir]/strings.json',
+            localeMap: {
+                "de-DE": "de"
+            }
+        }, "x/y/strings.json", "de-DE"), "x/y/de/strings.json");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathDirWithLocaleMapNotMapped: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template:'[dir]/[localeDir]/strings.json',
+            localeMap: {
+                "de-DE": "de"
+            }
+        }, "x/y/strings.json", "fr-FR"), "x/y/fr/FR/strings.json");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathDirWithGlobalLocaleMap: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p2);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template: '[dir]/[localeDir]/strings.json'
+        }, "x/y/strings.json", "de-DE"), "x/y/de/strings.json");
+
+        test.done();
+    },
+
+    testPOFileTypeGetLocalizedPathDirWithGlobalLocaleMapNotMapped: function(test) {
+        test.expect(2);
+
+        var jft = new JsonFileType(p2);
+        test.ok(jft);
+
+        test.equals(jft.getLocalizedPath({
+            template: '[dir]/[localeDir]/strings.json'
+        }, "x/y/strings.json", "fr-FR"), "x/y/fr/FR/strings.json");
 
         test.done();
     },
