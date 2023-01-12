@@ -300,6 +300,21 @@ JsonFileType.prototype.name = function() {
 };
 
 /**
+ * Return the alternate output locale or the shared output locale for the given
+ * mapping. If there are no locale mappings, it returns the locale parameter.
+ *
+ * @param {Object} mapping the mapping for this source file
+ * @param {String} locale the locale spec for the target locale
+ * @returns {Locale} the output locale
+ */
+JsonFileType.prototype.getOutputLocale = function(mapping, locale) {
+    return new Locale(
+        (mapping && mapping.localeMap && mapping.localeMap[locale] &&
+         mapping.localeMap[locale]) ||
+        this.project.getOutputLocale(locale));
+};
+
+/**
  * Return the location on disk where the version of this file localized
  * for the given locale should be written.
  * @param {String} template template for the output file
@@ -309,8 +324,7 @@ JsonFileType.prototype.name = function() {
  */
 JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
     var template = mapping && mapping.template;
-    // var l = this.getOutputLocale(mapping, locale);
-    var l = new Locale(locale);
+    var l = this.getOutputLocale(mapping, locale);
 
     if (!template) {
         template = defaultMappings["**/*.json"].template;
