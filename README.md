@@ -25,12 +25,6 @@ Then, in your `ilib-lib-config.json`, add a script:
 Please note: nodejs version 14 or above is required to run ilib-lint, as it
 is written with ESM modules.
 
-## Parser
-
-This plugin provides a class that can parse PO files and convert them into
-resources. This class depends on the ilib-loctool-po plugin to do the heavy
-lifting.
-
 ## Rules
 
 The following rules apply to any resources from any file type, but are
@@ -52,7 +46,7 @@ designed to check resources that come from python code:
 
 ## License
 
-Copyright © 2022, JEDLSoft
+Copyright © 2022-2023, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -72,5 +66,4 @@ limitations under the License.
 ### v1.0.0
 
 - initial version
-- PO file parser
 - Rules for python resources
