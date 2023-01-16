@@ -60,6 +60,20 @@ export const testPlugin = {
         test.done();
     },
 
+    testPluginGetRuleSetsDefault: function(test) {
+        test.expect(3);
+
+        const plugin = new MockPlugin();
+
+        test.ok(plugin);
+
+        const sets = plugin.getRuleSets();
+        test.ok(sets);
+        test.deepEqual(sets, {});
+
+        test.done();
+    },
+
     testPluginGetFormattersDefault: function(test) {
         test.expect(3);
 

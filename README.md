@@ -43,6 +43,8 @@ limitations under the License.
 
 - update the plugin to return only classes, as the linter may need to instantiate
   the classes multiple times
+- add the getRuleSets() method to the plugin to allow the plugins to define
+  standard rule sets
 
 ### v1.1.0
 
