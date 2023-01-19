@@ -45,6 +45,12 @@ library.
   so that the translators can rearrange them as needed by the
   grammar of the target language.
 
+## RuleSets
+
+This plugin defines one ruleset `python-gnu` that will turn on all the rules
+that this plugin supports. Users may rely on this ruleset when defining their
+file types.
+
 ## License
 
 Copyright © 2022-2023, JEDLSoft

@@ -21,21 +21,35 @@ import { Plugin } from 'i18nlint-common';
 
 import POParser from './POParser.js';
 import PrintfMatchRule from './PrintfMatchRule.js';
+import PrintfNumberedRule from './PrintfNumberedRule.js';
 
 class PythonPlugin extends Plugin {
     constructor(options) {
         super(options);
     }
 
+    /** @override */
     init() {
         //console.log("PythonPlugin.init() called");
     }
 
+    /** @override */
     getRules() {
         //console.log("PythonPlugin.getRules() called");
-        return [ PrintfMatchRule ];
+        return [ PrintfMatchRule, PrintfNumberedRule ];
     }
 
+    /** @override */
+    getRuleSets() {
+        return {
+            "python-gnu": {
+                "resource-printf-params-match": true,
+                "resource-printf-params-numbered": true
+            }
+        };
+    }
+
+    /** @override */
     getParsers() {
         //console.log("PythonPlugin.getParsers() called");
         return [ POParser ];
