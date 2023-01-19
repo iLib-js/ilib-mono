@@ -44,6 +44,12 @@ designed to check resources that come from python code:
   parameters (like "$name" or "$age") that appear in the source string
   also appear in the target strings.
 
+## RuleSets
+
+This plugin defines one ruleset `python` that will turn on all the rules
+that this plugin supports. Users may rely on this ruleset when defining their
+file types.
+
 ## License
 
 Copyright © 2022-2023, JEDLSoft

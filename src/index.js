@@ -21,19 +21,33 @@ import { Plugin } from 'i18nlint-common';
 
 import FStringMatchRule from './FStringMatchRule.js';
 import FStringNumberedRule from './FStringNumberedRule.js';
+import LegacyMatchRule from './LegacyMatchRule.js';
 
 class PythonPlugin extends Plugin {
     constructor(options) {
         super(options);
     }
 
+    /** @override */
     init() {
         //console.log("PythonPlugin.init() called");
     }
 
+    /** @override */
     getRules() {
         //console.log("PythonPlugin.getRules() called");
-        return [ FStringMatchRule, FStringNumberedRule ];
+        return [ FStringMatchRule, FStringNumberedRule, LegacyMatchRule ];
+    }
+
+    /** @override */
+    getRuleSets() {
+        return {
+            "python": {
+                "resource-python-fstrings-match": true,
+                "resource-python-fstrings-numbered": true,
+                "resource-python-legacy-match": true
+            }
+        };
     }
 }
 
