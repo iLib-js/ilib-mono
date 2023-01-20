@@ -51,6 +51,16 @@ class Parser {
     }
 
     /**
+     * Return a description of what this parser does and what kinds of files it
+     * handles for users who are trying to discover whether or not to use it.
+     *
+     * @returns {String} a description of this parser.
+     */
+    getDescription() {
+        return this.description;
+    }
+
+    /**
      * Return the list of extensions of the files that this parser handles.
      * The extensions are listed without the dot. eg. ["json", "jsn"].
      * Subclasses should assign `this.extensions` in their constructor.
