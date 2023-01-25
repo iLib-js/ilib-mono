@@ -22,7 +22,7 @@ See the [full API docs](./docs/i18nlint-common.md) for more information.
 
 ## License
 
-Copyright © 2022, JEDLSoft
+Copyright © 2022-2023, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
