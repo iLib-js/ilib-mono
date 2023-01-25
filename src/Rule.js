@@ -1,7 +1,7 @@
 /*
  * Rule.js - Represent an ilib-lint rule
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ class Rule {
     /**
      * Construct an ilib-lint rule. Rules in plugins should implement this
      * abstract class.
+     *
+     * @param {Object|undefined} options options for this instance of the
+     * rule from the config file, if any
      */
     constructor(options) {
         if (this.constructor === Rule) {

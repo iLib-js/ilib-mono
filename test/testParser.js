@@ -1,7 +1,7 @@
 /*
  * testParser.js - test the parser superclass object
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ class MockParser extends Parser {
         super();
         this.name = "mock";
         this.extensions = [ "x", "y", "z" ];
+        this.description = "A mock parser that doesn't really do a whole heck of a lot of anything.";
     }
 }
 
@@ -50,7 +51,6 @@ export const testParser = {
         test.done();
     },
 
-
     testParserGetName: function(test) {
         test.expect(2);
 
@@ -61,6 +61,20 @@ export const testParser = {
         test.ok(parser);
 
         test.equal(parser.getName(), "mock");
+
+        test.done();
+    },
+
+    testParserGetDescription: function(test) {
+        test.expect(2);
+
+        const parser = new MockParser({
+            filePath: "a/b/c.x"
+        });
+
+        test.ok(parser);
+
+        test.equal(parser.getDescription(), "A mock parser that doesn't really do a whole heck of a lot of anything.");
 
         test.done();
     },

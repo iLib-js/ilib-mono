@@ -1,7 +1,7 @@
 /*
  * Parser.js - common SPI for parser plugins
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@
 class Parser {
     /**
      * Construct a new plugin.
+     *
+     * @param {Object|undefined} options options for this instance of the
+     * parser from the config file, if any
      */
     constructor(options) {
         if (this.constructor === Parser) {
@@ -45,6 +48,16 @@ class Parser {
      */
     getName() {
         return this.name;
+    }
+
+    /**
+     * Return a description of what this parser does and what kinds of files it
+     * handles for users who are trying to discover whether or not to use it.
+     *
+     * @returns {String} a description of this parser.
+     */
+    getDescription() {
+        return this.description;
     }
 
     /**

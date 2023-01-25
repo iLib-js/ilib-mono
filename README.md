@@ -22,7 +22,7 @@ See the [full API docs](./docs/i18nlint-common.md) for more information.
 
 ## License
 
-Copyright © 2022, JEDLSoft
+Copyright © 2022-2023, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,6 +38,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.2.0
+
+- update the plugin to return only classes, as the linter may need to instantiate
+  the classes multiple times
+- add the getRuleSets() method to the plugin to allow the plugins to define
+  standard rule sets
 
 ### v1.1.0
 

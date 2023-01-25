@@ -1,7 +1,7 @@
 /*
  * testPlugin.js - test the plugin superclass object
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import Plugin from '../src/Plugin.js';
 class MockPlugin extends Plugin {
     constructor() {
         super();
-        this.type = "resource";
     }
 }
 
@@ -47,18 +46,6 @@ export const testPlugin = {
         test.done();
     },
 
-    testPluginGetType: function(test) {
-        test.expect(2);
-
-        const plugin = new MockPlugin();
-
-        test.ok(plugin);
-
-        test.equal(plugin.getType(), "resource");
-
-        test.done();
-    },
-
     testPluginGetRulesDefault: function(test) {
         test.expect(3);
 
@@ -69,6 +56,20 @@ export const testPlugin = {
         const rules = plugin.getRules();
         test.ok(rules);
         test.equal(rules.length, 0);
+
+        test.done();
+    },
+
+    testPluginGetRuleSetsDefault: function(test) {
+        test.expect(3);
+
+        const plugin = new MockPlugin();
+
+        test.ok(plugin);
+
+        const sets = plugin.getRuleSets();
+        test.ok(sets);
+        test.deepEqual(sets, {});
 
         test.done();
     },
