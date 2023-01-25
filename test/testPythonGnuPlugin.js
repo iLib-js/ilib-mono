@@ -51,7 +51,7 @@ export const testPythonGnuPlugin = {
 
         const rules = xp.getRules();
         test.ok(rules);
-        test.equal(rules.length, 1);
+        test.equal(rules.length, 2);
 
         test.done();
     },
