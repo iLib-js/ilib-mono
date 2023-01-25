@@ -51,7 +51,7 @@ export const testPythonPlugin = {
 
         const rules = xp.getRules();
         test.ok(rules);
-        test.equal(rules.length, 2);
+        test.equal(rules.length, 3);
 
         test.done();
     },

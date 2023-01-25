@@ -21,7 +21,7 @@ import Locale from 'ilib-locale';
 import { Rule, Result } from 'i18nlint-common';
 
 // from https://pubs.opengroup.org/onlinepubs/007904975/functions/fprintf.html
-const printfRegExp = /%(\d\$)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[diouxXfFeEgGaAcCsSpn]/g;
+const printfRegExp = /%\(\w+\)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[diouxXfFeEgGaAcCsSpn]/g;
 
 /**
  * @class Represent an i18nlint rule.
@@ -59,10 +59,6 @@ class LegacyMatchRule extends Rule {
                 number: match[1]
             });
             match = printfRegExp.exec(src);
-        }
-        if (sourceParams.length < 1) {
-            // no params to check
-            return undefined;
         }
 
         // now find the target parameters
