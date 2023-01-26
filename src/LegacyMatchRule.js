@@ -106,7 +106,7 @@ class LegacyMatchRule extends Rule {
                     rule: this,
                     description: `Extra target string substitution parameter ${tarParam.text} not found in the source string.`,
                     id: resource.getKey(),
-                    highlight: tar.replaceAll(re, "<e0>$&</e0>"),
+                    highlight: tar.replace(re, "<e0>$&</e0>"),
                     pathName: file,
                     source: src,
                     lineNumber
