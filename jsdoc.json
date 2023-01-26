@@ -3,7 +3,7 @@
         "allowUnknownTags": true,
         "dictionaries": ["jsdoc", "closure"]
     },
-    "copyright": "Copyright (c) 2022 JEDLSoft",
+    "copyright": "Copyright (c) 2023 JEDLSoft",
     "linenums": true,
     "sort": true,
     "search": true,

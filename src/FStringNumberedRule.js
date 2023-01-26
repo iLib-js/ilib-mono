@@ -1,7 +1,7 @@
 /*
  * TestRule.js - test an i18nlint Rule plugin
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ class FStringNumberedRule extends Rule {
                 rule: this,
                 description: `Source string substitution parameter ${srcParam} must be numbered but it is not.`,
                 id: resource.getKey(),
-                highlight: src.replaceAll(re, `<e0>$&</e0>`),
+                highlight: src.replace(re, `<e0>$&</e0>`),
                 pathName: file,
                 lineNumber
             }));
