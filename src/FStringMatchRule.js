@@ -102,12 +102,13 @@ class FStringMatchRule extends Rule {
         if (targetParams.length) {
             for (let j = 0; j < targetParams.length; j++) {
                 const tarParam = targetParams[j];
+                const re = new RegExp(tarParam.text, "g");
                 problems.push(new Result({
                     severity: "error",
                     rule: this,
                     description: `Extra target string substitution parameter ${tarParam.text} not found in the source string.`,
                     id: resource.getKey(),
-                    highlight: tar.replaceAll(tarParam.text, "<e0>$&</e0>"),
+                    highlight: tar.replace(re, "<e0>$&</e0>"),
                     pathName: file,
                     source: src,
                     lineNumber

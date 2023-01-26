@@ -65,12 +65,13 @@ class FStringNumberedRule extends Rule {
         // check for unnumbered params
         for (let i = 0; i < sourceParams.length; i++) {
             const srcParam = sourceParams[i];
+            const re = new RegExp(srcParam, "g");
             problems.push(new Result({
                 severity: "error",
                 rule: this,
                 description: `Source string substitution parameter ${srcParam} must be numbered but it is not.`,
                 id: resource.getKey(),
-                highlight: src.replaceAll(srcParam, `<e0>$&</e0>`),
+                highlight: src.replaceAll(re, `<e0>$&</e0>`),
                 pathName: file,
                 lineNumber
             }));
