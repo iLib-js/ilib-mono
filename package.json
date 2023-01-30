@@ -1,0 +1,44 @@
+{
+    "name": "ilib-lint-python-gnu",
+    "version": "1.0.0",
+    "main": "./src/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.js"
+        }
+    },
+    "description": "ilib-lint plugin to check python resources using the GNU gettext library",
+    "files": [
+        "src",
+        "package.json",
+        "README.md",
+        "LICENSE"
+    ],
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "scripts": {
+        "build": "npm run build:prod",
+        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
+        "test": "LANG=en_US.UTF8 node test/testSuite.js",
+        "debug": "LANG=en_US.UTF8 node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d src test",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md ; npm run doc:html",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "assertextras": "^1.1.0",
+        "docdash": "^2.0.1",
+        "jsdoc": "^4.0.0",
+        "jsdoc-to-markdown": "^8.0.0",
+        "nodeunit": "^0.11.3",
+        "npm-run-all": "^4.1.5"
+    },
+    "dependencies": {
+        "i18nlint-common": "^1.2.0",
+        "ilib-locale": "^1.2.2",
+        "ilib-loctool-po": "^1.6.2",
+        "ilib-tools-common": "^1.4.0"
+    }
+}
