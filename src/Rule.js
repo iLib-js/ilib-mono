@@ -65,6 +65,16 @@ class Rule {
     }
 
     /**
+     * Return the optional web link that gives more complete explanation about the Rule
+     * and how to resolve the problem.
+     *
+     * @returns {String} an URL to a web page that explains the problem this rule checks for
+     */
+    getLink() {
+        return this.link;
+    }
+
+    /**
      * Return the type of this rule. Rules can be organized into the following
      * types:
      *

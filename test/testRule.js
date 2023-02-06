@@ -24,6 +24,7 @@ class MockRule extends Rule {
         super(options);
         this.name = "mock";
         this.description = "asdf asdf";
+        this.link = "https://github.com/docs/rule.md";
     }
 }
 
@@ -108,6 +109,19 @@ export const testRule = {
         test.equal(rule.getRuleType(), "line");
 
         test.done();
+    },
+
+    testRuleGetLink: function(test) {
+        test.expect(2);
+
+        const rule = new MockRule();
+
+        test.ok(rule);
+
+        test.equal(rule.getLink(), "https://github.com/docs/rule.md");
+
+        test.done();
     }
+
 };
 
