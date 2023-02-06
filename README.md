@@ -39,6 +39,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.0
+
+- added getLink() method to the Rule class
+
 ### v1.2.0
 
 - update the plugin to return only classes, as the linter may need to instantiate
