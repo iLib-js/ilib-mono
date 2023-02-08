@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-var log4js = require('log4js');
 var path = require('path');
 var fs = require('fs');
 
 var JsonFile = require('ilib-loctool-json/JsonFile');
 var MarkdownFile = require('ilib-loctool-ghfm/MarkdownFile');
 var Locale = require('ilib/lib/Locale.js');
-var logger = log4js.getLogger('loctool.plugin.OpenAPIFile');
 
 var OpenAPIFile = function(options) {
     this.pathName = path.normalize(options.pathName || "");
@@ -59,6 +57,8 @@ var OpenAPIFile = function(options) {
 
     options.type = options.markdownFileType;
     this.markdownFile = new MarkdownFile(options);
+
+    this.logger = this.API.getLogger('loctool.plugin.OpenAPIFile');
 }
 
 /**
@@ -134,7 +134,7 @@ OpenAPIFile.prototype.makeKey = function(source) {
  * project's translation set.
  */
 OpenAPIFile.prototype.extract = function() {
-    logger.debug('Extracting strings from ' + this.pathName);
+    this.logger.info('Extracting strings from ' + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -144,8 +144,8 @@ OpenAPIFile.prototype.extract = function() {
             }
         }
         catch (e) {
-            logger.warn('Could not read file: ' + p);
-            logger.warn(e);
+            this.logger.warn('Could not read file: ' + p);
+            this.logger.warn(e);
         }
     }
 };
@@ -165,7 +165,7 @@ OpenAPIFile.prototype.localize = function(translations, locales) {
             var l = new Locale(locales[i]);
             if (!l.getVariant()) {
                 var pathName = this.getLocalizedPath(locales[i]);
-                logger.debug('Writing file ' + pathName);
+                this.logger.info('Writing file ' + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
                 this.API.utils.makeDirs(d);

@@ -58,6 +58,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.5
+
+- added more explicit logging so that it is easier to debug loctool
+  problems.
+- now uses the loctool logger via the API instead of its own logging
+
 ### v1.0.4
 
 - fixed a problem with paths that contain "." or ".." dir not being

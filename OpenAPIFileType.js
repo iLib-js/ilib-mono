@@ -19,12 +19,10 @@
 
 var fs = require('fs');
 const path = require('path');
-var log4js = require('log4js');
 
 var JsonFileType = require('ilib-loctool-json/JsonFileType');
 var MarkdownFileType = require('ilib-loctool-ghfm/MarkdownFileType');
 var OpenAPIFile = require('./OpenAPIFile');
-var logger = log4js.getLogger('loctool.plugin.OpenAPIFileType');
 
 var OpenAPIFileType = function(project) {
     this.type = 'openapi';
@@ -50,6 +48,8 @@ var OpenAPIFileType = function(project) {
         this.jsonFileType.schemas[defaultSchemaPath],
         this.jsonFileType.schemas[defaultSchemaPath],
         '#');
+
+    this.logger = this.API.getLogger('loctool.plugin.OpenAPIFileType');
 }
 
 /**
@@ -170,7 +170,7 @@ OpenAPIFileType.prototype.getNew = function() {
  * @returns {OpenAPIFile}
  */
 OpenAPIFileType.prototype.newFile = function(path, options) {
-    logger.debug('Add new file ' + path);
+    this.logger.debug('Add new file ' + path);
 
     return new OpenAPIFile({
         project: this.project,
