@@ -62,7 +62,9 @@ var OpenAPIFileType = function(project) {
  * @returns {String} the localized path name
  */
 OpenAPIFileType.prototype.getLocalizedPath = function(template, pathname, locale) {
-    return this.jsonFileType.getLocalizedPath(template, pathname, locale);
+    return this.jsonFileType.getLocalizedPath({
+        template: template
+    }, pathname, locale);
 }
 
 /**
@@ -73,7 +75,7 @@ OpenAPIFileType.prototype.getLocalizedPath = function(template, pathname, locale
  * @returns {String} the locale within the path
  */
 OpenAPIFileType.prototype.getLocaleFromPath = function(template, pathname) {
-    return this.jsonFileType.getLocaleFromPath(template, pathname);
+    return this.API.utils.getLocaleFromPath(template, pathname);
 }
 
 /**
