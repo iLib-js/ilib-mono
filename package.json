@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-openapi",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "main": "./OpenAPIFileType.js",
     "description": "A loctool plugin that knows how to localize openapi files",
     "license": "Apache-2.0",
@@ -51,12 +51,11 @@
     },
     "dependencies": {
         "ilib": "^14.14.0",
-        "ilib-loctool-ghfm": "^1.10.0",
-        "ilib-loctool-json": "^1.2.4",
-        "log4js": "^6.4.4"
+        "ilib-loctool-ghfm": "^1.11.0",
+        "ilib-loctool-json": "^1.5.0"
     },
     "devDependencies": {
-        "loctool": "^2.16.2",
+        "loctool": "^2.20.2",
         "nodeunit": "^0.11.3"
     }
 }
