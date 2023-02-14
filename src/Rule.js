@@ -75,25 +75,23 @@ class Rule {
     }
 
     /**
-     * Return the type of this rule. Rules can be organized into the following
-     * types:
+     * Return the type of intermediate representation that this rule can process. Rules can
+     * be any type as long as there is a parser that produces that type. By convention,
+     * there are two types that there are many parsers for already:
      *
-     * - A resource rule. This checks a translated resource with a source string
-     *   and a translation to a given locale. eg. a rule that checks that
+     * - resource - This checks a translated Resource instances with a source string
+     *   and a translation to a given locale. For example, a rule that checks that
      *   substitution parameters that exist in the source string also are
      *   given in the target string.
-     * - A line rule. This rule checks single lines of a file. eg. a rule to
+     * - line - This rule checks single lines of a file. eg. a rule to
      *   check the parameters to a function call.
-     * - A multiline rule. This rule checks multiple lines at once to find
-     *   problems that may span multiple lines. For example, a rule to enforce
-     *   a policy that all translatable strings in a source file have an appropriate
-     *   translator's comment on them.
-     * - A multifile rule. This rule checks problems across multiple files. eg.
-     *   a rule to check that ids for translatable strings are unique across all
-     *   files.
      *
-     * @returns {String} a string with either "resource", "line", "multiline", or
-     * "multifile".
+     * Typically, a full parser for a programming language will return something like
+     * an abstract syntax tree as an intermediate format. However, the parser can return
+     * anything it likes just as long as there are rules that know how to check it.
+     *
+     * @returns {String} a string that names the type of intermediate representation
+     * that this rule knows how to check
      */
     getRuleType() {
         // default rule type. If your rule is different, override this method.
@@ -119,60 +117,21 @@ class Rule {
      * <li>resource - the resource to test this rule against. For resource rules, this
      * is a required property.
      * <li>line - a single line of a file to test this rule against (for line rules)
-     * <li>lines - all the lines of a file to test this rule against (for multiline rules
-     * and multifile rules)
+     * <li>ir - intermediate representation from the parser. The parser type and the
+     * rule type must be the same.
      * <li>pathName - the name of the current file being matched in multifile rules.
      * <li>parameters - (optional) parameters for this rule from the configuration file
      * </ul>
      *
-     * The return value from this method when a rule matches is an object with the
-     * following properties:
+     * The return value from this method when a rule matches is an instance of a {@see Result}
+     * class.
      *
-     * <ul>
-     * <li>severity - the severity of this match. This can be one of the following:
-     *   <ul>
-     *   <li>suggestion - a suggestion of a better way to do things. The current way is
-     *   not incorrect, but probably not optimal
-     *   <li>warning - a problem that should be fixed, but which does not prevent
-     *   your app from operating internationally. This is more severe than a suggestion.
-     *   <li>error - a problem that must be fixed. This type of problem will prevent
-     *   your app from operating properly internationally and could possibly even
-     *   crash your app in some cases.
-     *   </ul>
-     * <li>description - a description of the problem to display to the user. In order
-     * to make the ilib-lint output useful, this description should attempt to make the
-     * following things clear:
-     *   <ul>
-     *   <li>What part is wrong
-     *   <li>Why it is wrong
-     *   <li>Suggestions on how to fix it
-     *   </ul>
-     * <li>lineNumber - the line number where the match occurred in multiline rules
-     * <li>highlight - the line where the problem occurred, highlighted with XML syntax
-     * (see below)
-     * </ul>
-     *
-     * For the `highlight` property, the line that has a problem is reproduced with
-     * XML tags around the problem part, if it is known. The tags are of the form
-     * &lt;eX&gt; where X is a digit starting with 0 and progressing to 9 for each
-     * subsequent problem. If the file type is XML already, the rest of the line will
-     * be XML-escaped first.<p>
-     *
-     * Example:<p>
-     *
-     * "const str = rb.getString(<e0>id</e0>);"<p>
-     *
-     * In this rule, `getString()` must be called with a static string in order for the
-     * loctool to be able to extract that string. The line above calls `getString()`
-     * with a variable named "id" as a parameter. The variable is highlighted with the
-     * e0 tag. Callers can then translate the open and close tags appropriately for
-     * the output device, such as ASCII escapes for a regular terminal, or HTML tags
-     * for a web-based device.
-     *
+     * @abstract
      * @param {Object} options The options object as per the description above
-     * @returns {Object|Array.<Object>|=} an object describing the problem if the rule
-     * does match for this locale, or an array of such Objects if there are multiple
-     * problems with the same input, or undefined if the rule does not match
+     * @returns {Result|Array.<Result>|=} a Result instance describing the problem if
+     * the rule check fails for this locale, or an array of such Result instances if
+     * there are multiple problems with the same input, or `undefined` if there is no
+     * problem found (ie. the rule does not match).
      */
     match(options) {
         throw new Error("Cannot call Rule.match() directly.");

@@ -39,6 +39,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.5.0
+
+- added Parser.getType() method
+- clarified some jsdocs
+    - Rule.match() should return a Result instance, an array of
+      Result instances, or undefined if no match
+- Parser.parse() should now return the intermediate representation
+
 ### v1.4.0
 
 - added utility function withVisibleWhitespace() to visually represent whitespace characters

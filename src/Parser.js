@@ -72,14 +72,56 @@ class Parser {
     }
 
     /**
-     * Parse the current file into an intermediate representation.
+     * Parse the current file into an intermediate representation. This
+     * representation may be anything you like, as long as the rules you
+     * implement also can use this same format to check for problems.
+     *
+     * Many parsers produce an abstract syntax tree. The tree could have
+     * a different style depending on the programming language, but
+     * generally, each node has a type, a name, and an array of children,
+     * as well as additional information that depends on the type of
+     * the node.
+     *
+     * Other types of intermediate representation could include:
+     *
+     * - lines - just split the file into an array of lines in order
+     * - concrete syntax tree - a tree the represents the actual
+     *   syntactical elements in the file. This can be converted to
+     *   an abstract syntax tree afterwards, which would be more useful
+     *   for checking for problems.
+     * - resources - array of instances of Resource classes as
+     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     *   This is the preference intermediate representation for
+     *   resource files like Java properties or xliff. There are many
+     *   rules that already know how to process Resource instances.
+     *
+     * @abstract
+     * @returns {Object} the intermediate representation
      */
     parse() {}
 
     /**
-     * For a "resource" type of plugin, this returns a list of Resource instances
+     * Return the type of intermediate representation that this parser
+     * produces. The type should be a unique name that matches with
+     * the rule type for rules that process this intermediate representation.
+     *
+     * There are two types that are reserved, however:
+     *
+     * - resource - the parser returns an array of Resource instances as
+     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     * - line - the parser produces a set of lines as an array of strings
+     *
+     * @abstract
+     * @returns {String} the name of the current type of intermediate
+     * representation.
+     */
+    getType() {}
+
+    /**
+     * For a "resource" type of parser, this returns a list of Resource instances
      * that result from parsing the file.
      *
+     * @abstract
      * @returns {Array.<Resource>} list of Resource instances in this file
      */
     getResources() {
