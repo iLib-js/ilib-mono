@@ -381,6 +381,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.1
+
+- update dependencies
+
 ### v1.5.0
 
 - added support for locale maps when generating output path names
