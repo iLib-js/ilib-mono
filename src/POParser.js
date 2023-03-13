@@ -131,6 +131,10 @@ class POParser extends Parser {
     parseData(data) {
     }
 
+    getType() {
+        return "resource";
+    }
+
     /**
      * Parse the current file into an intermediate representation.
      */
@@ -138,6 +142,7 @@ class POParser extends Parser {
         const pofile = this.potype.newFile(this.filePath);
         pofile.extract();
         this.ts = pofile.getTranslationSet();
+        return this.ts.getAll();
     }
 
     getResources() {

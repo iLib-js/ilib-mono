@@ -70,6 +70,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.0
+
+- updated dependencies
+- added getType() method to the POParser plugin
+- now return the results of parsing from the POParser.parse() method
+
 ### v1.0.0
 
 - initial version
