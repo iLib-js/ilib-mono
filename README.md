@@ -191,6 +191,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.11.1
+
+- Updated dependencies
+
 ### v1.11.0
 
 - Now uses newest yaml parser which puts a hash of the source path name in the
