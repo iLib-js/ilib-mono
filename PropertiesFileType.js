@@ -1,7 +1,7 @@
 /*
  * PropertiesFileType.js - manages a collection of android resource files
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ var log4js = require("log4js");
 var Locale = require("ilib/lib/Locale.js");
 
 var PropertiesFile = require("./PropertiesFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.PropertiesFileType");
 
 /**
  * @class Manage a collection of Android resource files.
@@ -58,6 +56,7 @@ var PropertiesFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.plugin.PropertiesFileType");
 };
 
 var alreadyLoc = new RegExp(/(^|\/)\w+_(([a-z][a-z])(_([A-Z][a-z][a-z][a-z]))?(_([A-Z][A-Z])(_([A-Z]+))?)?).properties/);
@@ -70,7 +69,7 @@ var alreadyLoc = new RegExp(/(^|\/)\w+_(([a-z][a-z])(_([A-Z][a-z][a-z][a-z]))?(_
  * false otherwise
  */
 PropertiesFileType.prototype.handles = function(pathName) {
-    logger.debug("PropertiesFileType handles " + pathName + "?");
+    this.logger.debug("PropertiesFileType handles " + pathName + "?");
 
     var extension = path.extname(pathName).toLowerCase();
     var ret = (this.extensions.indexOf(extension) > -1);
@@ -82,7 +81,7 @@ PropertiesFileType.prototype.handles = function(pathName) {
             return locale.getSpec() === this.project.sourceLocale;
         }
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -93,7 +92,7 @@ PropertiesFileType.prototype.handles = function(pathName) {
  * each to write out.
  */
 PropertiesFileType.prototype.write = function() {
-    logger.trace("Now writing out " + Object.keys(this.resourceFiles).length + " resource files");
+    this.logger.trace("Now writing out " + Object.keys(this.resourceFiles).length + " resource files");
     for (var hash in this.resourceFiles) {
         var file = this.resourceFiles[hash];
         file.write();
@@ -146,7 +145,7 @@ PropertiesFileType.prototype.getResourceFile = function(locale) {
             locale: key
         });
 
-        logger.trace("Defining new resource file");
+        this.logger.trace("Defining new resource file");
     }
 
     return resfile;
@@ -173,7 +172,7 @@ PropertiesFileType.prototype.getResourceFilePath = function(locale, pathName, ty
         localeSpec = "";
     } else {
         localeSpec = this.API.utils.getLocaleDefault(locale);
-        logger.trace("Getting resource file path for locale " + locale + ": " + localeSpec);
+        this.logger.trace("Getting resource file path for locale " + locale + ": " + localeSpec);
         localeSpec = "_" + localeSpec.replace(/-/g, "_");
 
         if (flavor) {
@@ -205,7 +204,7 @@ PropertiesFileType.prototype.getResourceFile = function(res) {
         flavor = res.getFlavor && res.getFlavor();
     var newPath = this.getResourceFilePath(locale, pathName, type, flavor);
 
-    logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
+    this.logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
 
     var resfile = this.resourceFiles && this.resourceFiles[newPath];
 
@@ -217,9 +216,9 @@ PropertiesFileType.prototype.getResourceFile = function(res) {
             type: this
         });
 
-        logger.trace("Defining new resource file");
+        this.logger.trace("Defining new resource file");
     } else {
-        logger.trace("Returning existing resource file");
+        this.logger.trace("Returning existing resource file");
     }
 
     return resfile;
@@ -242,11 +241,11 @@ PropertiesFileType.prototype.generatePseudo = function(locale, pb) {
     var resources = this.extracted.getBy({
         sourceLocale: pb.getSourceLocale()
     });
-    logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
+    this.logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
     var resource;
 
     resources.forEach(function(resource) {
-        logger.trace("Generating pseudo for " + resource.getKey());
+        this.logger.trace("Generating pseudo for " + resource.getKey());
         var res = resource.generatePseudo(locale, pb);
         if (res && res.getSource() !== res.getTarget()) {
             this.pseudo.add(res);

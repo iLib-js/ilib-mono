@@ -1,7 +1,7 @@
 /*
  * PropertiesFile.js - represents a old-format java properties file
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,6 @@ var path = require("path");
 var isSpace = require("ilib/lib/isSpace.js");
 var Locale = require("ilib/lib/Locale.js");
 var IString = require("ilib/lib/IString.js");
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.plugin.PropertiesFile");
 
 /**
  * @class Represents a Java properties file in the traditional format.
@@ -53,6 +50,7 @@ var PropertiesFile = function(props) {
     }
 
     this.set = this.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
+    this.logger = this.API.getLogger("loctool.plugin.PropertiesFile");
 };
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
@@ -152,7 +150,7 @@ PropertiesFile.prototype.parse = function(data) {
  * Extract the strings from the java properties file
  */
 PropertiesFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -161,7 +159,7 @@ PropertiesFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
+            this.logger.warn("Could not read file: " + p);
         }
     }
 };
@@ -216,20 +214,20 @@ PropertiesFile.prototype.getAll = function() {
  * @param {Resource} res a resource to add to this file
  */
 PropertiesFile.prototype.addResource = function(res) {
-    logger.trace("PropertiesFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    this.logger.trace("PropertiesFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
     var resLocale = res.getTargetLocale() || res.getSourceLocale();
     if (res && res.getProject() === this.project.getProjectId() && resLocale === this.locale.getSpec()) {
-        logger.trace("correct project, context, and locale. Adding.");
+        this.logger.trace("correct project, context, and locale. Adding.");
         this.set.add(res);
     } else {
         if (res) {
             if (res.getProject() !== this.project.getProjectId()) {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
             } else {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.locale.getSpec());
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.locale.getSpec());
             }
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -290,7 +288,7 @@ PropertiesFile.prototype.getContent = function() {
  * Write the resource file out to disk again.
  */
 PropertiesFile.prototype.write = function() {
-    logger.trace("writing resource file. [" + [this.project.getProjectId(), this.locale].join(", ") + "]");
+    this.logger.trace("writing resource file. [" + [this.project.getProjectId(), this.locale].join(", ") + "]");
     if (this.set.isDirty()) {
         var dir;
 
@@ -303,16 +301,16 @@ PropertiesFile.prototype.write = function() {
 
         var resources = this.set.getAll();
 
-        logger.info("Writing properties file for locale " + this.locale + " to file " + this.pathName);
+        this.logger.info("Writing properties file for locale " + this.locale + " to file " + this.pathName);
 
         var content = this.getContent();
 
         this.API.utils.makeDirs(dir);
 
         fs.writeFileSync(p, content, "utf8");
-        logger.debug("Wrote string translations to file " + this.pathName);
+        this.logger.debug("Wrote string translations to file " + this.pathName);
     } else {
-        logger.debug("File " + this.pathName + " is not dirty. Skipping.");
+        this.logger.debug("File " + this.pathName + " is not dirty. Skipping.");
     }
 };
 
