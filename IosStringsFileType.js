@@ -1,7 +1,7 @@
 /*
  * IosStringsFileType.js - manages a collection of iOS strings resource files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@ var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 
 var IosStringsFile = require("./IosStringsFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.IosStringsFileType");
 
 /**
  * @class Manage a collection of iOS strings resource files.
@@ -61,6 +58,7 @@ var IosStringsFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.plugin.IosStringsFileType");
 };
 
 /**
@@ -71,7 +69,7 @@ var IosStringsFileType = function(project) {
  * false otherwise
  */
 IosStringsFileType.prototype.handles = function(pathName) {
-    logger.debug("IosStringsFileType handles " + pathName + "?");
+    this.logger.debug("IosStringsFileType handles " + pathName + "?");
 
     var ret = true;
     var parent = path.dirname(pathName);
@@ -82,18 +80,18 @@ IosStringsFileType.prototype.handles = function(pathName) {
         ret = path.basename(parent) !== "Base.lproj" && path.basename(pathName) !== "Localizable.strings";
     }
 
-    logger.trace("dir being tested is is " + dir);
+    this.logger.trace("dir being tested is is " + dir);
 
-    // logger.trace("resdir: " + resdir + " dir: " + dir);
+    // this.logger.trace("resdir: " + resdir + " dir: " + dir);
     var ret = ret && (pathName.length > 8) && (pathName.substring(pathName.length - 8) === ".strings");
 
     if (ret) {
         var base = path.basename(parent, ".lproj");
-        // logger.trace("testing " + dir);
+        // this.logger.trace("testing " + dir);
         ret = (base === "." || base === "en-US") && base !== "Base";
     }
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -108,7 +106,7 @@ IosStringsFileType.prototype.handles = function(pathName) {
  */
 IosStringsFileType.prototype.write = function(translations, locales) {
     // distribute all the new resources to their resource files ...
-    logger.trace("distributing all new resources to their resource files");
+    this.logger.trace("distributing all new resources to their resource files");
     var res, file,
         resources = this.extracted.getAll(),
         db = this.project.db,
@@ -116,14 +114,14 @@ IosStringsFileType.prototype.write = function(translations, locales) {
             return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
         }.bind(this));
 
-    logger.trace("There are " + resources.length + " resources to add.");
+    this.logger.trace("There are " + resources.length + " resources to add.");
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Adding translations for " + res.reskey + " to locale " + locale);
+            this.logger.trace("Adding translations for " + res.reskey + " to locale " + locale);
 
             db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
                 var r = translated; // default to the source language if the translation is not there
@@ -135,12 +133,12 @@ IosStringsFileType.prototype.write = function(translations, locales) {
 
                     this.newres.add(r);
 
-                    logger.trace("No translation for " + res.reskey + " to " + locale + ". Adding to new resources file.");
+                    this.logger.trace("No translation for " + res.reskey + " to " + locale + ". Adding to new resources file.");
                 }
 
                 file = this.getResourceFile(r);
                 file.addResource(r);
-                logger.trace("Added " + r.reskey + " to " + file.pathName);
+                this.logger.trace("Added " + r.reskey + " to " + file.pathName);
             }.bind(this));
         }.bind(this));
     }
@@ -153,10 +151,10 @@ IosStringsFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         file = this.getResourceFile(res);
         file.addResource(res);
-        logger.trace("Added " + res.reskey + " to " + file.pathName);
+        this.logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
 
-    logger.trace("Now writing out the resource files");
+    this.logger.trace("Now writing out the resource files");
     // ... and then let them write themselves out
     for (var hash in this.resourceFiles) {
         file = this.resourceFiles[hash];
@@ -214,7 +212,7 @@ IosStringsFileType.prototype.getResourceFilePath = function(locale, pathName, ty
     };
 
     localeDir = localeMapping[locale] || (l.language === "en" ? l.getSpec() : l.language) + ".lproj";
-    logger.trace("Getting resource file path for locale " + locale + ": " + localeDir);
+    this.logger.trace("Getting resource file path for locale " + locale + ": " + localeDir);
 
     if (type === "x-xib" && !flavor) {
         // strings from xib files go into the xib's localized strings file instead of the main project strings file
@@ -246,7 +244,7 @@ IosStringsFileType.prototype.getResourceFile = function(res) {
         flavor = res.getFlavor && res.getFlavor();
     var newPath = this.getResourceFilePath(locale, pathName, type, flavor);
 
-    logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
+    this.logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
 
     var resfile = this.resourceFiles && this.resourceFiles[newPath];
 
@@ -258,9 +256,9 @@ IosStringsFileType.prototype.getResourceFile = function(res) {
             type: this
         });
 
-        logger.trace("Defining new resource file");
+        this.logger.trace("Defining new resource file");
     } else {
-        logger.trace("Returning existing resource file");
+        this.logger.trace("Returning existing resource file");
     }
 
     return resfile;

@@ -1,7 +1,7 @@
 /*
  * IosStringsFile.js - represents an iOS strings resource file
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2023 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,6 @@ var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.plugin.IosStringsFile");
 
 /**
  * @class Represents an iOS strings resource file.
@@ -56,6 +53,7 @@ var IosStringsFile = function(props) {
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
+    this.logger = this.API.getLogger("loctool.plugin.IosStringsFile");
 };
 
 var commentRE = new RegExp(/\/\*\s*(([^*]|\*[^\/])*)\s*\*\//);
@@ -84,7 +82,7 @@ IosStringsFile.prototype.parse = function(str) {
         } else {
             match = lineRE.exec(line);
             if (match && match.length > 3 && match[3] && match[3].trim().length > 0) {
-                logger.trace("Found resource string: " + match[1] + " = " + match[3]);
+                this.logger.trace("Found resource string: " + match[1] + " = " + match[3]);
                 var params = {
                     resType: "string",
                     project: this.project.getProjectId(),
@@ -135,7 +133,7 @@ IosStringsFile.prototype.extract = function() {
                 this.sourcePath = this.pathName;
             }
 
-            logger.trace("origin is " + this.origin + " and sourcePath is " + this.sourcePath);
+            this.logger.trace("origin is " + this.origin + " and sourcePath is " + this.sourcePath);
 
             var buffer = Buffer.alloc(2);
             buffer.fill(0);
@@ -150,7 +148,7 @@ IosStringsFile.prototype.extract = function() {
             }
 
             if (!this.contents) {
-                logger.debug(this.pathName + " is not available, skipping.");
+                this.logger.debug(this.pathName + " is not available, skipping.");
                 return;
             }
 
@@ -158,11 +156,11 @@ IosStringsFile.prototype.extract = function() {
 
             this.parse(this.contents);
 
-            logger.trace("After loading, resources are: " + JSON.stringify(this.set.getAll(), undefined, 4));
-            logger.trace("IosStringsFile: loaded strings in " + this.pathName);
+            this.logger.trace("After loading, resources are: " + JSON.stringify(this.set.getAll(), undefined, 4));
+            this.logger.trace("IosStringsFile: loaded strings in " + this.pathName);
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 
@@ -203,22 +201,22 @@ IosStringsFile.prototype._parsePath = function() {
                 // this.locale = new Locale(dir.substring(dir.length-6).replace("-r", "-").replace("-s", "-")).getSpec();
                 this.iosLocale = new Locale(match[1], match[3], undefined, match[2]).getSpec();
                 this.context = match[4] ? match[4].substring(1) : undefined;
-                logger.trace("script");
+                this.logger.trace("script");
             } else if ((match = reg.exec(dir)) && match && match.length > 0) {
                 //this.locale = new Locale(dir.substring(dir.length-6).replace("-r", "-")).getSpec();
                 this.iosLocale = new Locale(match[1], match[2]).getSpec();
                 this.context = match[3] ? match[3].substring(1) : undefined;
-                logger.trace("region");
+                this.logger.trace("region");
             } else if ((match = lang.exec(dir)) && match && match.length > 0) {
                 // this.locale = new Locale(dir.substring(dir.length-2)).getSpec();
                 this.iosLocale = new Locale(match[1]).getSpec();
                 this.context = match[2] ? match[2].substring(1) : undefined;
-                logger.trace("language");
+                this.logger.trace("language");
             }
 
             this.locale = (this.iosLocale === "en-US" ? this.project.sourceLocale: this.iosLocale) || this.project.sourceLocale;
         }
-        logger.trace("_parsePath: locale is " + this.locale);
+        this.logger.trace("_parsePath: locale is " + this.locale);
 
         if (this.project.settings.flavors) {
             var filename = path.basename(this.pathName, ".strings");
@@ -289,13 +287,13 @@ function localeContains(parent, child) {
  * @param {Resource} res a resource to add to this file
  */
 IosStringsFile.prototype.addResource = function(res) {
-    logger.trace("IosStringsFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + res.getTargetLocale());
+    this.logger.trace("IosStringsFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + res.getTargetLocale());
     if (res && res.getProject() === this.project.getProjectId()) {
         if (localeContains(this.locale, res.getTargetLocale())) {
-            logger.trace("correct project and locale. Adding.");
+            this.logger.trace("correct project and locale. Adding.");
             this.set.add(res);
         } else {
-            logger.trace("correct project, wrong locale. Adding as a source-only resource.");
+            this.logger.trace("correct project, wrong locale. Adding as a source-only resource.");
             // This one is not the right locale, so add it as a source-only resource
             // so that it can be a placeholder for the real translation later on
             this.set.add(this.API.newResource({
@@ -315,12 +313,12 @@ IosStringsFile.prototype.addResource = function(res) {
     } else {
         if (res) {
             if (res.getProject() !== this.project.getProjectId()) {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
             } else {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + res.getTargetLocale() + " vs. " + this.locale);
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + res.getTargetLocale() + " vs. " + this.locale);
             }
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -381,7 +379,7 @@ IosStringsFile.prototype.getContent = function() {
  * Write the resource file out to disk again.
  */
 IosStringsFile.prototype.write = function() {
-    logger.trace("writing resource file. [" + [this.project.getProjectId(), this.locale].join(", ") + "]");
+    this.logger.trace("writing resource file. [" + [this.project.getProjectId(), this.locale].join(", ") + "]");
     if (this.set.isDirty()) {
         var dir;
 
@@ -394,16 +392,16 @@ IosStringsFile.prototype.write = function() {
 
         var resources = this.set.getAll();
 
-        logger.info("Writing iOS resources for locale " + this.locale + " to file " + this.pathName);
+        this.logger.info("Writing iOS resources for locale " + this.locale + " to file " + this.pathName);
 
         var content = this.getContent();
 
         this.API.utils.makeDirs(dir);
 
         fs.writeFileSync(p, content, "utf8");
-        logger.debug("Wrote string translations to file " + this.pathName);
+        this.logger.debug("Wrote string translations to file " + this.pathName);
     } else {
-        logger.debug("File " + this.pathName + " is not dirty. Skipping.");
+        this.logger.debug("File " + this.pathName + " is not dirty. Skipping.");
     }
 };
 
