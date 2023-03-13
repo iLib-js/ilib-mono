@@ -1,7 +1,7 @@
 /*
  * HTMLFile.js - plugin to extract resources from an HTML file
  *
- * Copyright © 2018-2019, Box, Inc.
+ * Copyright © 2018-2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var htmlParser = require("html-parser");
 var jsstl = require("js-stl");
 var ilib = require("ilib");
@@ -29,8 +28,6 @@ var MessageAccumulator = require("message-accumulator").default;
 
 var Queue = jsstl.Queue;
 var Stack = jsstl.Stack;
-
-var logger = log4js.getLogger("loctool.plugin.HTMLFile");
 
 /**
  * Create a new HTML file with the given path name and within
@@ -49,6 +46,7 @@ var HTMLFile = function(options) {
     this.API = this.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.logger = this.API.getLogger("loctool.plugin.HTMLFile");
 };
 
 /**
@@ -128,7 +126,7 @@ function nodeToString(node) {
  */
 HTMLFile.prototype._emitText = function(escape) {
     this.text = this.message.getMinimalString();
-    logger.debug("_emitText: message accumulator minimal string is: " + this.text);
+    this.logger.debug("_emitText: message accumulator minimal string is: " + this.text);
 
     var pre = this.message.getPrefix().map(nodeToString).join('');
     var post = this.message.getSuffix().map(nodeToString).join('');
@@ -139,7 +137,7 @@ HTMLFile.prototype._emitText = function(escape) {
         text: this.accumulator
     });
 
-    logger.debug('text: pre is "' + pre + '" value is "' + this.text + '" and post is "' + post + '"');
+    this.logger.debug('text: pre is "' + pre + '" value is "' + this.text + '" and post is "' + post + '"');
 
     if (this.text.length) {
         this.segments.enqueue({
@@ -225,7 +223,7 @@ function getOriginalText(message) {
  * @param {String} data the string to parse
  */
 HTMLFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
 
     // accumulates characters in non-text segments
     this.accumulator = "";
@@ -262,7 +260,7 @@ HTMLFile.prototype.parse = function(data) {
 
     var x = htmlParser.parse(data, {
         openElement: function(name) {
-            logger.trace('open tag: ' + name);
+            this.logger.trace('open tag: ' + name);
             lastTagName = name;
             if (this.API.utils.ignoreTags[name]) {
                 // ignore the content inside of this tag
@@ -286,7 +284,7 @@ HTMLFile.prototype.parse = function(data) {
             }
         }.bind(this),
         closeOpenedElement: function(name, token, unary) {
-            logger.trace('close opened tag: ' + name + ", token: " + token + ', unary: ' + unary);
+            this.logger.trace('close opened tag: ' + name + ", token: " + token + ', unary: ' + unary);
             if (this.tagtext) {
                 this.tagtext += token;
             } else {
@@ -303,7 +301,7 @@ HTMLFile.prototype.parse = function(data) {
             this.lineNumber += countNewLines(token);
         }.bind(this),
         closeElement: function(name) {
-            logger.trace('close: %s', name);
+            this.logger.trace('close: %s', name);
             if (this.API.utils.ignoreTags[name]) {
                 // stop ignoring when we reach the closing tag
                 this.ignore = false;
@@ -325,7 +323,7 @@ HTMLFile.prototype.parse = function(data) {
             this.accumulator += '</' + name + '>';
         }.bind(this),
         comment: function(value) {
-            logger.trace('comment: %s', value);
+            this.logger.trace('comment: %s', value);
             // strip comments from the output, but keep i18n comments
             // for the resources
             value = value.trim();
@@ -335,7 +333,7 @@ HTMLFile.prototype.parse = function(data) {
             this.lineNumber += countNewLines(value);
         }.bind(this),
         cdata: function(value) {
-            logger.trace('cdata: %s', value);
+            this.logger.trace('cdata: %s', value);
             if (this.tagtext) {
                 this._emitText();
             }
@@ -343,7 +341,7 @@ HTMLFile.prototype.parse = function(data) {
             this.lineNumber += countNewLines(value);
         }.bind(this),
         attribute: function(name, value, quote) {
-            logger.trace('attribute: %s=%s%s%s', name, quote, value, quote);
+            this.logger.trace('attribute: %s=%s%s%s', name, quote, value, quote);
             if (!value && !quote) {
                 // make sure there are at least empty quotes
                 quote = '"';
@@ -399,12 +397,12 @@ HTMLFile.prototype.parse = function(data) {
             this.lineNumber += countNewLines(value);
         }.bind(this),
         docType: function(value) {
-            logger.trace('doctype: %s', value);
+            this.logger.trace('doctype: %s', value);
             this.accumulator += "<!DOCTYPE " + value + ">";
             this.lineNumber += countNewLines(value);
         }.bind(this),
         text: function(value) {
-            logger.trace('text: value is "' + value + '"');
+            this.logger.trace('text: value is "' + value + '"');
             if (this.ignore) {
                 this.accumulator += value;
             } else if (this.API.utils.isAllWhite(value)) {
@@ -446,7 +444,7 @@ HTMLFile.prototype.parse = function(data) {
  * project's translation set.
  */
 HTMLFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -455,8 +453,8 @@ HTMLFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
@@ -569,7 +567,7 @@ HTMLFile.prototype.localizeText = function(translations, locale) {
                         additional = translated.getTarget();
                     } else {
                         if (this.type && this.API.utils.containsActualText(text)) {
-                            logger.trace("New string found: " + text);
+                            this.logger.trace("New string found: " + text);
                             this.type.newres.add(this.API.newResource({
                                 resType: "string",
                                 project: this.project.getProjectId(),
@@ -640,7 +638,7 @@ HTMLFile.prototype.localize = function(translations, locales) {
                 var l = new Locale(locales[i]);
                 if (!l.getVariant()) {
                     var pathName = this.getLocalizedPath(locales[i]);
-                    logger.debug("Writing file " + pathName);
+                    this.logger.debug("Writing file " + pathName);
                     var p = path.join(this.project.target, pathName);
                     var d = path.dirname(p);
                     this.API.utils.makeDirs(d);
@@ -650,7 +648,7 @@ HTMLFile.prototype.localize = function(translations, locales) {
             }
         }
     } else {
-        logger.debug(this.pathName + ": No segments/no strings, no localize");
+        this.logger.debug(this.pathName + ": No segments/no strings, no localize");
     }
 };
 
