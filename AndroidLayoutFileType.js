@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFileType.js - tool to extract resources from source code
  *
- * Copyright © 2019-2021, JEDLSoft
+ * Copyright © 2019-2021, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,7 @@
  * limitations under the License.
  */
 
-var log4js = require("log4js");
-
 var AndroidLayoutFile = require("./AndroidLayoutFile.js");
-
-var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 
 var AndroidLayoutFileType = function(project) {
     this.type = "java";
@@ -36,6 +32,8 @@ var AndroidLayoutFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.logger = this.API.getLogger("loctool.lib.AndroidLayoutFile");
 };
 
 var extensionRE = new RegExp(/\.xml$/);
@@ -49,27 +47,27 @@ AndroidLayoutFileType.prototype.getExtensions = function() {
 };
 
 AndroidLayoutFileType.prototype.handles = function(pathName) {
-    logger.debug("AndroidLayoutFileType handles " + pathName + "?");
+    this.logger.debug("AndroidLayoutFileType handles " + pathName + "?");
     if (!extensionRE.test(pathName)) {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
     var pathElements = pathName.split('/');
     if (pathElements.length < 3 || pathElements[pathElements.length-3] !== "res") {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
     var dir = pathElements[pathElements.length-2];
 
     if (!dirRE.test(dir)) {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
     if (fullLocale.test(dir)) {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
@@ -78,18 +76,18 @@ AndroidLayoutFileType.prototype.handles = function(pathName) {
     for (var i = parts.length-1; i > 0; i--) {
         if (reg.test(parts[i]) && this.API.utils.iso3166[parts[i]]) {
             // already localized dir
-            logger.debug("No");
+            this.logger.debug("No");
             return false;
         }
 
         if (lang.test(parts[i]) && this.API.utils.iso639[parts[i]]) {
             // already localized dir
-            logger.debug("No");
+            this.logger.debug("No");
             return false;
         }
     }
 
-    logger.debug("Yes");
+    this.logger.debug("Yes");
     return true;
 };
 
@@ -119,7 +117,7 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
             return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));
 
-    logger.trace("Adding resources to resource files");
+    this.logger.trace("Adding resources to resource files");
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
@@ -128,7 +126,7 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Localizing Android layout strings to " + locale);
+            this.logger.trace("Localizing Android layout strings to " + locale);
 
             db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
                 var r = translated; // default to the source language if the translation is not there
@@ -141,11 +139,11 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
                     this.newres.add(r);
 
                     // skip to cause it to fall back to the english strings
-                    logger.trace("No translation for " + res.reskey + " to " + locale);
+                    this.logger.trace("No translation for " + res.reskey + " to " + locale);
                 } else {
                     file = resFileType.getResourceFile(r.context, locale, "strings", r.pathName);
                     file.addResource(r);
-                    logger.trace("Added " + r.reskey + " to " + file.pathName);
+                    this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
             }.bind(this));
         }.bind(this));
@@ -161,11 +159,11 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
         if (res.getSource() != res.getTarget()) {
             file = resFileType.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
             file.addResource(res);
-            logger.trace("Added " + res.reskey + " to " + file.pathName);
+            this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
     }
 
-    logger.trace("Writing out modified layout files");
+    this.logger.trace("Writing out modified layout files");
 
     // now write out all the files that were resourcified
     for (i = 0; i < this.files.length; i++) {

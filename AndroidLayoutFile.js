@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFile.js - tool to extract resources from source code
  *
- * Copyright © 2019-2021 JEDLSoft
+ * Copyright © 2019-2021, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,10 @@
  */
 
 var fs = require("fs");
-var log4js = require("log4js");
 var path = require("path");
 var xml2json = require("xml2json");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale");
-
-var logger = log4js.getLogger("loctool.lib.AndroidLayoutFile");
 
 /**
  * @class Represents an Android layout file.
@@ -53,6 +50,7 @@ var AndroidLayoutFile = function(props) {
 
     this.set = this.API.newTranslationSet(this.sourceLocale);
 
+    this.logger = this.API.getLogger("loctool.lib.AndroidLayoutFile");
     this.replacements = {};
 };
 
@@ -90,20 +88,20 @@ AndroidLayoutFile.prototype._parsePath = function() {
                 // this.locale = new Locale(dir.substring(dir.length-6).replace("-r", "-").replace("-s", "-")).getSpec();
                 this.locale = new Locale(match[1], match[3], undefined, match[2]).getSpec();
                 this.context = match[4] ? match[4].substring(1) : undefined;
-                logger.trace("script");
+                this.logger.trace("script");
             } else if ((match = reg.exec(dir)) && match && match.length > 0) {
                 //this.locale = new Locale(dir.substring(dir.length-6).replace("-r", "-")).getSpec();
                 this.locale = new Locale(match[1], match[2]).getSpec();
                 this.context = match[3] ? match[3].substring(1) : undefined;
-                logger.trace("region");
+                this.logger.trace("region");
             } else if ((match = lang.exec(dir)) && match && match.length > 0) {
                 // this.locale = new Locale(dir.substring(dir.length-2)).getSpec();
                 this.locale = new Locale(match[1]).getSpec();
                 this.context = match[2] ? match[2].substring(1) : undefined;
-                logger.trace("language");
+                this.logger.trace("language");
             } else if ((match = context.exec(dir)) && match && match.length > 0) {
                 this.context = match.length > 1 && match[1].length ? match[1] : undefined;
-                logger.trace("context");
+                this.logger.trace("context");
             }
 
             if (!this.locale) {
@@ -113,7 +111,7 @@ AndroidLayoutFile.prototype._parsePath = function() {
             var results = context.exec(dir);
             if (results && results.length) {
                 this.context = results[1] || undefined;
-                logger.trace("context only");
+                this.logger.trace("context only");
                 // dir = dir.substring(0, dir.length-2);
             }
         }
@@ -123,7 +121,7 @@ AndroidLayoutFile.prototype._parsePath = function() {
             this.flavor = undefined;
         }
 
-        logger.trace("_parsePath: locale is " + this.locale + " and context is " + this.context + " and flavor is " + this.flavor);
+        this.logger.trace("_parsePath: locale is " + this.locale + " and context is " + this.context + " and flavor is " + this.flavor);
     }
 
     this._pathParsed = true;
@@ -208,12 +206,12 @@ AndroidLayoutFile.prototype.walkLayout = function(node) {
         } else if (typeof(subnode) === "string") {
             if (subnode.length && localizableAttributes[p]) {
                 comment = node.i18n;
-                logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
+                this.logger.trace("Found resource " + p + " with string " + subnode + " and comment " + comment);
                 if (this.API.utils.isAndroidResource(subnode)) {
                     // note that this is a used resource?
-                    logger.trace("Already resourcified");
+                    this.logger.trace("Already resourcified");
                 } else if (!this.API.utils.isDNT(comment)) {
-                    logger.trace("Resourcifying");
+                    this.logger.trace("Resourcifying");
                     var key = this.makeKey(p, subnode);
                     node[p] = "@string/" + key;
                     var res = this.API.newResource({
@@ -235,7 +233,7 @@ AndroidLayoutFile.prototype.walkLayout = function(node) {
                     this.set.add(res);
                     this.dirty = true;
                     this.replacements[reEscape(p + '="' + subnode + '"')] = p + '="' + node[p] + '"';
-                    logger.trace("Recording replacement " + p + '="' + subnode + '" to ' + p + '="' + node[p] + '"');
+                    this.logger.trace("Recording replacement " + p + '="' + subnode + '" to ' + p + '="' + node[p] + '"');
                 }
             }
         } else if (ilib.isArray(subnode)) {
@@ -264,8 +262,8 @@ AndroidLayoutFile.prototype.parse = function(data) {
             !this.contents.Scrollview &&
             !this.contents.WebView &&
             !this.contents.Scrollview) ) {
-        logger.debug(this.pathName + " is not a layout file, skipping.");
-        logger.trace("Parsed file is " + JSON.stringify(this.content, undefined, 4));
+        this.logger.debug(this.pathName + " is not a layout file, skipping.");
+        this.logger.trace("Parsed file is " + JSON.stringify(this.content, undefined, 4));
         return;
     }
     */
@@ -278,7 +276,7 @@ AndroidLayoutFile.prototype.parse = function(data) {
  * project's translation set.
  */
 AndroidLayoutFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         this._parsePath(); // get the locale and context to use while making the resource instances
 
@@ -286,12 +284,12 @@ AndroidLayoutFile.prototype.extract = function() {
         try {
             var xml = fs.readFileSync(p, "utf8");
             if (xml) {
-                logger.trace("file contents: " + xml);
+                this.logger.trace("file contents: " + xml);
                 this.parse(xml);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.debug(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.debug(e);
         }
     }
 };
@@ -320,14 +318,14 @@ AndroidLayoutFile.prototype.localize = function() {};
  * Write out the contents to the appropriate file.
  */
 AndroidLayoutFile.prototype.write = function() {
-    logger.info("Writing Android layout file for locale " + this.locale + " to file " + this.pathName);
+    this.logger.info("Writing Android layout file for locale " + this.locale + " to file " + this.pathName);
     if (this.contents && this.dirty && this.pathName) {
-        logger.trace("Writing contents now");
+        this.logger.trace("Writing contents now");
         var filename = path.join(this.project.target, this.pathName);
         this.API.utils.makeDirs(path.dirname(filename));
         fs.writeFileSync(filename, this._getXML(), "utf-8");
     } else {
-        logger.debug("Android layout file for locale " + this.locale + " file " + this.pathName + " is not dirty. Not writing.");
+        this.logger.debug("Android layout file for locale " + this.locale + " file " + this.pathName + " is not dirty. Not writing.");
     }
 };
 
