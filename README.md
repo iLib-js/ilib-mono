@@ -3,6 +3,11 @@ Ilib loctool plugin to parse Java files and extract localizable strings from the
 
 # Release Notes
 
+### v1.0.2
+
+- update dependencies
+- use the loctool's logger instead of its own
+
 ## v1.0.1
 
 - Fixed bug related to figuring out which locales are pseudo locales

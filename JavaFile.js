@@ -1,7 +1,7 @@
 /*
  * JavaFile.js - plugin to extract resources from a Java source code file
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var IString = require("ilib/lib/IString.js");
-
-var logger = log4js.getLogger("loctool.lib.JavaFile");
 
 /**
  * Create a new java file with the given path name and within
@@ -47,6 +44,7 @@ var JavaFile = function(options) {
     if (this.flavor === "main") {
         this.flavor = undefined;
     }
+    this.logger = this.API.getLogger("loctool.lib.JavaFile");
 };
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
@@ -142,13 +140,13 @@ var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
  * @param {String} data the string to parse
  */
 JavaFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
     reGetString.lastIndex = 0; // for safety
     var result = reGetString.exec(data);
     while (result && result.length > 1 && result[2]) {
-        logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2] + "', comment: " + (result.length > 4 ? result[4] : undefined));
+        this.logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2] + "', comment: " + (result.length > 4 ? result[4] : undefined));
         if (result[2] && result[2].length) {
 
             var last = data.indexOf('\n', reGetString.lastIndex);
@@ -173,8 +171,8 @@ JavaFile.prototype.parse = function(data) {
             });
             this.set.add(r);
         } else {
-            logger.warn("Warning: Bogus empty string in get string call: ");
-            logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
+            this.logger.warn("Warning: Bogus empty string in get string call: ");
+            this.logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
         }
         result = reGetString.exec(data);
     }
@@ -182,7 +180,7 @@ JavaFile.prototype.parse = function(data) {
     reGetStringWithId.lastIndex = 0; // for safety
     result = reGetStringWithId.exec(data);
     while (result && result.length > 2 && result[2] && result[4]) {
-        logger.trace("Found string '" + result[2] + "' with unique key " + result[4] + ", comment: " + (result.length > 4 ? result[4] : undefined));
+        this.logger.trace("Found string '" + result[2] + "' with unique key " + result[4] + ", comment: " + (result.length > 4 ? result[4] : undefined));
         if (result[2] && result[4] && result[2].length && result[4].length) {
 
             var last = data.indexOf('\n', reGetStringWithId.lastIndex);
@@ -206,8 +204,8 @@ JavaFile.prototype.parse = function(data) {
             });
             this.set.add(r);
         } else {
-            logger.warn("Warning: Bogus empty string in get string call: ");
-            logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
+            this.logger.warn("Warning: Bogus empty string in get string call: ");
+            this.logger.warn("... " + data.substring(result.index, reGetString.lastIndex) + " ...");
         }
         result = reGetStringWithId.exec(data);
     }
@@ -215,17 +213,17 @@ JavaFile.prototype.parse = function(data) {
     // now check for and report on errors in the source
     this.API.utils.generateWarnings(data, reGetStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the RB.getString() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 
     this.API.utils.generateWarnings(data, reGetStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the RB.getString() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 
     this.API.utils.generateWarnings(data, reGetStringBogusParam,
         "Warning: non-string arguments are not allowed in the RB.getString() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 };
 
@@ -234,7 +232,7 @@ JavaFile.prototype.parse = function(data) {
  * project's translation set.
  */
 JavaFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -243,8 +241,8 @@ JavaFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
