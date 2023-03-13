@@ -1,7 +1,7 @@
 /*
  * XmlFileType.js - Represents a collection of XML files
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ var XmlFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.lib.XmlFileType");
 
     this.schemas = {};
     this.refs = {};

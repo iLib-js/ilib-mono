@@ -1132,6 +1132,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.2
+
+- update dependencies
+- use the loctool's logger instead of its own
+
 ### v1.1.1
 
 - Add unit tests to verify parsing the file name with locale

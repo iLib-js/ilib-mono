@@ -19,7 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var xmljs = require("xml-js");
@@ -50,6 +49,7 @@ var XmlFile = function(options) {
         this.schema = this.type.getDefaultSchema();
     }
     this.resourceIndex = 0;
+    this.logger = this.API.getLogger("loctool.lib.XmlFile");
 };
 
 /**
@@ -413,7 +413,7 @@ XmlFile.prototype.getTranslation = function(resourceInfo, locale, translations) 
         }
     } else {
         if (this.type) {
-            // logger.trace("New string found: " + text);
+            // this.logger.trace("New string found: " + text);
 
             var options = {
                 resType: resource.getType(),
@@ -670,7 +670,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
 
             case "object":
                 if (typeof(xml) !== "object") {
-                    // logger.warn(this.pathName + '/' + ref + " is a " +
+                    // this.logger.warn(this.pathName + '/' + ref + " is a " +
                     //    typeof(xml) + " but should be an object according to the schema...  skipping.");
                     return;
                 }
@@ -781,7 +781,7 @@ XmlFile.prototype.parseObj = function(xml, root, schema, ref, name, localizable,
 
 XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localizable, translations, locale, resourceInfo) {
     if (!ilib.isArray(xml)) {
-        // logger.warn(this.pathName + '/' + ref + " is a " +
+        // this.logger.warn(this.pathName + '/' + ref + " is a " +
         //        typeof(xml) + " but should be an array according to the schema... skipping.");
         return null;
     }
@@ -819,7 +819,7 @@ XmlFile.prototype.parseObjArray = function(xml, root, schema, ref, name, localiz
  * @param {String} data the string to parse
  */
 XmlFile.prototype.parse = function(data) {
-    // logger.debug("Extracting strings from " + this.pathName);
+    // this.logger.debug("Extracting strings from " + this.pathName);
 
     this.xml = data;
     this.resourceIndex = 0;
@@ -839,7 +839,7 @@ XmlFile.prototype.parse = function(data) {
  * project's translation set.
  */
 XmlFile.prototype.extract = function() {
-    // logger.debug("Extracting strings from " + this.pathName);
+    // this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -848,8 +848,8 @@ XmlFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            // logger.warn("Could not read file: " + p);
-            // logger.warn(e);
+            // this.logger.warn("Could not read file: " + p);
+            // this.logger.warn(e);
         }
     }
 };
@@ -919,7 +919,7 @@ XmlFile.prototype.localize = function(translations, locales) {
             var l = new Locale(locales[i]);
             if (!l.getVariant()) {
                 var pathName = this.getLocalizedPath(locales[i]);
-                // logger.debug("Writing file " + pathName);
+                // this.logger.debug("Writing file " + pathName);
                 var p = path.join(this.project.target, pathName);
                 var d = path.dirname(p);
                 this.API.utils.makeDirs(d);
