@@ -1,7 +1,7 @@
 /*
  * ObjectiveCFileType.js - Represents a collection of objective C files
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2023 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@ var fs = require("fs");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var log4js = require("log4js");
 
 var ObjectiveCFile = require("./ObjectiveCFile.js");
-
-var logger = log4js.getLogger("loctool.lib.ObjectiveCFileType");
 
 var ObjectiveCFileType = function(project) {
     this.type = "objc";
@@ -54,6 +51,7 @@ var ObjectiveCFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.lib.ObjectiveCFileType");
 };
 
 /**
@@ -65,10 +63,10 @@ var ObjectiveCFileType = function(project) {
  * otherwise
  */
 ObjectiveCFileType.prototype.handles = function(pathName) {
-    logger.debug("ObjectiveCFileType handles " + pathName + "?");
+    this.logger.debug("ObjectiveCFileType handles " + pathName + "?");
     ret = (pathName.length > 2) && (pathName.substring(pathName.length - 2) === ".m" || pathName.substring(pathName.length - 2) === ".h");
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -103,7 +101,7 @@ ObjectiveCFileType.prototype.write = function(translations, locales) {
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Localizing Objective C strings to " + locale);
+            this.logger.trace("Localizing Objective C strings to " + locale);
 
             db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
                 var r = translated; // default to the source language if the translation is not there
@@ -115,7 +113,7 @@ ObjectiveCFileType.prototype.write = function(translations, locales) {
 
                     this.newres.add(r);
 
-                    logger.trace("No translation for " + res.reskey + " to " + locale + ". Adding to new resources file.");
+                    this.logger.trace("No translation for " + res.reskey + " to " + locale + ". Adding to new resources file.");
                 }
                 if (res.reskey != r.reskey) {
                     // if reskeys don't match, we matched on cleaned string.
@@ -125,7 +123,7 @@ ObjectiveCFileType.prototype.write = function(translations, locales) {
                 }
                 file = resFileType.getResourceFile(r);
                 file.addResource(r);
-                logger.trace("Added " + r.hashKey() + " to " + file.pathName);
+                this.logger.trace("Added " + r.hashKey() + " to " + file.pathName);
             }.bind(this));
         }.bind(this));
     }
@@ -138,7 +136,7 @@ ObjectiveCFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         file = resFileType.getResourceFile(res);
         file.addResource(res);
-        logger.trace("Added " + res.reskey + " to " + file.pathName);
+        this.logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
 };
 

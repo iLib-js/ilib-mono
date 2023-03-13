@@ -1,7 +1,7 @@
 /*
  * ObjectiveCFile.js - plugin to extract resources from a Objective C source code file
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.plugin.ObjectiveCFile");
 
 /**
  * Create a new java file with the given path name and within
@@ -43,6 +39,7 @@ var ObjectiveCFile = function(options) {
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
+    this.logger = this.API.getLogger("loctool.plugin.ObjectiveCFile");
 };
 
 /**
@@ -100,13 +97,13 @@ var reNSLocalizedStringComment = /\s*(@"((\\"|[^"])*)")\s*\)/;
  * @param {String} data the string to parse
  */
 ObjectiveCFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
     reNSLocalizedString.lastIndex = 0; // for safety
     var comment, result = reNSLocalizedString.exec(data);
     while (result && result.length > 1 && result[2] && result[2].trim().length > 0) {
-        logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2] + "', comment: " + (result.length > 4 ? result[5] : undefined));
+        this.logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2] + "', comment: " + (result.length > 4 ? result[5] : undefined));
 
         var last = data.indexOf('\n', reNSLocalizedString.lastIndex);
         last = (last === -1) ? data.length : last;
@@ -134,17 +131,17 @@ ObjectiveCFile.prototype.parse = function(data) {
     // now check for and report on errors in the source
     this.API.utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the NSLocalizedString() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 
     this.API.utils.generateWarnings(data, reNSLocalizedStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the NSLocalizedString() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 
     this.API.utils.generateWarnings(data, reNSLocalizedStringBogusParam,
         "Warning: non-string arguments are not allowed in the NSLocalizedString() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 };
 
@@ -153,7 +150,7 @@ ObjectiveCFile.prototype.parse = function(data) {
  * project's translation set.
  */
 ObjectiveCFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -162,8 +159,8 @@ ObjectiveCFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
