@@ -44,16 +44,17 @@ var IosStringsFile = function(props) {
         this.flavor = props.flavor;
     }
 
+    this.API = this.project.getAPI();
+    this.logger = this.API.getLogger("loctool.plugin.IosStringsFile");
+
     if (this.pathName) {
         this._parsePath();
     }
 
-    this.API = this.project.getAPI();
 
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
-    this.logger = this.API.getLogger("loctool.plugin.IosStringsFile");
 };
 
 var commentRE = new RegExp(/\/\*\s*(([^*]|\*[^\/])*)\s*\*\//);

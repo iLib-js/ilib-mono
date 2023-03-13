@@ -37,6 +37,7 @@ var IosStringsFileType = function(project) {
 
     this.project = project;
     this.API = project.getAPI();
+    this.logger = this.API.getLogger("loctool.plugin.IosStringsFileType");
 
     this.extensions = [ ".strings" ];
 
@@ -58,7 +59,6 @@ var IosStringsFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
-    this.logger = this.API.getLogger("loctool.plugin.IosStringsFileType");
 };
 
 /**
