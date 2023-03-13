@@ -1,7 +1,7 @@
 /*
  * JsxFileType.js - Represents a collection of jsx files
  *
- * Copyright © 2019-2020, JEDLSoft
+ * Copyright © 2019-2020, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@
  */
 
 var path = require("path");
-var log4js = require("log4js");
 
 var JsxFile = require("./JsxFile.js");
-
-var logger = log4js.getLogger("loctool.lib.JsxFileType");
 
 var JsxFileType = function(project) {
     this.type = "javascript";
@@ -36,6 +33,7 @@ var JsxFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+    this.logger = this.API.getLogger("loctool.lib.JsxFileType");
 };
 
 var alreadyLocJS = new RegExp(/^([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z])(-[A-Z]+)?)?\.jsx?$/);
@@ -49,7 +47,7 @@ var alreadyLocJS = new RegExp(/^([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([
  * otherwise
  */
 JsxFileType.prototype.handles = function(pathName) {
-    logger.debug("JsxFileType handles " + pathName + "?");
+    this.logger.debug("JsxFileType handles " + pathName + "?");
     var ret = false;
 
     // resource files should be handled by the JavaScriptResourceType instead
@@ -67,7 +65,7 @@ JsxFileType.prototype.handles = function(pathName) {
             match[1] === this.project.sourceLocale : true;
     }
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -102,14 +100,14 @@ JsxFileType.prototype.write = function(translations, locales) {
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Localizing JavaScript strings to " + locale);
+            this.logger.trace("Localizing JavaScript strings to " + locale);
 
             db.getResourceByCleanHashKey(res.cleanHashKeyForTranslation(locale), function(err, translated) {
                 var r = translated;
                 if (!translated || this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
                     if (r) {
-                        logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
-                        logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
+                        this.logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
+                        this.logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
                     }
                     var note = r && 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + r.getSource() + '"';
                     var newres = res.clone();
@@ -120,7 +118,7 @@ JsxFileType.prototype.write = function(translations, locales) {
 
                     this.newres.add(newres);
 
-                    logger.trace("No translation for " + res.reskey + " to " + locale);
+                    this.logger.trace("No translation for " + res.reskey + " to " + locale);
                 } else {
                     if (res.reskey != r.reskey) {
                         // if reskeys don't match, we matched on cleaned string.
@@ -131,7 +129,7 @@ JsxFileType.prototype.write = function(translations, locales) {
 
                     file = resFileType.getResourceFile(locale);
                     file.addResource(r);
-                    logger.trace("Added " + r.reskey + " to " + file.pathName);
+                    this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
             }.bind(this));
         }.bind(this));
@@ -146,7 +144,7 @@ JsxFileType.prototype.write = function(translations, locales) {
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
             file = resFileType.getResourceFile(res.getTargetLocale());
             file.addResource(res);
-            logger.trace("Added " + res.reskey + " to " + file.pathName);
+            this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
     }
 };

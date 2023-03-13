@@ -1,7 +1,7 @@
 /*
  * JsxFile.js - plugin to extract resources from a React jsx files
  *
- * Copyright © 2019-2020, JEDLSoft
+ * Copyright © 2019-2020, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.lib.JsxFile");
 
 /**
  * @class Create a new java file with the given path name and within
@@ -46,6 +43,7 @@ var JsxFile = function(props) {
     this.API = props.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+    this.logger = this.API.getLogger("loctool.lib.JsxFile");
 };
 
 /**
@@ -132,7 +130,7 @@ var reBadContents = new RegExp(/\{[^}]+\}/g);
  * @param {String} data the string to parse
  */
 JsxFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
     var comment, match, key, autoKey;
@@ -172,7 +170,7 @@ JsxFile.prototype.parse = function(data) {
             }
 
             if (!key) {
-                logger.trace("Found string key: " + this.makeKey(match) + ", string: '" + match + "'");
+                this.logger.trace("Found string key: " + this.makeKey(match) + ", string: '" + match + "'");
                 key = this.makeKey(match);
             }
 
@@ -213,7 +211,7 @@ JsxFile.prototype.parse = function(data) {
  * project's translation set.
  */
 JsxFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -222,7 +220,7 @@ JsxFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
+            this.logger.warn("Could not read file: " + p);
         }
     }
 };
