@@ -5,6 +5,11 @@ allows it to read and localize android layout xml files.
 
 ## Release Notes
 
+### v1.0.2
+
+- update dependencies
+- use the loctool's logger instead of its own
+
 ### v1.0.1
 
 - Add missing functions that loctool needs to get resources out of this plugin
