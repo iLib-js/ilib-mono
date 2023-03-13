@@ -5,6 +5,11 @@ allows it to read and localize android strings.xml files.
 
 ## Release Notes
 
+### v1.0.2
+
+- update dependencies
+- use the loctool's logger instead of its own logger
+
 ### v1.0.1
 
 - Add missing functions that loctool needs to get resources out of this plugin
@@ -19,7 +24,7 @@ allows it to read and localize android strings.xml files.
 
 ## License
 
-Copyright © 2019-2021, JEDLSoft
+Copyright © 2019-2021, 2023 JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

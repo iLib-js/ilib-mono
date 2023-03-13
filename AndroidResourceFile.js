@@ -1,7 +1,7 @@
 /*
  * AndroidResourceFile.js - represents an Android strings.xml resource file
  *
- * Copyright © 2020-2021 JEDLSoft
+ * Copyright © 2020-2021, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@ var xml2json = require('xml2json');
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var PrettyData = require("pretty-data").pd;
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.lib.AndroidResourceFile");
 
 /**
  * @class Represents an Android resource file.
@@ -49,6 +46,8 @@ var AndroidResourceFile = function(props) {
         this.API = props.project.getAPI();
 
         this.set = this.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
+        
+        this.logger = this.API.getLogger("loctool.lib.AndroidResourceFile");
     }
 };
 
@@ -65,7 +64,7 @@ AndroidResourceFile.prototype.parse = function(data) {
     this.contents = xml2json.toJson(data, {object: true});
 
     if (!this.contents.resources) {
-        logger.debug(this.pathName + " is not a resource file, skipping.");
+        this.logger.debug(this.pathName + " is not a resource file, skipping.");
         return;
     }
 
@@ -76,10 +75,10 @@ AndroidResourceFile.prototype.parse = function(data) {
         var strArr = ilib.isArray(resources.string) ? resources.string : [resources.string];
 
         for (var i = 0; i < strArr.length; i++) {
-            logger.trace("Adding string resource " + " locale " + locale + " " + JSON.stringify(strArr[i]) );
+            this.logger.trace("Adding string resource " + " locale " + locale + " " + JSON.stringify(strArr[i]) );
             if (this.API.utils.isAndroidResource(strArr[i])) {
                 // note that this is a used resource?
-                logger.trace("Already resourcified");
+                this.logger.trace("Already resourcified");
             } else {
                 var params = {
                     resType: "string",
@@ -108,7 +107,7 @@ AndroidResourceFile.prototype.parse = function(data) {
                     res.formatted = strArr[i].formatted;
                 }
 
-                logger.trace("new string resource: " + JSON.stringify(strArr[i], undefined, 4));
+                this.logger.trace("new string resource: " + JSON.stringify(strArr[i], undefined, 4));
                 this.set.add(res);
             }
         };
@@ -116,15 +115,15 @@ AndroidResourceFile.prototype.parse = function(data) {
 
     if (resources["string-array"]) {
         var arrays = ilib.isArray(resources["string-array"]) ? resources["string-array"] : [resources["string-array"]];
-        logger.debug("Processing " + arrays.length + " string arrays.");
-        logger.trace("Arrays is " + JSON.stringify(arrays));
+        this.logger.debug("Processing " + arrays.length + " string arrays.");
+        this.logger.trace("Arrays is " + JSON.stringify(arrays));
         for (var i = 0; i < arrays.length; i++) {
             strArr = arrays[i];
             if (!strArr.item || strArr.item.every(ilib.bind(this, function(item) {
                 return this.API.utils.isAndroidResource(item);
             }))) {
                 // note that this is a used resource?
-                logger.trace("Already resourcified");
+                this.logger.trace("Already resourcified");
             } else {
                 var params = {
                     resType: "array",
@@ -149,7 +148,7 @@ AndroidResourceFile.prototype.parse = function(data) {
                     params.targetLocale = locale;
                 }
                 var res = this.API.newResource(params);
-                logger.trace("new string-array resource: " + JSON.stringify(strArr, undefined, 4));
+                this.logger.trace("new string-array resource: " + JSON.stringify(strArr, undefined, 4));
 
                 this.set.add(res);
             }
@@ -158,13 +157,13 @@ AndroidResourceFile.prototype.parse = function(data) {
 
     if (resources.array) {
         var arrays = ilib.isArray(resources.array) ? resources.array : [resources.array];
-        logger.debug("Processing " + arrays.length + " string arrays.");
-        logger.trace("Arrays is " + JSON.stringify(arrays));
+        this.logger.debug("Processing " + arrays.length + " string arrays.");
+        this.logger.trace("Arrays is " + JSON.stringify(arrays));
         for (var i = 0; i < arrays.length; i++) {
             strArr = arrays[i];
             if (!strArr.item || strArr.item.every(function(item) { return this.API.utils.isAndroidResource(item);})) {
                 // note that this is a used resource?
-                logger.trace("Already resourcified");
+                this.logger.trace("Already resourcified");
             } else {
                 var params = {
                     resType: "array",
@@ -189,7 +188,7 @@ AndroidResourceFile.prototype.parse = function(data) {
                     params.targetLocale = locale;
                 }
                 var res = this.API.newResource(params);
-                logger.trace("new array resource: " + JSON.stringify(strArr, undefined, 4));
+                this.logger.trace("new array resource: " + JSON.stringify(strArr, undefined, 4));
             }
 
             this.set.add(res);
@@ -197,18 +196,18 @@ AndroidResourceFile.prototype.parse = function(data) {
     }
 
     if (resources.plurals) {
-        logger.debug("Processing " + resources.plurals.length + " plural strings.");
+        this.logger.debug("Processing " + resources.plurals.length + " plural strings.");
         var plurals = ilib.isArray(resources.plurals) ? resources.plurals : [resources.plurals];
-        logger.trace("Plurals are " + JSON.stringify(resources.plurals));
+        this.logger.trace("Plurals are " + JSON.stringify(resources.plurals));
 
         for (var i = 0; i < plurals.length; i++) {
             strArr = plurals[i];
-            logger.trace("Plural " + i + " is " + JSON.stringify(strArr));
+            this.logger.trace("Plural " + i + " is " + JSON.stringify(strArr));
             var items = {};
             if (strArr && strArr.item && ilib.isArray(strArr.item)) {
                 strArr.item.forEach(function(item) {
                     if (typeof(item.$t) === "undefined") {
-                        logger.error("Syntax error in file " + this.pathName + ", item " + strArr.name + " quantity " + item.quantity + ". Probably have unescaped XML elements in this string.");
+                        this.logger.error("Syntax error in file " + this.pathName + ", item " + strArr.name + " quantity " + item.quantity + ". Probably have unescaped XML elements in this string.");
                     } else {
                         items[item.quantity] = item.$t;
                     }
@@ -236,19 +235,19 @@ AndroidResourceFile.prototype.parse = function(data) {
                 }
                 var res = this.API.newResource(params);
 
-                logger.trace("new plural resource: " + JSON.stringify(strArr, undefined, 4));
+                this.logger.trace("new plural resource: " + JSON.stringify(strArr, undefined, 4));
 
                 this.set.add(res);
             } else {
-                logger.trace("Error reading plurals. strArr is " + JSON.stringify(strArr));
+                this.logger.trace("Error reading plurals. strArr is " + JSON.stringify(strArr));
             }
         };
 
         resources.plurals = undefined;
     }
 
-    logger.trace("After loading, resources are: " + JSON.stringify(this.set.getAll(), undefined, 4));
-    logger.trace("AndroidResourceFile: loaded strings in " + this.pathName);
+    this.logger.trace("After loading, resources are: " + JSON.stringify(this.set.getAll(), undefined, 4));
+    this.logger.trace("AndroidResourceFile: loaded strings in " + this.pathName);
 
     //    mark this set as not dirty after we read it from disk
     //    so we can tell when other code has added resources to it
@@ -264,7 +263,7 @@ AndroidResourceFile.prototype.extract = function() {
         this._parsePath(); // get the locale and context to use while making the resource instances below
 
         var p = path.join(this.project.root, this.pathName);
-        logger.trace("Attempting to read and parse file " + p);
+        this.logger.trace("Attempting to read and parse file " + p);
         try {
             var xml = fs.readFileSync(this.pathName, "utf8");
 
@@ -272,8 +271,8 @@ AndroidResourceFile.prototype.extract = function() {
                 this.parse(xml);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.debug(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.debug(e);
         }
     }
 };
@@ -312,20 +311,20 @@ AndroidResourceFile.prototype._parsePath = function() {
                 // this.locale = new Locale(dir.substring(dir.length-6).replace("-r", "-").replace("-s", "-")).getSpec();
                 this.locale = new Locale(match[1], match[3], undefined, match[2]).getSpec();
                 this.context = match[4] ? match[4].substring(1) : undefined;
-                logger.trace("script");
+                this.logger.trace("script");
             } else if ((match = reg.exec(dir)) && match && match.length > 0) {
                 //this.locale = new Locale(dir.substring(dir.length-6).replace("-r", "-")).getSpec();
                 this.locale = new Locale(match[1], match[2]).getSpec();
                 this.context = match[3] ? match[3].substring(1) : undefined;
-                logger.trace("region");
+                this.logger.trace("region");
             } else if ((match = lang.exec(dir)) && match && match.length > 0) {
                 // this.locale = new Locale(dir.substring(dir.length-2)).getSpec();
                 this.locale = new Locale(match[1]).getSpec();
                 this.context = match[2] ? match[2].substring(1) : undefined;
-                logger.trace("language");
+                this.logger.trace("language");
             } else if ((match = context.exec(dir)) && match && match.length > 0) {
                 this.context = match.length > 1 && match[1].length ? match[1] : undefined;
-                logger.trace("context");
+                this.logger.trace("context");
             }
 
             if (!this.locale) {
@@ -335,7 +334,7 @@ AndroidResourceFile.prototype._parsePath = function() {
             var results = context.exec(dir);
             if (results && results.length) {
                 this.context = results[1] || undefined;
-                logger.trace("context only");
+                this.logger.trace("context only");
                 // dir = dir.substring(0, dir.length-2);
             }
         }
@@ -345,7 +344,7 @@ AndroidResourceFile.prototype._parsePath = function() {
             this.flavor = undefined;
         }
 
-        logger.trace("_parsePath: locale is " + this.locale + " and context is " + this.context + " and flavor is " + this.flavor);
+        this.logger.trace("_parsePath: locale is " + this.locale + " and context is " + this.context + " and flavor is " + this.flavor);
     }
 
     this._pathParsed = true;
@@ -406,13 +405,13 @@ AndroidResourceFile.prototype.getAll = function() {
  * @param {Resource} res a resource to add to this file
  */
 AndroidResourceFile.prototype.addResource = function(res) {
-    logger.trace("AndroidResourceFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    this.logger.trace("AndroidResourceFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
     // source-only resources have an undefined target locale but a defined source locale... it is okay to add these to this resource file
     var resLocale = res.getTargetLocale() || res.getSourceLocale();
     if (res && res.getProject() === this.project.getProjectId() &&
             resLocale === this.locale &&
             res.getContext() === this.context) {
-        logger.trace("correct project, context, and locale. Adding.");
+        this.logger.trace("correct project, context, and locale. Adding.");
 
         // merge the same string from various files, contexts, and data types into one
         var another = res.clone();
@@ -422,14 +421,14 @@ AndroidResourceFile.prototype.addResource = function(res) {
     } else {
         if (res) {
             if (res.getProject() !== this.project.getProjectId()) {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
             } else if (resLocale !== this.locale) {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.locale);
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect locale. " + resLocale + " vs. " + this.locale);
             } else {
-                logger.warn("Attempt to add a resource to a resource file with the incorrect context. " + res.getContext() + " vs. " + this.context);
+                this.logger.warn("Attempt to add a resource to a resource file with the incorrect context. " + res.getContext() + " vs. " + this.context);
             }
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -482,7 +481,7 @@ AndroidResourceFile.prototype._getXML = function() {
                 if (resource.getTarget() || resource.getSource()) {
                     if (!json.resources.string) json.resources.string = [];
                     var target = (resource.getTargetLocale() && resource.getTarget()) || resource.getSource();
-                    logger.trace("writing translation for " + resource.getKey() + " as " + target);
+                    this.logger.trace("writing translation for " + resource.getKey() + " as " + target);
                     var entry = {
                         name: resource.getKey(),
                         i18n: this.escapeDouble(resource.comment)
@@ -494,7 +493,7 @@ AndroidResourceFile.prototype._getXML = function() {
 
                     json.resources.string.push(entry);
                 } else {
-                    logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
+                    this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
                 }
             } else if (resource.resType === "array") {
                 var array;
@@ -508,7 +507,7 @@ AndroidResourceFile.prototype._getXML = function() {
                 }
 
                 var items = (resource.getTargetLocale() && resource.getTargetArray()) || resource.getSourceArray();
-                logger.trace("Writing array " + resource.getKey() + " of size " + items.length);
+                this.logger.trace("Writing array " + resource.getKey() + " of size " + items.length);
                 var arr = {
                     name: resource.getKey(),
                     i18n: this.escapeDouble(resource.comment),
@@ -518,7 +517,7 @@ AndroidResourceFile.prototype._getXML = function() {
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
 
-                    logger.trace("Mapping " + JSON.stringify(item || ""));
+                    this.logger.trace("Mapping " + JSON.stringify(item || ""));
 
                     arr.item.push({
                         "$t": this.escapeString(item || "")
@@ -531,7 +530,7 @@ AndroidResourceFile.prototype._getXML = function() {
 
                 var plurals = resources[j];
 
-                logger.trace("Writing plurals " + plurals.getKey());
+                this.logger.trace("Writing plurals " + plurals.getKey());
                 var arr = {
                     name: plurals.getKey(),
                     i18n: this.escapeDouble(resource.comment),
@@ -562,7 +561,7 @@ AndroidResourceFile.prototype._getXML = function() {
  * Write the resource file out to disk again.
  */
 AndroidResourceFile.prototype.write = function() {
-    logger.trace("writing resource file. [" + [this.project.getProjectId(), this.context || "root", this.locale].join(", ") + "]");
+    this.logger.trace("writing resource file. [" + [this.project.getProjectId(), this.context || "root", this.locale].join(", ") + "]");
     if (this.set.isDirty()) {
         // var dir, valueDir, alternateDir, settings, defaultLocales;
         var dir, settings;
@@ -572,7 +571,7 @@ AndroidResourceFile.prototype.write = function() {
             this.project.settings &&
             this.project.settings.AndroidResourceFile) || {};
 
-        logger.debug("Writing Android resources for locale " + this.locale + " to file " + this.pathName);
+        this.logger.debug("Writing Android resources for locale " + this.locale + " to file " + this.pathName);
 
         var filename = path.join(this.project.target, this.pathName);
         dir = path.dirname(filename);
@@ -603,14 +602,14 @@ AndroidResourceFile.prototype.write = function() {
 
                 var pathName = path.join(alternateDir, this.type + ".xml");
 
-                logger.debug("Also writing a copy of the Android resources for locale " + this.locale + " to file " + pathName);
+                this.logger.debug("Also writing a copy of the Android resources for locale " + this.locale + " to file " + pathName);
 
                 fs.writeFileSync(pathName, xml, "utf8");
             }
         }
-        logger.trace("Wrote string translations to file " + this.pathName);
+        this.logger.trace("Wrote string translations to file " + this.pathName);
     } else {
-        logger.debug("File " + this.pathName + " is not dirty. Skipping.");
+        this.logger.debug("File " + this.pathName + " is not dirty. Skipping.");
     }
 };
 

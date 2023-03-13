@@ -1,7 +1,7 @@
 /*
  * AndroidResourceFileType.js - manages a collection of android resource files
  *
- * Copyright © 2020-2021 JEDLSoft
+ * Copyright © 2020-2021, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,8 @@
 
 var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 
 var AndroidResourceFile = require("./AndroidResourceFile.js");
-
-var logger = log4js.getLogger("loctool.lib.AndroidResourceFileType");
 
 /**
  * @class Manage a collection of Android resource files.
@@ -44,6 +41,8 @@ var AndroidResourceFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.logger = this.API.getLogger("loctool.lib.AndroidResourceFileType");
 };
 
 var extensionRE = new RegExp(/\.xml$/);
@@ -60,28 +59,28 @@ var fullLocale = /-b\+[a-z][a-z]\+[A-Z][a-z][a-z][a-z]\+[A-Z][A-Z]/;
  * false otherwise
  */
 AndroidResourceFileType.prototype.handles = function(pathName) {
-    logger.debug("AndroidResourceFileType handles " + pathName + "?");
+    this.logger.debug("AndroidResourceFileType handles " + pathName + "?");
 
     if (!extensionRE.test(pathName)) {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
     var pathElements = pathName.split('/');
     if (pathElements.length < 3 || pathElements[pathElements.length-3] !== "res") {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
     var dir = pathElements[pathElements.length-2];
 
     if (!dirRE.test(dir)) {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
     if (fullLocale.test(dir)) {
-        logger.debug("No");
+        this.logger.debug("No");
         return false;
     }
 
@@ -90,18 +89,18 @@ AndroidResourceFileType.prototype.handles = function(pathName) {
     for (var i = parts.length-1; i > 0; i--) {
         if (reg.test(parts[i]) && this.API.utils.iso3166[parts[i]]) {
             // already localized dir
-            logger.debug("No");
+            this.logger.debug("No");
             return false;
         }
 
         if (lang.test(parts[i]) && this.API.utils.iso639[parts[i]]) {
             // already localized dir
-            logger.debug("No");
+            this.logger.debug("No");
             return false;
         }
     }
 
-    logger.debug("Yes");
+    this.logger.debug("Yes");
     return true;
 };
 
@@ -116,7 +115,7 @@ AndroidResourceFileType.prototype.handles = function(pathName) {
  */
 AndroidResourceFileType.prototype.write = function(translations, locales) {
     // distribute all the new resources to their resource files ...
-    logger.trace("distributing all new resources to their resource files");
+    this.logger.trace("distributing all new resources to their resource files");
     var res, file,
         resources = this.extracted.getAll(),
         db = this.project.db,
@@ -124,19 +123,19 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
             return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale && !this.API.isPseudoLocale(locale);
         }.bind(this));
 
-    logger.trace("There are " + resources.length + " resources to add.");
+    this.logger.trace("There are " + resources.length + " resources to add.");
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Localizing Java strings to " + locale);
+            this.logger.trace("Localizing Java strings to " + locale);
 
             db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
                 var r = translated; // default to the source language if the translation is not there
                 if (res.dnt) {
-                    logger.trace("Resource " + res.reskey + " is set to 'do not translate'");
+                    this.logger.trace("Resource " + res.reskey + " is set to 'do not translate'");
                 } else if (!translated) {
                     r = res.clone();
                     r.setTargetLocale(locale);
@@ -154,7 +153,7 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
 
                     this.newres.add(r);
 
-                    logger.trace("No translation for " + res.reskey + " to " + locale + ". Leaving blank.");
+                    this.logger.trace("No translation for " + res.reskey + " to " + locale + ". Leaving blank.");
                 } else {
                     var fullyTranslated = true;
                     var anyTranslated = false;
@@ -212,8 +211,8 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
                     } else {
                         // string
                         if (this.API.utils.cleanString(res.getSource()) !== this.API.utils.cleanString(r.getSource())) {
-                            logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
-                            logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
+                            this.logger.trace("extracted   source: " + this.API.utils.cleanString(res.getSource()));
+                            this.logger.trace("translation source: " + this.API.utils.cleanString(r.getSource()));
                             var newres = res.clone();
                             newres.setTargetLocale(locale);
                             newres.setTarget(r.getTarget());
@@ -232,7 +231,7 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
                     if (anyTranslated) {
                         file = this.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
                         file.addResource(r);
-                        logger.trace("Added " + r.getKey() + " to " + file.pathName);
+                        this.logger.trace("Added " + r.getKey() + " to " + file.pathName);
                     }
                 }
             }.bind(this));
@@ -247,10 +246,10 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         file = this.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
         file.addResource(res);
-        logger.trace("Added " + res.reskey + " to " + file.pathName);
+        this.logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
 
-    logger.trace("Now writing out the resource files");
+    this.logger.trace("Now writing out the resource files");
     // ... and then let them write themselves out
     for (var hash in this.resourceFiles) {
         file = this.resourceFiles[hash];
@@ -356,7 +355,7 @@ AndroidResourceFileType.prototype.getResourceFile = function(context, locale, ty
             pathName: pathName
         });
 
-        logger.trace("Defining new resource file");
+        this.logger.trace("Defining new resource file");
     }
 
     return resfile;
@@ -379,12 +378,12 @@ AndroidResourceFileType.prototype.generatePseudo = function(locale, pb) {
     var resources = this.extracted.getBy({
         sourceLocale: pb.getSourceLocale()
     });
-    logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
+    this.logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
     var resource;
 
     resources.forEach(function(resource) {
         if (resource && resource.getKey() !== "app_id" && resource.getKey() !== "live_sdk_client_id") {
-            logger.trace("Generating pseudo for " + resource.getKey());
+            this.logger.trace("Generating pseudo for " + resource.getKey());
             var pseudoized = resource.generatePseudo(locale, pb);
             if (pseudoized) {
                 if ((resource.resType === 'string' && resource.getSource() !== pseudoized.getTarget()) ||
@@ -393,7 +392,7 @@ AndroidResourceFileType.prototype.generatePseudo = function(locale, pb) {
                     this.pseudo.add(pseudoized);
                 }
             } else {
-                logger.trace("No pseudo match for " + resource.getKey());
+                this.logger.trace("No pseudo match for " + resource.getKey());
             }
         }
     }.bind(this));
