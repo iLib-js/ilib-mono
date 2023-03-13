@@ -175,6 +175,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.4.1
+
+- update dependencies
+
 ### v1.4.0
 
 - Add a hash of the file name into the key for each resource so that
