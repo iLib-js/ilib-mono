@@ -115,6 +115,10 @@ be localized, and the loctool will continue on to the next file.
 
 ## Release Notes
 
+### v1.1.2
+
+- update dependencies
+
 ### v1.1.1
 
 - deal with eslint's propensity of putting extra commas at the end of parameter lists
