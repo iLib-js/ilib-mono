@@ -1,7 +1,7 @@
 /*
  * YamlResourceFileType.js - manages a collection of yaml resource files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,8 @@ var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var log4js = require("log4js");
 
 var YamlResourceFile = require("./YamlResourceFile.js");
-
-var logger = log4js.getLogger("loctool.lib.YamlResourceFileType");
 
 /**
  * @class Manage a collection of Android resource files.
@@ -62,6 +59,7 @@ var YamlResourceFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.lib.YamlResourceFileType");
 };
 
 /**
@@ -72,7 +70,7 @@ var YamlResourceFileType = function(project) {
  * false otherwise
  */
 YamlResourceFileType.prototype.handles = function(pathName) {
-    logger.debug("YamlResourceFileType handles " + pathName + "?");
+    this.logger.debug("YamlResourceFileType handles " + pathName + "?");
 
     var ret = pathName.length > 4 && pathName.substring(pathName.length - 4) === ".yml";
 
@@ -93,7 +91,7 @@ YamlResourceFileType.prototype.handles = function(pathName) {
         }
     }
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -118,10 +116,10 @@ YamlResourceFileType.prototype.checkAllPluralCases = function (sourceRes, res, l
         }
 
         if (!fullyTranslated) {
-            //logger.debug("Not fully translated to locale " + locale);
-            //logger.debug("Missing English plural cases: " + JSON.stringify(newItems));
+            //this.logger.debug("Not fully translated to locale " + locale);
+            //this.logger.debug("Missing English plural cases: " + JSON.stringify(newItems));
 
-            //logger.debug("Adding source: " + JSON.stringify(newSourceRes));
+            //this.logger.debug("Adding source: " + JSON.stringify(newSourceRes));
 
             var newres = res.clone();
             newres.sourceStrings = newItems;
@@ -130,7 +128,7 @@ YamlResourceFileType.prototype.checkAllPluralCases = function (sourceRes, res, l
             newres.setState("new");
             this.newres.add(newres);
 
-            //logger.debug("Adding target: " + JSON.stringify(newres));
+            //this.logger.debug("Adding target: " + JSON.stringify(newres));
         }
     }
 
@@ -162,7 +160,7 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Localizing Yaml strings to " + locale);
+            this.logger.trace("Localizing Yaml strings to " + locale);
             if (!res.dnt) {
                 db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
                     var r = translated; // default to the source language if the translation is not there
@@ -183,16 +181,16 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
 
                         this.newres.add(r);
 
-                        logger.trace("No translation for " + res.reskey + " to " + locale);
+                        this.logger.trace("No translation for " + res.reskey + " to " + locale);
                     } else {
                         this.checkAllPluralCases(res, r, locale);
                         file = resFileType.getResourceFile(locale, res.getFlavor());
                         file.addResource(translated);
                     }
-                    logger.trace("Added " + r.reskey + " to " + (file ? file.pathName : "an unknown file"));
+                    this.logger.trace("Added " + r.reskey + " to " + (file ? file.pathName : "an unknown file"));
                 }.bind(this));
             } else {
-                logger.trace("DNT: " + r.reskey + ": " + r.getSource());
+                this.logger.trace("DNT: " + r.reskey + ": " + r.getSource());
             }
         }.bind(this));
     }
@@ -206,11 +204,11 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
             file = resFileType.getResourceFile(res.getTargetLocale());
             file.addResource(res);
-            logger.trace("Added " + res.reskey + " to " + file.pathName);
+            this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
     }
 
-    logger.trace("Now writing out the resource files");
+    this.logger.trace("Now writing out the resource files");
     // ... and then let them write themselves out
     for (var hash in this.resourceFiles) {
         var file = this.resourceFiles[hash];
@@ -280,11 +278,11 @@ YamlResourceFileType.prototype.generatePseudo = function(locale, pb) {
     var resources = this.extracted.getBy({
         sourceLocale: pb.getSourceLocale()
     });
-    logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
+    this.logger.trace("Found " + resources.length + " source resources for " + pb.getSourceLocale());
     var resource;
 
     resources.forEach(function(resource) {
-        logger.trace("Generating pseudo for " + resource.getKey());
+        this.logger.trace("Generating pseudo for " + resource.getKey());
         var res = resource.generatePseudo(locale, pb);
         if (res && res.getSource() !== res.getTarget()) {
             this.pseudo.add(res);
