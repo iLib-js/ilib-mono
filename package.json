@@ -50,7 +50,8 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.17.0"
+        "ilib": "^14.17.0",
+        "yaml": "2.2.1"
     },
     "devDependencies": {
         "loctool": "^2.20.2",

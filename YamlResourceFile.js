@@ -19,7 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var jsyaml = require("js-yaml");
+var yaml = require("yaml");
 
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
@@ -142,7 +142,7 @@ var localeSpec = /^[a-z][a-z][a-z]?(-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)
 YamlResourceFile.prototype.parse = function(str) {
     this.resourceIndex = 0;
 
-    var parsed = jsyaml.safeLoad(str);
+    var parsed = yaml.parse(str);
     var top = parsed;
     for (var key in parsed) {
         var spec = key.replace(/_/g, "-");
@@ -351,11 +351,11 @@ YamlResourceFile.prototype.getContent = function() {
 
     // now convert the json back to yaml
     // return yamljs.stringify(json, 4, 2, {});
-    return jsyaml.safeDump(json, {
-        schema: jsyaml.FAILSAFE_SCHEMA,
-        noCompatMode: true,
-        sortKeys: true,
-        linewidth: -1
+    return yaml.stringify(json, {
+        schema: 'failsafe',
+        sortMapEntries: true,
+        lineWidth: 0,
+        doubleQuotedAsJSON: true
     });
 };
 
