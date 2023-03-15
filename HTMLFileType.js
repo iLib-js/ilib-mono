@@ -1,7 +1,7 @@
 /*
  * HTMLFileType.js - Represents a collection of HTML files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,8 @@
 var fs = require("fs");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 
 var HTMLFile = require("./HTMLFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.HTMLFileType");
 
 var HTMLFileType = function(project) {
     this.type = "html";
@@ -53,6 +50,7 @@ var HTMLFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.plugin.HTMLFileType");
 };
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html?$/);
@@ -66,14 +64,14 @@ var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-
  * otherwise
  */
 HTMLFileType.prototype.handles = function(pathName) {
-    logger.debug("HTMLFileType handles " + pathName + "?");
+    this.logger.debug("HTMLFileType handles " + pathName + "?");
     var ret = ((pathName.length > 4) && (pathName.substring(pathName.length - 4) === ".htm")) ||
         ((pathName.length > 5) && (pathName.substring(pathName.length - 5) === ".html"));
     if (ret) {
         var match = alreadyLoc.exec(pathName);
         ret = (match && match.length) ? match[1] === this.project.sourceLocale : true;
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
