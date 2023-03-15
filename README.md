@@ -9,6 +9,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.3
+
+- update dependencies
+- use the loctool's logger instead of its own
+
 ### v1.1.2
 
 - Fix a bug where the pseudo locales were not initialized properly.
