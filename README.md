@@ -89,6 +89,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.2
+
+- update dependencies
+
 ### v1.1.1
 
 - fixed a bug where the xml schemas are not loaded properly on some versions
