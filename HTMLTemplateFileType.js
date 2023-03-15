@@ -1,7 +1,7 @@
 /*
  * HTMLTemplateFileType.js - Represents a collection of java files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,8 @@
 var fs = require("fs");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-var log4js = require("log4js");
 
 var HTMLTemplateFile = require("./HTMLTemplateFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.HTMLTemplateFileType");
 
 var HTMLTemplateFileType = function(project) {
     this.type = "html";
@@ -53,6 +50,7 @@ var HTMLTemplateFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.plugin.HTMLTemplateFileType");
 };
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.tmpl\.html$/);
@@ -66,13 +64,13 @@ var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-
  * otherwise
  */
 HTMLTemplateFileType.prototype.handles = function(pathName) {
-    logger.debug("HTMLTemplateFileType handles " + pathName + "?");
+    this.logger.debug("HTMLTemplateFileType handles " + pathName + "?");
     var ret = (pathName.length > 10) && (pathName.substring(pathName.length - 10) === ".tmpl.html");
     if (ret) {
         var match = alreadyLoc.exec(pathName);
         ret = (match && match.length) ? match[1] === this.project.sourceLocale : true;
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 

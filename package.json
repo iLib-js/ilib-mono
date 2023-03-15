@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-jst",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "main": "./JavaScriptFileType.js",
     "description": "A loctool plugin that knows how to process Javascript Template (JST) files",
     "license": "Apache-2.0",
@@ -53,12 +53,11 @@
     "dependencies": {
         "he": "^1.2.0",
         "html-parser": "^0.11.0",
-        "ilib": "^14.9.0",
-        "js-stl": ">=0.0.6",
-        "log4js": "^2.11.0"
+        "ilib": "^14.17.0",
+        "js-stl": ">=0.0.6"
     },
     "devDependencies": {
-        "loctool": "^2.10.1",
+        "loctool": "^2.20.2",
         "nodeunit": "^0.11.3"
     }
 }
