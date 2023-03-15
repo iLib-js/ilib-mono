@@ -1,7 +1,7 @@
 /*
  * CSVFileType.js - Represents a collection of CSV files
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2020, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,9 @@ var path = require("path");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var log4js = require("log4js");
 var mm = require("micromatch");
 
 var CSVFile = require("./CSVFile.js");
-
-var logger = log4js.getLogger("loctool.lib.CSVFileType");
 
 var CSVFileType = function(project) {
     this.type = "csv";
@@ -55,6 +52,8 @@ var CSVFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+
+    this.logger = this.API.getLogger("loctool.lib.CSVFileType");
 };
 
 var alreadyLoc = new RegExp(/(^|\/)([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\//);
@@ -68,7 +67,7 @@ var alreadyLoc = new RegExp(/(^|\/)([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-
  * otherwise
  */
 CSVFileType.prototype.handles = function(pathName) {
-    logger.debug("CSVFileType handles " + pathName + "?");
+    this.logger.debug("CSVFileType handles " + pathName + "?");
     var extension = path.extname(pathName).toLowerCase();
     var ret = (this.extensions.indexOf(extension) > -1);
 
@@ -76,7 +75,7 @@ CSVFileType.prototype.handles = function(pathName) {
         var match = alreadyLoc.exec(pathName);
         ret = (match && match.length > 2) ? match[2] === this.project.sourceLocale : true;
     }
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 

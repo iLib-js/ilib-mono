@@ -1,7 +1,7 @@
 /*
  * CSVFile.js - plugin to extract resources from a CSV source code file
  *
- * Copyright © 2020 JEDLSoft
+ * Copyright © 2020, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,6 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.lib.CSVFile");
 
 var whiteSpaceChars = [' ', '\t', '\f', '\n', '\r', '\v'];
 
@@ -109,6 +106,8 @@ var CSVFile = function(options) {
 
     this.set = this.API.newTranslationSet(this.sourceLocale);
     this.resourceIndex = 0;
+
+    this.logger = this.API.getLogger("loctool.lib.CSVFile");
 };
 
 /**
@@ -160,7 +159,7 @@ CSVFile.prototype.makeKey = function(source) {
  * @param {String} data the string to parse
  */
 CSVFile.prototype.parse = function(data) {
-    logger.debug("Parsing file " + this.pathName);
+    this.logger.debug("Parsing file " + this.pathName);
     if (!data) {
         this.records = [];
         return;
@@ -222,7 +221,7 @@ CSVFile.prototype.parse = function(data) {
  * project's translation set.
  */
 CSVFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -231,8 +230,8 @@ CSVFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 
@@ -269,15 +268,15 @@ CSVFile.prototype.getAll = function() {
  * @param {Resource} res a resource to add to this file
  */
 CSVFile.prototype.addResource = function(res) {
-    logger.trace("CSVFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    this.logger.trace("CSVFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
     if (res && res.getProject() === this.project.getProjectId()) {
-        logger.trace("correct project. Adding.");
+        this.logger.trace("correct project. Adding.");
         this.set.add(res);
     } else {
         if (res) {
-            logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+            this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -350,7 +349,7 @@ CSVFile.prototype.localizeText = function(translations, locale) {
                             }
                             translated = this.type.pseudos[locale].getString(source);
                         } else {
-                            logger.trace("New string found: " + source);
+                            this.logger.trace("New string found: " + source);
                             this.type.newres.add(this.API.newResource({
                                 resType: "string",
                                 project: this.project.getProjectId(),
@@ -409,7 +408,7 @@ CSVFile.prototype.localize = function(translations, locales) {
     if (this.records) {
         for (var i = 0; i < locales.length; i++) {
             var pathName = this.getLocalizedPath(locales[i]);
-            logger.debug("Writing file " + pathName);
+            this.logger.debug("Writing file " + pathName);
             var p = path.join(this.project.target, pathName);
             var d = path.dirname(p);
             this.API.utils.makeDirs(d);
@@ -421,7 +420,7 @@ CSVFile.prototype.localize = function(translations, locales) {
             }
         }
     } else {
-        logger.debug(this.pathName + ": No records, no localize");
+        this.logger.debug(this.pathName + ": No records, no localize");
     }
 };
 
