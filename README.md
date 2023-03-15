@@ -5,6 +5,10 @@ allows it to read and localize javascript resource files.
 
 ## Release Notes
 
+### v1.0.5
+
+- update dependencies
+
 ### v1.0.4
 
 - Add the ability to specify the locale to the JavaScriptResourceFileType.newFile() method
