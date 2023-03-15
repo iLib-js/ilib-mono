@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-jsx",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "main": "./JsxFileType.js",
     "description": "A loctool plugin that knows how to process JSX files",
     "license": "Apache-2.0",
@@ -52,11 +52,10 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib-loctool-javascript-resource": "^1.0.0",
-        "log4js": "^2.11.0"
+        "ilib-loctool-javascript-resource": "^1.0.4"
     },
     "devDependencies": {
-        "loctool": "^2.10.1",
+        "loctool": "^2.20.2",
         "nodeunit": "^0.11.3"
     }
 }
