@@ -1,7 +1,7 @@
 /*
  * RubyFileType.js - Represents a collection of Ruby files
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@ var fs = require("fs");
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
-var log4js = require("log4js");
 
 var RubyFile = require("./RubyFile.js");
-
-var logger = log4js.getLogger("loctool.plugin.RubyFileType");
 
 var RubyFileType = function(project) {
     this.type = "ruby";
@@ -54,6 +51,7 @@ var RubyFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+    this.logger = this.API.getLogger("loctool.plugin.RubyFileType");
 };
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
@@ -67,7 +65,7 @@ var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-
  * otherwise
  */
 RubyFileType.prototype.handles = function(pathName) {
-    logger.debug("RubyFileType handles " + pathName + "?");
+    this.logger.debug("RubyFileType handles " + pathName + "?");
     var ret = pathName.length > 10 && pathName.substring(pathName.length - 10) === ".html.haml";
     if (ret) {
         var match = alreadyLoc.exec(pathName);
@@ -77,7 +75,7 @@ RubyFileType.prototype.handles = function(pathName) {
     ret = ret || (pathName.length > 3 && pathName.substring(pathName.length - 3) === ".rb");
     ret = ret || (pathName.length > 5 && pathName.substring(pathName.length - 5) === ".rabl");
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -94,9 +92,9 @@ RubyFileType.prototype.checkAllPluralCases = function(extracted, translated) {
         var newItems = {};
 
         if (!items.one || !items.other) {
-            logger.warn('Source code is missing the "one" or the "other" case in Rb.p:');
-            logger.warn('path: ' + extracted.pathName);
-            logger.warn('strings: ' + JSON.stringify(items));
+            this.logger.warn('Source code is missing the "one" or the "other" case in Rb.p:');
+            this.logger.warn('path: ' + extracted.pathName);
+            this.logger.warn('strings: ' + JSON.stringify(items));
         }
 
         for (var p in items) {
@@ -109,8 +107,8 @@ RubyFileType.prototype.checkAllPluralCases = function(extracted, translated) {
         }
 
         if (!fullyTranslated) {
-            logger.trace("Not fully translated to locale " + translated.getTargetLocale());
-            logger.trace("Missing English plural cases: " + JSON.stringify(newItems));
+            this.logger.trace("Not fully translated to locale " + translated.getTargetLocale());
+            this.logger.trace("Missing English plural cases: " + JSON.stringify(newItems));
 
             var newres = translated.clone();
             newres.sourceStrings = newItems;
@@ -119,7 +117,7 @@ RubyFileType.prototype.checkAllPluralCases = function(extracted, translated) {
             newres.setState("new");
             this.newres.add(newres);
 
-            //logger.debug("Adding target: " + JSON.stringify(newres));
+            //this.logger.debug("Adding target: " + JSON.stringify(newres));
         }
     }
 
@@ -153,7 +151,7 @@ RubyFileType.prototype.write = function(translations, locales) {
 
         // for each extracted string, write out the translations of it
         translationLocales.forEach(function(locale) {
-            logger.trace("Localizing Ruby strings to " + locale);
+            this.logger.trace("Localizing Ruby strings to " + locale);
 
             if (!res.dnt) {
                 db.getResourceByHashKey(res.hashKeyForTranslation(locale), function(err, translated) {
@@ -164,7 +162,7 @@ RubyFileType.prototype.write = function(translations, locales) {
                         r = res.clone();
                         r.setTargetLocale(locale);
                         r.datatype = this.datatype;
-                        logger.trace("ruby hash key is " + r.hashKeyForTranslation(locale));
+                        this.logger.trace("ruby hash key is " + r.hashKeyForTranslation(locale));
                         db.getResourceByHashKey(r.hashKeyForTranslation(locale), function(err, translated) {
                             if (!translated) {
                                 r = res.clone();
@@ -183,23 +181,23 @@ RubyFileType.prototype.write = function(translations, locales) {
 
                                 this.newres.add(r);
 
-                                logger.trace("No translation for " + res.reskey + " to " + locale);
+                                this.logger.trace("No translation for " + res.reskey + " to " + locale);
                             } else {
                                 this.checkAllPluralCases(res, translated);
                                 file = resFileType.getResourceFile(locale, res.getFlavor());
                                 file.addResource(translated);
-                                logger.trace("Added " + r.reskey + " to " + file.pathName);
+                                this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                             }
                         }.bind(this));
                     } else {
                         this.checkAllPluralCases(res, translated);
                         file = resFileType.getResourceFile(locale, res.getFlavor());
                         file.addResource(translated);
-                        logger.trace("Added " + r.reskey + " to " + file.pathName);
+                        this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                     }
                 }.bind(this));
             } else {
-                logger.trace("DNT: " + r.reskey + ": " + r.getSource());
+                this.logger.trace("DNT: " + r.reskey + ": " + r.getSource());
             }
         }.bind(this));
     }
@@ -212,7 +210,7 @@ RubyFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         file = resFileType.getResourceFile(res.getTargetLocale(), res.getFlavor());
         file.addResource(res);
-        logger.trace("Added " + res.reskey + " to " + file.pathName);
+        this.logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
 };
 

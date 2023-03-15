@@ -1,7 +1,7 @@
 /*
  * RubyFile.js - plugin to extract resources from a Ruby source code file
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 var IString = require("ilib/lib/IString.js");
-
-var logger = log4js.getLogger("loctool.plugin.RubyFile");
 
 /**
  * Create a new Ruby file with the given path name and within
@@ -44,6 +41,7 @@ var RubyFile = function(options) {
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
+    this.logger = this.API.getLogger("loctool.plugin.RubyFile");
 };
 
 var reEscapeChar = /\\[ux]([a-fA-F0-9]+)/g;
@@ -178,13 +176,13 @@ var reGetStringPluralSingle = /:?(\w+)\s*(=>|:)\s*'((\\'|[^'])*)'(\s|,)*/g;
  * @param {String} data the string to parse
  */
 RubyFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
     reGetStringWithId.lastIndex = 0; // for safety
     var result = reGetStringWithId.exec(data);
     while (result && result.length > 1 && result[2]) {
-        logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2]);
+        this.logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '" + result[2]);
         //if (result[2] && result[2].length > 2) {
         if (result[2]) {
             var last = data.indexOf('\n', reGetStringWithId.lastIndex);
@@ -197,8 +195,8 @@ RubyFile.prototype.parse = function(data) {
 
             var tmp = reWrongReplacementType.exec(str);
             if (tmp) {
-                logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
-                logger.warn(str);
+                this.logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
+                this.logger.warn(str);
             }
 
             var key = result[9] || result[11] || this.makeKey(str);
@@ -218,8 +216,8 @@ RubyFile.prototype.parse = function(data) {
             });
             this.set.add(r);
         } else {
-            logger.warn(this.pathName + ": Warning: Bogus empty string in get string call: ");
-            logger.warn("... " + data.substring(result.index, reGetStringDouble.lastIndex) + " ...");
+            this.logger.warn(this.pathName + ": Warning: Bogus empty string in get string call: ");
+            this.logger.warn("... " + data.substring(result.index, reGetStringDouble.lastIndex) + " ...");
         }
         result = reGetStringWithId.exec(data);
     }
@@ -227,7 +225,7 @@ RubyFile.prototype.parse = function(data) {
     reGetStringNoId.lastIndex = 0; // for safety
     var result = reGetStringNoId.exec(data);
     while (result && result.length > 1 && result[2]) {
-        logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '");
+        this.logger.trace("Found string key: " + this.makeKey(result[2]) + ", string: '");
         if (result[2] && result[2].length > 2) {
             var last = data.indexOf('\n', reGetStringNoId.lastIndex);
             last = (last === -1) ? data.length : last;
@@ -239,8 +237,8 @@ RubyFile.prototype.parse = function(data) {
 
             var tmp = reWrongReplacementType.exec(str);
             if (tmp) {
-                logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
-                logger.warn(str);
+                this.logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
+                this.logger.warn(str);
             }
 
             var r = this.API.newResource({
@@ -258,8 +256,8 @@ RubyFile.prototype.parse = function(data) {
             });
             this.set.add(r);
         } else {
-            logger.warn(this.pathName + ": Warning: Bogus empty string in get string call: ");
-            logger.warn("... " + data.substring(result.index, reGetStringNoId.lastIndex) + " ...");
+            this.logger.warn(this.pathName + ": Warning: Bogus empty string in get string call: ");
+            this.logger.warn("... " + data.substring(result.index, reGetStringNoId.lastIndex) + " ...");
         }
         result = reGetStringNoId.exec(data); // for safety
     }
@@ -297,20 +295,20 @@ RubyFile.prototype.parse = function(data) {
                 if (r.getAllValidCategories().indexOf(quantity) > -1) {
                     var tmp = reWrongReplacementType.exec(preResource[quantity]);
                     if (tmp) {
-                        logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
-                        logger.warn(str);
+                        this.logger.warn(this.pathName + ":" + tmp.index + ": Warning: Ruby #{} parameters are not allowed in the RB.t() parameters:");
+                        this.logger.warn(str);
                     }
 
                     r.addSource(quantity, RubyFile.unescapeString(preResource[quantity]));
                 } else{
-                    logger.warn(this.pathName + ": Warning: ruby plural resource with invalid quantity:" + quantity);
-                    logger.warn(result[0]);
+                    this.logger.warn(this.pathName + ": Warning: ruby plural resource with invalid quantity:" + quantity);
+                    this.logger.warn(result[0]);
                 }
             }
             this.set.add(r);
         } else {
-            logger.warn(this.pathName + ": Warning: ruby plural resources must have key :one");
-            logger.warn(result[0]);
+            this.logger.warn(this.pathName + ": Warning: ruby plural resources must have key :one");
+            this.logger.warn(result[0]);
         }
         result = reGetStringPlural.exec(data); // for safety
     }
@@ -318,17 +316,17 @@ RubyFile.prototype.parse = function(data) {
     // now check for and report on errors in the source
     this.API.utils.generateWarnings(data, reGetStringBogusConcatenation1,
         "Warning: string concatenation is not allowed in the RB.t() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 
     this.API.utils.generateWarnings(data, reGetStringBogusConcatenation2,
         "Warning: string concatenation is not allowed in the RB.t() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 
     this.API.utils.generateWarnings(data, reGetStringBogusParam,
         "Warning: non-string arguments are not allowed in the RB.t() parameters:",
-        logger,
+        this.logger,
         this.pathName);
 };
 
@@ -337,7 +335,7 @@ RubyFile.prototype.parse = function(data) {
  * project's translation set.
  */
 RubyFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -346,8 +344,8 @@ RubyFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
