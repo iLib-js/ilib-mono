@@ -58,6 +58,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.6
+
+- update dependencies
+
 ### v1.0.5
 
 - added more explicit logging so that it is easier to debug loctool
