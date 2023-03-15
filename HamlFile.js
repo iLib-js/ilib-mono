@@ -1,7 +1,7 @@
 /*
  * HamlFile.js - plugin to extract resources from a Haml source code file
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2023 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,12 @@ var path = require("path");
 var ilib = require("ilib");
 var IString = require("ilib/lib/IString.js");
 var isSpace = require("ilib/lib/isSpace.js");
-var log4js = require("log4js");
 var jsstl = require("js-stl");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var Locale = require("ilib/lib/Locale.js");
 
 var Queue = jsstl.Queue;
-
-var logger = log4js.getLogger("loctool.lib.HamlFile");
 
 // load the locale data
 isSpace._init();
@@ -56,6 +53,8 @@ var HamlFile = function(options) {
     this.API = this.project.getAPI();
 
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
+
+    this.logger = this.API.getLogger("loctool.lib.HamlFile");
 };
 
 var reEscapeChar = /\\[ux]([a-fA-F0-9]+)/g;
@@ -602,7 +601,7 @@ var tagSuffixes = /([<>\/=]+)\s*$/;
  * @param {String} data the string to parse
  */
 HamlFile.prototype.parse = function(data) {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
 
     var i = 0,
         currentIndent = 0,
@@ -761,7 +760,7 @@ HamlFile.prototype.parse = function(data) {
  * project's translation set.
  */
 HamlFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -770,8 +769,8 @@ HamlFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 };
@@ -869,7 +868,7 @@ HamlFile.prototype.localizeText = function(translations, locale) {
                     dirty |= (additional != segment.text);
                 } else {
                     if (this.type && containsActualText(segment.text)) {
-                        logger.trace("New string found: " + segment.text);
+                        this.logger.trace("New string found: " + segment.text);
                         this.type.newres.add(this.API.newResource({
                             resType: "string",
                             project: this.project.getProjectId(),
@@ -922,7 +921,7 @@ HamlFile.prototype.localize = function(translations, locales) {
         for (var i = 0; i < locales.length; i++) {
             if (!this.project.isSourceLocale(locales[i])) {
                 var pathName = this.getLocalizedPath(locales[i]);
-                logger.debug("Writing file " + pathName);
+                this.logger.debug("Writing file " + pathName);
                 var localized = this.localizeText(translations, locales[i]);
                 if (localized) {
                     var p = path.join(this.project.target, pathName);
@@ -933,12 +932,12 @@ HamlFile.prototype.localize = function(translations, locales) {
                     // if not, rails will fall back to the base US English file by itself
                     fs.writeFileSync(p, localized, "utf-8");
                 } else {
-                    logger.debug("Skipping because it is not different than US English.");
+                    this.logger.debug("Skipping because it is not different than US English.");
                 }
             }
         }
     } else {
-        logger.debug(this.pathName + ": No segments/no strings, no localize");
+        this.logger.debug(this.pathName + ": No segments/no strings, no localize");
     }
 };
 

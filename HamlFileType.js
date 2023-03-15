@@ -19,15 +19,12 @@
 
 var fs = require("fs");
 var path = require("path");
-var log4js = require("log4js");
 const spawnSync = require('child_process').spawnSync;
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
 var ResBundle = require("ilib/lib/ResBundle.js");
 
 var HamlFile = require("./HamlFile.js");
-
-var logger = log4js.getLogger("loctool.lib.HamlFileType");
 
 var HamlFileType = function(project) {
     this.type = "ruby";
@@ -58,6 +55,8 @@ var HamlFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
+
+    this.logger = this.API.getLogger("loctool.lib.HamlFileType");
 };
 
 var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)?)?)\.html\.haml$/);
@@ -71,7 +70,7 @@ var alreadyLoc = new RegExp(/\.([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-
  * otherwise
  */
 HamlFileType.prototype.handles = function(pathName) {
-    logger.debug("HamlFileType handles " + pathName + "?");
+    this.logger.debug("HamlFileType handles " + pathName + "?");
     // var ret = extensionRE.test(pathName);
     var ret = pathName.length > 10 && pathName.substring(pathName.length - 10) === ".html.haml";
     if (ret) {
@@ -79,7 +78,7 @@ HamlFileType.prototype.handles = function(pathName) {
         ret = (match && match.length) ? match[1] === this.project.sourceLocale : true;
     }
 
-    logger.debug(ret ? "Yes" : "No");
+    this.logger.debug(ret ? "Yes" : "No");
     return ret;
 };
 
@@ -98,7 +97,7 @@ HamlFileType.prototype.name = function() {
 HamlFileType.prototype.write = function() {};
 
 HamlFileType.prototype.newFile = function(pathName) {
-    logger.trace("Creating new haml file for " + pathName + " len " + this.files.length);
+    this.logger.trace("Creating new haml file for " + pathName + " len " + this.files.length);
     this.files.push(pathName);
     return new HamlFile({
         project: this.project,
