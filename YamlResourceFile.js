@@ -1,7 +1,7 @@
 /*
  * YamlResourceFile.js - represents a yaml resource file
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2020, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,10 @@
 
 var fs = require("fs");
 var path = require("path");
-//var YAML = require("yaml-js");
-//var yamljs = require("yamljs");
-var jsyaml = require("js-yaml");
+var yaml = require("yaml");
 
 var ilib = require("ilib");
 var Locale = require("ilib/lib/Locale.js");
-
-var log4js = require("log4js");
-
-var logger = log4js.getLogger("loctool.plugin.YamlResourceFile");
 
 /**
  * @class Represents a yaml resource file.
@@ -59,6 +53,7 @@ var YamlResourceFile = function(props) {
     this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
 
     this.set = this.API.newTranslationSet(this.locale);
+    this.logger = this.API.getLogger("loctool.plugin.YamlResourceFile");
 };
 
 /**
@@ -71,7 +66,7 @@ YamlResourceFile.prototype._parseResources = function(prefix, obj, set) {
             this._parseResources(pre + key.replace(/@/g, "\\@"), obj[key], set);
         } else {
             var resource = obj[key];
-            logger.trace("Adding string resource " + JSON.stringify(resource) + " locale " + this.getLocale());
+            this.logger.trace("Adding string resource " + JSON.stringify(resource) + " locale " + this.getLocale());
             var params = {
                 resType: "string",
                 project: this.project.getProjectId(),
@@ -104,11 +99,11 @@ YamlResourceFile.prototype._parseResources = function(prefix, obj, set) {
  */
 YamlResourceFile.prototype._handleResourceString = function(resource, object) {
     if (!resource.getSource()) {
-        logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
+        this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
     } else {
         var string = resource.getTarget();
         if (string && resource.getSource() !== string) {
-            logger.trace("writing string " + resource.getKey() + " as " + string);
+            this.logger.trace("writing string " + resource.getKey() + " as " + string);
             var key = resource.getKey();
             object[key] = string;
         }
@@ -120,7 +115,7 @@ YamlResourceFile.prototype._handleResourceString = function(resource, object) {
  */
 YamlResourceFile.prototype._handleResourcePlural = function(resource, object) {
     if (!resource.getSourcePlurals()) {
-        logger.warn("Plural resource " + resource.getKey() + " has no plurals or is missing plurals. Skipping...");
+        this.logger.warn("Plural resource " + resource.getKey() + " has no plurals or is missing plurals. Skipping...");
     } else {
         var plurals = resource.getTargetPlurals();
 
@@ -129,7 +124,7 @@ YamlResourceFile.prototype._handleResourcePlural = function(resource, object) {
                 plurals.one &&
                 plurals.other &&
                 !this.API.utils.objectEquals(resource.getSourcePlurals(), plurals)) {
-            logger.trace("writing plurals " + resource.getKey() + " with " + JSON.stringify(plurals));
+            this.logger.trace("writing plurals " + resource.getKey() + " with " + JSON.stringify(plurals));
             var key = resource.getKey();
             object[key] = plurals;
         }
@@ -147,7 +142,7 @@ var localeSpec = /^[a-z][a-z][a-z]?(-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z](-[A-Z]+)
 YamlResourceFile.prototype.parse = function(str) {
     this.resourceIndex = 0;
 
-    var parsed = jsyaml.safeLoad(str);
+    var parsed = yaml.parse(str);
     var top = parsed;
     for (var key in parsed) {
         var spec = key.replace(/_/g, "-");
@@ -169,7 +164,7 @@ YamlResourceFile.prototype.parse = function(str) {
  * memory.
  */
 YamlResourceFile.prototype.extract = function() {
-    logger.debug("Extracting strings from " + this.pathName);
+    this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
         try {
@@ -178,8 +173,8 @@ YamlResourceFile.prototype.extract = function() {
                 this.parse(data);
             }
         } catch (e) {
-            logger.warn("Could not read file: " + p);
-            logger.warn(e);
+            this.logger.warn("Could not read file: " + p);
+            this.logger.warn(e);
         }
     }
 
@@ -286,15 +281,15 @@ YamlResourceFile.prototype.getAll = function() {
  * @param {Resource} res a resource to add to this file
  */
 YamlResourceFile.prototype.addResource = function(res) {
-    logger.trace("YamlResourceFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
+    this.logger.trace("YamlResourceFile.addResource: " + JSON.stringify(res) + " to " + this.project.getProjectId() + ", " + this.locale + ", " + JSON.stringify(this.context));
     if (res && res.getProject() === this.project.getProjectId()) {
-        logger.trace("correct project. Adding.");
+        this.logger.trace("correct project. Adding.");
         this.set.add(res);
     } else {
         if (res) {
-            logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
+            this.logger.warn("Attempt to add a resource to a resource file with the incorrect project.");
         } else {
-            logger.warn("Attempt to add an undefined resource to a resource file.");
+            this.logger.warn("Attempt to add an undefined resource to a resource file.");
         }
     }
 };
@@ -352,15 +347,15 @@ YamlResourceFile.prototype.getContent = function() {
         }
     }
 
-    logger.trace("json is " + JSON.stringify(json));
+    this.logger.trace("json is " + JSON.stringify(json));
 
     // now convert the json back to yaml
     // return yamljs.stringify(json, 4, 2, {});
-    return jsyaml.safeDump(json, {
-        schema: jsyaml.FAILSAFE_SCHEMA,
-        noCompatMode: true,
-        sortKeys: true,
-        linewidth: -1
+    return yaml.stringify(json, {
+        schema: 'failsafe',
+        sortMapEntries: true,
+        lineWidth: 0,
+        doubleQuotedAsJSON: true
     });
 };
 
@@ -382,7 +377,7 @@ YamlResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
     dir = path.join(this.project.target, this.project.getResourceDirs("yml")[0] || ".");
     newPath = path.join(dir, filename);
 
-    logger.trace("Getting resource file path for locale " + locale + ": " + newPath);
+    this.logger.trace("Getting resource file path for locale " + locale + ": " + newPath);
 
     return newPath;
 };
@@ -391,11 +386,11 @@ YamlResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
  * Write the resource file out to disk again.
  */
 YamlResourceFile.prototype.write = function() {
-    logger.trace("writing yaml resource file. [" + this.project.getProjectId() + "," + this.locale + "]");
+    this.logger.trace("writing yaml resource file. [" + this.project.getProjectId() + "," + this.locale + "]");
     if (this.set.isDirty()) {
         var dir;
         if (!this.pathName) {
-            logger.trace("Calculating path name ");
+            this.logger.trace("Calculating path name ");
 
             // must be a new file, so create the name
             this.pathName = path.join(this.project.target, this.getResourceFilePath(this.locale, this.flavor));
@@ -403,15 +398,15 @@ YamlResourceFile.prototype.write = function() {
 
         dir = path.dirname(this.pathName);
 
-        logger.info("Writing resources for locale " + this.locale + " to file " + this.pathName);
+        this.logger.info("Writing resources for locale " + this.locale + " to file " + this.pathName);
 
         this.API.utils.makeDirs(dir);
 
         var yml = this.getContent();
         fs.writeFileSync(this.pathName, yml, "utf8");
-        logger.debug("Wrote string translations to file " + this.pathName);
+        this.logger.debug("Wrote string translations to file " + this.pathName);
     } else {
-        logger.debug("File " + this.pathName + " is not dirty. Skipping.");
+        this.logger.debug("File " + this.pathName + " is not dirty. Skipping.");
     }
 };
 
