@@ -69,6 +69,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.2
+
+- Fix bug with parsing whitespace in params
+    - allow for whitespace in the susbstitution parameter so that
+      {name} = { name }
+    - match based on the name only, but highlight the whole text of
+      the parameter when there is an error
+
 ### v1.0.1
 
 - updated dependencies
