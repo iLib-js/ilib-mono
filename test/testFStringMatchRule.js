@@ -200,7 +200,7 @@ export const testFStringMatchRules = {
         const rule = new FStringMatchRule();
         test.ok(rule);
 
-        // no parameters in source or target is okay
+        // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
             resource: new ResourceString({
@@ -224,7 +224,7 @@ export const testFStringMatchRules = {
         const rule = new FStringMatchRule();
         test.ok(rule);
 
-        // no parameters in source or target is okay
+        // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
             resource: new ResourceString({
