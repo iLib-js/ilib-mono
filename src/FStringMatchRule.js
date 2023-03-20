@@ -21,7 +21,7 @@ import Locale from 'ilib-locale';
 import { Rule, Result } from 'i18nlint-common';
 
 // from https://peps.python.org/pep-0498/
-const fstringRegExp = /\{(\}\}|[^}])*?\}/g;
+const fstringRegExp = /\{\s*((\}\}|[^}])*?)\s*\}/g;
 
 /**
  * @class Represent an i18nlint rule.
@@ -54,7 +54,8 @@ class FStringMatchRule extends Rule {
         while (match) {
             sourceParams.push({
                 text: match[0],
-                number: match[1]
+                name: match[1],
+                number: match[2]
             });
             match = fstringRegExp.exec(src);
         }
@@ -69,7 +70,8 @@ class FStringMatchRule extends Rule {
         while (match) {
             targetParams.push({
                 text: match[0],
-                number: match[1]
+                name: match[1],
+                number: match[2]
             });
             match = fstringRegExp.exec(tar);
         }
@@ -80,7 +82,7 @@ class FStringMatchRule extends Rule {
             let found = false;
             for (let j = 0; j < targetParams.length; j++) {
                 const tarParam = targetParams[j];
-                if (tarParam.text === srcParam.text && tarParam.number === srcParam.number) {
+                if (tarParam.name === srcParam.name && tarParam.number === srcParam.number) {
                     targetParams.splice(j, 1);
                     found = true;
                     break;

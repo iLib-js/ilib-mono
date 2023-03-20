@@ -21,7 +21,7 @@ import Locale from 'ilib-locale';
 import { Rule, Result } from 'i18nlint-common';
 
 // from https://pubs.opengroup.org/onlinepubs/007904975/functions/fprintf.html
-const printfRegExp = /%\(\w+\)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[diouxXfFeEgGaAcCsSpn]/g;
+const printfRegExp = /%\(\s*(\w+)\s*\)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[diouxXfFeEgGaAcCsSpn]/g;
 
 /**
  * @class Represent an i18nlint rule.
@@ -56,7 +56,8 @@ class LegacyMatchRule extends Rule {
         while (match) {
             sourceParams.push({
                 text: match[0],
-                number: match[1]
+                name: match[1],
+                number: match[2]
             });
             match = printfRegExp.exec(src);
         }
@@ -67,7 +68,8 @@ class LegacyMatchRule extends Rule {
         while (match) {
             targetParams.push({
                 text: match[0],
-                number: match[1]
+                name: match[1],
+                number: match[2]
             });
             match = printfRegExp.exec(tar);
         }
@@ -78,7 +80,7 @@ class LegacyMatchRule extends Rule {
             let found = false;
             for (let j = 0; j < targetParams.length; j++) {
                 const tarParam = targetParams[j];
-                if (tarParam.text === srcParam.text && tarParam.number === srcParam.number) {
+                if (tarParam.name === srcParam.name && tarParam.number === srcParam.number) {
                     targetParams.splice(j, 1);
                     found = true;
                     break;

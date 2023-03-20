@@ -194,6 +194,54 @@ export const testFStringMatchRules = {
         test.done();
     },
 
+    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInSource: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // whitespace in parameters in source or target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains { name } in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält {name}.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // whitespace in parameters in source or target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains {name} in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält { name }.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
     testFStringMatchRuleMatchMatchingParamsMultiple: function(test) {
         test.expect(2);
 

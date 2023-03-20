@@ -205,6 +205,54 @@ export const testLegacyMatchRules = {
         test.done();
     },
 
+    testLegacyMatchRuleMatchMatchingParamsIgnoreWhitespaceInSource: function(test) {
+        test.expect(2);
+
+        const rule = new LegacyMatchRule();
+        test.ok(rule);
+
+        // whitespace in parameters in source or target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains %( name )s in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält %(name)s.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testLegacyMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget: function(test) {
+        test.expect(2);
+
+        const rule = new LegacyMatchRule();
+        test.ok(rule);
+
+        // whitespace in parameters in source or target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains %(name)s in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält %( name )s.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
     testLegacyMatchRuleMatchMatchingParamsMultiple: function(test) {
         test.expect(2);
 
