@@ -45,7 +45,12 @@ limitations under the License.
 - clarified some jsdocs
     - Rule.match() should return a Result instance, an array of
       Result instances, or undefined if no match
+- added IntermediateRepresentation class to represent the results of
+  parsing a file
 - Parser.parse() should now return the intermediate representation
+- Added support for logging provided by the lint tool so that plugins
+  can use the linter's logging
+    - Uses a default null logger if none provided by the linter
 
 ### v1.4.0
 
