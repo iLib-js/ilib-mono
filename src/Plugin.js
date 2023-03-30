@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import NullLogger from './NullLogger.js';
+
 /**
  * @class common SPI that all plugins must implement
  * @abstract
@@ -30,14 +32,25 @@ class Plugin {
         if (this.constructor === Plugin) {
             throw new Error("Cannot instantiate abstract class Plugin directly!");
         }
+        if (!options) return;
+        this.API = options.API;
+        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**
      * Initialize the current plugin, if necessary.
      *
      * @abstract
+     * @returns {Promise|undefined} a promise to initialize or undefined if the
+     * initialization is synchronous or if no initialization is necessary
      */
     init() {}
+
+    /**
+     * Return the version of the API that this plugin was built for. If
+     */
+    getAPIVersion() {
+    }
 
     /**
      * For a plugin that implements rules, this returns a list of Rule

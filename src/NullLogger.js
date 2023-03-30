@@ -1,7 +1,7 @@
 /*
- * index.js - export everything from all of the files
+ * NullLogger.js - Default logger that does not output any strings
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,16 @@
  * limitations under the License.
  */
 
-import Formatter from './Formatter.js';
-import Parser from './Parser.js';
-import Plugin from './Plugin.js';
-import Result from './Result.js';
-import Rule from './Rule.js';
-import IntermediateRepresentation from './IntermediateRepresentation.js';
+/**
+ * @class null logger with a similar API as log4js which produces no output
+ */
+class NullLogger {
+    fatal() {}
+    error() {}
+    info() {}
+    warning() {}
+    debug() {}
+    trace() {}
+}
 
-export * from './utils.js';
-
-export {
-    Formatter,
-    Parser,
-    Plugin,
-    Result,
-    Rule,
-    IntermediateRepresentation
-};
+export default NullLogger;

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import NullLogger from './NullLogger.js';
+
 /**
  * @class Represent an ilib-lint rule.
  * @abstract
@@ -35,6 +37,8 @@ class Rule {
         }
         if (!options) return;
         this.sourceLocale = options.sourceLocale;
+        this.API = options.API;
+        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**
@@ -112,13 +116,13 @@ class Rule {
      * contain any of the following properties:
      *
      * <ul>
+     * <li>ir - intermediate representation from the parser. The parser type and the
+     * rule type must be the same.
      * <li>locale - the locale against which this rule should be checked. Some rules
      * are locale-sensitive, others not.
      * <li>resource - the resource to test this rule against. For resource rules, this
      * is a required property.
      * <li>line - a single line of a file to test this rule against (for line rules)
-     * <li>ir - intermediate representation from the parser. The parser type and the
-     * rule type must be the same.
      * <li>pathName - the name of the current file being matched in multifile rules.
      * <li>parameters - (optional) parameters for this rule from the configuration file
      * </ul>

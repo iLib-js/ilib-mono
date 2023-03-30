@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import NullLogger from './NullLogger.js';
+
 /**
  * @class common SPI for parser plugins
  * @abstract
@@ -32,6 +34,9 @@ class Parser {
         if (this.constructor === Parser) {
             throw new Error("Cannot instantiate abstract class Plugin directly!");
         }
+        if (!options) return;
+        this.API = options.API;
+        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**
@@ -96,7 +101,7 @@ class Parser {
      *   rules that already know how to process Resource instances.
      *
      * @abstract
-     * @returns {Object} the intermediate representation
+     * @returns {IntermediateRepresentation} the intermediate representation
      */
     parse() {}
 

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import NullLogger from './NullLogger.js';
+
 /**
  * @class Represent an output formatter
  * @abstract
@@ -33,6 +35,9 @@ class Formatter {
         if (this.constructor === Formatter) {
             throw new Error("Cannot instantiate abstract class Formatter!");
         }
+        if (!options) return;
+        this.API = options.API;
+        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**
