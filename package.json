@@ -1,5 +1,5 @@
 {
-    "name": "ilib-lint-javascript",
+    "name": "ilib-lint-react",
     "version": "1.0.0",
     "main": "./src/index.js",
     "type": "module",
@@ -8,7 +8,7 @@
             "import": "./src/index.js"
         }
     },
-    "description": "ilib-lint plugin to check javascript",
+    "description": "ilib-lint plugin to lint react files for i18n problems",
     "files": [
         "src",
         "package.json",
