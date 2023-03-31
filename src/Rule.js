@@ -81,25 +81,34 @@ class Rule {
     /**
      * Return the type of intermediate representation that this rule can process. Rules can
      * be any type as long as there is a parser that produces that type. By convention,
-     * there are two types that there are many parsers for already:
+     * there are a few types that are already defined:
      *
-     * - resource - This checks a translated Resource instances with a source string
-     *   and a translation to a given locale. For example, a rule that checks that
+     * - resource - This checks a translated Resource instance with a source string
+     *   and a translation string for a given locale. For example, a rule that checks that
      *   substitution parameters that exist in the source string also are
-     *   given in the target string.
+     *   given in the target string. Typically, resource files like po, properties, or xliff
+     *   are parsed into an array of Resource instances as its intermediate representations.
      * - line - This rule checks single lines of a file. eg. a rule to
      *   check the parameters to a function call.
+     * - string - This rule checks the entire file as a single string. Often, this type
+     *   of representation is used with source code files that are checked with regular
+     *   expressions, which often mean declarative rules.
+     * - {other} - You can choose to return any other string here that uniquely identifies the
+     *   representation that a parser produces.
      *
      * Typically, a full parser for a programming language will return something like
-     * an abstract syntax tree as an intermediate format. However, the parser can return
-     * anything it likes just as long as there are rules that know how to check it.
+     * an abstract syntax tree as an intermediate format. For example, the acorn parser
+     * for javascript returns an abstract syntax tree in JSTree format. The parser may
+     * choose to return the string "ast-jstree" as its identifier, as long as there are
+     * rules that are looking for that same string. The parser can return any string it
+     * likes just as long as there are rules that know how to check it.
      *
      * @returns {String} a string that names the type of intermediate representation
      * that this rule knows how to check
      */
     getRuleType() {
-        // default rule type. If your rule is different, override this method.
-        return "line";
+        // default representation type. If your rule is different, override this method.
+        return "string";
     }
 
     /**
