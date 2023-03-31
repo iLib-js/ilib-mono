@@ -41,11 +41,10 @@ export const testFormatjsPlurals = {
                 }
             });
             export default messages;
-            `);
+            `, "x/y");
 
         const actual = rule.match({
-            ir,
-            file: "x/y"
+            ir
         });
         test.ok(!actual);
 
@@ -76,13 +75,12 @@ export const testFormatjsPlurals = {
                 }
             });
             export default messages;
-            `);
+            `, "x/y");
 
         //console.log(JSON.stringify(intermediateRepresentation, undefined, 2));
 
         const actual = rule.match({
-            ir,
-            file: "x/y"
+            ir
         });
         test.ok(actual);
         const expected = new Result({

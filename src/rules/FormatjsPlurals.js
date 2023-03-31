@@ -136,7 +136,7 @@ class FormatjsPlurals extends Rule {
      * @override
      */
     match(options) {
-        const { ir, file } = options;
+        const { ir } = options;
         const sourceLocale = this.sourceLocale;
         let problems = [];
 
@@ -160,7 +160,7 @@ class FormatjsPlurals extends Rule {
                     message.location = locations[i];
                 }
                 //console.log(`message is ${JSON.stringify(message, undefined, 2)}`);
-                return this.checkString(message, file, sourceLocale);
+                return this.checkString(message, ir.getPath(), sourceLocale);
             }).flat();
             return (results.length < 2) ? results[0] : results;
         } else {

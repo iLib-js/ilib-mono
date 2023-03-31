@@ -1,6 +1,6 @@
 # ilib-lint-react
 
-An ilib-lint plugin that provides the ability to parse React files and 
+An ilib-lint plugin that provides the ability to parse React files and
 provides rules to check resources that come from code written in React.
 
 ## Installation

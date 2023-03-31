@@ -48,7 +48,7 @@ class JSXParser extends Parser {
     /**
      * @private
      */ 
-    parseString(string) {
+    parseString(string, path) {
         return new IntermediateRepresentation({
             type: "ast-jstree",
             ir: JsxParse.parse(string, {
@@ -56,7 +56,7 @@ class JSXParser extends Parser {
                 ecmaVersion: 2020,
                 sourceType: "module"
             }),
-            filePath: this.path || ""
+            filePath: path
         });
     }
 
@@ -66,7 +66,7 @@ class JSXParser extends Parser {
      * of the jsx file
      */
     parse() {
-        return [this.parseString(this.data)];
+        return [this.parseString(this.data, this.path)];
     }
 
     getExtensions() {

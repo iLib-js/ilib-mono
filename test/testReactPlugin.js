@@ -77,8 +77,8 @@ export const testReactPlugin = {
 
         const sets = jp.getRuleSets();
         test.ok(sets);
-        test.ok(sets.javascript);
-        test.equal(Object.keys(sets.javascript).length, 0);
+        test.ok(sets.react);
+        test.equal(Object.keys(sets.react).length, 1);
 
         test.done();
     }

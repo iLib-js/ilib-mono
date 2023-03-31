@@ -82,7 +82,7 @@ export const testJSXParser = {
         const parser = new JSXParser();
         test.ok(parser);
 
-        const actual = parser.parseString("import foo from '../src/index.js';");
+        const actual = parser.parseString("import foo from '../src/index.js';", "x/y");
         test.ok(actual);
 
         const expected = {
@@ -140,7 +140,7 @@ export const testJSXParser = {
                 ],
                 sourceType: 'module'
             },
-            filePath: ""
+            filePath: "x/y"
         };
         test.deepEqual(actual, expected);
 
@@ -158,7 +158,7 @@ export const testJSXParser = {
             import foo from '../src/index.js';
 
             const str = <b>String</b>;
-            `);
+            `, "x/y");
         test.ok(actual);
 
         const expected = {
@@ -309,7 +309,7 @@ export const testJSXParser = {
                 ],
                 "sourceType": "module"
             },
-            filePath: ""
+            filePath: "x/y"
         };
         test.deepEqual(actual, expected);
 

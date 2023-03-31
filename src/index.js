@@ -46,7 +46,8 @@ class ReactPlugin extends Plugin {
     /** @override */
     getRuleSets() {
         return {
-            "javascript": {
+            "react": {
+                "source-formatjs-plurals": true
             }
         };
     }
