@@ -106,7 +106,7 @@ export const testRule = {
 
         test.ok(rule);
 
-        test.equal(rule.getRuleType(), "line");
+        test.equal(rule.getRuleType(), "string");
 
         test.done();
     },
