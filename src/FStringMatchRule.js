@@ -28,14 +28,14 @@ const fstringRegExp = /\{\s*((\}\}|[^}])*?)\s*\}/g;
  */
 function escapeRegex(re) {
     return re.
-        replaceAll(/\{/g, "\\{").
-        replaceAll(/\}/g, "\\}").
-        replaceAll(/\[/g, "\\[").
-        replaceAll(/\]/g, "\\]").
-        replaceAll(/\./g, "\\.").
-        replaceAll(/\?/g, "\\?").
-        replaceAll(/\*/g, "\\*").
-        replaceAll(/\+/g, "\\+");
+        replace(/\{/g, "\\{").
+        replace(/\}/g, "\\}").
+        replace(/\[/g, "\\[").
+        replace(/\]/g, "\\]").
+        replace(/\./g, "\\.").
+        replace(/\?/g, "\\?").
+        replace(/\*/g, "\\*").
+        replace(/\+/g, "\\+");
 }
 
 /**
