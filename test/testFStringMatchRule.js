@@ -332,6 +332,124 @@ export const testFStringMatchRules = {
         test.deepEqual(actual, expected);
 
         test.done();
-    }
+    },
+
+    testFStringMatchRuleMatchNumericParams: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // numeric params in source and target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains {0} in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält {0}.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringMatchRuleNonMatchNumericParams: function(test) {
+        test.expect(3);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // numeric params in source and target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains {0} in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält {name}.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(actual);
+       
+        // if the source contains native quotes, the target must too
+        const expected = [
+	        new Result({
+	            severity: "error",
+	            description: "Source string substitution parameter {0} not found in the target string.",
+	            id: "printf.test",
+	            source: 'This string contains {0} in it.',
+	            highlight: '<e0>Diese Zeichenfolge enthält {name}.</e0>',
+	            rule,
+	            pathName: "x"
+	        }),
+            new Result({
+                severity: "error",
+                description: "Extra target string substitution parameter {name} not found in the source string.",
+                id: "printf.test",
+                source: 'This string contains {0} in it.',
+                highlight: 'Diese Zeichenfolge enthält <e0>{name}</e0>.',
+                rule,
+                pathName: "x"
+            }),
+	    ];
+        test.deepEqual(actual, expected);
+
+        test.done();
+    },
+
+    testFStringMatchRuleNonMatchNumericTargetParams: function(test) {
+        test.expect(3);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // numeric params in source and target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            resource: new ResourceString({
+                key: "printf.test",
+                sourceLocale: "en-US",
+                source: 'This string contains {name} in it.',
+                targetLocale: "de-DE",
+                target: 'Diese Zeichenfolge enthält {0}.',
+                pathName: "a/b/c.xliff"
+            }),
+            file: "x"
+        });
+        test.ok(actual);
+       
+        // if the source contains native quotes, the target must too
+        const expected = [
+            new Result({
+                severity: "error",
+                description: "Source string substitution parameter {name} not found in the target string.",
+                id: "printf.test",
+                source: 'This string contains {0} in it.',
+                highlight: '<e0>Diese Zeichenfolge enthält {0}.</e0>',
+                rule,
+                pathName: "x"
+            }),
+            new Result({
+                severity: "error",
+                description: "Extra target string substitution parameter {0} not found in the source string.",
+                id: "printf.test",
+                source: 'This string contains {0} in it.',
+                highlight: 'Diese Zeichenfolge enthält <e0>{0}</e0>.',
+                rule,
+                pathName: "x"
+            }),
+        ];
+        test.deepEqual(actual, expected);
+
+        test.done();
+    },
 };
 
