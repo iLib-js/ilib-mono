@@ -69,6 +69,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.3
+
+- Fixed a bug where a numeric parameter in the target FString, such as
+  "{0}" would cause an exception
+
 ### v1.0.2
 
 - Fix bug with parsing whitespace in params
