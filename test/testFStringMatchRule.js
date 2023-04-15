@@ -378,18 +378,18 @@ export const testFStringMatchRules = {
             file: "x"
         });
         test.ok(actual);
-       
+
         // if the source contains native quotes, the target must too
         const expected = [
-	        new Result({
-	            severity: "error",
-	            description: "Source string substitution parameter {0} not found in the target string.",
-	            id: "printf.test",
-	            source: 'This string contains {0} in it.',
-	            highlight: '<e0>Diese Zeichenfolge enthält {name}.</e0>',
-	            rule,
-	            pathName: "x"
-	        }),
+            new Result({
+                severity: "error",
+                description: "Source string substitution parameter {0} not found in the target string.",
+                id: "printf.test",
+                source: 'This string contains {0} in it.',
+                highlight: '<e0>Diese Zeichenfolge enthält {name}.</e0>',
+                rule,
+                pathName: "x"
+            }),
             new Result({
                 severity: "error",
                 description: "Extra target string substitution parameter {name} not found in the source string.",
@@ -399,7 +399,7 @@ export const testFStringMatchRules = {
                 rule,
                 pathName: "x"
             }),
-	    ];
+        ];
         test.deepEqual(actual, expected);
 
         test.done();
@@ -425,14 +425,14 @@ export const testFStringMatchRules = {
             file: "x"
         });
         test.ok(actual);
-       
+
         // if the source contains native quotes, the target must too
         const expected = [
             new Result({
                 severity: "error",
                 description: "Source string substitution parameter {name} not found in the target string.",
                 id: "printf.test",
-                source: 'This string contains {0} in it.',
+                source: 'This string contains {name} in it.',
                 highlight: '<e0>Diese Zeichenfolge enthält {0}.</e0>',
                 rule,
                 pathName: "x"
@@ -441,7 +441,7 @@ export const testFStringMatchRules = {
                 severity: "error",
                 description: "Extra target string substitution parameter {0} not found in the source string.",
                 id: "printf.test",
-                source: 'This string contains {0} in it.',
+                source: 'This string contains {name} in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>{0}</e0>.',
                 rule,
                 pathName: "x"

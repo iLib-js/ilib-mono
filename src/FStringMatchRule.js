@@ -24,6 +24,21 @@ import { Rule, Result } from 'i18nlint-common';
 const fstringRegExp = /\{\s*((\}\}|[^}])*?)\s*\}/g;
 
 /**
+ * @private
+ */
+function escapeRegex(re) {
+    return re.
+        replaceAll(/\{/g, "\\{").
+        replaceAll(/\}/g, "\\}").
+        replaceAll(/\[/g, "\\[").
+        replaceAll(/\]/g, "\\]").
+        replaceAll(/\./g, "\\.").
+        replaceAll(/\?/g, "\\?").
+        replaceAll(/\*/g, "\\*").
+        replaceAll(/\+/g, "\\+");
+}
+
+/**
  * @class Represent an i18nlint rule.
  */
 class FStringMatchRule extends Rule {
@@ -104,7 +119,7 @@ class FStringMatchRule extends Rule {
         if (targetParams.length) {
             for (let j = 0; j < targetParams.length; j++) {
                 const tarParam = targetParams[j];
-                const re = new RegExp(tarParam.text, "g");
+                const re = new RegExp(escapeRegex(tarParam.text), "g");
                 problems.push(new Result({
                     severity: "error",
                     rule: this,
