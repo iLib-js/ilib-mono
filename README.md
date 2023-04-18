@@ -39,9 +39,10 @@ limitations under the License.
 
 ## Release Notes
 
-### Pending release
+### v1.4.0
 
 - added utility function withVisibleWhitespace() to visually represent whitespace characters
+- added isKebabCase(), isSnakeCase(), and isCamelCase() utility functions
 
 ### v1.3.0
 

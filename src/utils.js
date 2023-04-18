@@ -60,3 +60,58 @@ export const withVisibleWhitespace = (str) => {
         }
     });
 };
+
+const kababRe = /^(\w+-)*\w+$/g;
+const camelRe = /^[a-z]+([A-Z][a-z]+)*$/g;
+const snakeRe = /^(\w+_)*\w+$/g;
+
+/**
+ * Return true if the given string is written with kabab case. Kabab
+ * case is where words are separated with dashes, looking like they
+ * have been strung out on a kabab stick.
+ *
+ * Example: this-is-kabab-case-text
+ *
+ * @param {String} str the string to test
+ * @returns {boolean} true if the entire string is kabab case, and
+ * false otherwise
+ */
+export function isKababCase(str) {
+    if (typeof(str) !== "string" || !str) return false;
+    kababRe.lastIndex = 0;
+    return kababRe.test(str);
+}
+
+/**
+ * Return true if the given string is written with camel case. Camel
+ * case is where words are not separated by spaces but the first letter
+ * of each word is capitalized, looking like the humps of a camel.
+ *
+ * Example: thisIsCamelCaseText
+ *
+ * @param {String} str the string to test
+ * @returns {boolean} true if the entire string is kabab case, and
+ * false otherwise
+ */
+export function isCamelCase(str) {
+    if (typeof(str) !== "string" || !str) return false;
+    camelRe.lastIndex = 0;
+    return camelRe.test(str);
+}
+
+/**
+ * Return true if the given string is written with snake case. Snake
+ * case is where words are separated with underscores, looking like they
+ * have been strung out horizontally like a snake.
+ *
+ * Example: this_is_snake_case_text
+ *
+ * @param {String} str the string to test
+ * @returns {boolean} true if the entire string is snake case, and
+ * false otherwise
+ */
+export function isSnakeCase(str) {
+    if (typeof(str) !== "string" || !str) return false;
+    snakeRe.lastIndex = 0;
+    return snakeRe.test(str);
+}
