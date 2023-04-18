@@ -169,7 +169,7 @@ export const testUtils = {
     testIsSnakeCaseTrue: function(test) {
         test.expect(1);
 
-        test.ok(isSnakeCase("this_is_kabab_case"));
+        test.ok(isSnakeCase("this_is_snake_case"));
 
         test.done();
     },
