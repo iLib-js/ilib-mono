@@ -22,7 +22,8 @@ const files = [
     "testParser.js",
     "testPlugin.js",
     "testResult.js",
-    "testRule.js"
+    "testRule.js",
+    "testUtils.js"
 ];
 
 export default files;
