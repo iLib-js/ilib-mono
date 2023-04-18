@@ -61,9 +61,9 @@ export const withVisibleWhitespace = (str) => {
     });
 };
 
-const kababRe = /^(\w+-)*\w+$/g;
-const camelRe = /^[a-z]+([A-Z][a-z]+)*$/g;
-const snakeRe = /^(\w+_)*\w+$/g;
+const kababRe = /^(\w*-)*\w+$/g;
+const camelRe = /^[a-z]+([A-Z][a-z]*)*$/g;
+const snakeRe = /^(\w*_)*\w+$/g;
 
 /**
  * Return true if the given string is written with kabab case. Kabab

@@ -64,6 +64,14 @@ export const testUtils = {
         test.done();
     },
 
+    testIsKababCaseMultipleDashes: function(test) {
+        test.expect(1);
+
+        test.ok(isKababCase("this--is--kabab--case--still"));
+
+        test.done();
+    },
+
     testIsKababCaseFalse: function(test) {
         test.expect(1);
 
@@ -123,6 +131,14 @@ export const testUtils = {
         test.done();
     },
 
+    testIsCamelCaseSingleCaps: function(test) {
+        test.expect(1);
+
+        test.ok(isCamelCase("thisIsACamelCaseString"));
+
+        test.done();
+    },
+
     testIsCamelCaseFalse: function(test) {
         test.expect(1);
 
@@ -178,6 +194,14 @@ export const testUtils = {
         test.expect(1);
 
         test.ok(isSnakeCase("this"));
+
+        test.done();
+    },
+
+    testIsSnakeCaseMultipleUnderscores: function(test) {
+        test.expect(1);
+
+        test.ok(isSnakeCase("this__is__still__a__snake__case__string"));
 
         test.done();
     },
