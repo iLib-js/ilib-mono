@@ -27,15 +27,7 @@ const fstringRegExp = /\{\s*((\}\}|[^}])*?)\s*\}/g;
  * @private
  */
 function escapeRegex(re) {
-    return re.
-        replace(/\{/g, "\\{").
-        replace(/\}/g, "\\}").
-        replace(/\[/g, "\\[").
-        replace(/\]/g, "\\]").
-        replace(/\./g, "\\.").
-        replace(/\?/g, "\\?").
-        replace(/\*/g, "\\*").
-        replace(/\+/g, "\\+");
+    return re.replace(/([\{\}\[\]\.\?\*\+\(\)\|\\])/g, "\\$1");
 }
 
 /**

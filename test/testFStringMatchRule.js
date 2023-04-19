@@ -364,7 +364,6 @@ export const testFStringMatchRules = {
         const rule = new FStringMatchRule();
         test.ok(rule);
 
-        // numeric params in source and target is okay
         const actual = rule.match({
             locale: "de-DE",
             resource: new ResourceString({
@@ -379,7 +378,6 @@ export const testFStringMatchRules = {
         });
         test.ok(actual);
 
-        // if the source contains native quotes, the target must too
         const expected = [
             new Result({
                 severity: "error",
@@ -411,7 +409,6 @@ export const testFStringMatchRules = {
         const rule = new FStringMatchRule();
         test.ok(rule);
 
-        // numeric params in source and target is okay
         const actual = rule.match({
             locale: "de-DE",
             resource: new ResourceString({
@@ -426,7 +423,6 @@ export const testFStringMatchRules = {
         });
         test.ok(actual);
 
-        // if the source contains native quotes, the target must too
         const expected = [
             new Result({
                 severity: "error",
@@ -450,6 +446,6 @@ export const testFStringMatchRules = {
         test.deepEqual(actual, expected);
 
         test.done();
-    },
+    }
 };
 
