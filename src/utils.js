@@ -31,8 +31,11 @@
  *
  * Additionally, whitespaces not included in explicit mapping are represented
  * as their Unicode codepoint value, e.g. `\u3000` becomes `[U+3000]`
+ * 
+ * @param {string} str Input string
+ * @returns {string} String in which whitespaces are replaced with visible representations
  */
-export const withVisibleWhitespace = (/** @type {string} */ str) => {
+export const withVisibleWhitespace = (str) => {
     // partially per https://en.wikipedia.org/wiki/Whitespace_character#Substitute_images
     const explicitMapping = {
         "\u0020": "⎵",
