@@ -34,6 +34,18 @@ export const testUtils = {
         const result = withVisibleWhitespace(subject);
         test.equal(result, "[U+3000]");
         test.done();
-    }
+    },
+
+    testVisibleWhitespaceNonString: function(test) {
+        test.expect(5);
+
+        test.equals("", withVisibleWhitespace(undefined));
+        test.equals("", withVisibleWhitespace(false));
+        test.equals("", withVisibleWhitespace(["foo"]));
+        test.equals("", withVisibleWhitespace({property: "foo"}));
+        test.equals("", withVisibleWhitespace(() => "1"));
+
+        test.done();
+    },
 };
 
