@@ -61,25 +61,25 @@ export const withVisibleWhitespace = (str) => {
     });
 };
 
-const kababRe = /^(\w*-)*\w+$/g;
-const camelRe = /^[a-z]+([A-Z][a-z]*)*$/g;
-const snakeRe = /^(\w*_)*\w+$/g;
+const kebabRe = /^[a-zA-Z]+-[a-zA-Z\-]*$/g
+const camelRe = /^[A-Z]?[a-z]+[A-Z][a-zA-Z]*$/g;
+const snakeRe = /(^|^[a-zA-Z]+)_[a-zA-Z_]*$/g;
 
 /**
- * Return true if the given string is written with kabab case. Kabab
+ * Return true if the given string is written with kebab case. Kebab
  * case is where words are separated with dashes, looking like they
- * have been strung out on a kabab stick.
+ * have been strung out on a kebab stick.
  *
- * Example: this-is-kabab-case-text
+ * Example: this-is-kebab-case-text
  *
  * @param {String} str the string to test
- * @returns {boolean} true if the entire string is kabab case, and
+ * @returns {boolean} true if the entire string is kebab case, and
  * false otherwise
  */
-export function isKababCase(str) {
+export function isKebabCase(str) {
     if (typeof(str) !== "string" || !str) return false;
-    kababRe.lastIndex = 0;
-    return kababRe.test(str);
+    kebabRe.lastIndex = 0;
+    return kebabRe.test(str);
 }
 
 /**
@@ -90,7 +90,7 @@ export function isKababCase(str) {
  * Example: thisIsCamelCaseText
  *
  * @param {String} str the string to test
- * @returns {boolean} true if the entire string is kabab case, and
+ * @returns {boolean} true if the entire string is kebab case, and
  * false otherwise
  */
 export function isCamelCase(str) {

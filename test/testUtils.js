@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { isKababCase, isCamelCase, isSnakeCase, withVisibleWhitespace } from '../src/utils.js';
+import { isKebabCase, isCamelCase, isSnakeCase, withVisibleWhitespace } from '../src/utils.js';
 
 export const testUtils = {
     testVisibleWhitespaceRepresentExplicit: function(test) {
@@ -48,69 +48,93 @@ export const testUtils = {
         test.done();
     },
 
-    testIsKababCaseTrue: function(test) {
+    testIsKebabCaseTrue: function(test) {
         test.expect(1);
 
-        test.ok(isKababCase("This-is-Kabab-case"));
+        test.ok(isKebabCase("This-is-Kebab-case"));
 
         test.done();
     },
 
-    testIsKababCaseDegenerate: function(test) {
+    testIsKebabCaseDegenerate: function(test) {
         test.expect(1);
 
-        test.ok(isKababCase("this"));
+        test.ok(!isKebabCase("this"));
 
         test.done();
     },
 
-    testIsKababCaseMultipleDashes: function(test) {
+    testIsKebabCaseMinimal: function(test) {
         test.expect(1);
 
-        test.ok(isKababCase("this--is--kabab--case--still"));
+        test.ok(isKebabCase("t-"));
 
         test.done();
     },
 
-    testIsKababCaseFalse: function(test) {
+    testIsKebabCaseMultipleDashes: function(test) {
         test.expect(1);
 
-        test.ok(!isKababCase("this-is not kabab-case despite-the-various-dashes"));
+        test.ok(isKebabCase("this--is--kebab--case--still"));
 
         test.done();
     },
 
-    testIsKababCaseFalse2: function(test) {
+    testIsKebabCaseFalse: function(test) {
         test.expect(1);
 
-        test.ok(!isKababCase("this-is,not-kabab-case-either"));
+        test.ok(!isKebabCase("this-is not kebab-case despite-the-various-dashes"));
 
         test.done();
     },
 
-    testIsKababCaseUndefined: function(test) {
+    testIsKebabCaseFalse2: function(test) {
         test.expect(1);
 
-        test.ok(!isKababCase());
+        test.ok(!isKebabCase("this-is,not-kebab-case-either"));
 
         test.done();
     },
 
-    testIsKababCaseEmpty: function(test) {
+    testIsKebabCaseFalse3: function(test) {
         test.expect(1);
 
-        test.ok(!isKababCase(""));
+        test.ok(!isKebabCase("this-is_not-kebab-case-either"));
 
         test.done();
     },
 
-    testIsKababCaseNonString: function(test) {
+    testIsKebabCaseFalse4: function(test) {
+        test.expect(1);
+
+        test.ok(!isKebabCase("-t"));
+
+        test.done();
+    },
+
+    testIsKebabCaseUndefined: function(test) {
+        test.expect(1);
+
+        test.ok(!isKebabCase());
+
+        test.done();
+    },
+
+    testIsKebabCaseEmpty: function(test) {
+        test.expect(1);
+
+        test.ok(!isKebabCase(""));
+
+        test.done();
+    },
+
+    testIsKebabCaseNonString: function(test) {
         test.expect(4);
 
-        test.ok(!isKababCase(false));
-        test.ok(!isKababCase(["foo"]));
-        test.ok(!isKababCase({property: "foo"}));
-        test.ok(!isKababCase(() => "1"));
+        test.ok(!isKebabCase(false));
+        test.ok(!isKebabCase(["foo"]));
+        test.ok(!isKebabCase({property: "foo"}));
+        test.ok(!isKebabCase(() => "1"));
 
         test.done();
     },
@@ -126,7 +150,17 @@ export const testUtils = {
     testIsCamelCaseDegenerate: function(test) {
         test.expect(1);
 
-        test.ok(isCamelCase("this"));
+        test.ok(!isCamelCase("this"));
+
+        test.done();
+    },
+
+    testIsCamelCaseMinimal: function(test) {
+        test.expect(3);
+
+        test.ok(isCamelCase("aC"));
+        test.ok(isCamelCase("aCa"));
+        test.ok(isCamelCase("CaC"));
 
         test.done();
     },
@@ -151,6 +185,23 @@ export const testUtils = {
         test.expect(1);
 
         test.ok(!isCamelCase("thisIsNot,CamelCaseEither"));
+
+        test.done();
+    },
+
+    testIsCamelCaseFalse3: function(test) {
+        test.expect(1);
+
+        test.ok(!isCamelCase("thisIsNot_CamelCaseEither"));
+
+        test.done();
+    },
+
+    testIsCamelCaseFalse4: function(test) {
+        test.expect(2);
+
+        test.ok(!isCamelCase("CC"));
+        test.ok(!isCamelCase("Casdf"));
 
         test.done();
     },
@@ -193,7 +244,25 @@ export const testUtils = {
     testIsSnakeCaseDegenerate: function(test) {
         test.expect(1);
 
-        test.ok(isSnakeCase("this"));
+        test.ok(!isSnakeCase("this"));
+
+        test.done();
+    },
+
+    testIsSnakeCaseMinimal: function(test) {
+        test.expect(2);
+
+        test.ok(isSnakeCase("_t"));
+        test.ok(isSnakeCase("t_"));
+
+        test.done();
+    },
+
+    testIsSnakeCaseNodeBuiltins: function(test) {
+        test.expect(2);
+
+        test.ok(isSnakeCase("__LINE__"));
+        test.ok(isSnakeCase("__FILE__"));
 
         test.done();
     },
@@ -218,6 +287,14 @@ export const testUtils = {
         test.expect(1);
 
         test.ok(!isSnakeCase("this_is_not,snake_case_either"));
+
+        test.done();
+    },
+
+    testIsSnakeCaseFalse3: function(test) {
+        test.expect(1);
+
+        test.ok(!isSnakeCase("this_is_not-snake_case_either"));
 
         test.done();
     },
@@ -248,6 +325,5 @@ export const testUtils = {
 
         test.done();
     }
-
 };
 
