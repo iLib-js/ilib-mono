@@ -39,7 +39,7 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.4.0
+### Pending release
 
 - added utility function withVisibleWhitespace() to visually represent whitespace characters
 
