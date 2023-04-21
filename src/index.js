@@ -1,7 +1,7 @@
 /*
  * index.js - export everything from all of the files
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,5 +22,7 @@ import Parser from './Parser.js';
 import Plugin from './Plugin.js';
 import Result from './Result.js';
 import Rule from './Rule.js';
+
+export * from './utils.js';
 
 export { Formatter, Parser, Plugin, Result, Rule };

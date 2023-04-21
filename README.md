@@ -39,6 +39,10 @@ limitations under the License.
 
 ## Release Notes
 
+### Pending release
+
+- added utility function withVisibleWhitespace() to visually represent whitespace characters
+
 ### v1.3.0
 
 - added getLink() method to the Rule class
