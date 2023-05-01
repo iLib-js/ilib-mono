@@ -26,6 +26,12 @@ class IntermediateRepresentation {
     /**
      * Construct a new intermediate representation of a parsed file.
      *
+     * The params object can include the following properties:
+     *
+     * - type {String} a unique name for this type of representation (required)
+     * - ir {Object} the intermediate representation of this file (required)
+     * - filePath {String} the path to the current file (required)
+     *
      * @param {Object|undefined} params parameters for this representation
      */
     constructor(params) {
