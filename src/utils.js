@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-/** Replace whitespace in input string with visible representations<p>
+/**
+ * Replace whitespace in input string with visible representations<p>
  *
  * The following explicit mapping is used:<p>
  *

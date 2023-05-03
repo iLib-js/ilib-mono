@@ -1,6 +1,6 @@
 /*
  * IntermediateRepresentation.js - representation of the results of parsing
- * an input file 
+ * an input file
  *
  * Copyright © 2023 JEDLSoft
  *

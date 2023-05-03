@@ -26,14 +26,13 @@ class Parser {
      * Construct a new plugin.
      *
      * @param {Object} [options] options to the constructor
-     * @param {LintAPI} options.API the callback API provided by the linter
+     * @param {Function} options.getLogger a callback function provided by
+     * the linter to retrieve the log4js logger
      */
     constructor(options) {
         if (this.constructor === Parser) {
             throw new Error("Cannot instantiate abstract class Plugin directly!");
         }
-        if (!options) return;
-        this.API = options.API;
     }
 
     /**

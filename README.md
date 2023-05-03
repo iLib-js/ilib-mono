@@ -50,7 +50,7 @@ limitations under the License.
 - Parser.parse() should now return the intermediate representation
 - Added support for logging provided by the lint tool so that plugins
   can use the linter's logging
-    - Uses a default null logger if none provided by the linter
+    - getLogger() function passed to the constructors
 
 ### v1.4.0
 

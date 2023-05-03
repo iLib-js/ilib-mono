@@ -29,7 +29,8 @@ class Rule {
      * @param {Object} [options] options to the constructor
      * @param {String} options.sourceLocale the source locale of the files
      * being linted
-     * @param {LintAPI} options.API the callback API provided by the linter
+     * @param {Function} options.getLogger a callback function provided by
+     * the linter to retrieve the log4js logger
      */
     constructor(options) {
         if (this.constructor === Rule) {
@@ -37,7 +38,6 @@ class Rule {
         }
         if (!options) return;
         this.sourceLocale = options.sourceLocale;
-        this.API = options.API;
     }
 
     /**

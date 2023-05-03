@@ -69,33 +69,6 @@ have been strung out horizontally like a snake.</p>
 </dd>
 </dl>
 
-## Interfaces
-
-<dl>
-<dt><a href="#LintAPI">LintAPI</a></dt>
-<dd><p>common API interface that the linter provides to plugins</p>
-</dd>
-</dl>
-
-<a name="LintAPI"></a>
-
-## LintAPI
-common API interface that the linter provides to plugins
-
-**Kind**: global interface  
-
-* * *
-
-<a name="LintAPI+getLogger"></a>
-
-### lintAPI.getLogger() ⇒ <code>Logger</code>
-Return the log4js logger that the plugin can use to do logging.
-
-**Kind**: instance method of [<code>LintAPI</code>](#LintAPI)  
-**Returns**: <code>Logger</code> - return the logger to use  
-
-* * *
-
 <a name="Formatter"></a>
 
 ## *Formatter*
@@ -122,7 +95,7 @@ should implement this abstract class.
 | Param | Type | Description |
 | --- | --- | --- |
 | [options] | <code>Object</code> | options to the constructor |
-| options.API | [<code>LintAPI</code>](#LintAPI) | the callback API provided by the linter |
+| options.getLogger | <code>function</code> | a callback function provided by the linter to retrieve the log4js logger |
 
 
 * * *
@@ -253,7 +226,7 @@ Construct a new plugin.
 | Param | Type | Description |
 | --- | --- | --- |
 | [options] | <code>Object</code> | options to the constructor |
-| options.API | [<code>LintAPI</code>](#LintAPI) | the callback API provided by the linter |
+| options.getLogger | <code>function</code> | a callback function provided by the linter to retrieve the log4js logger |
 
 
 * * *
@@ -387,7 +360,7 @@ the plugin.
 | Param | Type | Description |
 | --- | --- | --- |
 | [options] | <code>Object</code> | options to the constructor |
-| options.API | [<code>LintAPI</code>](#LintAPI) | the callback API provided by the linter |
+| options.getLogger | <code>function</code> | a callback function provided by the linter to retrieve the log4js logger |
 
 
 * * *
@@ -591,7 +564,7 @@ abstract class.
 | --- | --- | --- |
 | [options] | <code>Object</code> | options to the constructor |
 | options.sourceLocale | <code>String</code> | the source locale of the files being linted |
-| options.API | [<code>LintAPI</code>](#LintAPI) | the callback API provided by the linter |
+| options.getLogger | <code>function</code> | a callback function provided by the linter to retrieve the log4js logger |
 
 
 * * *
