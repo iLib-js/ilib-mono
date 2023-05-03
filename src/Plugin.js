@@ -46,12 +46,6 @@ class Plugin {
     init() {}
 
     /**
-     * Return the version of the API that this plugin was built for.
-     */
-    getAPIVersion() {
-    }
-
-    /**
      * For a plugin that implements rules, this returns a list of Rule
      * classes that this plugin implements. Note this is the class itself,
      * not an instance of the class. The linter may need to instantiate
