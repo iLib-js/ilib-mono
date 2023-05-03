@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import NullLogger from './NullLogger.js';
-
 /**
  * @class Represent an output formatter
  * @abstract
@@ -28,8 +26,8 @@ class Formatter {
      * Construct an formatter instance. Formatters and formatter plugins
      * should implement this abstract class.
      *
-     * @param {Object|undefined} options options for this instance of the
-     * formatter from the config file, if any
+     * @param {Object} [options] options to the constructor
+     * @param {LintAPI} options.API the callback API provided by the linter
      */
     constructor(options) {
         if (this.constructor === Formatter) {
@@ -37,7 +35,6 @@ class Formatter {
         }
         if (!options) return;
         this.API = options.API;
-        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**

@@ -1,5 +1,6 @@
 /*
- * NullLogger.js - Default logger that does not output any strings
+ * LintAPI.js - common API interface that the linter provides to
+ * plugins
  *
  * Copyright © 2023 JEDLSoft
  *
@@ -18,15 +19,16 @@
  */
 
 /**
- * @class null logger with a similar API as log4js which produces no output
+ * @interface LintAPI
+ * @description common API interface that the linter provides to plugins
  */
-class NullLogger {
-    fatal() {}
-    error() {}
-    info() {}
-    warning() {}
-    debug() {}
-    trace() {}
-}
+class LintAPI {
+    /**
+     * Return the log4js logger that the plugin can use to do logging.
+     *
+     * @returns {Logger} return the logger to use
+     */
+    getLogger() {}
+};
 
-export default NullLogger;
+export default LintAPI;

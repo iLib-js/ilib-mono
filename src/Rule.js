@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import NullLogger from './NullLogger.js';
-
 /**
  * @class Represent an ilib-lint rule.
  * @abstract
@@ -28,8 +26,10 @@ class Rule {
      * Construct an ilib-lint rule. Rules in plugins should implement this
      * abstract class.
      *
-     * @param {Object|undefined} options options for this instance of the
-     * rule from the config file, if any
+     * @param {Object} [options] options to the constructor
+     * @param {String} options.sourceLocale the source locale of the files
+     * being linted
+     * @param {LintAPI} options.API the callback API provided by the linter
      */
     constructor(options) {
         if (this.constructor === Rule) {
@@ -38,7 +38,6 @@ class Rule {
         if (!options) return;
         this.sourceLocale = options.sourceLocale;
         this.API = options.API;
-        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**
@@ -57,9 +56,11 @@ class Rule {
      * testing for. This description is not related to particular matches, so
      * it cannot be more specific. Examples:
      *
-     * "translation should use the appropriate quote style"
-     * "parameters to the translation wrapper function must not be concatenated"
-     * "translation should match the whitespace of the source string"
+     * <ul>
+     * <li>"translation should use the appropriate quote style"
+     * <li>"parameters to the translation wrapper function must not be concatenated"
+     * <li>"translation should match the whitespace of the source string"
+     * </ul>
      *
      * @returns {String} a general description of the type of problems that this rule is
      * testing for
@@ -81,20 +82,22 @@ class Rule {
     /**
      * Return the type of intermediate representation that this rule can process. Rules can
      * be any type as long as there is a parser that produces that type. By convention,
-     * there are a few types that are already defined:
+     * there are a few types that are already defined:<p>
      *
-     * - resource - This checks a translated Resource instance with a source string
+     * <ul>
+     * <li>resource - This checks a translated Resource instance with a source string
      *   and a translation string for a given locale. For example, a rule that checks that
      *   substitution parameters that exist in the source string also are
      *   given in the target string. Typically, resource files like po, properties, or xliff
      *   are parsed into an array of Resource instances as its intermediate representations.
-     * - line - This rule checks single lines of a file. eg. a rule to
+     * <li>line - This rule checks single lines of a file. eg. a rule to
      *   check the parameters to a function call.
-     * - string - This rule checks the entire file as a single string. Often, this type
+     * <li>string - This rule checks the entire file as a single string. Often, this type
      *   of representation is used with source code files that are checked with regular
      *   expressions, which often mean declarative rules.
-     * - {other} - You can choose to return any other string here that uniquely identifies the
+     * <li>{other} - You can choose to return any other string here that uniquely identifies the
      *   representation that a parser produces.
+     * </ul>
      *
      * Typically, a full parser for a programming language will return something like
      * an abstract syntax tree as an intermediate format. For example, the acorn parser
@@ -121,27 +124,16 @@ class Rule {
     }
 
     /**
-     * Return whether or not this rule matches the input. The options object can
-     * contain any of the following properties:
-     *
-     * <ul>
-     * <li>ir - intermediate representation from the parser. The parser type and the
-     * rule type must be the same.
-     * <li>locale - the locale against which this rule should be checked. Some rules
-     * are locale-sensitive, others not.
-     * <li>resource - the resource to test this rule against. For resource rules, this
-     * is a required property.
-     * <li>line - a single line of a file to test this rule against (for line rules)
-     * <li>pathName - the name of the current file being matched in multifile rules.
-     * <li>parameters - (optional) parameters for this rule from the configuration file
-     * </ul>
-     *
-     * The return value from this method when a rule matches is an instance of a {@see Result}
-     * class.
+     * Test whether or not this rule matches the input. If so, produce {@see Result} instances
+     * that document what the problems are.<p>
      *
      * @abstract
      * @param {Object} options The options object as per the description above
-     * @returns {Result|Array.<Result>|=} a Result instance describing the problem if
+     * @param {*} options.ir The intermediate representation of the file to check
+     * @param {String} options.locale the locale against which this rule should be checked. Some rules
+     * are locale-sensitive, others not.
+     * @param {*} [options.parameters] parameters for this rule from the configuration file
+     * @returns {Result|Array.<Result>|undefined} a Result instance describing the problem if
      * the rule check fails for this locale, or an array of such Result instances if
      * there are multiple problems with the same input, or `undefined` if there is no
      * problem found (ie. the rule does not match).

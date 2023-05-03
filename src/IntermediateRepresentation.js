@@ -20,19 +20,15 @@
 
 /**
  * @class Representation of parser results
- * @abstract
  */
 class IntermediateRepresentation {
     /**
      * Construct a new intermediate representation of a parsed file.
      *
-     * The params object can include the following properties:
-     *
-     * - type {String} a unique name for this type of representation (required)
-     * - ir {Object} the intermediate representation of this file (required)
-     * - filePath {String} the path to the current file (required)
-     *
-     * @param {Object|undefined} params parameters for this representation
+     * @param {Object} params parameters for this representation
+     * @param {String} params.type a unique name for this type of representation
+     * @param {*} params.ir the intermediate representation of this file
+     * @param {String} params.filePath the path to the current file
      */
     constructor(params) {
         const requiredFields = ["type", "ir", "filePath"];
@@ -43,7 +39,6 @@ class IntermediateRepresentation {
             }
             return true;
         });
-        // logger.trace("params is " + JSON.stringify(params));
         if (missing.length) {
             throw new Error("Missing required parameters in the IntermediateRepresentation constructor: " + missing.join(", "));
         }
@@ -61,7 +56,7 @@ class IntermediateRepresentation {
     /**
      * Return the representation that was parsed from the file.
      *
-     * @returns {Object} the representation
+     * @returns {*} the representation
      */
     getRepresentation() {
         return this.ir;

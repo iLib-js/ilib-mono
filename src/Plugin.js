@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import NullLogger from './NullLogger.js';
-
 /**
  * @class common SPI that all plugins must implement
  * @abstract
@@ -27,6 +25,9 @@ class Plugin {
     /**
      * Construct a new plugin. The options can vary depending on the
      * the plugin.
+     *
+     * @param {Object} [options] options to the constructor
+     * @param {LintAPI} options.API the callback API provided by the linter
      */
     constructor(options) {
         if (this.constructor === Plugin) {
@@ -34,20 +35,19 @@ class Plugin {
         }
         if (!options) return;
         this.API = options.API;
-        this.logger = (this.API && this.API.getLogger()) || new NullLogger();
     }
 
     /**
      * Initialize the current plugin, if necessary.
      *
      * @abstract
-     * @returns {Promise|undefined} a promise to initialize or undefined if the
+     * @returns {Promise<void>|undefined} a promise to initialize or undefined if the
      * initialization is synchronous or if no initialization is necessary
      */
     init() {}
 
     /**
-     * Return the version of the API that this plugin was built for. If
+     * Return the version of the API that this plugin was built for.
      */
     getAPIVersion() {
     }
@@ -72,14 +72,14 @@ class Plugin {
      * developer adds new rules in their plugin, they can also update
      * the rule set to include those new rules and users of this plugin
      * will get enhanced functionality automatically without changing
-     * their own configuration.
+     * their own configuration.<p>
      *
      * For example, if there is a plugin named
      * "android", the plugin writer can add support for Java, Kotlin,
      * and properties files in the same plugin by adding parsers and rules
      * for each file type. They can then also add rulesets called "java",
      * "kotlin" and "properties" which will apply all the rules from this
-     * plugin that are appropriate for the file types.
+     * plugin that are appropriate for the file types.<p>
      *
      * By convention, these rulesets are named the same as the file type
      * that they support, but this is not a strict requirement. Plugin
