@@ -26,6 +26,10 @@ class MockParser extends Parser {
         this.extensions = [ "x", "y", "z" ];
         this.description = "A mock parser that doesn't really do a whole heck of a lot of anything.";
     }
+
+    getType() {
+        return "ast";
+    }
 }
 
 export const testParser = {
@@ -89,6 +93,20 @@ export const testParser = {
         test.ok(parser);
 
         test.equalIgnoringOrder(parser.getExtensions(), [ "x", "y", "z" ]);
+
+        test.done();
+    },
+
+    testParserGetType: function(test) {
+        test.expect(2);
+
+        const parser = new MockParser({
+            filePath: "a/b/c.x"
+        });
+
+        test.ok(parser);
+
+        test.equal(parser.getType(), "ast");
 
         test.done();
     }

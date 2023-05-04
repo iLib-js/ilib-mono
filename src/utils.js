@@ -17,20 +17,27 @@
  * limitations under the License.
  */
 
-/** Replace whitespace in input string with visible representations
+/**
+ * Replace whitespace in input string with visible representations<p>
  *
- * The following explicit mapping is used:
- * | Whitespace | Description | Representation | Description |
- * | - | - | - | - |
- * | `\u0020` | regular space | `⎵` | open box |
- * | `\u00a0` | non-breaking space | `⍽` | shouldered open box |
- * | `\t` | tabulator | `→` | tab symbol |
- * | `\r` | carriage return | `␍` | CR symbol |
- * | `\n` | line feed | `␊` | LF symbol |
- * | `\v` | vertical tab | `␋` | VT symbol |
+ * The following explicit mapping is used:<p>
+ *
+ * <table>
+ * <thead>
+ *   <tr><th>Whitespace</th><th>Description</th><th>Representation</th><th>Description</th></tr>
+ * </thead>
+ * <tbody>
+ *   <tr><td> \u0020 </td><td> regular space      </td><td> ⎵ </td><td> open box            </td></tr>
+ *   <tr><td> \u00a0 </td><td> non-breaking space </td><td> ⍽ </td><td> shouldered open box </td></tr>
+ *   <tr><td> \t     </td><td> tabulator          </td><td> → </td><td> tab symbol          </td></tr>
+ *   <tr><td> \r     </td><td> carriage return    </td><td> ␍ </td><td> CR symbol           </td></tr>
+ *   <tr><td> \n     </td><td> line feed          </td><td> ␊ </td><td> LF symbol           </td></tr>
+ *   <tr><td> \v     </td><td> vertical tab       </td><td> ␋ </td><td> VT symbol           </td></tr>
+ * </tbody>
+ * </table>
  *
  * Additionally, whitespaces not included in explicit mapping are represented
- * as their Unicode codepoint value, e.g. `\u3000` becomes `[U+3000]`.
+ * as their Unicode codepoint value, e.g. `\u3000` becomes `[U+3000]`.<p>
  * 
  * @note If a non-string is passed on input, returned value will be an empty string.
  * 

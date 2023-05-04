@@ -39,6 +39,20 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.0.0
+
+- added Parser.getType() method
+- clarified some jsdocs
+    - Rule.match() should return a Result instance, an array of
+      Result instances, or undefined if no match
+- added IntermediateRepresentation class to represent the results of
+  parsing a file
+- Parser.parse() should now return the intermediate representation
+    - this requires the plugins to change, so the major version is bumped
+- Added support for logging provided by the lint tool so that plugins
+  can use the linter's logging
+    - getLogger() function passed to the constructors
+
 ### v1.4.0
 
 - added utility function withVisibleWhitespace() to visually represent whitespace characters

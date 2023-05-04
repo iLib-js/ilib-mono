@@ -22,7 +22,15 @@ import Parser from './Parser.js';
 import Plugin from './Plugin.js';
 import Result from './Result.js';
 import Rule from './Rule.js';
+import IntermediateRepresentation from './IntermediateRepresentation.js';
 
 export * from './utils.js';
 
-export { Formatter, Parser, Plugin, Result, Rule };
+export {
+    Formatter,
+    Parser,
+    Plugin,
+    Result,
+    Rule,
+    IntermediateRepresentation
+};

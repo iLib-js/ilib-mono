@@ -26,8 +26,9 @@ class Formatter {
      * Construct an formatter instance. Formatters and formatter plugins
      * should implement this abstract class.
      *
-     * @param {Object|undefined} options options for this instance of the
-     * formatter from the config file, if any
+     * @param {Object} [options] options to the constructor
+     * @param {Function} options.getLogger a callback function provided by
+     * the linter to retrieve the log4js logger
      */
     constructor(options) {
         if (this.constructor === Formatter) {

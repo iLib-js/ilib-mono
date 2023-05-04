@@ -25,8 +25,9 @@ class Parser {
     /**
      * Construct a new plugin.
      *
-     * @param {Object|undefined} options options for this instance of the
-     * parser from the config file, if any
+     * @param {Object} [options] options to the constructor
+     * @param {Function} options.getLogger a callback function provided by
+     * the linter to retrieve the log4js logger
      */
     constructor(options) {
         if (this.constructor === Parser) {
@@ -35,7 +36,7 @@ class Parser {
     }
 
     /**
-     * Initialize the current plugin,
+     * Initialize the current plugin.
      * @abstract
      */
     init() {}
@@ -72,19 +73,57 @@ class Parser {
     }
 
     /**
-     * Parse the current file into an intermediate representation.
+     * Parse the current file into an intermediate representation. This
+     * representation may be anything you like, as long as the rules you
+     * implement also can use this same format to check for problems.<p>
+     *
+     * Many parsers produce an abstract syntax tree. The tree could have
+     * a different style depending on the programming language, but
+     * generally, each node has a type, a name, and an array of children,
+     * as well as additional information that depends on the type of
+     * the node.<p>
+     *
+     * Other types of intermediate representation could include:<p>
+     *
+     * <ul>
+     * <li>lines - just split the file into an array of lines in order
+     * <li>string - treat the whole file like a big string
+     * <li>concrete syntax tree - a tree the represents the actual
+     *   syntactical elements in the file. This can be converted to
+     *   an abstract syntax tree afterwards, which would be more useful
+     *   for checking for problems.
+     * <li>resources - array of instances of Resource classes as
+     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     *   This is the preference intermediate representation for
+     *   resource files like Java properties or xliff. There are many
+     *   rules that already know how to process Resource instances.
+     * </ul>
+     *
+     * @abstract
+     * @returns {IntermediateRepresentation} the intermediate representation
      */
     parse() {}
 
     /**
-     * For a "resource" type of plugin, this returns a list of Resource instances
-     * that result from parsing the file.
+     * Return the type of intermediate representation that this parser
+     * produces. The type should be a unique name that matches with
+     * the rule type for rules that process this intermediate representation.<p>
      *
-     * @returns {Array.<Resource>} list of Resource instances in this file
+     * There are three types that are reserved, however:<p>
+     *
+     * <ul>
+     * <li>resource - the parser returns an array of Resource instances as
+     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     * <li>line - the parser produces a set of lines as an array of strings
+     * <li>string - the parser doesn't parse. Instead, it just treats the
+     *   the file as one long string.
+     * </ul>
+     *
+     * @abstract
+     * @returns {String} the name of the current type of intermediate
+     * representation.
      */
-    getResources() {
-        return [];
-    }
+    getType() {}
 };
 
 export default Parser;

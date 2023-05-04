@@ -26,8 +26,11 @@ class Rule {
      * Construct an ilib-lint rule. Rules in plugins should implement this
      * abstract class.
      *
-     * @param {Object|undefined} options options for this instance of the
-     * rule from the config file, if any
+     * @param {Object} [options] options to the constructor
+     * @param {String} options.sourceLocale the source locale of the files
+     * being linted
+     * @param {Function} options.getLogger a callback function provided by
+     * the linter to retrieve the log4js logger
      */
     constructor(options) {
         if (this.constructor === Rule) {
@@ -53,9 +56,11 @@ class Rule {
      * testing for. This description is not related to particular matches, so
      * it cannot be more specific. Examples:
      *
-     * "translation should use the appropriate quote style"
-     * "parameters to the translation wrapper function must not be concatenated"
-     * "translation should match the whitespace of the source string"
+     * <ul>
+     * <li>"translation should use the appropriate quote style"
+     * <li>"parameters to the translation wrapper function must not be concatenated"
+     * <li>"translation should match the whitespace of the source string"
+     * </ul>
      *
      * @returns {String} a general description of the type of problems that this rule is
      * testing for
@@ -75,29 +80,38 @@ class Rule {
     }
 
     /**
-     * Return the type of this rule. Rules can be organized into the following
-     * types:
+     * Return the type of intermediate representation that this rule can process. Rules can
+     * be any type as long as there is a parser that produces that type. By convention,
+     * there are a few types that are already defined:<p>
      *
-     * - A resource rule. This checks a translated resource with a source string
-     *   and a translation to a given locale. eg. a rule that checks that
+     * <ul>
+     * <li>resource - This checks a translated Resource instance with a source string
+     *   and a translation string for a given locale. For example, a rule that checks that
      *   substitution parameters that exist in the source string also are
-     *   given in the target string.
-     * - A line rule. This rule checks single lines of a file. eg. a rule to
+     *   given in the target string. Typically, resource files like po, properties, or xliff
+     *   are parsed into an array of Resource instances as its intermediate representations.
+     * <li>line - This rule checks single lines of a file. eg. a rule to
      *   check the parameters to a function call.
-     * - A multiline rule. This rule checks multiple lines at once to find
-     *   problems that may span multiple lines. For example, a rule to enforce
-     *   a policy that all translatable strings in a source file have an appropriate
-     *   translator's comment on them.
-     * - A multifile rule. This rule checks problems across multiple files. eg.
-     *   a rule to check that ids for translatable strings are unique across all
-     *   files.
+     * <li>string - This rule checks the entire file as a single string. Often, this type
+     *   of representation is used with source code files that are checked with regular
+     *   expressions, which often mean declarative rules.
+     * <li>{other} - You can choose to return any other string here that uniquely identifies the
+     *   representation that a parser produces.
+     * </ul>
      *
-     * @returns {String} a string with either "resource", "line", "multiline", or
-     * "multifile".
+     * Typically, a full parser for a programming language will return something like
+     * an abstract syntax tree as an intermediate format. For example, the acorn parser
+     * for javascript returns an abstract syntax tree in JSTree format. The parser may
+     * choose to return the string "ast-jstree" as its identifier, as long as there are
+     * rules that are looking for that same string. The parser can return any string it
+     * likes just as long as there are rules that know how to check it.
+     *
+     * @returns {String} a string that names the type of intermediate representation
+     * that this rule knows how to check
      */
     getRuleType() {
-        // default rule type. If your rule is different, override this method.
-        return "line";
+        // default representation type. If your rule is different, override this method.
+        return "string";
     }
 
     /**
@@ -110,69 +124,19 @@ class Rule {
     }
 
     /**
-     * Return whether or not this rule matches the input. The options object can
-     * contain any of the following properties:
+     * Test whether or not this rule matches the input. If so, produce {@see Result} instances
+     * that document what the problems are.<p>
      *
-     * <ul>
-     * <li>locale - the locale against which this rule should be checked. Some rules
-     * are locale-sensitive, others not.
-     * <li>resource - the resource to test this rule against. For resource rules, this
-     * is a required property.
-     * <li>line - a single line of a file to test this rule against (for line rules)
-     * <li>lines - all the lines of a file to test this rule against (for multiline rules
-     * and multifile rules)
-     * <li>pathName - the name of the current file being matched in multifile rules.
-     * <li>parameters - (optional) parameters for this rule from the configuration file
-     * </ul>
-     *
-     * The return value from this method when a rule matches is an object with the
-     * following properties:
-     *
-     * <ul>
-     * <li>severity - the severity of this match. This can be one of the following:
-     *   <ul>
-     *   <li>suggestion - a suggestion of a better way to do things. The current way is
-     *   not incorrect, but probably not optimal
-     *   <li>warning - a problem that should be fixed, but which does not prevent
-     *   your app from operating internationally. This is more severe than a suggestion.
-     *   <li>error - a problem that must be fixed. This type of problem will prevent
-     *   your app from operating properly internationally and could possibly even
-     *   crash your app in some cases.
-     *   </ul>
-     * <li>description - a description of the problem to display to the user. In order
-     * to make the ilib-lint output useful, this description should attempt to make the
-     * following things clear:
-     *   <ul>
-     *   <li>What part is wrong
-     *   <li>Why it is wrong
-     *   <li>Suggestions on how to fix it
-     *   </ul>
-     * <li>lineNumber - the line number where the match occurred in multiline rules
-     * <li>highlight - the line where the problem occurred, highlighted with XML syntax
-     * (see below)
-     * </ul>
-     *
-     * For the `highlight` property, the line that has a problem is reproduced with
-     * XML tags around the problem part, if it is known. The tags are of the form
-     * &lt;eX&gt; where X is a digit starting with 0 and progressing to 9 for each
-     * subsequent problem. If the file type is XML already, the rest of the line will
-     * be XML-escaped first.<p>
-     *
-     * Example:<p>
-     *
-     * "const str = rb.getString(<e0>id</e0>);"<p>
-     *
-     * In this rule, `getString()` must be called with a static string in order for the
-     * loctool to be able to extract that string. The line above calls `getString()`
-     * with a variable named "id" as a parameter. The variable is highlighted with the
-     * e0 tag. Callers can then translate the open and close tags appropriately for
-     * the output device, such as ASCII escapes for a regular terminal, or HTML tags
-     * for a web-based device.
-     *
+     * @abstract
      * @param {Object} options The options object as per the description above
-     * @returns {Object|Array.<Object>|=} an object describing the problem if the rule
-     * does match for this locale, or an array of such Objects if there are multiple
-     * problems with the same input, or undefined if the rule does not match
+     * @param {*} options.ir The intermediate representation of the file to check
+     * @param {String} options.locale the locale against which this rule should be checked. Some rules
+     * are locale-sensitive, others not.
+     * @param {*} [options.parameters] parameters for this rule from the configuration file
+     * @returns {Result|Array.<Result>|undefined} a Result instance describing the problem if
+     * the rule check fails for this locale, or an array of such Result instances if
+     * there are multiple problems with the same input, or `undefined` if there is no
+     * problem found (ie. the rule does not match).
      */
     match(options) {
         throw new Error("Cannot call Rule.match() directly.");
