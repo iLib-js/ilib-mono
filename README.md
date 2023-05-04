@@ -39,7 +39,7 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.5.0
+### v2.0.0
 
 - added Parser.getType() method
 - clarified some jsdocs
@@ -48,6 +48,7 @@ limitations under the License.
 - added IntermediateRepresentation class to represent the results of
   parsing a file
 - Parser.parse() should now return the intermediate representation
+    - this requires the plugins to change, so the major version is bumped
 - Added support for logging provided by the lint tool so that plugins
   can use the linter's logging
     - getLogger() function passed to the constructors
