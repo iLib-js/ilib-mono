@@ -52,7 +52,7 @@ export const testResult = {
     },
 
     testResultFull: function(test) {
-        test.expect(8);
+        test.expect(9);
 
         const result = new Result({
             severity: "warning",
@@ -61,6 +61,7 @@ export const testResult = {
             id: "x",
             highlight: "test<e0/>",
             lineNumber: 23,
+            charNumber: 14,
             locale: "de-DE",
             rule
         });
@@ -73,6 +74,7 @@ export const testResult = {
         test.equal(result.id, "x");
         test.equal(result.highlight, "test<e0/>");
         test.equal(result.lineNumber, 23);
+        test.equal(result.charNumber, 14);
         test.equal(result.locale, "de-DE");
 
         test.done();
