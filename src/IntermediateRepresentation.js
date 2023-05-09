@@ -44,7 +44,7 @@ class IntermediateRepresentation {
             throw new Error("Missing required parameters in the IntermediateRepresentation constructor: " + missing.join(", "));
         }
         ["stats"].forEach(property => {
-            if (fields[property]) this[property] = fields[property];
+            if (typeof(fields[property]) !== 'undefined') this[property] = fields[property];
         });
     }
 
