@@ -39,6 +39,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.0.1
+
+- fix a problem where you could not create a Result instance with a
+  lineNumber equal to 0.
+
 ### v2.0.0
 
 - added Parser.getType() method
