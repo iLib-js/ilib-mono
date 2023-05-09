@@ -95,7 +95,7 @@ class Result {
             fields.severity :
             "warning";
         ["description", "pathName", "rule", "id", "highlight", "lineNumber", "locale", "source"].forEach(property => {
-            if (fields[property]) this[property] = fields[property];
+            if (typeof(fields[property]) !== 'undefined') this[property] = fields[property];
         });
     }
 }

@@ -78,6 +78,29 @@ export const testResult = {
         test.done();
     },
 
+    testResultLineZero: function(test) {
+        test.expect(2);
+
+        const result = new Result({
+            severity: "warning",
+            pathName: "a/b/c.js",
+            description: "test",
+            id: "x",
+            highlight: "test<e0/>",
+            lineNumber: 23,
+            charNumber: 14,
+            locale: "de-DE",
+            rule,
+            lineNumber: 0
+        });
+
+        test.ok(result);
+
+        test.equal(result.lineNumber, 0);
+
+        test.done();
+    },
+
     testResultNormalizeSeverity: function(test) {
         test.expect(4);
 
