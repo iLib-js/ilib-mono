@@ -23,6 +23,7 @@
 class FileStats {
     /** @private */ files = 1;
     /** @private */ lines;
+    /** @private */ bytes;
     /** @private */ modules;
 
     /**
@@ -34,6 +35,8 @@ class FileStats {
      * being counted. If not given, this defaults to 1.
      * @param {Number} [options.lines] the number of lines in those
      * source files
+     * @param {Number} [options.bytes] the number of bytes in those
+     * source files
      * @param {Number} [options.modules] the number of modules in
      * those source files. The definition of a "module" are given
      * by the programming language and may mean things like functions
@@ -42,7 +45,7 @@ class FileStats {
      */
     constructor(options) {
         if (!options) return;
-        ["files", "lines", "modules"].forEach(property => {
+        ["files", "lines", "bytes", "modules"].forEach(property => {
             if (typeof(options[property]) === 'number') this[property] = options[property];
         });
     }
@@ -56,8 +59,8 @@ class FileStats {
      */
     addStats(stats) {
         if (!stats || typeof(stats) !== 'object' || !(stats instanceof FileStats)) return this;
-        ["files", "lines", "modules"].forEach(property => {
-            this[property] += stats[property];
+        ["files", "lines", "bytes", "modules"].forEach(property => {
+            this[property] += stats[property] || 0;
         });
         if (typeof(stats.files) !== 'number') {
             this.files++;
@@ -107,7 +110,33 @@ class FileStats {
     }
 
     /**
-     * Get the number of source file modules being counted.
+     * Get the number of source file bytes being counted.
+     *
+     * @returns {Number} the number of source file bytes being counted
+     */
+    getBytes() {
+        return this.bytes || 0;
+    }
+
+    /**
+     * Add the given amount to the number of bytes.
+     *
+     * @param {Number} num the amount to add
+     * @returns {FileStats} the current instance
+     */
+    addBytes(num) {
+        if (typeof(num) !== 'number') return this;
+        this.bytes += num;
+        return this;
+    }
+
+    /**
+     * Get the number of source file modules being counted. Modules
+     * are filetype-dependent. It is up to the parser instance to determine
+     * what is a module and what is not. An example could be that a
+     * functional language like C might define a function as a module,
+     * whereas an object-oriented language like C++ might define a class
+     * as a module.
      *
      * @returns {Number} the number of source file modules being counted
      */

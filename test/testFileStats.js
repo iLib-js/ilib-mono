@@ -21,37 +21,41 @@ import FileStats from '../src/FileStats.js';
 
 export const testFileStats = {
     testFileStatsEmpty: function(test) {
-        test.expect(3);
+        test.expect(4);
 
         const stats = new FileStats();
         test.equal(stats.getFiles(), 1);
         test.equal(stats.getLines(), 0);
+        test.equal(stats.getBytes(), 0);
         test.equal(stats.getModules(), 0);
 
         test.done();
     },
 
     testFileStatsWithOptions: function(test) {
-        test.expect(3);
+        test.expect(4);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 7853,
             modules: 2
         });
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 7853);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsWithNonObjectOptions: function(test) {
-        test.expect(3);
+        test.expect(4);
 
         const stats = new FileStats(true);
         test.equal(stats.getFiles(), 1);
         test.equal(stats.getLines(), 0);
+        test.equal(stats.getBytes(), 0);
         test.equal(stats.getModules(), 0);
 
         test.done();
@@ -63,6 +67,7 @@ export const testFileStats = {
         const stats = new FileStats({
             files: true,
             lines: [1],
+            bytes: foo => { return "bar"; },
             modules: "asdf"
         });
         test.equal(stats.getFiles(), 1);
@@ -73,203 +78,281 @@ export const testFileStats = {
     },
 
     testFileStatsAddStats: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats1 = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 32452,
             modules: 2
         });
         const stats2 = new FileStats({
             files: 8,
             lines: 44,
+            bytes: 94343,
             modules: 8
         });
 
         test.equal(stats1.getFiles(), 4);
         test.equal(stats1.getLines(), 456);
+        test.equal(stats1.getBytes(), 32452);
         test.equal(stats1.getModules(), 2);
 
         stats1.addStats(stats2);
 
         test.equal(stats1.getFiles(), 12);
         test.equal(stats1.getLines(), 500);
+        test.equal(stats1.getBytes(), 126795);
         test.equal(stats1.getModules(), 10);
 
         test.done();
     },
 
     testFileStatsAddStatsNotAStatsInstance1: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addStats({x:2});
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsAddStatsNotAStatsInstance2: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addStats(true);
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsAddFiles: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addFiles(23);
 
         test.equal(stats.getFiles(), 27);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsAddFilesNotNumber: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addFiles("asdf");
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsAddLines: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addLines(23);
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 479);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsAddLinesNotNumber: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addLines("asdf");
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
+        test.equal(stats.getModules(), 2);
+
+        test.done();
+    },
+
+    testFileStatsAddBytes: function(test) {
+        test.expect(8);
+
+        const stats = new FileStats({
+            files: 4,
+            lines: 456,
+            bytes: 3423,
+            modules: 2
+        });
+
+        test.equal(stats.getFiles(), 4);
+        test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
+        test.equal(stats.getModules(), 2);
+
+        stats.addBytes(23);
+
+        test.equal(stats.getFiles(), 4);
+        test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3446);
+        test.equal(stats.getModules(), 2);
+
+        test.done();
+    },
+
+    testFileStatsAddBytesNotNumber: function(test) {
+        test.expect(8);
+
+        const stats = new FileStats({
+            files: 4,
+            lines: 456,
+            bytes: 3423,
+            modules: 2
+        });
+
+        test.equal(stats.getFiles(), 4);
+        test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
+        test.equal(stats.getModules(), 2);
+
+        stats.addBytes("asdf");
+
+        test.equal(stats.getFiles(), 4);
+        test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
     },
 
     testFileStatsAddModules: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addModules(23);
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 25);
 
         test.done();
     },
 
     testFileStatsAddModulesNotNumber: function(test) {
-        test.expect(6);
+        test.expect(8);
 
         const stats = new FileStats({
             files: 4,
             lines: 456,
+            bytes: 3423,
             modules: 2
         });
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         stats.addModules("asdf");
 
         test.equal(stats.getFiles(), 4);
         test.equal(stats.getLines(), 456);
+        test.equal(stats.getBytes(), 3423);
         test.equal(stats.getModules(), 2);
 
         test.done();
