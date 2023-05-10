@@ -42,6 +42,7 @@ limitations under the License.
 ### v2.1.0
 
 - added the FileStats class
+- added fields to the Result object for the location of the issue
 
 ### v2.0.1
 
