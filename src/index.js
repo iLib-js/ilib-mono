@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import FileStats from './FileStats.js';
 import Formatter from './Formatter.js';
 import Parser from './Parser.js';
 import Plugin from './Plugin.js';
@@ -27,6 +28,7 @@ import IntermediateRepresentation from './IntermediateRepresentation.js';
 export * from './utils.js';
 
 export {
+    FileStats,
     Formatter,
     Parser,
     Plugin,
