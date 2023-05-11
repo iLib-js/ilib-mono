@@ -1,6 +1,9 @@
 ## Classes
 
 <dl>
+<dt><a href="#FileStats">FileStats</a></dt>
+<dd><p>Represent statistics about source files.</p>
+</dd>
 <dt><a href="#Formatter">Formatter</a></dt>
 <dd><p>Represent an output formatter</p>
 </dd>
@@ -68,6 +71,167 @@ have been strung out horizontally like a snake.</p>
 <p>Example: this_is_snake_case_text</p>
 </dd>
 </dl>
+
+<a name="FileStats"></a>
+
+## FileStats
+Represent statistics about source files.
+
+**Kind**: global class  
+
+* [FileStats](#FileStats)
+    * [new FileStats([options])](#new_FileStats_new)
+    * [.addStats(stats)](#FileStats+addStats) ⇒
+    * [.getFiles()](#FileStats+getFiles) ⇒ <code>Number</code>
+    * [.addFiles(num)](#FileStats+addFiles) ⇒ [<code>FileStats</code>](#FileStats)
+    * [.getLines()](#FileStats+getLines) ⇒ <code>Number</code>
+    * [.addLines(num)](#FileStats+addLines) ⇒ [<code>FileStats</code>](#FileStats)
+    * [.getBytes()](#FileStats+getBytes) ⇒ <code>Number</code>
+    * [.addBytes(num)](#FileStats+addBytes) ⇒ [<code>FileStats</code>](#FileStats)
+    * [.getModules()](#FileStats+getModules) ⇒ <code>Number</code>
+    * [.addModules(num)](#FileStats+addModules) ⇒ [<code>FileStats</code>](#FileStats)
+
+
+* * *
+
+<a name="new_FileStats_new"></a>
+
+### new FileStats([options])
+Construct an file statistics instance. Each count in the
+statistics instance is optional except for the files.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [options] | <code>Object</code> | options to the constructor |
+| options.files | <code>Number</code> | the number of source files being counted. If not given, this defaults to 1. |
+| [options.lines] | <code>Number</code> | the number of lines in those source files |
+| [options.bytes] | <code>Number</code> | the number of bytes in those source files |
+| [options.modules] | <code>Number</code> | the number of modules in those source files. The definition of a "module" are given by the programming language and may mean things like functions or classes. It is up to the parser for that programming language to count these. |
+
+
+* * *
+
+<a name="FileStats+addStats"></a>
+
+### fileStats.addStats(stats) ⇒
+Add statistics from another instance into this one and return
+the result.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: {FileStats] the current instance  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stats | [<code>FileStats</code>](#FileStats) | the other instance to add to the current one |
+
+
+* * *
+
+<a name="FileStats+getFiles"></a>
+
+### fileStats.getFiles() ⇒ <code>Number</code>
+Get the number of source files being counted.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: <code>Number</code> - the number of source files being counted  
+
+* * *
+
+<a name="FileStats+addFiles"></a>
+
+### fileStats.addFiles(num) ⇒ [<code>FileStats</code>](#FileStats)
+Add the given amount to the number of files.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: [<code>FileStats</code>](#FileStats) - the current instance  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| num | <code>Number</code> | the amount to add |
+
+
+* * *
+
+<a name="FileStats+getLines"></a>
+
+### fileStats.getLines() ⇒ <code>Number</code>
+Get the number of source file lines being counted.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: <code>Number</code> - the number of source file lines being counted  
+
+* * *
+
+<a name="FileStats+addLines"></a>
+
+### fileStats.addLines(num) ⇒ [<code>FileStats</code>](#FileStats)
+Add the given amount to the number of lines.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: [<code>FileStats</code>](#FileStats) - the current instance  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| num | <code>Number</code> | the amount to add |
+
+
+* * *
+
+<a name="FileStats+getBytes"></a>
+
+### fileStats.getBytes() ⇒ <code>Number</code>
+Get the number of source file bytes being counted.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: <code>Number</code> - the number of source file bytes being counted  
+
+* * *
+
+<a name="FileStats+addBytes"></a>
+
+### fileStats.addBytes(num) ⇒ [<code>FileStats</code>](#FileStats)
+Add the given amount to the number of bytes.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: [<code>FileStats</code>](#FileStats) - the current instance  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| num | <code>Number</code> | the amount to add |
+
+
+* * *
+
+<a name="FileStats+getModules"></a>
+
+### fileStats.getModules() ⇒ <code>Number</code>
+Get the number of source file modules being counted. Modules
+are filetype-dependent. It is up to the parser instance to determine
+what is a module and what is not. An example could be that a
+functional language like C might define a function as a module,
+whereas an object-oriented language like C++ might define a class
+as a module.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: <code>Number</code> - the number of source file modules being counted  
+
+* * *
+
+<a name="FileStats+addModules"></a>
+
+### fileStats.addModules(num) ⇒ [<code>FileStats</code>](#FileStats)
+Add the given amount to the number of modules.
+
+**Kind**: instance method of [<code>FileStats</code>](#FileStats)  
+**Returns**: [<code>FileStats</code>](#FileStats) - the current instance  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| num | <code>Number</code> | the amount to add |
+
+
+* * *
 
 <a name="Formatter"></a>
 
@@ -164,6 +328,7 @@ Construct a new intermediate representation of a parsed file.
 | params.type | <code>String</code> | a unique name for this type of representation |
 | params.ir | <code>\*</code> | the intermediate representation of this file |
 | params.filePath | <code>String</code> | the path to the current file |
+| [params.stats] | [<code>FileStats</code>](#FileStats) | statistics about the file that was parsed |
 
 
 * * *
@@ -341,7 +506,6 @@ common SPI that all plugins must implement
 * *[Plugin](#Plugin)*
     * *[new Plugin([options])](#new_Plugin_new)*
     * **[.init()](#Plugin+init) ⇒ <code>Promise.&lt;void&gt;</code> \| <code>undefined</code>**
-    * *[.getAPIVersion()](#Plugin+getAPIVersion)*
     * *[.getRules()](#Plugin+getRules) ⇒ <code>Array.&lt;Class&gt;</code>*
     * *[.getRuleSets()](#Plugin+getRuleSets) ⇒ <code>Object</code>*
     * *[.getParsers()](#Plugin+getParsers) ⇒ <code>Array.&lt;Class&gt;</code>*
@@ -373,15 +537,6 @@ Initialize the current plugin, if necessary.
 **Kind**: instance abstract method of [<code>Plugin</code>](#Plugin)  
 **Returns**: <code>Promise.&lt;void&gt;</code> \| <code>undefined</code> - a promise to initialize or undefined if the
 initialization is synchronous or if no initialization is necessary  
-
-* * *
-
-<a name="Plugin+getAPIVersion"></a>
-
-### *plugin.getAPIVersion()*
-Return the version of the API that this plugin was built for.
-
-**Kind**: instance method of [<code>Plugin</code>](#Plugin)  
 
 * * *
 
@@ -529,6 +684,9 @@ properties are optional. All fields are stored in this result and are public.<p>
 | [fields.id] | <code>String</code> | for rule that check resources, this is the id of of the resource that generated this result |
 | [fields.source] | <code>String</code> | for rule that check resources, this is the source string of the resource that generated this result |
 | [fields.lineNumber] | <code>Number</code> | if the parser included location information in the intermediate representation, this gives the line number in the source file where the problem occurred |
+| [fields.charNumber] | <code>Number</code> | if the parser included location information in the intermediate representation, this gives the character number within the line in the source file where the problem occurred |
+| [fields.endLineNumber] | <code>Number</code> | if the parser included location information in the intermediate representation, this gives the last line number in the source file where the problem occurred |
+| [fields.endCharNumber] | <code>Number</code> | if the parser included location information in the intermediate representation, this gives the last character number within the line in the source file where the problem occurred |
 | [fields.locale] | <code>String</code> | for locale-sensitive rules, this gives an indication of which locale generated this result |
 
 
