@@ -69,6 +69,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.4
+
+- updated dependencies
+
 ### v1.0.3
 
 - Fixed a bug where a numeric parameter in the target FString, such as
