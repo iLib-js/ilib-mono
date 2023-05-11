@@ -18,6 +18,7 @@
  */
 
 const files = [
+    "testFileStats.js",
     "testFormatter.js",
     "testParser.js",
     "testPlugin.js",

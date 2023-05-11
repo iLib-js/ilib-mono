@@ -39,6 +39,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.1.0
+
+- added the FileStats class
+- added fields to the Result object for the location of the issue
+
 ### v2.0.1
 
 - fix a problem where you could not create a Result instance with a

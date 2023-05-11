@@ -84,6 +84,15 @@ class Result {
      * @param {Number} [fields.lineNumber] if the parser included location information
      * in the intermediate representation, this gives the line number in the source file
      * where the problem occurred
+     * @param {Number} [fields.charNumber] if the parser included location information
+     * in the intermediate representation, this gives the character number within the line
+     * in the source file where the problem occurred
+     * @param {Number} [fields.endLineNumber] if the parser included location information
+     * in the intermediate representation, this gives the last line number in the source file
+     * where the problem occurred
+     * @param {Number} [fields.endCharNumber] if the parser included location information
+     * in the intermediate representation, this gives the last character number within the line
+     * in the source file where the problem occurred
      * @param {String} [fields.locale] for locale-sensitive rules, this gives an indication
      * of which locale generated this result
      */
@@ -94,7 +103,8 @@ class Result {
         this.severity = (fields.severity === "error" || fields.severity === "warning") ?
             fields.severity :
             "warning";
-        ["description", "pathName", "rule", "id", "highlight", "lineNumber", "locale", "source"].forEach(property => {
+        ["description", "pathName", "rule", "id", "highlight", "lineNumber", "charNumber",
+         "endLineNumber", "endCharNumber", "locale", "source"].forEach(property => {
             if (typeof(fields[property]) !== 'undefined') this[property] = fields[property];
         });
     }
