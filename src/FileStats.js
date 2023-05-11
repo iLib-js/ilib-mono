@@ -22,9 +22,9 @@
  */
 class FileStats {
     /** @private */ files = 1;
-    /** @private */ lines;
-    /** @private */ bytes;
-    /** @private */ modules;
+    /** @private */ lines = 0;
+    /** @private */ bytes = 0;
+    /** @private */ modules = 0;
 
     /**
      * Construct an file statistics instance. Each count in the

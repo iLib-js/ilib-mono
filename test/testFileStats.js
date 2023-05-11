@@ -108,6 +108,32 @@ export const testFileStats = {
         test.done();
     },
 
+    testFileStatsAddStatsToEmptyObj: function(test) {
+        test.expect(8);
+
+        const stats1 = new FileStats();
+        const stats2 = new FileStats({
+            files: 8,
+            lines: 44,
+            bytes: 94343,
+            modules: 8
+        });
+
+        test.equal(stats1.getFiles(), 1);
+        test.equal(stats1.getLines(), 0);
+        test.equal(stats1.getBytes(), 0);
+        test.equal(stats1.getModules(), 0);
+
+        stats1.addStats(stats2);
+
+        test.equal(stats1.getFiles(), 9);
+        test.equal(stats1.getLines(), 44);
+        test.equal(stats1.getBytes(), 94343);
+        test.equal(stats1.getModules(), 8);
+
+        test.done();
+    },
+
     testFileStatsAddStatsNotAStatsInstance1: function(test) {
         test.expect(8);
 
