@@ -70,6 +70,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.0
+
+- updated dependencies, including updating to i18nlint-common 2.x
+- parser now returns an array of IntermediateRepresentation objects
+
 ### v1.1.0
 
 - updated dependencies
