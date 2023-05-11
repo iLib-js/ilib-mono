@@ -125,53 +125,59 @@ class FStringMatchRule extends Rule {
             }
         }
 
-        return problems.length < 2 ? problems[0] : problems;
+        return problems;
     }
 
     /**
      * @override
      */
     match(options) {
-        const { resource, file, locale } = options;
+        const { ir, locale } = options;
         let problems = [];
 
-        switch (resource.getType()) {
-            case 'string':
-                const tarString = resource.getTarget();
-                if (tarString) {
-                    return this.checkString(resource.getSource(), tarString, file, resource, options.lineNumber);
-                }
-                break;
+        if (ir.getType() !== "resource") return;  // we can only process resources
+        const resources = ir.getRepresentation();
 
-            case 'array':
-                const srcArray = resource.getSource();
-                const tarArray = resource.getTarget();
-                if (tarArray) {
-                    return srcArray.map((item, i) => {
-                        if (i < tarArray.length && tarArray[i]) {
-                            return this.checkString(srcArray[i], tarArray[i], file, resource, options.lineNumber);
-                        }
-                    }).flat().filter(element => {
-                        return element;
-                    });
-                }
-                break;
+        const results = resources.flatMap(resource => {
+            switch (resource.getType()) {
+                case 'string':
+                    const tarString = resource.getTarget();
+                    if (tarString) {
+                        return this.checkString(resource.getSource(), tarString, ir.getPath(), resource, options.lineNumber);
+                    }
+                    break;
 
-            case 'plural':
-                const srcPlural = resource.getSource();
-                const tarPlural = resource.getTarget();
-                if (tarPlural) {
-                    const categories = Array.from(new Set(Object.keys(srcPlural).concat(Object.keys(tarPlural))).values());
-                    return categories.map(category => {
-                        return this.checkString(srcPlural[category] || srcPlural.other, tarPlural[category] || tarPlural.other, file, resource, options.lineNumber);
-                    }).flat();
-                }
-                break;
-        }
+                case 'array':
+                    const srcArray = resource.getSource();
+                    const tarArray = resource.getTarget();
+                    if (tarArray) {
+                        return srcArray.flatMap((item, i) => {
+                            if (i < tarArray.length && tarArray[i]) {
+                                return this.checkString(srcArray[i], tarArray[i], ir.getPath(), resource, options.lineNumber);
+                            }
+                        }).filter(element => {
+                            return element;
+                        });
+                    }
+                    break;
+
+                case 'plural':
+                    const srcPlural = resource.getSource();
+                    const tarPlural = resource.getTarget();
+                    if (tarPlural) {
+                        const categories = Array.from(new Set(Object.keys(srcPlural).concat(Object.keys(tarPlural))).values());
+                        return categories.flatMap(category => {
+                            return this.checkString(srcPlural[category] || srcPlural.other, tarPlural[category] || tarPlural.other, ir.getPath(), resource, options.lineNumber);
+                        });
+                    }
+                    break;
+            }
+
+            // no match
+            return [];
+        });
+        return results.length > 1 ? results : results[0];
     }
-
-    // no match
-    return;
 }
 
 export default FStringMatchRule;

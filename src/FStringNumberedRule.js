@@ -77,41 +77,47 @@ class FStringNumberedRule extends Rule {
             }));
         }
 
-        return problems.length < 2 ? problems[0] : problems;
+        return problems;
     }
 
     /**
      * @override
      */
     match(options) {
-        const { resource, file } = options;
+        const { ir } = options;
 
-        switch (resource.getType()) {
-            case 'string':
-                return this.checkString(resource.getSource(), file, resource, options.lineNumber);
-                break;
+        if (ir.getType() !== "resource") return;  // we can only process resources
+        const resources = ir.getRepresentation();
 
-            case 'array':
-                const srcArray = resource.getSource();
-                return srcArray.map(item => {
-                    return this.checkString(item, file, resource, options.lineNumber);
-                }).flat().filter(element => {
-                    return element;
-                });
-                break;
+        const results = resources.flatMap(resource => {
+            switch (resource.getType()) {
+                case 'string':
+                    return this.checkString(resource.getSource(), ir.getPath(), resource, options.lineNumber);
+                    break;
 
-            case 'plural':
-                const srcPlural = resource.getSource();
-                const categories = Object.keys(srcPlural);
-                return categories.map(category => {
-                    return this.checkString(srcPlural[category], file, resource, options.lineNumber);
-                });
-                break;
-        }
+                case 'array':
+                    const srcArray = resource.getSource();
+                    return srcArray.flatMap(item => {
+                        return this.checkString(item, ir.getPath(), resource, options.lineNumber);
+                    }).filter(element => {
+                        return element;
+                    });
+                    break;
+    
+                case 'plural':
+                    const srcPlural = resource.getSource();
+                    const categories = Object.keys(srcPlural);
+                    return categories.flatMap(category => {
+                        return this.checkString(srcPlural[category], ir.getPath(), resource, options.lineNumber);
+                    });
+                    break;
+            }
+
+            // no match
+            return [];
+        });
+        return results.length > 1 ? results : results[0];
     }
-
-    // no match
-    return;
 }
 
 export default FStringNumberedRule;
