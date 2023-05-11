@@ -1,7 +1,7 @@
 /*
  * PrintfMatchRule.js - a rule to match printf-style substition parameters
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,53 +118,59 @@ class PrintfMatchRule extends Rule {
             }
         }
 
-        return problems.length < 2 ? problems[0] : problems;
+        return problems;
     }
 
     /**
      * @override
      */
     match(options) {
-        const { resource, file, locale } = options;
+        const { ir, locale } = options;
         const sourceLocale = this.sourceLocale;
         let problems = [];
 
-        switch (resource.getType()) {
-            case 'string':
-                const tarString = resource.getTarget();
-                if (tarString) {
-                    return this.checkString(resource.getSource(), tarString, file, resource, sourceLocale, options.locale, options.lineNumber);
-                }
-                break;
+        if (ir.getType() !== "resource") return;  // we can only process resources
+        const resources = ir.getRepresentation();
 
-            case 'array':
-                const srcArray = resource.getSource();
-                const tarArray = resource.getTarget();
-                if (tarArray) {
-                    return srcArray.map((item, i) => {
-                        if (i < tarArray.length && tarArray[i]) {
-                            return this.checkString(srcArray[i], tarArray[i], file, resource, sourceLocale, options.locale, options.lineNumber);
-                        }
-                    }).filter(element => {
-                        return element;
-                    });
-                }
-                break;
+        const results = resources.flatMap(resource => {
+            switch (resource.getType()) {
+                case 'string':
+                    const tarString = resource.getTarget();
+                    if (tarString) {
+                        return this.checkString(resource.getSource(), tarString, ir.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
+                    }
+                    break;
+    
+                case 'array':
+                    const srcArray = resource.getSource();
+                    const tarArray = resource.getTarget();
+                    if (tarArray) {
+                        return srcArray.flatMap((item, i) => {
+                            if (i < tarArray.length && tarArray[i]) {
+                                return this.checkString(srcArray[i], tarArray[i], ir.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
+                            }
+                        }).filter(element => {
+                            return element;
+                        });
+                    }
+                    break;
+    
+                case 'plural':
+                    const srcPlural = resource.getSource();
+                    const tarPlural = resource.getTarget();
+                    if (tarPlural) {
+                        return categories.flatMap(category => {
+                            return this.checkString(srcPlural.other, tarPlural[category], ir.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
+                        });
+                    }
+                    break;
+            }
 
-            case 'plural':
-                const srcPlural = resource.getSource();
-                const tarPlural = resource.getTarget();
-                if (tarPlural) {
-                    return categories.map(category => {
-                        return this.checkString(srcPlural.other, tarPlural[category], file, resource, sourceLocale, options.locale, options.lineNumber);
-                    });
-                }
-                break;
-        }
+            // no match
+            return [];
+        });
+        return results.length > 1 ? results : results[0];
     }
-
-    // no match
-    return;
 }
 
 export default PrintfMatchRule;

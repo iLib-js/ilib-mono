@@ -1,7 +1,7 @@
 /*
  * POParser.js - a parser for PO files
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { Parser } from 'i18nlint-common';
+import { Parser, IntermediateRepresentation } from 'i18nlint-common';
 import {
     ResourceString,
     ResourceArray,
@@ -142,11 +142,11 @@ class POParser extends Parser {
         const pofile = this.potype.newFile(this.filePath);
         pofile.extract();
         this.ts = pofile.getTranslationSet();
-        return this.ts.getAll();
-    }
-
-    getResources() {
-        return this.ts.getAll();
+        return [new IntermediateRepresentation({
+            type: "resource",
+            ir: this.ts.getAll(),
+            filePath: this.filePath
+        })];
     }
 }
 

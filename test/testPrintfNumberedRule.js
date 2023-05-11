@@ -1,7 +1,7 @@
 /*
  * testPrintfNumberedRule.js - test the substitution parameter numbering rule
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import PrintfNumberedRule from '../src/PrintfNumberedRule.js';
 
-import { Result } from 'i18nlint-common';
+import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
 export const testPrintfNumberedRules = {
     testPrintfNumberedRuleStyle: function(test) {
@@ -88,13 +88,16 @@ export const testPrintfNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This %d string contains a %s string in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This %d string contains a %s string in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = [
@@ -129,13 +132,16 @@ export const testPrintfNumberedRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains no substitution parameters in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains no substitution parameters in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -151,13 +157,16 @@ export const testPrintfNumberedRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a %3$s substitution parameter in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a %3$s substitution parameter in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -173,13 +182,16 @@ export const testPrintfNumberedRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a %s substitution parameter in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a %s substitution parameter in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -194,13 +206,16 @@ export const testPrintfNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This %1$d string contains a %s string in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This %1$d string contains a %s string in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -224,13 +239,16 @@ export const testPrintfNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This %1$d string contains a %s string in %2$s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This %1$d string contains a %s string in %2$s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -254,13 +272,16 @@ export const testPrintfNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This %1$d string contains a %s string in %s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This %1$d string contains a %s string in %s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = [

@@ -1,7 +1,7 @@
 /*
  * PrintfMatchRule.js - a rule to match printf-style substition parameters
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,43 +77,47 @@ class PrintfMatchRule extends Rule {
             }));
         }
 
-        return problems.length < 2 ? problems[0] : problems;
+        return problems;
     }
 
     /**
      * @override
      */
     match(options) {
-        const { resource, file, locale } = options;
-        const sourceLocale = this.sourceLocale;
-        let problems = [];
+        const { ir, locale } = options;
 
-        switch (resource.getType()) {
-            case 'string':
-                return this.checkString(resource.getSource(), file, resource, options.lineNumber);
-                break;
+        if (ir.getType() !== "resource") return;  // we can only process resources
+        const resources = ir.getRepresentation();
 
-            case 'array':
-                const srcArray = resource.getSource();
-                return srcArray.map((item, i) => {
-                    return this.checkString(srcArray[i], file, resource, options.lineNumber);
-                }).filter(element => {
-                    return element;
-                });
-                break;
+        const results = resources.flatMap(resource => {
+            switch (resource.getType()) {
+                case 'string':
+                    return this.checkString(resource.getSource(), ir.getPath(), resource, options.lineNumber);
+                    break;
+        
+                case 'array':
+                    const srcArray = resource.getSource();
+                    return srcArray.flatMap((item, i) => {
+                        return this.checkString(srcArray[i], ir.getPath(), resource, options.lineNumber);
+                    }).filter(element => {
+                        return element;
+                    });
+                    break;
+        
+                case 'plural':
+                    const srcPlural = resource.getSource();
+                    const categories = Object.keys(srcPlural);
+                    return categories.flatMap(category => {
+                        return this.checkString(srcPlural[category], ir.getPath(), resource, options.lineNumber);
+                    });
+                    break;
+            }
 
-            case 'plural':
-                const srcPlural = resource.getSource();
-                const categories = Object.keys(srcPlural);
-                return categories.map(category => {
-                    return this.checkString(srcPlural[category], file, resource, options.lineNumber);
-                });
-                break;
-        }
+            // no match
+            return [];
+        });
+        return results.length > 1 ? results : results[0];
     }
-
-    // no match
-    return;
 }
 
 export default PrintfMatchRule;
