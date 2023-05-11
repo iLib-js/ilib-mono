@@ -69,9 +69,11 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.0.4
+### v1.1.0
 
 - updated dependencies
+- update to i18nlint-common 2.x which requires the use of an intermediate
+  representation
 
 ### v1.0.3
 
