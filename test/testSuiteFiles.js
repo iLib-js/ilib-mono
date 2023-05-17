@@ -18,9 +18,10 @@
  */
 
 const files = [
+    "testJSParser.js",
     "testJSXParser.js",
     "testReactPlugin.js",
-    "testFormatjsPlurals.js"
+//    "testFormatjsPlurals.js"
 ];
 
 export default files;

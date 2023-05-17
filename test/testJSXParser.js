@@ -18,7 +18,7 @@
  */
 import { ResourceString } from 'ilib-tools-common';
 
-import JSXParser from '../src/JSXParser.js';
+import JSXParser from '../src/parsers/JSXParser.js';
 
 import { Result } from 'i18nlint-common';
 

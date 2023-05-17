@@ -20,7 +20,7 @@
 import { IntlMessageFormat } from 'intl-messageformat';
 import Locale from 'ilib-locale';
 import { Rule, Result } from 'i18nlint-common';
-import { findNodeAt } from 'acorn-walk';
+// import { findNodeAt } from 'acorn-walk';
 import { default as jp } from 'jsonpath';
 
 // all the plural categories from CLDR

@@ -21,16 +21,37 @@ Then, in your `ilib-lib-config.json`, add some configuration:
     ],
     "filetypes": {
         "jsx": {
+            "parser": "jsx",
             "ruleset": [ "react" ]
+        },
+        "js": {
+            "parser": "js",
+            "ruleset": [ "javscript" ]
         }
     },
     "paths": {
-        "src/**/*.jsx": "jsx"
+        "src/**/*.jsx": "jsx",
+        "src/**/*.js": "js"
     }
 ```
 
 Please note: nodejs version 14 or above is required to run ilib-lint, as it
 is written with ESM modules.
+
+## Parsers
+
+This plugin provides multiple parsers:
+
+- JSParser - parser for regular Javascript files
+- JSXParser - parser for React JSX files
+
+Some projects use the file extension "js" instead of "jsx" for their JSX
+files. If you are not sure what is in your files that have a "js" extension,
+then use the jsx parser to be safe. Both parsers produce the same form of
+intermediate representation that the rules can parse, and the JSX parser
+has the ability to parse regular javascript as well as JSX syntax. You
+should use the JSParser only if you want strict Javascript syntax which
+throws exceptions if the file attempts to use JSX syntax.
 
 ## Rules
 
@@ -38,7 +59,7 @@ The following rules apply to any resources from any file type, but are
 designed to check resources that come from react code:
 
 - source-formatjs-plurals - check that any React-intl style plurals have
-  correct syntax
+  correct syntax (NOT IMPLEMENTED YET)
 
 ## RuleSets
 
@@ -68,5 +89,5 @@ limitations under the License.
 ### v1.0.0
 
 - initial version
-- Parser for jsx files
+- Parser for jsx and js files
 - Rules for react resources

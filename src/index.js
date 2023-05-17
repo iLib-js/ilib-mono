@@ -19,8 +19,9 @@
 
 import { Plugin } from 'i18nlint-common';
 
-import JSXParser from './JSXParser.js';
-import FormatjsPlurals from './rules/FormatjsPlurals.js';
+import JSParser from './parsers/JSParser.js';
+import JSXParser from './parsers/JSXParser.js';
+// import FormatjsPlurals from './rules/FormatjsPlurals.js';
 
 class ReactPlugin extends Plugin {
     constructor(options) {
@@ -34,22 +35,26 @@ class ReactPlugin extends Plugin {
 
     /** @override */
     getParsers() {
-        return [ JSXParser ];
+        return [ JSParser, JSXParser ];
     }
 
     /** @override */
     getRules() {
         //console.log("ReactPlugin.getRules() called");
-        return [ FormatjsPlurals ];
+        // return [ FormatjsPlurals ]; not ready for prime time yet
+        return [];
     }
 
     /** @override */
     getRuleSets() {
+        /*
+        not ready for prime time yet
         return {
             "react": {
                 "source-formatjs-plurals": true
             }
         };
+        */
     }
 }
 

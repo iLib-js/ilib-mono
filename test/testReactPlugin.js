@@ -38,7 +38,7 @@ export const testReactPlugin = {
 
         const parsers = jp.getParsers();
         test.ok(parsers);
-        test.equal(parsers.length, 1);
+        test.equal(parsers.length, 2);
 
         test.done();
     },
@@ -51,7 +51,7 @@ export const testReactPlugin = {
 
         const rules = jp.getRules();
         test.ok(rules);
-        test.equal(rules.length, 1);
+        test.equal(rules.length, 0);
 
         test.done();
     },
@@ -70,15 +70,17 @@ export const testReactPlugin = {
     },
 
     testReactPluginGetRulesets: function(test) {
-        test.expect(4);
+        test.expect(2);
 
         const jp = new ReactPlugin();
         test.ok(jp);
 
         const sets = jp.getRuleSets();
-        test.ok(sets);
+        test.ok(!sets);
+        /*
         test.ok(sets.react);
-        test.equal(Object.keys(sets.react).length, 1);
+        test.equal(Object.keys(sets.react).length, 0);
+        */
 
         test.done();
     }
