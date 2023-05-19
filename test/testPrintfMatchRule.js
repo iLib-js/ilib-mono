@@ -1,7 +1,7 @@
 /*
  * testPrintfMatchRule.js - test the substitution parameter rule
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import PrintfMatchRule from '../src/PrintfMatchRule.js';
 
-import { Result } from 'i18nlint-common';
+import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
 export const testPrintfMatchRules = {
     testPrintfMatchRuleStyle: function(test) {
@@ -88,15 +88,18 @@ export const testPrintfMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a %s string in it.',
-                targetLocale: "de-DE",
-                target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a %s string in it.',
+                    targetLocale: "de-DE",
+                    target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -122,15 +125,18 @@ export const testPrintfMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains “quotes” in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains “quotes” in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -145,15 +151,18 @@ export const testPrintfMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a %s string in it.',
-                targetLocale: "de-DE",
-                target: "Diese Zeichenfolge enthält %s anderen Zeichenfolgen %s.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a %s string in it.',
+                    targetLocale: "de-DE",
+                    target: "Diese Zeichenfolge enthält %s anderen Zeichenfolgen %s.",
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -179,15 +188,18 @@ export const testPrintfMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains %s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains %s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -203,15 +215,18 @@ export const testPrintfMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string %d contains %s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %s %d.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string %d contains %s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %s %d.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -227,15 +242,18 @@ export const testPrintfMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains %0$-#05.2zd in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %0$-#05.2zd.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains %0$-#05.2zd in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %0$-#05.2zd.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -251,15 +269,18 @@ export const testPrintfMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains %0$-#05.2d in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %0$-#05.2zd.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains %0$-#05.2d in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %0$-#05.2zd.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         const expected = [
             new Result({
@@ -295,15 +316,18 @@ export const testPrintfMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string %0$s contains %1$s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese %1$s Zeichenfolge enthält %0$s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string %0$s contains %1$s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese %1$s Zeichenfolge enthält %0$s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 

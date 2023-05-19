@@ -1,7 +1,7 @@
 /*
  * testPOParser.js - test the parser factory
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,15 +43,17 @@ export const testPOParser = {
     },
 
     testPOParserParse: function(test) {
-        test.expect(4);
+        test.expect(6);
 
         const parser = new POParser({
             filePath: "./test/testfiles/test.po"
         });
         test.ok(parser);
-        parser.parse();
+        const irArray = parser.parse();
+        test.ok(Array.isArray(irArray));
+        test.equal(irArray[0].getType(), "resource");
 
-        const resources = parser.getResources();
+        const resources = irArray[0].getRepresentation();
         test.ok(resources);
         test.ok(Array.isArray(resources));
         test.equal(resources.length, 4);
@@ -60,15 +62,16 @@ export const testPOParser = {
     },
 
     testPOParserParseRightContents: function(test) {
-        test.expect(18);
+        test.expect(19);
 
         const parser = new POParser({
             filePath: "./test/testfiles/test.po"
         });
         test.ok(parser);
-        parser.parse();
+        const irArray = parser.parse();
+        test.ok(Array.isArray(irArray));
 
-        const resources = parser.getResources();
+        const resources = irArray[0].getRepresentation();
         test.ok(resources);
 
         test.equal(resources[0].getSource(), "string 1");
@@ -98,15 +101,16 @@ export const testPOParser = {
     },
 
     testPOParserParseTranslatedFile: function(test) {
-        test.expect(26);
+        test.expect(27);
 
         const parser = new POParser({
             filePath: "./test/testfiles/de-DE.po"
         });
         test.ok(parser);
-        parser.parse();
+        const irArray = parser.parse();
+        test.ok(Array.isArray(irArray));
 
-        const resources = parser.getResources();
+        const resources = irArray[0].getRepresentation();
         test.ok(resources);
 
         test.equal(resources[0].getSource(), "string 1");
@@ -147,7 +151,7 @@ export const testPOParser = {
     },
 
     testPOParserParseTranslatedFileWithPathTemplate: function(test) {
-        test.expect(26);
+        test.expect(27);
 
         const parser = new POParser({
             filePath: "./test/testfiles/test_de_DE.po",
@@ -156,9 +160,10 @@ export const testPOParser = {
             }
         });
         test.ok(parser);
-        parser.parse();
+        const irArray = parser.parse();
+        test.ok(Array.isArray(irArray));
 
-        const resources = parser.getResources();
+        const resources = irArray[0].getRepresentation();
         test.ok(resources);
 
         test.equal(resources[0].getSource(), "string 1");
@@ -196,7 +201,6 @@ export const testPOParser = {
         test.equal(resources[3].getTargetLocale(), "de-DE");
 
         test.done();
-    },
-
+    }
 };
 
