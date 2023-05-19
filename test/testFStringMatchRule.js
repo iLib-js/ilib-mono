@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import FStringMatchRule from '../src/FStringMatchRule.js';
 
-import { Result } from 'i18nlint-common';
+import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
 export const testFStringMatchRules = {
     testFStringMatchRuleStyle: function(test) {
@@ -88,15 +88,18 @@ export const testFStringMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a {name} string in it.',
-                targetLocale: "de-DE",
-                target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {name} string in it.',
+                    targetLocale: "de-DE",
+                    target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -122,15 +125,18 @@ export const testFStringMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains “quotes” in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains “quotes” in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -145,15 +151,18 @@ export const testFStringMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a {name} string in it.',
-                targetLocale: "de-DE",
-                target: "Diese Zeichenfolge enthält {name} anderen Zeichenfolgen {name}.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {name} string in it.',
+                    targetLocale: "de-DE",
+                    target: "Diese Zeichenfolge enthält {name} anderen Zeichenfolgen {name}.",
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -179,15 +188,18 @@ export const testFStringMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {name} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {name}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {name} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {name}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -203,15 +215,18 @@ export const testFStringMatchRules = {
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains { name } in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {name}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains { name } in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {name}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -227,15 +242,18 @@ export const testFStringMatchRules = {
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {name} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält { name }.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {name} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält { name }.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -251,15 +269,18 @@ export const testFStringMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string {number} contains {name} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {name} {number}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string {number} contains {name} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {name} {number}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -275,15 +296,18 @@ export const testFStringMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {number:.3d} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {number:.3d}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {number:.3d} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {number:.3d}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -299,15 +323,18 @@ export const testFStringMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {number:.3d} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {number:3.3d}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {number:.3d} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {number:3.3d}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         const expected = [
             new Result({
@@ -343,15 +370,18 @@ export const testFStringMatchRules = {
         // numeric params in source and target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {0} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {0}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {0} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {0}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -366,15 +396,18 @@ export const testFStringMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {0} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {name}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {0} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {name}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(actual);
 
@@ -411,15 +444,18 @@ export const testFStringMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains {name} in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält {0}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {name} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {0}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(actual);
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import { ResourceString } from 'ilib-tools-common';
-import { Result } from 'i18nlint-common';
+import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
 import FStringNumberedRule from '../src/FStringNumberedRule.js';
 
@@ -87,13 +87,16 @@ export const testFStringNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This {} string contains a {} string in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This {} string contains a {} string in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = [
@@ -128,13 +131,16 @@ export const testFStringNumberedRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This string contains no substitution parameters in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains no substitution parameters in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -150,13 +156,16 @@ export const testFStringNumberedRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a {name} substitution parameter in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {name} substitution parameter in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -172,13 +181,16 @@ export const testFStringNumberedRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a {} substitution parameter in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {} substitution parameter in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -193,13 +205,16 @@ export const testFStringNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This {name} string contains a {} string in it.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This {name} string contains a {} string in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -223,13 +238,16 @@ export const testFStringNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This {name} string contains a {} string in {location}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This {name} string contains a {} string in {location}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -253,13 +271,16 @@ export const testFStringNumberedRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "fstring.test",
-                sourceLocale: "en-US",
-                source: 'This {name} string contains a {} string in {}.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This {name} string contains a {} string in {}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = [

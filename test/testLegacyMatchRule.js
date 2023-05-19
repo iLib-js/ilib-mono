@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import LegacyMatchRule from '../src/LegacyMatchRule.js';
 
-import { Result } from 'i18nlint-common';
+import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
 export const testLegacyMatchRules = {
     testLegacyMatchRuleStyle: function(test) {
@@ -88,15 +88,18 @@ export const testLegacyMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a %(name)s string in it.',
-                targetLocale: "de-DE",
-                target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a %(name)s string in it.',
+                    targetLocale: "de-DE",
+                    target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = new Result({
@@ -122,15 +125,18 @@ export const testLegacyMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains “quotes” in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains “quotes” in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -145,15 +151,18 @@ export const testLegacyMatchRules = {
 
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains a name string in it.',
-                targetLocale: "de-DE",
-                target: "Diese Zeichenfolge enthält %(name)s anderen Zeichenfolgen %(name)s.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a name string in it.',
+                    targetLocale: "de-DE",
+                    target: "Diese Zeichenfolge enthält %(name)s anderen Zeichenfolgen %(name)s.",
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         // if the source contains native quotes, the target must too
         const expected = [
@@ -190,15 +199,18 @@ export const testLegacyMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains %(name)s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %(name)s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains %(name)s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %(name)s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -214,15 +226,18 @@ export const testLegacyMatchRules = {
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains %( name )s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %(name)s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains %( name )s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %(name)s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -238,15 +253,18 @@ export const testLegacyMatchRules = {
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string contains %(name)s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %( name )s.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains %(name)s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %( name )s.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
@@ -262,15 +280,18 @@ export const testLegacyMatchRules = {
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
-            resource: new ResourceString({
-                key: "printf.test",
-                sourceLocale: "en-US",
-                source: 'This string %(number)d contains %(name)s in it.',
-                targetLocale: "de-DE",
-                target: 'Diese Zeichenfolge enthält %(name)s %(number)d.',
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x"
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string %(number)d contains %(name)s in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält %(name)s %(number)d.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
         });
         test.ok(!actual);
 
