@@ -30,7 +30,7 @@ class Parser {
      *
      * @param {Object} [options] options to the constructor
      * @param {string} [options.filePath] path to the file that should be parsed
-     * @param {(category?: string | undefined) => any} [options.getLogger] a callback function provided by
+     * @param {Function} [options.getLogger] a callback function provided by
      * @param {object} [options.settings] additional settings that can be passed to the parser
      * the linter to retrieve the log4js logger
      */
@@ -44,7 +44,7 @@ class Parser {
 
     /** a callback function provided by
      * the linter to retrieve the log4js logger
-     * @type {((category?: string | undefined) => any) | undefined}
+     * @type {Function | undefined}
      */
     getLogger;
 

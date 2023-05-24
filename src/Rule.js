@@ -33,7 +33,7 @@ class Rule {
      * @param {Object} [options] options to the constructor
      * @param {String} [options.sourceLocale] the source locale of the files
      * being linted
-     * @param {(category?: string | undefined) => any} [options.getLogger] a callback function provided by
+     * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
      */
     constructor(options) {
@@ -46,7 +46,7 @@ class Rule {
 
     /** a callback function provided by
      * the linter to retrieve the log4js logger
-     * @type {((category?: string | undefined) => any) | undefined}
+     * @type {Function | undefined}
      */
     getLogger;
 
