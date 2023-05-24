@@ -40,7 +40,7 @@ class Plugin {
      * Initialize the current plugin, if necessary.
      *
      * @abstract
-     * @returns {Promise<void>|undefined} a promise to initialize or undefined if the
+     * @returns {Promise<void>|void} a promise to initialize or undefined if the
      * initialization is synchronous or if no initialization is necessary
      */
     init() {}
@@ -112,6 +112,19 @@ class Plugin {
      * plugin
      */
     getFormatters() {
+        return [];
+    }
+
+    /**
+     * For a "fixer" type of plugin, this returns a list of Fixer
+     * classes that this plugin implements. Note this is the class, not an
+     * instance of the class. The linter may need to instantiate this
+     * formatter multiple times.
+     *
+     * @returns {Array.<Class>} array of Fixer classes implemented
+     * by this plugin
+     */
+    getFixers() {
         return [];
     }
 };

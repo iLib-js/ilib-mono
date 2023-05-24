@@ -185,6 +185,42 @@ class Parser {
     getType() {
         return this.type;
     }
+
+    /**
+     * Write out the intermediate representation back into the file.
+     *
+     * Override this method and {@link Parser.canWrite} if You want to
+     * allow `Rule`s to auto-fix errors.
+     *
+     * After obtaining the representation from {@link Parser.parse},
+     * Rules are able to apply fixes by modifying the `ir` object.
+     * Subsequently, in order to commit these fixes to the actual file
+     * `Parser` needs to write out the transformed `IntermediateRepresentation`
+     * instance back to a file from which it was originally parsed
+     * (overwriting it in process).
+     *
+     * Ideally, when provided with an unchanged `ir`, this method
+     * should produce an unchanged file (or an equivalent of it).
+     *
+     * @param {IntermediateRepresentation} ir A modified representation which
+     * should be written back to the file.
+     * @return {void}
+     */
+    write(ir) {
+        throw new NotImplementedError();
+    }
+
+    /**
+     * Defines whether this parser is able to write out
+     * an intermediate representation back to the file.
+     *
+     * Override this flag as `true` and implement {@link Parser.write}
+     * to allow `Rule`s to auto-fix errors.
+     *
+     * @readonly
+     * @type {boolean}
+     */
+    canWrite = false;
 };
 
 export default Parser;

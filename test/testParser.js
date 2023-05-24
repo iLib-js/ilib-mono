@@ -109,6 +109,20 @@ export const testParser = {
         test.equal(parser.getType(), "ast");
 
         test.done();
-    }
+    },
+
+    testParserGetCanWrite: function(test) {
+        test.expect(2);
+
+        const parser = new MockParser({
+            filePath: "a/b/c.x"
+        });
+
+        test.ok(parser);
+
+        test.equal(parser.canWrite, false);
+
+        test.done();
+    },
 };
 

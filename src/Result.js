@@ -18,6 +18,9 @@
  */
 
 import Rule from "./Rule.js";
+import Fixer from "./Fixer.js";
+import Fix from "./Fix.js";
+
 /**
  * Represent an ilib-lint rule check result
  */
@@ -89,6 +92,7 @@ class Result {
      * in the source file where the problem occurred
      * @param {String} [fields.locale] for locale-sensitive rules, this gives an indication
      * of which locale generated this result
+     * @param {Fix} [fields.fix] object which contains info needed by the {@link Fixer} to perform the fix for this result
      */
     constructor(fields) {
         if (!fields || !fields.severity || !fields.description || !fields.pathName || !fields.rule) {
@@ -111,6 +115,7 @@ class Result {
         this.endCharNumber = fields.endCharNumber;
         this.locale = fields.locale;
         this.source = fields.source;
+        this.fix = fields.fix;
     }
 
     /**
@@ -192,6 +197,12 @@ class Result {
      * @type {String | undefined}
      */
     locale;
+
+    /**
+     * An object which contains info needed for the {@link Fixer} to perform the fix for this result
+     * @type {Fix | undefined}
+     */
+    fix;
 }
 
 export default Result;
