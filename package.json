@@ -40,8 +40,11 @@
         "acorn": "^8.8.2",
         "acorn-jsx": "^5.3.2",
         "i18nlint-common": "^2.1.0",
+        "ilib-ctype": "^1.1.0",
+        "ilib-istring": "^1.0.1",
         "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "^1.7.0",
-        "jsonpath": "^1.1.1"
+        "ilib-tools-common": "file:../ilib-tools-common/ilib-tools-common-1.8.0.tgz",
+        "jsonpath": "^1.1.1",
+        "regenerator-runtime": "^0.13.11"
     }
 }
