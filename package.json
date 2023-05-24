@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint-react",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "./src/index.js",
     "type": "module",
     "exports": {
@@ -43,7 +43,7 @@
         "ilib-ctype": "^1.1.0",
         "ilib-istring": "^1.0.1",
         "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "file:../ilib-tools-common/ilib-tools-common-1.8.0.tgz",
+        "ilib-tools-common": "^1.8.0",
         "jsonpath": "^1.1.1",
         "regenerator-runtime": "^0.13.11"
     }
