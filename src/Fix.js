@@ -61,26 +61,31 @@ class Fix {
      * If there are no Fix and Fixer with type `string`,
      * they could be implemented like in the following example:
      *
-     * ```ts
+     * ```js
+     * class StringFixCommand {
+     *     commandId;
+     *     position;
+     * }
+     * 
+     * class InsertCommand extends StringFixCommand {
+     *     commandId = "INSERT";
+     *     content;
+     * }
+     * 
+     * class RemoveCommand extends StringFixCommand {
+     *     commandId = "REMOVE";
+     *     length;
+     * }
+     * 
      * class StringFix extends Fix {
-     *     commands: StringFixCommand[];
+     *     commands; // StringFixCommand[]
      * }
+     * 
      * class StringFixer {
-     *     applyFixes(representation: IntermediateRepresentation<string>, fixes: StringFix[]): void
-     *     createFix(commands: StringFixCommand[]): StringFix
-     *     insertStringAt(position: number, content: string): InsertCommand
-     *     removeStringAt(position: number, length: number): RemoveCommand
-     * }
-     * type StringFixCommand = InsertCommand | RemoveCommand;
-     * type InsertCommand = {
-     *     command: 'INSERT',
-     *     position: number,
-     *     content: string
-     * }
-     * type RemoveCommand = {
-     *     command: 'REMOVE',
-     *     position: number,
-     *     length: number
+     *     applyFixes(representation, fixes) {} // applyFixes(representation: IntermediateRepresentation, fixes: StringFix[]): void
+     *     createFix(commands) {}               // createFix(commands: StringFixCommand[]): StringFix
+     *     insertStringAt(position, content) {} // insertStringAt(position: number, content: string): InsertCommand
+     *     removeStringAt(position, length) {}  // removeStringAt(position: number, length: number): RemoveCommand
      * }
      * ```
      *

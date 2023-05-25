@@ -17,7 +17,7 @@ to remediate the issue.</p></dd>
 <dt><a href="#NotImplementedError">NotImplementedError</a></dt>
 <dd><p>Error thrown when an abstract method is called but not implemented</p></dd>
 <dt><a href="#Parser">Parser</a></dt>
-<dd><p>common API for parser plugins</p></dd>
+<dd><p>common SPI for parser plugins</p></dd>
 <dt><a href="#Plugin">Plugin</a></dt>
 <dd><p>common SPI that all plugins must implement</p></dd>
 <dt><a href="#Result">Result</a></dt>
@@ -280,25 +280,30 @@ should always be surrounded by quotes.</p>
 </ol>
 <p>If there are no Fix and Fixer with type <code>string</code>,
 they could be implemented like in the following example:</p>
-<pre class="prettyprint source lang-ts"><code>class StringFix extends Fix {
-    commands: StringFixCommand[];
+<pre class="prettyprint source lang-js"><code>class StringFixCommand {
+    commandId;
+    position;
 }
+
+class InsertCommand extends StringFixCommand {
+    commandId = &quot;INSERT&quot;;
+    content;
+}
+
+class RemoveCommand extends StringFixCommand {
+    commandId = &quot;REMOVE&quot;;
+    length;
+}
+
+class StringFix extends Fix {
+    commands; // StringFixCommand[]
+}
+
 class StringFixer {
-    applyFixes(representation: IntermediateRepresentation&lt;string>, fixes: StringFix[]): void
-    createFix(commands: StringFixCommand[]): StringFix
-    insertStringAt(position: number, content: string): InsertCommand
-    removeStringAt(position: number, length: number): RemoveCommand
-}
-type StringFixCommand = InsertCommand | RemoveCommand;
-type InsertCommand = {
-    command: 'INSERT',
-    position: number,
-    content: string
-}
-type RemoveCommand = {
-    command: 'REMOVE',
-    position: number,
-    length: number
+    applyFixes(representation, fixes) {} // applyFixes(representation: IntermediateRepresentation, fixes: StringFix[]): void
+    createFix(commands) {}               // createFix(commands: StringFixCommand[]): StringFix
+    insertStringAt(position, content) {} // insertStringAt(position: number, content: string): InsertCommand
+    removeStringAt(position, length) {}  // removeStringAt(position: number, length: number): RemoveCommand
 }
 </code></pre>
 <p>Rule should then accept an instance of a StringFixer,
@@ -610,7 +615,7 @@ formatted string.</p>
 <a name="Parser"></a>
 
 ## *Parser*
-<p>common API for parser plugins</p>
+<p>common SPI for parser plugins</p>
 
 **Kind**: global abstract class  
 
