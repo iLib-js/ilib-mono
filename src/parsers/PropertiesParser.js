@@ -219,7 +219,7 @@ class PropertiesParser extends Parser {
      * of the properties file
      */
     parse() {
-        let sourceStrings, targetStrings;
+        let sourceStrings = {}, targetStrings;
         let res, resources = [];
 
         if (this.path) {
@@ -251,12 +251,11 @@ class PropertiesParser extends Parser {
                     res = new ResourceString({
                         key: id,
                         sourceLocale: this.sourceLocale,
-                        source: unescapeString(sourceStrings[id].source),
                         targetLocale: this.targetLocale,
                         target: unescapeString(targetStrings[id].source),
                         pathName: this.path,
                         state: "new",
-                        comment: sourceStrings[id].comment,
+                        comment: targetStrings[id].comment,
                         datatype: "properties"
                     });
                 }

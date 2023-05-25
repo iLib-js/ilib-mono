@@ -875,5 +875,299 @@ export const testPropertiesParser = {
 
         test.done();
     },
-};
 
+    testPropertiesParserParseReadTargetFileWithNoSourceFile: function(test) {
+        test.expect(15);
+
+        const parser = new PropertiesParser({
+            filePath: "./test/testfiles/test2_de-DE.properties",
+            sourceLocale: "en-US"
+        });
+        test.ok(parser);
+
+        const actual = parser.parse();
+        test.ok(actual);
+
+        // should give target-only resources
+        const expected = [
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 1",
+                key: "resource1",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 2",
+                key: "resource2",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 3",
+                key: "resource3",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 4",
+                key: "resource4",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 5",
+                key: "resource5",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 6",
+                key: "resource6",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                comment: "this is a comment for resource6 which is ignored",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 7",
+                key: "resource7",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            })
+        ];
+
+        test.ok(actual);
+        test.ok(Array.isArray(actual));
+        test.equal(actual.length, 1);
+
+        const ir = actual[0];
+        test.equal(ir.getType(), "resource");
+        test.equal(ir.getPath(), "./test/testfiles/test2_de-DE.properties");
+        const resources = ir.getRepresentation();
+        test.equal(resources.length, 7);
+
+        for (let i = 0; i < resources.length; i++) {
+            test.deepEqual(resources[i], expected[i], `resource ${i}`);
+        }
+
+        test.done();
+    },
+
+    testPropertiesParserParseReadTargetFileWithMissingSourceStrings: function(test) {
+        test.expect(15);
+
+        const parser = new PropertiesParser({
+            filePath: "./test/testfiles/test2_de-DE.properties",
+            sourceLocale: "en-US"
+        });
+        test.ok(parser);
+
+        const actual = parser.parse();
+        test.ok(actual);
+
+        // should give target-only resources
+        const expected = [
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 1",
+                key: "resource1",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 2",
+                key: "resource2",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 3",
+                key: "resource3",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 4",
+                key: "resource4",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 5",
+                key: "resource5",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 6",
+                key: "resource6",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                comment: "this is a comment for resource6 which is ignored",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 7",
+                key: "resource7",
+                pathName: "./test/testfiles/test2_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            })
+        ];
+
+        test.ok(actual);
+        test.ok(Array.isArray(actual));
+        test.equal(actual.length, 1);
+
+        const ir = actual[0];
+        test.equal(ir.getType(), "resource");
+        test.equal(ir.getPath(), "./test/testfiles/test2_de-DE.properties");
+        const resources = ir.getRepresentation();
+        test.equal(resources.length, 7);
+
+        for (let i = 0; i < resources.length; i++) {
+            test.deepEqual(resources[i], expected[i], `resource ${i}`);
+        }
+
+        test.done();
+    },
+
+    testPropertiesParserParseSomeStringsHaveNoSource: function(test) {
+        test.expect(15);
+
+        const parser = new PropertiesParser({
+            filePath: "./test/testfiles/test3_de-DE.properties",
+            sourceLocale: "en-US"
+        });
+        test.ok(parser);
+
+        const actual = parser.parse();
+        test.ok(actual);
+
+        const expected = [
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 1",
+                key: "resource1",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                source: "translation 2",
+                targetLocale: "de-DE",
+                target: "Umsetzung 2",
+                key: "resource2",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                source: "translation 3",
+                targetLocale: "de-DE",
+                target: "Umsetzung 3",
+                key: "resource3",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                comment: "comment for resource3",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 4",
+                key: "resource4",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                targetLocale: "de-DE",
+                target: "Umsetzung 5",
+                key: "resource5",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                source: "translation 6",
+                targetLocale: "de-DE",
+                target: "Umsetzung 6",
+                key: "resource6",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                comment: "this is a comment for resource6",
+                datatype: "properties"
+            }),
+            new ResourceString({
+                sourceLocale: "en-US",
+                source: "translation 7",
+                targetLocale: "de-DE",
+                target: "Umsetzung 7",
+                key: "resource7",
+                pathName: "./test/testfiles/test3_de-DE.properties",
+                state: "new",
+                datatype: "properties"
+            })
+        ];
+
+        test.ok(actual);
+        test.ok(Array.isArray(actual));
+        test.equal(actual.length, 1);
+
+        const ir = actual[0];
+        test.equal(ir.getType(), "resource");
+        test.equal(ir.getPath(), "./test/testfiles/test3_de-DE.properties");
+        const resources = ir.getRepresentation();
+        test.equal(resources.length, 7);
+
+        for (let i = 0; i < resources.length; i++) {
+            test.deepEqual(resources[i], expected[i], `resource ${i}`);
+        }
+
+        test.done();
+    },
+};
