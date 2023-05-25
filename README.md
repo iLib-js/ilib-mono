@@ -39,7 +39,7 @@ limitations under the License.
 
 ## Release Notes
 
-### Pending release
+### v2.2.0
 
 - added Fix and Fixer to allow implementing auto-fixing of Results
 

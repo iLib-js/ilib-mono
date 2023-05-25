@@ -1,6 +1,6 @@
 {
     "name": "i18nlint-common",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "module": "./src/index.js",
     "type": "module",
     "exports": {
