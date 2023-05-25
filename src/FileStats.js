@@ -42,6 +42,7 @@ class FileStats {
      * by the programming language and may mean things like functions
      * or classes. It is up to the parser for that programming language
      * to count these.
+     * @constructor
      */
     constructor(options) {
         if (!options) return;

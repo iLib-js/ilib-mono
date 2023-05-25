@@ -39,6 +39,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.2.0
+
+- added Fix and Fixer to allow implementing auto-fixing of Results
+
 ### v2.1.0
 
 - added the FileStats class
