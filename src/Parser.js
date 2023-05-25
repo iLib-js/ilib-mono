@@ -21,7 +21,7 @@ import IntermediateRepresentation from "./IntermediateRepresentation.js";
 import NotImplementedError from "./NotImplementedError.js";
 
 /**
- * @class common API for parser plugins
+ * @class common SPI for parser plugins
  * @abstract
  */
 class Parser {
