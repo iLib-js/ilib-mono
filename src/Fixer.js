@@ -22,10 +22,19 @@ import NotImplementedError from "./NotImplementedError.js";
 import IntermediateRepresentation from "./IntermediateRepresentation.js";
 
 /**
+ * @class
+ *
  * Class that applies fixes produced by rules onto the intermediate representation
+ *
  * @abstract
  */
-export class Fixer {
+class Fixer {
+    /**
+     * @param {Object} [options] Placeholder for options that should be provided upon the Fixer subclass instantiation
+     * @constructor
+     */
+    constructor(options = undefined) {}
+
     /**
      * Modify the Intermediate Representation instance by applying provided fixes.
      * Fix can be anything as long as the Fixer knows how to apply it onto the IR,
@@ -67,18 +76,17 @@ export class Fixer {
      * This fix overlaps with fix from the other rule (insert `"` at 0 and 5) because the fixer
      * can't tell which symbol goes first (`"!birds"` or `!"birds"`). One of those fixes
      * needs to be skipped.
-     * 
-     * @abstract
      *
      * @param {IntermediateRepresentation} ir Intermediate Representaion instance which will be
      * modified by the fixer when the fixes are applied
      * @param {Fix[]} fixes Array of fixes which Fixer should attempt to apply
      * @returns {void}
+     * @abstract
      */
     applyFixes(ir, fixes) {
         throw new NotImplementedError();
     }
-    
+
     /**
      * Unique identifier which allows to dynamically match 
      * the Fixer to its corresponding IntermediateRepresentation
@@ -91,11 +99,6 @@ export class Fixer {
      */
     // @ts-expect-error: subclass must define this property
     type;
-
-    /**
-     * @param {any} [options] Placeholder for options that should be provided upon the Fixer subclass instantiation
-     */
-    constructor(options = undefined) {}
 }
 
 export default Fixer;

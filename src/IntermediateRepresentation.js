@@ -32,6 +32,7 @@ class IntermediateRepresentation {
      * @param {any} params.ir the intermediate representation of this file
      * @param {String} params.filePath the path to the current file
      * @param {FileStats} [params.stats] statistics about the file that was parsed
+     * @constructor
      */
     constructor(params) {
         const requiredFields = ["type", "ir", "filePath"];

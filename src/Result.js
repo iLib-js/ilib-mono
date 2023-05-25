@@ -22,7 +22,7 @@ import Fixer from "./Fixer.js";
 import Fix from "./Fix.js";
 
 /**
- * Represent an ilib-lint rule check result
+ * @class Represent an ilib-lint rule check result
  */
 class Result {
     /**
@@ -93,6 +93,7 @@ class Result {
      * @param {String} [fields.locale] for locale-sensitive rules, this gives an indication
      * of which locale generated this result
      * @param {Fix} [fields.fix] object which contains info needed by the {@link Fixer} to perform the fix for this result
+     * @constructor
      */
     constructor(fields) {
         if (!fields || !fields.severity || !fields.description || !fields.pathName || !fields.rule) {

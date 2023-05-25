@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
-/** Error thrown when an abstract method is not implemented */
-export class NotImplementedError extends Error {
+/**
+ * @class Error thrown when an abstract method is called but not implemented
+ */
+class NotImplementedError extends Error {
     constructor() {
         super("not implemented");
     }

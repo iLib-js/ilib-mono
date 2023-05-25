@@ -35,6 +35,7 @@ class Rule {
      * being linted
      * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
+     * @constructor
      */
     constructor(options) {
         if (this.constructor === Rule) {
@@ -47,6 +48,7 @@ class Rule {
     /** a callback function provided by
      * the linter to retrieve the log4js logger
      * @type {Function | undefined}
+     * @private
      */
     getLogger;
 
@@ -84,8 +86,8 @@ class Rule {
      *
      * Subclass must define this property.
      * @readonly
-     * @abstract
      * @type {string}
+     * @abstract
      */
     // @ts-expect-error: subclass must define this property
     description;

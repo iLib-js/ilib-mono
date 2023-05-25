@@ -29,6 +29,7 @@ class Plugin {
      * @param {Object} [options] options to the constructor
      * @param {Function} options.getLogger a callback function provided by
      * the linter to retrieve the log4js logger
+     * @constructor
      */
     constructor(options) {
         if (this.constructor === Plugin) {

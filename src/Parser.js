@@ -204,7 +204,7 @@ class Parser {
      *
      * @param {IntermediateRepresentation} ir A modified representation which
      * should be written back to the file.
-     * @return {void}
+     * @returns {void}
      */
     write(ir) {
         throw new NotImplementedError();
