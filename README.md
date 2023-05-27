@@ -383,6 +383,9 @@ file for more details.
 
 ### v1.5.2
 
+- fixed a bug where the "anyOf", "allOf", "oneOf", and "not" keywords
+  in json schemas were not handled properly (or at all!) causing
+  the plugin to miss strings that should be localized
 - update dependencies
 
 ### v1.5.1

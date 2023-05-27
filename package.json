@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-json",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "main": "./JsonFileType.js",
     "description": "A loctool plugin that knows how to localize json files",
     "license": "Apache-2.0",
