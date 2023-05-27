@@ -381,6 +381,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.2
+
+- update dependencies
+
 ### v1.5.1
 
 - update dependencies

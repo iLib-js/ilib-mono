@@ -98,6 +98,11 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[localeDir]/arrays.json"
             },
+            "**/arrays2.json": {
+                "schema": "http://github.com/ilib-js/arrays2.json",
+                "method": "copy",
+                "template": "resources/[localeDir]/arrays2.json"
+            },
             "**/array-refs.json": {
                 "schema": "http://github.com/ilib-js/array-refs.json",
                 "method": "copy",
@@ -774,6 +779,56 @@ module.exports.jsonfile = {
         test.equal(resources[2].getType(), 'string');
         test.equal(resources[2].getKey(), 'objects/item_1/description');
         test.equal(resources[2].getSource(), 'String property');
+
+        test.done();
+    },
+
+    testJsonFileParseArrayOfStringsInsideOfAnyOf: function(test) {
+        test.expect(14);
+
+        // when it's named arrays.json, it should apply the arrays schema
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays2.json",
+            type: t
+        });
+        test.ok(jf);
+
+        jf.parse(
+            '[\n' +
+            '    {\n' +
+            '        "strings": "test string"\n' +
+            '    },\n' +
+            '    {\n' +
+            '        "strings": [\n' +
+            '            "string 4",\n' +
+            '            "string 5",\n' +
+            '            "string 6"\n' +
+            '        ]\n' +
+            '    }\n' +
+            ']\n'
+            );
+
+        var set = jf.getTranslationSet();
+        test.ok(set);
+        test.equal(set.size(), 2);
+
+        var resources = set.getAll();
+        test.equal(resources.length, 2);
+        test.equal(resources[0].getType(), 'string');
+        test.equal(resources[0].getKey(), 'item_0/strings');
+
+        test.equal(resources[0].getSource(), "test string");
+
+        test.equal(resources[1].getType(), 'array');
+        test.equal(resources[1].getKey(), 'item_1/strings');
+
+        arrayStrings = resources[1].getSourceArray();
+        test.ok(arrayStrings);
+        test.equal(arrayStrings.length, 3);
+        test.equal(arrayStrings[0], "string 4");
+        test.equal(arrayStrings[1], "string 5");
+        test.equal(arrayStrings[2], "string 6");
 
         test.done();
     },
@@ -2123,6 +2178,7 @@ module.exports.jsonfile = {
         var expected =
            '{\n' +
            '    "plurals": {\n' +
+           '        "foo": "asdf",\n' +     // this line is not localized
            '        "bar": {\n' +
            '            "one": "singulaire",\n' +
            '            "many": "plupart",\n' +
@@ -2155,6 +2211,7 @@ module.exports.jsonfile = {
         var expected =
            '{\n' +
            '    "plurals": {\n' +
+           '        "foo": "asdf",\n' +     // this line is not localized
            '        "bar": {\n' +
            '            "one": "einslige",\n' +
            '            "many": "mehrere",\n' +
