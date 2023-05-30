@@ -262,9 +262,11 @@ JsonFile.prototype.sparseValue = function(value) {
     return (!this.mapping || !this.mapping.method || this.mapping.method !== "sparse") ? value : undefined;
 };
 
-JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable, translations, locale) {
-    if (!json || !schema) return;
+function getSchemaType(schema, type, root) {
+    var localizable = schema.localizable;
+    var subschema;
 
+    // dereference first so we can figure out if the type matches below
     if (typeof(schema["$ref"]) !== 'undefined') {
         // substitute the referenced schema for this one
         var refname = schema["$ref"];
@@ -277,11 +279,70 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
         schema = otherschema;
     }
 
-    var returnValue;
+    if (schema.type) {
+        return (type === schema.type) ? schema : undefined;
+    }
 
-    localizable |= schema.localizable;
+    if (schema.anyOf) {
+        subschema = schema.anyOf.find(function(subschema) {
+            return getSchemaType(subschema, type, root);
+        });
+        if (subschema) {
+            subschema.localizable |= localizable;
+        }
+        return subschema;
+    }
+
+    if (schema.not) {
+        subschema = getSchemaType(schema.not, type, root);
+        if (subschema) {
+            if (type === subschema.type) return undefined;  // matches, so "not" fails
+            subschema.localizable |= localizable;
+        }
+        return subschema;
+    }
+
+    if (schema.oneOf) {
+        var matches = schema.oneOf.map(function(subschema) {
+            return getSchemaType(subschema, type, root);
+        });
+        if (matches.length !== 1) return undefined;
+        if (matches[0]) {
+            matches[0].localizable |= localizable;
+        }
+        return matches[0];
+    }
+
+    if (schema.allOf) {
+        var matches = schema.allOf.every(function(subschema) {
+            return getSchemaType(subschema, type, root);
+        });
+        if (!matches) return undefined;
+        // it matches all of them, so just choose the first one
+        if (matches[0]) {
+            matches[0].localizable |= localizable;
+        }
+        return matches[0];
+    }
+
+    // no valid type detected
+    return undefined;
+}
+
+JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable, translations, locale) {
+    if (!json || !schema) return;
 
     if (this.type.hasType(schema)) {
+        var returnValue;
+
+        var thisType = Array.isArray(json) ? "array" : typeof(json);
+        schema = getSchemaType(schema, thisType, root);
+
+        // if the type of this value does not match the schema type, just skip this node
+        // in the tree
+        if (!schema) return this.sparseValue(json);
+
+        localizable |= schema.localizable;
         var type = schema.type || typeof(json);
         switch (type) {
         case "boolean":
