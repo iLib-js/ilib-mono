@@ -19,7 +19,6 @@
 
 import fs from 'fs';
 
-import { isSpace } from 'ilib-ctype';
 import IString from 'ilib-istring';
 import Locale from 'ilib-locale';
 
@@ -28,10 +27,7 @@ import { ResourceString, parsePath } from 'ilib-tools-common';
 
 function skipLine(line) {
     if (!line || !line.length) return true;
-    let i = 0;
-    while (isSpace(line[i]) && i < line.length) i++;
-    if (i >= line.length || line[i] === '#' || line[i] === "!") return true;
-    return false;
+    return /^\s*[#!]/.test(line);
 }
 
 const singleLineRe = /^\s*((\\\s|\S+)+)\s*[=:]\s*(.*)/;
@@ -94,6 +90,7 @@ class PropertiesParser extends Parser {
         this.extensions = [ "properties" ];
         this.name = "properties";
         this.description = "A parser for properties files.";
+        this.type = "resource";
 
         if (!options.filePath) return;
 
@@ -101,38 +98,47 @@ class PropertiesParser extends Parser {
         // If it was a source, just read it. If it was a target, try to figure
         // out what the source was, and then read that as well.
 
+        this.guessLocaleAndFindSourceFile(options.filePath);
+    }
+
+    /**
+     * @private
+     */
+    guessLocaleAndFindSourceFile(filePath) {
         let prefix;
         let locale = new Locale(this.sourceLocale);
         let fileTemplate = "[dir]/[basename]_[locale].properties";
-        let parts = parsePath(fileTemplate, options.filePath);
+        let parts = parsePath(fileTemplate, filePath);
 
         if (parts.locale?.length) {
             if (parts.locale === this.sourceLocale || parts.language === locale.getLanguage()) {
-                this.sourcePath = options.filePath;
+                this.sourcePath = filePath;
             } else {
-                this.path = options.filePath;
+                this.path = filePath;
                 this.targetLocale = parts.locale;
                 prefix = `${parts.dir}/${parts.basename}_`;
             }
         } else {
             // try again with no basename
             fileTemplate = "[dir]/[locale].properties";
-            parts = parsePath(fileTemplate, options.filePath);
+            parts = parsePath(fileTemplate, filePath);
 
             if (parts.locale?.length) {
                 if (parts.locale === this.sourceLocale || parts.language === locale.getLanguage()) {
-                    this.sourcePath = options.filePath;
+                    this.sourcePath = filePath;
                 } else {
-                    this.path = options.filePath;
+                    this.path = filePath;
                     this.targetLocale = parts.locale;
                     prefix = `${parts.dir}/`;
                 }
             } else {
                 // try one last time, but this time without the locale. (ie. this is a source file)
                 fileTemplate = "[dir]/[basename].properties";
-                parts = parsePath(fileTemplate, options.filePath);
+                parts = parsePath(fileTemplate, filePath);
 
-                this.sourcePath = options.filePath;
+                if (parts.basename) {
+                    this.sourcePath = filePath;
+                }
             }
         }
 
@@ -164,8 +170,8 @@ class PropertiesParser extends Parser {
     parseString(string) {
         if (!string) return {};
 
-        const lines = string.split(/\n/g);
-        let id, match, match2, source, comment = "";
+        const lines = string.split(/\r\n|\r|\n/g);
+        let id, lineMatch, commentMatch, source, comment = "";
         let strings = {};
 
         for (let i = 0; i < lines.length; i++) {
@@ -173,29 +179,24 @@ class PropertiesParser extends Parser {
             if (skipLine(line)) {
                 // any comments for the next line?
                 commentRe.lastIndex = 0;
-                match2 = commentRe.exec(line);
-                if (match2 && match2[1]) {
-                    comment += match2[1];
+                commentMatch = commentRe.exec(line);
+                if (commentMatch && commentMatch[1]) {
+                    if (comment.length) {
+                        comment += ' ';
+                    }
+                    comment += commentMatch[1];
                 }
             } else {
                 singleLineRe.lastIndex = 0;
-                match = singleLineRe.exec(line);
-                if (match) {
-                    id = unescapeString(match[1]);
-                    source = match[3];
-                    commentRe.lastIndex = 0;
-                    match2 = commentRe.exec(source);
-                    if (match2 && match2[1]) {
-                        if (comment.length) comment += ' ';
-                        comment += match2[1];
-                        source = source.substring(0, match2.index);
-                    } else {
-                        // check for continuation chars. (ie. a backslash at the end of the line)
-                        while (source.endsWith("\\") && i < lines.length) {
-                            // next line is also part of this same string
-                            line = lines[++i];
-                            source += '\n' + line;
-                        }
+                lineMatch = singleLineRe.exec(line);
+                if (lineMatch) {
+                    id = unescapeString(lineMatch[1]);
+                    source = lineMatch[3];
+                    // check for continuation chars. (ie. a backslash at the end of the line)
+                    while (source.endsWith("\\") && i < lines.length) {
+                        // next line is also part of this same string
+                        line = lines[++i];
+                        source += '\n' + line;
                     }
                     strings[id] = {
                         source: unescapeString(source)

@@ -241,8 +241,8 @@ export const testPropertiesParser = {
                 comment: "this is a comment before the string"
             },
             resource2: {
-                source: "value 2",
-                comment: "this is an inline comment"
+                // no inline comments
+                source: "value 2 # this is an inline comment"
             },
             resource3: {
                 source: "value 3",
