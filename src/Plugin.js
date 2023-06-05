@@ -52,8 +52,8 @@ class Plugin {
      * not an instance of the class. The linter may need to instantiate
      * this rule multiple times with different optional parameters.
      *
-     * @returns {Array.<Class>} list of Rule classes implemented by this
-     * plugin
+     * @returns {Array.<Class|Object>} list of Rule classes implemented
+     * by this plugin or objects that are definitions of declarative rules
      */
     getRules() {
         return [];
@@ -109,8 +109,8 @@ class Plugin {
      * instance of the class. The linter may need to instantiate this
      * formatter multiple times.
      *
-     * @returns {Array.<Class>} list of Formatter classes implemented by this
-     * plugin
+     * @returns {Array.<Class|Object>} list of Formatter classes implemented
+     * by this plugin or objects that are definitions of declarative formatters
      */
     getFormatters() {
         return [];
