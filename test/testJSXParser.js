@@ -140,7 +140,8 @@ export const testJSXParser = {
                 ],
                 sourceType: 'module'
             },
-            filePath: "x/y"
+            filePath: "x/y",
+            stats: undefined
         };
         test.deepEqual(actual, expected);
 
@@ -309,7 +310,8 @@ export const testJSXParser = {
                 ],
                 "sourceType": "module"
             },
-            filePath: "x/y"
+            filePath: "x/y",
+            stats: undefined
         };
         test.deepEqual(actual, expected);
 

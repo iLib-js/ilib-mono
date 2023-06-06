@@ -44,6 +44,8 @@ This plugin provides multiple parsers:
 
 - JSParser - parser for regular Javascript files
 - JSXParser - parser for React JSX files
+- PropertiesParser - parser for properties files as used for translated
+  strings in the react-intl library
 
 Some projects use the file extension "js" instead of "jsx" for their JSX
 files. If you are not sure what is in your files that have a "js" extension,
@@ -85,6 +87,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.1.0
+
+- added a parser for properties files
+    - produces an array of Resource instances
 
 ### v1.0.0
 
