@@ -21,6 +21,7 @@ import { Plugin } from 'i18nlint-common';
 
 import JSParser from './parsers/JSParser.js';
 import JSXParser from './parsers/JSXParser.js';
+import PropertiesParser from './parsers/PropertiesParser.js';
 // import FormatjsPlurals from './rules/FormatjsPlurals.js';
 
 class ReactPlugin extends Plugin {
@@ -35,7 +36,7 @@ class ReactPlugin extends Plugin {
 
     /** @override */
     getParsers() {
-        return [ JSParser, JSXParser ];
+        return [ JSParser, JSXParser, PropertiesParser ];
     }
 
     /** @override */
