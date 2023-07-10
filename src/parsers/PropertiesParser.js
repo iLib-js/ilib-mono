@@ -76,7 +76,7 @@ const nullLogger = {
 /**
  * @class Parser for Java style properties files as used with react-intl.
  */
-export class PropertiesParser extends Parser {
+class PropertiesParser extends Parser {
     /**
      * Construct a new plugin.
      * @constructor
