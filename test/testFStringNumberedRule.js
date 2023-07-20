@@ -304,5 +304,54 @@ export const testFStringNumberedRules = {
         test.deepEqual(actual, expected);
 
         test.done();
-    }
+    },
+
+    testFStringNumberedRuleIgnoreDoubleCurlies1: function(test) {
+        test.expect(2);
+
+        const rule = new FStringNumberedRule();
+        test.ok(rule);
+
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {{}} string in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringNumberedRuleIgnoreDoubleCurlies2: function(test) {
+        test.expect(2);
+
+        const rule = new FStringNumberedRule();
+        test.ok(rule);
+
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "fstring.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {{ }} string in it.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
 };
