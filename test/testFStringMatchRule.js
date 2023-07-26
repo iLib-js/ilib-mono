@@ -233,7 +233,7 @@ export const testFStringMatchRules = {
         test.done();
     },
 
-    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget: function(test) {
+    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget1: function(test) {
         test.expect(2);
 
         const rule = new FStringMatchRule();
@@ -250,6 +250,60 @@ export const testFStringMatchRules = {
                     source: 'This string contains {name} in it.',
                     targetLocale: "de-DE",
                     target: 'Diese Zeichenfolge enthält { name }.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget2: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // whitespace in parameters in source or target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {name} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält { name}.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget3: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // whitespace in parameters in source or target is okay
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains {name} in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält {name }.',
                     pathName: "a/b/c.xliff"
                 })],
                 filePath: "x"
@@ -482,6 +536,90 @@ export const testFStringMatchRules = {
         test.deepEqual(actual, expected);
 
         test.done();
-    }
+    },
+
+    testFStringMatchRuleDoNotMatchDoubleCurlies1: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // Double curly braces render to a single one in the output
+        // and do not indicate the presence of a replacement param
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {{ and a }} character in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält einen {{ und einen }} Zeichen.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringMatchRuleDoNotMatchDoubleCurlies2: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // Double curly braces render to a single one in the output
+        // and do not indicate the presence of a replacement param
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {{and}} character in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält einen {{und}} Zeichen.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
+
+    testFStringMatchRuleDoNotMatchDoubleCurlies3: function(test) {
+        test.expect(2);
+
+        const rule = new FStringMatchRule();
+        test.ok(rule);
+
+        // Double curly braces render to a single one in the output
+        // and do not indicate the presence of a replacement param
+        const actual = rule.match({
+            locale: "de-DE",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "printf.test",
+                    sourceLocale: "en-US",
+                    source: 'This string contains a {{and }} character in it.',
+                    targetLocale: "de-DE",
+                    target: 'Diese Zeichenfolge enthält einen {{ und}} Zeichen.',
+                    pathName: "a/b/c.xliff"
+                })],
+                filePath: "x"
+            })
+        });
+        test.ok(!actual);
+
+        test.done();
+    },
 };
 

@@ -59,11 +59,13 @@ class FStringMatchRule extends Rule {
         fstringRegExp.lastIndex = 0;
         match = fstringRegExp.exec(src);
         while (match) {
-            sourceParams.push({
-                text: match[0],
-                name: match[1],
-                number: match[2]
-            });
+            if (!match[0].startsWith("{{")) {
+                sourceParams.push({
+                    text: match[0],
+                    name: match[1],
+                    number: match[2]
+                });
+            }
             match = fstringRegExp.exec(src);
         }
         if (sourceParams.length < 1) {
@@ -75,11 +77,13 @@ class FStringMatchRule extends Rule {
         fstringRegExp.lastIndex = 0;
         match = fstringRegExp.exec(tar);
         while (match) {
-            targetParams.push({
-                text: match[0],
-                name: match[1],
-                number: match[2]
-            });
+            if (!match[0].startsWith("{{")) {
+                targetParams.push({
+                    text: match[0],
+                    name: match[1],
+                    number: match[2]
+                });
+            }
             match = fstringRegExp.exec(tar);
         }
 

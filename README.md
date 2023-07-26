@@ -69,6 +69,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.1
+
+- fixed a bug where doubled curly braces (= escaped curly braces) were
+  interpreted as replacement parameters
+- updated dependencies
+
 ### v1.1.0
 
 - updated dependencies
