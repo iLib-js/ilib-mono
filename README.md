@@ -57,7 +57,10 @@ used within the yaml property:
   - `commentPrefix` - a string that defines prefix for context comment for
     translators. Only comments that start with the provided string will
     be extracted and added to ResultSet, all other are ignored.
-- `checkTranslatability`: by default the plugin checks if lines in yaml file are translatable, to turn that check off `checkTranslatability` setting has to set to false.         
+- `checkTranslatability`: by default, the plugin tries to guess which values
+  in the file are strings for translation and filter out others;
+  setting `checkTranslatablility`: false will disable this behaviour and all
+  values from the file will be extracted.
 
 Example configuration:
 ```json
