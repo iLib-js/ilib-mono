@@ -12,7 +12,7 @@ The plugin will look for the `yaml` property within the `settings`
 of your `project.json` file. The following settings are
 used within the yaml property:
 
-- mappings: a mapping between file matchers and an object that gives
+- `mappings`: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
   yaml files within the project to be processed with different schema.
   The matchers are
@@ -57,6 +57,10 @@ used within the yaml property:
   - `commentPrefix` - a string that defines prefix for context comment for
     translators. Only comments that start with the provided string will
     be extracted and added to ResultSet, all other are ignored.
+- `checkTranslatability`: by default, the plugin tries to guess which values
+  in the file are strings for translation and filter out others;
+  setting `checkTranslatablility`: false will disable this behaviour and all
+  values from the file will be extracted.
 
 Example configuration:
 ```json
