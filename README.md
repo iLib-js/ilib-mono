@@ -179,6 +179,13 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.0
+
+- added checkTranslatability setting to turn on or off the ability
+  to guess whether values are translatable. Default is true, same
+  as before, but now you can turn that off and allow all
+  values to be translated.
+
 ### v1.4.1
 
 - update dependencies
