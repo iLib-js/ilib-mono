@@ -142,10 +142,10 @@ var badEndPunct = {
 YamlFile.prototype._isTranslatable = function(resource) {
     var locale = new Locale(this.getLocale());
 
-    var yamlSettings = this.project.settings.yaml;
+    // var yamlSettings = this.project.settings.yaml;
 
-    // if extra config exists in yaml settings (project.json) and checkNonTranslatable is set to false then check will be skipped
-    if ((yamlSettings.config) && !(yamlSettings.config.checkNonTranslatable)) return true;
+    // if checkTranslatability setting exists in the yaml property and it's set to false then check will be turned off
+    if (yamlSettings && (yamlSettings.checkTranslatability === false)) return true;
 
     if (!resource || typeof(resource) !== "string") {
         return false;
