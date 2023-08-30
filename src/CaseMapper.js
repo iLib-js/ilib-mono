@@ -19,7 +19,6 @@
 
 import { getBrowser } from 'ilib-env';
 import Locale from 'ilib-locale';
-import IString from 'ilib-istring';
 
 /**
  * @class A class that can map strings to upper and lower case in a 
@@ -107,17 +106,15 @@ class CaseMapper {
         if (!string) {
             return string;
         }
-        const input = (typeof(string) === 'string') ? new IString(string) : string.toString();
         let ret = "";
-        let it = input.charIterator();
-        let c;
+        let i, c;
 
-        // use an iterator so that we skip over UTF-16 code points properly
-        while (it.hasNext()) {
-            c = it.next();
+        for (i = 0; i < string.length; i++) {
+            c = string[i];
             if (!this.up && c === 'Σ') {
-                if (it.hasNext()) {
-                    c = it.next();
+                if (i+1 < string.length) {
+                    i++;
+                    c = string[i];
                     const code = c.charCodeAt(0);
                     // if the next char is not a greek letter, this is the end of the word so use the
                     // final form of sigma. Otherwise, use the mid-word form.

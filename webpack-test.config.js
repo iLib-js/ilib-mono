@@ -1,5 +1,5 @@
 /*
- * webpack.config.js - webpack configuration script for ilib-env
+ * webpack.config.js - webpack configuration script for ilib-casemapper
  *
  * Copyright © 2021-2023, JEDLSoft
  *
