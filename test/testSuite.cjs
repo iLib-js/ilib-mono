@@ -22,7 +22,14 @@
 process.env.BABEL_ENV = "test";
 require("@babel/register")({
     presets: [
-        '@babel/preset-env',
+        [
+            '@babel/preset-env',
+            {
+                targets: {
+                    node: "current"
+                }
+            }
+        ]
     ],
     compact: false,
     minified: false,
