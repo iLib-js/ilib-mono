@@ -18,13 +18,6 @@
  * limitations under the License.
  */
 
-// have to do this here as well as in the testSuite.js because there are
-// two copies of nodeunit in memory -- the required one and the imported
-// one.
-var nodeunit = require("nodeunit");
-var assert = require("nodeunit/lib/assert");
-require("assertextras")(assert);
-
 // this processes all subsequent requires using babel
 process.env.BABEL_ENV = "test";
 require("@babel/register")({
@@ -48,4 +41,3 @@ require("@babel/register")({
 // call the ESM tests and use babel to make this version of node
 // be able to run it
 require("./testSuite.js");
-

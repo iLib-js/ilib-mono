@@ -9,7 +9,7 @@
             "require": "./lib/CaseMapper.js"
         }
     },
-    "description": "A BCP-47/IETF locale specifier parser/validator",
+    "description": "A locale-sensitive class to map strings to upper- or lower-case",
     "keywords": [
         "internationalization",
         "i18n",
@@ -22,9 +22,7 @@
         "format",
         "locale",
         "translation",
-        "bcp-47",
-        "bcp47",
-        "ietf"
+        "case"
     ],
     "homepage": "https://github.com/iLib-js/ilib-casemapper",
     "bugs": "https://github.com/iLib-js/ilib-casemapper/issues",
@@ -60,16 +58,16 @@
         "build": "npm run build:prod",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
-        "build:test": "npm-run-all build:dev build:webtest",
+        "build:test": "npm-run-all build:dev build:pkg build:webtest",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "build:webtest": "webpack-cli --config webpack-test.config.js",
+        "build:webtest": "webpack-cli --env dev --config webpack-test.config.js",
         "dist": "npm-run-all doc build:prod build:pkg; npm pack",
-        "test": "LANG=en_US.UTF8 npm-run-all build:dev test:cli",
-        "test:cli": "LANG=en_US.UTF8 bash test/testSuite.sh",
-        "test:all": "LANG=en_US.UTF8 npm-run-all test:cli test:web",
+        "test:cli": "LANG=en_US.UTF8 npm-run-all build:dev build:pkg ; bash test/testSuite.sh",
         "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test": "LANG=en_US.UTF8 npm-run-all build:dev test:cli",
+        "test:all": "LANG=en_US.UTF8 npm-run-all test:cli test:web",
         "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
-        "clean": "git clean -f -d src test ; rm -rf lib",
+        "clean": "git clean -f -d src test ; rm -rf lib *.tgz",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/CaseMapper.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },

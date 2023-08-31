@@ -2,7 +2,7 @@
  * Gruntfile.js - build this project
  *
  * @license
- * Copyright © 2021-2022, JEDLSoft
+ * Copyright © 2021-2023, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
