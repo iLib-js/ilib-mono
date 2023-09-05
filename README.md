@@ -88,6 +88,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.1
+
+- forgot to expose the properties parser to the consumers of this lib
+
 ### v1.1.0
 
 - added a parser for properties files
