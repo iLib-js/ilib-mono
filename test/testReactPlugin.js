@@ -38,7 +38,7 @@ export const testReactPlugin = {
 
         const parsers = jp.getParsers();
         test.ok(parsers);
-        test.equal(parsers.length, 2);
+        test.equal(parsers.length, 3);
 
         test.done();
     },
