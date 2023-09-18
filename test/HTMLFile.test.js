@@ -1,7 +1,7 @@
 /*
- * testHTMLFile.js - test the HTML file handler object.
+ * HTMLFile.test.js - test the HTML file handler object.
  *
- * Copyright © 2018-2019, Box, Inc.
+ * Copyright © 2018-2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 var path = require("path");
 var fs = require("fs");
-
 if (!HTMLFile) {
     var HTMLFile = require("../HTMLFile.js");
     var HTMLFileType = require("../HTMLFileType.js");
-
     var CustomProject =  require("loctool/lib/CustomProject.js");
     var TranslationSet =  require("loctool/lib/TranslationSet.js");
     var ResourceString =  require("loctool/lib/ResourceString.js");
 }
-
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
-
     for (var i = 0; i < min; i++) {
         if (a[i] !== b[i]) {
             console.log("Found difference at character " + i);
@@ -41,7 +36,6 @@ function diff(a, b) {
         }
     }
 }
-
 var p = new CustomProject({
     name: "foo",
     id: "foo",
@@ -51,7 +45,6 @@ var p = new CustomProject({
     targetDir: "testfiles",
     nopseudo: true
 });
-
 var p2 = new CustomProject({
     name: "foo",
     id: "foo",
@@ -61,278 +54,184 @@ var p2 = new CustomProject({
     identify: true,
     targetDir: "testfiles"
 });
-
 var t = new HTMLFileType(p2);
-
-module.exports.htmlfile = {
-    testHTMLFileConstructor: function(test) {
-        test.expect(1);
-
+describe("htmlfile", function() {
+    test("HTMLFileConstructor", function() {
+        expect.assertions(1);
         var htf = new HTMLFile({project: p});
-        test.ok(htf);
-
-        test.done();
-    },
-
-    testHTMLFileConstructorParams: function(test) {
-        test.expect(1);
-
+        expect(htf).toBeTruthy();
+    });
+    test("HTMLFileConstructorParams", function() {
+        expect.assertions(1);
         var htf = new HTMLFile({
             project: p,
             pathName: "./testfiles/html/CookieFlow.html",
             type: t
         });
-
-        test.ok(htf);
-
-        test.done();
-    },
-
-    testHTMLFileConstructorNoFile: function(test) {
-        test.expect(1);
-
+        expect(htf).toBeTruthy();
+    });
+    test("HTMLFileConstructorNoFile", function() {
+        expect.assertions(1);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
-        test.done();
-    },
-
-    testHTMLFileMakeKey: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+    });
+    test("HTMLFileMakeKey", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.makeKey("This is a test"), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileMakeKeyNoReturnChars: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.makeKey("This is a test")).toBe("r654479252");
+    });
+    test("HTMLFileMakeKeyNoReturnChars", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.makeKey("This is\n a te\nst"), "r1055138400");
-
-        test.done();
-    },
-
-    testHTMLFileMakeKeyCompressWhiteSpace: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.makeKey("This is\n a te\nst")).toBe("r1055138400");
+    });
+    test("HTMLFileMakeKeyCompressWhiteSpace", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.makeKey("This \t is\n \t a   test"), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileMakeKeyTrimWhiteSpace: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.makeKey("This \t is\n \t a   test")).toBe("r654479252");
+    });
+    test("HTMLFileMakeKeyTrimWhiteSpace", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.makeKey("\n\t This \t is\n \t a   test\n\n\n"), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
-
+        expect(htf).toBeTruthy();
+        expect(htf.makeKey("\n\t This \t is\n \t a   test\n\n\n")).toBe("r654479252");
+    });
+    test("HTMLFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body>This is a test</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("foo", "en-US", "r654479252", "html"));
-        test.ok(r);
-
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("HTMLFileParseSimpleGetBySource", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body>This is a test</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("HTMLFileParseSimpleIgnoreWhitespace", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '<body>\n' +
                 '     This is a test    \n' +
                 '</body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileParseDontExtractUnicodeWhitespace: function(test) {
-        test.expect(3);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("HTMLFileParseDontExtractUnicodeWhitespace", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // contains U+00A0 non-breaking space and other Unicode space characters
         htf.parse('<div>            ​‌‍ ⁠</div>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testHTMLFileParseDontExtractNbspEntity: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("HTMLFileParseDontExtractNbspEntity", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<div>&nbsp; &nnbsp; &mmsp;</div>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testHTMLFileParseDoExtractOtherEntities: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("HTMLFileParseDoExtractOtherEntities", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<div>&uuml;</div>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testHTMLFileParseNoStrings: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+    });
+    test("HTMLFileParseNoStrings", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<div class="noheader medrx"></div>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testHTMLFileParseSimpleRightSize: function(test) {
-        test.expect(4);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("HTMLFileParseSimpleRightSize", function() {
+        expect.assertions(4);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         var set = htf.getTranslationSet();
-        test.equal(set.size(), 0);
-
+        expect(set.size()).toBe(0);
         htf.parse('<html><body>This is a test</body></html>');
-
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testHTMLFileParseMultiple: function(test) {
-        test.expect(8);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+    });
+    test("HTMLFileParseMultiple", function() {
+        expect.assertions(8);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a test\n' +
@@ -341,32 +240,24 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testHTMLFileParseWithDups: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("r999080996");
+    });
+    test("HTMLFileParseWithDups", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a test\n' +
@@ -376,29 +267,21 @@ module.exports.htmlfile = {
                 '       This is a test\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.equal(set.size(), 2);
-
-        test.done();
-    },
-
-    testHTMLFileParseEscapeInvalidChars: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+        expect(set.size()).toBe(2);
+    });
+    test("HTMLFileParseEscapeInvalidChars", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div id="foo">\n' +
@@ -406,28 +289,21 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should use html entities to represent the invalid control chars
         var r = set.getBySource("This is also a &#3; test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a &#3; test");
-        test.equal(r.getKey(), "r1041204778");
-
-        test.done();
-    },
-
-    testHTMLTemplateFileParseIgnoreDoctypeTag: function(test) {
-        test.expect(9);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a &#3; test");
+        expect(r.getKey()).toBe("r1041204778");
+    });
+    test("HTMLTemplateFileParseIgnoreDoctypeTag", function() {
+        expect.assertions(9);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
             '<html>\n' +
@@ -439,34 +315,25 @@ module.exports.htmlfile = {
             '       This is a test\n' +
             '   </body>\n' +
             '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testHTMLFileParseDontEscapeWhitespaceChars: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("r999080996");
+    });
+    test("HTMLFileParseDontEscapeWhitespaceChars", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div id="foo">\n' +
@@ -474,28 +341,21 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // leave the whitespace control chars alone
         var r = set.getBySource("This is also a \u000C test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a \u000C test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testHTMLFileSkipScript: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a \u000C test");
+        expect(r.getKey()).toBe("r999080996");
+    });
+    test("HTMLFileSkipScript", function() {
+        expect.assertions(8);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <head>\n' +
                 '   <script>\n' +
@@ -509,367 +369,271 @@ module.exports.htmlfile = {
                 '       This is a test\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         var r = set.getBySource("// comment text");
-        test.ok(!r);
-
+        expect(!r).toBeTruthy();
         var r = set.getBySource("bar");
-        test.ok(!r);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTags: function(test) {
-        test.expect(5);
-
+        expect(!r).toBeTruthy();
+        expect(set.size()).toBe(1);
+    });
+    test("HTMLFileParseNonBreakingTags", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a <em>test</em> of the emergency parsing system.  \n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0>test</c0> of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0>test</c0> of the emergency parsing system.");
-        test.equal(r.getKey(), "r306365966");
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsOutside: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0>test</c0> of the emergency parsing system.");
+        expect(r.getKey()).toBe("r306365966");
+    });
+    test("HTMLFileParseNonBreakingTagsOutside", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span id="foo" class="bar">This is a test of the emergency parsing system.</span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the span tag because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsOutsideTrimWhitespace: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("HTMLFileParseNonBreakingTagsOutsideTrimWhitespace", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span id="foo" class="bar"> \t\t \r  This is a test of the emergency parsing system.   \t \n  </span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should trim the whitespace before and after the string
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsInside: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("HTMLFileParseNonBreakingTagsInside", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should pick up the span tag because there is localizable text
         // before it and after it
         var r = set.getBySource('This is <c0> a test of the emergency parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the emergency parsing </c0> system.');
-        test.equal(r.getKey(), 'r124733470');
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsAtStartOfString: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the emergency parsing </c0> system.');
+        expect(r.getKey()).toBe('r124733470');
+    });
+    test("HTMLFileParseNonBreakingTagsAtStartOfString", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span id="foo" class="bar">This is a test of the emergency parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should pick up the span tag because there is localizable text
         // after the close
         var r = set.getBySource('<c0>This is a test of the emergency parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), '<c0>This is a test of the emergency parsing </c0> system.');
-        test.equal(r.getKey(), 'r580926060');
-
-        test.done();
-    },
-
-    testHTMLFileParseMultipleNonBreakingTagsAtStartOfString: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('<c0>This is a test of the emergency parsing </c0> system.');
+        expect(r.getKey()).toBe('r580926060');
+    });
+    test("HTMLFileParseMultipleNonBreakingTagsAtStartOfString", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span id="foo" class="bar"><b>This</b> is a test of the emergency parsing system.</span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should pick up the b tag because there is localizable text
         // after the close, but not the span tag
         var r = set.getBySource('<c0>This</c0> is a test of the emergency parsing system.');
-
-        test.ok(r);
-        test.equal(r.getSource(), '<c0>This</c0> is a test of the emergency parsing system.');
-        test.equal(r.getKey(), 'r501987849');
-
-        test.done();
-    },
-
-    testHTMLFileParseMultipleNonBreakingTagsAsOuterTags: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('<c0>This</c0> is a test of the emergency parsing system.');
+        expect(r.getKey()).toBe('r501987849');
+    });
+    test("HTMLFileParseMultipleNonBreakingTagsAsOuterTags", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span id="foo" class="bar"><b>This is a test of the emergency parsing system.</b></span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the span and b tags because there is no localizable text
         // before or after them
         var r = set.getBySource('This is a test of the emergency parsing system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is a test of the emergency parsing system.');
-        test.equal(r.getKey(), 'r699762575');
-
-        test.done();
-    },
-
-    testHTMLFileParseMultipleNonBreakingTagsAtEndOfString: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is a test of the emergency parsing system.');
+        expect(r.getKey()).toBe('r699762575');
+    });
+    test("HTMLFileParseMultipleNonBreakingTagsAtEndOfString", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a test of the emergency parsing system.<span id="foo" class="bar">  </span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should pick up the span tag because there is localizable text
         // inside it or after the close
         var r = set.getBySource('This is a test of the emergency parsing system.');
-
-        test.ok(r);
-        test.equal(r.getSource(), 'This is a test of the emergency parsing system.');
-        test.equal(r.getKey(), 'r699762575');
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsInsideMultiple: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is a test of the emergency parsing system.');
+        expect(r.getKey()).toBe('r699762575');
+    });
+    test("HTMLFileParseNonBreakingTagsInsideMultiple", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // tags should be nestable
         var r = set.getBySource('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        test.equal(r.getKey(), 'r772812508');
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsNotWellFormed: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
+        expect(r.getKey()).toBe('r772812508');
+    });
+    test("HTMLFileParseNonBreakingTagsNotWellFormed", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the end span tag should automatically end the em tag
         var r = set.getBySource('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
-        test.equal(r.getKey(), 'r417724998');
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
+        expect(r.getKey()).toBe('r417724998');
+    });
+    test("HTMLFileParseNonBreakingTagsNotWellFormedWithTerminatorTag", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div>This is <span id="foo"> a test of the <em>emergency parsing</div> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the end div tag ends all the other tags
         var r = set.getBySource('This is <c0> a test of the <c1>emergency parsing</c1></c0>');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency parsing</c1></c0>');
-        test.equal(r.getKey(), 'r713898724');
-
-        test.done();
-    },
-
-    testHTMLFileParseNonBreakingTagsTagStackIsReset: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency parsing</c1></c0>');
+        expect(r.getKey()).toBe('r713898724');
+    });
+    test("HTMLFileParseNonBreakingTagsTagStackIsReset", function() {
+        expect.assertions(5);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div>This is <span id="foo" class="bar"> a test of the <em>emergency parsing</em> system.</div>\n' +
                 '       <div>This is <b>another test</b> of the emergency parsing </span> system.</div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the end div tag ends all the other tags
         var r = set.getBySource('This is <c0>another test</c0> of the emergency parsing');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0>another test</c0> of the emergency parsing');
-        test.equal(r.getKey(), 'r2117084');
-
-        test.done();
-    },
-
-    testHTMLFileParseLocalizableTitle: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0>another test</c0> of the emergency parsing');
+        expect(r.getKey()).toBe('r2117084');
+    });
+    test("HTMLFileParseLocalizableTitle", function() {
+        expect.assertions(8);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div title="This value is localizable">\n' +
@@ -877,32 +641,24 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This value is localizable");
-        test.ok(r);
-        test.equal(r.getSource(), "This value is localizable");
-        test.equal(r.getKey(), "r922503175");
-
-        test.done();
-    },
-
-    testHTMLFileParseLocalizableAttributes: function(test) {
-        test.expect(11);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This value is localizable");
+        expect(r.getKey()).toBe("r922503175");
+    });
+    test("HTMLFileParseLocalizableAttributes", function() {
+        expect.assertions(11);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <img src="http://www.test.test/foo.png" alt="Alternate text">\n' +
@@ -910,37 +666,28 @@ module.exports.htmlfile = {
                 '       <input type="text" placeholder="localizable placeholder here">\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("Alternate text");
-        test.ok(r);
-        test.equal(r.getSource(), "Alternate text");
-        test.equal(r.getKey(), "r1051764073");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Alternate text");
+        expect(r.getKey()).toBe("r1051764073");
         r = set.getBySource("localizable placeholder here");
-        test.ok(r);
-        test.equal(r.getSource(), "localizable placeholder here");
-        test.equal(r.getKey(), "r734414247");
-
-        test.done();
-    },
-
-    testHTMLFileParseLocalizableAttributesSkipEmpty: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("localizable placeholder here");
+        expect(r.getKey()).toBe("r734414247");
+    });
+    test("HTMLFileParseLocalizableAttributesSkipEmpty", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <img src="http://www.test.test/foo.png" alt="">\n' +
@@ -948,88 +695,65 @@ module.exports.htmlfile = {
                 '       <input type="text" placeholder="">\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testHTMLFileParseLocalizableAttributesAndNonBreakingTags: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("HTMLFileParseLocalizableAttributesAndNonBreakingTags", function() {
+        expect.assertions(8);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource('This is <c0>a test</c0> of non-breaking tags.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0>a test</c0> of non-breaking tags.');
-        test.equal(r.getKey(), 'r1063253939');
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0>a test</c0> of non-breaking tags.');
+        expect(r.getKey()).toBe('r1063253939');
         r = set.getBySource("localizable title");
-        test.ok(r);
-        test.equal(r.getSource(), "localizable title");
-        test.equal(r.getKey(), "r160369622");
-
-        test.done();
-    },
-
-    testHTMLFileParseI18NComments: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("localizable title");
+        expect(r.getKey()).toBe("r160369622");
+    });
+    test("HTMLFileParseI18NComments", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <!-- i18n: this describes the text below -->\n' +
                 '       This is a test of the emergency parsing system.  \n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-        test.equal(r.getComment(), "this describes the text below");
-
-        test.done();
-    },
-
-    testHTMLFileParseIgnoreScriptTags: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+        expect(r.getComment()).toBe("this describes the text below");
+    });
+    test("HTMLFileParseIgnoreScriptTags", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body>\n' +
             '<script type="javascript">\n' +
             'if (window) {\n' +
@@ -1038,29 +762,21 @@ module.exports.htmlfile = {
             '</script>\n' +
             '<span class="foo">foo</span>\n' +
             '</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
-
-    testHTMLFileParseIgnoreStyleTags: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foo");
+        expect(r.getKey()).toBe("r941132140");
+    });
+    test("HTMLFileParseIgnoreStyleTags", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body>\n' +
             '<style>\n' +
             '  .activity_title{\n' +
@@ -1072,29 +788,21 @@ module.exports.htmlfile = {
             '</style>\n' +
             '<span class="foo">foo</span>\n' +
             '</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
-
-    testHTMLFileParseIgnoreCodeTags: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foo");
+        expect(r.getKey()).toBe("r941132140");
+    });
+    test("HTMLFileParseIgnoreCodeTags", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body>\n' +
             '<span class="foo">foo</span>\n' +
             '<code>\n' +
@@ -1102,158 +810,109 @@ module.exports.htmlfile = {
             '  var str = js.getString("Test String");\n' +
             '</code>\n' +
             '</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
-
-    testHTMLFileExtractFile: function(test) {
-        test.expect(11);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foo");
+        expect(r.getKey()).toBe("r941132140");
+    });
+    test("HTMLFileExtractFile", function() {
+        expect.assertions(11);
         var base = path.dirname(module.id);
-
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/CookieFlow.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should read the file
         htf.extract();
-
         var set = htf.getTranslationSet();
-
-        test.equal(set.size(), 3);
-
+        expect(set.size()).toBe(3);
         var r = set.getBySource("Get insurance quotes for free!");
-        test.ok(r);
-        test.equal(r.getSource(), "Get insurance quotes for free!");
-        test.equal(r.getKey(), "r308704783");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Get insurance quotes for free!");
+        expect(r.getKey()).toBe("r308704783");
         r = set.getBySource("Send question");
-        test.ok(r);
-        test.equal(r.getSource(), "Send question");
-        test.equal(r.getKey(), "r458583963");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Send question");
+        expect(r.getKey()).toBe("r458583963");
         r = set.getBySource("Ask");
-        test.ok(r);
-        test.equal(r.getSource(), "Ask");
-        test.equal(r.getKey(), "r30868880");
-
-        test.done();
-    },
-
-    testHTMLFileExtractFile2: function(test) {
-        test.expect(17);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Ask");
+        expect(r.getKey()).toBe("r30868880");
+    });
+    test("HTMLFileExtractFile2", function() {
+        expect.assertions(17);
         var base = path.dirname(module.id);
-
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/topic_navigation_main.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should read the file
         htf.extract();
-
         var set = htf.getTranslationSet();
-
-        test.equal(set.size(), 5);
-
+        expect(set.size()).toBe(5);
         var r = set.getBySource("Description");
-        test.ok(r);
-        test.equal(r.getSource(), "Description");
-        test.equal(r.getKey(), "r398698468");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Description");
+        expect(r.getKey()).toBe("r398698468");
         r = set.getBySource('Authored by <c0>John Smith</c0>');
-        test.ok(r);
-        test.equal(r.getSource(), 'Authored by <c0>John Smith</c0>');
-        test.equal(r.getKey(), 'r389685457');
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('Authored by <c0>John Smith</c0>');
+        expect(r.getKey()).toBe('r389685457');
         r = set.getBySource('Agreed');
-        test.ok(r);
-        test.equal(r.getSource(), 'Agreed');
-        test.equal(r.getKey(), 'r906242212');
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('Agreed');
+        expect(r.getKey()).toBe('r906242212');
         r = set.getBySource('and <c0><c1>8</c1> of your friends agree</c0>');
-        test.ok(r);
-        test.equal(r.getSource(), 'and <c0><c1>8</c1> of your friends agree</c0>');
-        test.equal(r.getKey(), 'r997712256');
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('and <c0><c1>8</c1> of your friends agree</c0>');
+        expect(r.getKey()).toBe('r997712256');
         r = set.getBySource("Write a better description &raquo;");
-        test.ok(r);
-        test.equal(r.getSource(), "Write a better description &raquo;");
-        test.equal(r.getKey(), "r291101881");
-
-        test.done();
-    },
-
-    testHTMLFileExtractUndefinedFile: function(test) {
-        test.expect(2);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Write a better description &raquo;");
+        expect(r.getKey()).toBe("r291101881");
+    });
+    test("HTMLFileExtractUndefinedFile", function() {
+        expect.assertions(2);
         var base = path.dirname(module.id);
-
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should attempt to read the file and not fail
         htf.extract();
-
         var set = htf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testHTMLFileExtractBogusFile: function(test) {
-        test.expect(2);
-
+        expect(set.size()).toBe(0);
+    });
+    test("HTMLFileExtractBogusFile", function() {
+        expect.assertions(2);
         var base = path.dirname(module.id);
-
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/bogus.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should attempt to read the file and not fail
         htf.extract();
-
         var set = htf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeText: function(test) {
-        test.expect(2);
-
+        expect(set.size()).toBe(0);
+    });
+    test("HTMLFileLocalizeText", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body>This is a test</body></html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1264,30 +923,23 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var actual = htf.localizeText(translations, "fr-FR");
         var expected = '<html><body>Ceci est un essai</body></html>\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextPreserveWhitespace: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("HTMLFileLocalizeTextPreserveWhitespace", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '<body>\n' +
                 '     This is a test    \n' +
                 '</body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1298,33 +950,25 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '<body>\n' +
             '     Ceci est un essai    \n' +
             '</body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextPreserveSelfClosingTags: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextPreserveSelfClosingTags", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '<body>\n' +
                 '     <div class="foo"/>\n' +
                 '     This is a test    \n' +
                 '</body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1335,27 +979,20 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '<body>\n' +
             '     <div class="foo"/>\n' +
             '     Ceci est un essai    \n' +
             '</body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextMultiple: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextMultiple", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a test\n' +
@@ -1364,7 +1001,6 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1384,9 +1020,7 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       Ceci est un essai\n' +
                 '       <div id="foo">\n' +
@@ -1394,19 +1028,14 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextWithDups: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextWithDups", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a test\n' +
@@ -1416,7 +1045,6 @@ module.exports.htmlfile = {
                 '       This is a test\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1436,9 +1064,7 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       Ceci est un essai\n' +
                 '       <div id="foo">\n' +
@@ -1447,19 +1073,14 @@ module.exports.htmlfile = {
                 '       Ceci est un essai\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextWithDoctypeTag: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextWithDoctypeTag", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
             '<html>\n' +
@@ -1470,7 +1091,6 @@ module.exports.htmlfile = {
             '       </div>\n' +
             '   </body>\n' +
             '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1490,9 +1110,7 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
             '<html>\n' +
             '   <body>\n' +
             '       Ceci est un essai\n' +
@@ -1501,19 +1119,14 @@ module.exports.htmlfile = {
             '       </div>\n' +
             '   </body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextSkipScript: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextSkipScript", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <head>\n' +
                 '   <script>\n' +
@@ -1527,7 +1140,6 @@ module.exports.htmlfile = {
                 '       This is a test\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1538,9 +1150,7 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '   <head>\n' +
             '   <script>\n' +
             '// comment text\n' +
@@ -1553,25 +1163,19 @@ module.exports.htmlfile = {
             '       Ceci est un essai\n' +
             '   </body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonBreakingTags: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextNonBreakingTags", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a <em>test</em> of the emergency parsing system.  \n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1582,32 +1186,24 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '   <body>\n' +
             '       Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.  \n' +
             '   </body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonBreakingTagsOutside: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextNonBreakingTagsOutside", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span id="foo" class="bar">  This is a test of the emergency parsing system.  </span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1618,32 +1214,24 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '   <body>\n' +
             '       <span id="foo" class="bar">  Ceci est un essai du système d\'analyse syntaxique de l\'urgence.  </span>\n' +
             '   </body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonBreakingTagsInside: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextNonBreakingTagsInside", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1653,32 +1241,24 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '   <body>\n' +
             '       Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence.</span>\n' +
             '   </body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonBreakingTagsInsideMultiple: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextNonBreakingTagsInsideMultiple", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1688,32 +1268,24 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-            '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
             '   <body>\n' +
             '       Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n' +
             '   </body>\n' +
             '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonBreakingTagsNotWellFormed: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextNonBreakingTagsNotWellFormed", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1723,32 +1295,24 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonBreakingTagsNotWellFormedWithTerminatorTag: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextNonBreakingTagsNotWellFormedWithTerminatorTag", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div>This is <span id="foo" class="bar"> a test of the <em>emergency parsing </div> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1758,26 +1322,19 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       <div>Ceci est <span id="foo" class="bar"> un essai du système <em>d\'analyse syntaxique </em></span></div> system.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextLocalizableTitle: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextLocalizableTitle", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <div title="This value is localizable">\n' +
@@ -1785,7 +1342,6 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1803,28 +1359,21 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       <div title="Cette valeur est localisable">\n' +
                 '           Ceci est un essai\n' +
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextLocalizableAttributes: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextLocalizableAttributes", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <img src="http://www.test.test/foo.png" alt="Alternate text">\n' +
@@ -1832,7 +1381,6 @@ module.exports.htmlfile = {
                 '       <input type="text" placeholder="localizable placeholder here">\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1858,34 +1406,26 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       <img src="http://www.test.test/foo.png" alt="Texte alternative">\n' +
                 '       Ceci est un essai\n' +
                 '       <input type="text" placeholder="espace réservé localisable ici">\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextLocalizableAttributesAndNonBreakingTags: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextLocalizableAttributesAndNonBreakingTags", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1903,33 +1443,25 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextI18NComments: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextI18NComments", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <!-- i18n: this describes the text below -->\n' +
                 '       This is a test of the emergency parsing system.  \n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1939,27 +1471,20 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '<html>\n' +
+        expect(htf.localizeText(translations, "fr-FR")).toBe('<html>\n' +
                 '   <body>\n' +
                 '       \n' +
                 '       Ceci est un essai du système d\'analyse syntaxique de l\'urgence.  \n' +
                 '   </body>\n' +
                 '</html>\n');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextIdentifyResourceIds: function(test) {
-        test.expect(2);
-
+    });
+    test("HTMLFileLocalizeTextIdentifyResourceIds", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p2,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This is a test\n' +
@@ -1969,7 +1494,6 @@ module.exports.htmlfile = {
                 '       This is a test\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -1989,7 +1513,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var expected =
             '<html>\n' +
             '   <body>\n' +
@@ -2001,21 +1524,16 @@ module.exports.htmlfile = {
             '   </body>\n' +
             '</html>\n';
            var actual = htf.localizeText(translations, "fr-FR");
-
            diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextIdentifyResourceIdsWithAttributes: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("HTMLFileLocalizeTextIdentifyResourceIdsWithAttributes", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p2,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <area alt="placeholder text">This is a test</area>\n' +
@@ -2024,7 +1542,6 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2052,7 +1569,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var expected =
             '<html>\n' +
             '   <body>\n' +
@@ -2063,21 +1579,16 @@ module.exports.htmlfile = {
             '   </body>\n' +
             '</html>\n';
            var actual = htf.localizeText(translations, "fr-FR");
-
            diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextIdentifyResourceIdsWithEmbeddedAttributes: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("HTMLFileLocalizeTextIdentifyResourceIdsWithEmbeddedAttributes", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p2,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       This <span title="placeholder text">is a test</span>\n' +
@@ -2086,7 +1597,6 @@ module.exports.htmlfile = {
                 '       </div>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2115,7 +1625,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var expected =
             '<html>\n' +
             '   <body>\n' +
@@ -2126,112 +1635,78 @@ module.exports.htmlfile = {
             '   </body>\n' +
             '</html>\n';
            var actual = htf.localizeText(translations, "fr-FR");
-
            diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testHTMLFileGetLocalizedPathSimple: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("HTMLFileGetLocalizedPathSimple", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             pathName: "simple.html",
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.getLocalizedPath("fr-FR"), "simple.fr-FR.html");
-
-        test.done();
-    },
-
-    testHTMLFileGetLocalizedPathComplex: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.getLocalizedPath("fr-FR")).toBe("simple.fr-FR.html");
+    });
+    test("HTMLFileGetLocalizedPathComplex", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             pathName: "./asdf/bar/simple.html",
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.html");
-
-        test.done();
-    },
-
-    testHTMLFileGetLocalizedPathRegularHTMLFileName: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple.fr-FR.html");
+    });
+    test("HTMLFileGetLocalizedPathRegularHTMLFileName", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             pathName: "./asdf/bar/simple.html",
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.html");
-
-        test.done();
-    },
-
-    testHTMLFileGetLocalizedPathNotEnoughParts: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple.fr-FR.html");
+    });
+    test("HTMLFileGetLocalizedPathNotEnoughParts", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             pathName: "./asdf/bar/simple",
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR");
-
-        test.done();
-    },
-
-    testHTMLFileGetLocalizedSourceLocale: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple.fr-FR");
+    });
+    test("HTMLFileGetLocalizedSourceLocale", function() {
+        expect.assertions(2);
         var htf = new HTMLFile({
             project: p,
             pathName: "./asdf/bar/simple.en-US.html",
             type: t
         });
-        test.ok(htf);
-
-        test.equal(htf.getLocalizedPath("fr-FR"), "asdf/bar/simple.fr-FR.html");
-
-        test.done();
-    },
-
-    testHTMLFileLocalize: function(test) {
-        test.expect(7);
-
+        expect(htf).toBeTruthy();
+        expect(htf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple.fr-FR.html");
+    });
+    test("HTMLFileLocalize", function() {
+        expect.assertions(7);
         var base = path.dirname(module.id);
-
         if (fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"))) {
             fs.unlinkSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"));
         }
         if (fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"))) {
             fs.unlinkSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"));
         }
-
-        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html")));
-
+        expect(!fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"))).toBeTruthy();
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/CookieFlow.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should read the file
         htf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2265,7 +1740,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r308704783',
@@ -2298,14 +1772,10 @@ module.exports.htmlfile = {
             targetLocale: "de-DE",
             datatype: "html"
         }));
-
         htf.localize(translations, ["fr-FR", "de-DE"]);
-
-        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html")));
-
+        expect(fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"))).toBeTruthy();
         var content = fs.readFileSync(path.join(base, "testfiles/testfiles/html/CookieFlow.fr-FR.html"), "utf-8");
-
         var expected =
             '<div class="upsell-ad-item clearfix">  \n' +
             '    <div class="modal_x"></div>\n' +
@@ -2327,14 +1797,10 @@ module.exports.htmlfile = {
             '      </div>\n' +
             '    </div>\n' +
             '</div>';
-
         diff(content, expected);
-        test.equal(content, expected);
-
+        expect(content).toBe(expected);
         content = fs.readFileSync(path.join(base, "testfiles/testfiles/html/CookieFlow.de-DE.html"), "utf-8");
-
-        test.equal(content,
-            '<div class="upsell-ad-item clearfix">  \n' +
+        expect(content).toBe('<div class="upsell-ad-item clearfix">  \n' +
             '    <div class="modal_x"></div>\n' +
             '    <div class="upsell-ad-content">\n' +
             '      <div class="upsell-ad-header">\n' +
@@ -2355,35 +1821,26 @@ module.exports.htmlfile = {
             '    </div>\n' +
             '</div>'
         );
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeNoStrings: function(test) {
-        test.expect(5);
-
+    });
+    test("HTMLFileLocalizeNoStrings", function() {
+        expect.assertions(5);
         var base = path.dirname(module.id);
-
         if (fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html"))) {
             fs.unlinkSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html"));
         }
         if (fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html"))) {
             fs.unlinkSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html"));
         }
-
-        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html")));
-
+        expect(!fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html"))).toBeTruthy();
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/nostrings.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should read the file
         htf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2401,39 +1858,29 @@ module.exports.htmlfile = {
             targetLocale: "de-DE",
             datatype: "html"
         }));
-
         htf.localize(translations, ["fr-FR", "de-DE"]);
-
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html")));
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextNonTemplateTagsInsideTags: function(test) {
-        test.expect(6);
-
+        expect(fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.fr-FR.html"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/testfiles/html/nostrings.de-DE.html"))).toBeTruthy();
+    });
+    test("HTMLFileLocalizeTextNonTemplateTagsInsideTags", function() {
+        expect.assertions(6);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html>\n' +
                 '   <body>\n' +
                 '       <span class="foo" <span class="bar"> Mr. Smith is not available.</span></span>\n' +
                 '   </body>\n' +
                 '</html>\n');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource('Mr. Smith is not available.');
-        test.ok(r);
-        test.equal(r.getSource(), 'Mr. Smith is not available.');
-        test.equal(r.getKey(), 'r41505278');
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('Mr. Smith is not available.');
+        expect(r.getKey()).toBe('r41505278');
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2443,7 +1890,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var actual = htf.localizeText(translations, "fr-FR");
         var expected =
                 '<html>\n' +
@@ -2451,26 +1897,19 @@ module.exports.htmlfile = {
                 '       <span class="foo" span="" class="bar"> Mssr. Smith n\'est pas disponible.</span></span>\n' +
                 '   </body>\n' +
                 '</html>\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextEscapeDoubleQuotes: function(test) {
-        test.expect(3);
-
+        expect(actual).toBe(expected);
+    });
+    test("HTMLFileLocalizeTextEscapeDoubleQuotes", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('  <span class="foo" onclick=\'javascript:var a = "foo", b = "bar";\'>foo</span>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2480,35 +1919,25 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         diff(htf.localizeText(translations, "fr-FR"),
                 '  <span class="foo" onclick=\'javascript:var a = &quot;foo&quot;, b = &quot;bar&quot;;\'>asdf</span>');
-
-        test.equal(htf.localizeText(translations, "fr-FR"),
-                '  <span class="foo" onclick=\'javascript:var a = &quot;foo&quot;, b = &quot;bar&quot;;\'>asdf</span>');
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextIgnoreScriptTags: function(test) {
-        test.expect(3);
-
+        expect(htf.localizeText(translations, "fr-FR")).toBe('  <span class="foo" onclick=\'javascript:var a = &quot;foo&quot;, b = &quot;bar&quot;;\'>asdf</span>');
+    });
+    test("HTMLFileLocalizeTextIgnoreScriptTags", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body><script type="javascript">\n' +
                '  foo\n' +
             '</script>\n' +
             '<span class="foo">foo</span>\n' +
             '<div></div><script>foo</script><div></div>\n' +
             '</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2518,7 +1947,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var expected =
             '<html><body><script type="javascript">\n' +
             '  foo\n' +
@@ -2526,33 +1954,24 @@ module.exports.htmlfile = {
             '<span class="foo">asdf</span>\n' +
             '<div></div><script>foo</script><div></div>\n' +
             '</body></html>';
-
         diff(htf.localizeText(translations, "fr-FR"), expected);
-
-        test.equal(htf.localizeText(translations, "fr-FR"), expected);
-
-        test.done();
-    },
-
-    testHTMLFileLocalizeTextIgnoreStyleTags: function(test) {
-        test.expect(3);
-
+        expect(htf.localizeText(translations, "fr-FR")).toBe(expected);
+    });
+    test("HTMLFileLocalizeTextIgnoreStyleTags", function() {
+        expect.assertions(3);
         var htf = new HTMLFile({
             project: p,
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.parse('<html><body><style>\n' +
                '  foo\n' +
             '</style>\n' +
             '<span class="foo">foo</span>\n' +
             '<div></div><style>foo</style><div></div>\n' +
             '</body></html>');
-
         var set = htf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2562,7 +1981,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var expected =
             '<html><body><style>\n' +
             '  foo\n' +
@@ -2570,103 +1988,72 @@ module.exports.htmlfile = {
             '<span class="foo">asdf</span>\n' +
             '<div></div><style>foo</style><div></div>\n' +
             '</body></html>';
-
         diff(htf.localizeText(translations, "fr-FR"), expected);
-
-        test.equal(htf.localizeText(translations, "fr-FR"), expected);
-
-        test.done();
-    },
-
-    testHTMLFileExtractFileFullyExtracted: function(test) {
-        test.expect(17);
-
+        expect(htf.localizeText(translations, "fr-FR")).toBe(expected);
+    });
+    test("HTMLFileExtractFileFullyExtracted", function() {
+        expect.assertions(17);
         var base = path.dirname(module.id);
-
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/meeting_panel.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should read the file
         htf.extract();
-
         var set = htf.getTranslationSet();
-
-        test.equal(set.size(), 5);
-
+        expect(set.size()).toBe(5);
         var r = set.getBySource("Upcoming Appointments");
-        test.ok(r);
-        test.equal(r.getSource(), "Upcoming Appointments");
-        test.equal(r.getKey(), "r110253465");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Upcoming Appointments");
+        expect(r.getKey()).toBe("r110253465");
         r = set.getBySource("Completed Meetings");
-        test.ok(r);
-        test.equal(r.getSource(), "Completed Meetings");
-        test.equal(r.getKey(), "r163355880");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Completed Meetings");
+        expect(r.getKey()).toBe("r163355880");
         r = set.getBySource("Get help");
-        test.ok(r);
-        test.equal(r.getSource(), "Get help");
-        test.equal(r.getKey(), "r1035647778");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Get help");
+        expect(r.getKey()).toBe("r1035647778");
         r = set.getBySource("Colleagues are standing by to help");
-        test.ok(r);
-        test.equal(r.getSource(), "Colleagues are standing by to help");
-        test.equal(r.getKey(), "r688256348");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Colleagues are standing by to help");
+        expect(r.getKey()).toBe("r688256348");
         r = set.getBySource("Ask your co-workers now");
-        test.ok(r);
-        test.equal(r.getSource(), "Ask your co-workers now");
-        test.equal(r.getKey(), "r575590209");
-
-        test.done();
-    },
-
-    testHTMLFileExtractFileFullyExtracted2: function(test) {
-        test.expect(11);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Ask your co-workers now");
+        expect(r.getKey()).toBe("r575590209");
+    });
+    test("HTMLFileExtractFileFullyExtracted2", function() {
+        expect.assertions(11);
         var base = path.dirname(module.id);
-
         var htf = new HTMLFile({
             project: p,
             pathName: "./html/mode.html",
             type: t
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         // should read the file
         htf.extract();
-
         var set = htf.getTranslationSet();
-
-        test.equal(set.size(), 3);
-
+        expect(set.size()).toBe(3);
         var r = set.getBySource("Choose a meeting method");
-        test.ok(r);
-        test.equal(r.getSource(), "Choose a meeting method");
-        test.equal(r.getKey(), "r950833718");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Choose a meeting method");
+        expect(r.getKey()).toBe("r950833718");
         r = set.getBySource("Test phrase");
-        test.ok(r);
-        test.equal(r.getSource(), "Test phrase");
-        test.equal(r.getKey(), "r103886803");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test phrase");
+        expect(r.getKey()).toBe("r103886803");
         r = set.getBySource("In Person Mode");
-        test.ok(r);
-        test.equal(r.getSource(), "In Person Mode");
-        test.equal(r.getKey(), "r251839517");
-
-        test.done();
-    },
-
-    testHTMLFileExtractFileNewResources: function(test) {
-        test.expect(16);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("In Person Mode");
+        expect(r.getKey()).toBe("r251839517");
+    });
+    test("HTMLFileExtractFileNewResources", function() {
+        expect.assertions(16);
         var base = path.dirname(module.id);
-
         var p3 = new CustomProject({
             name: "foo",
             id: "foo",
@@ -2675,19 +2062,15 @@ module.exports.htmlfile = {
             locales:["en-GB"],
             targetDir: "testfiles"
         });
-
         var t2 = new HTMLFileType(p3);
         var htf = new HTMLFile({
             project: p3,
             pathName: "./html/mode.html",
             type: t2
         });
-        test.ok(htf);
-
+        expect(htf).toBeTruthy();
         htf.extract();
-
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: "r950833718",
@@ -2697,7 +2080,6 @@ module.exports.htmlfile = {
             targetLocale: "fr-FR",
             datatype: "html"
         }));
-
         var actual = htf.localizeText(translations, "fr-FR");
         var expected =
             '<div class="askHeader">\n' +
@@ -2716,44 +2098,36 @@ module.exports.htmlfile = {
             '      </div>\n' +
             '      <div class="name"></div>\n' +
             '      <div class="specialty"></div>\n' +
-            '      Ťëšţ þĥŕàšë543210\n' +
+            '      [Ťëšţ þĥŕàšë543210]\n' +
             '    </div>\n' +
             '    <div class="modeSelection">\n' +
             '      <div class="modeContents">\n' +
-            '        <h4>Ïñ Pëŕšõñ Mõðë6543210</h4>\n' +
+            '        <h4>[Ïñ Pëŕšõñ Mõðë6543210]</h4>\n' +
             '        <p class="description"></p>\n' +
             '      </div>\n' +
             '    </div><div class="divider"></div>\n' +
             '  </div>\n' +
             '</div>\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
+        expect(actual).toBe(expected);
         var set = t2.newres;
         var resources = set.getAll();
-
-        test.equal(resources.length, 2);
-
+        expect(resources.length).toBe(2);
         var r = set.getBySource("Choose a meeting method");
-        test.ok(!r);
-
+        expect(!r).toBeTruthy();
         r = set.getBySource("Test phrase");
-        test.ok(r);
-        test.equal(resources[0].getKey(), "r103886803");
-        test.equal(resources[0].getSource(), "Test phrase");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "Test phrase");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
-
+        expect(r).toBeTruthy();
+        expect(resources[0].getKey()).toBe("r103886803");
+        expect(resources[0].getSource()).toBe("Test phrase");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("Test phrase");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
         r = set.getBySource("In Person Mode");
-        test.ok(r);
-        test.equal(resources[1].getKey(), "r251839517");
-        test.equal(resources[1].getSource(), "In Person Mode");
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.equal(resources[1].getTarget(), "In Person Mode");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
-
-        test.done();
-    }
-};
+        expect(r).toBeTruthy();
+        expect(resources[1].getKey()).toBe("r251839517");
+        expect(resources[1].getSource()).toBe("In Person Mode");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTarget()).toBe("In Person Mode");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
+    });
+});
