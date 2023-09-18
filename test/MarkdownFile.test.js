@@ -1,7 +1,7 @@
 /*
- * testMarkdownFile.js - test the Markdown file handler object.
+ * MarkdownFile.test.js - test the Markdown file handler object.
  *
- * Copyright © 2019-2022, Box, Inc.
+ * Copyright © 2019- 2022-2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 var path = require("path");
 var fs = require("fs");
-
 if (!MarkdownFile) {
     var MarkdownFile = require("../MarkdownFile.js");
     var MarkdownFileType = require("../MarkdownFileType.js");
-
     var CustomProject = require("loctool/lib/CustomProject.js");
     var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
     var TranslationSet = require("loctool/lib/TranslationSet.js");
     var ResourceString = require("loctool/lib/ResourceString.js");
 }
-
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
-
     for (var i = 0; i < min; i++) {
         if (a[i] !== b[i]) {
             console.log("Found difference at character " + i);
@@ -42,7 +37,6 @@ function diff(a, b) {
         }
     }
 }
-
 var p = new CustomProject({
     name: "foo",
     id: "foo",
@@ -52,10 +46,8 @@ var p = new CustomProject({
     locales:["en-GB"],
     targetDir: "./test/testfiles"
 });
-
 var mdft = new MarkdownFileType(p);
 var base = path.dirname(module.id);
-
 var p2 = new CustomProject({
     sourceLocale: "en-US",
     id: "foo",
@@ -66,9 +58,7 @@ var p2 = new CustomProject({
     targetDir: "./test/testfiles",
     identify: true
 });
-
 var mdft2 = new MarkdownFileType(p2);
-
 var p3 = new CustomProject({
     sourceLocale: "en-US",
     id: "foo",
@@ -115,1335 +105,928 @@ var p3 = new CustomProject({
     }
 });
 var mdft3 = new MarkdownFileType(p3);
-
-module.exports.markdown = {
-    testMarkdownFileConstructor: function(test) {
-        test.expect(1);
-
+describe("markdown", function() {
+    test("MarkdownFileConstructor", function() {
+        expect.assertions(1);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
-        test.done();
-    },
-
-    testMarkdownFileConstructorParams: function(test) {
-        test.expect(1);
-
+        expect(mf).toBeTruthy();
+    });
+    test("MarkdownFileConstructorParams", function() {
+        expect.assertions(1);
         var mf = new MarkdownFile({
             project: p,
             pathName: "./testfiles/md/test1.md",
             type: mdft
         });
-
-        test.ok(mf);
-
-        test.done();
-    },
-
-    testMarkdownFileConstructorNoFile: function(test) {
-        test.expect(1);
-
+        expect(mf).toBeTruthy();
+    });
+    test("MarkdownFileConstructorNoFile", function() {
+        expect.assertions(1);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
-        test.done();
-    },
-
-
-    testMarkdownFileMakeKey: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+    });
+    test("MarkdownFileMakeKey", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("This is a test"), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeySimpleTexts1: function(test) {
-        test.expect(5);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("This is a test")).toBe("r654479252");
+    });
+    test("MarkdownFileMakeKeySimpleTexts1", function() {
+        expect.assertions(5);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Preferences in your profile"), "r372802078");
-        test.equal(mdf.makeKey("All settings"), "r725930887");
-        test.equal(mdf.makeKey("Colour scheme"), "r734599412");
-        test.equal(mdf.makeKey("Experts"), "r343852585");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyUnescaped: function(test) {
-        test.expect(5);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Preferences in your profile")).toBe("r372802078");
+        expect(mdf.makeKey("All settings")).toBe("r725930887");
+        expect(mdf.makeKey("Colour scheme")).toBe("r734599412");
+        expect(mdf.makeKey("Experts")).toBe("r343852585");
+    });
+    test("MarkdownFileMakeKeyUnescaped", function() {
+        expect.assertions(5);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("foo \\n \\t bar"), "r206710698");
-        test.equal(mdf.makeKey("\\n \\t bar"), "r601615571");
-        test.equal(mdf.makeKey("The \\'Dude\\' played by Jeff Bridges"), "r600298088");
-        test.equal(mdf.makeKey("\\'Dude\\'"), "r6259609");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeySimpleTexts2: function(test) {
-        test.expect(6);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("foo \\n \\t bar")).toBe("r206710698");
+        expect(mdf.makeKey("\\n \\t bar")).toBe("r601615571");
+        expect(mdf.makeKey("The \\'Dude\\' played by Jeff Bridges")).toBe("r600298088");
+        expect(mdf.makeKey("\\'Dude\\'")).toBe("r6259609");
+    });
+    test("MarkdownFileMakeKeySimpleTexts2", function() {
+        expect.assertions(6);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Procedures"), "r807691021");
-        test.equal(mdf.makeKey("Mobile Apps"), "r898923204");
-        test.equal(mdf.makeKey("Settings in your profile"), "r618035987");
-        test.equal(mdf.makeKey("Product Reviews"), "r175350918");
-        test.equal(mdf.makeKey("Answers"), "r221604632");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeySimpleTexts3: function(test) {
-        test.expect(9);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Procedures")).toBe("r807691021");
+        expect(mdf.makeKey("Mobile Apps")).toBe("r898923204");
+        expect(mdf.makeKey("Settings in your profile")).toBe("r618035987");
+        expect(mdf.makeKey("Product Reviews")).toBe("r175350918");
+        expect(mdf.makeKey("Answers")).toBe("r221604632");
+    });
+    test("MarkdownFileMakeKeySimpleTexts3", function() {
+        expect.assertions(9);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Private Profile"), "r314592735");
-        test.equal(mdf.makeKey("People you are connected to"), "r711926199");
-        test.equal(mdf.makeKey("Notifications"), "r284964820");
-        test.equal(mdf.makeKey("News"), "r613036745");
-        test.equal(mdf.makeKey("More Tips"), "r216617786");
-        test.equal(mdf.makeKey("Filters"), "r81370429");
-        test.equal(mdf.makeKey("Referral Link"), "r140625167");
-        test.equal(mdf.makeKey("Questions"), "r256277957");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyEscapes: function(test) {
-        test.expect(3);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Private Profile")).toBe("r314592735");
+        expect(mdf.makeKey("People you are connected to")).toBe("r711926199");
+        expect(mdf.makeKey("Notifications")).toBe("r284964820");
+        expect(mdf.makeKey("News")).toBe("r613036745");
+        expect(mdf.makeKey("More Tips")).toBe("r216617786");
+        expect(mdf.makeKey("Filters")).toBe("r81370429");
+        expect(mdf.makeKey("Referral Link")).toBe("r140625167");
+        expect(mdf.makeKey("Questions")).toBe("r256277957");
+    });
+    test("MarkdownFileMakeKeyEscapes", function() {
+        expect.assertions(3);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Can\'t find id"), "r743945592");
-        test.equal(mdf.makeKey("Can\'t find an application for SMS"), "r909283218");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyPunctuation: function(test) {
-        test.expect(8);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Can\'t find id")).toBe("r743945592");
+        expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
+    });
+    test("MarkdownFileMakeKeyPunctuation", function() {
+        expect.assertions(8);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("{name}({generic_name})"), "r300446104");
-        test.equal(mdf.makeKey("{name}, {sharer_name} {start}found this interesting{end}"), "r8321889");
-        test.equal(mdf.makeKey("{sharer_name} {start}found this interesting{end}"), "r639868344");
-        test.equal(mdf.makeKey("Grow your Network"), "r895214324");
-        test.equal(mdf.makeKey("Failed to send connection request!"), "r1015770123");
-        test.equal(mdf.makeKey("{goal_name} Goals"), "r993422001");
-        test.equal(mdf.makeKey("Connection link copied!"), "r180897411");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeySameStringMeansSameKey: function(test) {
-        test.expect(3);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("{name}({generic_name})")).toBe("r300446104");
+        expect(mdf.makeKey("{name}, {sharer_name} {start}found this interesting{end}")).toBe("r8321889");
+        expect(mdf.makeKey("{sharer_name} {start}found this interesting{end}")).toBe("r639868344");
+        expect(mdf.makeKey("Grow your Network")).toBe("r895214324");
+        expect(mdf.makeKey("Failed to send connection request!")).toBe("r1015770123");
+        expect(mdf.makeKey("{goal_name} Goals")).toBe("r993422001");
+        expect(mdf.makeKey("Connection link copied!")).toBe("r180897411");
+    });
+    test("MarkdownFileMakeKeySameStringMeansSameKey", function() {
+        expect.assertions(3);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("This is a test"), "r654479252");
-        test.equal(mdf.makeKey("This is a test"), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyCompressWhiteSpace: function(test) {
-        test.expect(5);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("This is a test")).toBe("r654479252");
+        expect(mdf.makeKey("This is a test")).toBe("r654479252");
+    });
+    test("MarkdownFileMakeKeyCompressWhiteSpace", function() {
+        expect.assertions(5);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(mdf.makeKey("Can\'t    find               id"), "r743945592");
-
-        test.equal(mdf.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(mdf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS"), "r909283218");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyTrimWhiteSpace: function(test) {
-        test.expect(5);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Can\'t find  id")).toBe("r743945592");
+        expect(mdf.makeKey("Can\'t    find               id")).toBe("r743945592");
+        expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
+        expect(mdf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS")).toBe("r909283218");
+    });
+    test("MarkdownFileMakeKeyTrimWhiteSpace", function() {
+        expect.assertions(5);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(mdf.makeKey("      Can\'t find  id "), "r743945592");
-
-        test.equal(mdf.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(mdf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r"), "r909283218");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyNewLines: function(test) {
-        test.expect(2);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Can\'t find  id")).toBe("r743945592");
+        expect(mdf.makeKey("      Can\'t find  id ")).toBe("r743945592");
+        expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
+        expect(mdf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r")).toBe("r909283218");
+    });
+    test("MarkdownFileMakeKeyNewLines", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
+        expect(mdf).toBeTruthy();
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equal(mdf.makeKey("A \n B"), "r191336864");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyEscapeN: function(test) {
-        test.expect(2);
-
+        expect(mdf.makeKey("A \n B")).toBe("r191336864");
+    });
+    test("MarkdownFileMakeKeyEscapeN", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
+        expect(mdf).toBeTruthy();
         // \n is not a return character in MD. It is just an escaped "n"
-        test.equal(mdf.makeKey("A \\n B"), "r968833504");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyTabs: function(test) {
-        test.expect(2);
-
+        expect(mdf.makeKey("A \\n B")).toBe("r968833504");
+    });
+    test("MarkdownFileMakeKeyTabs", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("A \t B"), "r191336864");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyEscapeT: function(test) {
-        test.expect(2);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("A \t B")).toBe("r191336864");
+    });
+    test("MarkdownFileMakeKeyEscapeT", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
+        expect(mdf).toBeTruthy();
         // \t is not a tab character in MD. It is just an escaped "t"
-        test.equal(mdf.makeKey("A \\t B"), "r215504705");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyQuotes: function(test) {
-        test.expect(2);
-
+        expect(mdf.makeKey("A \\t B")).toBe("r215504705");
+    });
+    test("MarkdownFileMakeKeyQuotes", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("A \\'B\\' C"), "r935639115");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
-        test.expect(2);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("A \\'B\\' C")).toBe("r935639115");
+    });
+    test("MarkdownFileMakeKeyInterpretEscapedUnicodeChars", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("&#x00A0; &#x0023;"), "r2293235");
-
-        test.done();
-    },
-
-    testMarkdownFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
-        test.expect(2);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("&#x00A0; &#x0023;")).toBe("r2293235");
+    });
+    test("MarkdownFileMakeKeyInterpretEscapedSpecialChars2", function() {
+        expect.assertions(2);
         var mdf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mdf);
-
-        test.equal(mdf.makeKey("Talk to a support representative live 24/7 via video or &#x00a0; text&#x00a0;chat"), "r969175354");
-
-        test.done();
-    },
-
-    testMarkdownFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
-
+        expect(mdf).toBeTruthy();
+        expect(mdf.makeKey("Talk to a support representative live 24/7 via video or &#x00a0; text&#x00a0;chat")).toBe("r969175354");
+    });
+    test("MarkdownFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\nThis is a test too\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("foo", "en-US", "r654479252", "markdown"));
-        test.ok(r);
-
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("MarkdownFileParseSimpleGetBySource", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\nThis is a test too\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("MarkdownFileParseSimpleIgnoreWhitespace", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test            \t   \t     \n\nThis is a test too\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileParseDontExtractUnicodeWhitespace: function(test) {
-        test.expect(3);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("MarkdownFileParseDontExtractUnicodeWhitespace", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // contains U+00A0 non-breaking space and other Unicode space characters
         mf.parse('            ​‌‍ \n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseDontExtractNbspEntity: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileParseDontExtractNbspEntity", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('&nbsp; &#xA0; \n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseDoExtractOtherEntities: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileParseDoExtractOtherEntities", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('&uuml;\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testMarkdownFileParseEmpty: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+    });
+    test("MarkdownFileParseEmpty", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(' \n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseSkipHeader: function(test) {
-        test.expect(3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileParseSkipHeader", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseSkipHeaderAndParseRest: function(test) {
-        test.expect(6);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileParseSkipHeaderAndParseRest", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n\nThis is a test\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNoStrings: function(test) {
-        test.expect(3);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("MarkdownFileParseNoStrings", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('\n     \n\t\t\t\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileParseSimpleRightSize: function(test) {
-        test.expect(4);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileParseSimpleRightSize", function() {
+        expect.assertions(4);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         var set = mf.getTranslationSet();
-        test.equal(set.size(), 0);
-
+        expect(set.size()).toBe(0);
         mf.parse('This is a test\n\n');
-
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
-        test.done();
-    },
-
-    testMarkdownFileParseMultiple: function(test) {
-        test.expect(8);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+    });
+    test("MarkdownFileParseMultiple", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\n' +
                   'This is also a test\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testMarkdownFileParseContinuedParagraph: function(test) {
-        test.expect(7);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("r999080996");
+    });
+    test("MarkdownFileParseContinuedParagraph", function() {
+        expect.assertions(7);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test.\n' +
                   'This is also a test.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test.\nThis is also a test.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test.\nThis is also a test.");
-        test.equal(r.getKey(), "r770271164");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test.\nThis is also a test.");
+        expect(r.getKey()).toBe("r770271164");
         r = set.getBySource("This is a test.");
-        test.ok(!r);
-
+        expect(!r).toBeTruthy();
         r = set.getBySource("This is also a test.");
-        test.ok(!r);
-
-        test.done();
-    },
-
-
-    testMarkdownFileParseWithDups: function(test) {
-        test.expect(6);
-
+        expect(!r).toBeTruthy();
+    });
+    test("MarkdownFileParseWithDups", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\n' +
                   'This is also a test\n\n' +
                   'This is a test\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.equal(set.size(), 2);
-
-        test.done();
-    },
-
-    testMarkdownFileParseEscapeInvalidChars: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+        expect(set.size()).toBe(2);
+    });
+    test("MarkdownFileParseEscapeInvalidChars", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is also a &#x3; test\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should use html entities to represent the invalid control chars
         var r = set.getBySource("This is also a &#3; test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a &#3; test");
-        test.equal(r.getKey(), "r1041204778");
-
-        test.done();
-    },
-
-    testMarkdownFileParseDontEscapeWhitespaceChars: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a &#3; test");
+        expect(r.getKey()).toBe("r1041204778");
+    });
+    test("MarkdownFileParseDontEscapeWhitespaceChars", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is also a &#x000C; test\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // leave the whitespace control chars alone
         var r = set.getBySource("This is also a \u000C test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a \u000C test");
-        test.equal(r.getKey(), "r999080996");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingEmphasis: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a \u000C test");
+        expect(r.getKey()).toBe("r999080996");
+    });
+    test("MarkdownFileParseNonBreakingEmphasis", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a *test* of the emergency parsing system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0>test</c0> of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0>test</c0> of the emergency parsing system.");
-        test.equal(r.getKey(), "r306365966");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNestedNonBreakingEmphasis: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0>test</c0> of the emergency parsing system.");
+        expect(r.getKey()).toBe("r306365966");
+    });
+    test("MarkdownFileParseNestedNonBreakingEmphasis", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This _is a *test* of the emergency parsing_ system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This <c0>is a <c1>test</c1> of the emergency parsing</c0> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This <c0>is a <c1>test</c1> of the emergency parsing</c0> system.");
-        test.equal(r.getKey(), "r96403243");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNestedAndSequentialNonBreakingEmphasis: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This <c0>is a <c1>test</c1> of the emergency parsing</c0> system.");
+        expect(r.getKey()).toBe("r96403243");
+    });
+    test("MarkdownFileParseNestedAndSequentialNonBreakingEmphasis", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This _is a *test* of the_ *emergency parsing* system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This <c0>is a <c1>test</c1> of the</c0> <c2>emergency parsing</c2> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This <c0>is a <c1>test</c1> of the</c0> <c2>emergency parsing</c2> system.");
-        test.equal(r.getKey(), "r456647808");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingLinks: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This <c0>is a <c1>test</c1> of the</c0> <c2>emergency parsing</c2> system.");
+        expect(r.getKey()).toBe("r456647808");
+    });
+    test("MarkdownFileParseNonBreakingLinks", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the [emergency parsing](http://foo.com/bar/asdf.html) system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the <c0>emergency parsing</c0> system.");
-        test.equal(r.getKey(), "r848003676");
-
-        test.done();
-    },
-
-    testMarkdownFileParseReferenceLinksWithTitle: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r.getKey()).toBe("r848003676");
+    });
+    test("MarkdownFileParseReferenceLinksWithTitle", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the [emergency parsing][emer_sys] system.\n\n' +
             '[emer_sys]: http://www.test.com/\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the <c0>emergency parsing</c0> system.");
-        test.equal(r.getKey(), "r848003676");
-
-        test.done();
-    },
-
-    testMarkdownFileParseReferenceLinksWithoutTitle: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r.getKey()).toBe("r848003676");
+    });
+    test("MarkdownFileParseReferenceLinksWithoutTitle", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the [emergency parsing] system.\n\n' +
             '[emergency parsing]: http://www.test.com/\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the <c0>emergency parsing</c0> system.");
-        test.equal(r.getKey(), "r848003676");
-
-        test.done();
-    },
-
-    testMarkdownFileParseDontExtractURLOnlyLinks: function(test) {
-        test.expect(7);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r.getKey()).toBe("r848003676");
+    });
+    test("MarkdownFileParseDontExtractURLOnlyLinks", function() {
+        expect.assertions(7);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'Here are some links:\n\n' +
             '* [http://www.box.com/foobar](http://www.box.com/foobar)\n' +
             '* [http://www.box.com/asdf](http://www.box.com/asdf)\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("Here are some links:");
-        test.ok(r);
-        test.equal(r.getSource(), "Here are some links:");
-        test.equal(r.getKey(), "r539503678");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Here are some links:");
+        expect(r.getKey()).toBe("r539503678");
         // the URLs should not be extracted if they are the only thing in the string
         r = set.getBySource("http://www.box.com/foobar");
-        test.ok(!r);
-
-        test.done();
-    },
-
-    testMarkdownFileParseTurnOnURLOnlyLinks: function(test) {
-        test.expect(12);
-
+        expect(!r).toBeTruthy();
+    });
+    test("MarkdownFileParseTurnOnURLOnlyLinks", function() {
+        expect.assertions(12);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'Here are some links:\n\n' +
             '<!-- i18n-enable localize-links -->\n' +
             '* [http://www.box.com/foobar](http://www.box.com/foobar)\n' +
             '* [http://www.box.com/asdf](http://www.box.com/asdf)\n' +
             '<!-- i18n-disable localize-links -->\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
         var r = set.getBySource("Here are some links:");
-        test.ok(r);
-        test.equal(r.getSource(), "Here are some links:");
-        test.equal(r.getKey(), "r539503678");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Here are some links:");
+        expect(r.getKey()).toBe("r539503678");
         // the URLs should be extracted because we turned on link localization
         r = set.getBySource("http://www.box.com/foobar");
-        test.ok(r);
-        test.equal(r.getSource(), "http://www.box.com/foobar");
-        test.equal(r.getKey(), "r803907207");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://www.box.com/foobar");
+        expect(r.getKey()).toBe("r803907207");
         r = set.getBySource("http://www.box.com/asdf");
-        test.ok(r);
-        test.equal(r.getSource(), "http://www.box.com/asdf");
-        test.equal(r.getKey(), "r247450278");
-
-        test.done();
-    },
-
-    testMarkdownFileParseTurnOnDirectLinks: function(test) {
-        test.expect(18);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://www.box.com/asdf");
+        expect(r.getKey()).toBe("r247450278");
+    });
+    test("MarkdownFileParseTurnOnDirectLinks", function() {
+        expect.assertions(18);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'Here are some links:\n\n' +
             '<!-- i18n-enable localize-links -->\n' +
             '* This is [foobar](http://www.box.com/foobar)\n' +
             '* And here is [asdf](http://www.box.com/asdf)\n' +
             '<!-- i18n-disable localize-links -->\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 5);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(5);
         var r = set.getBySource("Here are some links:");
-        test.ok(r);
-        test.equal(r.getSource(), "Here are some links:");
-        test.equal(r.getKey(), "r539503678");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Here are some links:");
+        expect(r.getKey()).toBe("r539503678");
         // the URLs should be extracted because we turned on link localization
         r = set.getBySource("This is <c0>foobar</c0>");
-        test.ok(r);
-        test.equal(r.getSource(), "This is <c0>foobar</c0>");
-        test.equal(r.getKey(), "r924705194");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is <c0>foobar</c0>");
+        expect(r.getKey()).toBe("r924705194");
         r = set.getBySource("And here is <c0>asdf</c0>");
-        test.ok(r);
-        test.equal(r.getSource(), "And here is <c0>asdf</c0>");
-        test.equal(r.getKey(), "r655195000");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("And here is <c0>asdf</c0>");
+        expect(r.getKey()).toBe("r655195000");
         r = set.getBySource("http://www.box.com/foobar");
-        test.ok(r);
-        test.equal(r.getSource(), "http://www.box.com/foobar");
-        test.equal(r.getKey(), "r803907207");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://www.box.com/foobar");
+        expect(r.getKey()).toBe("r803907207");
         r = set.getBySource("http://www.box.com/asdf");
-        test.ok(r);
-        test.equal(r.getSource(), "http://www.box.com/asdf");
-        test.equal(r.getKey(), "r247450278");
-
-        test.done();
-    },
-
-    testMarkdownFileParseDoExtractURLLinksMidString: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://www.box.com/asdf");
+        expect(r.getKey()).toBe("r247450278");
+    });
+    test("MarkdownFileParseDoExtractURLLinksMidString", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing [http://www.box.com/foobar](http://www.box.com/foobar) system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.");
-        test.equal(r.getKey(), "r598935364");
-
-        test.done();
-    },
-
-    testMarkdownFileParseReferences: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.");
+        expect(r.getKey()).toBe("r598935364");
+    });
+    test("MarkdownFileParseReferences", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing [C1] system.\n\n' +
                 '[C1]: http://www.box.com/foobar\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0>C1</c0> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing <c0>C1</c0> system.");
-        test.equal(r.getKey(), "r475244008");
-
-        test.done();
-    },
-
-    testMarkdownFileParseFootnotes: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0>C1</c0> system.");
+        expect(r.getKey()).toBe("r475244008");
+    });
+    test("MarkdownFileParseFootnotes", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
                 '[^1]: well, not really\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing <c0/> system.");
-        test.equal(r.getKey(), "r1010312382");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0/> system.");
+        expect(r.getKey()).toBe("r1010312382");
         var r = set.getBySource("well, not really");
-        test.ok(r);
-        test.equal(r.getSource(), "well, not really");
-        test.equal(r.getKey(), "r472274968");
-
-        test.done();
-    },
-
-    testMarkdownFileParseFootnotesLongname: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("well, not really");
+        expect(r.getKey()).toBe("r472274968");
+    });
+    test("MarkdownFileParseFootnotesLongname", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing [^longname] system.\n\n' +
                 '[^longname]: well, not really\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing <c0/> system.");
-        test.equal(r.getKey(), "r1010312382");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0/> system.");
+        expect(r.getKey()).toBe("r1010312382");
         var r = set.getBySource("well, not really");
-        test.ok(r);
-        test.equal(r.getSource(), "well, not really");
-        test.equal(r.getKey(), "r472274968");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingInlineCode: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("well, not really");
+        expect(r.getKey()).toBe("r472274968");
+    });
+    test("MarkdownFileParseNonBreakingInlineCode", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the `inline code` system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the <c0/> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the <c0/> system.");
-        test.equal(r.getComment(), "c0 will be replaced with the inline code `inline code`.");
-        test.equal(r.getKey(), "r405516144");
-
-        test.done();
-    },
-
-    testMarkdownFileParseMultipleNonBreakingInlineCodes: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0/> system.");
+        expect(r.getComment()).toBe("c0 will be replaced with the inline code `inline code`.");
+        expect(r.getKey()).toBe("r405516144");
+    });
+    test("MarkdownFileParseMultipleNonBreakingInlineCodes", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a `test` of the `inline code` system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0/> of the <c1/> system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0/> of the <c1/> system.");
-        test.equal(r.getComment(), "c0 will be replaced with the inline code `test`. c1 will be replaced with the inline code `inline code`.");
-        test.equal(r.getKey(), "r960448365");
-
-        test.done();
-    },
-
-    testMarkdownFileParseInlineCodeByItself: function(test) {
-        test.expect(9);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0/> of the <c1/> system.");
+        expect(r.getComment()).toBe("c0 will be replaced with the inline code `test`. c1 will be replaced with the inline code `inline code`.");
+        expect(r.getKey()).toBe("r960448365");
+    });
+    test("MarkdownFileParseInlineCodeByItself", function() {
+        expect.assertions(9);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'This is a test of the inline code system.\n' +
             '\n' +
             '`inline code`\n' +
             '\n' +
             'Sentence after.');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         // should not extract the inline code by itself
         var r = set.getBySource("This is a test of the inline code system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the inline code system.");
-        test.equal(r.getKey(), "r41637229");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the inline code system.");
+        expect(r.getKey()).toBe("r41637229");
         r = set.getBySource("Sentence after.");
-        test.ok(r);
-        test.equal(r.getSource(), "Sentence after.");
-        test.equal(r.getKey(), "r16227039");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingHTMLTags: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Sentence after.");
+        expect(r.getKey()).toBe("r16227039");
+    });
+    test("MarkdownFileParseNonBreakingHTMLTags", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0>test</c0> of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0>test</c0> of the emergency parsing system.");
-        test.equal(r.getKey(), "r306365966");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingHTMLTagsOutside: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0>test</c0> of the emergency parsing system.");
+        expect(r.getKey()).toBe("r306365966");
+    });
+    test("MarkdownFileParseNonBreakingHTMLTagsOutside", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<em>This is a test of the emergency parsing system.</em>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingSelfClosingHTMLTags: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("MarkdownFileParseNonBreakingSelfClosingHTMLTags", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<em>This is a test of the <br> emergency parsing system.</em>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the <c0/> emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the <c0/> emergency parsing system.");
-        test.equal(r.getKey(), "r1070934855");
-
-        test.done();
-    },
-
-    testMarkdownFileParseBreakingSelfClosedHTMLTags: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0/> emergency parsing system.");
+        expect(r.getKey()).toBe("r1070934855");
+    });
+    test("MarkdownFileParseBreakingSelfClosedHTMLTags", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<em>This is a test of the <p/> emergency parsing system.</em>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the");
-        test.equal(r.getKey(), "r593084440");
-
-        test.done();
-    },
-
-    testMarkdownFileParseBreakingNotClosedHTMLTags: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the");
+        expect(r.getKey()).toBe("r593084440");
+    });
+    test("MarkdownFileParseBreakingNotClosedHTMLTags", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<em>This is a test of the <p> emergency parsing system.</em>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the");
-        test.equal(r.getKey(), "r593084440");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingSelfClosedHTMLTags: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the");
+        expect(r.getKey()).toBe("r593084440");
+    });
+    test("MarkdownFileParseNonBreakingSelfClosedHTMLTags", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<em>This is a test of the <br/> emergency parsing system.</em>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the <c0/> emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the <c0/> emergency parsing system.");
-        test.equal(r.getKey(), "r1070934855");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingIgnoreComplexIrrelevant: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0/> emergency parsing system.");
+        expect(r.getKey()).toBe("r1070934855");
+    });
+    test("MarkdownFileParseNonBreakingIgnoreComplexIrrelevant", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('*_ <span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.   _*\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up any of the non-breaking tags because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testMarkdownFileParseHTMLWithValuelessAttributes: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("MarkdownFileParseHTMLWithValuelessAttributes", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<span class="foo" checked>This is a test of the emergency parsing system.</span>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should not pick up any of the non-breaking tags because there is no localizable text
         // before it or after it
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFlowStyleHTMLTags: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("MarkdownFileParseWithFlowStyleHTMLTags", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
             "This is a string that should be extracted.\n" +
             "</message>\n"
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         r = set.getBySource("This is a string that should be extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a string that should be extracted.");
-        test.equal(r.getKey(), "r134469253");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFlowStyleHTMLTagsMultiple: function(test) {
-        test.expect(9);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a string that should be extracted.");
+        expect(r.getKey()).toBe("r134469253");
+    });
+    test("MarkdownFileParseWithFlowStyleHTMLTagsMultiple", function() {
+        expect.assertions(9);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
             "This is a string that should be extracted.\n" +
@@ -1452,34 +1035,25 @@ module.exports.markdown = {
             "This is another string that should be extracted.\n" +
             "</message>\n"
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         r = set.getBySource("This is a string that should be extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a string that should be extracted.");
-        test.equal(r.getKey(), "r134469253");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a string that should be extracted.");
+        expect(r.getKey()).toBe("r134469253");
         r = set.getBySource("This is another string that should be extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is another string that should be extracted.");
-        test.equal(r.getKey(), "r142202207");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFlowStyleHTMLTagsMultipleWithTextInBetween: function(test) {
-        test.expect(12);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is another string that should be extracted.");
+        expect(r.getKey()).toBe("r142202207");
+    });
+    test("MarkdownFileParseWithFlowStyleHTMLTagsMultipleWithTextInBetween", function() {
+        expect.assertions(12);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
             "This is a string that should be extracted.\n" +
@@ -1489,512 +1063,366 @@ module.exports.markdown = {
             "This is another string that should be extracted.\n" +
             "</message>\n"
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
         r = set.getBySource("This is a string that should be extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a string that should be extracted.");
-        test.equal(r.getKey(), "r134469253");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a string that should be extracted.");
+        expect(r.getKey()).toBe("r134469253");
         r = set.getBySource("ab");
-        test.ok(r);
-        test.equal(r.getSource(), "ab");
-        test.equal(r.getKey(), "r889488492");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("ab");
+        expect(r.getKey()).toBe("r889488492");
         r = set.getBySource("This is another string that should be extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is another string that should be extracted.");
-        test.equal(r.getKey(), "r142202207");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is another string that should be extracted.");
+        expect(r.getKey()).toBe("r142202207");
+    });
+    test("MarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
             "This is a <em>string</em> that should be extracted.\n" +
             "</message>\n"
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         r = set.getBySource("This is a <c0>string</c0> that should be extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0>string</c0> that should be extracted.");
-        test.equal(r.getKey(), "r625837512");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedMarkdown: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0>string</c0> that should be extracted.");
+        expect(r.getKey()).toBe("r625837512");
+    });
+    test("MarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedMarkdown", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
             "This is a `string` that *should be* extracted.\n" +
             "</message>\n"
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         r = set.getBySource("This is a <c0/> that <c1>should be</c1> extracted.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a <c0/> that <c1>should be</c1> extracted.");
-        test.equal(r.getKey(), "r177384086");
-
-        test.done();
-    },
-
-    testMarkdownFileParseLists: function(test) {
-        test.expect(12);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0/> that <c1>should be</c1> extracted.");
+        expect(r.getKey()).toBe("r177384086");
+    });
+    test("MarkdownFileParseLists", function() {
+        expect.assertions(12);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '* This is a test of the emergency parsing system.\n' +
             '* This is another test.\n' +
             '* And finally, the last test.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
         var r = set.getBySource("This is another test.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is another test.");
-        test.equal(r.getKey(), "r139148599");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is another test.");
+        expect(r.getKey()).toBe("r139148599");
         var r = set.getBySource("And finally, the last test.");
-        test.ok(r);
-        test.equal(r.getSource(), "And finally, the last test.");
-        test.equal(r.getKey(), "r177500258");
-
-        test.done();
-    },
-
-    testMarkdownFileParseListWithTextBefore: function(test) {
-        test.expect(9);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("And finally, the last test.");
+        expect(r.getKey()).toBe("r177500258");
+    });
+    test("MarkdownFileParseListWithTextBefore", function() {
+        expect.assertions(9);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'This is text before the list.\n' +
             '* This is a test of the emergency parsing system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
         var r = set.getBySource("This is text before the list.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is text before the list.");
-        test.equal(r.getKey(), "r254971181");
-
-        test.done();
-    },
-
-    testMarkdownFileParseListWithTextAfter: function(test) {
-        test.expect(9);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is text before the list.");
+        expect(r.getKey()).toBe("r254971181");
+    });
+    test("MarkdownFileParseListWithTextAfter", function() {
+        expect.assertions(9);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '* This is a test of the emergency parsing system.\n\n' +
             'This is text after the list.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
         var r = set.getBySource("This is text after the list.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is text after the list.");
-        test.equal(r.getKey(), "r607073205");
-
-        test.done();
-    },
-
-    testMarkdownFileParseListWithTextAfter2: function(test) {
-        test.expect(9);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is text after the list.");
+        expect(r.getKey()).toBe("r607073205");
+    });
+    test("MarkdownFileParseListWithTextAfter2", function() {
+        expect.assertions(9);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:\n\n' +
             '* **https://cloud.app.box.com/viewer/{FileID}?options**\n\n' +
             'The File ID can be obtained from the API or from the web application user interface.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var r = set.getBySource("The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
-        test.ok(r);
-        test.equal(r.getSource(), "The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
-        test.equal(r.getKey(), "r220720707");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
+        expect(r.getKey()).toBe("r220720707");
         var r = set.getBySource("The File ID can be obtained from the API or from the web application user interface.");
-        test.ok(r);
-        test.equal(r.getSource(), "The File ID can be obtained from the API or from the web application user interface.");
-        test.equal(r.getKey(), "r198589153");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingEmphasisOutside: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("The File ID can be obtained from the API or from the web application user interface.");
+        expect(r.getKey()).toBe("r198589153");
+    });
+    test("MarkdownFileParseNonBreakingEmphasisOutside", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('*This is a test of the emergency parsing system.*\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should pick up the emphasis markers
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingHTMLTagsInside: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("MarkdownFileParseNonBreakingHTMLTagsInside", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // should pick up the span tag because there is localizable text
         // before it and after it
         var r = set.getBySource('This is <c0> a test of the emergency parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the emergency parsing </c0> system.');
-        test.equal(r.getKey(), 'r124733470');
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingHTMLTagsInsideMultiple: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the emergency parsing </c0> system.');
+        expect(r.getKey()).toBe('r124733470');
+    });
+    test("MarkdownFileParseNonBreakingHTMLTagsInsideMultiple", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // tags should be nestable
         var r = set.getBySource('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        test.equal(r.getKey(), 'r772812508');
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingTagsNotWellFormed: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
+        expect(r.getKey()).toBe('r772812508');
+    });
+    test("MarkdownFileParseNonBreakingTagsNotWellFormed", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the end span tag should automatically end the em tag
         var r = set.getBySource('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
-        test.equal(r.getKey(), 'r417724998');
-
-        test.done();
-    },
-
-    testMarkdownFileParseNonBreakingTagsTagStackIsReset: function(test) {
-        test.expect(5);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
+        expect(r.getKey()).toBe('r417724998');
+    });
+    test("MarkdownFileParseNonBreakingTagsTagStackIsReset", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<span>This is <span id="foo" class="bar"> a test of the <em>emergency parsing</em> system.</span>\n\n' +
                   'This is <b>another test</b> of the emergency parsing </span> system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the end div tag ends all the other tags
         var r = set.getBySource('This is <c0>another test</c0> of the emergency parsing');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0>another test</c0> of the emergency parsing');
-        test.equal(r.getKey(), 'r2117084');
-
-        test.done();
-    },
-
-    testMarkdownFileParseLocalizableTitle: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0>another test</c0> of the emergency parsing');
+        expect(r.getKey()).toBe('r2117084');
+    });
+    test("MarkdownFileParseLocalizableTitle", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<div title="This value is localizable">\n\n' +
                 'This is a test\n\n' +
                 '</div>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This value is localizable");
-        test.ok(r);
-        test.equal(r.getSource(), "This value is localizable");
-        test.equal(r.getKey(), "r922503175");
-
-        test.done();
-    },
-
-    testMarkdownFileParseLocalizableTitleWithSingleQuotes: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This value is localizable");
+        expect(r.getKey()).toBe("r922503175");
+    });
+    test("MarkdownFileParseLocalizableTitleWithSingleQuotes", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse("<div title='This value is localizable'>\n\n" +
                 'This is a test\n\n' +
                 '</div>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This value is localizable");
-        test.ok(r);
-        test.equal(r.getSource(), "This value is localizable");
-        test.equal(r.getKey(), "r922503175");
-
-        test.done();
-    },
-
-    testMarkdownFileParseLocalizableAttributes: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This value is localizable");
+        expect(r.getKey()).toBe("r922503175");
+    });
+    test("MarkdownFileParseLocalizableAttributes", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n' +
                 '<input type="text" placeholder="localizable placeholder here"></input>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("localizable placeholder here");
-        test.ok(r);
-        test.equal(r.getSource(), "localizable placeholder here");
-        test.equal(r.getKey(), "r734414247");
-
-        test.done();
-    },
-
-    testMarkdownFileParseLocalizableAttributesSkipEmpty: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("localizable placeholder here");
+        expect(r.getKey()).toBe("r734414247");
+    });
+    test("MarkdownFileParseLocalizableAttributesSkipEmpty", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n' +
                 '<input type="text" placeholder=""></input>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
-        test.done();
-    },
-
-    testMarkdownFileParseLocalizableAttributesAndNonBreakingTags: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+    });
+    test("MarkdownFileParseLocalizableAttributesAndNonBreakingTags", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource('This is <c0>a test</c0> of non-breaking tags.');
-        test.ok(r);
-        test.equal(r.getSource(), 'This is <c0>a test</c0> of non-breaking tags.');
-        test.equal(r.getKey(), 'r1063253939');
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('This is <c0>a test</c0> of non-breaking tags.');
+        expect(r.getKey()).toBe('r1063253939');
         r = set.getBySource("localizable title");
-        test.ok(r);
-        test.equal(r.getSource(), "localizable title");
-        test.equal(r.getKey(), "r160369622");
-
-        test.done();
-    },
-
-    testMarkdownFileParseI18NComments: function(test) {
-        test.expect(10);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("localizable title");
+        expect(r.getKey()).toBe("r160369622");
+    });
+    test("MarkdownFileParseI18NComments", function() {
+        expect.assertions(10);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<!-- i18n this describes the text below -->\n' +
                 'This is a test of the emergency parsing system.\n\n' +
                 'But not this text\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-        test.equal(r.getComment(), "this describes the text below");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+        expect(r.getComment()).toBe("this describes the text below");
         r = set.getBySource("But not this text");
-        test.ok(r);
-        test.equal(r.getSource(), "But not this text");
-        test.equal(r.getKey(), "r492109677");
-        test.ok(!r.getComment());
-
-        test.done();
-    },
-
-    testMarkdownFileParseIgnoreTags: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("But not this text");
+        expect(r.getKey()).toBe("r492109677");
+        expect(!r.getComment()).toBeTruthy();
+    });
+    test("MarkdownFileParseIgnoreTags", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '<script type="javascript">\n' +
             'if (window) {\n' +
@@ -2010,30 +1438,22 @@ module.exports.markdown = {
             '  }\n' +
             '</style>\n' +
             '<span class="foo">foo</span>\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 1);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
         var r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFrontMatterNotParsed: function(test) {
-        test.expect(10);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foo");
+        expect(r.getKey()).toBe("r941132140");
+    });
+    test("MarkdownFileParseWithFrontMatterNotParsed", function() {
+        expect.assertions(10);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "foo/bar.md"  // no frontmatter config
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'test: This is a test of the front matter\n' +
@@ -2042,40 +1462,30 @@ module.exports.markdown = {
             'This is a test\n\n' +
             'This is also a test\n'
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "r654479252");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "r999080996");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("r999080996");
         // the front matter should be ignored
         r = set.getBySource("This is a test of the front matter");
-        test.ok(!r);
-
+        expect(!r).toBeTruthy();
         r = set.getBySource("test: This is a test of the front matter");
-        test.ok(!r);
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFrontMatterExtracted: function(test) {
-        test.expect(14);
-
+        expect(!r).toBeTruthy();
+    });
+    test("MarkdownFileParseWithFrontMatterExtracted", function() {
+        expect.assertions(14);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "foo/bar/x/foo.md"
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -2085,41 +1495,33 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the front matter should be extracted because p3 has fm settings
         // turned on. The front matter is in yaml format
         var r = set.getBySource("This is a test of the front matter");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the front matter");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getKey(), "r777132775.Title");
-        test.equal(r.getPath(), "foo/bar/x/foo.md"); // should come from this file
-        test.equal(r.getDataType(), "x-yaml");
-        test.equal(r.getProject(), "foo");
-        test.equal(r.getType(), "string");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the front matter");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getKey()).toBe("r777132775.Title");
+        expect(r.getPath()).toBe("foo/bar/x/foo.md"); // should come from this file
+        expect(r.getDataType()).toBe("x-yaml");
+        expect(r.getProject()).toBe("foo");
+        expect(r.getType()).toBe("string");
         r = set.getBySource("another front matter description\nwith extended text\n");
-        test.ok(r);
-        test.equal(r.getSource(), "another front matter description\nwith extended text\n");
-        test.equal(r.getKey(), "r777132775.Description");
-        test.equal(r.getPath(), "foo/bar/x/foo.md"); // should come from this file
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFrontMatterExtractAll: function(test) {
-        test.expect(11);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("another front matter description\nwith extended text\n");
+        expect(r.getKey()).toBe("r777132775.Description");
+        expect(r.getPath()).toBe("foo/bar/x/foo.md"); // should come from this file
+    });
+    test("MarkdownFileParseWithFrontMatterExtractAll", function() {
+        expect.assertions(11);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "foo/bar/y/foo.md" // extracts all front matter fields
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -2130,44 +1532,33 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         // the front matter should be extracted because p3 has fm settings.
         // the front matter is in yaml format
         var r = set.getBySource("This is a test of the front matter");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the front matter");
-        test.equal(r.getKey(), "r318739619.Title");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the front matter");
+        expect(r.getKey()).toBe("r318739619.Title");
         r = set.getBySource("another front matter description\nwith extended text\n");
-        test.ok(r);
-        test.equal(r.getSource(), "another front matter description\nwith extended text\n");
-        test.equal(r.getKey(), "r318739619.Description");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("another front matter description\nwith extended text\n");
+        expect(r.getKey()).toBe("r318739619.Description");
         r = set.getBySource("asdf asdf asdf");
-        test.ok(r);
-        test.equal(r.getSource(), "asdf asdf asdf");
-        test.equal(r.getKey(), "r318739619.Foobar");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithFrontMatterExtractedTwoFiles: function(test) {
-        test.expect(21);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("asdf asdf asdf");
+        expect(r.getKey()).toBe("r318739619.Foobar");
+    });
+    test("MarkdownFileParseWithFrontMatterExtractedTwoFiles", function() {
+        expect.assertions(21);
         mdft3.getExtracted().clear();
-
-        test.equal(mdft3.getExtracted().size(), 0);
-
+        expect(mdft3.getExtracted().size()).toBe(0);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "foo/bar/x/foo.md"
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -2177,16 +1568,13 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         mdft3.addSet(mf.getTranslationSet());
-
         mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "foo/bar/x/foobar.md"
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is another test of the front matter\n' +
@@ -2196,146 +1584,112 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         mdft3.addSet(mf.getTranslationSet());
-
         var set = mdft3.getExtracted();
-        test.ok(set);
-
-        test.equal(set.size(), 6);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(6);
         // the front matter should be extracted because p3 has fm settings
         // turned on. The front matter is in yaml format
         var r = set.getBySource("This is a test of the front matter");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the front matter");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getKey(), "r777132775.Title");
-        test.equal(r.getPath(), "foo/bar/x/foo.md"); // should come from this file
-        test.equal(r.getDataType(), "x-yaml");
-        test.equal(r.getProject(), "foo");
-        test.equal(r.getType(), "string");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the front matter");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getKey()).toBe("r777132775.Title");
+        expect(r.getPath()).toBe("foo/bar/x/foo.md"); // should come from this file
+        expect(r.getDataType()).toBe("x-yaml");
+        expect(r.getProject()).toBe("foo");
+        expect(r.getType()).toBe("string");
         r = set.getBySource("This is another test of the front matter");
-        test.ok(r);
-        test.equal(r.getSource(), "This is another test of the front matter");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getKey(), "r456669421.Title");
-        test.equal(r.getPath(), "foo/bar/x/foobar.md"); // should come from this file
-        test.equal(r.getDataType(), "x-yaml");
-        test.equal(r.getProject(), "foo");
-        test.equal(r.getType(), "string");
-
-        test.done();
-    },
-
-    testMarkdownFileParseTable: function(test) {
-        test.expect(21);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is another test of the front matter");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getKey()).toBe("r456669421.Title");
+        expect(r.getPath()).toBe("foo/bar/x/foobar.md"); // should come from this file
+        expect(r.getDataType()).toBe("x-yaml");
+        expect(r.getProject()).toBe("foo");
+        expect(r.getType()).toBe("string");
+    });
+    test("MarkdownFileParseTable", function() {
+        expect.assertions(21);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
             "|-------------------|-----------------|\n" +
             "| Query description | Returns column  |\n" +
             "| asdf              | fdsa            |\n" +
             "| foo               | bar             |\n");
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 6);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(6);
         var r = set.getBySource("Query description");
-        test.ok(r);
-        test.equal(r.getSource(), "Query description");
-        test.equal(r.getKey(), "r744039504");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Query description");
+        expect(r.getKey()).toBe("r744039504");
         r = set.getBySource("Returns column");
-        test.ok(r);
-        test.equal(r.getSource(), "Returns column");
-        test.equal(r.getKey(), "r595024848");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Returns column");
+        expect(r.getKey()).toBe("r595024848");
         r = set.getBySource("asdf");
-        test.ok(r);
-        test.equal(r.getSource(), "asdf");
-        test.equal(r.getKey(), "r976104267");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("asdf");
+        expect(r.getKey()).toBe("r976104267");
         r = set.getBySource("fdsa");
-        test.ok(r);
-        test.equal(r.getSource(), "fdsa");
-        test.equal(r.getKey(), "r486555110");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("fdsa");
+        expect(r.getKey()).toBe("r486555110");
         r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foo");
+        expect(r.getKey()).toBe("r941132140");
         r = set.getBySource("bar");
-        test.ok(r);
-        test.equal(r.getSource(), "bar");
-        test.equal(r.getKey(), "r755240053");
-
-        test.done();
-    },
-
-    testMarkdownFileParseTableWithInlineCode: function(test) {
-        test.expect(15);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("bar");
+        expect(r.getKey()).toBe("r755240053");
+    });
+    test("MarkdownFileParseTableWithInlineCode", function() {
+        expect.assertions(15);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
             "|-------------------|-----------------|\n" +
             "| Query description | Returns column  |\n" +
             "| `asdf`            | `fdsa`          |\n" +
             "| foo               | bar             |\n");
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 4);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(4);
         var r = set.getBySource("Query description");
-        test.ok(r);
-        test.equal(r.getSource(), "Query description");
-        test.equal(r.getKey(), "r744039504");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Query description");
+        expect(r.getKey()).toBe("r744039504");
         r = set.getBySource("Returns column");
-        test.ok(r);
-        test.equal(r.getSource(), "Returns column");
-        test.equal(r.getKey(), "r595024848");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Returns column");
+        expect(r.getKey()).toBe("r595024848");
         r = set.getBySource("foo");
-        test.ok(r);
-        test.equal(r.getSource(), "foo");
-        test.equal(r.getKey(), "r941132140");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foo");
+        expect(r.getKey()).toBe("r941132140");
         r = set.getBySource("bar");
-        test.ok(r);
-        test.equal(r.getSource(), "bar");
-        test.equal(r.getKey(), "r755240053");
-
-        test.done();
-    },
-
-    testMarkdownFileParseTableWithInlineCodeAndTextAfterwards: function(test) {
-        test.expect(15);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("bar");
+        expect(r.getKey()).toBe("r755240053");
+    });
+    test("MarkdownFileParseTableWithInlineCodeAndTextAfterwards", function() {
+        expect.assertions(15);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
             "|-------------------|-----------------|\n" +
@@ -2345,168 +1699,117 @@ module.exports.markdown = {
             "## Heading Title\n" +
             "\n" +
             "Text body.\n");
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 4);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(4);
         var r = set.getBySource("Query description");
-        test.ok(r);
-        test.equal(r.getSource(), "Query description");
-        test.equal(r.getKey(), "r744039504");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Query description");
+        expect(r.getKey()).toBe("r744039504");
         r = set.getBySource("Returns column");
-        test.ok(r);
-        test.equal(r.getSource(), "Returns column");
-        test.equal(r.getKey(), "r595024848");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Returns column");
+        expect(r.getKey()).toBe("r595024848");
         r = set.getBySource("Heading Title");
-        test.ok(r);
-        test.equal(r.getSource(), "Heading Title");
-        test.equal(r.getKey(), "r931719890");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Heading Title");
+        expect(r.getKey()).toBe("r931719890");
         r = set.getBySource("Text body.");
-        test.ok(r);
-        test.equal(r.getSource(), "Text body.");
-        test.equal(r.getKey(), "r443039973");
-
-        test.done();
-    },
-
-    testMarkdownFileExtractFile: function(test) {
-        test.expect(14);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Text body.");
+        expect(r.getKey()).toBe("r443039973");
+    });
+    test("MarkdownFileExtractFile", function() {
+        expect.assertions(14);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/test1.md",
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var set = mf.getTranslationSet();
-
-        test.equal(set.size(), 4);
-
+        expect(set.size()).toBe(4);
         var r = set.getBySource("This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        test.equal(r.getKey(), "r548615397");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        expect(r.getKey()).toBe("r548615397");
         r = set.getBySource("This is some text. This is more text. Pretty, pretty text.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is some text. This is more text. Pretty, pretty text.");
-        test.equal(r.getKey(), "r777006502");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is some text. This is more text. Pretty, pretty text.");
+        expect(r.getKey()).toBe("r777006502");
         r = set.getBySource("This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        test.equal(r.getKey(), "r112215756");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        expect(r.getKey()).toBe("r112215756");
         r = set.getBySource("This is the last bit of localizable text.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is the last bit of localizable text.");
-        test.equal(r.getKey(), "r260813817");
-
-        test.done();
-    },
-
-    testMarkdownFileExtractFile2: function(test) {
-        test.expect(11);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is the last bit of localizable text.");
+        expect(r.getKey()).toBe("r260813817");
+    });
+    test("MarkdownFileExtractFile2", function() {
+        expect.assertions(11);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/test2.md",
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var set = mf.getTranslationSet();
-
-        test.equal(set.size(), 3);
-
+        expect(set.size()).toBe(3);
         var r = set.getBySource("This is text with a <c0>link</c0> in it.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is text with a <c0>link</c0> in it.");
-        test.equal(r.getKey(), "r717941707");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is text with a <c0>link</c0> in it.");
+        expect(r.getKey()).toBe("r717941707");
         r = set.getBySource("This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        test.equal(r.getKey(), "r736057533");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        expect(r.getKey()).toBe("r736057533");
         r = set.getBySource("This is a Heading");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a Heading");
-        test.equal(r.getKey(), "r728092714");
-
-        test.done();
-    },
-
-    testMarkdownFileExtractUndefinedFile: function(test) {
-        test.expect(2);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a Heading");
+        expect(r.getKey()).toBe("r728092714");
+    });
+    test("MarkdownFileExtractUndefinedFile", function() {
+        expect.assertions(2);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should attempt to read the file and not fail
         mf.extract();
-
         var set = mf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileExtractBogusFile: function(test) {
-        test.expect(2);
-
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileExtractBogusFile", function() {
+        expect.assertions(2);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/bogus.md",
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should attempt to read the file and not fail
         mf.extract();
-
         var set = mf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeText: function(test) {
-        test.expect(2);
-
+        expect(set.size()).toBe(0);
+    });
+    test("MarkdownFileLocalizeText", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2517,26 +1820,19 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "fr-FR");
         var expected = 'Ceci est un essai\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextPreserveWhitespace: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTextPreserveWhitespace", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test    \n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2547,25 +1843,17 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un essai    \n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextMultiple: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai    \n');
+    });
+    test("MarkdownFileLocalizeTextMultiple", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\n' +
                 'This is also a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2585,27 +1873,19 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-                'Ceci est un essai\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n\n' +
                 'Ceci est aussi un essai\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithDups: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextWithDups", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\n' +
                 'This is also a test\n\n' +
                 'This is a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2625,24 +1905,17 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-                'Ceci est un essai\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n\n' +
                 'Ceci est aussi un essai\n\n' +
                 'Ceci est un essai\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextSkipScript: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextSkipScript", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<script>\n' +
                 '// comment text\n' +
                 'if (locales.contains[thisLocale]) {\n' +
@@ -2651,7 +1924,6 @@ module.exports.markdown = {
                 '</script>\n' +
                 '\n' +
                 'This is a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2662,9 +1934,7 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '<script>\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('<script>\n' +
             '// comment text\n' +
             'if (locales.contains[thisLocale]) {\n' +
             '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
@@ -2672,21 +1942,15 @@ module.exports.markdown = {
             '</script>\n' +
             '\n' +
             'Ceci est un essai\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithLinks: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextWithLinks", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a [test](http://www.test.com/) of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2697,29 +1961,20 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithLinksNotTranslated: function(test) {
-        test.expect(6);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextWithLinksNotTranslated", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // make sure there are no new strings before we start
         mdft.newres.clear();
-        test.equal(mdft.newres.size(), 0);
-        test.equal(mf.getTranslationSet().size(), 0);
-
+        expect(mdft.newres.size()).toBe(0);
+        expect(mf.getTranslationSet().size()).toBe(0);
         mf.parse('This is a [test](http://www.test.com/) of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2730,38 +1985,28 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
         // the set of new translations should be empty because we did not extract the link
         var newSet = mdft.getNew();
-        test.equal(newSet.size(), 0);
-        test.equal(mf.getTranslationSet().size(), 1);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithLinksTranslatedNew: function(test) {
-        test.expect(7);
-
+        expect(newSet.size()).toBe(0);
+        expect(mf.getTranslationSet().size()).toBe(1);
+    });
+    test("MarkdownFileLocalizeTextWithLinksTranslatedNew", function() {
+        expect.assertions(7);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // make sure there are no new strings before we start
         mdft.newres.clear();
-        test.equal(mdft.newres.size(), 0);
-        test.equal(mf.getTranslationSet().size(), 0);
-
+        expect(mdft.newres.size()).toBe(0);
+        expect(mf.getTranslationSet().size()).toBe(0);
         mf.parse(
             '<!-- i18n-enable localize-links -->\n' +
             'This is a [test](http://www.test.com/) of the emergency parsing system.\n' +
             '<!-- i18n-disable localize-links -->\n'
         );
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2772,45 +2017,34 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         // no translation available for the link itself
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '<!-- i18n-enable localize-links -->\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('<!-- i18n-enable localize-links -->\n\n' +
             'Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n\n' +
             '<!-- i18n-disable localize-links -->\n'
         );
-
         // the set of new translations should now contain the link
         var newSet = mdft.getNew();
-        test.equal(newSet.size(), 1);
+        expect(newSet.size()).toBe(1);
         var resources = newSet.getAll();
-        test.equal(resources[0].getSource(), "http://www.test.com/");
-
-        test.equal(mf.getTranslationSet().size(), 2);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithLinksTranslated: function(test) {
-        test.expect(6);
-
+        expect(resources[0].getSource()).toBe("http://www.test.com/");
+        expect(mf.getTranslationSet().size()).toBe(2);
+    });
+    test("MarkdownFileLocalizeTextWithLinksTranslated", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // make sure there are no new strings before we start
         mdft.newres.clear();
-        test.equal(mdft.newres.size(), 0);
-        test.equal(mf.getTranslationSet().size(), 0);
-
+        expect(mdft.newres.size()).toBe(0);
+        expect(mf.getTranslationSet().size()).toBe(0);
         mf.parse(
             '<!-- i18n-enable localize-links -->\n' +
             'This is a [test](http://www.test.com/) of the emergency parsing system.\n' +
             '<!-- i18n-disable localize-links -->\n'
         );
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2830,33 +2064,24 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         // no translation available for the link itself
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '<!-- i18n-enable localize-links -->\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('<!-- i18n-enable localize-links -->\n\n' +
             'Ceci est un [essai](http://www.test.com/fr) du système d\'analyse syntaxique de l\'urgence.\n\n' +
             '<!-- i18n-disable localize-links -->\n'
         );
-
         // the set of new translations should not contain the link because it was already translated
         var newSet = mdft.getNew();
-        test.equal(newSet.size(), 0);
-        test.equal(mf.getTranslationSet().size(), 2);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithInlineCode: function(test) {
-        test.expect(2);
-
+        expect(newSet.size()).toBe(0);
+        expect(mf.getTranslationSet().size()).toBe(2);
+    });
+    test("MarkdownFileLocalizeTextWithInlineCode", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a `test` of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2867,24 +2092,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un `test` du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithInlineCodeAtTheEnd: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un `test` du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextWithInlineCodeAtTheEnd", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('Delete the file with this command: `git rm filename`\n');
-
         // should not optimize out inline code at the end of strings so that it can be
         // part of the text that is translated
         var translations = new TranslationSet();
@@ -2897,30 +2114,21 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Avec cette commande `git rm filename`, vous pouvez supprimer le fichier.\n');
-
-        test.done();
-    },
-
-
-    testMarkdownFileLocalizeInlineCodeByItself: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Avec cette commande `git rm filename`, vous pouvez supprimer le fichier.\n');
+    });
+    test("MarkdownFileLocalizeInlineCodeByItself", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'This is a test of the inline code system.\n' +
             '\n' +
             '`inline code`\n' +
             '\n' +
             'Sentence after.\n');
-
         // should not optimize out inline code at the end of strings so that it can be
         // part of the text that is translated
         var translations = new TranslationSet();
@@ -2942,28 +2150,20 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            "Ceci est un teste de la systeme 'inline code'.\n" +
+        expect(mf.localizeText(translations, "fr-FR")).toBe("Ceci est un teste de la systeme 'inline code'.\n" +
             '\n' +
             '`inline code`\n' +
             '\n' +
             'La phrase denier.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithLinkReference: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextWithLinkReference", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency [C1] parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2974,24 +2174,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithMultipleLinkReferences: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n');
+    });
+    test("MarkdownFileLocalizeTextWithMultipleLinkReferences", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency [C1] parsing system [R1].\n\n[C1]: https://www.box.com/test1\n[R1]: http://www.box.com/about.html\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3002,28 +2194,20 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithMultipleLocalizableLinkReferences: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
+    });
+    test("MarkdownFileLocalizeTextWithMultipleLocalizableLinkReferences", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency [C1] parsing system [R1].\n\n' +
             '<!-- i18n-enable localize-links -->\n' +
             '[C1]: https://www.box.com/test1\n' +
             '[R1]: http://www.box.com/about.html\n' +
             '<!-- i18n-disable localize-links -->\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3034,7 +2218,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: "r647537837",
@@ -3044,7 +2227,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: "r448858983",
@@ -3054,29 +2236,21 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n' +
             '<!-- i18n-enable localize-links -->\n\n' +
             '[C1]: https://www.box.com/fr/test1\n\n' +
             '[R1]: http://www.box.com/fr/about.html\n\n' +
             '<!-- i18n-disable localize-links -->\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithFootnotes: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextWithFootnotes", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
             '[^1]: well, not really\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3087,7 +2261,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: "r472274968",
@@ -3097,26 +2270,18 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [^1] de l\'urgence.\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [^1] de l\'urgence.\n\n' +
             '[^1]: normalement, c\'est pas vrai\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextWithFootnotesLongName: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextWithFootnotesLongName", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing [^longname] system.\n\n' +
             '[^longname]: well, not really\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3127,7 +2292,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: "r472274968",
@@ -3137,25 +2301,17 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un test du système d\'analyse syntaxique [^longname] de l\'urgence.\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [^longname] de l\'urgence.\n\n' +
             '[^longname]: normalement, c\'est pas vrai\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextNonBreakingTags: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextNonBreakingTags", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3166,24 +2322,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextNonBreakingTagsOutside: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextNonBreakingTagsOutside", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('*This is a test of the emergency parsing system.*\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3194,24 +2342,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '_Ceci est un essai du système d\'analyse syntaxique de l\'urgence._\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextNonBreakingTagsBeforeAndAfter: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('_Ceci est un essai du système d\'analyse syntaxique de l\'urgence._\n');
+    });
+    test("MarkdownFileLocalizeTextNonBreakingTagsBeforeAndAfter", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('*_ <span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.   _*\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3222,24 +2362,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '__ <span class="test"> <span id="foo"></span></span>  Ceci est un essai du système d\'analyse syntaxique de l\'urgence.   __\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextNonBreakingTagsInside: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('__ <span class="test"> <span id="foo"></span></span>  Ceci est un essai du système d\'analyse syntaxique de l\'urgence.   __\n');
+    });
+    test("MarkdownFileLocalizeTextNonBreakingTagsInside", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3249,24 +2381,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence. </span>\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextNonBreakingTagsInsideMultiple: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence. </span>\n');
+    });
+    test("MarkdownFileLocalizeTextNonBreakingTagsInsideMultiple", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3276,24 +2400,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextNonBreakingTagsNotWellFormed: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n');
+    });
+    test("MarkdownFileLocalizeTextNonBreakingTagsNotWellFormed", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3303,24 +2419,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-                'Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextBreakingTags: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n');
+    });
+    test("MarkdownFileLocalizeTextBreakingTags", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <p>test of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3340,24 +2448,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <p>essai du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextSelfClosedBreakingTags: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p>essai du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextSelfClosedBreakingTags", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <p/>test of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3377,24 +2477,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <p/>essai du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextSelfClosingNonBreakingTags: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p/>essai du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextSelfClosingNonBreakingTags", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <br>test of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3405,24 +2497,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <br>essai du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextSelfClosedNonBreakingTags: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br>essai du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextSelfClosedNonBreakingTags", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <br/>test of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3433,24 +2517,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <br/>essai du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextMismatchedNumberOfComponents: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br/>essai du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextMismatchedNumberOfComponents", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         // there is no c1 in the source, so this better not throw an exception
         translations.add(new ResourceString({
@@ -3462,25 +2538,17 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         // Should ignore the c1 as if it weren't there
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextMismatchedNumberOfComponentsSelfClosing: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextMismatchedNumberOfComponentsSelfClosing", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         // there is no c1 in the source, so this better not throw an exception
         translations.add(new ResourceString({
@@ -3492,25 +2560,17 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         // Should ignore the c1 as if it weren't there
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Ceci est un <em>essai</em> du système d\'analyse  syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextLocalizableTitle: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse  syntaxique de l\'urgence.\n');
+    });
+    test("MarkdownFileLocalizeTextLocalizableTitle", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('Markdown text <div title="This value is localizable">This is a test</div>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3528,24 +2588,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Màŕķðõŵñ ţëxţ6543210 <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextLocalizableTitleSingleQuotes: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+    });
+    test("MarkdownFileLocalizeTextLocalizableTitleSingleQuotes", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse("Markdown text <div title='This value is localizable'>This is a test</div>\n");
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             key: 'r922503175',
@@ -3563,26 +2615,18 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            'Màŕķðõŵñ ţëxţ6543210 <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextLocalizableAttributes: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+    });
+    test("MarkdownFileLocalizeTextLocalizableAttributes", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('![Alternate text](http://www.test.test/foo.png "title here")\n' +
                 'This is a test\n' +
                 '<input type="text" placeholder="localizable placeholder here">\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3616,26 +2660,18 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '![Texte alternative](http://www.test.test/foo.png "titre ici")\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('![Texte alternative](http://www.test.test/foo.png "titre ici")\n' +
             'Ceci est un essai\n' +
             '<input type="text" placeholder="espace réservé localisable ici">\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextLocalizableAttributesAndNonBreakingTags: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextLocalizableAttributesAndNonBreakingTags", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3653,24 +2689,16 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-                'Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextLocalizableValuelessAttributes: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n');
+    });
+    test("MarkdownFileLocalizeTextLocalizableValuelessAttributes", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is <a href="foo.html" checked title="localizable title">a test</a> of non-breaking tags.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3688,25 +2716,17 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-                'Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextI18NComments: function(test) {
-        test.expect(2);
-
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n');
+    });
+    test("MarkdownFileLocalizeTextI18NComments", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<!-- i18n: this describes the text below -->\n' +
                 'This is a test of the emergency parsing system.\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3716,27 +2736,19 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '<!-- i18n: this describes the text below -->\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('<!-- i18n: this describes the text below -->\n\n' +
             'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.\n');
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextIdentifyResourceIds: function(test) {
-        test.expect(2);
-
+    });
+    test("MarkdownFileLocalizeTextIdentifyResourceIds", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p2,
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test\n\n' +
                 'This is also a test\n\n' +
                 'This is a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3756,29 +2768,22 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span x-locid="r654479252">Ceci est un essai</span>\n\n' +
             '<span x-locid="r999080996">Ceci est aussi un essai</span>\n\n' +
             '<span x-locid="r654479252">Ceci est un essai</span>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeHTMLWithValuelessAttributes: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeHTMLWithValuelessAttributes", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('<span class="foo" checked>This is a test of the emergency parsing system.</span>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3789,30 +2794,23 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span class="foo" checked>Ceci est un test du système d\'analyse d\'urgence.</span>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFlowStyleHTML: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFlowStyleHTML", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
             'This is a test of the emergency parsing system.\n' +
             '</span>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3823,27 +2821,21 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span class="foo" checked>\n' +
             'Ceci est un test du système d\'analyse d\'urgence.\n' +
             '</span>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFlowStyleHTMLMultiple: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFlowStyleHTMLMultiple", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
             'This is a test of the emergency parsing system.\n' +
@@ -3852,7 +2844,6 @@ module.exports.markdown = {
             'This is translatable.\n' +
             '</message>\n'
             );
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3872,7 +2863,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span class="foo" checked>\n' +
             'Ceci est un test du système d\'analyse d\'urgence.\n' +
@@ -3881,21 +2871,16 @@ module.exports.markdown = {
             'Ceci est traduitable.\n' +
             '</message>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFlowStyleHTMLMultipleWithTextInBetween: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFlowStyleHTMLMultipleWithTextInBetween", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
             'This is a test of the emergency parsing system.\n' +
@@ -3907,7 +2892,6 @@ module.exports.markdown = {
             'This is translatable.\n' +
             '</message>\n'
             );
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3927,7 +2911,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span class="foo" checked>\n' +
             'Ceci est un test du système d\'analyse d\'urgence.\n' +
@@ -3939,26 +2922,20 @@ module.exports.markdown = {
             'Ceci est traduitable.\n' +
             '</message>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFlowStyleHTMLWithEmbeddedHTML: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFlowStyleHTMLWithEmbeddedHTML", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
             'This is a <b>test</b> of the emergency parsing system.\n' +
             '</span>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -3969,32 +2946,25 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span class="foo" checked>\n' +
             'Ceci est un <b>test</b> du système d\'analyse d\'urgence.\n' +
             '</span>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFlowStyleHTMLWithEmbeddedMarkdown: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFlowStyleHTMLWithEmbeddedMarkdown", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
             'This is a `test` of the _emergency parsing system_.\n' +
             '</span>\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4005,27 +2975,21 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var expected =
             '<span class="foo" checked>\n' +
             'Ceci est un `test` du _système d\'analyse d\'urgence_.\n' +
             '</span>\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextIgnoreFrontMatter: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTextIgnoreFrontMatter", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'test: This is a test\n' +
@@ -4033,7 +2997,6 @@ module.exports.markdown = {
             'This is a test\n\n' +
             'This is also a test\n\n' +
             'This is a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4053,7 +3016,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         // should ignore the front matter and leave it unlocalized
         var expected =
             '---\n' +
@@ -4063,22 +3025,17 @@ module.exports.markdown = {
             'Ceci est aussi un essai\n\n' +
             'Ceci est un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextProcessFrontMatter: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTextProcessFrontMatter", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "a/b/x/foo.md"
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -4088,7 +3045,6 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4126,7 +3082,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "x-yaml"
         }));
-
         // should localize the front matter because the mapping includes Title and Description
         var expected =
             '---\n' +
@@ -4138,24 +3093,18 @@ module.exports.markdown = {
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextProcessFrontMatterProcessNewStrings: function(test) {
-        test.expect(12);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTextProcessFrontMatterProcessNewStrings", function() {
+        expect.assertions(12);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "a/b/x/foo.md"
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mdft3.newres.clear();
-
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -4165,7 +3114,6 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4185,7 +3133,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "x-yaml"
         }));
-
         // should localize the front matter because the mapping includes Title and Description
         var expected =
             '---\n' +
@@ -4197,38 +3144,29 @@ module.exports.markdown = {
             'Ceci est un essai\n\n' +
             'This is also a test\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
+        expect(actual).toBe(expected);
         var newset = mdft3.getNew();
-        test.ok(newset);
+        expect(newset).toBeTruthy();
         var resources = newset.getAll();
-        test.equal(resources.length, 2);
-
-        test.equal(resources[0].getKey(), "r536069958.Description");
-        test.equal(resources[0].getSource(), "another front matter description\nwith extended text\n");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getPath(), "a/b/x/foo.md");
-
-        test.equal(resources[1].getKey(), "r999080996");
-        test.equal(resources[1].getSource(), "This is also a test");
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.equal(resources[1].getPath(), "a/b/x/foo.md");
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextProcessFrontMatterSkipUnknownFields: function(test) {
-        test.expect(2);
-
+        expect(resources.length).toBe(2);
+        expect(resources[0].getKey()).toBe("r536069958.Description");
+        expect(resources[0].getSource()).toBe("another front matter description\nwith extended text\n");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getPath()).toBe("a/b/x/foo.md");
+        expect(resources[1].getKey()).toBe("r999080996");
+        expect(resources[1].getSource()).toBe("This is also a test");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getPath()).toBe("a/b/x/foo.md");
+    });
+    test("MarkdownFileLocalizeTextProcessFrontMatterSkipUnknownFields", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "a/b/x/foo.md"
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -4239,7 +3177,6 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4277,7 +3214,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "x-yaml"
         }));
-
         // should ignore the front matter it doesn't recognize and leave it unlocalized
         var expected =
             '---\n' +
@@ -4290,22 +3226,17 @@ module.exports.markdown = {
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextProcessFrontMatterLocalizeAll: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTextProcessFrontMatterLocalizeAll", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             type: mdft3,
             pathName: "a/b/y/foo.md" // localizes all frontmatter fields
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '---\n' +
             'Title: This is a test of the front matter\n' +
@@ -4316,7 +3247,6 @@ module.exports.markdown = {
             '---\n\n' +
             'This is a test\n\n' +
             'This is also a test\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4363,7 +3293,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "x-yaml"
         }));
-
         // should localize all the front matter
         var expected =
             '---\n' +
@@ -4376,164 +3305,112 @@ module.exports.markdown = {
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
-
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathSimple: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileGetLocalizedPathSimple", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             pathName: "simple.md",
             type: mdft
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/simple.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathComplex: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.md");
+    });
+    test("MarkdownFileGetLocalizedPathComplex", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             pathName: "./asdf/bar/simple2.md",
             type: mdft
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathRegularMarkdownFileName: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+    });
+    test("MarkdownFileGetLocalizedPathRegularMarkdownFileName", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             pathName: "./asdf/bar/simple2.md",
             type: mdft
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathNotEnoughParts: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+    });
+    test("MarkdownFileGetLocalizedPathNotEnoughParts", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             pathName: "./asdf/bar/simple",
             type: mdft
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathAlreadyHasSourceLocale: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple");
+    });
+    test("MarkdownFileGetLocalizedPathAlreadyHasSourceLocale", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             pathName: "./en-US/asdf/bar/simple2.md",
             type: mdft3
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathSourceLocaleInMidPath: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+    });
+    test("MarkdownFileGetLocalizedPathSourceLocaleInMidPath", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             pathName: "./asdf/en-US/bar/simple3.md",
             type: mdft3
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "asdf/fr-FR/bar/simple3.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathSourceLocaleInBeginningPath: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.md");
+    });
+    test("MarkdownFileGetLocalizedPathSourceLocaleInBeginningPath", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             pathName: "en-US/asdf/bar/simple2.md",
             type: mdft3
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/asdf/bar/simple2.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale: function(test) {
-        test.expect(2);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+    });
+    test("MarkdownFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p3,
             pathName: "./asdf/pen-USing/en-US/bar/asdf.md",
             type: mdft3
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should leave "pen-USing" alone and only get the "en-US" path component
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr-FR/bar/asdf.md");
-
-        test.done();
-    },
-
-    testMarkdownFileGetLocalizedPathWithLocaleMap: function(test) {
-        test.expect(3);
-
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.md");
+    });
+    test("MarkdownFileGetLocalizedPathWithLocaleMap", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p3,
             pathName: "simple4.md",
             type: mdft3
         });
-        test.ok(mf);
-
-        test.equal(mf.getLocalizedPath("fr-FR"), "fr/asdf/bar/simple4.md");
-        test.equal(mf.getLocalizedPath("zh-Hans-CN"), "zh-CN/asdf/bar/simple4.md");
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFile: function(test) {
-        test.expect(5);
-
+        expect(mf).toBeTruthy();
+        expect(mf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.md");
+        expect(mf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.md");
+    });
+    test("MarkdownFileLocalizeFile", function() {
+        expect.assertions(5);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/test1.md",
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4567,7 +3444,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r548615397',
@@ -4600,14 +3476,10 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR", "de-DE"]);
-
-        test.ok(fs.existsSync(path.join(p.target, "fr-FR/md/test1.md")));
-        test.ok(fs.existsSync(path.join(p.target, "de-DE/md/test1.md")));
-
+        expect(fs.existsSync(path.join(p.target, "fr-FR/md/test1.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "de-DE/md/test1.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test1.md"), "utf-8");
-
         var expected =
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
@@ -4616,12 +3488,9 @@ module.exports.markdown = {
             'C\'est le dernier morceau de texte localisable.\n' +
             '\n' +
             'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
+        expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p.target, "de-DE/md/test1.md"), "utf-8");
-
         var expected =
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
             '\n' +
@@ -4630,28 +3499,20 @@ module.exports.markdown = {
             'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
             '\n' +
             'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileWithFrontMatter: function(test) {
-        test.expect(5);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileWithFrontMatter", function() {
+        expect.assertions(5);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/test3.md",
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -4685,7 +3546,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r548615397',
@@ -4718,14 +3578,10 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR", "de-DE"]);
-
-        test.ok(fs.existsSync(path.join(p.target, "fr-FR/md/test3.md")));
-        test.ok(fs.existsSync(path.join(p.target, "de-DE/md/test3.md")));
-
+        expect(fs.existsSync(path.join(p.target, "fr-FR/md/test3.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "de-DE/md/test3.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test3.md"), "utf-8");
-
         var expected =
             '---\n' +
             'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
@@ -4738,12 +3594,9 @@ module.exports.markdown = {
             'C\'est le dernier morceau de texte localisable.\n' +
             '\n' +
             'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
+        expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p.target, "de-DE/md/test3.md"), "utf-8");
-
         var expected =
             '---\n' +
             'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
@@ -4756,16 +3609,11 @@ module.exports.markdown = {
             'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
             '\n' +
             'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileWithFrontMatterNotFullyTranslated: function(test) {
-        test.expect(5);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileWithFrontMatterNotFullyTranslated", function() {
+        expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             markdown: {
                 fullyTranslated: true
@@ -4777,11 +3625,9 @@ module.exports.markdown = {
             pathName: "./notrans2.md",
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
            project: "loctest2",
@@ -4807,7 +3653,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
            project: "loctest2",
             key: 'r548615397',
@@ -4832,14 +3677,10 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR", "de-DE"]);
-
-        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md")));
-        test.ok(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md")));
-
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.md"), "utf-8");
-
         var expected =
             '---\n' +
             'frontmatter: true\n' +
@@ -4854,12 +3695,9 @@ module.exports.markdown = {
             'This is the last bit of localizable text.\n' +
             '\n' +
             'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
+        expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.md"), "utf-8");
-
         var expected =
             '---\n' +
             'frontmatter: true\n' +
@@ -4874,16 +3712,11 @@ module.exports.markdown = {
             'This is the last bit of localizable text.\n' +
             '\n' +
             'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileWithFrontMatterFullyTranslated: function(test) {
-        test.expect(5);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileWithFrontMatterFullyTranslated", function() {
+        expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             markdown: {
                 fullyTranslated: true
@@ -4895,11 +3728,9 @@ module.exports.markdown = {
             pathName: "./notrans2.md",
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
            project: "loctest2",
@@ -4933,7 +3764,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
            project: "loctest2",
             key: 'r548615397',
@@ -4966,14 +3796,10 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR", "de-DE"]);
-
-        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md")));
-        test.ok(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md")));
-
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.md"), "utf-8");
-
         var expected =
             '---\n' +
             'frontmatter: true\n' +
@@ -4987,12 +3813,9 @@ module.exports.markdown = {
             'C\'est le dernier morceau de texte localisable.\n' +
             '\n' +
             'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
+        expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.md"), "utf-8");
-
         var expected =
             '---\n' +
             'frontmatter: true\n' +
@@ -5006,16 +3829,11 @@ module.exports.markdown = {
             'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
             '\n' +
             'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated: function(test) {
-        test.expect(5);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated", function() {
+        expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             markdown: {
                 fullyTranslated: true
@@ -5027,11 +3845,9 @@ module.exports.markdown = {
             pathName: "./notrans.md",
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
            project: "loctest2",
@@ -5065,7 +3881,6 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         translations.add(new ResourceString({
            project: "loctest2",
             key: 'r548615397',
@@ -5098,14 +3913,10 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR", "de-DE"]);
-
-        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
-        test.ok(fs.existsSync(path.join(p2.target, "de-DE/notrans.md")));
-
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p2.target, "de-DE/notrans.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
@@ -5117,12 +3928,9 @@ module.exports.markdown = {
             'C\'est le dernier morceau de texte localisable.\n' +
             '\n' +
             'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
+        expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans.md"), "utf-8");
-
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
@@ -5134,28 +3942,20 @@ module.exports.markdown = {
             'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
             '\n' +
             'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeNoStrings: function(test) {
-        test.expect(3);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeNoStrings", function() {
+        expect.assertions(3);
         var base = path.dirname(module.id);
-
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/nostrings.md",
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -5173,34 +3973,23 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR", "de-DE"]);
-
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(p.target, "fr-FR/md/nostrings.md")));
-        test.ok(fs.existsSync(path.join(p.target, "de-DE/md/nostrings.md")));
-
-        test.done();
-    },
-
-
-    testMarkdownFileExtractFileNewResources: function(test) {
-        test.expect(16);
-
+        expect(fs.existsSync(path.join(p.target, "fr-FR/md/nostrings.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "de-DE/md/nostrings.md"))).toBeTruthy();
+    });
+    test("MarkdownFileExtractFileNewResources", function() {
+        expect.assertions(16);
         var base = path.dirname(module.id);
-
         var t = new MarkdownFileType(p);
         var mf = new MarkdownFile({
             project: p,
             pathName: "./md/mode.md",
             type: t
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.extract();
-
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: "r950833718",
@@ -5210,61 +3999,48 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "fr-FR");
         var expected =
             '## Choisissez une méthode de réunion d\'affaires\n' +
             '\n' +
             '<img src="http://foo.com/photo.png" height="86px" width="86px">\n' +
             '\n' +
-            'Ťëšţ þĥŕàšë543210\n' +
+            '\\[Ťëšţ þĥŕàšë543210]\n' +
             '\n' +
-            '## Ïñ Pëŕšõñ Mõðë6543210\n';
-
+            '## \\[Ïñ Pëŕšõñ Mõðë6543210]\n';
         diff(actual, expected);
-        test.equal(actual, expected);
-
+        expect(actual).toBe(expected);
         var set = t.newres;
         var resources = set.getAll();
-
-        test.equal(resources.length, 2);
-
+        expect(resources.length).toBe(2);
         var r = set.getBySource("Choose a meeting method");
-        test.ok(!r);
-
+        expect(!r).toBeTruthy();
         r = set.getBySource("Test phrase");
-        test.ok(r);
-        test.equal(resources[0].getKey(), "r103886803");
-        test.equal(resources[0].getSource(), "Test phrase");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "Test phrase");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
-
+        expect(r).toBeTruthy();
+        expect(resources[0].getKey()).toBe("r103886803");
+        expect(resources[0].getSource()).toBe("Test phrase");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("Test phrase");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
         r = set.getBySource("In Person Mode");
-        test.ok(r);
-        test.equal(resources[1].getKey(), "r251839517");
-        test.equal(resources[1].getSource(), "In Person Mode");
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.equal(resources[1].getTarget(), "In Person Mode");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTextHeaderWithNoSpace: function(test) {
-        test.expect(2);
-
+        expect(r).toBeTruthy();
+        expect(resources[1].getKey()).toBe("r251839517");
+        expect(resources[1].getSource()).toBe("In Person Mode");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTarget()).toBe("In Person Mode");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
+    });
+    test("MarkdownFileLocalizeTextHeaderWithNoSpace", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '#Bad Header\n' +
             '##Other Bad Header\n' +
             '# Bad Header\n');
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -5282,55 +4058,39 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
-        test.equal(mf.localizeText(translations, "fr-FR"),
-            '# Entête mal\n\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe('# Entête mal\n\n' +
             '## Autre entête mal\n\n' +
             '# Entête mal\n');
-
-        test.done();
-    },
-
-    testMarkdownFileParseMultipleMDComponents: function(test) {
-        test.expect(9);
-
+    });
+    test("MarkdownFileParseMultipleMDComponents", function() {
+        expect.assertions(9);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'Integration samples include: \n' +
             '* **[File Workflow with Webhooks](/docs/file-workflow-with-webhooks)**: Creating file task automation with webhooks.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var r = set.getBySource("Integration samples include:");
-        test.ok(r);
-        test.equal(r.getSource(), "Integration samples include:");
-        test.equal(r.getKey(), "r537538527");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Integration samples include:");
+        expect(r.getKey()).toBe("r537538527");
         r = set.getBySource("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
-        test.ok(r);
-        test.equal(r.getSource(), "<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
-        test.equal(r.getKey(), "r663481768");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithLinkReferenceWithText: function(test) {
-        test.expect(6);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
+        expect(r.getKey()).toBe("r663481768");
+    });
+    test("MarkdownFileParseWithLinkReferenceWithText", function() {
+        expect.assertions(6);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5338,32 +4098,21 @@ module.exports.markdown = {
             '\n' +
             '[twitter]: https://twitter.com/OurPlatform\n'
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-
-        test.equal(resources.length, 2);
-
-        test.equal(resources[0].getSource(), "For developer support, please reach out to us via one of our channels:");
-
-        test.equal(resources[1].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithLinkReferenceToExtractedURL: function(test) {
-        test.expect(8);
-
+        expect(resources.length).toBe(2);
+        expect(resources[0].getSource()).toBe("For developer support, please reach out to us via one of our channels:");
+        expect(resources[1].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
+    });
+    test("MarkdownFileParseWithLinkReferenceToExtractedURL", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '- [Ask on Twitter][twitter]: For general questions and support.\n' +
             '- [Ask on Facebook][facebook]: For general questions and support.\n' +
@@ -5373,33 +4122,23 @@ module.exports.markdown = {
             '[facebook]: http://www.facebook.com/OurPlatform\n' +
             '<!-- i18n-disable localize-links -->'
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 4);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-
-        test.equal(resources.length, 4);
-
-        test.equal(resources[0].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
-        test.equal(resources[1].getSource(), "<c0>Ask on Facebook</c0>: For general questions and support.");
-        test.equal(resources[2].getSource(), "https://twitter.com/OurPlatform");
-        test.equal(resources[3].getSource(), "http://www.facebook.com/OurPlatform");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithLinkReferenceWithLinkTitle: function(test) {
-        test.expect(7);
-
+        expect(resources.length).toBe(4);
+        expect(resources[0].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
+        expect(resources[1].getSource()).toBe("<c0>Ask on Facebook</c0>: For general questions and support.");
+        expect(resources[2].getSource()).toBe("https://twitter.com/OurPlatform");
+        expect(resources[3].getSource()).toBe("http://www.facebook.com/OurPlatform");
+    });
+    test("MarkdownFileParseWithLinkReferenceWithLinkTitle", function() {
+        expect.assertions(7);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'Regular service will be [available][exception].\n' +
             '\n' +
@@ -5407,32 +4146,22 @@ module.exports.markdown = {
             '[exception]: http://a.com/ "link title"\n' +
             '<!-- i18n-disable localize-links -->'
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
         var resources = set.getAll();
-
-        test.equal(resources.length, 3);
-
-        test.equal(resources[0].getSource(), "Regular service will be <c0>available</c0>.");
-        test.equal(resources[1].getSource(), "http://a.com/");
-        test.equal(resources[2].getSource(), "link title");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff: function(test) {
-        test.expect(7);
-
+        expect(resources.length).toBe(3);
+        expect(resources[0].getSource()).toBe("Regular service will be <c0>available</c0>.");
+        expect(resources[1].getSource()).toBe("http://a.com/");
+        expect(resources[2].getSource()).toBe("link title");
+    });
+    test("MarkdownFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff", function() {
+        expect.assertions(7);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             '- [Ask on Twitter][twitter]: For general questions and support.\n' +
             '- [Ask on Facebook][facebook]: For general questions and support.\n' +
@@ -5442,32 +4171,22 @@ module.exports.markdown = {
             '<!-- i18n-disable localize-links -->' +
             '[facebook]: http://www.facebook.com/OurPlatform\n'
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
         var resources = set.getAll();
-
-        test.equal(resources.length, 3);
-
-        test.equal(resources[0].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
-        test.equal(resources[1].getSource(), "<c0>Ask on Facebook</c0>: For general questions and support.");
-        test.equal(resources[2].getSource(), "https://twitter.com/OurPlatform");
-
-        test.done();
-    },
-
-    testMarkdownFileParseWithMultipleLinkReferenceWithText: function(test) {
-        test.expect(8);
-
+        expect(resources.length).toBe(3);
+        expect(resources[0].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
+        expect(resources[1].getSource()).toBe("<c0>Ask on Facebook</c0>: For general questions and support.");
+        expect(resources[2].getSource()).toBe("https://twitter.com/OurPlatform");
+    });
+    test("MarkdownFileParseWithMultipleLinkReferenceWithText", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5479,33 +4198,23 @@ module.exports.markdown = {
             '[email]: mailto:support@ourplatform\n' +
             '[so]: http://ourplatform.stackoverflow.com/'
         );
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
-        test.equal(set.size(), 4);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-
-        test.equal(resources.length, 4);
-
-        test.equal(resources[0].getSource(), "For developer support, please reach out to us via one of our channels:");
-        test.equal(resources[1].getSource(), "<c0>Ask on Twitter</c0>: For general questions and support.");
-        test.equal(resources[2].getSource(), "<c0>Ask in email</c0>: For specific questions and support.");
-        test.equal(resources[3].getSource(), "<c0>Ask on stack overflow</c0>: For community answers and support.");
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeReferenceLinksWithLinkId: function(test) {
-        test.expect(3);
-
+        expect(resources.length).toBe(4);
+        expect(resources[0].getSource()).toBe("For developer support, please reach out to us via one of our channels:");
+        expect(resources[1].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
+        expect(resources[2].getSource()).toBe("<c0>Ask in email</c0>: For specific questions and support.");
+        expect(resources[3].getSource()).toBe("<c0>Ask on stack overflow</c0>: For community answers and support.");
+    });
+    test("MarkdownFileLocalizeReferenceLinksWithLinkId", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5513,10 +4222,8 @@ module.exports.markdown = {
             '\n' +
             '[twitter]: https://twitter.com/OurPlatform\n'
         );
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r816306377',
@@ -5533,31 +4240,23 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
             '\n' +
             '* [Auf Twitter stellen][twitter]: Für allgemeine Fragen und Unterstützung.\n' +
             '\n' +
             '[twitter]: https://twitter.com/OurPlatform\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeReferenceLinksWithoutLinkId: function(test) {
-        test.expect(3);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeReferenceLinksWithoutLinkId", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5565,10 +4264,8 @@ module.exports.markdown = {
             '\n' +
             '[Ask on Twitter]: https://twitter.com/OurPlatform\n'
         );
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r816306377',
@@ -5585,9 +4282,7 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         // DON'T localize the label. Instead, add a title that is translated
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
@@ -5595,22 +4290,16 @@ module.exports.markdown = {
             '* [Auf Twitter stellen][Ask on Twitter] für allgemeine Fragen und Unterstützung.\n' +
             '\n' +
             '[Ask on Twitter]: https://twitter.com/OurPlatform\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeReferenceLinksWithLinkTitle: function(test) {
-        test.expect(3);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeReferenceLinksWithLinkTitle", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5620,10 +4309,8 @@ module.exports.markdown = {
             '[twitter]: https://twitter.com/OurPlatform "Our Platform"\n' +
             '<!-- i18n-disable localize-links -->\n'
         );
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r816306377',
@@ -5656,9 +4343,7 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
             '\n' +
@@ -5667,22 +4352,16 @@ module.exports.markdown = {
             '<!-- i18n-enable localize-links -->\n\n' +
             '[twitter]: https://de.twitter.com/OurPlatform "Unsere Platformen"\n\n' +
             '<!-- i18n-disable localize-links -->\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeDirectLinksTurnedOff: function(test) {
-        test.expect(3);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeDirectLinksTurnedOff", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5690,10 +4369,8 @@ module.exports.markdown = {
             '\n' +
             '- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n'
         );
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r816306377',
@@ -5718,31 +4395,23 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
             '\n' +
             '<!-- i18n-disable localize-links -->\n' +
             '\n' +
             '* [Auf Twitter stellen](https://twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeDirectLinksTurnedOn: function(test) {
-        test.expect(3);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeDirectLinksTurnedOn", function() {
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             'For developer support, please reach out to us via one of our channels:\n' +
             '\n' +
@@ -5752,10 +4421,8 @@ module.exports.markdown = {
             '\n' +
             '<!-- i18n-disable localize-links -->\n'
         );
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r816306377',
@@ -5780,9 +4447,7 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
             '\n' +
@@ -5791,75 +4456,52 @@ module.exports.markdown = {
             '* [Auf Twitter stellen](https://de.twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n' +
             '\n' +
             '<!-- i18n-disable localize-links -->\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileParseHTMLComments: function(test) {
-        test.expect(5);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileParseHTMLComments", function() {
+        expect.assertions(5);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a <!-- comment -->test of the emergency parsing system.\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
-        test.done();
-    },
-
-    testMarkdownFileParseHTMLCommentsWithIndent: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
+    });
+    test("MarkdownFileParseHTMLCommentsWithIndent", function() {
+        expect.assertions(8);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing system.\n  <!-- comment -->\nA second string\n');
-
         var set = mf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test of the emergency parsing system.");
-        test.equal(r.getKey(), "r699762575");
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getKey()).toBe("r699762575");
         var r = set.getBySource("A second string");
-        test.ok(r);
-        test.equal(r.getSource(), "A second string");
-        test.equal(r.getKey(), "r772298159");
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeHTMLCommentsWithIndent: function(test) {
-        test.expect(2);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("A second string");
+        expect(r.getKey()).toBe("r772298159");
+    });
+    test("MarkdownFileLocalizeHTMLCommentsWithIndent", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse('This is a test of the emergency parsing system.\n  <!-- comment -->\nA second string\n');
-
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r699762575',
@@ -5876,35 +4518,25 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             'This is a test of the emergency parsing system... in GERMAN!\n\n  <!-- comment -->\n\nA second string... in GERMAN!\n';
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTable: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTable", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
             "|-------------------|-----------------|\n" +
             "| Query description | Returns column  |\n" +
             "| foo               | bar             |\n");
-
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r744039504',
@@ -5937,39 +4569,29 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             "|                                 |                              |\n" +
             "| ------------------------------- | ---------------------------- |\n" +
             "| Query description... in GERMAN! | Returns column... in GERMAN! |\n" +
             "| foo... in GERMAN!               | bar... in GERMAN!            |\n";
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTableWithInlineCode: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTableWithInlineCode", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
             "|-------------------|-----------------|\n" +
             "| Query description | Returns column  |\n" +
             "| `code`            | `more code`     |\n" +
             "| foo               | bar             |\n");
-
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r744039504',
@@ -6002,31 +4624,23 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             "|                                 |                              |\n" +
             "| ------------------------------- | ---------------------------- |\n" +
             "| Query description... in GERMAN! | Returns column... in GERMAN! |\n" +
             "| `code`                          | `more code`                  |\n" +
             "| foo... in GERMAN!               | bar... in GERMAN!            |\n";
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeTableWithInlineCodeAndTextAfter: function(test) {
-        test.expect(2);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeTableWithInlineCodeAndTextAfter", function() {
+        expect.assertions(2);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
             "|-------------------|-----------------|\n" +
@@ -6036,10 +4650,7 @@ module.exports.markdown = {
             "## Header Title\n" +
             "\n" +
             "Body text.\n");
-
-
         var translations = new TranslationSet();
-
         translations.add(new ResourceString({
             project: "foo",
             key: 'r744039504',
@@ -6072,9 +4683,7 @@ module.exports.markdown = {
             targetLocale: "de-DE",
             datatype: "markdown"
         }));
-
         var actual = mf.localizeText(translations, "de-DE");
-
         var expected =
             "|                                 |                              |\n" +
             "| ------------------------------- | ---------------------------- |\n" +
@@ -6084,16 +4693,11 @@ module.exports.markdown = {
             "## Header Title... in GERMAN!\n" +
             "\n" +
             "Body text... in GERMAN!\n";
-
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileFullyTranslatedFlag: function(test) {
-        test.expect(3);
-
+        expect(actual).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileFullyTranslatedFlag", function() {
+        expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             markdown: {
@@ -6106,11 +4710,9 @@ module.exports.markdown = {
             pathName: "./notrans.md",
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "loctest2",
@@ -6144,13 +4746,9 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR"]);
-
-        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
-
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
@@ -6161,16 +4759,11 @@ module.exports.markdown = {
             'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
             'C\'est le dernier morceau de texte localisable.\n\n' +
             'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileFullyTranslatedFlagNoTranslations: function(test) {
-        test.expect(3);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileFullyTranslatedFlagNoTranslations", function() {
+        expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             markdown: {
@@ -6183,19 +4776,13 @@ module.exports.markdown = {
             pathName: "./notrans.md",
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
-
         mf.localize(translations, ["fr-FR"]);
-
-        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
-
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-
         // should not be translated because we didn't have translations for any strings
         var expected =
             '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
@@ -6203,16 +4790,11 @@ module.exports.markdown = {
             'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
             'This is the last bit of localizable text.\n\n' +
             'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-
-    testMarkdownFileLocalizeFileFullyTranslatedFlagNotFullyTranslated: function(test) {
-        test.expect(3);
-
+        expect(content).toBe(expected);
+    });
+    test("MarkdownFileLocalizeFileFullyTranslatedFlagNotFullyTranslated", function() {
+        expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             markdown: {
@@ -6225,11 +4807,9 @@ module.exports.markdown = {
             pathName: "./notrans.md",
             type: mdft2
         });
-        test.ok(mf);
-
+        expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
-
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "loctest2",
@@ -6247,13 +4827,9 @@ module.exports.markdown = {
             targetLocale: "fr-FR",
             datatype: "markdown"
         }));
-
         mf.localize(translations, ["fr-FR"]);
-
-        test.ok(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md")));
-
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-
         // should not be translated because we didn't have translations for all strings
         var expected =
             '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
@@ -6261,10 +4837,7 @@ module.exports.markdown = {
             'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
             'This is the last bit of localizable text.\n\n' +
             'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    }
-};
+        expect(content).toBe(expected);
+    });
+});
