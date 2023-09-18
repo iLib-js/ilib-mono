@@ -1,7 +1,7 @@
 /*
- * testJavaFileType.js - test the Java file type handler object.
+ * JavaFileType.test.js - test the Java file type handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 if (!JavaFileType) {
     var JavaFileType = require("../JavaFileType.js");
     var CustomProject =  require("loctool/lib/CustomProject.js");
 }
-
 var p = new CustomProject({
     id: "webapp",
     name: "webapp",
@@ -29,60 +27,34 @@ var p = new CustomProject({
 }, "./test/testfiles", {
     locales:["en-GB"]
 });
-
-
-module.exports.javafiletype = {
-    testJavaFileTypeConstructor: function(test) {
-        test.expect(1);
-
+describe("javafiletype", function() {
+    test("JavaFileTypeConstructor", function() {
+        expect.assertions(1);
         var htf = new JavaFileType(p);
-
-        test.ok(htf);
-
-        test.done();
-    },
-
-    testJavaFileTypeHandlesJavaTrue: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+    });
+    test("JavaFileTypeHandlesJavaTrue", function() {
+        expect.assertions(2);
         var htf = new JavaFileType(p);
-        test.ok(htf);
-
-        test.ok(htf.handles("foo.java"));
-
-        test.done();
-    },
-
-    testJavaFileTypeHandlesJavaFalseClose: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(htf.handles("foo.java")).toBeTruthy();
+    });
+    test("JavaFileTypeHandlesJavaFalseClose", function() {
+        expect.assertions(2);
         var htf = new JavaFileType(p);
-        test.ok(htf);
-
-        test.ok(!htf.handles("foojava"));
-
-        test.done();
-    },
-
-    testJavaFileTypeHandlesFalse: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(!htf.handles("foojava")).toBeTruthy();
+    });
+    test("JavaFileTypeHandlesFalse", function() {
+        expect.assertions(2);
         var htf = new JavaFileType(p);
-        test.ok(htf);
-
-        test.ok(!htf.handles("foo.html"));
-
-        test.done();
-    },
-
-    testJavaFileTypeHandlesJavaTrueWithDir: function(test) {
-        test.expect(2);
-
+        expect(htf).toBeTruthy();
+        expect(!htf.handles("foo.html")).toBeTruthy();
+    });
+    test("JavaFileTypeHandlesJavaTrueWithDir", function() {
+        expect.assertions(2);
         var htf = new JavaFileType(p);
-        test.ok(htf);
-
-        test.ok(htf.handles("a/b/c/foo.java"));
-
-        test.done();
-    }
-};
+        expect(htf).toBeTruthy();
+        expect(htf.handles("a/b/c/foo.java")).toBeTruthy();
+    });
+});

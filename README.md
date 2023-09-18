@@ -3,6 +3,11 @@ Ilib loctool plugin to parse Java files and extract localizable strings from the
 
 # Release Notes
 
+### v1.0.3
+
+- update dependencies
+- update unit tests from nodeunit to jest
+
 ### v1.0.2
 
 - update dependencies
