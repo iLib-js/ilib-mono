@@ -45,7 +45,7 @@
         "dist": "npm pack",
         "test": "jest",
         "test:watch": "jest --watch",
-        "debug": "node --inspect-brk jest",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
