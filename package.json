@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-javascript",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "main": "./JavaScriptFileType.js",
     "description": "A loctool plugin that knows how to process JS files",
     "license": "Apache-2.0",
@@ -43,8 +43,9 @@
     },
     "scripts": {
         "dist": "npm pack",
-        "test": "node test/testSuite.js",
-        "debug": "node --inspect-brk test/testSuite.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
@@ -55,9 +56,8 @@
         "ilib-loctool-javascript-resource": "^1.0.4"
     },
     "devDependencies": {
-        "assertextras": "^1.1.0",
         "ilib-loctool-json": "^1.5.0",
-        "loctool": "^2.20.2",
-        "nodeunit": "^0.11.3"
+        "jest": "^26.6.3",
+        "loctool": "^2.20.2"
     }
 }
