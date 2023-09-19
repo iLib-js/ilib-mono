@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-html",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "main": "./HTMLFileType.js",
     "description": "A loctool plugin that knows how to localize static html files",
     "license": "Apache-2.0",
@@ -42,22 +42,23 @@
     },
     "scripts": {
         "dist": "npm pack",
-        "test": "node test/testSuite.js",
-        "debug": "node --inspect-brk test/testSuite.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=10.0"
     },
     "dependencies": {
         "he": "^1.2.0",
         "html-parser": "^0.11.0",
-        "ilib": "^14.17.0",
+        "ilib": "^14.18.0",
         "js-stl": ">=0.0.6",
         "message-accumulator": "^2.2.1"
     },
     "devDependencies": {
-        "loctool": "^2.20.2",
-        "nodeunit": "^0.11.3"
+        "jest": "^26.6.3",
+        "loctool": "^2.23.1"
     }
 }
