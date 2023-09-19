@@ -179,6 +179,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.1
+
+- update dependencies
+- make it work on node 10 & 12
+- convert unit tests from nodeunit to jest
+
 ### v1.5.0
 
 - added checkTranslatability setting to turn on or off the ability
