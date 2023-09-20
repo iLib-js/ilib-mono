@@ -1373,6 +1373,170 @@ Follow these steps:
         expect(r.getKey()).toBe("r198589153");
     });
 
+    test("MarkdownFileParseOrderedLists", function() {
+        expect.assertions(18);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(`
+## This is a header
+
+Follow these steps:
+
+1. First point:
+
+1. Second point:
+
+1. Third point:
+`
+        );
+
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(5);
+
+        r = set.getBySource("This is a header");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a header");
+        expect(r.getKey()).toBe("r655736675");
+
+        r = set.getBySource("Follow these steps:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Follow these steps:");
+        expect(r.getKey()).toBe("r449239371");
+
+        r = set.getBySource("First point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("First point:");
+        expect(r.getKey()).toBe("r996315725");
+
+        r = set.getBySource("Second point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Second point:");
+        expect(r.getKey()).toBe("r15205890");
+
+        r = set.getBySource("Third point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Third point:");
+        expect(r.getKey()).toBe("r924843090");
+    });
+
+   test("MarkdownFileParseOrderedListsWithIndentedText", function() {
+debugger;
+        expect.assertions(18);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(`
+## This is a header
+
+Follow these steps:
+
+1. First point:
+   first
+
+1. Second point:
+   second
+
+1. Third point:
+   third
+`
+        );
+
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(5);
+
+        r = set.getBySource("This is a header");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a header");
+        expect(r.getKey()).toBe("r655736675");
+
+        r = set.getBySource("Follow these steps:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Follow these steps:");
+        expect(r.getKey()).toBe("r449239371");
+
+        r = set.getBySource("First point:\nfirst");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("First point:\nfirst");
+        expect(r.getKey()).toBe("r130284640");
+
+        r = set.getBySource("Second point:\nsecond");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Second point:\nsecond");
+        expect(r.getKey()).toBe("r608223461");
+
+        r = set.getBySource("Third point:\nthird");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Third point:\nthird");
+        expect(r.getKey()).toBe("r284799174");
+    });
+
+   test("MarkdownFileParseOrderedListsWithCodeBlocks", function() {
+debugger;
+        expect.assertions(18);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(`
+## This is a header
+
+Follow these steps:
+
+1. First point:
+   \`\`\`
+code code code
+\`\`\`
+
+1. Second point:
+   \`\`\`
+code code code
+\`\`\`
+
+1. Third point:
+   \`\`\`
+code code code
+\`\`\`
+`
+        );
+
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(5);
+
+        r = set.getBySource("This is a header");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a header");
+        expect(r.getKey()).toBe("r655736675");
+
+        r = set.getBySource("Follow these steps:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Follow these steps:");
+        expect(r.getKey()).toBe("r449239371");
+
+        r = set.getBySource("First point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("First point:");
+        expect(r.getKey()).toBe("r996315725");
+
+        r = set.getBySource("Second point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Second point:");
+        expect(r.getKey()).toBe("r15205890");
+
+        r = set.getBySource("Third point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Third point:");
+        expect(r.getKey()).toBe("r924843090");
+    });
+
     test("MarkdownFileParseNonBreakingEmphasisOutside", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({

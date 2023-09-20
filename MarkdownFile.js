@@ -849,7 +849,8 @@ MarkdownFile.prototype.parse = function(data) {
     data = data.
         replace(/\[block:/g, "```\n[block:").
         replace(/\[\/block\]/g, "[/block]\n```").
-        replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3");
+        replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
+        replace(/(^|\n)\s+```/g, "$1```");
 
     this.ast = mdparser.parse(data);
 

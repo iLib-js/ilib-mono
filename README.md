@@ -196,6 +196,9 @@ file for more details.
 - Fixed a bug where HTML-like tags that were indented and the only
   thing on a line were not parsed correctly and caused infinite
   recursion until the stack blew out
+- Fixed a bug where code blocks that start with an indented triple
+  backtick cause the markdown parser to skip every other item in an
+  ordered list and not extract its strings
 
 ### v1.11.2
 
