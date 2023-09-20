@@ -381,6 +381,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.3
+
+- update dependencies
+- convert all unit tests from nodeunit to jest
+
 ### v1.5.2
 
 - fixed a bug where the "anyOf", "allOf", "oneOf", and "not" keywords

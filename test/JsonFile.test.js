@@ -1,7 +1,7 @@
 /*
- * testJsonFile.js - test the json file handler object.
+ * JsonFile.test.js - test the json file handler object.
  *
- * Copyright © 2021-2022, Box, Inc.
+ * Copyright © 2021-2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,18 +138,16 @@ var p2 = new CustomProject({
 
 var t2 = new JsonFileType(p2);
 
-module.exports.jsonfile = {
-    testJsonFileConstructor: function(test) {
-        test.expect(1);
+describe("jsonfile", function() {
+    test("JsonFileConstructor", function() {
+        expect.assertions(1);
 
         var jf = new JsonFile({project: p, type: t});
-        test.ok(jf);
+        expect(jf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsonFileConstructorParams: function(test) {
-        test.expect(1);
+    test("JsonFileConstructorParams", function() {
+        expect.assertions(1);
 
         var jf = new JsonFile({
             project: p,
@@ -157,143 +155,111 @@ module.exports.jsonfile = {
             type: t
         });
 
-        test.ok(jf);
+        expect(jf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsonFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("JsonFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
+    });
 
-        test.done();
-    },
+    test("JsonFileEscapeProp", function() {
+        expect.assertions(1);
 
-    testJsonFileEscapeProp: function(test) {
-        test.expect(1);
+        expect(JsonFile.escapeProp("escape/tilde~tilde")).toBe("escape~1tilde~0tilde");
+    });
 
-        test.ok(JsonFile.escapeProp("escape/tilde~tilde"), "escape~0tilde~1tilde");
+    test("JsonFileEscapePropNoChange", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(JsonFile.escapeProp("permissions")).toBe("permissions");
+    });
 
-    testJsonFileEscapePropNoChange: function(test) {
-        test.expect(1);
+    test("JsonFileEscapePropDontEscapeOthers", function() {
+        expect.assertions(1);
 
-        test.ok(JsonFile.escapeProp("permissions"), "permissions");
+        expect(JsonFile.escapeProp("permissions% \" ^ | \\")).toBe("permissions% \" ^ | \\");
+    });
 
-        test.done();
-    },
+    test("JsonFileUnescapeProp", function() {
+        expect.assertions(1);
 
-    testJsonFileEscapePropDontEscapeOthers: function(test) {
-        test.expect(1);
+        expect(JsonFile.unescapeProp("escape~1tilde~0tilde")).toBe("escape/tilde~tilde");
+    });
 
-        test.ok(JsonFile.escapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+    test("JsonFileUnescapePropTricky", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(JsonFile.unescapeProp("escape~3tilde~4tilde")).toBe("escape~3tilde~4tilde");
+    });
 
-    testJsonFileUnescapeProp: function(test) {
-        test.expect(1);
+    test("JsonFileUnescapePropNoChange", function() {
+        expect.assertions(1);
 
-        test.ok(JsonFile.unescapeProp("escape~0tilde~1tilde"), "escape/tilde~tilde");
+        expect(JsonFile.unescapeProp("permissions")).toBe("permissions");
+    });
 
-        test.done();
-    },
+    test("JsonFileUnescapePropDontEscapeOthers", function() {
+        expect.assertions(1);
 
-    testJsonFileUnescapePropTricky: function(test) {
-        test.expect(1);
+        expect(JsonFile.unescapeProp("permissions% \" ^ | \\")).toBe("permissions% \" ^ | \\");
+    });
 
-        test.ok(JsonFile.unescapeProp("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
+    test("JsonFileEscapeRef", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(JsonFile.escapeRef("escape/tilde~tilde")).toBe("escape~1tilde~0tilde");
+    });
 
-    testJsonFileUnescapePropNoChange: function(test) {
-        test.expect(1);
+    test("JsonFileEscapeRefNoChange", function() {
+        expect.assertions(1);
 
-        test.ok(JsonFile.unescapeProp("permissions"), "permissions");
+        expect(JsonFile.escapeRef("permissions")).toBe("permissions");
+    });
 
-        test.done();
-    },
+    test("JsonFileEscapeRefDontEscapeOthers", function() {
+        expect.assertions(1);
 
-    testJsonFileUnescapePropDontEscapeOthers: function(test) {
-        test.expect(1);
+        expect(JsonFile.escapeRef("permissions% \" ^ | \\")).toBe("permissions%25%20%22%20%5E%20%7C%20%5C");
+    });
 
-        test.ok(JsonFile.unescapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+    test("JsonFileUnescapeRef", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(JsonFile.unescapeRef("escape~1tilde~0tilde")).toBe("escape/tilde~tilde");
+    });
 
-    testJsonFileEscapeRef: function(test) {
-        test.expect(1);
+    test("JsonFileUnescapeRefTricky", function() {
+        expect.assertions(1);
 
-        test.ok(JsonFile.escapeRef("escape/tilde~tilde"), "escape~0tilde~1tilde");
+        expect(JsonFile.unescapeRef("escape~3tilde~4tilde")).toBe("escape~3tilde~4tilde");
+    });
 
-        test.done();
-    },
+    test("JsonFileUnescapeRefNoChange", function() {
+        expect.assertions(1);
 
-    testJsonFileEscapeRefNoChange: function(test) {
-        test.expect(1);
+        expect(JsonFile.unescapeRef("permissions")).toBe("permissions");
+    });
 
-        test.ok(JsonFile.escapeRef("permissions"), "permissions");
+    test("JsonFileUnescapeRefDontEscapeOthers", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(JsonFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C")).toBe("permissions% \" ^ | \\");
+    });
 
-    testJsonFileEscapeRefDontEscapeOthers: function(test) {
-        test.expect(1);
-
-        test.ok(JsonFile.escapeRef("permissions% \" ^ | \\"), "permissions%25%20%22%20%5E%20%7C%20%5C");
-
-        test.done();
-    },
-
-    testJsonFileUnescapeRef: function(test) {
-        test.expect(1);
-
-        test.ok(JsonFile.unescapeRef("escape~0tilde~1tilde"), "escape/tilde~tilde");
-
-        test.done();
-    },
-
-    testJsonFileUnescapeRefTricky: function(test) {
-        test.expect(1);
-
-        test.ok(JsonFile.unescapeRef("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
-
-        test.done();
-    },
-
-    testJsonFileUnescapeRefNoChange: function(test) {
-        test.expect(1);
-
-        test.ok(JsonFile.unescapeRef("permissions"), "permissions");
-
-        test.done();
-    },
-
-    testJsonFileUnescapeRefDontEscapeOthers: function(test) {
-        test.expect(1);
-
-        test.ok(JsonFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C"), "permissions% \" ^ | \\");
-
-        test.done();
-    },
-
-    testJsonFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
+    test("JsonFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -302,25 +268,23 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "json"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "this is string one");
-        test.equal(r.getKey(), "string 1");
+        expect(r.getSource()).toBe("this is string one");
+        expect(r.getKey()).toBe("string 1");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseSimpleRightStrings: function(test) {
-        test.expect(8);
+    test("JsonFileParseSimpleRightStrings", function() {
+        expect.assertions(8);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -329,29 +293,27 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "string 2");
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("string 2");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseSimpleDontExtractEmpty: function(test) {
-        test.expect(6);
+    test("JsonFileParseSimpleDontExtractEmpty", function() {
+        expect.assertions(6);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -360,26 +322,24 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseEscapeStringKeys: function(test) {
-        test.expect(8);
+    test("JsonFileParseEscapeStringKeys", function() {
+        expect.assertions(8);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -388,29 +348,27 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "/user");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("/user");
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "~tilde");
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("~tilde");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseSimpleRejectThingsThatAreNotInTheSchema: function(test) {
-        test.expect(6);
+    test("JsonFileParseSimpleRejectThingsThatAreNotInTheSchema", function() {
+        expect.assertions(6);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -421,20 +379,18 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseComplexRightSize: function(test) {
-        test.expect(3);
+    test("JsonFileParseComplexRightSize", function() {
+        expect.assertions(3);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -442,7 +398,7 @@ module.exports.jsonfile = {
             pathName: "i18n/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -467,14 +423,13 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
-        test.done();
-    },
+        expect(set.size()).toBe(4);
+    });
 
-    testJsonFileParseComplexRightStrings: function(test) {
-        test.expect(26);
+    test("JsonFileParseComplexRightStrings", function() {
+        expect.assertions(26);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -482,7 +437,7 @@ module.exports.jsonfile = {
             pathName: "i18n/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -507,45 +462,43 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "plurals/bar");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("plurals/bar");
         var pluralStrings = resources[0].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "singular");
-        test.equal(pluralStrings.many, "many");
-        test.equal(pluralStrings.other, "plural");
-        test.ok(!pluralStrings.zero);
-        test.ok(!pluralStrings.two);
-        test.ok(!pluralStrings.few);
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("singular");
+        expect(pluralStrings.many).toBe("many");
+        expect(pluralStrings.other).toBe("plural");
+        expect(!pluralStrings.zero).toBeTruthy();
+        expect(!pluralStrings.two).toBeTruthy();
+        expect(!pluralStrings.few).toBeTruthy();
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "strings/a");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("b");
+        expect(resources[1].getKey()).toBe("strings/a");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "strings/c");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("d");
+        expect(resources[2].getKey()).toBe("strings/c");
 
-        test.equal(resources[3].getType(), "array");
-        test.equal(resources[3].getKey(), "arrays/asdf");
+        expect(resources[3].getType()).toBe("array");
+        expect(resources[3].getKey()).toBe("arrays/asdf");
         var arrayStrings = resources[3].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "string 1");
-        test.equal(arrayStrings[1], "string 2");
-        test.equal(arrayStrings[2], "string 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings.length).toBe(3);
+        expect(arrayStrings[0]).toBe("string 1");
+        expect(arrayStrings[1]).toBe("string 2");
+        expect(arrayStrings[2]).toBe("string 3");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseComplexRightStringsTranslated: function(test) {
-        test.expect(38);
+    test("JsonFileParseComplexRightStringsTranslated", function() {
+        expect.assertions(38);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -553,7 +506,7 @@ module.exports.jsonfile = {
             pathName: "resources/de/DE/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -578,57 +531,55 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "plurals/bar");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTargetLocale(), "de-DE");
-        test.deepEqual(resources[0].getSourcePlurals(), {});
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("plurals/bar");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
+        expect(resources[0].getSourcePlurals()).toStrictEqual({});
         var pluralStrings = resources[0].getTargetPlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "eins");
-        test.equal(pluralStrings.many, "vielen");
-        test.equal(pluralStrings.other, "mehrere");
-        test.ok(!pluralStrings.zero);
-        test.ok(!pluralStrings.two);
-        test.ok(!pluralStrings.few);
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("eins");
+        expect(pluralStrings.many).toBe("vielen");
+        expect(pluralStrings.other).toBe("mehrere");
+        expect(!pluralStrings.zero).toBeTruthy();
+        expect(!pluralStrings.two).toBeTruthy();
+        expect(!pluralStrings.few).toBeTruthy();
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.equal(resources[1].getTargetLocale(), "de-DE");
-        test.ok(!resources[1].getSource());
-        test.equal(resources[1].getTarget(), "b");
-        test.equal(resources[1].getKey(), "strings/a");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTargetLocale()).toBe("de-DE");
+        expect(!resources[1].getSource()).toBeTruthy();
+        expect(resources[1].getTarget()).toBe("b");
+        expect(resources[1].getKey()).toBe("strings/a");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.equal(resources[2].getTargetLocale(), "de-DE");
-        test.ok(!resources[2].getSource());
-        test.equal(resources[2].getTarget(), "d");
-        test.equal(resources[2].getKey(), "strings/c");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTargetLocale()).toBe("de-DE");
+        expect(!resources[2].getSource()).toBeTruthy();
+        expect(resources[2].getTarget()).toBe("d");
+        expect(resources[2].getKey()).toBe("strings/c");
 
-        test.equal(resources[3].getType(), "array");
-        test.equal(resources[3].getSourceLocale(), "en-US");
-        test.equal(resources[3].getTargetLocale(), "de-DE");
-        test.equal(resources[3].getKey(), "arrays/asdf");
-        test.deepEqual(!resources[3].getSourceArray(), []);
+        expect(resources[3].getType()).toBe("array");
+        expect(resources[3].getSourceLocale()).toBe("en-US");
+        expect(resources[3].getTargetLocale()).toBe("de-DE");
+        expect(resources[3].getKey()).toBe("arrays/asdf");
+        expect(resources[3].getSourceArray()).toStrictEqual([]);
         var arrayStrings = resources[3].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "Zeichenfolge 1");
-        test.equal(arrayStrings[1], "Zeichenfolge 2");
-        test.equal(arrayStrings[2], "Zeichenfolge 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings.length).toBe(3);
+        expect(arrayStrings[0]).toBe("Zeichenfolge 1");
+        expect(arrayStrings[1]).toBe("Zeichenfolge 2");
+        expect(arrayStrings[2]).toBe("Zeichenfolge 3");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseArrayOfStrings: function(test) {
-        test.expect(11);
+    test("JsonFileParseArrayOfStrings", function() {
+        expect.assertions(11);
 
         // when it's named arrays.json, it should apply the arrays schema
         var jf = new JsonFile({
@@ -636,7 +587,7 @@ module.exports.jsonfile = {
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "strings": [\n' +
@@ -647,33 +598,31 @@ module.exports.jsonfile = {
                 '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
 
         var resources = set.getAll();
-        test.equal(resources.length, 1);
-        test.equal(resources[0].getType(), 'array');
-        test.equal(resources[0].getKey(), 'strings');
+        expect(resources.length).toBe(1);
+        expect(resources[0].getType()).toBe('array');
+        expect(resources[0].getKey()).toBe('strings');
 
         var arrayStrings = resources[0].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "string 1");
-        test.equal(arrayStrings[1], "string 2");
-        test.equal(arrayStrings[2], "string 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings.length).toBe(3);
+        expect(arrayStrings[0]).toBe("string 1");
+        expect(arrayStrings[1]).toBe("string 2");
+        expect(arrayStrings[2]).toBe("string 3");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseArrayOfNumbers: function(test) {
-        test.expect(12);
+    test("JsonFileParseArrayOfNumbers", function() {
+        expect.assertions(12);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "numbers": [\n' +
@@ -685,34 +634,32 @@ module.exports.jsonfile = {
                 '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
 
         var resources = set.getAll();
-        test.equal(resources.length, 1);
-        test.equal(resources[0].getType(), 'array');
-        test.equal(resources[0].getKey(), 'numbers');
+        expect(resources.length).toBe(1);
+        expect(resources[0].getType()).toBe('array');
+        expect(resources[0].getKey()).toBe('numbers');
 
         var arrayNumbers = resources[0].getSourceArray();
-        test.ok(arrayNumbers);
-        test.equal(arrayNumbers.length, 4);
-        test.equal(arrayNumbers[0], "15");
-        test.equal(arrayNumbers[1], "-3");
-        test.equal(arrayNumbers[2], "1.18");
-        test.equal(arrayNumbers[3], "0");
+        expect(arrayNumbers).toBeTruthy();
+        expect(arrayNumbers.length).toBe(4);
+        expect(arrayNumbers[0]).toBe("15");
+        expect(arrayNumbers[1]).toBe("-3");
+        expect(arrayNumbers[2]).toBe("1.18");
+        expect(arrayNumbers[3]).toBe("0");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseArrayOfBooleans: function(test) {
-        test.expect(10);
+    test("JsonFileParseArrayOfBooleans", function() {
+        expect.assertions(10);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "booleans": [\n' +
@@ -722,32 +669,30 @@ module.exports.jsonfile = {
                 '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
 
         var resources = set.getAll();
-        test.equal(resources.length, 1);
-        test.equal(resources[0].getType(), 'array');
-        test.equal(resources[0].getKey(), 'booleans');
+        expect(resources.length).toBe(1);
+        expect(resources[0].getType()).toBe('array');
+        expect(resources[0].getKey()).toBe('booleans');
 
         var arrayBooleans = resources[0].getSourceArray();
-        test.ok(arrayBooleans);
-        test.equal(arrayBooleans.length, 2);
-        test.equal(arrayBooleans[0], "true");
-        test.equal(arrayBooleans[1], "false");
+        expect(arrayBooleans).toBeTruthy();
+        expect(arrayBooleans.length).toBe(2);
+        expect(arrayBooleans[0]).toBe("true");
+        expect(arrayBooleans[1]).toBe("false");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseArrayOfObjects: function(test) {
-        test.expect(13);
+    test("JsonFileParseArrayOfObjects", function() {
+        expect.assertions(13);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "objects": [\n' +
@@ -763,28 +708,26 @@ module.exports.jsonfile = {
                 '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 3);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
 
         var resources = set.getAll();
-        test.equal(resources.length, 3);
-        test.equal(resources[0].getType(), 'string');
-        test.equal(resources[0].getKey(), 'objects/item_0/name');
-        test.equal(resources[0].getSource(), 'First Object');
+        expect(resources.length).toBe(3);
+        expect(resources[0].getType()).toBe('string');
+        expect(resources[0].getKey()).toBe('objects/item_0/name');
+        expect(resources[0].getSource()).toBe('First Object');
 
-        test.equal(resources[1].getType(), 'string');
-        test.equal(resources[1].getKey(), 'objects/item_1/name');
-        test.equal(resources[1].getSource(), 'Second Object');
+        expect(resources[1].getType()).toBe('string');
+        expect(resources[1].getKey()).toBe('objects/item_1/name');
+        expect(resources[1].getSource()).toBe('Second Object');
 
-        test.equal(resources[2].getType(), 'string');
-        test.equal(resources[2].getKey(), 'objects/item_1/description');
-        test.equal(resources[2].getSource(), 'String property');
+        expect(resources[2].getType()).toBe('string');
+        expect(resources[2].getKey()).toBe('objects/item_1/description');
+        expect(resources[2].getSource()).toBe('String property');
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseArrayOfStringsInsideOfAnyOf: function(test) {
-        test.expect(14);
+    test("JsonFileParseArrayOfStringsInsideOfAnyOf", function() {
+        expect.assertions(14);
 
         // when it's named arrays.json, it should apply the arrays schema
         var jf = new JsonFile({
@@ -792,7 +735,7 @@ module.exports.jsonfile = {
             pathName: "i18n/arrays2.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
             '[\n' +
@@ -810,38 +753,36 @@ module.exports.jsonfile = {
             );
 
         var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 2);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
 
         var resources = set.getAll();
-        test.equal(resources.length, 2);
-        test.equal(resources[0].getType(), 'string');
-        test.equal(resources[0].getKey(), 'item_0/strings');
+        expect(resources.length).toBe(2);
+        expect(resources[0].getType()).toBe('string');
+        expect(resources[0].getKey()).toBe('item_0/strings');
 
-        test.equal(resources[0].getSource(), "test string");
+        expect(resources[0].getSource()).toBe("test string");
 
-        test.equal(resources[1].getType(), 'array');
-        test.equal(resources[1].getKey(), 'item_1/strings');
+        expect(resources[1].getType()).toBe('array');
+        expect(resources[1].getKey()).toBe('item_1/strings');
 
         arrayStrings = resources[1].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "string 4");
-        test.equal(arrayStrings[1], "string 5");
-        test.equal(arrayStrings[2], "string 6");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings.length).toBe(3);
+        expect(arrayStrings[0]).toBe("string 4");
+        expect(arrayStrings[1]).toBe("string 5");
+        expect(arrayStrings[2]).toBe("string 6");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseArrayWithRef: function(test) {
-        test.expect(10);
+    test("JsonFileParseArrayWithRef", function() {
+        expect.assertions(10);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/array-refs.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "itemsArray": [\n' +
@@ -857,24 +798,22 @@ module.exports.jsonfile = {
                 '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 2);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
 
         var resources = set.getAll();
-        test.equal(resources.length, 2);
-        test.equal(resources[0].getType(), 'string');
-        test.equal(resources[0].getKey(), 'itemsArray/item_0/itemField');
-        test.equal(resources[0].getSource(), 'First item');
+        expect(resources.length).toBe(2);
+        expect(resources[0].getType()).toBe('string');
+        expect(resources[0].getKey()).toBe('itemsArray/item_0/itemField');
+        expect(resources[0].getSource()).toBe('First item');
 
-        test.equal(resources[1].getType(), 'string');
-        test.equal(resources[1].getKey(), 'itemsArray/item_1/itemField');
-        test.equal(resources[1].getSource(), 'Second item');
+        expect(resources[1].getType()).toBe('string');
+        expect(resources[1].getKey()).toBe('itemsArray/item_1/itemField');
+        expect(resources[1].getSource()).toBe('Second item');
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseDeepRightSize: function(test) {
-        test.expect(3);
+    test("JsonFileParseDeepRightSize", function() {
+        expect.assertions(3);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -882,7 +821,7 @@ module.exports.jsonfile = {
             pathName: "i18n/deep.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -908,14 +847,13 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
-        test.done();
-    },
+        expect(set.size()).toBe(3);
+    });
 
-    testJsonFileParseDeepRightStrings: function(test) {
-        test.expect(19);
+    test("JsonFileParseDeepRightStrings", function() {
+        expect.assertions(19);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -923,7 +861,7 @@ module.exports.jsonfile = {
             pathName: "i18n/deep.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -949,36 +887,34 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
         var resources = set.getAll();
-        test.equal(resources.length, 3);
+        expect(resources.length).toBe(3);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "x/y/plurals/bar");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("x/y/plurals/bar");
         var pluralStrings = resources[0].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "singular");
-        test.equal(pluralStrings.many, "many");
-        test.equal(pluralStrings.other, "plural");
-        test.ok(!pluralStrings.zero);
-        test.ok(!pluralStrings.two);
-        test.ok(!pluralStrings.few);
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("singular");
+        expect(pluralStrings.many).toBe("many");
+        expect(pluralStrings.other).toBe("plural");
+        expect(!pluralStrings.zero).toBeTruthy();
+        expect(!pluralStrings.two).toBeTruthy();
+        expect(!pluralStrings.few).toBeTruthy();
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a/b/strings/a");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("b");
+        expect(resources[1].getKey()).toBe("a/b/strings/a");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "a/b/strings/c");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("d");
+        expect(resources[2].getKey()).toBe("a/b/strings/c");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseTestInvalidJson: function(test) {
-        test.expect(2);
+    test("JsonFileParseTestInvalidJson", function() {
+        expect.assertions(2);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -986,9 +922,9 @@ module.exports.jsonfile = {
             pathName: "i18n/deep.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
-        test.throws(function(test) {
+        expect(function(test) {
             jf.parse(
                '{\n' +
                '    "x": {\n' +
@@ -1011,13 +947,11 @@ module.exports.jsonfile = {
                '        }\n' +
                '    }\n' +
                '}\n');
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseRefsRightSize: function(test) {
-        test.expect(3);
+    test("JsonFileParseRefsRightSize", function() {
+        expect.assertions(3);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -1025,7 +959,7 @@ module.exports.jsonfile = {
             pathName: "i18n/refs.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1053,14 +987,13 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
-        test.done();
-    },
+        expect(set.size()).toBe(3);
+    });
 
-    testJsonFileParseRefsRightStrings: function(test) {
-        test.expect(13);
+    test("JsonFileParseRefsRightStrings", function() {
+        expect.assertions(13);
 
         // when it's named messages.json, it should apply the messages-schema schema
         var jf = new JsonFile({
@@ -1068,7 +1001,7 @@ module.exports.jsonfile = {
             pathName: "i18n/refs.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1096,36 +1029,34 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
         var resources = set.getAll();
-        test.equal(resources.length, 3);
+        expect(resources.length).toBe(3);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "Mobile");
-        test.equal(resources[0].getKey(), "owner/phone/type");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("Mobile");
+        expect(resources[0].getKey()).toBe("owner/phone/type");
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "Home");
-        test.equal(resources[1].getKey(), "customer1/phone/type");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("Home");
+        expect(resources[1].getKey()).toBe("customer1/phone/type");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "Work");
-        test.equal(resources[2].getKey(), "customer2/phone/type");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("Work");
+        expect(resources[2].getKey()).toBe("customer2/phone/type");
+    });
 
-        test.done();
-    },
-
-    testJsonFileParseDefaultSchema: function(test) {
-        test.expect(5);
+    test("JsonFileParseDefaultSchema", function() {
+        expect.assertions(5);
 
         var jf = new JsonFile({
             project: p,
             pathName: "a/b/c/str.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1134,28 +1065,26 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ResourceString.hashKey("foo", "en-US", "string 1", "json"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "this is string one");
-        test.equal(r.getKey(), "string 1");
-
-        test.done();
-    },
+        expect(r.getSource()).toBe("this is string one");
+        expect(r.getKey()).toBe("string 1");
+    });
 
 /*
     can't do comments yet
 
-    testJsonFileParseExtractComments: function(test) {
-        test.expect(8);
+    test("JsonFileParseExtractComments", function() {
+        expect.assertions(8);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1166,26 +1095,24 @@ module.exports.jsonfile = {
            '}\n');
 
         var set = jf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getNote(), "comment for string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getNote()).toBe("comment for string 1");
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "string 2");
-
-        test.done();
-    },
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("string 2");
+    });
 
 */
 
-    testJsonFileExtractFile: function(test) {
-        test.expect(28);
+    test("JsonFileExtractFile", function() {
+        expect.assertions(28);
 
         var base = path.dirname(module.id);
 
@@ -1194,56 +1121,54 @@ module.exports.jsonfile = {
             pathName: "./json/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should read the file
         jf.extract();
 
         var set = jf.getTranslationSet();
 
-        test.equal(set.size(), 5);
+        expect(set.size()).toBe(5);
 
         var resources = set.getAll();
-        test.equal(resources.length, 5);
+        expect(resources.length).toBe(5);
 
-        test.equal(resources[0].getType(), "plural");
+        expect(resources[0].getType()).toBe("plural");
         var categories = resources[0].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one");
-        test.equal(categories.other, "other");
-        test.equal(resources[0].getKey(), "plurals/bar");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one");
+        expect(categories.other).toBe("other");
+        expect(resources[0].getKey()).toBe("plurals/bar");
 
-        test.equal(resources[1].getType(), "array");
+        expect(resources[1].getType()).toBe("array");
         var arr = resources[1].getSourceArray();
-        test.ok(arr);
-        test.equal(arr.length, 3);
-        test.equal(arr[0], "value 1");
-        test.equal(arr[1], "value 2");
-        test.equal(arr[2], "value 3");
-        test.equal(resources[1].getKey(), "arrays/asdf");
+        expect(arr).toBeTruthy();
+        expect(arr.length).toBe(3);
+        expect(arr[0]).toBe("value 1");
+        expect(arr[1]).toBe("value 2");
+        expect(arr[2]).toBe("value 3");
+        expect(resources[1].getKey()).toBe("arrays/asdf");
 
-        test.equal(resources[2].getType(), "array");
+        expect(resources[2].getType()).toBe("array");
         var arr = resources[2].getSourceArray();
-        test.ok(arr);
-        test.equal(arr.length, 3);
-        test.equal(arr[0], "1");
-        test.equal(arr[1], "2");
-        test.equal(arr[2], "3");
-        test.equal(resources[2].getKey(), "arrays/asdfasdf");
+        expect(arr).toBeTruthy();
+        expect(arr.length).toBe(3);
+        expect(arr[0]).toBe("1");
+        expect(arr[1]).toBe("2");
+        expect(arr[2]).toBe("3");
+        expect(resources[2].getKey()).toBe("arrays/asdfasdf");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "b");
-        test.equal(resources[3].getKey(), "strings/a");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("b");
+        expect(resources[3].getKey()).toBe("strings/a");
 
-        test.equal(resources[4].getType(), "string");
-        test.equal(resources[4].getSource(), "d");
-        test.equal(resources[4].getKey(), "strings/c");
+        expect(resources[4].getType()).toBe("string");
+        expect(resources[4].getSource()).toBe("d");
+        expect(resources[4].getKey()).toBe("strings/c");
+    });
 
-        test.done();
-    },
-
-    testJsonFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("JsonFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -1251,20 +1176,18 @@ module.exports.jsonfile = {
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should attempt to read the file and not fail
         jf.extract();
 
         var set = jf.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJsonFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("JsonFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -1273,26 +1196,24 @@ module.exports.jsonfile = {
             pathName: "./json/bogus.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should attempt to read the file and not fail
         jf.extract();
 
         var set = jf.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeTextSimple: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextSimple", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1319,19 +1240,18 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testJsonFileLocalizeTextWithSchema: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextWithSchema", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1441,19 +1361,18 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testJsonFileLocalizeTextMethodSparse: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextMethodSparse", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/sparse.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1479,19 +1398,18 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testJsonFileLocalizeTextWithSchemaSparseComplex: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextWithSchemaSparseComplex", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/sparse2.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1559,19 +1477,18 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testJsonFileLocalizeArrayOfStrings: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeArrayOfStrings", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "strings": [\n' +
@@ -1611,20 +1528,18 @@ module.exports.jsonfile = {
                 '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeArrayOfNumbers: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeArrayOfNumbers", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "numbers": [\n' +
@@ -1668,20 +1583,18 @@ module.exports.jsonfile = {
                 '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeArrayOfBooleans: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeArrayOfBooleans", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "booleans": [\n' +
@@ -1717,20 +1630,18 @@ module.exports.jsonfile = {
                 '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeArrayOfObjects: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeArrayOfObjects", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
                 '  "objects": [\n' +
@@ -1791,20 +1702,18 @@ module.exports.jsonfile = {
                 '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeArrayOfObjectsWithBooleansOnly: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeArrayOfObjectsWithBooleansOnly", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "i18n/arrays.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse('{\n' +
             '  "objects": [\n' +
@@ -1833,20 +1742,18 @@ module.exports.jsonfile = {
             '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeTextUsePseudoForMissing: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextUsePseudoForMissing", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p2,
             pathName: "./json/messages.json",
             type: t2
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1881,20 +1788,20 @@ module.exports.jsonfile = {
            '{\n' +
            '    "plurals": {\n' +
            '        "bar": {\n' +
-           '            "one": "šíñğüľàŕ3210",\n' +
-           '            "many": "màñÿ10",\n' +
-           '            "other": "þľüŕàľ210"\n' +
+           '            "one": "[šíñğüľàŕ3210]",\n' +
+           '            "many": "[màñÿ10]",\n' +
+           '            "other": "[þľüŕàľ210]"\n' +
            '        }\n' +
            '    },\n' +
            '    "strings": {\n' +
-           '        "a": "b0",\n' +
-           '        "c": "ð0"\n' +
+           '        "a": "[b0]",\n' +
+           '        "c": "[ð0]"\n' +
            '    },\n' +
            '    "arrays": {\n' +
            '        "asdf": [\n' +
-           '            "šţŕíñğ 13210",\n' +
-           '            "šţŕíñğ 23210",\n' +
-           '            "šţŕíñğ 33210"\n' +
+           '            "[šţŕíñğ 13210]",\n' +
+           '            "[šţŕíñğ 23210]",\n' +
+           '            "[šţŕíñğ 33210]"\n' +
            '        ]\n' +
            '    },\n' +
            '    "others": {\n' +
@@ -1904,22 +1811,21 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
 /*
     not implemented yet
 
-    testJsonFileLocalizeTextMethodSpread: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextMethodSpread", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/spread.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -1959,19 +1865,18 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testJsonFileLocalizeTextMethodSpreadMultilingual: function(test) {
-        test.expect(2);
+    test("JsonFileLocalizeTextMethodSpreadMultilingual", function() {
+        expect.assertions(2);
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/spread.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -2031,13 +1936,12 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 */
 
-    testJsonFileLocalize: function(test) {
-        test.expect(7);
+    test("JsonFileLocalize", function() {
+        expect.assertions(7);
 
         var base = path.dirname(module.id);
 
@@ -2048,15 +1952,15 @@ module.exports.jsonfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))).toBeTruthy();
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should read the file
         jf.extract();
@@ -2170,8 +2074,8 @@ module.exports.jsonfile = {
 
         jf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.json"), "utf-8");
 
@@ -2204,7 +2108,7 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.json"), "utf-8");
 
@@ -2236,13 +2140,11 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n';
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeNoTranslations: function(test) {
-        test.expect(5);
+    test("JsonFileLocalizeNoTranslations", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2253,15 +2155,15 @@ module.exports.jsonfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))).toBeTruthy();
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/messages.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should read the file
         jf.extract();
@@ -2271,14 +2173,12 @@ module.exports.jsonfile = {
         jf.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeMethodSparse: function(test) {
-        test.expect(7);
+    test("JsonFileLocalizeMethodSparse", function() {
+        expect.assertions(7);
 
         var base = path.dirname(module.id);
 
@@ -2289,15 +2189,15 @@ module.exports.jsonfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))).toBeTruthy();
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/sparse2.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should read the file
         jf.extract();
@@ -2360,8 +2260,8 @@ module.exports.jsonfile = {
 
         jf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))).toBeTruthy();
 
         // should only contain the things that were actually translated
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"), "utf-8");
@@ -2381,7 +2281,7 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"), "utf-8");
 
@@ -2399,13 +2299,11 @@ module.exports.jsonfile = {
            '    }\n' +
            '}\n';
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeExtractNewStrings: function(test) {
-        test.expect(43);
+    test("JsonFileLocalizeExtractNewStrings", function() {
+        expect.assertions(43);
 
         var base = path.dirname(module.id);
 
@@ -2416,19 +2314,19 @@ module.exports.jsonfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))).toBeTruthy();
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/sparse2.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // make sure we start off with no new strings
         t.newres.clear();
-        test.equal(t.newres.size(), 0);
+        expect(t.newres.size()).toBe(0);
 
         // should read the file
         jf.extract();
@@ -2474,65 +2372,63 @@ module.exports.jsonfile = {
 
         jf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))).toBeTruthy();
 
         // now verify that the strings which did not have translations show up in the
         // new strings translation set
-        test.equal(t.newres.size(), 7);
+        expect(t.newres.size()).toBe(7);
         var resources = t.newres.getAll();
-        test.equal(resources.length, 7);
+        expect(resources.length).toBe(7);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "plurals/bar");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("plurals/bar");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
         var pluralStrings = resources[0].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "one");
-        test.equal(pluralStrings.other, "other");
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("one");
+        expect(pluralStrings.other).toBe("other");
         pluralStrings = resources[0].getTargetPlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "one");
-        test.equal(pluralStrings.other, "other");
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("one");
+        expect(pluralStrings.other).toBe("other");
 
-        test.equal(resources[1].getType(), "array");
-        test.equal(resources[1].getKey(), "arrays/asdf");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getKey()).toBe("arrays/asdf");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
         var arrayStrings = resources[1].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
         arrayStrings = resources[1].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
 
-        test.equal(resources[2].getType(), "array");
-        test.equal(resources[2].getKey(), "arrays/asdfasdf");
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        expect(resources[2].getType()).toBe("array");
+        expect(resources[2].getKey()).toBe("arrays/asdfasdf");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
         var arrayStrings = resources[2].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "1");
-        test.equal(arrayStrings[1], "2");
-        test.equal(arrayStrings[2], "3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("1");
+        expect(arrayStrings[1]).toBe("2");
+        expect(arrayStrings[2]).toBe("3");
         arrayStrings = resources[2].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "1");
-        test.equal(arrayStrings[1], "2");
-        test.equal(arrayStrings[2], "3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("1");
+        expect(arrayStrings[1]).toBe("2");
+        expect(arrayStrings[2]).toBe("3");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "d");
-        test.equal(resources[3].getKey(), "strings/c");
-        test.equal(resources[3].getTargetLocale(), "fr-FR");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("d");
+        expect(resources[3].getKey()).toBe("strings/c");
+        expect(resources[3].getTargetLocale()).toBe("fr-FR");
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeWithAlternateFileNameTemplate: function(test) {
-        test.expect(5);
+    test("JsonFileLocalizeWithAlternateFileNameTemplate", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2543,15 +2439,15 @@ module.exports.jsonfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/deep_de-DE.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json"))).toBeTruthy();
 
         var jf = new JsonFile({
             project: p,
             pathName: "./json/deep.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         // should read the file
         jf.extract();
@@ -2561,14 +2457,12 @@ module.exports.jsonfile = {
 
         jf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.json"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsonFileLocalizeDefaultMethodAndTemplate: function(test) {
-        test.expect(4);
+    test("JsonFileLocalizeDefaultMethodAndTemplate", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -2577,7 +2471,7 @@ module.exports.jsonfile = {
             pathName: "x/y/str.json",
             type: t
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.parse(
            '{\n' +
@@ -2601,11 +2495,11 @@ module.exports.jsonfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/fr/FR/str.json"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json"))).toBeTruthy();
 
         jf.localize(translations, ["fr-FR"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/str.json"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/str.json"), "utf-8");
 
@@ -2617,13 +2511,11 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileGetLocalizedTextGeneratedString: function(test) {
-        test.expect(2);
+    test("JsonFileGetLocalizedTextGeneratedString", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -2633,7 +2525,7 @@ module.exports.jsonfile = {
             type: t,
             locale: "fr-FR"
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.addResource(new ResourceString({
             project: "foo",
@@ -2653,13 +2545,11 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileGetLocalizedTextGeneratedPlural: function(test) {
-        test.expect(2);
+    test("JsonFileGetLocalizedTextGeneratedPlural", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -2669,7 +2559,7 @@ module.exports.jsonfile = {
             type: t,
             locale: "fr-FR"
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.addResource(new ResourcePlural({
             project: "foo",
@@ -2697,13 +2587,11 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileGetLocalizedTextGeneratedArray: function(test) {
-        test.expect(2);
+    test("JsonFileGetLocalizedTextGeneratedArray", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -2713,7 +2601,7 @@ module.exports.jsonfile = {
             type: t,
             locale: "fr-FR"
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.addResource(new ResourceArray({
             project: "foo",
@@ -2745,13 +2633,11 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileGetLocalizedTextGeneratedAll: function(test) {
-        test.expect(2);
+    test("JsonFileGetLocalizedTextGeneratedAll", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -2761,7 +2647,7 @@ module.exports.jsonfile = {
             type: t,
             locale: "fr-FR"
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.addResource(new ResourceString({
             project: "foo",
@@ -2821,13 +2707,11 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJsonFileGetLocalizedTextGeneratedEscapeDoubleQuotes: function(test) {
-        test.expect(2);
+    test("JsonFileGetLocalizedTextGeneratedEscapeDoubleQuotes", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -2837,7 +2721,7 @@ module.exports.jsonfile = {
             type: t,
             locale: "fr-FR"
         });
-        test.ok(jf);
+        expect(jf).toBeTruthy();
 
         jf.addResource(new ResourceString({
             project: "foo",
@@ -2898,9 +2782,7 @@ module.exports.jsonfile = {
            '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    }
-
-};
+});
