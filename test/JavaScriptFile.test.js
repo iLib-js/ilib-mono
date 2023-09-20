@@ -1,7 +1,7 @@
 /*
- * testJavaScriptFile.js - test the JavaScript file handler object.
+ * JavaScriptFile.test.js - test the JavaScript file handler object.
  *
- * Copyright © 2019, 2022 Box, Inc.
+ * Copyright © 2019, 2022-2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,21 +47,19 @@ var p2 = new CustomProject({
 
 var jsft2 = new JavaScriptFileType(p2);
 
-module.exports.javascriptfile = {
-    testJavaScriptFileConstructor: function(test) {
-        test.expect(1);
+describe("javascriptfile", function() {
+    test("JavaScriptFileConstructor", function() {
+        expect.assertions(1);
 
         var j = new JavaScriptFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileConstructorParams: function(test) {
-        test.expect(1);
+    test("JavaScriptFileConstructorParams", function() {
+        expect.assertions(1);
 
         var j = new JavaScriptFile({
             project: p,
@@ -69,305 +67,277 @@ module.exports.javascriptfile = {
             type: jsft
         });
 
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("JavaScriptFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileMakeKey: function(test) {
-        test.expect(2);
+    test("JavaScriptFileMakeKey", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
-        test.equal(j.makeKey("This is a test"), "This is a test");
+        expect(j.makeKey("This is a test")).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "This is a test"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "This is a test");
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseSimpleGetBySource", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseJSSimpleGetBySource: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseJSSimpleGetBySource", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getStringJS("This is a test")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleSingleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseSimpleSingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("RB.getString('This is a test')");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseJSSimpleSingleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseJSSimpleSingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("RB.getStringJS('This is a test')");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseMoreComplexSingleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseMoreComplexSingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("if (subcat == 'Has types') {title = RB.getString('Types of {topic}').format({topic: topic.attribute.name})}");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("Types of {topic}");
-        test.ok(r);
-        test.equal(r.getSource(), "Types of {topic}");
-        test.equal(r.getKey(), "Types of {topic}");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Types of {topic}");
+        expect(r.getKey()).toBe("Types of {topic}");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseSimpleIgnoreWhitespace", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('   RB.getString  (    \t "This is a test"    );  ');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseJSCompressWhitespaceInKey: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseJSCompressWhitespaceInKey", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getStringJS("\t\t This \\n \n is \\\n\t a    test")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "\t\t This \\n \n is \t a    test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("\t\t This \\n \n is \t a    test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleRightSize: function(test) {
-        test.expect(4);
+    test("JavaScriptFileParseSimpleRightSize", function() {
+        expect.assertions(4);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         j.parse('RB.getString("This is a test")');
 
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleWithTranslatorComment: function(test) {
-        test.expect(6);
+    test("JavaScriptFileParseSimpleWithTranslatorComment", function() {
+        expect.assertions(6);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('\tRB.getString("This is a test"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
-        test.equal(r.getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+        expect(r.getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSingleQuotesWithTranslatorComment: function(test) {
-        test.expect(6);
+    test("JavaScriptFileParseSingleQuotesWithTranslatorComment", function() {
+        expect.assertions(6);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("\tRB.getString('This is a test'); // i18n: this is a translator\'s comment\n\tfoo('This is not');");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
-        test.equal(r.getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+        expect(r.getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSingleQuotesWithEmbeddedSingleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseSingleQuotesWithEmbeddedSingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             '    RB.getString(\'We\\\'ll notify you when {prefix}{last_name} accepts you as a friend!\').format({\n' +
@@ -377,25 +347,23 @@ module.exports.javascriptfile = {
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("We'll notify you when {prefix}{last_name} accepts you as a friend!");
-        test.ok(r);
-        test.equal(r.getSource(), "We'll notify you when {prefix}{last_name} accepts you as a friend!");
-        test.equal(r.getKey(), "We'll notify you when {prefix}{last_name} accepts you as a friend!");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("We'll notify you when {prefix}{last_name} accepts you as a friend!");
+        expect(r.getKey()).toBe("We'll notify you when {prefix}{last_name} accepts you as a friend!");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSingleQuotesWithEmbeddedDoubleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseSingleQuotesWithEmbeddedDoubleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             '    RB.getString("We\\"ll notify you when {prefix}{last_name} accepts you as a friend!").format({\n' +
@@ -405,497 +373,457 @@ module.exports.javascriptfile = {
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource('We"ll notify you when {prefix}{last_name} accepts you as a friend!');
-        test.ok(r);
-        test.equal(r.getSource(), 'We"ll notify you when {prefix}{last_name} accepts you as a friend!');
-        test.equal(r.getKey(), 'We"ll notify you when {prefix}{last_name} accepts you as a friend!');
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('We"ll notify you when {prefix}{last_name} accepts you as a friend!');
+        expect(r.getKey()).toBe('We"ll notify you when {prefix}{last_name} accepts you as a friend!');
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSimpleWithUniqueIdAndTranslatorComment: function(test) {
-        test.expect(6);
+    test("JavaScriptFileParseSimpleWithUniqueIdAndTranslatorComment", function() {
+        expect.assertions(6);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('\tRB.getString("This is a test", "foobar"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "foobar"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "foobar");
-        test.equal(r[0].getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("foobar");
+        expect(r[0].getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWithKey: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseWithKey", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test", "unique_id")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique_id"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "unique_id");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("unique_id");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseJSWithKey: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseJSWithKey", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getStringJS("This is a test", "unique_id")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique_id"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "unique_id");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("unique_id");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWithKeySingleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseWithKeySingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("RB.getString('This is a test', 'unique_id')");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique_id"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "unique_id");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("unique_id");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseJSWithKeySingleQuotes: function(test) {
-        test.expect(5);
+    test("JavaScriptFileParseJSWithKeySingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("RB.getStringJS('This is a test', 'unique_id')");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique_id"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "unique_id");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("unique_id");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWithKeyCantGetBySource: function(test) {
-        test.expect(3);
+    test("JavaScriptFileParseWithKeyCantGetBySource", function() {
+        expect.assertions(3);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test", "unique_id")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(!r);
+        expect(!r).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseMultiple: function(test) {
-        test.expect(8);
+    test("JavaScriptFileParseMultiple", function() {
+        expect.assertions(8);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "This is also a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("This is also a test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseMultipleWithKey: function(test) {
-        test.expect(10);
+    test("JavaScriptFileParseMultipleWithKey", function() {
+        expect.assertions(10);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test", "x");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "y");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "x"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.ok(!r[0].getAutoKey());
-        test.equal(r[0].getKey(), "x");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(!r[0].getAutoKey()).toBeTruthy();
+        expect(r[0].getKey()).toBe("x");
 
         r = set.getBy({
             reskey: "y"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.ok(!r[0].getAutoKey());
-        test.equal(r[0].getKey(), "y");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(!r[0].getAutoKey()).toBeTruthy();
+        expect(r[0].getKey()).toBe("y");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseMultipleSameLine: function(test) {
-        test.expect(12);
+    test("JavaScriptFileParseMultipleSameLine", function() {
+        expect.assertions(12);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test"), RB.getString("This is a second test"), RB.getString("This is a third test")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         r = set.getBySource("This is a second test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a second test");
-        test.equal(r.getKey(), "This is a second test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a second test");
+        expect(r.getKey()).toBe("This is a second test");
 
         r = set.getBySource("This is a third test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a third test");
-        test.equal(r.getKey(), "This is a third test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a third test");
+        expect(r.getKey()).toBe("This is a third test");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseMultipleWithComments: function(test) {
-        test.expect(10);
+    test("JavaScriptFileParseMultipleWithComments", function() {
+        expect.assertions(10);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");\t// i18n: bar');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
-        test.equal(r.getComment(), "foo");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+        expect(r.getComment()).toBe("foo");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "This is also a test");
-        test.equal(r.getComment(), "bar");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("This is also a test");
+        expect(r.getComment()).toBe("bar");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseMultipleWithUniqueIdsAndComments: function(test) {
-        test.expect(10);
+    test("JavaScriptFileParseMultipleWithUniqueIdsAndComments", function() {
+        expect.assertions(10);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test", "asdf");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test", "kdkdkd");\t// i18n: bar');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "asdf"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "asdf");
-        test.equal(r[0].getComment(), "foo");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("asdf");
+        expect(r[0].getComment()).toBe("foo");
 
         r = set.getBy({
             reskey: "kdkdkd"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is also a test");
-        test.equal(r[0].getKey(), "kdkdkd");
-        test.equal(r[0].getComment(), "bar");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is also a test");
+        expect(r[0].getKey()).toBe("kdkdkd");
+        expect(r[0].getComment()).toBe("bar");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWithDups: function(test) {
-        test.expect(6);
+    test("JavaScriptFileParseWithDups", function() {
+        expect.assertions(6);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseDupsDifferingByKeyOnly: function(test) {
-        test.expect(8);
+    test("JavaScriptFileParseDupsDifferingByKeyOnly", function() {
+        expect.assertions(8);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "unique_id");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         r = set.getBy({
             reskey: "unique_id"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "unique_id");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("unique_id");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseBogusConcatenation: function(test) {
-        test.expect(2);
+    test("JavaScriptFileParseBogusConcatenation", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test" + " and this isnt");');
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseBogusConcatenation2: function(test) {
-        test.expect(2);
+    test("JavaScriptFileParseBogusConcatenation2", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString("This is a test" + foobar);');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseBogusNonStringParam: function(test) {
-        test.expect(2);
+    test("JavaScriptFileParseBogusNonStringParam", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString(foobar);');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseEmptyParams: function(test) {
-        test.expect(2);
+    test("JavaScriptFileParseEmptyParams", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('RB.getString();');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWholeWord: function(test) {
-        test.expect(2);
+    test("JavaScriptFileParseWholeWord", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('EPIRB.getString("This is a test");');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseSubobject: function(test) {
-        test.expect(2);
+    test("JavaScriptFileParseSubobject", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('App.RB.getString("This is a test");');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParsePunctuationBeforeRB: function(test) {
-        test.expect(9);
+    test("JavaScriptFileParsePunctuationBeforeRB", function() {
+        expect.assertions(9);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             "        <%\n" +
@@ -908,52 +836,48 @@ module.exports.javascriptfile = {
             "        %>\n");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.getBySource("Personal");
-        test.ok(r);
-        test.equal(r.getSource(), "Personal");
-        test.equal(r.getKey(), "Personal");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Personal");
+        expect(r.getKey()).toBe("Personal");
 
         r = set.getBySource("Smart Watches");
-        test.ok(r);
-        test.equal(r.getSource(), "Smart Watches");
-        test.equal(r.getKey(), "Smart Watches");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Smart Watches");
+        expect(r.getKey()).toBe("Smart Watches");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseEmptyString: function(test) {
-        test.expect(3);
+    test("JavaScriptFileParseEmptyString", function() {
+        expect.assertions(3);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("var subcats = [RB.getStringJS(''), RB.getString(''), RB.getStringJS('', 'foo')];\n");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseNonString: function(test) {
-        test.expect(3);
+    test("JavaScriptFileParseNonString", function() {
+        expect.assertions(3);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse("var subcats = [\n" +
         "    RB.getStringJS(variableName),\n" +
@@ -965,129 +889,119 @@ module.exports.javascriptfile = {
         "];\n");
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileExtractFile: function(test) {
-        test.expect(8);
+    test("JavaScriptFileExtractFile", function() {
+        expect.assertions(8);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: "./js/t1.js",
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should read the file
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         var r = set.getBy({
             reskey: "id1"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test with a unique id");
-        test.equal(r[0].getKey(), "id1");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test with a unique id");
+        expect(r[0].getKey()).toBe("id1");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileExtractTemplateFile: function(test) {
-        test.expect(11);
+    test("JavaScriptFileExtractTemplateFile", function() {
+        expect.assertions(11);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: "./tmpl/topic_types.tmpl.html",
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should read the file
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         var r = set.getBySource("Hand-held Devices");
-        test.ok(r);
-        test.equal(r.getSource(), "Hand-held Devices");
-        test.equal(r.getKey(), "Hand-held Devices");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Hand-held Devices");
+        expect(r.getKey()).toBe("Hand-held Devices");
 
         r = set.getBySource("Tablets");
-        test.ok(r);
-        test.equal(r.getSource(), "Tablets");
-        test.equal(r.getKey(), "Tablets");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Tablets");
+        expect(r.getKey()).toBe("Tablets");
 
         r = set.getBySource("Smart Watches");
-        test.ok(r);
-        test.equal(r.getSource(), "Smart Watches");
-        test.equal(r.getKey(), "Smart Watches");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Smart Watches");
+        expect(r.getKey()).toBe("Smart Watches");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("JavaScriptFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should attempt to read the file and not fail
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("JavaScriptFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: "./java/foo.js",
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should attempt to read the file and not fail
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWithAlternateWrapper: function(test) {
-        test.expect(9);
+    test("JavaScriptFileParseWithAlternateWrapper", function() {
+        expect.assertions(9);
 
         var j = new JavaScriptFile({
             project: p2,
             pathName: undefined,
             type: jsft2
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             "if (subcat === 'Has types') {\n" +
@@ -1107,33 +1021,31 @@ module.exports.javascriptfile = {
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique key"
         });
-        test.ok(r);
-        test.equal(r.length, 1);
-        test.equal(r[0].getSource(), "Types of {topic}");
-        test.equal(r[0].getKey(), "unique key");
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(1);
+        expect(r[0].getSource()).toBe("Types of {topic}");
+        expect(r[0].getKey()).toBe("unique key");
 
         r = set.getBySource("Start Download");
-        test.ok(r);
-        test.equal(r.getSource(), "Start Download");
-        test.equal(r.getKey(), "Start Download");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Start Download");
+        expect(r.getKey()).toBe("Start Download");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseWithAlternateWrapperAndEmbeddedQuote: function(test) {
-        test.expect(9);
+    test("JavaScriptFileParseWithAlternateWrapperAndEmbeddedQuote", function() {
+        expect.assertions(9);
 
         var j = new JavaScriptFile({
             project: p2,
             pathName: undefined,
             type: jsft2
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             "if (subcat === 'Has types') {\n" +
@@ -1153,33 +1065,31 @@ module.exports.javascriptfile = {
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique key"
         });
-        test.ok(r);
-        test.equal(r.length, 1);
-        test.equal(r[0].getSource(), "Types of {topic}");
-        test.equal(r[0].getKey(), "unique key");
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(1);
+        expect(r[0].getSource()).toBe("Types of {topic}");
+        expect(r[0].getKey()).toBe("unique key");
 
         r = set.getBySource("Start \"Download");
-        test.ok(r);
-        test.equal(r.getSource(), "Start \"Download");
-        test.equal(r.getKey(), "Start \"Download");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Start \"Download");
+        expect(r.getKey()).toBe("Start \"Download");
+    });
 
-        test.done();
-    },
-
-    testJavaScriptFileParseParametersWithExtraTrailingCommas: function(test) {
-        test.expect(9);
+    test("JavaScriptFileParseParametersWithExtraTrailingCommas", function() {
+        expect.assertions(9);
 
         var j = new JavaScriptFile({
             project: p,
             pathName: undefined,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // eslint has this nasty habit of inserting useless extra commas at the end
         // of parameter lists
@@ -1199,21 +1109,19 @@ module.exports.javascriptfile = {
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "unique key"
         });
-        test.ok(r);
-        test.equal(r.length, 1);
-        test.equal(r[0].getSource(), "Types of {topic}");
-        test.equal(r[0].getKey(), "unique key");
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(1);
+        expect(r[0].getSource()).toBe("Types of {topic}");
+        expect(r[0].getKey()).toBe("unique key");
 
         r = set.getBySource("Start Download");
-        test.ok(r);
-        test.equal(r.getSource(), "Start Download");
-        test.equal(r.getKey(), "Start Download");
-
-        test.done();
-    }
-};
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Start Download");
+        expect(r.getKey()).toBe("Start Download");
+    });
+});

@@ -115,6 +115,11 @@ be localized, and the loctool will continue on to the next file.
 
 ## Release Notes
 
+### v1.1.3
+
+- update dependencies
+- convert all unit tests from nodeunit to jest
+
 ### v1.1.2
 
 - update dependencies
