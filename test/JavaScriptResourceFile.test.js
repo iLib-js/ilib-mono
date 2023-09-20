@@ -1,7 +1,7 @@
 /*
- * testJavaScriptResourceFile.js - test the JavaScript file handler object.
+ * JavaScriptResourceFile.test.js - test the JavaScript file handler object.
  *
- * Copyright © 2019-2020, Box, Inc.
+ * Copyright © 2019-2020, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,20 +78,18 @@ var p2 = new CustomProject({
     identify: true
 });
 
-module.exports.javascriptresourcefile = {
-    testJavaScriptResourceFileConstructor: function(test) {
-        test.expect(1);
+describe("javascriptresourcefile", function() {
+    test("JavaScriptResourceFileConstructor", function() {
+        expect.assertions(1);
 
         var jsrf = new JavaScriptResourceFile({
             project: p
         });
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileConstructorParams: function(test) {
-        test.expect(1);
+    test("JavaScriptResourceFileConstructorParams", function() {
+        expect.assertions(1);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
@@ -99,13 +97,11 @@ module.exports.javascriptresourcefile = {
             locale: "en-US"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileIsDirty: function(test) {
-        test.expect(3);
+    test("JavaScriptResourceFileIsDirty", function() {
+        expect.assertions(3);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
@@ -113,8 +109,8 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
-        test.ok(!jsrf.isDirty());
+        expect(jsrf).toBeTruthy();
+        expect(!jsrf.isDirty()).toBeTruthy();
 
         [
             p.getAPI().newResource({
@@ -148,13 +144,11 @@ module.exports.javascriptresourcefile = {
             jsrf.addResource(res);
         });
 
-        test.ok(jsrf.isDirty());
+        expect(jsrf.isDirty()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileRightContents: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileRightContents", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
@@ -162,7 +156,7 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -196,19 +190,16 @@ module.exports.javascriptresourcefile = {
             jsrf.addResource(res);
         });
 
-        test.equal(jsrf.getContent(),
-            'ilib.data.strings_de_DE = {\n' +
+        expect(jsrf.getContent()).toBe('ilib.data.strings_de_DE = {\n' +
             '    "more source text": "mehr Quellentext",\n' +
             '    "source text": "Quellentext",\n' +
             '    "yet more source text": "noch mehr Quellentext"\n' +
             '};\n'
         );
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentsNoContent: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentsNoContent", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
@@ -216,17 +207,14 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getContent(),
-            'ilib.data.strings_de_DE = {};\n'
+        expect(jsrf.getContent()).toBe('ilib.data.strings_de_DE = {};\n'
         );
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileEscapeDoubleQuotes: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileEscapeDoubleQuotes", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
@@ -234,7 +222,7 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
         [
             p2.getAPI().newResource({
                 type: "string",
@@ -258,18 +246,15 @@ module.exports.javascriptresourcefile = {
             jsrf.addResource(res);
         });
 
-        test.equal(jsrf.getContent(),
-            'ilib.data.strings_de_DE = {\n' +
+        expect(jsrf.getContent()).toBe('ilib.data.strings_de_DE = {\n' +
             '    "more source text": "mehr Quellen\\"text",\n' +
             '    "source text": "Quellen\\"text"\n' +
             '};\n'
         );
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileDontEscapeSingleQuotes: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileDontEscapeSingleQuotes", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
@@ -277,7 +262,7 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
         [
             p2.getAPI().newResource({
                 type: "string",
@@ -301,18 +286,15 @@ module.exports.javascriptresourcefile = {
             jsrf.addResource(res);
         });
 
-        test.equal(jsrf.getContent(),
-            'ilib.data.strings_de_DE = {\n' +
+        expect(jsrf.getContent()).toBe('ilib.data.strings_de_DE = {\n' +
             '    "more source text": "mehr Quellen\'text",\n' +
             '    "source text": "Quellen\'text"\n' +
             '};\n'
         );
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileIdentifyResourceIds: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileIdentifyResourceIds", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
@@ -320,7 +302,7 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -364,167 +346,154 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguage: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguage", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageNoDefaultAvailable: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageNoDefaultAvailable", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-DE.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-DE.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguage: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguage", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-AT"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-AT.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-AT.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageWithFlavor: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageWithFlavor", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-DE-ASDF"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-DE-ASDF.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-DE-ASDF.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguageWithFlavor: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguageWithFlavor", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-AT-ASDF"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/de-AT-ASDF.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-AT-ASDF.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageZH: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageZH", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hans-CN"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/zh.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageZHNoDefaultsAvailable: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageZHNoDefaultsAvailable", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
             locale: "zh-Hans-CN"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hans-CN.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/zh-Hans-CN.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageZH: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocaleForLanguageZH", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hant-HK"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hant.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/zh-Hant.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguageZH2: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguageZH2", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hans-SG"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hans-SG.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/zh-Hans-SG.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguageZH3: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathNonDefaultLocaleForLanguageZH3", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hant-TW"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/zh-Hant-TW.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/zh-Hant-TW.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathDefaultLocale: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathDefaultLocale", function() {
+        expect.assertions(2);
 
         // should default to English/US
         var jsrf = new JavaScriptResourceFile({
             project: p2
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "testfiles/localized_js/en.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/en.js");
+    });
 
-    testJavaScriptResourceFileGetResourceFilePathAlreadyHasPath: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetResourceFilePathAlreadyHasPath", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
@@ -532,21 +501,20 @@ module.exports.javascriptresourcefile = {
             pathName: "path/to/foo.js"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
-        test.equal(jsrf.getResourceFilePath(), "path/to/foo.js");
-        test.done();
-    },
+        expect(jsrf.getResourceFilePath()).toBe("path/to/foo.js");
+    });
 
-    testJavaScriptResourceFileGetContentDefaultLocale: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentDefaultLocale", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -591,13 +559,11 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentDefaultLocaleNoDefaultsAvailable: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentDefaultLocaleNoDefaultsAvailable", function() {
+        expect.assertions(2);
 
         var p3 = new CustomProject({
             id: "webapp",
@@ -615,7 +581,7 @@ module.exports.javascriptresourcefile = {
             locale: "de-DE"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -660,20 +626,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentNonDefaultLocale: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentNonDefaultLocale", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-AT"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -718,20 +682,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentDefaultLocaleZH: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentDefaultLocaleZH", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hans-CN"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -776,20 +738,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentDefaultLocaleZH2: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentDefaultLocaleZH2", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hant-HK"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -834,20 +794,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentNonDefaultLocaleZH: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentNonDefaultLocaleZH", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hans-SG"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -892,20 +850,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentNonDefaultLocaleZH2: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentNonDefaultLocaleZH2", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "zh-Hant-TW"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -950,20 +906,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentDefaultLocaleWithFlavor: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentDefaultLocaleWithFlavor", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-DE-ASDF"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -1008,20 +962,18 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testJavaScriptResourceFileGetContentNonDefaultLocaleWithFlavor: function(test) {
-        test.expect(2);
+    test("JavaScriptResourceFileGetContentNonDefaultLocaleWithFlavor", function() {
+        expect.assertions(2);
 
         var jsrf = new JavaScriptResourceFile({
             project: p2,
             locale: "de-DE-ASDF"
         });
 
-        test.ok(jsrf);
+        expect(jsrf).toBeTruthy();
 
         [
             p2.getAPI().newResource({
@@ -1066,8 +1018,6 @@ module.exports.javascriptresourcefile = {
         var actual = jsrf.getContent();
         diff(actual, expected);
 
-        test.equal(actual, expected);
-
-        test.done();
-    }
-};
+        expect(actual).toBe(expected);
+    });
+});
