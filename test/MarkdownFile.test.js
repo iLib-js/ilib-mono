@@ -1,7 +1,7 @@
 /*
  * MarkdownFile.test.js - test the Markdown file handler object.
  *
- * Copyright © 2019- 2022-2023 Box, Inc.
+ * Copyright © 2019-2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  */
 var path = require("path");
 var fs = require("fs");
+
 if (!MarkdownFile) {
     var MarkdownFile = require("../MarkdownFile.js");
     var MarkdownFileType = require("../MarkdownFileType.js");
@@ -26,6 +27,7 @@ if (!MarkdownFile) {
     var TranslationSet = require("loctool/lib/TranslationSet.js");
     var ResourceString = require("loctool/lib/ResourceString.js");
 }
+
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
     for (var i = 0; i < min; i++) {
@@ -46,8 +48,10 @@ var p = new CustomProject({
     locales:["en-GB"],
     targetDir: "./test/testfiles"
 });
+
 var mdft = new MarkdownFileType(p);
 var base = path.dirname(module.id);
+
 var p2 = new CustomProject({
     sourceLocale: "en-US",
     id: "foo",
@@ -58,6 +62,7 @@ var p2 = new CustomProject({
     targetDir: "./test/testfiles",
     identify: true
 });
+
 var mdft2 = new MarkdownFileType(p2);
 var p3 = new CustomProject({
     sourceLocale: "en-US",
@@ -104,7 +109,9 @@ var p3 = new CustomProject({
         }
     }
 });
+
 var mdft3 = new MarkdownFileType(p3);
+
 describe("markdown", function() {
     test("MarkdownFileConstructor", function() {
         expect.assertions(1);
@@ -114,6 +121,7 @@ describe("markdown", function() {
         });
         expect(mf).toBeTruthy();
     });
+
     test("MarkdownFileConstructorParams", function() {
         expect.assertions(1);
         var mf = new MarkdownFile({
@@ -123,6 +131,7 @@ describe("markdown", function() {
         });
         expect(mf).toBeTruthy();
     });
+
     test("MarkdownFileConstructorNoFile", function() {
         expect.assertions(1);
         var mf = new MarkdownFile({
@@ -131,6 +140,7 @@ describe("markdown", function() {
         });
         expect(mf).toBeTruthy();
     });
+
     test("MarkdownFileMakeKey", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -140,6 +150,7 @@ describe("markdown", function() {
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("This is a test")).toBe("r654479252");
     });
+
     test("MarkdownFileMakeKeySimpleTexts1", function() {
         expect.assertions(5);
         var mdf = new MarkdownFile({
@@ -152,6 +163,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("Colour scheme")).toBe("r734599412");
         expect(mdf.makeKey("Experts")).toBe("r343852585");
     });
+
     test("MarkdownFileMakeKeyUnescaped", function() {
         expect.assertions(5);
         var mdf = new MarkdownFile({
@@ -164,6 +176,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("The \\'Dude\\' played by Jeff Bridges")).toBe("r600298088");
         expect(mdf.makeKey("\\'Dude\\'")).toBe("r6259609");
     });
+
     test("MarkdownFileMakeKeySimpleTexts2", function() {
         expect.assertions(6);
         var mdf = new MarkdownFile({
@@ -177,6 +190,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("Product Reviews")).toBe("r175350918");
         expect(mdf.makeKey("Answers")).toBe("r221604632");
     });
+
     test("MarkdownFileMakeKeySimpleTexts3", function() {
         expect.assertions(9);
         var mdf = new MarkdownFile({
@@ -193,6 +207,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("Referral Link")).toBe("r140625167");
         expect(mdf.makeKey("Questions")).toBe("r256277957");
     });
+
     test("MarkdownFileMakeKeyEscapes", function() {
         expect.assertions(3);
         var mdf = new MarkdownFile({
@@ -203,6 +218,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("Can\'t find id")).toBe("r743945592");
         expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
     });
+
     test("MarkdownFileMakeKeyPunctuation", function() {
         expect.assertions(8);
         var mdf = new MarkdownFile({
@@ -218,6 +234,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("{goal_name} Goals")).toBe("r993422001");
         expect(mdf.makeKey("Connection link copied!")).toBe("r180897411");
     });
+
     test("MarkdownFileMakeKeySameStringMeansSameKey", function() {
         expect.assertions(3);
         var mdf = new MarkdownFile({
@@ -228,6 +245,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("This is a test")).toBe("r654479252");
         expect(mdf.makeKey("This is a test")).toBe("r654479252");
     });
+
     test("MarkdownFileMakeKeyCompressWhiteSpace", function() {
         expect.assertions(5);
         var mdf = new MarkdownFile({
@@ -240,6 +258,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
         expect(mdf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS")).toBe("r909283218");
     });
+
     test("MarkdownFileMakeKeyTrimWhiteSpace", function() {
         expect.assertions(5);
         var mdf = new MarkdownFile({
@@ -252,6 +271,7 @@ describe("markdown", function() {
         expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
         expect(mdf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r")).toBe("r909283218");
     });
+
     test("MarkdownFileMakeKeyNewLines", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -262,6 +282,7 @@ describe("markdown", function() {
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
         expect(mdf.makeKey("A \n B")).toBe("r191336864");
     });
+
     test("MarkdownFileMakeKeyEscapeN", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -272,6 +293,7 @@ describe("markdown", function() {
         // \n is not a return character in MD. It is just an escaped "n"
         expect(mdf.makeKey("A \\n B")).toBe("r968833504");
     });
+
     test("MarkdownFileMakeKeyTabs", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -281,6 +303,7 @@ describe("markdown", function() {
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("A \t B")).toBe("r191336864");
     });
+
     test("MarkdownFileMakeKeyEscapeT", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -291,6 +314,7 @@ describe("markdown", function() {
         // \t is not a tab character in MD. It is just an escaped "t"
         expect(mdf.makeKey("A \\t B")).toBe("r215504705");
     });
+
     test("MarkdownFileMakeKeyQuotes", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -300,6 +324,7 @@ describe("markdown", function() {
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("A \\'B\\' C")).toBe("r935639115");
     });
+
     test("MarkdownFileMakeKeyInterpretEscapedUnicodeChars", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -309,6 +334,7 @@ describe("markdown", function() {
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("&#x00A0; &#x0023;")).toBe("r2293235");
     });
+
     test("MarkdownFileMakeKeyInterpretEscapedSpecialChars2", function() {
         expect.assertions(2);
         var mdf = new MarkdownFile({
@@ -318,6 +344,7 @@ describe("markdown", function() {
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Talk to a support representative live 24/7 via video or &#x00a0; text&#x00a0;chat")).toBe("r969175354");
     });
+
     test("MarkdownFileParseSimpleGetByKey", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -333,6 +360,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
     });
+
     test("MarkdownFileParseSimpleGetBySource", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -348,6 +376,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
     });
+
     test("MarkdownFileParseSimpleIgnoreWhitespace", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -363,6 +392,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
     });
+
     test("MarkdownFileParseDontExtractUnicodeWhitespace", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -376,6 +406,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileParseDontExtractNbspEntity", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -388,6 +419,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileParseDoExtractOtherEntities", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -400,6 +432,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
     });
+
     test("MarkdownFileParseEmpty", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -412,6 +445,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileParseSkipHeader", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -424,6 +458,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileParseSkipHeaderAndParseRest", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -440,6 +475,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
     });
+
     test("MarkdownFileParseNoStrings", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -452,6 +488,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileParseSimpleRightSize", function() {
         expect.assertions(4);
         var mf = new MarkdownFile({
@@ -465,6 +502,7 @@ describe("markdown", function() {
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
     });
+
     test("MarkdownFileParseMultiple", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -485,6 +523,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is also a test");
         expect(r.getKey()).toBe("r999080996");
     });
+
     test("MarkdownFileParseContinuedParagraph", function() {
         expect.assertions(7);
         var mf = new MarkdownFile({
@@ -505,6 +544,7 @@ describe("markdown", function() {
         r = set.getBySource("This is also a test.");
         expect(!r).toBeTruthy();
     });
+
     test("MarkdownFileParseWithDups", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -523,6 +563,7 @@ describe("markdown", function() {
         expect(r.getKey()).toBe("r654479252");
         expect(set.size()).toBe(2);
     });
+
     test("MarkdownFileParseEscapeInvalidChars", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -539,6 +580,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is also a &#3; test");
         expect(r.getKey()).toBe("r1041204778");
     });
+
     test("MarkdownFileParseDontEscapeWhitespaceChars", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -555,6 +597,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is also a \u000C test");
         expect(r.getKey()).toBe("r999080996");
     });
+
     test("MarkdownFileParseNonBreakingEmphasis", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -570,6 +613,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a <c0>test</c0> of the emergency parsing system.");
         expect(r.getKey()).toBe("r306365966");
     });
+
     test("MarkdownFileParseNestedNonBreakingEmphasis", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -585,6 +629,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This <c0>is a <c1>test</c1> of the emergency parsing</c0> system.");
         expect(r.getKey()).toBe("r96403243");
     });
+
     test("MarkdownFileParseNestedAndSequentialNonBreakingEmphasis", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -600,6 +645,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This <c0>is a <c1>test</c1> of the</c0> <c2>emergency parsing</c2> system.");
         expect(r.getKey()).toBe("r456647808");
     });
+
     test("MarkdownFileParseNonBreakingLinks", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -615,6 +661,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
         expect(r.getKey()).toBe("r848003676");
     });
+
     test("MarkdownFileParseReferenceLinksWithTitle", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -631,6 +678,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
         expect(r.getKey()).toBe("r848003676");
     });
+
     test("MarkdownFileParseReferenceLinksWithoutTitle", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -647,6 +695,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
         expect(r.getKey()).toBe("r848003676");
     });
+
     test("MarkdownFileParseDontExtractURLOnlyLinks", function() {
         expect.assertions(7);
         var mf = new MarkdownFile({
@@ -669,6 +718,7 @@ describe("markdown", function() {
         r = set.getBySource("http://www.box.com/foobar");
         expect(!r).toBeTruthy();
     });
+
     test("MarkdownFileParseTurnOnURLOnlyLinks", function() {
         expect.assertions(12);
         var mf = new MarkdownFile({
@@ -699,6 +749,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("http://www.box.com/asdf");
         expect(r.getKey()).toBe("r247450278");
     });
+
     test("MarkdownFileParseTurnOnDirectLinks", function() {
         expect.assertions(18);
         var mf = new MarkdownFile({
@@ -737,6 +788,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("http://www.box.com/asdf");
         expect(r.getKey()).toBe("r247450278");
     });
+
     test("MarkdownFileParseDoExtractURLLinksMidString", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -752,6 +804,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.");
         expect(r.getKey()).toBe("r598935364");
     });
+
     test("MarkdownFileParseReferences", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -768,6 +821,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing <c0>C1</c0> system.");
         expect(r.getKey()).toBe("r475244008");
     });
+
     test("MarkdownFileParseFootnotes", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -788,6 +842,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("well, not really");
         expect(r.getKey()).toBe("r472274968");
     });
+
     test("MarkdownFileParseFootnotesLongname", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -808,6 +863,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("well, not really");
         expect(r.getKey()).toBe("r472274968");
     });
+
     test("MarkdownFileParseNonBreakingInlineCode", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -824,6 +880,7 @@ describe("markdown", function() {
         expect(r.getComment()).toBe("c0 will be replaced with the inline code `inline code`.");
         expect(r.getKey()).toBe("r405516144");
     });
+
     test("MarkdownFileParseMultipleNonBreakingInlineCodes", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -840,6 +897,7 @@ describe("markdown", function() {
         expect(r.getComment()).toBe("c0 will be replaced with the inline code `test`. c1 will be replaced with the inline code `inline code`.");
         expect(r.getKey()).toBe("r960448365");
     });
+
     test("MarkdownFileParseInlineCodeByItself", function() {
         expect.assertions(9);
         var mf = new MarkdownFile({
@@ -866,6 +924,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("Sentence after.");
         expect(r.getKey()).toBe("r16227039");
     });
+
     test("MarkdownFileParseNonBreakingHTMLTags", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -881,6 +940,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a <c0>test</c0> of the emergency parsing system.");
         expect(r.getKey()).toBe("r306365966");
     });
+
     test("MarkdownFileParseNonBreakingHTMLTagsOutside", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -898,6 +958,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
         expect(r.getKey()).toBe("r699762575");
     });
+
     test("MarkdownFileParseNonBreakingSelfClosingHTMLTags", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -915,6 +976,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the <c0/> emergency parsing system.");
         expect(r.getKey()).toBe("r1070934855");
     });
+
     test("MarkdownFileParseBreakingSelfClosedHTMLTags", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -932,6 +994,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the");
         expect(r.getKey()).toBe("r593084440");
     });
+
     test("MarkdownFileParseBreakingNotClosedHTMLTags", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -949,6 +1012,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the");
         expect(r.getKey()).toBe("r593084440");
     });
+
     test("MarkdownFileParseNonBreakingSelfClosedHTMLTags", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -966,6 +1030,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the <c0/> emergency parsing system.");
         expect(r.getKey()).toBe("r1070934855");
     });
+
     test("MarkdownFileParseNonBreakingIgnoreComplexIrrelevant", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -983,6 +1048,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
         expect(r.getKey()).toBe("r699762575");
     });
+
     test("MarkdownFileParseHTMLWithValuelessAttributes", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -1000,6 +1066,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
         expect(r.getKey()).toBe("r699762575");
     });
+
     test("MarkdownFileParseWithFlowStyleHTMLTags", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -1020,6 +1087,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a string that should be extracted.");
         expect(r.getKey()).toBe("r134469253");
     });
+
     test("MarkdownFileParseWithFlowStyleHTMLTagsMultiple", function() {
         expect.assertions(9);
         var mf = new MarkdownFile({
@@ -1047,6 +1115,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is another string that should be extracted.");
         expect(r.getKey()).toBe("r142202207");
     });
+
     test("MarkdownFileParseWithFlowStyleHTMLTagsMultipleWithTextInBetween", function() {
         expect.assertions(12);
         var mf = new MarkdownFile({
@@ -1079,6 +1148,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is another string that should be extracted.");
         expect(r.getKey()).toBe("r142202207");
     });
+
     test("MarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -1099,6 +1169,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a <c0>string</c0> that should be extracted.");
         expect(r.getKey()).toBe("r625837512");
     });
+
     test("MarkdownFileParseWithFlowStyleHTMLTagsAndEmbeddedMarkdown", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -1119,6 +1190,91 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a <c0/> that <c1>should be</c1> extracted.");
         expect(r.getKey()).toBe("r177384086");
     });
+
+    test("MarkdownFileParseWithIndentedHTMLTags", function() {
+        expect.assertions(21);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(`
+## This is a header
+
+Follow these steps:
+
+1. First point:
+
+\`\`\`json
+{
+  "template_id": "6ae28666-03c4-4ac1-80db-06a90d3b1361",
+}
+\`\`\`
+
+
+
+1. Second point:
+
+\`\`\`json
+   {
+  "template_id": "6ae28666-03c4-4ac1-80db-06a90d3b1361",
+}
+\`\`\`
+
+
+
+1. Third point:
+   
+   <Message>
+
+   Test test test
+
+   </Message>
+
+\`\`\`json
+{
+  "template_id": "6ae28666-03c4-4ac1-80db-06a90d3b1361",
+}
+\`\`\`
+
+`
+        );
+
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(6);
+
+        r = set.getBySource("This is a header");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a header");
+        expect(r.getKey()).toBe("r655736675");
+
+        r = set.getBySource("Follow these steps:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Follow these steps:");
+        expect(r.getKey()).toBe("r449239371");
+
+        r = set.getBySource("First point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("First point:");
+        expect(r.getKey()).toBe("r996315725");
+
+        r = set.getBySource("Second point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Second point:");
+        expect(r.getKey()).toBe("r15205890");
+
+        r = set.getBySource("Third point:");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Third point:");
+        expect(r.getKey()).toBe("r924843090");
+
+        r = set.getBySource("Test test test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test test test");
+        expect(r.getKey()).toBe("r13589298");
+    });
+
     test("MarkdownFileParseLists", function() {
         expect.assertions(12);
         var mf = new MarkdownFile({
@@ -1146,6 +1302,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("And finally, the last test.");
         expect(r.getKey()).toBe("r177500258");
     });
+
     test("MarkdownFileParseListWithTextBefore", function() {
         expect.assertions(9);
         var mf = new MarkdownFile({
@@ -1168,6 +1325,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is text before the list.");
         expect(r.getKey()).toBe("r254971181");
     });
+
     test("MarkdownFileParseListWithTextAfter", function() {
         expect.assertions(9);
         var mf = new MarkdownFile({
@@ -1190,6 +1348,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is text after the list.");
         expect(r.getKey()).toBe("r607073205");
     });
+
     test("MarkdownFileParseListWithTextAfter2", function() {
         expect.assertions(9);
         var mf = new MarkdownFile({
@@ -1213,6 +1372,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("The File ID can be obtained from the API or from the web application user interface.");
         expect(r.getKey()).toBe("r198589153");
     });
+
     test("MarkdownFileParseNonBreakingEmphasisOutside", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -1229,6 +1389,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
         expect(r.getKey()).toBe("r699762575");
     });
+
     test("MarkdownFileParseNonBreakingHTMLTagsInside", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -1246,6 +1407,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe('This is <c0> a test of the emergency parsing </c0> system.');
         expect(r.getKey()).toBe('r124733470');
     });
+
     test("MarkdownFileParseNonBreakingHTMLTagsInsideMultiple", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -1262,6 +1424,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
         expect(r.getKey()).toBe('r772812508');
     });
+
     test("MarkdownFileParseNonBreakingTagsNotWellFormed", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -1278,6 +1441,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
         expect(r.getKey()).toBe('r417724998');
     });
+
     test("MarkdownFileParseNonBreakingTagsTagStackIsReset", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -1295,6 +1459,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe('This is <c0>another test</c0> of the emergency parsing');
         expect(r.getKey()).toBe('r2117084');
     });
+
     test("MarkdownFileParseLocalizableTitle", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -1316,6 +1481,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This value is localizable");
         expect(r.getKey()).toBe("r922503175");
     });
+
     test("MarkdownFileParseLocalizableTitleWithSingleQuotes", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -1337,6 +1503,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This value is localizable");
         expect(r.getKey()).toBe("r922503175");
     });
+
     test("MarkdownFileParseLocalizableAttributes", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -1357,6 +1524,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("localizable placeholder here");
         expect(r.getKey()).toBe("r734414247");
     });
+
     test("MarkdownFileParseLocalizableAttributesSkipEmpty", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -1374,6 +1542,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
     });
+
     test("MarkdownFileParseLocalizableAttributesAndNonBreakingTags", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -1393,6 +1562,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("localizable title");
         expect(r.getKey()).toBe("r160369622");
     });
+
     test("MarkdownFileParseI18NComments", function() {
         expect.assertions(10);
         var mf = new MarkdownFile({
@@ -1416,6 +1586,7 @@ describe("markdown", function() {
         expect(r.getKey()).toBe("r492109677");
         expect(!r.getComment()).toBeTruthy();
     });
+
     test("MarkdownFileParseIgnoreTags", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -1446,6 +1617,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("foo");
         expect(r.getKey()).toBe("r941132140");
     });
+
     test("MarkdownFileParseWithFrontMatterNotParsed", function() {
         expect.assertions(10);
         var mf = new MarkdownFile({
@@ -1478,6 +1650,7 @@ describe("markdown", function() {
         r = set.getBySource("test: This is a test of the front matter");
         expect(!r).toBeTruthy();
     });
+
     test("MarkdownFileParseWithFrontMatterExtracted", function() {
         expect.assertions(14);
         var mf = new MarkdownFile({
@@ -1514,6 +1687,7 @@ describe("markdown", function() {
         expect(r.getKey()).toBe("r777132775.Description");
         expect(r.getPath()).toBe("foo/bar/x/foo.md"); // should come from this file
     });
+
     test("MarkdownFileParseWithFrontMatterExtractAll", function() {
         expect.assertions(11);
         var mf = new MarkdownFile({
@@ -1549,6 +1723,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("asdf asdf asdf");
         expect(r.getKey()).toBe("r318739619.Foobar");
     });
+
     test("MarkdownFileParseWithFrontMatterExtractedTwoFiles", function() {
         expect.assertions(21);
         mdft3.getExtracted().clear();
@@ -1609,6 +1784,7 @@ describe("markdown", function() {
         expect(r.getProject()).toBe("foo");
         expect(r.getType()).toBe("string");
     });
+
     test("MarkdownFileParseTable", function() {
         expect.assertions(21);
         var mf = new MarkdownFile({
@@ -1650,6 +1826,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("bar");
         expect(r.getKey()).toBe("r755240053");
     });
+
     test("MarkdownFileParseTableWithInlineCode", function() {
         expect.assertions(15);
         var mf = new MarkdownFile({
@@ -1683,6 +1860,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("bar");
         expect(r.getKey()).toBe("r755240053");
     });
+
     test("MarkdownFileParseTableWithInlineCodeAndTextAfterwards", function() {
         expect.assertions(15);
         var mf = new MarkdownFile({
@@ -1719,6 +1897,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("Text body.");
         expect(r.getKey()).toBe("r443039973");
     });
+
     test("MarkdownFileExtractFile", function() {
         expect.assertions(14);
         var base = path.dirname(module.id);
@@ -1749,6 +1928,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is the last bit of localizable text.");
         expect(r.getKey()).toBe("r260813817");
     });
+
     test("MarkdownFileExtractFile2", function() {
         expect.assertions(11);
         var base = path.dirname(module.id);
@@ -1775,6 +1955,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a Heading");
         expect(r.getKey()).toBe("r728092714");
     });
+
     test("MarkdownFileExtractUndefinedFile", function() {
         expect.assertions(2);
         var base = path.dirname(module.id);
@@ -1788,6 +1969,7 @@ describe("markdown", function() {
         var set = mf.getTranslationSet();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileExtractBogusFile", function() {
         expect.assertions(2);
         var base = path.dirname(module.id);
@@ -1802,6 +1984,7 @@ describe("markdown", function() {
         var set = mf.getTranslationSet();
         expect(set.size()).toBe(0);
     });
+
     test("MarkdownFileLocalizeText", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -1825,6 +2008,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTextPreserveWhitespace", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -1845,6 +2029,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai    \n');
     });
+
     test("MarkdownFileLocalizeTextMultiple", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -1876,6 +2061,7 @@ describe("markdown", function() {
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n\n' +
                 'Ceci est aussi un essai\n');
     });
+
     test("MarkdownFileLocalizeTextWithDups", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -1909,6 +2095,7 @@ describe("markdown", function() {
                 'Ceci est aussi un essai\n\n' +
                 'Ceci est un essai\n');
     });
+
     test("MarkdownFileLocalizeTextSkipScript", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -1943,6 +2130,7 @@ describe("markdown", function() {
             '\n' +
             'Ceci est un essai\n');
     });
+
     test("MarkdownFileLocalizeTextWithLinks", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -1963,6 +2151,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextWithLinksNotTranslated", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -1991,6 +2180,7 @@ describe("markdown", function() {
         expect(newSet.size()).toBe(0);
         expect(mf.getTranslationSet().size()).toBe(1);
     });
+
     test("MarkdownFileLocalizeTextWithLinksTranslatedNew", function() {
         expect.assertions(7);
         var mf = new MarkdownFile({
@@ -2029,6 +2219,7 @@ describe("markdown", function() {
         expect(resources[0].getSource()).toBe("http://www.test.com/");
         expect(mf.getTranslationSet().size()).toBe(2);
     });
+
     test("MarkdownFileLocalizeTextWithLinksTranslated", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -2074,6 +2265,7 @@ describe("markdown", function() {
         expect(newSet.size()).toBe(0);
         expect(mf.getTranslationSet().size()).toBe(2);
     });
+
     test("MarkdownFileLocalizeTextWithInlineCode", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2094,6 +2286,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un `test` du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextWithInlineCodeAtTheEnd", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2116,6 +2309,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Avec cette commande `git rm filename`, vous pouvez supprimer le fichier.\n');
     });
+
     test("MarkdownFileLocalizeInlineCodeByItself", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2156,6 +2350,7 @@ describe("markdown", function() {
             '\n' +
             'La phrase denier.\n');
     });
+
     test("MarkdownFileLocalizeTextWithLinkReference", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2176,6 +2371,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n');
     });
+
     test("MarkdownFileLocalizeTextWithMultipleLinkReferences", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2196,6 +2392,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
     });
+
     test("MarkdownFileLocalizeTextWithMultipleLocalizableLinkReferences", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2242,6 +2439,7 @@ describe("markdown", function() {
             '[R1]: http://www.box.com/fr/about.html\n\n' +
             '<!-- i18n-disable localize-links -->\n');
     });
+
     test("MarkdownFileLocalizeTextWithFootnotes", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2273,6 +2471,7 @@ describe("markdown", function() {
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [^1] de l\'urgence.\n\n' +
             '[^1]: normalement, c\'est pas vrai\n');
     });
+
     test("MarkdownFileLocalizeTextWithFootnotesLongName", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2304,6 +2503,7 @@ describe("markdown", function() {
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [^longname] de l\'urgence.\n\n' +
             '[^longname]: normalement, c\'est pas vrai\n');
     });
+
     test("MarkdownFileLocalizeTextNonBreakingTags", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2324,6 +2524,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextNonBreakingTagsOutside", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2344,6 +2545,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('_Ceci est un essai du système d\'analyse syntaxique de l\'urgence._\n');
     });
+
     test("MarkdownFileLocalizeTextNonBreakingTagsBeforeAndAfter", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2364,6 +2566,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('__ <span class="test"> <span id="foo"></span></span>  Ceci est un essai du système d\'analyse syntaxique de l\'urgence.   __\n');
     });
+
     test("MarkdownFileLocalizeTextNonBreakingTagsInside", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2383,6 +2586,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence. </span>\n');
     });
+
     test("MarkdownFileLocalizeTextNonBreakingTagsInsideMultiple", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2402,6 +2606,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n');
     });
+
     test("MarkdownFileLocalizeTextNonBreakingTagsNotWellFormed", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2421,6 +2626,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n');
     });
+
     test("MarkdownFileLocalizeTextBreakingTags", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2450,6 +2656,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p>essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextSelfClosedBreakingTags", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2479,6 +2686,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p/>essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextSelfClosingNonBreakingTags", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2499,6 +2707,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br>essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextSelfClosedNonBreakingTags", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2519,6 +2728,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br/>essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextMismatchedNumberOfComponents", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2541,6 +2751,7 @@ describe("markdown", function() {
         // Should ignore the c1 as if it weren't there
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextMismatchedNumberOfComponentsSelfClosing", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2563,6 +2774,7 @@ describe("markdown", function() {
         // Should ignore the c1 as if it weren't there
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse  syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextLocalizableTitle", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2590,6 +2802,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
     });
+
     test("MarkdownFileLocalizeTextLocalizableTitleSingleQuotes", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2617,6 +2830,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
     });
+
     test("MarkdownFileLocalizeTextLocalizableAttributes", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2664,6 +2878,7 @@ describe("markdown", function() {
             'Ceci est un essai\n' +
             '<input type="text" placeholder="espace réservé localisable ici">\n');
     });
+
     test("MarkdownFileLocalizeTextLocalizableAttributesAndNonBreakingTags", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2691,6 +2906,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n');
     });
+
     test("MarkdownFileLocalizeTextLocalizableValuelessAttributes", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2718,6 +2934,7 @@ describe("markdown", function() {
         }));
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n');
     });
+
     test("MarkdownFileLocalizeTextI18NComments", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2739,6 +2956,7 @@ describe("markdown", function() {
         expect(mf.localizeText(translations, "fr-FR")).toBe('<!-- i18n: this describes the text below -->\n\n' +
             'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
+
     test("MarkdownFileLocalizeTextIdentifyResourceIds", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2776,6 +2994,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeHTMLWithValuelessAttributes", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2800,6 +3019,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFlowStyleHTML", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2829,6 +3049,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFlowStyleHTMLMultiple", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2874,6 +3095,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFlowStyleHTMLMultipleWithTextInBetween", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2925,6 +3147,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFlowStyleHTMLWithEmbeddedHTML", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2954,6 +3177,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFlowStyleHTMLWithEmbeddedMarkdown", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -2983,6 +3207,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTextIgnoreFrontMatter", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3028,6 +3253,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTextProcessFrontMatter", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3096,6 +3322,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTextProcessFrontMatterProcessNewStrings", function() {
         expect.assertions(12);
         var mf = new MarkdownFile({
@@ -3159,6 +3386,7 @@ describe("markdown", function() {
         expect(resources[1].getSourceLocale()).toBe("en-US");
         expect(resources[1].getPath()).toBe("a/b/x/foo.md");
     });
+
     test("MarkdownFileLocalizeTextProcessFrontMatterSkipUnknownFields", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3229,6 +3457,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTextProcessFrontMatterLocalizeAll", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3308,6 +3537,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileGetLocalizedPathSimple", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3318,6 +3548,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.md");
     });
+
     test("MarkdownFileGetLocalizedPathComplex", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3328,6 +3559,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
     });
+
     test("MarkdownFileGetLocalizedPathRegularMarkdownFileName", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3338,6 +3570,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
     });
+
     test("MarkdownFileGetLocalizedPathNotEnoughParts", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3348,6 +3581,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple");
     });
+
     test("MarkdownFileGetLocalizedPathAlreadyHasSourceLocale", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3358,6 +3592,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
     });
+
     test("MarkdownFileGetLocalizedPathSourceLocaleInMidPath", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3368,6 +3603,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.md");
     });
+
     test("MarkdownFileGetLocalizedPathSourceLocaleInBeginningPath", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3378,6 +3614,7 @@ describe("markdown", function() {
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
     });
+
     test("MarkdownFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -3389,6 +3626,7 @@ describe("markdown", function() {
         // should leave "pen-USing" alone and only get the "en-US" path component
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.md");
     });
+
     test("MarkdownFileGetLocalizedPathWithLocaleMap", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -3400,6 +3638,7 @@ describe("markdown", function() {
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.md");
         expect(mf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.md");
     });
+
     test("MarkdownFileLocalizeFile", function() {
         expect.assertions(5);
         var base = path.dirname(module.id);
@@ -3502,6 +3741,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileWithFrontMatter", function() {
         expect.assertions(5);
         var base = path.dirname(module.id);
@@ -3612,6 +3852,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileWithFrontMatterNotFullyTranslated", function() {
         expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
@@ -3715,6 +3956,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileWithFrontMatterFullyTranslated", function() {
         expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
@@ -3832,6 +4074,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated", function() {
         expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
@@ -3945,6 +4188,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeNoStrings", function() {
         expect.assertions(3);
         var base = path.dirname(module.id);
@@ -3978,6 +4222,7 @@ describe("markdown", function() {
         expect(fs.existsSync(path.join(p.target, "fr-FR/md/nostrings.md"))).toBeTruthy();
         expect(fs.existsSync(path.join(p.target, "de-DE/md/nostrings.md"))).toBeTruthy();
     });
+
     test("MarkdownFileExtractFileNewResources", function() {
         expect.assertions(16);
         var base = path.dirname(module.id);
@@ -4030,6 +4275,7 @@ describe("markdown", function() {
         expect(resources[1].getTarget()).toBe("In Person Mode");
         expect(resources[1].getTargetLocale()).toBe("fr-FR");
     });
+
     test("MarkdownFileLocalizeTextHeaderWithNoSpace", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -4062,6 +4308,7 @@ describe("markdown", function() {
             '## Autre entête mal\n\n' +
             '# Entête mal\n');
     });
+
     test("MarkdownFileParseMultipleMDComponents", function() {
         expect.assertions(9);
         var mf = new MarkdownFile({
@@ -4084,6 +4331,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
         expect(r.getKey()).toBe("r663481768");
     });
+
     test("MarkdownFileParseWithLinkReferenceWithText", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -4106,6 +4354,7 @@ describe("markdown", function() {
         expect(resources[0].getSource()).toBe("For developer support, please reach out to us via one of our channels:");
         expect(resources[1].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
     });
+
     test("MarkdownFileParseWithLinkReferenceToExtractedURL", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -4132,6 +4381,7 @@ describe("markdown", function() {
         expect(resources[2].getSource()).toBe("https://twitter.com/OurPlatform");
         expect(resources[3].getSource()).toBe("http://www.facebook.com/OurPlatform");
     });
+
     test("MarkdownFileParseWithLinkReferenceWithLinkTitle", function() {
         expect.assertions(7);
         var mf = new MarkdownFile({
@@ -4155,6 +4405,7 @@ describe("markdown", function() {
         expect(resources[1].getSource()).toBe("http://a.com/");
         expect(resources[2].getSource()).toBe("link title");
     });
+
     test("MarkdownFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff", function() {
         expect.assertions(7);
         var mf = new MarkdownFile({
@@ -4180,6 +4431,7 @@ describe("markdown", function() {
         expect(resources[1].getSource()).toBe("<c0>Ask on Facebook</c0>: For general questions and support.");
         expect(resources[2].getSource()).toBe("https://twitter.com/OurPlatform");
     });
+
     test("MarkdownFileParseWithMultipleLinkReferenceWithText", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -4208,6 +4460,7 @@ describe("markdown", function() {
         expect(resources[2].getSource()).toBe("<c0>Ask in email</c0>: For specific questions and support.");
         expect(resources[3].getSource()).toBe("<c0>Ask on stack overflow</c0>: For community answers and support.");
     });
+
     test("MarkdownFileLocalizeReferenceLinksWithLinkId", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -4250,6 +4503,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeReferenceLinksWithoutLinkId", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -4293,6 +4547,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeReferenceLinksWithLinkTitle", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -4355,6 +4610,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeDirectLinksTurnedOff", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -4405,6 +4661,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeDirectLinksTurnedOn", function() {
         expect.assertions(3);
         var mf = new MarkdownFile({
@@ -4459,6 +4716,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileParseHTMLComments", function() {
         expect.assertions(5);
         var mf = new MarkdownFile({
@@ -4474,6 +4732,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
         expect(r.getKey()).toBe("r699762575");
     });
+
     test("MarkdownFileParseHTMLCommentsWithIndent", function() {
         expect.assertions(8);
         var mf = new MarkdownFile({
@@ -4493,6 +4752,7 @@ describe("markdown", function() {
         expect(r.getSource()).toBe("A second string");
         expect(r.getKey()).toBe("r772298159");
     });
+
     test("MarkdownFileLocalizeHTMLCommentsWithIndent", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -4524,6 +4784,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTable", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -4578,6 +4839,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTableWithInlineCode", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -4634,6 +4896,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeTableWithInlineCodeAndTextAfter", function() {
         expect.assertions(2);
         var mf = new MarkdownFile({
@@ -4696,6 +4959,7 @@ describe("markdown", function() {
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileFullyTranslatedFlag", function() {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
@@ -4762,6 +5026,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileFullyTranslatedFlagNoTranslations", function() {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
@@ -4793,6 +5058,7 @@ describe("markdown", function() {
         diff(content, expected);
         expect(content).toBe(expected);
     });
+
     test("MarkdownFileLocalizeFileFullyTranslatedFlagNotFullyTranslated", function() {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true

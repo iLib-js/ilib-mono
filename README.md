@@ -191,6 +191,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.11.3
+
+- Fixed a bug where HTML-like tags that were indented and the only
+  thing on a line were not parsed correctly and caused infinite
+  recursion until the stack blew out
+
 ### v1.11.2
 
 - Updated dependencies
