@@ -1,7 +1,7 @@
 /*
- * testAndroidResourceFile.js - test the Android resource file handler object.
+ * AndroidResourceFile.test.js - test the Android resource file handler object.
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 var path = require("path");
-
 if (!AndroidResourceFile) {
     var AndroidResourceFile = require("../AndroidResourceFile.js");
     var AndroidResourceFileType = require("../AndroidResourceFileType.js");
@@ -27,10 +25,8 @@ if (!AndroidResourceFile) {
     var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
     var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
 }
-
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
-
     for (var i = 0; i < min; i++) {
         if (a[i] !== b[i]) {
             console.log("Found difference at character " + i);
@@ -40,7 +36,6 @@ function diff(a, b) {
         }
     }
 }
-
 var p = new CustomProject({
     id: "android",
     sourceLocale: "en-US",
@@ -54,60 +49,41 @@ var p = new CustomProject({
     locales:["en-GB"],
     "build.gradle": "build1.gradle"
 });
-
 var arft = new AndroidResourceFileType(p);
-
-module.exports.androidresourcefile = {
+describe("androidresourcefile", function() {
     // make sure to initialize the file types so that the tests below can use
     // a ContextResourceString instead of a regular ResourceString
-    testAndroidInit: function(test) {
+    test("AndroidInit", function() {
         p.init(function() {
-            test.done();
         });
-    },
-
-    testAndroidResourceFileConstructor: function(test) {
-        test.expect(1);
-
+    });
+    test("AndroidResourceFileConstructor", function() {
+        expect.assertions(1);
         var arf = new AndroidResourceFile();
-        test.ok(arf);
-
-        test.done();
-    },
-
-    testAndroidResourceFileConstructorParams: function(test) {
-        test.expect(1);
-
+        expect(arf).toBeTruthy();
+    });
+    test("AndroidResourceFileConstructorParams", function() {
+        expect.assertions(1);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./java/res/values/t1.xml",
             locale: "en-US"
         });
-
-        test.ok(arf);
-
-        test.done();
-    },
-
-    testAndroidResourceFileConstructorNoFile: function(test) {
-        test.expect(1);
-
+        expect(arf).toBeTruthy();
+    });
+    test("AndroidResourceFileConstructorNoFile", function() {
+        expect.assertions(1);
         var arf = new AndroidResourceFile({project: p, pathName: "foo"});
-        test.ok(arf);
-
-        test.done();
-    },
-
-    testAndroidResourceFileParseStringGetByKey: function(test) {
-        test.expect(6);
-
+        expect(arf).toBeTruthy();
+    });
+    test("AndroidResourceFileParseStringGetByKey", function() {
+        expect.assertions(6);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -119,31 +95,22 @@ module.exports.androidresourcefile = {
                 '  <string name="thanks_news">{name} appreciates your gratitude</string>\n' +
                 '  <string name="thanks">Thank you!</string>\n' +
                 '</resources>\n');
-
-
         var set = arf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ContextResourceString.hashKey("android", undefined, "en-US", "thanks_friend_pre", "x-android-resource"));
-        test.ok(r);
-
-        test.equal(r.getSource(), "Send a thank you note to\n{name}");
-        test.equal(r.getKey(), "thanks_friend_pre");
-        test.equal(r.getState(), "new");
-
-        test.done();
-    },
-
-    testAndroidResourceFileParsePluralTargetOnly: function(test) {
-        test.expect(10);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Send a thank you note to\n{name}");
+        expect(r.getKey()).toBe("thanks_friend_pre");
+        expect(r.getState()).toBe("new");
+    });
+    test("AndroidResourceFileParsePluralTargetOnly", function() {
+        expect.assertions(10);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             locale: "de-DE" // different from source locale, so should produce target resources
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -157,37 +124,27 @@ module.exports.androidresourcefile = {
                 '    </item>\n' +
                 '  </plurals>\n' +
                 '</resources>\n');
-
-
         var set = arf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ResourcePlural.hashKey("android", undefined, "de-DE", "friend_comment"));
-        test.ok(r);
-
-        test.equal(r.getKey(), "friend_comment");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getTargetLocale(), "de-DE");
-        test.equal(r.getState(), "new");
-
+        expect(r).toBeTruthy();
+        expect(r.getKey()).toBe("friend_comment");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getTargetLocale()).toBe("de-DE");
+        expect(r.getState()).toBe("new");
         var plurals = r.getTargetPlurals();
-        test.ok(plurals);
-        test.equal(plurals.one, "{start}1 friend{end} commented");
-        test.equal(plurals.other, "{start}%d friends{end} commented");
-
-        test.done();
-    },
-
-    testAndroidResourceFileParsePluralSourceOnly: function(test) {
-        test.expect(10);
-
+        expect(plurals).toBeTruthy();
+        expect(plurals.one).toBe("{start}1 friend{end} commented");
+        expect(plurals.other).toBe("{start}%d friends{end} commented");
+    });
+    test("AndroidResourceFileParsePluralSourceOnly", function() {
+        expect.assertions(10);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             targetLocale: "en-US"  // same as source locale, so should produce source-only resources
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -201,35 +158,26 @@ module.exports.androidresourcefile = {
                 '    </item>\n' +
                 '  </plurals>\n' +
                 '</resources>\n');
-
-
         var set = arf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ResourcePlural.hashKey("android", undefined, "en-US", "friend_comment"));
-        test.ok(r);
-        test.equal(r.getSourceLocale(), "en-US");
-        test.ok(!r.getTargetLocale());
-        test.equal(r.getKey(), "friend_comment");
-        test.equal(r.getState(), "new");
-
+        expect(r).toBeTruthy();
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(!r.getTargetLocale()).toBeTruthy();
+        expect(r.getKey()).toBe("friend_comment");
+        expect(r.getState()).toBe("new");
         var plurals = r.getSourcePlurals();
-        test.ok(plurals);
-        test.equal(plurals.one, "{start}1 friend{end} commented");
-        test.equal(plurals.other, "{start}%d friends{end} commented");
-
-        test.done();
-    },
-
-    testAndroidResourceFileParseArrayGetByKey: function(test) {
-        test.expect(10);
-
+        expect(plurals).toBeTruthy();
+        expect(plurals.one).toBe("{start}1 friend{end} commented");
+        expect(plurals.other).toBe("{start}%d friends{end} commented");
+    });
+    test("AndroidResourceFileParseArrayGetByKey", function() {
+        expect.assertions(10);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -240,36 +188,26 @@ module.exports.androidresourcefile = {
                 '    <item>How many times did you have a pre-term deliveries?</item>\n' +
                 '  </string-array>\n' +
                 '</resources>\n');
-
-
         var set = arf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ResourceArray.hashKey("android", undefined, "en-US", "self_questions"));
-        test.ok(r);
-
-        test.equal(r.getKey(), "self_questions");
-        test.equal(r.getState(), "new");
-
+        expect(r).toBeTruthy();
+        expect(r.getKey()).toBe("self_questions");
+        expect(r.getState()).toBe("new");
         var array = r.getSourceArray();
-        test.ok(array);
-        test.equal(array.length, 3);
-        test.equal(array[0], "How many times have you been pregnant?");
-        test.equal(array[1], "How many deliveries did you have?");
-        test.equal(array[2], "How many times did you have a pre-term deliveries?");
-
-        test.done();
-    },
-
-    testAndroidResourceFileParseStringDNT: function(test) {
-        test.expect(7);
-
+        expect(array).toBeTruthy();
+        expect(array.length).toBe(3);
+        expect(array[0]).toBe("How many times have you been pregnant?");
+        expect(array[1]).toBe("How many deliveries did you have?");
+        expect(array[2]).toBe("How many times did you have a pre-term deliveries?");
+    });
+    test("AndroidResourceFileParseStringDNT", function() {
+        expect.assertions(7);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -281,32 +219,22 @@ module.exports.androidresourcefile = {
                 '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
                 '  <string name="thanks">Thank you!</string>\n' +
                 '</resources>\n');
-
-
         var set = arf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ContextResourceString.hashKey("android", undefined, "en-US", "app_id", "x-android-resource"));
-        test.ok(r);
-
-        test.equal(r.getSource(), "151779581544891");
-        test.equal(r.getKey(), "app_id");
-        test.equal(r.getState(), "new");
-
-        test.ok(r.dnt)
-
-        test.done();
-    },
-
-    testAndroidResourceFileParseStringWithComment: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("151779581544891");
+        expect(r.getKey()).toBe("app_id");
+        expect(r.getState()).toBe("new");
+        expect(r.dnt).toBeTruthy();
+    });
+    test("AndroidResourceFileParseStringWithComment", function() {
+        expect.assertions(8);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -318,38 +246,26 @@ module.exports.androidresourcefile = {
                 '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
                 '  <string name="thanks">Thank you!</string>\n' +
                 '</resources>\n');
-
-
         var set = arf.getTranslationSet();
-        test.ok(set);
-
+        expect(set).toBeTruthy();
         var r = set.get(ContextResourceString.hashKey("android", undefined, "en-US", "thanks_friend_pre", "x-android-resource"));
-        test.ok(r);
-
-        test.equal(r.getSource(), "Send a thank you note to\n{name}");
-        test.equal(r.getKey(), "thanks_friend_pre");
-        test.equal(r.getComment(), "name is name of your friend");
-        test.equal(r.getState(), "new");
-
-        test.ok(!r.dnt);
-
-        test.done();
-    },
-
-
-    testAndroidResourceFileParseSimpleRightSize: function(test) {
-        test.expect(4);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Send a thank you note to\n{name}");
+        expect(r.getKey()).toBe("thanks_friend_pre");
+        expect(r.getComment()).toBe("name is name of your friend");
+        expect(r.getState()).toBe("new");
+        expect(!r.dnt).toBeTruthy();
+    });
+    test("AndroidResourceFileParseSimpleRightSize", function() {
+        expect.assertions(4);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "foo"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         var set = arf.getTranslationSet();
-        test.equal(set.size(), 0);
-
+        expect(set.size()).toBe(0);
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -361,154 +277,106 @@ module.exports.androidresourcefile = {
                 '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
                 '  <string name="thanks">Thank you!</string>\n' +
                 '</resources>\n');
-
-        test.ok(set);
-
-        test.equal(set.size(), 6);
-
-        test.done();
-    },
-
-    testAndroidResourceFileExtractFile: function(test) {
-        test.expect(7);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(6);
+    });
+    test("AndroidResourceFileExtractFile", function() {
+        expect.assertions(7);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/strings.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         // should read the file
         arf.extract();
-
         var set = arf.getTranslationSet();
-
-        test.equal(set.size(), 12);
-
+        expect(set.size()).toBe(12);
         var r = set.get(ContextResourceString.hashKey("android", undefined, "en-US", "ask_question", "x-android-resource"));
-        test.ok(r);
-        test.equal(r.getSource(), "Ask friends");
-        test.equal(r.getKey(), "ask_question");
-        test.equal(r.getState(), "new");
-
-        test.ok(!r.getContext());
-
-        test.done();
-    },
-
-    testAndroidResourceFileExtractFilePlurals: function(test) {
-        test.expect(8);
-
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Ask friends");
+        expect(r.getKey()).toBe("ask_question");
+        expect(r.getState()).toBe("new");
+        expect(!r.getContext()).toBeTruthy();
+    });
+    test("AndroidResourceFileExtractFilePlurals", function() {
+        expect.assertions(8);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/plurals.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         // should read the file
         arf.extract();
-
         var set = arf.getTranslationSet();
-
-        test.ok(set);
-        test.equal(set.size(), 3);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
         var r = set.get(ResourcePlural.hashKey("android", undefined, "en-US", "friend_comment"));
-        test.ok(r);
-
-        test.equal(r.getKey(), "friend_comment");
+        expect(r).toBeTruthy();
+        expect(r.getKey()).toBe("friend_comment");
         var plurals = r.getSourcePlurals();
-        test.ok(plurals);
-        test.equal(plurals.one, "{start}1 friend{end} commented");
-        test.equal(plurals.other, "{start}%d friends{end} commented");
-
-        test.done();
-    },
-
-    testAndroidResourceFileExtractFileArrays: function(test) {
-        test.expect(10);
-
+        expect(plurals).toBeTruthy();
+        expect(plurals.one).toBe("{start}1 friend{end} commented");
+        expect(plurals.other).toBe("{start}%d friends{end} commented");
+    });
+    test("AndroidResourceFileExtractFileArrays", function() {
+        expect.assertions(10);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/arrays.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         // should read the file
         arf.extract();
-
         var set = arf.getTranslationSet();
-
-        test.ok(set);
-        test.equal(set.size(), 2);
-
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
         var r = set.get(ResourceArray.hashKey("android", undefined, "en-US", "self_questions"));
-        test.ok(r);
-
-        test.equal(r.getKey(), "self_questions");
+        expect(r).toBeTruthy();
+        expect(r.getKey()).toBe("self_questions");
         var array = r.getSourceArray();
-        test.ok(array);
-        test.equal(array.length, 3);
-        test.equal(array[0], "How many times have you been pregnant?");
-        test.equal(array[1], "How many deliveries did you have?");
-        test.equal(array[2], "How many times did you have a pre-term deliveries?");
-
-        test.done();
-    },
-
-    testAndroidResourceFileExtractUndefinedFile: function(test) {
-        test.expect(2);
-
+        expect(array).toBeTruthy();
+        expect(array.length).toBe(3);
+        expect(array[0]).toBe("How many times have you been pregnant?");
+        expect(array[1]).toBe("How many deliveries did you have?");
+        expect(array[2]).toBe("How many times did you have a pre-term deliveries?");
+    });
+    test("AndroidResourceFileExtractUndefinedFile", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "foo"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         // should attempt to read the file and not fail
         arf.extract();
-
         var set = arf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testAndroidResourceFileExtractBogusFile: function(test) {
-        test.expect(2);
-
+        expect(set.size()).toBe(0);
+    });
+    test("AndroidResourceFileExtractBogusFile", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./java/foo.java"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         // should attempt to read the file and not fail
         arf.extract();
-
         var set = arf.getTranslationSet();
-
-        test.equal(set.size(), 0);
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetXMLStrings: function(test) {
-        test.expect(2);
-
+        expect(set.size()).toBe(0);
+    });
+    test("AndroidResourceFileGetXMLStrings", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/foo.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -520,16 +388,13 @@ module.exports.androidresourcefile = {
                 '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
                 '  <string name="thanks">Thank you!</string>\n' +
                 '</resources>\n');
-
         arf.addResource(new ContextResourceString({
             project: "android",
             key: "asdf",
             source: "foobar",
             sourceLocale: "en-US"
         }));
-
         var xml = arf._getXML();
-
         // output is sorted by key now
         var expected = '<?xml version="1.0" encoding="utf-8"?>\n' +
             '<resources \n' +
@@ -542,23 +407,17 @@ module.exports.androidresourcefile = {
             '  <string name="thanks_friend_pre" i18n="name is name of your friend">Send a thank you note to\n{name}</string>\n' +
             '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
             '</resources>';
-
         diff(xml, expected);
-        test.equal(xml, expected);
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetXMLNoChange: function(test) {
-        test.expect(2);
-
+        expect(xml).toBe(expected);
+    });
+    test("AndroidResourceFileGetXMLNoChange", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/foo.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.parse(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<resources \n' +
@@ -570,9 +429,7 @@ module.exports.androidresourcefile = {
                 '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
                 '  <string name="thanks">Thank you!</string>\n' +
                 '</resources>\n');
-
         var xml = arf._getXML();
-
         var expected = '<?xml version="1.0" encoding="utf-8"?>\n' +
             '<resources \n' +
             '  xmlns:tools="http://schemas.android.com/tools">\n' +
@@ -583,23 +440,17 @@ module.exports.androidresourcefile = {
             '  <string name="thanks_news">{name} appreciates your gratitude :)</string>\n' +
             '  <string name="thanks">Thank you!</string>\n' +
             '</resources>\n';
-
-        test.equal(xml, expected);
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetXMLPlurals: function(test) {
-        test.expect(2);
-
+        expect(xml).toBe(expected);
+    });
+    test("AndroidResourceFileGetXMLPlurals", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/foo.xml",
             locale: "en-US"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.addResource(new ResourcePlural({
             project: "android",
             key: "asdf",
@@ -611,7 +462,6 @@ module.exports.androidresourcefile = {
             locale: "en-US",
             comment: "comment1"
         }));
-
         arf.addResource(new ResourcePlural({
             project: "android",
             key: "foobar",
@@ -623,9 +473,7 @@ module.exports.androidresourcefile = {
             locale: "en-US",
             comment: "comment2"
         }));
-
         var xml = arf._getXML();
-
         var expected = '<?xml version="1.0" encoding="utf-8"?>\n' +
             '<resources \n' +
             '  xmlns:tools="http://schemas.android.com/tools">\n' +
@@ -640,23 +488,17 @@ module.exports.androidresourcefile = {
             '    <item quantity="other">trois</item>\n' +
             '  </plurals>\n' +
             '</resources>';
-
-        test.equal(xml, expected);
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetXMLArrays: function(test) {
-        test.expect(2);
-
+        expect(xml).toBe(expected);
+    });
+    test("AndroidResourceFileGetXMLArrays", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/foo.xml",
             locale: "en-US"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         arf.addResource(new ResourceArray({
             project: "android",
             key: "asdf",
@@ -664,7 +506,6 @@ module.exports.androidresourcefile = {
             sourceLocale: "en-US",
             comment: "comment1"
         }));
-
         arf.addResource(new ResourceArray({
             project: "android",
             key: "foobar",
@@ -672,9 +513,7 @@ module.exports.androidresourcefile = {
             sourceLocale: "en-US",
             comment: "comment2"
         }));
-
         var xml = arf._getXML();
-
         var expected = '<?xml version="1.0" encoding="utf-8"?>\n' +
             '<resources \n' +
             '  xmlns:tools="http://schemas.android.com/tools">\n' +
@@ -689,122 +528,82 @@ module.exports.androidresourcefile = {
             '    <item>trois</item>\n' +
             '  </string-array>\n' +
             '</resources>';
-
-        test.equal(xml, expected);
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetLocale: function(test) {
-        test.expect(2);
-
+        expect(xml).toBe(expected);
+    });
+    test("AndroidResourceFileGetLocale", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values/foo.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         var l = arf.getLocale();
-
-        test.equal(l, "en-US");
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetLocaleFromDir: function(test) {
-        test.expect(2);
-
+        expect(l).toBe("en-US");
+    });
+    test("AndroidResourceFileGetLocaleFromDir", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values-en-rNZ/foo.xml"
         });
-        test.ok(arf);
-
+        expect(arf).toBeTruthy();
         var l = arf.getLocale();
-
-        test.equal(l, "en-NZ");
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetContext: function(test) {
-        test.expect(2);
-
+        expect(l).toBe("en-NZ");
+    });
+    test("AndroidResourceFileGetContext", function() {
+        expect.assertions(2);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values-bar/foo.xml"
         });
-        test.ok(arf);
-
-        test.equal(arf.getContext(), "bar");
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetLocaleAndContext1: function(test) {
-        test.expect(3);
-
+        expect(arf).toBeTruthy();
+        expect(arf.getContext()).toBe("bar");
+    });
+    test("AndroidResourceFileGetLocaleAndContext1", function() {
+        expect.assertions(3);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values-de-bar/foo.xml"
         });
-        test.ok(arf);
-
-        test.equal(arf.getLocale(), "de");
-        test.equal(arf.getContext(), "bar");
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetLocaleAndContext1: function(test) {
-        test.expect(3);
-
+        expect(arf).toBeTruthy();
+        expect(arf.getLocale()).toBe("de");
+        expect(arf.getContext()).toBe("bar");
+    });
+    test("AndroidResourceFileGetLocaleAndContext1", function() {
+        expect.assertions(3);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values-de-bar/foo.xml"
         });
-        test.ok(arf);
-
-        test.equal(arf.getLocale(), "de");
-        test.equal(arf.getContext(), "bar");
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetLocaleAndContext2: function(test) {
-        test.expect(3);
-
+        expect(arf).toBeTruthy();
+        expect(arf.getLocale()).toBe("de");
+        expect(arf.getContext()).toBe("bar");
+    });
+    test("AndroidResourceFileGetLocaleAndContext2", function() {
+        expect.assertions(3);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values-de-rCH-bar/foo.xml"
         });
-        test.ok(arf);
-
-        test.equal(arf.getLocale(), "de-CH");
-        test.equal(arf.getContext(), "bar");
-
-        test.done();
-    },
-
-    testAndroidResourceFileGetLocaleAndContext2: function(test) {
-        test.expect(3);
-
+        expect(arf).toBeTruthy();
+        expect(arf.getLocale()).toBe("de-CH");
+        expect(arf.getContext()).toBe("bar");
+    });
+    test("AndroidResourceFileGetLocaleAndContext2", function() {
+        expect.assertions(3);
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
             pathName: "./res/values-zh-sHans-rCN-bar/foo.xml"
         });
-        test.ok(arf);
-
-        test.equal(arf.getLocale(), "zh-Hans-CN");
-        test.equal(arf.getContext(), "bar");
-
-        test.done();
-    }
-};
+        expect(arf).toBeTruthy();
+        expect(arf.getLocale()).toBe("zh-Hans-CN");
+        expect(arf.getContext()).toBe("bar");
+    });
+});
