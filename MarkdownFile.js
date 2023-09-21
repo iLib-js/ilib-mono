@@ -1,7 +1,7 @@
 /*
  * MarkdownFile.js - plugin to extract resources from an Markdown file
  *
- * Copyright © 2019-2022, Box, Inc.
+ * Copyright © 2019-2023, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -745,7 +745,7 @@ MarkdownFile.prototype._walk = function(node) {
                 }
             } else {
                 reTagName.lastIndex = 0;
-                match = reTagName.exec(node.value);
+                match = reTagName.exec(trimmed);
 
                 if (match) {
                     tagName = match[2];
@@ -849,7 +849,8 @@ MarkdownFile.prototype.parse = function(data) {
     data = data.
         replace(/\[block:/g, "```\n[block:").
         replace(/\[\/block\]/g, "[/block]\n```").
-        replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3");
+        replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
+        replace(/(^|\n)\s+```/g, "$1```");
 
     this.ast = mdparser.parse(data);
 
@@ -1146,7 +1147,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                 }
             } else {
                 reTagName.lastIndex = 0;
-                match = reTagName.exec(node.value);
+                match = reTagName.exec(trimmed);
 
                 if (match) {
                     var tagName = match[2];
