@@ -5,6 +5,11 @@ allows it to read and localize android layout xml files.
 
 ## Release Notes
 
+### v1.0.3
+
+- update dependencies
+- convert unit tests from nodeunit to jest
+
 ### v1.0.2
 
 - update dependencies
