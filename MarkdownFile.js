@@ -518,38 +518,46 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
             break;
 
         case 'text':
-            // need to to parse text nodes as markdown again, since it was never parsed before
-            root = mdparser.parse(astNode.value);
-            if (root) {
-                if (root.type === "root" &&
-                        root.children &&
-                        root.children.length &&
-                        root.children[0].type === "paragraph" &&
-                        root.children[0].children &&
-                        root.children[0].children.length > 1) {
-                    nodes = [];
-                    var match = astNode.value.match(/^\s+/);
-                    if (match) {
-                       nodes.push(new Node({
-                           type: "text",
-                           value: match[0]
-                       }));
+            try {
+                // need to to parse text nodes as markdown again, since it was never parsed before
+                root = mdparser.parse(astNode.value);
+                if (root) {
+                    if (root.type === "root" &&
+                            root.children &&
+                            root.children.length &&
+                            root.children[0].type === "paragraph" &&
+                            root.children[0].children &&
+                            root.children[0].children.length > 1) {
+                        nodes = [];
+                        var match = astNode.value.match(/^\s+/);
+                        if (match) {
+                           nodes.push(new Node({
+                               type: "text",
+                               value: match[0]
+                           }));
+                        }
+                        nodes = nodes.concat(root.children[0].children);
+                        var match = astNode.value.match(/\s+$/);
+                        if (match) {
+                           nodes.push(new Node({
+                               type: "text",
+                               value: match[0]
+                           }));
+                        }
+                        return nodes;
+                    } else {
+                        // just plain text, so return it as-is
+                        return [astNode];
                     }
-                    nodes = nodes.concat(root.children[0].children);
-                    var match = astNode.value.match(/\s+$/);
-                    if (match) {
-                       nodes.push(new Node({
-                           type: "text",
-                           value: match[0]
-                       }));
-                    }
-                    return nodes;
                 } else {
-                    // just plain text, so return it as-is
-                    return [astNode];
+                    throw new Error("Syntax error in markdown file " + this.pathName + ". Bad markdown syntax.");
                 }
-            } else {
-                throw new Error("Syntax error in markdown file " + this.pathName + ". Bad markdown syntax.");
+            } catch (e) {
+                // syntax error in markdown, just treat it like regular text
+                return [new Node({
+                    type: "text",
+                    value: astNode.value
+                })];
             }
             break;
     }
@@ -850,7 +858,8 @@ MarkdownFile.prototype.parse = function(data) {
         replace(/\[block:/g, "```\n[block:").
         replace(/\[\/block\]/g, "[/block]\n```").
         replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
-        replace(/(^|\n)\s+```/g, "$1```");
+        replace(/(^|\n)\s+```/g, "$1```").
+        replace(/\n```/g, "\n\n```");
 
     this.ast = mdparser.parse(data);
 
@@ -1175,8 +1184,10 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                         }
                     }
                 } else if (node.value) {
+                    var line = (node.position && node.position.start.line) || "?";
+                    var column = (node.position && node.position.start.column) || "?";
                     throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                        line + " column " + column + ". Bad HTML tag: " + node.value);
                 } // else empty html is just a container for some children
             }
             break;

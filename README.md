@@ -191,6 +191,17 @@ file for more details.
 
 ## Release Notes
 
+### v1.11.4
+
+- Fixed a bug where code blocks introduced with triple backticks
+  were not properly parsed if they occurred right after some other
+  types of blocks. The work around is to add a blank link in front
+  of the code block which allows the parser to reset and behave properly
+- Fixed an problem with a "dereferencing undefined" exception that occurs
+  while printing out a warning about a previously caught exception, which
+  not only hides the first exception, but also causes loctool to abort
+  altogether!
+
 ### v1.11.3
 
 - Fixed a bug where HTML-like tags that were indented and the only
