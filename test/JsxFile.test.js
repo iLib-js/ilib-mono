@@ -1,7 +1,7 @@
 /*
- * testJsxFile.js - test the React jsx file handler object.
+ * JsxFile.test.js - test the React jsx file handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,21 +33,19 @@ var p = new CustomProject({
 
 var jsft = new JsxFileType(p);
 
-module.exports.jsxfile = {
-    testJsxFileConstructor: function(test) {
-        test.expect(1);
+describe("jsxfile", function() {
+    test("JsxFileConstructor", function() {
+        expect.assertions(1);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsxFileConstructorParams: function(test) {
-        test.expect(1);
+    test("JsxFileConstructorParams", function() {
+        expect.assertions(1);
 
         var j = new JsxFile({
             project: p,
@@ -55,226 +53,204 @@ module.exports.jsxfile = {
             type: jsft
         });
 
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsxFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("JsxFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsxFileMakeKey: function(test) {
-        test.expect(2);
+    test("JsxFileMakeKey", function() {
+        expect.assertions(2);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
-        test.equal(j.makeKey("This is a test"), "This is a test");
+        expect(j.makeKey("This is a test")).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
+    test("JsxFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "This is a test"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "This is a test");
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
+    test("JsxFileParseSimpleGetBySource", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate>")');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseJSSimpleGetBySource: function(test) {
-        test.expect(5);
+    test("JsxFileParseJSSimpleGetBySource", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(5);
+    test("JsxFileParseSimpleIgnoreWhitespace", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('   <Translate>    \t This is a test  </Translate>  ');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleIgnoreReturnChars: function(test) {
-        test.expect(5);
+    test("JsxFileParseSimpleIgnoreReturnChars", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('   <Translate>\n' +
                 '     This is a test\n' +
                 '   </Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseJSCompressWhitespaceInKey: function(test) {
-        test.expect(5);
+    test("JsxFileParseJSCompressWhitespaceInKey", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>\t\t This \\n \n is \\\n\t a    test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleRightSize: function(test) {
-        test.expect(4);
+    test("JsxFileParseSimpleRightSize", function() {
+        expect.assertions(4);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         j.parse('<Translate>This is a test</Translate>');
 
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleWithTranslatorComment: function(test) {
-        test.expect(6);
+    test("JsxFileParseSimpleWithTranslatorComment", function() {
+        expect.assertions(6);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate> { /* i18n: this is a translator\'s comment */ }\n\tfoo("This is not");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
-        test.equal(r.getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+        expect(r.getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseWithParameters: function(test) {
-        test.expect(5);
+    test("JsxFileParseWithParameters", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             '    <Translate prefix={detail.name_prefix} last_name={detail.last_name}>\n' +
@@ -283,487 +259,447 @@ module.exports.jsxfile = {
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("We will notify you when {prefix} {last_name} accepts you as a friend!");
-        test.ok(r);
-        test.equal(r.getSource(), "We will notify you when {prefix} {last_name} accepts you as a friend!");
-        test.equal(r.getKey(), "We will notify you when {prefix} {last_name} accepts you as a friend!");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("We will notify you when {prefix} {last_name} accepts you as a friend!");
+        expect(r.getKey()).toBe("We will notify you when {prefix} {last_name} accepts you as a friend!");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseWithEmbeddedEntities: function(test) {
-        test.expect(5);
+    test("JsxFileParseWithEmbeddedEntities", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             '    <Translate>We&apos;ll notify you when &quot;your friend&quot; accepts you as a friend!</Translate>'
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("We'll notify you when \"your friend\" accepts you as a friend!");
-        test.ok(r);
-        test.equal(r.getSource(), "We'll notify you when \"your friend\" accepts you as a friend!");
-        test.equal(r.getKey(), "We'll notify you when \"your friend\" accepts you as a friend!");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("We'll notify you when \"your friend\" accepts you as a friend!");
+        expect(r.getKey()).toBe("We'll notify you when \"your friend\" accepts you as a friend!");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseWithEmbeddedHTMLElements: function(test) {
-        test.expect(5);
+    test("JsxFileParseWithEmbeddedHTMLElements", function() {
+        expect.assertions(5);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse(
             '    <Translate>We will <span class="foo">notify <br/>you</span> when your friend accepts you as a <b>friend</b>!</Translate>'
         );
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource('We will <span class="foo">notify <br/>you</span> when your friend accepts you as a <b>friend</b>!');
-        test.ok(r);
-        test.equal(r.getSource(), 'We will <span class="foo">notify <br/>you</span> when your friend accepts you as a <b>friend</b>!');
-        test.equal(r.getKey(), 'We will <span class="foo">notify <br/>you</span> when your friend accepts you as a <b>friend</b>!');
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('We will <span class="foo">notify <br/>you</span> when your friend accepts you as a <b>friend</b>!');
+        expect(r.getKey()).toBe('We will <span class="foo">notify <br/>you</span> when your friend accepts you as a <b>friend</b>!');
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleWithUniqueIdAndTranslatorComment: function(test) {
-        test.expect(6);
+    test("JsxFileParseSimpleWithUniqueIdAndTranslatorComment", function() {
+        expect.assertions(6);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('\tconst x = (<Translate key="foobar">This is a test</Translate>); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "foobar"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "foobar");
-        test.equal(r[0].getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("foobar");
+        expect(r[0].getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseSimpleWithUniqueIdAndTranslatorCommentParam: function(test) {
-        test.expect(6);
+    test("JsxFileParseSimpleWithUniqueIdAndTranslatorCommentParam", function() {
+        expect.assertions(6);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('\tconst x = (<Translate key="foobar" comment="this is a translator\'s comment">This is a test</Translate>);\n\tfoo("This is not");');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "foobar"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "foobar");
-        test.equal(r[0].getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("foobar");
+        expect(r[0].getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseWithKeyCantGetBySource: function(test) {
-        test.expect(3);
+    test("JsxFileParseWithKeyCantGetBySource", function() {
+        expect.assertions(3);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate key="unique_id">This is a test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(!r);
+        expect(!r).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseMultiple: function(test) {
-        test.expect(8);
+    test("JsxFileParseMultiple", function() {
+        expect.assertions(8);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate>\n' +
                 '\t<Translate>This is another test</Translate>\n' +
                 '\t\t<Translate>This is also a test</Translate>;');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "This is also a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("This is also a test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseMultipleWithKey: function(test) {
-        test.expect(10);
+    test("JsxFileParseMultipleWithKey", function() {
+        expect.assertions(10);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate key="x">This is a test</Translate>\n' +
                 '\t<Translate>This is another test</Translate>\n' +
                 '\t\t<Translate key="y">This is a test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "x"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.ok(!r[0].getAutoKey());
-        test.equal(r[0].getKey(), "x");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(!r[0].getAutoKey()).toBeTruthy();
+        expect(r[0].getKey()).toBe("x");
 
         r = set.getBy({
             reskey: "y"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.ok(!r[0].getAutoKey());
-        test.equal(r[0].getKey(), "y");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(!r[0].getAutoKey()).toBeTruthy();
+        expect(r[0].getKey()).toBe("y");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseNestedTranslate: function(test) {
-        test.expect(2);
+    test("JsxFileParseNestedTranslate", function() {
+        expect.assertions(2);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
-        test.throws(function() {
+        expect(function() {
             j.parse('<Translate key="x">This is a test <Translate>This is another test</Translate> This is a test</Translate>');
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseMultipleSameLine: function(test) {
-        test.expect(12);
+    test("JsxFileParseMultipleSameLine", function() {
+        expect.assertions(12);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate> <Translate>This is a second test</Translate> <Translate>This is a third test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         r = set.getBySource("This is a second test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a second test");
-        test.equal(r.getKey(), "This is a second test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a second test");
+        expect(r.getKey()).toBe("This is a second test");
 
         r = set.getBySource("This is a third test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a third test");
-        test.equal(r.getKey(), "This is a third test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a third test");
+        expect(r.getKey()).toBe("This is a third test");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseMultipleWithComments: function(test) {
-        test.expect(10);
+    test("JsxFileParseMultipleWithComments", function() {
+        expect.assertions(10);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate> { // i18n: foo\n\t}\n\t<Translate>This is another test</Translate>\n\t\t<Translate>This is also a test</Translate>\t{ /* i18n: bar */ }\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
-        test.equal(r.getComment(), "foo");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
+        expect(r.getComment()).toBe("foo");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "This is also a test");
-        test.equal(r.getComment(), "bar");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("This is also a test");
+        expect(r.getComment()).toBe("bar");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseMultipleWithUniqueIdsAndComments: function(test) {
-        test.expect(10);
+    test("JsxFileParseMultipleWithUniqueIdsAndComments", function() {
+        expect.assertions(10);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate key="asdf">This is a test</Translate> { /* i18n: foo */ }\n\t<Translate>This is another test</Translate>\n\t\t<Translate key="kdkdkd">This is also a test</Translate>\t { /* i18n: bar */ }\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "asdf"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "asdf");
-        test.equal(r[0].getComment(), "foo");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("asdf");
+        expect(r[0].getComment()).toBe("foo");
 
         r = set.getBy({
             reskey: "kdkdkd"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is also a test");
-        test.equal(r[0].getKey(), "kdkdkd");
-        test.equal(r[0].getComment(), "bar");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is also a test");
+        expect(r[0].getKey()).toBe("kdkdkd");
+        expect(r[0].getComment()).toBe("bar");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseWithDups: function(test) {
-        test.expect(6);
+    test("JsxFileParseWithDups", function() {
+        expect.assertions(6);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate>\n\t<Translate>This is another test.</Translate>\n\t\t<Translate>This is a test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseDupsDifferingByKeyOnly: function(test) {
-        test.expect(8);
+    test("JsxFileParseDupsDifferingByKeyOnly", function() {
+        expect.assertions(8);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate>This is a test</Translate>\n\t<Translate>This is another test.</Translate>\n\t\t<Translate key="unique_id">This is a test</Translate>');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         r = set.getBy({
             reskey: "unique_id"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test");
-        test.equal(r[0].getKey(), "unique_id");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getKey()).toBe("unique_id");
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseEmbeddedReplacement: function(test) {
-        test.expect(3);
+    test("JsxFileParseEmbeddedReplacement", function() {
+        expect.assertions(3);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
-        test.throws(function() {
+        expect(function() {
             j.parse('<Translate>This is a {test} and this isnt</Translate>');
-        });
+        }).toThrow();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseBogusNonStringParam: function(test) {
-        test.expect(3);
+    test("JsxFileParseBogusNonStringParam", function() {
+        expect.assertions(3);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
-        test.throws(function() {
+        expect(function() {
             j.parse('<Translate>[[test]]</Translate>');
-        });
+        }).toThrow();
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJsxFileParseEmptyParams: function(test) {
-        test.expect(2);
+    test("JsxFileParseEmptyParams", function() {
+        expect.assertions(2);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('<Translate></Translate>');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJsxFileExtractFile: function(test) {
-        test.expect(8);
+    test("JsxFileExtractFile", function() {
+        expect.assertions(8);
 
         var j = new JsxFile({
             project: p,
             pathName: "./js/t1.jsx",
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should read the file
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("This is a test");
 
         var r = set.getBy({
             reskey: "id1"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "This is a test with a unique id");
-        test.equal(r[0].getKey(), "id1");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("This is a test with a unique id");
+        expect(r[0].getKey()).toBe("id1");
+    });
 
-        test.done();
-    },
-
-    testJsxFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("JsxFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var j = new JsxFile({
             project: p,
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should attempt to read the file and not fail
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testJsxFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("JsxFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var j = new JsxFile({
             project: p,
             pathName: "./java/foo.jsx",
             type: jsft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should attempt to read the file and not fail
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
-
-        test.done();
-    }
-};
+        expect(set.size()).toBe(0);
+    });
+});
