@@ -1,0 +1,38 @@
+version: 2.1
+jobs:
+  test:
+    parameters:
+        docker_image:
+          type: string
+          default: cimg/node:current
+    docker:
+      - image: << parameters.docker_image >>
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            rm -rf node_modules package-lock.json
+            npm install
+      - run:
+          name: Running all unit tests
+          command: |
+            node -v
+            npm -v
+            npm run test
+
+workflows:
+  version: 2
+  test-all-node-versions:
+    jobs:
+      - test:
+          docker_image: circleci/node:10-browsers
+      - test:
+          docker_image: cimg/node:12.18
+      - test:
+          docker_image: cimg/node:14.21
+      - test:
+          docker_image: cimg/node:16.19
+      - test:
+          docker_image: cimg/node:18.15
+      - test
