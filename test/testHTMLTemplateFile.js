@@ -530,11 +530,11 @@ module.exports.htmltemplatefile = {
         var set = htf.getTranslationSet();
         test.ok(set);
 
-        var r = set.get(ResourceString.hashKey("foo", "en-US", "Uploaded", "html"));
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "Uploaded <%= dateString %>", "html"));
         test.ok(r);
 
-        test.equal(r.getSource(), "Uploaded");
-        test.equal(r.getKey(), "Uploaded");
+        test.equal(r.getSource(), "Uploaded <%= dateString %>");
+        test.equal(r.getKey(), "Uploaded <%= dateString %>");
 
         test.done();
     },
@@ -1388,20 +1388,20 @@ module.exports.htmltemplatefile = {
         test.equal(r.getSource(), "Description");
         test.equal(r.getKey(), "Description");
 
-        r = set.getBySource('Authored by');
+        r = set.getBySource('Authored by <%=val.author.full_name%>');
         test.ok(r);
-        test.equal(r.getSource(), 'Authored by');
-        test.equal(r.getKey(), 'Authored by');
+        test.equal(r.getSource(), 'Authored by <%=val.author.full_name%>');
+        test.equal(r.getKey(), 'Authored by <%=val.author.full_name%>');
 
         r = set.getBySource('Agreed');
         test.ok(r);
         test.equal(r.getSource(), 'Agreed');
         test.equal(r.getKey(), 'Agreed');
 
-        r = set.getBySource('and <a class="bold"><span class="friend_agree_count_h"><%=val.desc_agrees.length%></span> of your friends agree</a>');
+        r = set.getBySource('and <%=val.desc_agrees.length%><a class="bold"><span class="friend_agree_count_h"></span> of your friends agree</a>');
         test.ok(r);
-        test.equal(r.getSource(), 'and <a class="bold"><span class="friend_agree_count_h"><%=val.desc_agrees.length%></span> of your friends agree</a>');
-        test.equal(r.getKey(), 'and<a class="bold"><span class="friend_agree_count_h"><%=val.desc_agrees.length%></span>of your friends agree</a>');
+        test.equal(r.getSource(), 'and <%=val.desc_agrees.length%><a class="bold"><span class="friend_agree_count_h"></span> of your friends agree</a>');
+        test.equal(r.getKey(), 'and <%=val.desc_agrees.length%><a class="bold"><span class="friend_agree_count_h"></span>of your friends agree</a>');
 
         r = set.getBySource("Write a better description &raquo;");
         test.ok(r);
@@ -3736,9 +3736,9 @@ module.exports.htmltemplatefile = {
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: 'Uploaded',
-            source: 'Uploaded',
-            target: 'Cargada',
+            key: 'Uploaded <%= dateString %>',
+            source: 'Uploaded <%= dateString %>',
+            target: 'Cargada <%= dateString %>',
             targetLocale: "es-US",
             datatype: "html"
         }));
@@ -3800,10 +3800,10 @@ module.exports.htmltemplatefile = {
 
         test.equal(set.size(), 5);
 
-        var r = set.getBySource("Upcoming Appointments");
+        var r = set.getBySource("Upcoming Appointments\n      <%= upcoming_meetings.length %>");
         test.ok(r);
-        test.equal(r.getSource(), "Upcoming Appointments");
-        test.equal(r.getKey(), "Upcoming Appointments");
+        test.equal(r.getSource(), "Upcoming Appointments\n      <%= upcoming_meetings.length %>");
+        test.equal(r.getKey(), "Upcoming Appointments <%= upcoming_meetings.length %>");
 
         r = set.getBySource("Completed Meetings");
         test.ok(r);
@@ -3920,7 +3920,7 @@ module.exports.htmltemplatefile = {
             '      <% $.each(supplementary_descriptions, function(index, desc) { %>\n' +
             '      <div class="addInfo"><%= desc %></div>\n' +
             '      <% }); %>\n' +
-            '      Ťëšţ þĥŕàšë543210\n' +
+            '      [Ťëšţ þĥŕàšë543210]\n' +
             '    </div>\n' +
             '    <div class="modeSelection">\n' +
             '      <% $.each(modes, function(index, mode) { %>\n' +

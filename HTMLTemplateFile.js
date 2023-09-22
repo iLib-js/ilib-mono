@@ -372,7 +372,9 @@ HTMLTemplateFile.prototype.parse = function(data) {
         }.bind(this),
         tmplEcho: function(value) {
             this.logger.trace('template echo: %s', value);
-            if (this.text || this.tagtext) {
+            if (this.text) {
+                this.text += '<%=' + value + '%>';
+            } else if (this.tagtext) {
                 this.tagtext += '<%=' + value + '%>';
             } else {
                 this.accumulator += '<%=' + value + '%>';
