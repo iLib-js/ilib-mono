@@ -20,8 +20,8 @@
 var path = require('path');
 var fs = require('fs');
 
-var JsonFile = require('ilib-loctool-json/JsonFile');
-var MarkdownFile = require('ilib-loctool-ghfm/MarkdownFile');
+var JsonFile = require('ilib-loctool-json/JsonFile.js');
+var MarkdownFile = require('ilib-loctool-ghfm/MarkdownFile.js');
 var Locale = require('ilib/lib/Locale.js');
 
 var OpenAPIFile = function(options) {

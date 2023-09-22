@@ -20,9 +20,9 @@
 var fs = require('fs');
 const path = require('path');
 
-var JsonFileType = require('ilib-loctool-json/JsonFileType');
-var MarkdownFileType = require('ilib-loctool-ghfm/MarkdownFileType');
-var OpenAPIFile = require('./OpenAPIFile');
+var JsonFileType = require('ilib-loctool-json/JsonFileType.js');
+var MarkdownFileType = require('ilib-loctool-ghfm/MarkdownFileType.js');
+var OpenAPIFile = require('./OpenAPIFile.js');
 
 var OpenAPIFileType = function(project) {
     this.type = 'openapi';

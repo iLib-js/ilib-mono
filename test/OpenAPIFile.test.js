@@ -1,7 +1,7 @@
 /*
- * testOpenAPIFile.js - Represents a collection of json files
+ * OpenAPIFile.test.js - Represents a collection of json files
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,10 +64,10 @@ var p = new CustomProject({
 
 var t = new OpenAPIFileType(p);
 
-module.exports.openapifile = {
-    constuctor: {
-        testConstructor: function(test) {
-            test.expect(1);
+describe("openapifile", function() {
+    describe("constuctor", function() {
+        test("Constructor", function() {
+            expect.assertions(1);
 
             var oaf = new OpenAPIFile({
                 project: p,
@@ -75,26 +75,22 @@ module.exports.openapifile = {
                 markdownFileType: t.markdownFileType
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
+        });
 
-            test.done();
-        },
-
-        testConstructorUseTypeToGetRequiredParam: function(test) {
-            test.expect(1);
+        test("ConstructorUseTypeToGetRequiredParam", function() {
+            expect.assertions(1);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
+        });
 
-            test.done();
-        },
-
-        testConstructorParams: function(test) {
-            test.expect(1);
+        test("ConstructorParams", function() {
+            expect.assertions(1);
 
             var oaf = new OpenAPIFile({
                 project: p,
@@ -102,34 +98,30 @@ module.exports.openapifile = {
                 pathName: './testfiles/json/messages.json'
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
+        });
 
-            test.done();
-        },
+        test("ConstructorErrorMissingRequiredParam", function() {
+            expect.assertions(1);
 
-        testConstructorErrorMissingRequiredParam: function(test) {
-            test.expect(1);
-
-            test.throws(function(test) {
+            expect(function(test) {
                 var oaf = new OpenAPIFile({
                     project: p
                 });
-            });
+            }).toThrow();
+        });
+    });
 
-            test.done();
-        }
-    },
-
-    parse: {
-        testParseSimpleJsonGetBySource: function(test) {
-            test.expect(5);
+    describe("parse", function() {
+        test("ParseSimpleJsonGetBySource", function() {
+            expect.assertions(5);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/openapi.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "openapi": "3.0.0",\n' +
@@ -142,26 +134,24 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resource = set.getBySource('File used for testing OpenAPI parser');
-            test.ok(resource);
+            expect(resource).toBeTruthy();
 
-            test.equal(resource.getSource(), 'File used for testing OpenAPI parser');
-            test.equal(resource.getKey(), oaf.markdownFile.makeKey('File used for testing OpenAPI parser'));
+            expect(resource.getSource()).toBe('File used for testing OpenAPI parser');
+            expect(resource.getKey()).toBe(oaf.markdownFile.makeKey('File used for testing OpenAPI parser'));
+        });
 
-            test.done();
-        },
-
-        testParseMarkdownJsonGetBySource: function(test) {
-            test.expect(7);
+        test("ParseMarkdownJsonGetBySource", function() {
+            expect.assertions(7);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/openapi.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -176,28 +166,26 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resource = set.getBySource('Markdown string with <c0/> in it');
-            test.ok(resource);
+            expect(resource).toBeTruthy();
 
-            test.equal(resource.getSource(), 'Markdown string with <c0/> in it');
-            test.equal(resource.getComment(), 'c0 will be replaced with the inline code `code`.');
-            test.equal(resource.getKey(), oaf.makeKey('Markdown string with <c0/> in it'));
-            test.equal(resource.getDataType(), 'markdown');
+            expect(resource.getSource()).toBe('Markdown string with <c0/> in it');
+            expect(resource.getComment()).toBe('c0 will be replaced with the inline code `code`.');
+            expect(resource.getKey()).toBe(oaf.makeKey('Markdown string with <c0/> in it'));
+            expect(resource.getDataType()).toBe('markdown');
+        });
 
-            test.done();
-        },
-
-        testParseInlineCodeOnlyString: function(test) {
-            test.expect(7);
+        test("ParseInlineCodeOnlyString", function() {
+            expect.assertions(7);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/openapi.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -219,28 +207,26 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resources = set.getAll();
-            test.equal(resources.length, 2);
-            test.equal(resources[0].getSource(), 'Markdown string with <c0/> in it');
-            test.equal(resources[0].getComment(), 'c0 will be replaced with the inline code `code`.');
+            expect(resources.length).toBe(2);
+            expect(resources[0].getSource()).toBe('Markdown string with <c0/> in it');
+            expect(resources[0].getComment()).toBe('c0 will be replaced with the inline code `code`.');
 
-            test.equal(resources[1].getSource(), 'String with no parameters');
-            test.equal(resources[1].getComment(), null);
+            expect(resources[1].getSource()).toBe('String with no parameters');
+            expect(resources[1].getComment()).toBeUndefined();
+        });
 
-            test.done();
-        },
-
-        testParseDoubleNewLine: function(test) {
-            test.expect(7);
+        test("ParseDoubleNewLine", function() {
+            expect.assertions(7);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/openapi.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -258,28 +244,26 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resources = set.getAll();
-            test.equal(resources.length, 2);
-            test.equal(resources[0].getSource(), 'Not Found');
-            test.equal(resources[0].getComment(), null);
+            expect(resources.length).toBe(2);
+            expect(resources[0].getSource()).toBe('Not Found');
+            expect(resources[0].getComment()).toBeUndefined();
 
-            test.equal(resources[1].getSource(), 'response with <c0/> break line');
-            test.equal(resources[1].getComment(), 'c0 will be replaced with the inline code `markdown`.');
+            expect(resources[1].getSource()).toBe('response with <c0/> break line');
+            expect(resources[1].getComment()).toBe('c0 will be replaced with the inline code `markdown`.');
+        });
 
-            test.done();
-        },
-
-        testParseCustomSchema: function(test) {
-            test.expect(5);
+        test("ParseCustomSchema", function() {
+            expect.assertions(5);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/custom.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -303,25 +287,23 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resources = set.getAll();
-            test.equal(resources.length, 1);
-            test.equal(resources[0].getSource(), 'Translatable field using <c0/> schema');
-            test.equal(resources[0].getComment(), 'c0 will be replaced with the inline code `custom`.');
+            expect(resources.length).toBe(1);
+            expect(resources[0].getSource()).toBe('Translatable field using <c0/> schema');
+            expect(resources[0].getComment()).toBe('c0 will be replaced with the inline code `custom`.');
+        });
 
-            test.done();
-        },
-
-        testParseArrayJson: function(test) {
-            test.expect(13);
+        test("ParseArrayJson", function() {
+            expect.assertions(13);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/openapi.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -346,39 +328,37 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resources = set.getAll();
-            test.equal(resources.length, 3);
-            test.equal(resources[0].getSource(), 'Test array support using tags');
+            expect(resources.length).toBe(3);
+            expect(resources[0].getSource()).toBe('Test array support using tags');
 
-            test.equal(resources[1].getType(), 'array');
-            test.equal(resources[1].getKey(), 'paths//array/get/tags');
-            test.equal(resources[1].getDataType(), 'json');
+            expect(resources[1].getType()).toBe('array');
+            expect(resources[1].getKey()).toBe('paths//array/get/tags');
+            expect(resources[1].getDataType()).toBe('json');
 
             var arrayStrings = resources[1].getSourceArray();
-            test.ok(arrayStrings);
+            expect(arrayStrings).toBeTruthy();
 
-            test.equal(arrayStrings.length, 3);
-            test.equals(arrayStrings[0], 'First Tag');
-            test.equals(arrayStrings[1], 'Second Tag');
-            test.equals(arrayStrings[2], 'Third Tag');
+            expect(arrayStrings.length).toBe(3);
+            expect(arrayStrings[0]).toBe('First Tag');
+            expect(arrayStrings[1]).toBe('Second Tag');
+            expect(arrayStrings[2]).toBe('Third Tag');
 
-            test.equal(resources[2].getSource(), 'OK Response');
+            expect(resources[2].getSource()).toBe('OK Response');
 
-            test.done();
+        });
 
-        },
-
-        testParsePluralJson: function(test) {
-            test.expect(16);
+        test("ParsePluralJson", function() {
+            expect.assertions(16);
 
             var oaf = new OpenAPIFile({
                 project: p,
                 type: t,
                 pathName: 'i18n/custom.json'
             });
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -405,35 +385,33 @@ module.exports.openapifile = {
             oaf.parse(jsonToParse);
 
             var set = oaf.getTranslationSet();
-            test.ok(set);
+            expect(set).toBeTruthy();
 
             var resources = set.getAll();
-            test.equal(resources.length, 2);
-            test.equal(resources[0].getSource(), 'Translatable field using <c0/> schema');
-            test.equal(resources[0].getComment(), 'c0 will be replaced with the inline code `custom`.');
-            test.equal(resources[0].getDataType(), 'markdown');
+            expect(resources.length).toBe(2);
+            expect(resources[0].getSource()).toBe('Translatable field using <c0/> schema');
+            expect(resources[0].getComment()).toBe('c0 will be replaced with the inline code `custom`.');
+            expect(resources[0].getDataType()).toBe('markdown');
 
-            test.equal(resources[1].getType(), 'plural');
-            test.equal(resources[1].getKey(), 'paths//plural/get/pluralProp');
-            test.equal(resources[1].getDataType(), 'json');
+            expect(resources[1].getType()).toBe('plural');
+            expect(resources[1].getKey()).toBe('paths//plural/get/pluralProp');
+            expect(resources[1].getDataType()).toBe('json');
 
             var pluralStrings = resources[1].getSourcePlurals();
-            test.ok(pluralStrings);
+            expect(pluralStrings).toBeTruthy();
 
-            test.equal(pluralStrings.one, 'singular');
-            test.equal(pluralStrings.many, 'many');
-            test.equal(pluralStrings.other, 'plural');
-            test.ok(!pluralStrings.zero);
-            test.ok(!pluralStrings.two);
-            test.ok(!pluralStrings.few);
+            expect(pluralStrings.one).toBe('singular');
+            expect(pluralStrings.many).toBe('many');
+            expect(pluralStrings.other).toBe('plural');
+            expect(!pluralStrings.zero).toBeTruthy();
+            expect(!pluralStrings.two).toBeTruthy();
+            expect(!pluralStrings.few).toBeTruthy();
+        });
+    });
 
-            test.done();
-        }
-    },
-
-    localizeText: {
-        testLocalizeTextSimpleJson: function(test) {
-            test.expect(2);
+    describe("localizeText", function() {
+        test("LocalizeTextSimpleJson", function() {
+            expect.assertions(2);
 
             var oaf = new OpenAPIFile({
                 project: p,
@@ -441,7 +419,7 @@ module.exports.openapifile = {
                 pathName: 'i18n/openapi.json'
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "openapi": "3.0.0",\n' +
@@ -474,13 +452,11 @@ module.exports.openapifile = {
                 '    }\n' +
                 '}\n';
 
-            test.equal(actual, expected);
+            expect(actual).toBe(expected);
+        });
 
-            test.done();
-        },
-
-        testLocalizeTextMarkdownJson: function(test) {
-            test.expect(2);
+        test("LocalizeTextMarkdownJson", function() {
+            expect.assertions(2);
 
             var oaf = new OpenAPIFile({
                 project: p,
@@ -488,7 +464,7 @@ module.exports.openapifile = {
                 pathName: 'i18n/openapi.json'
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -537,13 +513,11 @@ module.exports.openapifile = {
                 '    }\n' +
                 '}\n';
 
-            test.equal(actual, expected);
+            expect(actual).toBe(expected);
+        });
 
-            test.done();
-        },
-
-        testLocalizeTextComplexJson: function(test) {
-            test.expect(2);
+        test("LocalizeTextComplexJson", function() {
+            expect.assertions(2);
 
             var oaf = new OpenAPIFile({
                 project: p,
@@ -551,7 +525,7 @@ module.exports.openapifile = {
                 pathName: 'i18n/custom.json'
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             var jsonToParse = '{\n' +
                 '  "paths": {\n' +
@@ -645,22 +619,20 @@ module.exports.openapifile = {
                 '    }\n' +
                 '}\n'
 
-            test.equal(actual, expected);
+            expect(actual).toBe(expected);
+        });
+    });
 
-            test.done();
-        }
-    },
-
-    localize: {
-        testLocalize: function(test) {
-            test.expect(4);
+    describe("localize", function() {
+        test("Localize", function() {
+            expect.assertions(4);
 
             var base = path.dirname(module.id);
             if (fs.existsSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json'))) {
                 fs.unlinkSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json'));
             }
 
-            test.ok(!fs.existsSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json')));
+            expect(!fs.existsSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json'))).toBeTruthy();
 
             var oaf = new OpenAPIFile({
                 project: p,
@@ -668,7 +640,7 @@ module.exports.openapifile = {
                 pathName: './openapi.json'
             });
 
-            test.ok(oaf);
+            expect(oaf).toBeTruthy();
 
             oaf.extract();
 
@@ -755,7 +727,7 @@ module.exports.openapifile = {
             }));
 
             oaf.localize(translations, ['ru-RU']);
-            test.ok(fs.existsSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json')));
+            expect(fs.existsSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json'))).toBeTruthy();
 
             var content = fs.readFileSync(path.join(base, 'testfiles/resources/ru/RU/openapi.json'), 'utf-8');
 
@@ -813,9 +785,7 @@ module.exports.openapifile = {
                 '    }\n' +
                 '}\n';
 
-            test.equal(content, expected);
-
-            test.done();
-        }
-    }
-}
+            expect(content).toBe(expected);
+        });
+    });
+});
