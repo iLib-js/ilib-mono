@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-jsx",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "main": "./JsxFileType.js",
     "description": "A loctool plugin that knows how to process JSX files",
     "license": "Apache-2.0",
@@ -44,18 +44,19 @@
     },
     "scripts": {
         "dist": "npm pack",
-        "test": "node test/testSuite.js",
-        "debug": "node --inspect-brk test/testSuite.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib-loctool-javascript-resource": "^1.0.4"
+        "ilib-loctool-javascript-resource": "^1.0.6"
     },
     "devDependencies": {
-        "loctool": "^2.20.2",
-        "nodeunit": "^0.11.3"
+        "jest": "^26.6.3",
+        "loctool": "^2.23.1"
     }
 }
