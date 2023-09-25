@@ -18,7 +18,6 @@
  */
 
 var path = require("path");
-var log4js = require("log4js");
 var Locale = require("ilib/lib/Locale.js");
 
 var PropertiesFile = require("./PropertiesFile.js");

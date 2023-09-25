@@ -1,8 +1,8 @@
 {
     "name": "ilib-loctool-properties",
-    "version": "1.0.3",
-    "main": "./JavaScriptFileType.js",
-    "description": "A loctool plugin that knows how to process ilib-loctool-properties files",
+    "version": "1.0.4",
+    "main": "./PropertiesFileType.js",
+    "description": "A loctool plugin that knows how to process properties files",
     "license": "Apache-2.0",
     "keywords": [
         "internationalization",
@@ -17,7 +17,7 @@
         "translation",
         "webpack",
         "loader",
-        "ilib-loctool-properties"
+        "properties"
     ],
     "email": "ehoogerbeets@gmail.com",
     "author": {
@@ -43,18 +43,19 @@
     },
     "scripts": {
         "dist": "npm pack",
-        "test": "node test/testSuite.js",
-        "debug": "node --inspect-brk test/testSuite.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk jest",
         "clean": "git clean -f -d *"
     },
     "engines": {
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.17.0"
+        "ilib": "^14.18.0"
     },
     "devDependencies": {
-        "nodeunit": "^0.11.3",
-        "loctool": "^2.20.2"
+        "jest": "^26.3.0",
+        "loctool": "^2.23.1"
     }
 }

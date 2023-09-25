@@ -1,7 +1,7 @@
 /*
- * testPropertiesFile.js - test the Java file handler object.
+ * PropertiesFile.test.js - test the Java file handler object.
  *
- * Copyright © 2019, JEDLSoft
+ * Copyright © 2019, 2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,20 +34,18 @@ var p = new CustomProject({
 
 var pft = new PropertiesFileType(p);
 
-module.exports.propertiesfile = {
-    testPropertiesFileConstructor: function(test) {
-        test.expect(1);
+describe("propertiesfile", function() {
+    test("PropertiesFileConstructor", function() {
+        expect.assertions(1);
 
         var j = new PropertiesFile({
             project: p
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileConstructorParams: function(test) {
-        test.expect(1);
+    test("PropertiesFileConstructorParams", function() {
+        expect.assertions(1);
 
         var j = new PropertiesFile({
             project: p,
@@ -55,534 +53,489 @@ module.exports.propertiesfile = {
             type: pft
         });
 
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("PropertiesFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1=This is a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "test1", "properties"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseSimpleGetBySource: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseSimpleGetBySource", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1=This is a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseWithColon: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseWithColon", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1: This is a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "test1", "properties"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseWithNonLetterKeys: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseWithNonLetterKeys", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1.foo.bar: This is a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "test1.foo.bar", "properties"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1.foo.bar");
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1.foo.bar");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseIgnoreEmpty: function(test) {
-        test.expect(3);
+    test("PropertiesFileParseIgnoreEmpty", function() {
+        expect.assertions(3);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('\n\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseSimpleIgnoreWhitespace", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('  \t test1  \t\t  =   This is a test     \n  ');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test     ");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test     ");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test     ");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseSimpleWithTranslatorComment: function(test) {
-        test.expect(6);
+    test("PropertiesFileParseSimpleWithTranslatorComment", function() {
+        expect.assertions(6);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a test # i18n: this is a translator\'s comment\n\t# This is not\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test ");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test ");
-        test.equal(r.getKey(), "test1");
-        test.equal(r.getComment(), "this is a translator's comment");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test ");
+        expect(r.getKey()).toBe("test1");
+        expect(r.getComment()).toBe("this is a translator's comment");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseWithEmbeddedDoubleQuotes: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseWithEmbeddedDoubleQuotes", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a \\\"test\\\"\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a \"test\"");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a \"test\"");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a \"test\"");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseWithEmbeddedEscapedSingleQuotes: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseWithEmbeddedEscapedSingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a \\\'test\\\'\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a 'test'");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a 'test'");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a 'test'");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseWithEmbeddedUnescapedSingleQuotes: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseWithEmbeddedUnescapedSingleQuotes", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a \'test\'\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a 'test'");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a 'test'");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a 'test'");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseWithEmbeddedUnicodeEscape: function(test) {
-        test.expect(5);
+    test("PropertiesFileParseWithEmbeddedUnicodeEscape", function() {
+        expect.assertions(5);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a t\\u011Bst\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a těst");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a těst");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a těst");
+        expect(r.getKey()).toBe("test1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseMultiple: function(test) {
-        test.expect(8);
+    test("PropertiesFileParseMultiple", function() {
+        expect.assertions(8);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a test\ntest2 = This is another test\n\t\ttest3 = This is also a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "test3");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("test3");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseMultipleWithComments: function(test) {
-        test.expect(10);
+    test("PropertiesFileParseMultipleWithComments", function() {
+        expect.assertions(10);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a test # i18n: foo\n\ttest2 = This is another test\n\t\ttest3 = This is also a test# i18n: bar\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test ");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test ");
-        test.equal(r.getKey(), "test1");
-        test.equal(r.getComment(), "foo");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test ");
+        expect(r.getKey()).toBe("test1");
+        expect(r.getComment()).toBe("foo");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "test3");
-        test.equal(r.getComment(), "bar");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("test3");
+        expect(r.getComment()).toBe("bar");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseMultipleWithCommentsOnLineBefore: function(test) {
-        test.expect(10);
+    test("PropertiesFileParseMultipleWithCommentsOnLineBefore", function() {
+        expect.assertions(10);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('# i18n: foo\ntest1 = This is a test\n\ttest2 = This is another test\n\n# i18n: bar\n\n\t\ttest3 = This is also a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
-        test.equal(r.getComment(), "foo");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1");
+        expect(r.getComment()).toBe("foo");
 
         r = set.getBySource("This is also a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is also a test");
-        test.equal(r.getKey(), "test3");
-        test.equal(r.getComment(), "bar");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("test3");
+        expect(r.getComment()).toBe("bar");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseDupsDifferingByKeyOnly: function(test) {
-        test.expect(8);
+    test("PropertiesFileParseDupsDifferingByKeyOnly", function() {
+        expect.assertions(8);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('test1 = This is a test\n\ttest2 = This is another test\n\t\ttest3 = This is a test\n');
 
         var set = j.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test3");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test3");
 
         r = set.get(ResourceString.hashKey("webapp", "en-US", "test3", "properties"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test3");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test3");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseDupsDifferingByValue: function(test) {
-        test.expect(2);
+    test("PropertiesFileParseDupsDifferingByValue", function() {
+        expect.assertions(2);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
-        test.throws(function() {
+        expect(function() {
             j.parse('test1 = This is a test\n\ttest2 = This is another test\n\t\ttest1 = Alternate source\n');
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileParseEmptyKey: function(test) {
-        test.expect(2);
+    test("PropertiesFileParseEmptyKey", function() {
+        expect.assertions(2);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         j.parse('= This is a test\n');
 
         var set = j.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileExtractFile: function(test) {
-        test.expect(8);
+    test("PropertiesFileExtractFile", function() {
+        expect.assertions(8);
 
         var j = new PropertiesFile({
             project: p,
             pathName: "./java/t1.properties",
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should read the file
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.getBySource("This is a test");
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test");
-        test.equal(r.getKey(), "test1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("test1");
 
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "id1", "properties"));
-        test.ok(r);
-        test.equal(r.getSource(), "This is a test with a unique id");
-        test.equal(r.getKey(), "id1");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test with a unique id");
+        expect(r.getKey()).toBe("id1");
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("PropertiesFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var j = new PropertiesFile({
             project: p,
             pathName: undefined,
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should attempt to read the file and not fail
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("PropertiesFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var j = new PropertiesFile({
             project: p,
             pathName: "./java/foo.properties",
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should attempt to read the file and not fail
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPropertiesFileExtractFile2: function(test) {
-        test.expect(14);
+    test("PropertiesFileExtractFile2", function() {
+        expect.assertions(14);
 
         var j = new PropertiesFile({
             project: p,
             pathName: "./java/t2.properties",
             type: pft
         });
-        test.ok(j);
+        expect(j).toBeTruthy();
 
         // should read the file
         j.extract();
 
         var set = j.getTranslationSet();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
 
         var r = set.getBySource("Can't find a group?");
-        test.ok(r);
-        test.equal(r.getSource(), "Can't find a group?");
-        test.equal(r.getKey(), "group.question1");
-        test.equal(r.getComment(), "used on the home page");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Can't find a group?");
+        expect(r.getKey()).toBe("group.question1");
+        expect(r.getComment()).toBe("used on the home page");
 
         r = set.getBySource("Can't find a friend?");
-        test.ok(r);
-        test.equal(r.getSource(), "Can't find a friend?");
-        test.equal(r.getKey(), "friend.question1");
-        test.ok(!r.getComment());
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Can't find a friend?");
+        expect(r.getKey()).toBe("friend.question1");
+        expect(!r.getComment()).toBeTruthy();
 
         r = set.getBySource("Invite them to Myproduct");
-        test.ok(r);
-        test.equal(r.getSource(), "Invite them to Myproduct");
-        test.equal(r.getKey(), "call-to-action");
-        test.ok(!r.getComment());
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Invite them to Myproduct");
+        expect(r.getKey()).toBe("call-to-action");
+        expect(!r.getComment()).toBeTruthy();
+    });
+});
 
-        test.done();
-    }
-};
