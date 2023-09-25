@@ -1,7 +1,7 @@
 /*
- * testPOFile.js - test the po and pot file handler object.
+ * POFile.test.js - test the po and pot file handler object.
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,24 +124,21 @@ var p2 = new CustomProject({
 
 var t2 = new POFileType(p2);
 
-module.exports.pofile = {
-    testPOInit: function(test) {
+describe("pofile", function() {
+    test("POInit", function() {
         p.init(function() {
-            test.done();
         });
-    },
+    });
 
-    testPOFileConstructor: function(test) {
-        test.expect(1);
+    test("POFileConstructor", function() {
+        expect.assertions(1);
 
         var pof = new POFile({project: p, type: t});
-        test.ok(pof);
+        expect(pof).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileConstructorParams: function(test) {
-        test.expect(1);
+    test("POFileConstructorParams", function() {
+        expect.assertions(1);
 
         var pof = new POFile({
             project: p,
@@ -149,115 +146,101 @@ module.exports.pofile = {
             type: t
         });
 
-        test.ok(pof);
+        expect(pof).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("POFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileSourceLocaleGiven: function(test) {
-        test.expect(2);
+    test("POFileSourceLocaleGiven", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             sourceLocale: "en-US",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
-        test.equal(pof.getSourceLocale(), "en-US");
+        expect(pof.getSourceLocale()).toBe("en-US");
+    });
 
-        test.done();
-    },
-
-    testPOFileSourceLocaleDefault: function(test) {
-        test.expect(2);
+    test("POFileSourceLocaleDefault", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
-        test.equal(pof.getSourceLocale(), "en-US");
+        expect(pof.getSourceLocale()).toBe("en-US");
+    });
 
-        test.done();
-    },
-
-    testPOFileTargetLocaleGiven: function(test) {
-        test.expect(2);
+    test("POFileTargetLocaleGiven", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             locale: "de-DE",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
-        test.equal(pof.getTargetLocale(), "de-DE");
+        expect(pof.getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPOFileTargetLocaleInferredFromPath: function(test) {
-        test.expect(2);
+    test("POFileTargetLocaleInferredFromPath", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "resources/de-DE.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
-        test.equal(pof.getTargetLocale(), "de-DE");
+        expect(pof.getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSimple: function(test) {
-        test.expect(6);
+    test("POFileParseSimple", function() {
+        expect.assertions(6);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n');
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", "", "en-US", "string 1", "po"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "string 1");
-        test.equal(r.getKey(), "string 1");
-        test.equal(r.getType(), "string");
+        expect(r.getSource()).toBe("string 1");
+        expect(r.getKey()).toBe("string 1");
+        expect(r.getType()).toBe("string");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseWithContext: function(test) {
-        test.expect(7);
+    test("POFileParseWithContext", function() {
+        expect.assertions(7);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgctxt "context 1"\n' +
@@ -265,57 +248,53 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", "context 1", "en-US", "string 1", "po"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "string 1");
-        test.equal(r.getKey(), "string 1");
-        test.equal(r.getType(), "string");
-        test.equal(r.getContext(), "context 1");
+        expect(r.getSource()).toBe("string 1");
+        expect(r.getKey()).toBe("string 1");
+        expect(r.getType()).toBe("string");
+        expect(r.getContext()).toBe("context 1");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSimpleWithTranslation: function(test) {
-        test.expect(9);
+    test("POFileParseSimpleWithTranslation", function() {
+        expect.assertions(9);
 
         var pof = new POFile({
             project: p,
             locale: "de-DE",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
             'msgstr "this is string one"\n');
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", "", "de-DE", "string 1", "po"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "string 1");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getKey(), "string 1");
-        test.equal(r.getTarget(), "this is string one");
-        test.equal(r.getTargetLocale(), "de-DE");
-        test.equal(r.getType(), "string");
+        expect(r.getSource()).toBe("string 1");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getKey()).toBe("string 1");
+        expect(r.getTarget()).toBe("this is string one");
+        expect(r.getTargetLocale()).toBe("de-DE");
+        expect(r.getType()).toBe("string");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSimpleRightStrings: function(test) {
-        test.expect(10);
+    test("POFileParseSimpleRightStrings", function() {
+        expect.assertions(10);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -326,31 +305,29 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getTarget(), "this is string one");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getTarget()).toBe("this is string one");
 
-        test.equal(resources[1].getSource(), "string 2");
-        test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getTarget(), "this is string two");
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getTarget()).toBe("this is string two");
+    });
 
-        test.done();
-    },
-
-    testPOFileParsePluralString: function(test) {
-        test.expect(9);
+    test("POFileParsePluralString", function() {
+        expect.assertions(9);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "one object"\n' +
@@ -358,31 +335,29 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getType(), "plural");
+        expect(resources[0].getType()).toBe("plural");
         var strings = resources[0].getSourcePlurals();
-        test.equal(strings.one, "one object");
-        test.equal(strings.other, "{$count} objects");
-        test.equal(resources[0].getKey(), "one object");
-        test.ok(!resources[0].getTargetPlurals());
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("one object");
+        expect(!resources[0].getTargetPlurals()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParsePluralStringWithTranslations: function(test) {
-        test.expect(12);
+    test("POFileParsePluralStringWithTranslations", function() {
+        expect.assertions(12);
 
         var pof = new POFile({
             project: p,
             locale: "de-DE",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "one object"\n' +
@@ -392,35 +367,33 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getType(), "plural");
+        expect(resources[0].getType()).toBe("plural");
         var strings = resources[0].getSourcePlurals();
-        test.equal(strings.one, "one object");
-        test.equal(strings.other, "{$count} objects");
-        test.equal(resources[0].getKey(), "one object");
-        test.equal(resources[0].getSourceLocale(), "en-US");
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
         strings = resources[0].getTargetPlurals();
-        test.equal(strings.one, "Ein Objekt");
-        test.equal(strings.other, "{$count} Objekten");
-        test.equal(resources[0].getTargetLocale(), "de-DE");
+        expect(strings.one).toBe("Ein Objekt");
+        expect(strings.other).toBe("{$count} Objekten");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPOFileParsePluralStringWithEmptyTranslations: function(test) {
-        test.expect(11);
+    test("POFileParsePluralStringWithEmptyTranslations", function() {
+        expect.assertions(11);
 
         var pof = new POFile({
             project: p,
             locale: "de-DE",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "one object"\n' +
@@ -430,33 +403,31 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getType(), "plural");
+        expect(resources[0].getType()).toBe("plural");
         var strings = resources[0].getSourcePlurals();
-        test.equal(strings.one, "one object");
-        test.equal(strings.other, "{$count} objects");
-        test.equal(resources[0].getKey(), "one object");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.ok(!resources[0].getTargetPlurals());
-        test.ok(!resources[0].getTargetLocale());
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(!resources[0].getTargetPlurals()).toBeTruthy();
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParsePluralStringWithTranslationsRussian: function(test) {
-        test.expect(13);
+    test("POFileParsePluralStringWithTranslationsRussian", function() {
+        expect.assertions(13);
 
         var pof = new POFile({
             project: p,
             locale: "ru-RU",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "one object"\n' +
@@ -467,35 +438,33 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getType(), "plural");
+        expect(resources[0].getType()).toBe("plural");
         var strings = resources[0].getSourcePlurals();
-        test.equal(strings.one, "one object");
-        test.equal(strings.other, "{$count} objects");
-        test.equal(resources[0].getKey(), "one object");
-        test.equal(resources[0].getSourceLocale(), "en-US");
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
         strings = resources[0].getTargetPlurals();
-        test.equal(strings.one, "{$count} объект");
-        test.equal(strings.few, "{$count} объекта");
-        test.equal(strings.other, "{$count} объектов");
-        test.equal(resources[0].getTargetLocale(), "ru-RU");
+        expect(strings.one).toBe("{$count} объект");
+        expect(strings.few).toBe("{$count} объекта");
+        expect(strings.other).toBe("{$count} объектов");
+        expect(resources[0].getTargetLocale()).toBe("ru-RU");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSimpleLineContinuations: function(test) {
-        test.expect(7);
+    test("POFileParseSimpleLineContinuations", function() {
+        expect.assertions(7);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -506,27 +475,25 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1 and more string 1");
-        test.equal(resources[0].getKey(), "string 1 and more string 1");
-        test.equal(resources[0].getTarget(), "this is string one or the translation thereof. Next line.");
+        expect(resources[0].getSource()).toBe("string 1 and more string 1");
+        expect(resources[0].getKey()).toBe("string 1 and more string 1");
+        expect(resources[0].getTarget()).toBe("this is string one or the translation thereof. Next line.");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSimpleLineContinuationsWithEmptyString: function(test) {
-        test.expect(7);
+    test("POFileParseSimpleLineContinuationsWithEmptyString", function() {
+        expect.assertions(7);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid ""\n' +
@@ -539,52 +506,48 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1 and more string 1");
-        test.equal(resources[0].getKey(), "string 1 and more string 1");
-        test.equal(resources[0].getTarget(), "this is string one or the translation thereof. Next line.");
+        expect(resources[0].getSource()).toBe("string 1 and more string 1");
+        expect(resources[0].getKey()).toBe("string 1 and more string 1");
+        expect(resources[0].getTarget()).toBe("this is string one or the translation thereof. Next line.");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseEscapedQuotes: function(test) {
-        test.expect(6);
+    test("POFileParseEscapedQuotes", function() {
+        expect.assertions(6);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string \\"quoted\\" 1"\n');
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", "", "en-US", 'string "quoted" 1', "po"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), 'string "quoted" 1');
-        test.equal(r.getKey(), 'string "quoted" 1');
-        test.equal(r.getType(), 'string');
+        expect(r.getSource()).toBe('string "quoted" 1');
+        expect(r.getKey()).toBe('string "quoted" 1');
+        expect(r.getType()).toBe('string');
+    });
 
-        test.done();
-    },
-
-    testPOFileParseEmptyTranslation: function(test) {
-        test.expect(12);
+    test("POFileParseEmptyTranslation", function() {
+        expect.assertions(12);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // only source strings
         pof.parse(
@@ -596,33 +559,31 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.ok(!resources[0].getTarget());
-        test.ok(!resources[0].getTargetLocale());
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(!resources[0].getTarget()).toBeTruthy();
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[1].getSource(), "string 2");
-        test.equal(resources[1].getKey(), "string 2");
-        test.ok(!resources[1].getTarget());
-        test.ok(!resources[1].getTargetLocale());
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(!resources[1].getTarget()).toBeTruthy();
+        expect(!resources[1].getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParseEmptySource: function(test) {
-        test.expect(3);
+    test("POFileParseEmptySource", function() {
+        expect.assertions(3);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid ""\n' +
@@ -633,22 +594,20 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         // no source = no string to translate!
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPOFileParseFileHeader: function(test) {
-        test.expect(3);
+    test("POFileParseFileHeader", function() {
+        expect.assertions(3);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '#, fuzzy\n' +
@@ -662,22 +621,20 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         // no source = no string to translate!
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPOFileParseDupString: function(test) {
-        test.expect(8);
+    test("POFileParseDupString", function() {
+        expect.assertions(8);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // only source strings
         pof.parse(
@@ -689,28 +646,26 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.ok(!resources[0].getTarget());
-        test.ok(!resources[0].getTargetLocale());
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(!resources[0].getTarget()).toBeTruthy();
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSameStringDifferentContext: function(test) {
-        test.expect(14);
+    test("POFileParseSameStringDifferentContext", function() {
+        expect.assertions(14);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // only source strings
         pof.parse(
@@ -724,36 +679,34 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getContext(), "context 1");
-        test.ok(!resources[0].getTarget());
-        test.ok(!resources[0].getTargetLocale());
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getContext()).toBe("context 1");
+        expect(!resources[0].getTarget()).toBeTruthy();
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[1].getSource(), "string 1");
-        test.equal(resources[1].getKey(), "string 1");
-        test.equal(resources[1].getContext(), "context 2");
-        test.ok(!resources[1].getTarget());
-        test.ok(!resources[1].getTargetLocale());
+        expect(resources[1].getSource()).toBe("string 1");
+        expect(resources[1].getKey()).toBe("string 1");
+        expect(resources[1].getContext()).toBe("context 2");
+        expect(!resources[1].getTarget()).toBeTruthy();
+        expect(!resources[1].getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParseSameStringContextInKey: function(test) {
-        test.expect(14);
+    test("POFileParseSameStringContextInKey", function() {
+        expect.assertions(14);
 
         var pof = new POFile({
             project: p,
             pathName: "foo/bar/context.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgctxt "context 1"\n' +
@@ -766,29 +719,27 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1 --- context 1");
-        test.equal(resources[0].getContext(), "context 1");
-        test.ok(!resources[0].getTarget());
-        test.ok(!resources[0].getTargetLocale());
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1 --- context 1");
+        expect(resources[0].getContext()).toBe("context 1");
+        expect(!resources[0].getTarget()).toBeTruthy();
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[1].getSource(), "string 1");
-        test.equal(resources[1].getKey(), "string 1 --- context 2");
-        test.equal(resources[1].getContext(), "context 2");
-        test.ok(!resources[1].getTarget());
-        test.ok(!resources[1].getTargetLocale());
+        expect(resources[1].getSource()).toBe("string 1");
+        expect(resources[1].getKey()).toBe("string 1 --- context 2");
+        expect(resources[1].getContext()).toBe("context 2");
+        expect(!resources[1].getTarget()).toBeTruthy();
+        expect(!resources[1].getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParseTestInvalidPO: function(test) {
-        test.expect(2);
+    test("POFileParseTestInvalidPO", function() {
+        expect.assertions(2);
 
         // when it's named messages.po, it should apply the messages-schema schema
         var pof = new POFile({
@@ -796,9 +747,9 @@ module.exports.pofile = {
             pathName: "i18n/deep.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
-        test.throws(function(test) {
+        expect(function(test) {
             // that's not a po file!
             pof.parse(
                '{\n' +
@@ -822,19 +773,17 @@ module.exports.pofile = {
                '        }\n' +
                '    }\n' +
                '}\n');
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testPOFileParseExtractComments: function(test) {
-        test.expect(12);
+    test("POFileParseExtractComments", function() {
+        expect.assertions(12);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '# translator\'s comments\n' +
@@ -855,43 +804,39 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(),
-            '{"translator":["translator\'s comments"],' +
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
              '"paths":["src/foo.html:32 src/bar.html:234"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1."],' +
              '"flags":["c-format"],' +
              '"previous":["str 1"]}');
-        test.equal(resources[0].getPath(), "src/foo.html");
+        expect(resources[0].getPath()).toBe("src/foo.html");
 
-        test.equal(resources[1].getSource(), "string 2");
-        test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getComment(),
-            '{"translator":["translator\'s comments 2"],' +
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getComment()).toBe('{"translator":["translator\'s comments 2"],' +
              '"paths":["src/bar.html:644 src/asdf.html:232"],' +
              '"extracted":["This is comments from the engineer to the translator for string 2."],' +
              '"flags":["javascript-format,gcc-internal-format"],' +
              '"previous":["str 2"]}');
-        test.equal(resources[1].getPath(), "src/bar.html");
+        expect(resources[1].getPath()).toBe("src/bar.html");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseExtractFileNameNoLineNumbers: function(test) {
-        test.expect(12);
+    test("POFileParseExtractFileNameNoLineNumbers", function() {
+        expect.assertions(12);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '#: src/foo.html src/bar.html\n' +
@@ -904,35 +849,31 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(),
-            '{"paths":["src/foo.html src/bar.html"]}');
-        test.equal(resources[0].getPath(), "src/foo.html");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"paths":["src/foo.html src/bar.html"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
 
-        test.equal(resources[1].getSource(), "string 2");
-        test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getComment(),
-            '{"paths":["src/bar.html"]}');
-        test.equal(resources[1].getPath(), "src/bar.html");
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getComment()).toBe('{"paths":["src/bar.html"]}');
+        expect(resources[1].getPath()).toBe("src/bar.html");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseClearComments: function(test) {
-        test.expect(12);
+    test("POFileParseClearComments", function() {
+        expect.assertions(12);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '# translator\'s comments\n' +
@@ -948,39 +889,36 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(),
-            '{"translator":["translator\'s comments"],' +
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
              '"paths":["src/foo.html:32"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1."],' +
              '"flags":["c-format"],' +
              '"previous":["str 1"]}');
-        test.equal(resources[0].getPath(), "src/foo.html");
+        expect(resources[0].getPath()).toBe("src/foo.html");
 
         // comments for string 1 should not carry over to string 2
-        test.equal(resources[1].getSource(), "string 2");
-        test.equal(resources[1].getKey(), "string 2");
-        test.ok(!resources[1].getComment());
-        test.ok(!resources[1].getPath());
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(!resources[1].getComment()).toBeTruthy();
+        expect(!resources[1].getPath()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileParseExtractMultiplePaths: function(test) {
-        test.expect(8);
+    test("POFileParseExtractMultiplePaths", function() {
+        expect.assertions(8);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '#: src/foo.html:32\n' +
@@ -994,28 +932,26 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(), '{"paths":["src/foo.html:32","src/bar.html:32","src/asdf.html:32","src/xyz.html:32","src/abc.html:32"]}');
-        test.equal(resources[0].getPath(), "src/foo.html");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"paths":["src/foo.html:32","src/bar.html:32","src/asdf.html:32","src/xyz.html:32","src/abc.html:32"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
+    });
 
-        test.done();
-    },
-
-    testPOFileParseExtractMultipleComments: function(test) {
-        test.expect(7);
+    test("POFileParseExtractMultipleComments", function() {
+        expect.assertions(7);
 
         var pof = new POFile({
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '# translator\'s comments 1\n' +
@@ -1032,33 +968,30 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(),
-            '{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1.",'+
              '"This is more comments from the engineer to the translator for string 1."],' +
              '"flags":["c-format","javascript-format"],' +
              '"previous":["str 1","str 2"]}');
+    });
 
-        test.done();
-    },
-
-    testPOFileParseIgnoreComments: function(test) {
-        test.expect(7);
+    test("POFileParseIgnoreComments", function() {
+        expect.assertions(7);
 
         var pof = new POFile({
             project: p,
             type: t,
             pathName: "foo/bar/ignore2.po"   // picks the right mapping
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '# translator\'s comments 1\n' +
@@ -1077,32 +1010,29 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(),
-            '{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1.",'+
              '"This is more comments from the engineer to the translator for string 1."],' +
              '"previous":["str 1","str 2"]}');
+    });
 
-        test.done();
-    },
-
-    testPOFileParseIgnoreAllComments: function(test) {
-        test.expect(7);
+    test("POFileParseIgnoreAllComments", function() {
+        expect.assertions(7);
 
         var pof = new POFile({
             project: p,
             type: t,
             pathName: "foo/bar/ignore1.po"   // picks the right mapping
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             '# translator\'s comments 1\n' +
@@ -1121,21 +1051,19 @@ module.exports.pofile = {
         );
 
         var set = pof.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.ok(!resources[0].getComment());
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(!resources[0].getComment()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileExtractFile: function(test) {
-        test.expect(17);
+    test("POFileExtractFile", function() {
+        expect.assertions(17);
 
         var base = path.dirname(module.id);
 
@@ -1144,42 +1072,40 @@ module.exports.pofile = {
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         var categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one string");
-        test.equal(categories.other, "{$count} strings");
-        test.equal(resources[1].getKey(), "one string");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one string");
+        expect(categories.other).toBe("{$count} strings");
+        expect(resources[1].getKey()).toBe("one string");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "string 2");
-        test.equal(resources[2].getKey(), "string 2");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("string 2");
+        expect(resources[2].getKey()).toBe("string 2");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "string 3 and 4");
-        test.equal(resources[3].getKey(), "string 3 and 4");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("string 3 and 4");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+    });
 
-        test.done();
-    },
-
-    testPOFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("POFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -1187,20 +1113,18 @@ module.exports.pofile = {
             project: p,
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should attempt to read the file and not fail
         pof.extract();
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPOFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("POFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -1209,27 +1133,25 @@ module.exports.pofile = {
             pathName: "./po/bogus.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should attempt to read the file and not fail
         pof.extract();
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeTextSimple: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextSimple", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1269,19 +1191,18 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextMultiple: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextMultiple", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1330,19 +1251,18 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 2"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextPreserveComments: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextPreserveComments", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1399,19 +1319,18 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 2"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextPreserveMultipleComments: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextPreserveMultipleComments", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1480,19 +1399,18 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 2"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextWithEscapedQuotes: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextWithEscapedQuotes", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string \\"quoted\\" 1"\n' +
@@ -1526,19 +1444,18 @@ module.exports.pofile = {
             'msgstr "chaîne \\"numéro\\" 1"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextWithContext: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextWithContext", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgctxt "context 1"\n' +
@@ -1593,19 +1510,18 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 2 contexte 2"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextWithContextInKey: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextWithContextInKey", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/context.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgctxt "context 1"\n' +
@@ -1660,19 +1576,18 @@ module.exports.pofile = {
             'msgstr "chaîne numéro 2 contexte 2"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextWithNoActualTranslation: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextWithNoActualTranslation", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1721,19 +1636,18 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextUsePseudoForMissingTranslations: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextUsePseudoForMissingTranslations", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p2,
             pathName: "./po/messages.po",
             type: t2
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1758,27 +1672,26 @@ module.exports.pofile = {
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
-            'msgstr "šţŕíñğ 13210"\n' +
+            'msgstr "[šţŕíñğ 13210]"\n' +
             '\n' +
             'msgid "string 2"\n' +
             'msgid_plural "string 2 plural"\n' +
-            'msgstr[0] "šţŕíñğ 23210"\n' +
-            'msgstr[1] "šţŕíñğ 2 þľüŕàľ76543210"\n\n';
+            'msgstr[0] "[šţŕíñğ 23210]"\n' +
+            'msgstr[1] "[šţŕíñğ 2 þľüŕàľ76543210]"\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextWithExistingTranslations: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextWithExistingTranslations", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1827,19 +1740,18 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextPluralsWithNoActualTranslation: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextPluralsWithNoActualTranslation", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "{$count} object"\n' +
@@ -1904,19 +1816,18 @@ module.exports.pofile = {
             'msgstr[1] ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextHeaderLocaleFull: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextHeaderLocaleFull", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.pot",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -1956,19 +1867,18 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextHeaderLocaleAbbreviated: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextHeaderLocaleAbbreviated", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/template.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -2008,19 +1918,18 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalizeTextHeaderLocaleMapped: function(test) {
-        test.expect(2);
+    test("POFileLocalizeTextHeaderLocaleMapped", function() {
+        expect.assertions(2);
 
         var pof = new POFile({
             project: p,
             pathName: "./po/foo.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -2060,12 +1969,11 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testPOFileLocalize: function(test) {
-        test.expect(7);
+    test("POFileLocalize", function() {
+        expect.assertions(7);
 
         var base = path.dirname(module.id);
 
@@ -2076,15 +1984,15 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2178,8 +2086,8 @@ module.exports.pofile = {
 
         pof.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr-FR.po"), "utf-8");
 
@@ -2213,7 +2121,7 @@ module.exports.pofile = {
             'msgstr "chaîne 3 et 4"\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/resources/de-DE.po"), "utf-8");
 
@@ -2247,13 +2155,11 @@ module.exports.pofile = {
             'msgstr "Zeichenfolge 3 und 4"\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeNoTranslations: function(test) {
-        test.expect(5);
+    test("POFileLocalizeNoTranslations", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2264,15 +2170,15 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2282,14 +2188,12 @@ module.exports.pofile = {
         pof.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeExtractNewStrings: function(test) {
-        test.expect(20);
+    test("POFileLocalizeExtractNewStrings", function() {
+        expect.assertions(20);
 
         var base = path.dirname(module.id);
 
@@ -2300,19 +2204,19 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // make sure we start off with no new strings
         t.newres.clear();
-        test.equal(t.newres.size(), 0);
+        expect(t.newres.size()).toBe(0);
 
         // should read the file
         pof.extract();
@@ -2371,36 +2275,34 @@ module.exports.pofile = {
 
         pof.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         // now verify that the strings which did not have translations show up in the
         // new strings translation set
-        test.equal(t.newres.size(), 4);
+        expect(t.newres.size()).toBe(4);
         var resources = t.newres.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getKey(), "string 2");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getKey()).toBe("string 2");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getKey(), "string 3 and 4");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getKey()).toBe("string 3 and 4");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getKey(), "string 2");
-        test.equal(resources[2].getTargetLocale(), "de-DE");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getKey()).toBe("string 2");
+        expect(resources[2].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getKey(), "string 3 and 4");
-        test.equal(resources[3].getTargetLocale(), "de-DE");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+        expect(resources[3].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithAlternateFileNameTemplate: function(test) {
-        test.expect(5);
+    test("POFileLocalizeWithAlternateFileNameTemplate", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2411,15 +2313,15 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/template_de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/template_fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/template_de-DE.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/template.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2429,14 +2331,12 @@ module.exports.pofile = {
 
         pof.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_fr-FR.po")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/template_fr-FR.po"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/template_de-DE.po"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithAlternateLocaleMapping: function(test) {
-        test.expect(3);
+    test("POFileLocalizeWithAlternateLocaleMapping", function() {
+        expect.assertions(3);
 
         var base = path.dirname(module.id);
 
@@ -2444,14 +2344,14 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "./testfiles/po/no.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+        expect(!fs.existsSync(path.join(base, "./testfiles/po/no.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/foo.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2461,13 +2361,11 @@ module.exports.pofile = {
         // should use the locale map in the mapping rather than the shared one
         pof.localize(translations, ["nb-NO"]);
 
-        test.ok(fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+        expect(fs.existsSync(path.join(base, "./testfiles/po/no.po"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithAlternateLocaleMappingRightContents: function(test) {
-        test.expect(4);
+    test("POFileLocalizeWithAlternateLocaleMappingRightContents", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -2475,14 +2373,14 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "./testfiles/po/no.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+        expect(!fs.existsSync(path.join(base, "./testfiles/po/no.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/foo.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2510,7 +2408,7 @@ module.exports.pofile = {
         // should use the locale map in the mapping rather than the shared one
         pof.localize(translations, ["nb-NO"]);
 
-        test.ok(fs.existsSync(path.join(base, "./testfiles/po/no.po")));
+        expect(fs.existsSync(path.join(base, "./testfiles/po/no.po"))).toBeTruthy();
 
         var actual = fs.readFileSync(path.join(base, "./testfiles/po/no.po"), "utf-8");
         var expected =
@@ -2542,13 +2440,11 @@ module.exports.pofile = {
             'msgid "string 3 and 4"\n' +
             'msgstr ""\n\n';
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithSharedLocaleMapping: function(test) {
-        test.expect(3);
+    test("POFileLocalizeWithSharedLocaleMapping", function() {
+        expect.assertions(3);
 
         var base = path.dirname(module.id);
 
@@ -2556,14 +2452,14 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/template_nb.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/template_nb.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/template.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2573,13 +2469,11 @@ module.exports.pofile = {
         // should use the shared locale map because there isn't one in the mapping
         pof.localize(translations, ["nb-NO"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithSharedLocaleMappingRightContents: function(test) {
-        test.expect(4);
+    test("POFileLocalizeWithSharedLocaleMappingRightContents", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -2587,14 +2481,14 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/template_nb.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/template_nb.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/template.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2622,7 +2516,7 @@ module.exports.pofile = {
         // should use the shared locale map because there isn't one in the mapping
         pof.localize(translations, ["nb-NO"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/template_nb.po"))).toBeTruthy();
 
         var actual = fs.readFileSync(path.join(base, "testfiles/resources/template_nb.po"), "utf-8");
         var expected =
@@ -2654,14 +2548,11 @@ module.exports.pofile = {
             'msgid "string 3 and 4"\n' +
             'msgstr ""\n\n';
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-
-        test.done();
-    },
-
-    testPOFileLocalizeDefaultTemplate: function(test) {
-        test.expect(4);
+    test("POFileLocalizeDefaultTemplate", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -2670,7 +2561,7 @@ module.exports.pofile = {
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         pof.parse(
             'msgid "string 1"\n' +
@@ -2694,11 +2585,11 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/fr-FR.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
 
         pof.localize(translations, ["fr-FR"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr-FR.po"), "utf-8");
 
@@ -2720,13 +2611,11 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileExtractLocalizedFiles: function(test) {
-        test.expect(65);
+    test("POFileExtractLocalizedFiles", function() {
+        expect.assertions(65);
 
         var base = path.dirname(module.id);
 
@@ -2737,15 +2626,15 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/messages.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2839,15 +2728,15 @@ module.exports.pofile = {
 
         pof.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr-FR.po"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de-DE.po"))).toBeTruthy();
 
         pof = new POFile({
             project: p,
             pathName: "./resources/fr-FR.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2857,50 +2746,50 @@ module.exports.pofile = {
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "chaîne 1");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("chaîne 1");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         var categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one string");
-        test.equal(categories.other, "{$count} strings");
-        test.equal(resources[1].getKey(), "one string");
-        test.equal(resources[1].getSourceLocale(), "en-US");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one string");
+        expect(categories.other).toBe("{$count} strings");
+        expect(resources[1].getKey()).toBe("one string");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
         categories = resources[1].getTargetPlurals();
-        test.equal(categories.one, "chaîne un");
-        test.equal(categories.other, "chaîne {$count}");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(categories.one).toBe("chaîne un");
+        expect(categories.other).toBe("chaîne {$count}");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "string 2");
-        test.equal(resources[2].getKey(), "string 2");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.equal(resources[2].getTarget(), "chaîne 2");
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("string 2");
+        expect(resources[2].getKey()).toBe("string 2");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTarget()).toBe("chaîne 2");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "string 3 and 4");
-        test.equal(resources[3].getKey(), "string 3 and 4");
-        test.equal(resources[3].getSourceLocale(), "en-US");
-        test.equal(resources[3].getTarget(), "chaîne 3 et 4");
-        test.equal(resources[3].getTargetLocale(), "fr-FR");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("string 3 and 4");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+        expect(resources[3].getSourceLocale()).toBe("en-US");
+        expect(resources[3].getTarget()).toBe("chaîne 3 et 4");
+        expect(resources[3].getTargetLocale()).toBe("fr-FR");
 
         pof = new POFile({
             project: p,
             pathName: "./resources/de-DE.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -2910,49 +2799,47 @@ module.exports.pofile = {
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "Zeichenfolge 1");
-        test.equal(resources[0].getTargetLocale(), "de-DE");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("Zeichenfolge 1");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         var categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one string");
-        test.equal(categories.other, "{$count} strings");
-        test.equal(resources[1].getKey(), "one string");
-        test.equal(resources[1].getSourceLocale(), "en-US");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one string");
+        expect(categories.other).toBe("{$count} strings");
+        expect(resources[1].getKey()).toBe("one string");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
         categories = resources[1].getTargetPlurals();
-        test.equal(categories.one, "Zeichenfolge eins");
-        test.equal(categories.other, "Zeichenfolge {$count}");
-        test.equal(resources[1].getTargetLocale(), "de-DE");
+        expect(categories.one).toBe("Zeichenfolge eins");
+        expect(categories.other).toBe("Zeichenfolge {$count}");
+        expect(resources[1].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "string 2");
-        test.equal(resources[2].getKey(), "string 2");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.equal(resources[2].getTarget(), "Zeichenfolge 2");
-        test.equal(resources[2].getTargetLocale(), "de-DE");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("string 2");
+        expect(resources[2].getKey()).toBe("string 2");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTarget()).toBe("Zeichenfolge 2");
+        expect(resources[2].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "string 3 and 4");
-        test.equal(resources[3].getKey(), "string 3 and 4");
-        test.equal(resources[3].getSourceLocale(), "en-US");
-        test.equal(resources[3].getTarget(), "Zeichenfolge 3 und 4");
-        test.equal(resources[3].getTargetLocale(), "de-DE");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("string 3 and 4");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+        expect(resources[3].getSourceLocale()).toBe("en-US");
+        expect(resources[3].getTarget()).toBe("Zeichenfolge 3 und 4");
+        expect(resources[3].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPOFileExtractLocalizedFilesNoMappings: function(test) {
-        test.expect(67);
+    test("POFileExtractLocalizedFilesNoMappings", function() {
+        expect.assertions(67);
 
         var base = path.dirname(module.id);
 
@@ -2963,8 +2850,8 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))).toBeTruthy();
 
         // custom project with no mappings should force it to use the default
         // mappings to get the target locale
@@ -2986,7 +2873,7 @@ module.exports.pofile = {
             pathName: "./po/messages.po",
             type: t2
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3078,20 +2965,20 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/fr-FR.po")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/fr-FR.po"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))).toBeTruthy();
 
         pof.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/fr-FR.po")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/fr-FR.po"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))).toBeTruthy();
 
         pof = new POFile({
             project: p,
             pathName: "./po/fr-FR.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3101,50 +2988,50 @@ module.exports.pofile = {
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "chaîne 1");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("chaîne 1");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         var categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one string");
-        test.equal(categories.other, "{$count} strings");
-        test.equal(resources[1].getKey(), "one string");
-        test.equal(resources[1].getSourceLocale(), "en-US");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one string");
+        expect(categories.other).toBe("{$count} strings");
+        expect(resources[1].getKey()).toBe("one string");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
         categories = resources[1].getTargetPlurals();
-        test.equal(categories.one, "chaîne un");
-        test.equal(categories.other, "chaîne {$count}");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(categories.one).toBe("chaîne un");
+        expect(categories.other).toBe("chaîne {$count}");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "string 2");
-        test.equal(resources[2].getKey(), "string 2");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.equal(resources[2].getTarget(), "chaîne 2");
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("string 2");
+        expect(resources[2].getKey()).toBe("string 2");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTarget()).toBe("chaîne 2");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "string 3 and 4");
-        test.equal(resources[3].getKey(), "string 3 and 4");
-        test.equal(resources[3].getSourceLocale(), "en-US");
-        test.equal(resources[3].getTarget(), "chaîne 3 et 4");
-        test.equal(resources[3].getTargetLocale(), "fr-FR");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("string 3 and 4");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+        expect(resources[3].getSourceLocale()).toBe("en-US");
+        expect(resources[3].getTarget()).toBe("chaîne 3 et 4");
+        expect(resources[3].getTargetLocale()).toBe("fr-FR");
 
         pof = new POFile({
             project: p,
             pathName: "./po/de-DE.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3154,49 +3041,47 @@ module.exports.pofile = {
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "Zeichenfolge 1");
-        test.equal(resources[0].getTargetLocale(), "de-DE");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("Zeichenfolge 1");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         var categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one string");
-        test.equal(categories.other, "{$count} strings");
-        test.equal(resources[1].getKey(), "one string");
-        test.equal(resources[1].getSourceLocale(), "en-US");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one string");
+        expect(categories.other).toBe("{$count} strings");
+        expect(resources[1].getKey()).toBe("one string");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
         categories = resources[1].getTargetPlurals();
-        test.equal(categories.one, "Zeichenfolge eins");
-        test.equal(categories.other, "Zeichenfolge {$count}");
-        test.equal(resources[1].getTargetLocale(), "de-DE");
+        expect(categories.one).toBe("Zeichenfolge eins");
+        expect(categories.other).toBe("Zeichenfolge {$count}");
+        expect(resources[1].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "string 2");
-        test.equal(resources[2].getKey(), "string 2");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.equal(resources[2].getTarget(), "Zeichenfolge 2");
-        test.equal(resources[2].getTargetLocale(), "de-DE");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("string 2");
+        expect(resources[2].getKey()).toBe("string 2");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTarget()).toBe("Zeichenfolge 2");
+        expect(resources[2].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "string 3 and 4");
-        test.equal(resources[3].getKey(), "string 3 and 4");
-        test.equal(resources[3].getSourceLocale(), "en-US");
-        test.equal(resources[3].getTarget(), "Zeichenfolge 3 und 4");
-        test.equal(resources[3].getTargetLocale(), "de-DE");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("string 3 and 4");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+        expect(resources[3].getSourceLocale()).toBe("en-US");
+        expect(resources[3].getTarget()).toBe("Zeichenfolge 3 und 4");
+        expect(resources[3].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPOFileExtractLocalizedFilesNoMappingsRussian: function(test) {
-        test.expect(35);
+    test("POFileExtractLocalizedFilesNoMappingsRussian", function() {
+        expect.assertions(35);
 
         var base = path.dirname(module.id);
 
@@ -3204,7 +3089,7 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         // custom project with no mappings should force it to use the default
         // mappings to get the target locale
@@ -3226,7 +3111,7 @@ module.exports.pofile = {
             pathName: "./po/messages.po",
             type: t2
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3276,18 +3161,18 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         pof.localize(translations, ["ru-RU"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         pof = new POFile({
             project: p,
             pathName: "./po/ru-RU.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3297,50 +3182,48 @@ module.exports.pofile = {
 
         var set = pof.getTranslationSet();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
 
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "string 1");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getTarget(), "строка 1");
-        test.equal(resources[0].getTargetLocale(), "ru-RU");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTarget()).toBe("строка 1");
+        expect(resources[0].getTargetLocale()).toBe("ru-RU");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         var categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one string");
-        test.equal(categories.other, "{$count} strings");
-        test.equal(resources[1].getKey(), "one string");
-        test.equal(resources[1].getSourceLocale(), "en-US");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one string");
+        expect(categories.other).toBe("{$count} strings");
+        expect(resources[1].getKey()).toBe("one string");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
         categories = resources[1].getTargetPlurals();
-        test.equal(categories.one, "{$count} струна");
-        test.equal(categories.few, "{$count} струны");
-        test.equal(categories.other, "{$count} струн");
-        test.equal(resources[1].getTargetLocale(), "ru-RU");
+        expect(categories.one).toBe("{$count} струна");
+        expect(categories.few).toBe("{$count} струны");
+        expect(categories.other).toBe("{$count} струн");
+        expect(resources[1].getTargetLocale()).toBe("ru-RU");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "string 2");
-        test.equal(resources[2].getKey(), "string 2");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.equal(resources[2].getTarget(), "строка 2");
-        test.equal(resources[2].getTargetLocale(), "ru-RU");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("string 2");
+        expect(resources[2].getKey()).toBe("string 2");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTarget()).toBe("строка 2");
+        expect(resources[2].getTargetLocale()).toBe("ru-RU");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "string 3 and 4");
-        test.equal(resources[3].getKey(), "string 3 and 4");
-        test.equal(resources[3].getSourceLocale(), "en-US");
-        test.equal(resources[3].getTarget(), "строка 3 и 4");
-        test.equal(resources[3].getTargetLocale(), "ru-RU");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("string 3 and 4");
+        expect(resources[3].getKey()).toBe("string 3 and 4");
+        expect(resources[3].getSourceLocale()).toBe("en-US");
+        expect(resources[3].getTarget()).toBe("строка 3 и 4");
+        expect(resources[3].getTargetLocale()).toBe("ru-RU");
+    });
 
-        test.done();
-    },
-
-    testPOFileWriteSourceOnly: function(test) {
-        test.expect(5);
+    test("POFileWriteSourceOnly", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -3348,7 +3231,7 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         // custom project with no mappings should force it to use the default
         // mappings to get the target locale
@@ -3371,7 +3254,7 @@ module.exports.pofile = {
             type: t2,
             locale: "ru-RU"
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
 
         pof.addResource(new ContextResourceString({
@@ -3406,11 +3289,11 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         pof.write();
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         content = fs.readFileSync(path.join(base, "testfiles/po/ru-RU.po"), "utf-8");
 
@@ -3441,13 +3324,11 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileWriteWithTranslation: function(test) {
-        test.expect(5);
+    test("POFileWriteWithTranslation", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -3455,7 +3336,7 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         // custom project with no mappings should force it to use the default
         // mappings to get the target locale
@@ -3478,7 +3359,7 @@ module.exports.pofile = {
             type: t2,
             locale: "ru-RU"
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
 
         pof.addResource(new ContextResourceString({
@@ -3525,11 +3406,11 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         pof.write();
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         content = fs.readFileSync(path.join(base, "testfiles/po/ru-RU.po"), "utf-8");
 
@@ -3560,13 +3441,11 @@ module.exports.pofile = {
             'msgstr "строка 3 и 4"\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileWriteWithMissingTranslations: function(test) {
-        test.expect(5);
+    test("POFileWriteWithMissingTranslations", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -3574,7 +3453,7 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/ru-RU.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         // custom project with no mappings should force it to use the default
         // mappings to get the target locale
@@ -3597,7 +3476,7 @@ module.exports.pofile = {
             type: t2,
             locale: "ru-RU"
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
 
         pof.addResource(new ContextResourceString({
@@ -3641,11 +3520,11 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         pof.write();
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/ru-RU.po"))).toBeTruthy();
 
         content = fs.readFileSync(path.join(base, "testfiles/po/ru-RU.po"), "utf-8");
 
@@ -3676,13 +3555,11 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileWriteWrongTargetLocale: function(test) {
-        test.expect(5);
+    test("POFileWriteWrongTargetLocale", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -3690,7 +3567,7 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/de-DE.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))).toBeTruthy();
 
         // custom project with no mappings should force it to use the default
         // mappings to get the target locale
@@ -3713,7 +3590,7 @@ module.exports.pofile = {
             type: t2,
             locale: "de-DE"
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should add these as source-only resources
         pof.addResource(new ContextResourceString({
@@ -3760,11 +3637,11 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))).toBeTruthy();
 
         pof.write();
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/de-DE.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/de-DE.po"))).toBeTruthy();
 
         content = fs.readFileSync(path.join(base, "testfiles/po/de-DE.po"), "utf-8");
 
@@ -3794,13 +3671,11 @@ module.exports.pofile = {
             'msgstr ""\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithHeaderLocaleFull: function(test) {
-        test.expect(5);
+    test("POFileLocalizeWithHeaderLocaleFull", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -3808,14 +3683,14 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/po/ru.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/template.pot",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3865,11 +3740,11 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/po/ru.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/po/ru.po"))).toBeTruthy();
 
         pof.localize(translations, ["ru-RU"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/po/ru.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/po/ru.po"))).toBeTruthy();
 
         content = fs.readFileSync(path.join(base, "testfiles/po/ru.po"), "utf-8");
 
@@ -3900,13 +3775,11 @@ module.exports.pofile = {
             'msgstr "строка 3 и 4"\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testPOFileLocalizeWithHeaderLocaleAbbreviated: function(test) {
-        test.expect(5);
+    test("POFileLocalizeWithHeaderLocaleAbbreviated", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -3914,14 +3787,14 @@ module.exports.pofile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/template_ru-RU.po"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po"))).toBeTruthy();
 
         var pof = new POFile({
             project: p,
             pathName: "./po/template.po",
             type: t
         });
-        test.ok(pof);
+        expect(pof).toBeTruthy();
 
         // should read the file
         pof.extract();
@@ -3971,11 +3844,11 @@ module.exports.pofile = {
             datatype: "po"
         }));
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po"))).toBeTruthy();
 
         pof.localize(translations, ["ru-RU"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/template_ru-RU.po"))).toBeTruthy();
 
         content = fs.readFileSync(path.join(base, "testfiles/resources/template_ru-RU.po"), "utf-8");
 
@@ -4010,8 +3883,6 @@ module.exports.pofile = {
             'msgstr "строка 3 и 4"\n\n';
 
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
-};
+        expect(content).toBe(expected);
+    });
+});
