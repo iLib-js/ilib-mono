@@ -1172,7 +1172,7 @@ describe("metaxmlfile", function() {
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            pathName: "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             type: mxft
         });
         expect(mxf).toBeTruthy();
@@ -2197,7 +2197,7 @@ describe("metaxmlfile", function() {
             "./force-app/all/labels/MyLabels.labels-meta.xml",
             "./force-app/main/default/application/MyApp.app-meta.xml",
             "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
-            "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml",
@@ -3237,7 +3237,7 @@ describe("metaxmlfile", function() {
             "./force-app/all/labels/MyLabels.labels-meta.xml",
             "./force-app/main/default/application/MyApp.app-meta.xml",
             "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
-            "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml",
@@ -3586,7 +3586,7 @@ describe("metaxmlfile", function() {
 
     test("MetaXmlFileLocalizeExtractedStringsWithSources", function() {
         expect.assertions(17);
-
+debugger;
         var base = path.dirname(module.id);
 
         // clear the existing files and strings first
@@ -3603,7 +3603,7 @@ describe("metaxmlfile", function() {
             "./force-app/all/labels/MyLabels.labels-meta.xml",
             "./force-app/main/default/application/MyApp.app-meta.xml",
             "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
-            "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml",
@@ -3620,13 +3620,13 @@ describe("metaxmlfile", function() {
 
         // there are 13 resources + 5 unused source strings from
         // the other meta.xml files
-        extracted = mxf.getTranslationSet();
+        var extracted = mxf.getTranslationSet();
         expect(extracted).toBeTruthy();
-        expect(extracted.size()).toBe(18);
+        expect(extracted.size()).toBe(19);
 
         var resources = extracted.getAll();
         expect(resources).toBeTruthy();
-        expect(resources.length).toBe(18);
+        expect(resources.length).toBe(19);
 
         expect(resources[0].getKey()).toBe("MyApp");
         expect(resources[0].getSource()).toBe("My Application");
