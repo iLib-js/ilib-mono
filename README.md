@@ -88,6 +88,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.2
+
+- update dependencies
+- convert unit tests from nodeunit to jest
+
 ### v1.1.1
 
 - forgot to expose the properties parser to the consumers of this lib

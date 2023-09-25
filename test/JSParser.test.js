@@ -1,5 +1,5 @@
 /*
- * testJSParser.js - test the React JS parser
+ * JSParser.test.js - test the React JS parser
  *
  * Copyright © 2023 Box, Inc.
  *
@@ -22,70 +22,61 @@ import JSParser from '../src/parsers/JSParser.js';
 
 import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
-export const testJSParser = {
-    testJSParserConstructorEmpty: function(test) {
-        test.expect(1);
+describe("testJSParser", () => {
+    test("JSParserConstructorEmpty", () => {
+        expect.assertions(1);
 
         const parser = new JSParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJSParserConstructorPath: function(test) {
-        test.expect(1);
+    test("JSParserConstructorPath", () => {
+        expect.assertions(1);
 
         const parser = new JSParser({
-            filePath: "./test/testfiles/test.js"
+            filePath: "./test/testfiles/testfile.js"
         });
-        test.ok(parser);
+        expect(parser).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJSParserGetDescription: function(test) {
-        test.expect(2);
+    test("JSParserGetDescription", () => {
+        expect.assertions(2);
 
         const parser = new JSParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getDescription(), "A parser for JS files.");
+        expect(parser.getDescription()).toBe("A parser for JS files.");
+    });
 
-        test.done();
-    },
-
-    testJSParserGetName: function(test) {
-        test.expect(2);
+    test("JSParserGetName", () => {
+        expect.assertions(2);
 
         const parser = new JSParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getName(), "js");
+        expect(parser.getName()).toBe("js");
+    });
 
-        test.done();
-    },
-
-    testJSParserGetExtensions: function(test) {
-        test.expect(2);
+    test("JSParserGetExtensions", () => {
+        expect.assertions(2);
 
         const parser = new JSParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.deepEqual(parser.getExtensions(), [ "js" ]);
+        expect(parser.getExtensions()).toStrictEqual([ "js" ]);
+    });
 
-        test.done();
-    },
-
-    testJSParserSimple: function(test) {
-        test.expect(3);
+    test("JSParserSimple", () => {
+        expect.assertions(3);
 
         const parser = new JSParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
         const actual = parser.parseString("import foo from '../src/index.js';", "x/y");
-        test.ok(actual);
+        expect(actual).toBeTruthy();
+        const actualSimplified = JSON.parse(JSON.stringify(actual));
 
-        const expected = new IntermediateRepresentation({
+        const expected = {
             "type": "ast-jstree",
             "ir": {
                 "type": 'Program',
@@ -141,17 +132,15 @@ export const testJSParser = {
                 "sourceType": 'module'
             },
             filePath: "x/y"
-        });
-        test.deepEqual(actual, expected);
+        };
+        expect(actualSimplified).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testJSParserMoreComplex: function(test) {
-        test.expect(3);
+    test("JSParserMoreComplex", () => {
+        expect.assertions(3);
 
         const parser = new JSParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
         const actual = parser.parseString(
             `// comment
@@ -159,9 +148,10 @@ export const testJSParser = {
 
             const str = "String";
             `, "x/y");
-        test.ok(actual);
+        expect(actual).toBeTruthy();
+        const actualSimplified = JSON.parse(JSON.stringify(actual));
 
-        const expected = new IntermediateRepresentation({
+        const expected = {
             "type": "ast-jstree",
             "ir": {
                 "type": "Program",
@@ -313,10 +303,8 @@ export const testJSParser = {
                 "sourceType": "module"
             },
             "filePath": "x/y"
-        });
-        test.deepEqual(actual, expected);
-
-        test.done();
-    },
-};
+        };
+        expect(actualSimplified).toStrictEqual(expected);
+    });
+});
 
