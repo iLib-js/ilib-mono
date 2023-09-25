@@ -3575,7 +3575,7 @@ describe("metaxmlfile", function() {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label>Pàššŵõŕð3210</label>\n' +
+            '        <label>[Pàššŵõŕð3210]</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n';
@@ -3586,7 +3586,7 @@ describe("metaxmlfile", function() {
 
     test("MetaXmlFileLocalizeExtractedStringsWithSources", function() {
         expect.assertions(17);
-debugger;
+
         var base = path.dirname(module.id);
 
         // clear the existing files and strings first
