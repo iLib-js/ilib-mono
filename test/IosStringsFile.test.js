@@ -1,7 +1,7 @@
 /*
- * testIosStringsFile.js - test the iOS strings file handler object.
+ * IosStringsFile.test.js - test the iOS strings file handler object.
  *
- * Copyright © 2019,2021 Box, Inc.
+ * Copyright © 2019, 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,197 +40,180 @@ var p = new CustomProject({
 
 var isft = new IosStringsFileType(p);
 
-module.exports.stringsfile = {
-    testIosStringsInit: function(test) {
-        p.init(function() {
-            test.done();
-        });
-    },
+beforeAll(function() {
+    p.init(function() {
+    });
+});
 
-    testIosStringsFileConstructor: function(test) {
-        test.expect(1);
+describe("stringsfile", function() {
+    test("IosStringsFileConstructor", function() {
+        expect.assertions(1);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileConstructorParams: function(test) {
-        test.expect(1);
+    test("IosStringsFileConstructorParams", function() {
+        expect.assertions(1);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft
         }, "./testfiles/objc/Base.lproj/Localizable.strings");
 
-        test.ok(strings);
+        expect(strings).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("IosStringsFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileParseSimpleGetByKey: function(test) {
-        test.expect(6);
+    test("IosStringsFileParseSimpleGetByKey", function() {
+        expect.assertions(6);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.parse('/* Class = "UIButton"; normalTitle = "Terms"; ObjectID = "2V9-YN-vxb"; */\n' +
                 '"2V9-YN-vxb.normalTitle" = "Terms";\n');
 
         var set = strings.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "2V9-YN-vxb.normalTitle"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "Terms");
-        test.equal(r[0].getKey(), "2V9-YN-vxb.normalTitle");
-        test.equal(r[0].getComment(), 'Class = "UIButton"; normalTitle = "Terms"; ObjectID = "2V9-YN-vxb";');
+        expect(r[0].getSource()).toBe("Terms");
+        expect(r[0].getKey()).toBe("2V9-YN-vxb.normalTitle");
+        expect(r[0].getComment()).toBe('Class = "UIButton"; normalTitle = "Terms"; ObjectID = "2V9-YN-vxb";');
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileParseWithComment: function(test) {
-        test.expect(6);
+    test("IosStringsFileParseWithComment", function() {
+        expect.assertions(6);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.parse('/* this is the terms and conditions button label */\n' +
                 '"2V9-YN-vxb.normalTitle" = "Terms";\n');
 
         var set = strings.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "2V9-YN-vxb.normalTitle"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "Terms");
-        test.equal(r[0].getKey(), "2V9-YN-vxb.normalTitle");
-        test.equal(r[0].getComment(), "this is the terms and conditions button label");
+        expect(r[0].getSource()).toBe("Terms");
+        expect(r[0].getKey()).toBe("2V9-YN-vxb.normalTitle");
+        expect(r[0].getComment()).toBe("this is the terms and conditions button label");
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileParseWithNonComment: function(test) {
-        test.expect(6);
+    test("IosStringsFileParseWithNonComment", function() {
+        expect.assertions(6);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.parse(
                 '/* No comment provided by engineer. */\n' +
                 '"Terms" = "Terms";\n');
 
         var set = strings.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "Terms"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "Terms");
-        test.equal(r[0].getKey(), "Terms");
-        test.ok(!r[0].getComment());
+        expect(r[0].getSource()).toBe("Terms");
+        expect(r[0].getKey()).toBe("Terms");
+        expect(r[0].getComment()).toBeFalsy();
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileParseSimpleIgnoreWhitespace: function(test) {
-        test.expect(6);
+    test("IosStringsFileParseSimpleIgnoreWhitespace", function() {
+        expect.assertions(6);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.parse('/*            this is the terms and conditions button label              */\n\n\n\n' +
                 '          "2V9-YN-vxb.normalTitle"      \t =    \t "Terms"    ;     \n');
 
         var set = strings.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "2V9-YN-vxb.normalTitle"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "Terms");
-        test.equal(r[0].getKey(), "2V9-YN-vxb.normalTitle");
-        test.equal(r[0].getComment(), "this is the terms and conditions button label");
+        expect(r[0].getSource()).toBe("Terms");
+        expect(r[0].getKey()).toBe("2V9-YN-vxb.normalTitle");
+        expect(r[0].getComment()).toBe("this is the terms and conditions button label");
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileParseSimpleRightSize: function(test) {
-        test.expect(4);
+    test("IosStringsFileParseSimpleRightSize", function() {
+        expect.assertions(4);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         var set = strings.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         strings.parse('/* i18n: this is the terms and conditions button label */\n' +
                 '"2V9-YN-vxb.normalTitle" = "Terms";\n\n' +
                 '/* Class = "UILabel"; text = "Are you a driver?"; ObjectID = "MFI-qx-pQf"; */\n' +
                 '"MFI-qx-pQf.text" = "Are you a driver?";');
 
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileParseMultiple: function(test) {
-        test.expect(10);
+    test("IosStringsFileParseMultiple", function() {
+        expect.assertions(10);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.parse('/* this is the terms and conditions button label */\n' +
                 '"2V9-YN-vxb.normalTitle" = "Terms";\n\n' +
@@ -238,164 +221,154 @@ module.exports.stringsfile = {
                 '"MFI-qx-pQf.text" = "Are you a driver?";');
 
         var set = strings.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "2V9-YN-vxb.normalTitle"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Terms");
-        test.equal(r[0].getKey(), "2V9-YN-vxb.normalTitle");
-        test.equal(r[0].getComment(), "this is the terms and conditions button label");
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Terms");
+        expect(r[0].getKey()).toBe("2V9-YN-vxb.normalTitle");
+        expect(r[0].getComment()).toBe("this is the terms and conditions button label");
 
         r = set.getBy({
             reskey: "MFI-qx-pQf.text"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Are you a driver?");
-        test.equal(r[0].getKey(), "MFI-qx-pQf.text");
-        test.equal(r[0].getComment(), 'Class = "UILabel"; text = "Are you a driver?"; ObjectID = "MFI-qx-pQf";');
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Are you a driver?");
+        expect(r[0].getKey()).toBe("MFI-qx-pQf.text");
+        expect(r[0].getComment()).toBe('Class = "UILabel"; text = "Are you a driver?"; ObjectID = "MFI-qx-pQf";');
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileExtractFile: function(test) {
-        test.expect(14);
+    test("IosStringsFileExtractFile", function() {
+        expect.assertions(14);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/en-US.lproj/SignUpViewController.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         // should read the file
         strings.extract();
 
         var set = strings.getTranslationSet();
 
-        test.equal(set.size(), 14);
+        expect(set.size()).toBe(14);
 
         var r = set.getBy({
             reskey: "QCe-xG-x5k.normalTitle"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Login ›");
-        test.equal(r[0].getKey(), "QCe-xG-x5k.normalTitle");
-        test.equal(r[0].getComment(), 'Class = "UIButton"; normalTitle = "Login ›"; ObjectID = "QCe-xG-x5k";');
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Login ›");
+        expect(r[0].getKey()).toBe("QCe-xG-x5k.normalTitle");
+        expect(r[0].getComment()).toBe('Class = "UIButton"; normalTitle = "Login ›"; ObjectID = "QCe-xG-x5k";');
 
         var r = set.getBy({
             reskey: "WpN-ro-7NU.placeholder"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Your email");
-        test.equal(r[0].getKey(), "WpN-ro-7NU.placeholder");
-        test.equal(r[0].getComment(), 'Class = "UITextField"; placeholder = "Your email"; ObjectID = "WpN-ro-7NU";');
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Your email");
+        expect(r[0].getKey()).toBe("WpN-ro-7NU.placeholder");
+        expect(r[0].getComment()).toBe('Class = "UITextField"; placeholder = "Your email"; ObjectID = "WpN-ro-7NU";');
 
         var r = set.getBy({
             reskey: "DWd-6J-lLt.text"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "free, private");
-        test.equal(r[0].getKey(), "DWd-6J-lLt.text");
-        test.equal(r[0].getComment(), 'Class = "UILabel"; text = "free, private"; ObjectID = "DWd-6J-lLt";');
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("free, private");
+        expect(r[0].getKey()).toBe("DWd-6J-lLt.text");
+        expect(r[0].getComment()).toBe('Class = "UILabel"; text = "free, private"; ObjectID = "DWd-6J-lLt";');
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileExtractFileUnicodeFile: function(test) {
-        test.expect(14);
+    test("IosStringsFileExtractFileUnicodeFile", function() {
+        expect.assertions(14);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/Localizable.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         // should read the file
         strings.extract();
 
         var set = strings.getTranslationSet();
 
-        test.equal(set.size(), 21);
+        expect(set.size()).toBe(21);
 
         var r = set.getBy({
             reskey: "%@ (%ld yrs)"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "%1$@ (%2$ld yrs)");
-        test.equal(r[0].getKey(), "%@ (%ld yrs)");
-        test.ok(!r[0].getComment());
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("%1$@ (%2$ld yrs)");
+        expect(r[0].getKey()).toBe("%@ (%ld yrs)");
+        expect(r[0].getComment()).toBeFalsy();
 
         var r = set.getBy({
             reskey: "$%@ regularly"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "$%@ regularly");
-        test.equal(r[0].getKey(), "$%@ regularly");
-        test.ok(!r[0].getComment());
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("$%@ regularly");
+        expect(r[0].getKey()).toBe("$%@ regularly");
+        expect(r[0].getComment()).toBeFalsy();
 
         var r = set.getBy({
             reskey: "%@ and "
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "%@ and ");
-        test.equal(r[0].getKey(), "%@ and ");
-        test.ok(!r[0].getComment());
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("%@ and ");
+        expect(r[0].getKey()).toBe("%@ and ");
+        expect(r[0].getComment()).toBeFalsy();
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("IosStringsFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             locale: "en-US"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         // should attempt to read the file and not fail
         strings.extract();
 
         var set = strings.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("IosStringsFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/en-US.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         // should attempt to read the file and not fail
         strings.extract();
 
         var set = strings.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileGetContent: function(test) {
-        test.expect(2);
+    test("IosStringsFileGetContent", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/de.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         [
             new ResourceString({
@@ -420,25 +393,22 @@ module.exports.stringsfile = {
             strings.addResource(res);
         });
 
-        test.equal(strings.getContent(),
-            '/* bar */\n' +
+        expect(strings.getContent()).toBe('/* bar */\n' +
             '"more source text" = "mehr Quellen\\"text";\n\n' +
             '/* foo */\n' +
             '"source text" = "Quellen\\"text";\n'
         );
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileGetContentWithEscapes: function(test) {
-        test.expect(2);
+    test("IosStringsFileGetContentWithEscapes", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/de.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         [
             new ResourceString({
@@ -463,25 +433,22 @@ module.exports.stringsfile = {
             strings.addResource(res);
         });
 
-        test.equal(strings.getContent(),
-            '/* bar */\n' +
+        expect(strings.getContent()).toBe('/* bar */\n' +
             '"more source text" = "mehr Quellen\\"text";\n\n' +
             '/* foo */\n' +
             '"source text" = "Quellen\\n\\ttext";\n'
         );
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileGetContentWithEscapedSourceChars: function(test) {
-        test.expect(2);
+    test("IosStringsFileGetContentWithEscapedSourceChars", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/de.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         [
             new ResourceString({
@@ -526,20 +493,18 @@ module.exports.stringsfile = {
             '/* foo */\n' +
             '"source\\ntext" = "Quellen text";\n';
         var actual = strings.getContent();
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileGetContentWithMultipleEscapedQuotes: function(test) {
-        test.expect(2);
+    test("IosStringsFileGetContentWithMultipleEscapedQuotes", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/es.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         [
             new ResourceString({
@@ -555,38 +520,33 @@ module.exports.stringsfile = {
             strings.addResource(res);
         });
 
-        test.equal(strings.getContent(),
-            '/* bar */\n' +
+        expect(strings.getContent()).toBe('/* bar */\n' +
             '"“The future of technology is at your fingertips.”" = "\\\"El futuro de la tecnología está al alcance de tus dedos.\\\"";\n'
         );
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileGetContentEmpty: function(test) {
-        test.expect(2);
+    test("IosStringsFileGetContentEmpty", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/de.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
-        test.equal(strings.getContent(), '');
+        expect(strings.getContent()).toBe('');
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileGetContentRoundTrip: function(test) {
-        test.expect(2);
+    test("IosStringsFileGetContentRoundTrip", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/de.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.parse('/* this is the terms and conditions button label */\n' +
                 '"2V9-YN-vxb.normalTitle" = "Terms";\n\n' +
@@ -600,12 +560,11 @@ module.exports.stringsfile = {
             '/* Class = "UILabel"; text = "Are you a driver?"; ObjectID = "MFI-qx-pQf"; */\n' +
             '"MFI-qx-pQf.text" = "Are you a driver?";\n';
 
-        test.equal(x, y);
-        test.done();
-    },
+        expect(x).toBe(y);
+    });
 
-    testIosStringsFileReadFlavorFile: function(test) {
-        test.expect(17);
+    test("IosStringsFileReadFlavorFile", function() {
+        expect.assertions(17);
 
         var strings = new IosStringsFile({
             project: p,
@@ -613,38 +572,36 @@ module.exports.stringsfile = {
             pathName: "./objc/en-US.lproj/chocolate.strings"
         });
 
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         strings.extract();
 
         var set = strings.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.getAll();
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "Are you an existing customer?");
-        test.equal(r[0].getSourceLocale(), "en-US");
-        test.ok(!r[0].getTargetLocale());
-        test.equal(r[0].getKey(), "F5h-fB-tt5.text");
-        test.equal(r[0].getComment(), 'Class = "UILabel"; text = "Are you a member?"; ObjectID = "F5h-fB-tt5";');
-        test.equal(r[0].getFlavor(), "chocolate");
-        test.equal(r[0].getPath(), "./objc/en-US.lproj/chocolate.strings");
+        expect(r[0].getSource()).toBe("Are you an existing customer?");
+        expect(r[0].getSourceLocale()).toBe("en-US");
+        expect(r[0].getTargetLocale()).toBeFalsy();
+        expect(r[0].getKey()).toBe("F5h-fB-tt5.text");
+        expect(r[0].getComment()).toBe('Class = "UILabel"; text = "Are you a member?"; ObjectID = "F5h-fB-tt5";');
+        expect(r[0].getFlavor()).toBe("chocolate");
+        expect(r[0].getPath()).toBe("./objc/en-US.lproj/chocolate.strings");
 
-        test.equal(r[1].getSource(), "Are you connected to a customer?");
-        test.equal(r[1].getSourceLocale(), "en-US");
-        test.ok(!r[1].getTargetLocale());
-        test.equal(r[1].getKey(), "MFI-qx-pQf.text");
-        test.equal(r[1].getComment(), 'Class = "UILabel"; text = "Are you a friend?"; ObjectID = "MFI-qx-pQf";');
-        test.equal(r[1].getFlavor(), "chocolate");
-        test.equal(r[1].getPath(), "./objc/en-US.lproj/chocolate.strings");
+        expect(r[1].getSource()).toBe("Are you connected to a customer?");
+        expect(r[1].getSourceLocale()).toBe("en-US");
+        expect(r[1].getTargetLocale()).toBeFalsy();
+        expect(r[1].getKey()).toBe("MFI-qx-pQf.text");
+        expect(r[1].getComment()).toBe('Class = "UILabel"; text = "Are you a friend?"; ObjectID = "MFI-qx-pQf";');
+        expect(r[1].getFlavor()).toBe("chocolate");
+        expect(r[1].getPath()).toBe("./objc/en-US.lproj/chocolate.strings");
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileFindTargetLocaleInSettings: function(test) {
-        test.expect(2);
+    test("IosStringsFileFindTargetLocaleInSettings", function() {
+        expect.assertions(2);
 
         var p2 = new CustomProject({
             id: "iosapp",
@@ -664,7 +621,7 @@ module.exports.stringsfile = {
             type: isft,
             pathName: "./objc/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         [
             new ResourceString({
@@ -698,27 +655,24 @@ module.exports.stringsfile = {
             strings.addResource(res);
         });
 
-        test.equal(strings.getContent(),
-            '/* bar */\n' +
+        expect(strings.getContent()).toBe('/* bar */\n' +
             '"more source text" = "mehr Quellen\\"text";\n\n' +
             '/* foo */\n' +
             '"source text" = "Quellen\\"text";\n\n' +
             '/* asdf */\n' +
             '"third source text" = "third source text";\n'
         );
+    });
 
-        test.done();
-    },
-
-    testIosStringsFileFindTargetLocaleFromPath: function(test) {
-        test.expect(2);
+    test("IosStringsFileFindTargetLocaleFromPath", function() {
+        expect.assertions(2);
 
         var strings = new IosStringsFile({
             project: p,
             type: isft,
             pathName: "./objc/de-DE.lproj/asdf.strings"
         });
-        test.ok(strings);
+        expect(strings).toBeTruthy();
 
         [
             new ResourceString({
@@ -752,15 +706,12 @@ module.exports.stringsfile = {
             strings.addResource(res);
         });
 
-        test.equal(strings.getContent(),
-            '/* bar */\n' +
+        expect(strings.getContent()).toBe('/* bar */\n' +
             '"more source text" = "mehr Quellen\\"text";\n\n' +
             '/* foo */\n' +
             '"source text" = "Quellen\\"text";\n\n' +
             '/* asdf */\n' +
             '"third source text" = "third source text";\n'
         );
-
-        test.done();
-    }
-};
+    });
+});
