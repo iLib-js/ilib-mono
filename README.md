@@ -9,6 +9,11 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.4
+
+- update dependencies
+- converted unit tests from nodeunit to jest
+
 ### v1.1.3
 
 - update dependencies

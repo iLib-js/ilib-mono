@@ -42,18 +42,19 @@
     },
     "scripts": {
         "dist": "npm pack",
-        "test": "node test/testSuite.js",
-        "debug": "node --inspect-brk test/testSuite.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib": "^14.17.0"
+        "ilib": "^14.18.0"
     },
     "devDependencies": {
-        "loctool": "^2.20.2",
-        "nodeunit": "^0.11.3"
+        "jest": "^26.3.0",
+        "loctool": "^2.23.1"
     }
 }
