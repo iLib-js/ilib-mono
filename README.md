@@ -232,12 +232,17 @@ be localized, and the loctool will continue on to the next file.
 
 ## License
 
-Copyright © 2019, 2022 JEDLSoft
+Copyright © 2019, 2022-2023 JEDLSoft
 
 This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.6.3
+
+- update dependencies
+- convert all unit tests from nodeunit to jest
 
 ### v1.6.2
 
