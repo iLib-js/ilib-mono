@@ -1,7 +1,7 @@
 /*
- * testMetaXmlFile.js - test the MetaXml file handler object.
+ * MetaXmlFile.test.js - test the MetaXml file handler object.
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,29 +87,26 @@ var p2 = new CustomProject({
 
 var mxft2 = new MetaXmlFileType(p2);
 
-module.exports.metaxmlfile = {
-    testMetaXmlInit: function(test) {
-        p.init(function() {
-            p2.init(function() {
-                test.done();
-            });
+beforeAll(function() {
+    p.init(function() {
+        p2.init(function() {
         });
-    },
+    });
+});
 
-    testMetaXmlFileConstructor: function(test) {
-        test.expect(1);
+describe("metaxmlfile", function() {
+    test("MetaXmlFileConstructor", function() {
+        expect.assertions(1);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileConstructorParams: function(test) {
-        test.expect(1);
+    test("MetaXmlFileConstructorParams", function() {
+        expect.assertions(1);
 
         var mxf = new MetaXmlFile({
             project: p,
@@ -117,377 +114,333 @@ module.exports.metaxmlfile = {
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("MetaXmlFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKey: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKey", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.makeKey("This is a test"), "r654479252");
+        expect(mxf.makeKey("This is a test")).toBe("r654479252");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeySimpleTexts1: function(test) {
-        test.expect(5);
+    test("MetaXmlFileMakeKeySimpleTexts1", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("Preferences in your profile"), "r372802078");
-        test.equals(mxf.makeKey("All settings"), "r725930887");
-        test.equals(mxf.makeKey("Colour scheme"), "r734599412");
-        test.equals(mxf.makeKey("Experts"), "r343852585");
+        expect(mxf.makeKey("Preferences in your profile")).toBe("r372802078");;
+        expect(mxf.makeKey("All settings")).toBe("r725930887");;
+        expect(mxf.makeKey("Colour scheme")).toBe("r734599412");;
+        expect(mxf.makeKey("Experts")).toBe("r343852585");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyUnescaped: function(test) {
-        test.expect(5);
+    test("MetaXmlFileMakeKeyUnescaped", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("foo \\n \\t bar"), "r1056543475");
-        test.equals(mxf.makeKey("\\n \\t bar"), "r755240053");
-        test.equals(mxf.makeKey("The \\'Dude\\' played by Jeff Bridges"), "r600298088");
-        test.equals(mxf.makeKey("\\'Dude\\'"), "r6259609");
+        expect(mxf.makeKey("foo \\n \\t bar")).toBe("r1056543475");;
+        expect(mxf.makeKey("\\n \\t bar")).toBe("r755240053");;
+        expect(mxf.makeKey("The \\'Dude\\' played by Jeff Bridges")).toBe("r600298088");;
+        expect(mxf.makeKey("\\'Dude\\'")).toBe("r6259609");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeySimpleTexts2: function(test) {
-        test.expect(6);
+    test("MetaXmlFileMakeKeySimpleTexts2", function() {
+        expect.assertions(6);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("Procedures"), "r807691021");
-        test.equals(mxf.makeKey("Mobile Apps"), "r898923204");
-        test.equals(mxf.makeKey("Settings in your profile"), "r618035987");
-        test.equals(mxf.makeKey("Product Reviews"), "r175350918");
-        test.equals(mxf.makeKey("Answers"), "r221604632");
+        expect(mxf.makeKey("Procedures")).toBe("r807691021");;
+        expect(mxf.makeKey("Mobile Apps")).toBe("r898923204");;
+        expect(mxf.makeKey("Settings in your profile")).toBe("r618035987");;
+        expect(mxf.makeKey("Product Reviews")).toBe("r175350918");;
+        expect(mxf.makeKey("Answers")).toBe("r221604632");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeySimpleTexts3: function(test) {
-        test.expect(9);
+    test("MetaXmlFileMakeKeySimpleTexts3", function() {
+        expect.assertions(9);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("Private Profile"), "r314592735");
-        test.equals(mxf.makeKey("People you are connected to"), "r711926199");
-        test.equals(mxf.makeKey("Notifications"), "r284964820");
-        test.equals(mxf.makeKey("News"), "r613036745");
-        test.equals(mxf.makeKey("More Tips"), "r216617786");
-        test.equals(mxf.makeKey("Filters"), "r81370429");
-        test.equals(mxf.makeKey("Referral Link"), "r140625167");
-        test.equals(mxf.makeKey("Questions"), "r256277957");
+        expect(mxf.makeKey("Private Profile")).toBe("r314592735");;
+        expect(mxf.makeKey("People you are connected to")).toBe("r711926199");;
+        expect(mxf.makeKey("Notifications")).toBe("r284964820");;
+        expect(mxf.makeKey("News")).toBe("r613036745");;
+        expect(mxf.makeKey("More Tips")).toBe("r216617786");;
+        expect(mxf.makeKey("Filters")).toBe("r81370429");;
+        expect(mxf.makeKey("Referral Link")).toBe("r140625167");;
+        expect(mxf.makeKey("Questions")).toBe("r256277957");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyEscapes: function(test) {
-        test.expect(3);
+    test("MetaXmlFileMakeKeyEscapes", function() {
+        expect.assertions(3);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("Can\'t find id"), "r743945592");
-        test.equals(mxf.makeKey("Can\'t find an application for SMS"), "r909283218");
+        expect(mxf.makeKey("Can\'t find id")).toBe("r743945592");;
+        expect(mxf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyPunctuation: function(test) {
-        test.expect(8);
+    test("MetaXmlFileMakeKeyPunctuation", function() {
+        expect.assertions(8);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("{name}({generic_name})"), "r300446104");
-        test.equals(mxf.makeKey("{name}, {sharer_name} {start}found this interesting{end}"), "r8321889");
-        test.equals(mxf.makeKey("{sharer_name} {start}found this interesting{end}"), "r639868344");
-        test.equals(mxf.makeKey("Grow your Network"), "r895214324");
-        test.equals(mxf.makeKey("Failed to send connection request!"), "r1015770123");
-        test.equals(mxf.makeKey("{goal_name} Goals"), "r993422001");
-        test.equals(mxf.makeKey("Connection link copied!"), "r180897411");
+        expect(mxf.makeKey("{name}({generic_name})")).toBe("r300446104");;
+        expect(mxf.makeKey("{name}, {sharer_name} {start}found this interesting{end}")).toBe("r8321889");;
+        expect(mxf.makeKey("{sharer_name} {start}found this interesting{end}")).toBe("r639868344");;
+        expect(mxf.makeKey("Grow your Network")).toBe("r895214324");;
+        expect(mxf.makeKey("Failed to send connection request!")).toBe("r1015770123");;
+        expect(mxf.makeKey("{goal_name} Goals")).toBe("r993422001");;
+        expect(mxf.makeKey("Connection link copied!")).toBe("r180897411");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeySameStringMeansSameKey: function(test) {
-        test.expect(3);
+    test("MetaXmlFileMakeKeySameStringMeansSameKey", function() {
+        expect.assertions(3);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.makeKey("This is a test"), "r654479252");
-        test.equal(mxf.makeKey("This is a test"), "r654479252");
+        expect(mxf.makeKey("This is a test")).toBe("r654479252");
+        expect(mxf.makeKey("This is a test")).toBe("r654479252");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyCompressWhiteSpace: function(test) {
-        test.expect(5);
+    test("MetaXmlFileMakeKeyCompressWhiteSpace", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(mxf.makeKey("Can\'t    find               id"), "r743945592");
+        expect(mxf.makeKey("Can\'t find  id")).toBe("r743945592");
+        expect(mxf.makeKey("Can\'t    find               id")).toBe("r743945592");
 
-        test.equal(mxf.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(mxf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS"), "r909283218");
+        expect(mxf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
+        expect(mxf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS")).toBe("r909283218");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyTrimWhiteSpace: function(test) {
-        test.expect(5);
+    test("MetaXmlFileMakeKeyTrimWhiteSpace", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.makeKey("Can\'t find  id"), "r743945592");
-        test.equal(mxf.makeKey("      Can\'t find  id "), "r743945592");
+        expect(mxf.makeKey("Can\'t find  id")).toBe("r743945592");
+        expect(mxf.makeKey("      Can\'t find  id ")).toBe("r743945592");
 
-        test.equal(mxf.makeKey("Can\'t find an application for SMS"), "r909283218");
-        test.equal(mxf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r"), "r909283218");
+        expect(mxf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
+        expect(mxf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r")).toBe("r909283218");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyNewLines: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyNewLines", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equals(mxf.makeKey("A \n B"), "r191336864");
+        expect(mxf.makeKey("A \n B")).toBe("r191336864");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyEscapeN: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyEscapeN", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
-        test.equals(mxf.makeKey("A \\n B"), "r191336864");
+        expect(mxf.makeKey("A \\n B")).toBe("r191336864");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyTabs: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyTabs", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("A \t B"), "r191336864");
+        expect(mxf.makeKey("A \t B")).toBe("r191336864");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyEscapeT: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyEscapeT", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("A \\t B"), "r191336864");
+        expect(mxf.makeKey("A \\t B")).toBe("r191336864");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyQuotes: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyQuotes", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("A \\'B\\' C"), "r935639115");
+        expect(mxf.makeKey("A \\'B\\' C")).toBe("r935639115");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyInterpretEscapedUnicodeChars: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyInterpretEscapedUnicodeChars", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("\\u00A0 \\u0023"), "r2293235");
+        expect(mxf.makeKey("\\u00A0 \\u0023")).toBe("r2293235");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyInterpretEscapedSpecialChars2: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyInterpretEscapedSpecialChars2", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat"), "r969175354");
+        expect(mxf.makeKey("Talk to a support representative live 24/7 via video or \u00a0 text\u00a0chat")).toBe("r969175354");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyInterpretEscapedOctalChars: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyInterpretEscapedOctalChars", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("A \\40 \\011 B"), "r191336864");
+        expect(mxf.makeKey("A \\40 \\011 B")).toBe("r191336864");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyMetaXmlEscapeSequences: function(test) {
-        test.expect(2);
+    test("MetaXmlFileMakeKeyMetaXmlEscapeSequences", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("A \\b\\t\\n\\f\\r B"), "r191336864");
+        expect(mxf.makeKey("A \\b\\t\\n\\f\\r B")).toBe("r191336864");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileMakeKeyCheckRubyCompatibility: function(test) {
-        test.expect(13);
+    test("MetaXmlFileMakeKeyCheckRubyCompatibility", function() {
+        expect.assertions(13);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
 
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equals(mxf.makeKey("This has \\\"double quotes\\\" in it."), "r487572481");
-        test.equals(mxf.makeKey('This has \\\"double quotes\\\" in it.'), "r487572481");
-        test.equals(mxf.makeKey("This has \\\'single quotes\\\' in it."), "r900797640");
-        test.equals(mxf.makeKey('This has \\\'single quotes\\\' in it.'), "r900797640");
-        test.equals(mxf.makeKey("This is a double quoted string"), "r494590307");
-        test.equals(mxf.makeKey('This is a single quoted string'), "r683276274");
-        test.equals(mxf.makeKey("This is a double quoted string with \\\"quotes\\\" in it."), "r246354917");
-        test.equals(mxf.makeKey('This is a single quoted string with \\\'quotes\\\' in it.'), "r248819747");
-        test.equals(mxf.makeKey("This is a double quoted string with \\n return chars in it"), "r1001831480");
-        test.equals(mxf.makeKey('This is a single quoted string with \\n return chars in it'), "r147719125");
-        test.equals(mxf.makeKey("This is a double quoted string with \\t tab chars in it"), "r276797171");
-        test.equals(mxf.makeKey('This is a single quoted string with \\t tab chars in it'), "r303137748");
+        expect(mxf.makeKey("This has \\\"double quotes\\\" in it.")).toBe("r487572481");;
+        expect(mxf.makeKey('This has \\\"double quotes\\\" in it.')).toBe("r487572481");;
+        expect(mxf.makeKey("This has \\\'single quotes\\\' in it.")).toBe("r900797640");;
+        expect(mxf.makeKey('This has \\\'single quotes\\\' in it.')).toBe("r900797640");;
+        expect(mxf.makeKey("This is a double quoted string")).toBe("r494590307");;
+        expect(mxf.makeKey('This is a single quoted string')).toBe("r683276274");;
+        expect(mxf.makeKey("This is a double quoted string with \\\"quotes\\\" in it.")).toBe("r246354917");;
+        expect(mxf.makeKey('This is a single quoted string with \\\'quotes\\\' in it.')).toBe("r248819747");;
+        expect(mxf.makeKey("This is a double quoted string with \\n return chars in it")).toBe("r1001831480");;
+        expect(mxf.makeKey('This is a single quoted string with \\n return chars in it')).toBe("r147719125");;
+        expect(mxf.makeKey("This is a double quoted string with \\t tab chars in it")).toBe("r276797171");;
+        expect(mxf.makeKey('This is a single quoted string with \\t tab chars in it')).toBe("r303137748");;
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -500,26 +453,24 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseCommentOnly: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseCommentOnly", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -532,26 +483,24 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.ok(!r.getSource());
-        test.equal(r.getKey(), "Test");
+        expect(!r.getSource()).toBeTruthy();
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseEmpty: function(test) {
-        test.expect(6);
+    test("MetaXmlFileParseEmpty", function() {
+        expect.assertions(6);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -564,28 +513,26 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.ok(!r.getSource());
-        test.equal(r.getKey(), "Test");
+        expect(!r.getSource()).toBeTruthy();
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseSimplePreserveWhitespace: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseSimplePreserveWhitespace", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -598,28 +545,26 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "    Enter Your Password \r \n  ");
-        test.equal(r.getKey(), "Test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("    Enter Your Password \r \n  ");
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseSimpleRightSize: function(test) {
-        test.expect(4);
+    test("MetaXmlFileParseSimpleRightSize", function() {
+        expect.assertions(4);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -631,22 +576,20 @@ module.exports.metaxmlfile = {
             '</Translations>\n'
         );
 
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseCustomApplications: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseCustomApplications", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -659,26 +602,24 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseCustomLabels: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseCustomLabels", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -691,26 +632,24 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseCustomTabs: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseCustomTabs", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -723,26 +662,24 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseQuickActions: function(test) {
-        test.expect(5);
+    test("MetaXmlFileParseQuickActions", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -755,26 +692,24 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseReportTypes: function(test) {
-        test.expect(8);
+    test("MetaXmlFileParseReportTypes", function() {
+        expect.assertions(8);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -791,32 +726,30 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "screen_flows_prebuilt_crt", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Screen Flows");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt");
+        expect(r.getSource()).toBe("Screen Flows");
+        expect(r.getKey()).toBe("screen_flows_prebuilt_crt");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test1", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Test1");
+        expect(r.getSource()).toBe("Flow Interview Log Entries");
+        expect(r.getKey()).toBe("Test1");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseReportTypesMultiple: function(test) {
-        test.expect(11);
+    test("MetaXmlFileParseReportTypesMultiple", function() {
+        expect.assertions(11);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -838,38 +771,36 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "screen_flows_prebuilt_crt", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Screen Flows");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt");
+        expect(r.getSource()).toBe("Screen Flows");
+        expect(r.getKey()).toBe("screen_flows_prebuilt_crt");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test1", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Test1");
+        expect(r.getSource()).toBe("Flow Interview Log Entries");
+        expect(r.getKey()).toBe("Test1");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test2", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Flow Interview Logs");
-        test.equal(r.getKey(), "Test2");
+        expect(r.getSource()).toBe("Flow Interview Logs");
+        expect(r.getKey()).toBe("Test2");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseReportTypesRightSize: function(test) {
-        test.expect(3);
+    test("MetaXmlFileParseReportTypesRightSize", function() {
+        expect.assertions(3);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -891,22 +822,20 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseReportTypesWithDescription: function(test) {
-        test.expect(9);
+    test("MetaXmlFileParseReportTypesWithDescription", function() {
+        expect.assertions(9);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -924,33 +853,31 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "screen_flows_prebuilt_crt", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Screen Flows");
-        test.equal(r.getKey(), "screen_flows_prebuilt_crt");
-        test.equal(r.getComment(), "Screen Flows Description");
+        expect(r.getSource()).toBe("Screen Flows");
+        expect(r.getKey()).toBe("screen_flows_prebuilt_crt");
+        expect(r.getComment()).toBe("Screen Flows Description");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test1", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Flow Interview Log Entries");
-        test.equal(r.getKey(), "Test1");
+        expect(r.getSource()).toBe("Flow Interview Log Entries");
+        expect(r.getKey()).toBe("Test1");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseWithDups: function(test) {
-        test.expect(6);
+    test("MetaXmlFileParseWithDups", function() {
+        expect.assertions(6);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -967,28 +894,26 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test");
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileParseWithDupsWithDifferentKeys: function(test) {
-        test.expect(9);
+    test("MetaXmlFileParseWithDupsWithDifferentKeys", function() {
+        expect.assertions(9);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "force-app/main/default/translations/en-US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1005,35 +930,33 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test1", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test1");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test1");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test2", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Password");
-        test.equal(r.getKey(), "Test2");
+        expect(r.getSource()).toBe("Password");
+        expect(r.getKey()).toBe("Test2");
 
-        test.equal(set.size(), 2);
-
-        test.done();
-    },
+        expect(set.size()).toBe(2);
+    });
 
 
-    testMetaXmlFileParseCustomApplication: function(test) {
-        test.expect(11);
+    test("MetaXmlFileParseCustomApplication", function() {
+        expect.assertions(11);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "foo/bar/foo.app-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1051,494 +974,458 @@ module.exports.metaxmlfile = {
         );
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "foo", "xml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Screen Flows");
-        test.equal(r.getKey(), "foo");
-        test.equal(r.getComment(), "Screen Flows Description");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getType(), "string");
-        test.ok(!r.getTarget());
-        test.ok(!r.getTargetLocale());
+        expect(r.getSource()).toBe("Screen Flows");
+        expect(r.getKey()).toBe("foo");
+        expect(r.getComment()).toBe("Screen Flows Description");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getType()).toBe("string");
+        expect(!r.getTarget()).toBeTruthy();
+        expect(!r.getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractFile: function(test) {
-        test.expect(11);
+    test("MetaXmlFileExtractFile", function() {
+        expect.assertions(11);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 13);
+        expect(set.size()).toBe(13);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "String_only_in_translations_meta_xml", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Translations Only String");
-        test.equal(r.getKey(), "String_only_in_translations_meta_xml");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Translations Only String");
+        expect(r.getKey()).toBe("String_only_in_translations_meta_xml");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Retry_Count__c", "xml"));
-        test.ok(r);
-        test.ok(!r.getSource());
-        test.equal(r.getKey(), "Retry_Count__c");
+        expect(r).toBeTruthy();
+        expect(!r.getSource()).toBeTruthy();
+        expect(r.getKey()).toBe("Retry_Count__c");
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "MyApp_Files2", "xml"));
-        test.ok(r);
-        test.ok(!r.getSource());
-        test.equal(r.getKey(), "MyApp_Files2");
+        expect(r).toBeTruthy();
+        expect(!r.getSource()).toBeTruthy();
+        expect(r.getKey()).toBe("MyApp_Files2");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractUndefinedFile: function(test) {
+    test("MetaXmlFileExtractUndefinedFile", function() {
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: undefined,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should attempt to read the file and not fail
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("MetaXmlFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./en_US.translations-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should attempt to read the file and not fail
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractLabelsFile: function(test) {
-        test.expect(10);
+    test("MetaXmlFileExtractLabelsFile", function() {
+        expect.assertions(10);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/all/labels/MyLabels.labels-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Show_Sender_in_Recipient_List", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Show Sender in Recipient List");
-        test.equal(r.getKey(), "Show_Sender_in_Recipient_List");
-        test.equal(r.getComment(), "Whether or not the sender should be shown in the recipient list of the email.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Show Sender in Recipient List");
+        expect(r.getKey()).toBe("Show_Sender_in_Recipient_List");
+        expect(r.getComment()).toBe("Whether or not the sender should be shown in the recipient list of the email.");
 
         r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "Test_of_emergency_warning_system", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Test of the emergency warning system.");
-        test.equal(r.getKey(), "Test_of_emergency_warning_system");
-        test.equal(r.getComment(), "Had this been a real test, you would have been instructed to calmly leave the building.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test of the emergency warning system.");
+        expect(r.getKey()).toBe("Test_of_emergency_warning_system");
+        expect(r.getComment()).toBe("Had this been a real test, you would have been instructed to calmly leave the building.");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractObjectFile: function(test) {
-        test.expect(10);
+    test("MetaXmlFileExtractObjectFile", function() {
+        expect.assertions(10);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/objects/Foo__c/Foo__c.object-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var r = set.get(ResourcePlural.hashKey("forceapp", undefined, "en-US", "Foo__c"));
-        test.ok(r);
+        expect(r).toBeTruthy();
         var strings = r.getSourcePlurals();
-        test.ok(strings);
-        test.equal(strings.one, "Lead Convert Queue");
-        test.equal(strings.other, "Lead Convert Queue Entries");
+        expect(strings).toBeTruthy();
+        expect(strings.one).toBe("Lead Convert Queue");
+        expect(strings.other).toBe("Lead Convert Queue Entries");
 
-        test.equal(r.getKey(), "Foo__c");
+        expect(r.getKey()).toBe("Foo__c");
 
         r = set.get(ContextResourceString.hashKey("forceapp", "CustomObject/nameField/label/_text", "en-US", "Foo__c", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Lead Convert Queue Name");
-        test.equal(r.getKey(), "Foo__c");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Lead Convert Queue Name");
+        expect(r.getKey()).toBe("Foo__c");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractApplicationFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractApplicationFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/application/MyApp.app-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "MyApp", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "My Application");
-        test.equal(r.getKey(), "MyApp");
-
-        test.done();
-    },
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("My Application");
+        expect(r.getKey()).toBe("MyApp");
+    });
 
 
-    testMetaXmlFileExtractMetadataFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractMetadataFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "MyApp_Setting", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Default Configuration");
-        test.equal(r.getKey(), "MyApp_Setting");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Default Configuration");
+        expect(r.getKey()).toBe("MyApp_Setting");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractPermissionsFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractCustomPermissionsFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
-            pathName: "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            pathName: "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "MyApp_Admin", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "MyApp Admin Settings");
-        test.equal(r.getKey(), "MyApp_Admin");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("MyApp Admin Settings");
+        expect(r.getKey()).toBe("MyApp_Admin");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractFieldFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractFieldFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "AccessToken_Expr__c", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Access token expired");
-        test.equal(r.getKey(), "AccessToken_Expr__c");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Access token expired");
+        expect(r.getKey()).toBe("AccessToken_Expr__c");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractListViewFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractListViewFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/objects/Foo__c/listviews/ListView.listView-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "All", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "All items");
-        test.equal(r.getKey(), "All");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("All items");
+        expect(r.getKey()).toBe("All");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractPermissionsFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractPermissionsetFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/permissionsets/Standard.permissionset-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", "Foo__c", "en-US", "Standard", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "MyApp Standard");
-        test.equal(r.getKey(), "Standard");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("MyApp Standard");
+        expect(r.getKey()).toBe("Standard");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractQuickActionsFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractQuickActionsFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/quickActions/SendEmail.quickAction-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "SendEmail", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "Send Email");
-        test.equal(r.getKey(), "SendEmail");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Send Email");
+        expect(r.getKey()).toBe("SendEmail");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileExtractTabsFile: function(test) {
-        test.expect(5);
+    test("MetaXmlFileExtractTabsFile", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./force-app/main/default/tabs/MyApp_Files2.tab-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         var set = mxf.getTranslationSet();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
 
         var r = set.get(ContextResourceString.hashKey("forceapp", undefined, "en-US", "MyApp_Files2", "xml"));
-        test.ok(r);
-        test.equal(r.getSource(), "My Application Files");
-        test.equal(r.getKey(), "MyApp_Files2");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("My Application Files");
+        expect(r.getKey()).toBe("MyApp_Files2");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileGetLocalizedPathSimple: function(test) {
-        test.expect(2);
+    test("MetaXmlFileGetLocalizedPathSimple", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // resource file template is in the settings.metaxml.resourceFile property
-        test.equal(mxf.getLocalizedPath("de-DE"), "force-app/main/default/translations/de.translation-meta.xml");
-        test.done();
-    },
+        expect(mxf.getLocalizedPath("de-DE")).toBe("force-app/main/default/translations/de.translation-meta.xml");
+    });
 
-    testMetaXmlFileGetLocalizedPathWithPath: function(test) {
-        test.expect(2);
+    test("MetaXmlFileGetLocalizedPathWithPath", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "src/translations/en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.getLocalizedPath("de-DE"), "force-app/main/default/translations/de.translation-meta.xml");
-        test.done();
-    },
+        expect(mxf.getLocalizedPath("de-DE")).toBe("force-app/main/default/translations/de.translation-meta.xml");
+    });
 
-    testMetaXmlFileGetLocalizedPathNonDefault: function(test) {
-        test.expect(2);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: "./en_US.translation-meta.xml",
-            type: mxft
-        });
-        test.ok(mxf);
-
-        test.equal(mxf.getLocalizedPath("de-AT"), "force-app/main/default/translations/de_AT.translation-meta.xml");
-        test.done();
-    },
-
-
-    testMetaXmlFileGetLocalizedPathSpecialMappingNB: function(test) {
-        test.expect(2);
+    test("MetaXmlFileGetLocalizedPathNonDefault", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.getLocalizedPath("nb-NO"), "force-app/main/default/translations/no.translation-meta.xml");
-        test.done();
-    },
+        expect(mxf.getLocalizedPath("de-AT")).toBe("force-app/main/default/translations/de_AT.translation-meta.xml");
+    });
 
-    testMetaXmlFileGetLocalizedPathSpecialMappingChinese: function(test) {
-        test.expect(2);
 
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: "./en_US.translation-meta.xml",
-            type: mxft
-        });
-        test.ok(mxf);
-
-        test.equal(mxf.getLocalizedPath("zh-Hans-CN"), "force-app/main/default/translations/zh_CN.translation-meta.xml");
-        test.done();
-    },
-
-    testMetaXmlFileGetLocalizedPathSpecialMappingLatAmSpanish: function(test) {
-        test.expect(2);
+    test("MetaXmlFileGetLocalizedPathSpecialMappingNB", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.getLocalizedPath("es-419"), "force-app/main/default/translations/es_MX.translation-meta.xml");
-        test.done();
-    },
+        expect(mxf.getLocalizedPath("nb-NO")).toBe("force-app/main/default/translations/no.translation-meta.xml");
+    });
 
-    testMetaXmlFileGetLocalizedPathSpecialMappingPortugueseNoDefault: function(test) {
-        test.expect(3);
-
-        var mxf = new MetaXmlFile({
-            project: p,
-            pathName: "./en_US.translation-meta.xml",
-            type: mxft
-        });
-        test.ok(mxf);
-
-        test.equal(mxf.getLocalizedPath("pt-PT"), "force-app/main/default/translations/pt_PT.translation-meta.xml");
-        test.equal(mxf.getLocalizedPath("pt-BR"), "force-app/main/default/translations/pt_BR.translation-meta.xml");
-        test.done();
-    },
-
-    testMetaXmlFileGetLocalizedPath: function(test) {
-        test.expect(3);
+    test("MetaXmlFileGetLocalizedPathSpecialMappingChinese", function() {
+        expect.assertions(2);
 
         var mxf = new MetaXmlFile({
             project: p,
             pathName: "./en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
-        test.equal(mxf.getLocalizedPath("pt-PT"), "force-app/main/default/translations/pt_PT.translation-meta.xml");
-        test.equal(mxf.getLocalizedPath("pt-BR"), "force-app/main/default/translations/pt_BR.translation-meta.xml");
-        test.done();
-    },
+        expect(mxf.getLocalizedPath("zh-Hans-CN")).toBe("force-app/main/default/translations/zh_CN.translation-meta.xml");
+    });
 
-    testMetaXmlFileAddResource: function(test) {
-        test.expect(4);
+    test("MetaXmlFileGetLocalizedPathSpecialMappingLatAmSpanish", function() {
+        expect.assertions(2);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        expect(mxf).toBeTruthy();
+
+        expect(mxf.getLocalizedPath("es-419")).toBe("force-app/main/default/translations/es_MX.translation-meta.xml");
+    });
+
+    test("MetaXmlFileGetLocalizedPathSpecialMappingPortugueseNoDefault", function() {
+        expect.assertions(3);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        expect(mxf).toBeTruthy();
+
+        expect(mxf.getLocalizedPath("pt-PT")).toBe("force-app/main/default/translations/pt_PT.translation-meta.xml");
+        expect(mxf.getLocalizedPath("pt-BR")).toBe("force-app/main/default/translations/pt_BR.translation-meta.xml");
+    });
+
+    test("MetaXmlFileGetLocalizedPath", function() {
+        expect.assertions(3);
+
+        var mxf = new MetaXmlFile({
+            project: p,
+            pathName: "./en_US.translation-meta.xml",
+            type: mxft
+        });
+        expect(mxf).toBeTruthy();
+
+        expect(mxf.getLocalizedPath("pt-PT")).toBe("force-app/main/default/translations/pt_PT.translation-meta.xml");
+        expect(mxf.getLocalizedPath("pt-BR")).toBe("force-app/main/default/translations/pt_BR.translation-meta.xml");
+    });
+
+    test("MetaXmlFileAddResource", function() {
+        expect.assertions(4);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         mxf.addResource(new ContextResourceString({
             project: "forceapp",
@@ -1550,24 +1437,22 @@ module.exports.metaxmlfile = {
             targetLocale: "de-DE"
         }));
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileAddMultipleResources: function(test) {
-        test.expect(4);
+    test("MetaXmlFileAddMultipleResources", function() {
+        expect.assertions(4);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         mxf.addResource(new ContextResourceString({
             project: "forceapp",
@@ -1588,24 +1473,22 @@ module.exports.metaxmlfile = {
             targetLocale: "de-DE"
         }));
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileAddResourceNoSourceInExtracted: function(test) {
-        test.expect(14);
+    test("MetaXmlFileAddResourceNoSourceInExtracted", function() {
+        expect.assertions(14);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1621,37 +1504,35 @@ module.exports.metaxmlfile = {
             '</Translations>\n'
         );
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var resources = set.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 2);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getKey(), "Test");
-        test.ok(!resources[0].getSource());
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getState(), "new");
+        expect(resources[0].getKey()).toBe("Test");
+        expect(!resources[0].getSource()).toBeTruthy();
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getState()).toBe("new");
 
-        test.equal(resources[1].reskey, "user");
-        test.ok(!resources[1].getSource());
-        test.equal(resources[1].sourceLocale, "en-US");
-        test.equal(resources[1].state, "new");
+        expect(resources[1].reskey).toBe("user");
+        expect(!resources[1].getSource()).toBeTruthy();
+        expect(resources[1].sourceLocale).toBe("en-US");
+        expect(resources[1].state).toBe("new");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileAddResourceAddSourceExtractedFromOtherResources: function(test) {
-        test.expect(14);
+    test("MetaXmlFileAddResourceAddSourceExtractedFromOtherResources", function() {
+        expect.assertions(14);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1667,7 +1548,7 @@ module.exports.metaxmlfile = {
             '</Translations>\n'
         );
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         mxf.addResource(new ContextResourceString({
             project: "forceapp",
@@ -1691,35 +1572,33 @@ module.exports.metaxmlfile = {
         // should add the source strings to the existing resources
 
         var resources = set.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 2);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getKey(), "Test");
-        test.equal(resources[0].getSource(), "Password");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.equal(resources[0].getState(), "new");
+        expect(resources[0].getKey()).toBe("Test");
+        expect(resources[0].getSource()).toBe("Password");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getState()).toBe("new");
 
-        test.equal(resources[1].reskey, "user");
-        test.equal(resources[1].getSource(), "User Name");
-        test.equal(resources[1].sourceLocale, "en-US");
-        test.equal(resources[1].state, "new");
+        expect(resources[1].reskey).toBe("user");
+        expect(resources[1].getSource()).toBe("User Name");
+        expect(resources[1].sourceLocale).toBe("en-US");
+        expect(resources[1].state).toBe("new");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeTextSimpleNoSource: function(test) {
-        test.expect(5);
+    test("MetaXmlFileLocalizeTextSimpleNoSource", function() {
+        expect.assertions(5);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1735,7 +1614,7 @@ module.exports.metaxmlfile = {
             '</Translations>\n'
         );
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var translations = new TranslationSet();
         translations.add(new ContextResourceString({
@@ -1777,27 +1656,25 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeTextNewResourcesRightContent: function(test) {
-        test.expect(6);
+    test("MetaXmlFileLocalizeTextNewResourcesRightContent", function() {
+        expect.assertions(6);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         set = mxft.getNew();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1814,7 +1691,7 @@ module.exports.metaxmlfile = {
         );
 
         set = mxf.getTranslationSet();
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var translations = new TranslationSet();
         translations.add(new ContextResourceString({
@@ -1844,28 +1721,26 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeTextNewResourcesRightSize: function(test) {
-        test.expect(6);
+    test("MetaXmlFileLocalizeTextNewResourcesRightSize", function() {
+        expect.assertions(6);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         var set = mxf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 0);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
 
         set = mxft.getNew();
         set.clear();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1882,7 +1757,7 @@ module.exports.metaxmlfile = {
         );
 
         set = mxf.getTranslationSet();
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
 
         var translations = new TranslationSet();
         translations.add(new ContextResourceString({
@@ -1901,24 +1776,22 @@ module.exports.metaxmlfile = {
         mxf.localizeText(translations, "de-DE");
 
         set = mxft.getNew();
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeTextNewResourcesRightResources: function(test) {
-        test.expect(8);
+    test("MetaXmlFileLocalizeTextNewResourcesRightResources", function() {
+        expect.assertions(8);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         set = mxft.getNew();
         set.clear();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -1951,30 +1824,28 @@ module.exports.metaxmlfile = {
         mxf.localizeText(translations, "de-DE");
 
         var resources = set.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 1);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getKey(), "user");
-        test.equal(resources[0].getProject(), "forceapp");
-        test.ok(!resources[0].getSource());
-        test.equal(resources[0].getSourceLocale(), "en-US");
+        expect(resources[0].getKey()).toBe("user");
+        expect(resources[0].getProject()).toBe("forceapp");
+        expect(!resources[0].getSource()).toBeTruthy();
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeTextNewResourcesAddSourceStrings: function(test) {
-        test.expect(8);
+    test("MetaXmlFileLocalizeTextNewResourcesAddSourceStrings", function() {
+        expect.assertions(8);
 
         var mxf = new MetaXmlFile({
             project: p,
             type: mxft,
             locale: "de-DE"
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         set = mxft.getNew();
         set.clear();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -2027,20 +1898,18 @@ module.exports.metaxmlfile = {
         mxf.localizeText(translations, "de-DE");
 
         var resources = set.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 1);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getKey(), "user");
-        test.equal(resources[0].getProject(), "forceapp");
-        test.equal(resources[0].getSource(), "User Name");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-
-        test.done();
-    },
+        expect(resources[0].getKey()).toBe("user");
+        expect(resources[0].getProject()).toBe("forceapp");
+        expect(resources[0].getSource()).toBe("User Name");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+    });
 
 /*
-    testMetaXmlFileLocalize: function(test) {
-        test.expect(5);
+    test("MetaXmlFileLocalize", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2049,7 +1918,7 @@ module.exports.metaxmlfile = {
             pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
             type: mxft
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
@@ -2221,8 +2090,8 @@ module.exports.metaxmlfile = {
 
         mxf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"), "UTF-8");
 
@@ -2265,7 +2134,7 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"), "UTF-8");
 
@@ -2308,19 +2177,17 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    },
+        expect(content).toBe(expected);
+    });
 */
 
-    testMetaXmlFileLocalizeWrite: function(test) {
-        test.expect(5);
+    test("MetaXmlFileLocalizeWrite", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
         var mxf = mxft.newFile("./force-app/main/default/translations/en_US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
@@ -2330,7 +2197,7 @@ module.exports.metaxmlfile = {
             "./force-app/all/labels/MyLabels.labels-meta.xml",
             "./force-app/main/default/application/MyApp.app-meta.xml",
             "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
-            "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml",
@@ -2568,8 +2435,8 @@ module.exports.metaxmlfile = {
         // out all of them
         mxft.write(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"), "UTF-8");
 
@@ -2631,7 +2498,7 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"), "UTF-8");
 
@@ -2693,18 +2560,16 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeWithNoSourceStrings: function(test) {
-        test.expect(5);
+    test("MetaXmlFileLocalizeWithNoSourceStrings", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
         var mxf = mxft.newFile("./force-app/main/default/translations/en_US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
@@ -2932,8 +2797,8 @@ module.exports.metaxmlfile = {
         // out all of them. This should work despite the lack of source strings.
         mxft.write(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"), "UTF-8");
 
@@ -2995,7 +2860,7 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"), "UTF-8");
 
@@ -3057,18 +2922,16 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeNoStrings: function(test) {
-        test.expect(5);
+    test("MetaXmlFileLocalizeNoStrings", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
         var mxf = mxft2.newFile("./xml/en-US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // set up
         if (fs.existsSync(path.join(base, "testfiles/xml/de.translation-meta.xml"))) {
@@ -3078,8 +2941,8 @@ module.exports.metaxmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/xml/fr.translation-meta.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/xml/de.translation-meta.xml")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/xml/fr.translation-meta.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/xml/de.translation-meta.xml"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/xml/fr.translation-meta.xml"))).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -3113,8 +2976,8 @@ module.exports.metaxmlfile = {
         mxft2.write(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/xml/de.translation-meta.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/xml/fr.translation-meta.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/xml/de.translation-meta.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/xml/fr.translation-meta.xml"))).toBeTruthy();
 
         if (fs.existsSync(path.join(base, "testfiles/xml/de.translation-meta.xml"))) {
             fs.unlinkSync(path.join(base, "testfiles/xml/de.translation-meta.xml"));
@@ -3122,12 +2985,10 @@ module.exports.metaxmlfile = {
         if (fs.existsSync(path.join(base, "testfiles/xml/fr.translation-meta.xml"))) {
             fs.unlinkSync(path.join(base, "testfiles/xml/fr.translation-meta.xml"));
         }
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeNewStringsNoSources: function(test) {
-        test.expect(26);
+    test("MetaXmlFileLocalizeNewStringsNoSources", function() {
+        expect.assertions(26);
 
         var base = path.dirname(module.id);
 
@@ -3135,10 +2996,10 @@ module.exports.metaxmlfile = {
         mxft.files = {};
         var newStrings = mxft.getNew();
         newStrings.clear();
-        test.equal(newStrings.size(), 0);
+        expect(newStrings.size()).toBe(0);
 
         var mxf = mxft.newFile("./force-app/main/default/translations/en_US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
@@ -3318,46 +3179,44 @@ module.exports.metaxmlfile = {
         // out all of them. This should work despite the lack of source strings.
         mxft.write(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"))).toBeTruthy();
 
         newStrings = mxft.getNew();
-        test.ok(newStrings);
-        test.equal(newStrings.size(), 6);
+        expect(newStrings).toBeTruthy();
+        expect(newStrings.size()).toBe(6);
 
         var resources = newStrings.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 6);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(6);
 
-        test.equal(resources[0].getKey(), "MyApp");
-        test.ok(!resources[0].getSource());
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getKey()).toBe("MyApp");
+        expect(!resources[0].getSource()).toBeTruthy();
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[1].getKey(), "AccessToken_Expr__c");
-        test.ok(!resources[1].getSource());
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(resources[1].getKey()).toBe("AccessToken_Expr__c");
+        expect(!resources[1].getSource()).toBeTruthy();
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[2].getKey(), "Allocation_status__c");
-        test.ok(!resources[2].getSource());
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        expect(resources[2].getKey()).toBe("Allocation_status__c");
+        expect(!resources[2].getSource()).toBeTruthy();
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[3].getKey(), "MyApp");
-        test.ok(!resources[3].getSource());
-        test.equal(resources[3].getTargetLocale(), "de-DE");
+        expect(resources[3].getKey()).toBe("MyApp");
+        expect(!resources[3].getSource()).toBeTruthy();
+        expect(resources[3].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[4].getKey(), "AccessToken_Expr__c");
-        test.ok(!resources[4].getSource());
-        test.equal(resources[4].getTargetLocale(), "de-DE");
+        expect(resources[4].getKey()).toBe("AccessToken_Expr__c");
+        expect(!resources[4].getSource()).toBeTruthy();
+        expect(resources[4].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[5].getKey(), "Allocation_status__c");
-        test.ok(!resources[5].getSource());
-        test.equal(resources[5].getTargetLocale(), "de-DE");
+        expect(resources[5].getKey()).toBe("Allocation_status__c");
+        expect(!resources[5].getSource()).toBeTruthy();
+        expect(resources[5].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeNewStringsWithSources: function(test) {
-        test.expect(26);
+    test("MetaXmlFileLocalizeNewStringsWithSources", function() {
+        expect.assertions(26);
 
         var base = path.dirname(module.id);
 
@@ -3365,10 +3224,10 @@ module.exports.metaxmlfile = {
         mxft.files = {};
         var newStrings = mxft.getNew();
         newStrings.clear();
-        test.equal(newStrings.size(), 0);
+        expect(newStrings.size()).toBe(0);
 
         var mxf = mxft.newFile("./force-app/main/default/translations/en_US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
@@ -3378,7 +3237,7 @@ module.exports.metaxmlfile = {
             "./force-app/all/labels/MyLabels.labels-meta.xml",
             "./force-app/main/default/application/MyApp.app-meta.xml",
             "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
-            "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml",
@@ -3568,46 +3427,44 @@ module.exports.metaxmlfile = {
         // out all of them. This should work despite the lack of source strings.
         mxft.write(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/fr.translation-meta.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/force-app/main/default/translations/de.translation-meta.xml"))).toBeTruthy();
 
         newStrings = mxft.getNew();
-        test.ok(newStrings);
-        test.equal(newStrings.size(), 6);
+        expect(newStrings).toBeTruthy();
+        expect(newStrings.size()).toBe(6);
 
         var resources = newStrings.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 6);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(6);
 
-        test.equal(resources[0].getKey(), "MyApp");
-        test.equal(resources[0].getSource(), "My Application");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getKey()).toBe("MyApp");
+        expect(resources[0].getSource()).toBe("My Application");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[1].getKey(), "AccessToken_Expr__c");
-        test.equal(resources[1].getSource(), "Access token expired");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(resources[1].getKey()).toBe("AccessToken_Expr__c");
+        expect(resources[1].getSource()).toBe("Access token expired");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[2].getKey(), "Allocation_status__c");
-        test.equal(resources[2].getSource(), "Allocation status");
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        expect(resources[2].getKey()).toBe("Allocation_status__c");
+        expect(resources[2].getSource()).toBe("Allocation status");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[3].getKey(), "MyApp");
-        test.equal(resources[3].getSource(), "My Application");
-        test.equal(resources[3].getTargetLocale(), "de-DE");
+        expect(resources[3].getKey()).toBe("MyApp");
+        expect(resources[3].getSource()).toBe("My Application");
+        expect(resources[3].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[4].getKey(), "AccessToken_Expr__c");
-        test.equal(resources[4].getSource(), "Access token expired");
-        test.equal(resources[4].getTargetLocale(), "de-DE");
+        expect(resources[4].getKey()).toBe("AccessToken_Expr__c");
+        expect(resources[4].getSource()).toBe("Access token expired");
+        expect(resources[4].getTargetLocale()).toBe("de-DE");
 
-        test.equal(resources[5].getKey(), "Allocation_status__c");
-        test.equal(resources[5].getSource(), "Allocation status");
-        test.equal(resources[5].getTargetLocale(), "de-DE");
+        expect(resources[5].getKey()).toBe("Allocation_status__c");
+        expect(resources[5].getSource()).toBe("Allocation status");
+        expect(resources[5].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeRightNewStrings: function(test) {
-        test.expect(8);
+    test("MetaXmlFileLocalizeRightNewStrings", function() {
+        expect.assertions(8);
 
         var base = path.dirname(module.id);
 
@@ -3617,7 +3474,7 @@ module.exports.metaxmlfile = {
             pathName: "./force-app/main/default/translations/en_US.translation-meta.xml",
             type: mxft2
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -3652,23 +3509,21 @@ module.exports.metaxmlfile = {
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         var newSet = mxft2.getNew();
 
-        test.equal(newSet.size(), 1);
+        expect(newSet.size()).toBe(1);
         var res = newSet.getAll();
-        test.equal(res[0].reskey, "Test");
-        test.equal(res[0].source, "Password");
-        test.equal(res[0].sourceLocale, "en-US");
-        test.equal(res[0].targetLocale, "de-DE");
-        test.equal(res[0].state, "new");
+        expect(res[0].reskey).toBe("Test");
+        expect(res[0].source).toBe("Password");
+        expect(res[0].sourceLocale).toBe("en-US");
+        expect(res[0].targetLocale).toBe("de-DE");
+        expect(res[0].state).toBe("new");
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeWithPseudo: function(test) {
-        test.expect(2);
+    test("MetaXmlFileLocalizeWithPseudo", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -3690,7 +3545,7 @@ module.exports.metaxmlfile = {
             pathName: "./xml/en.translation-meta.xml",
             type: t2
         });
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         mxf.parse(
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -3720,19 +3575,17 @@ module.exports.metaxmlfile = {
             '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<Translations xmlns="http://soap.sforce.com/2006/04/metadata">\n' +
             '    <customApplications>\n' +
-            '        <label>Pàššŵõŕð3210</label>\n' +
+            '        <label>[Pàššŵõŕð3210]</label>\n' +
             '        <name>Test</name>\n' +
             '    </customApplications>\n' +
             '</Translations>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeExtractedStringsWithSources: function(test) {
-        test.expect(17);
+    test("MetaXmlFileLocalizeExtractedStringsWithSources", function() {
+        expect.assertions(17);
 
         var base = path.dirname(module.id);
 
@@ -3740,7 +3593,7 @@ module.exports.metaxmlfile = {
         mxft.files = {};
 
         var mxf = mxft.newFile("./force-app/main/default/translations/en_US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
@@ -3750,7 +3603,7 @@ module.exports.metaxmlfile = {
             "./force-app/all/labels/MyLabels.labels-meta.xml",
             "./force-app/main/default/application/MyApp.app-meta.xml",
             "./force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml",
-            "./force-app/main/default/customPermissions/MyApp_Admin.customPermissions-meta.xml",
+            "./force-app/main/default/customPermissions/MyApp_Admin.customPermission-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml",
             "./force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml",
@@ -3767,34 +3620,32 @@ module.exports.metaxmlfile = {
 
         // there are 13 resources + 5 unused source strings from
         // the other meta.xml files
-        extracted = mxf.getTranslationSet();
-        test.ok(extracted);
-        test.equal(extracted.size(), 18);
+        var extracted = mxf.getTranslationSet();
+        expect(extracted).toBeTruthy();
+        expect(extracted.size()).toBe(19);
 
         var resources = extracted.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 18);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(19);
 
-        test.equal(resources[0].getKey(), "MyApp");
-        test.equal(resources[0].getSource(), "My Application");
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.ok(!resources[0].getTargetLocale());
+        expect(resources[0].getKey()).toBe("MyApp");
+        expect(resources[0].getSource()).toBe("My Application");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[1].getKey(), "AccessToken_Expr__c");
-        test.equal(resources[1].getSource(), "Access token expired");
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.ok(!resources[1].getTargetLocale());
+        expect(resources[1].getKey()).toBe("AccessToken_Expr__c");
+        expect(resources[1].getSource()).toBe("Access token expired");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(!resources[1].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[2].getKey(), "Allocation_status__c");
-        test.equal(resources[2].getSource(), "Allocation status");
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.ok(!resources[2].getTargetLocale());
+        expect(resources[2].getKey()).toBe("Allocation_status__c");
+        expect(resources[2].getSource()).toBe("Allocation status");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(!resources[2].getTargetLocale()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testMetaXmlFileLocalizeExtractedStringsWithoutSources: function(test) {
-        test.expect(17);
+    test("MetaXmlFileLocalizeExtractedStringsWithoutSources", function() {
+        expect.assertions(17);
 
         var base = path.dirname(module.id);
 
@@ -3802,35 +3653,33 @@ module.exports.metaxmlfile = {
         mxft.files = {};
 
         var mxf = mxft.newFile("./force-app/main/default/translations/en_US.translation-meta.xml");
-        test.ok(mxf);
+        expect(mxf).toBeTruthy();
 
         // should read the file
         mxf.extract();
 
         // there are 13 resources
         extracted = mxf.getTranslationSet();
-        test.ok(extracted);
-        test.equal(extracted.size(), 13);
+        expect(extracted).toBeTruthy();
+        expect(extracted.size()).toBe(13);
 
         var resources = extracted.getAll();
-        test.ok(resources);
-        test.equal(resources.length, 13);
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(13);
 
-        test.equal(resources[0].getKey(), "MyApp");
-        test.ok(!resources[0].getSource());
-        test.equal(resources[0].getSourceLocale(), "en-US");
-        test.ok(!resources[0].getTargetLocale());
+        expect(resources[0].getKey()).toBe("MyApp");
+        expect(!resources[0].getSource()).toBeTruthy();
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(!resources[0].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[1].getKey(), "AccessToken_Expr__c");
-        test.ok(!resources[1].getSource());
-        test.equal(resources[1].getSourceLocale(), "en-US");
-        test.ok(!resources[1].getTargetLocale());
+        expect(resources[1].getKey()).toBe("AccessToken_Expr__c");
+        expect(!resources[1].getSource()).toBeTruthy();
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(!resources[1].getTargetLocale()).toBeTruthy();
 
-        test.equal(resources[2].getKey(), "Allocation_status__c");
-        test.ok(!resources[2].getSource());
-        test.equal(resources[2].getSourceLocale(), "en-US");
-        test.ok(!resources[2].getTargetLocale());
-
-        test.done();
-    }
-};
+        expect(resources[2].getKey()).toBe("Allocation_status__c");
+        expect(!resources[2].getSource()).toBeTruthy();
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(!resources[2].getTargetLocale()).toBeTruthy();
+    });
+});
