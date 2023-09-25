@@ -1424,7 +1424,6 @@ Follow these steps:
     });
 
    test("MarkdownFileParseOrderedListsWithIndentedText", function() {
-debugger;
         expect.assertions(18);
         var mf = new MarkdownFile({
             project: p,
@@ -1478,7 +1477,6 @@ Follow these steps:
     });
 
    test("MarkdownFileParseOrderedListsWithCodeBlocks", function() {
-debugger;
         expect.assertions(18);
         var mf = new MarkdownFile({
             project: p,
