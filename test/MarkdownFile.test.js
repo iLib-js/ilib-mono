@@ -1476,7 +1476,7 @@ Follow these steps:
         expect(r.getKey()).toBe("r284799174");
     });
 
-   test("MarkdownFileParseOrderedListsWithCodeBlocks", function() {
+   test("MarkdownFileParseOrderedListsWithIndentedCodeBlocks", function() {
         expect.assertions(18);
         var mf = new MarkdownFile({
             project: p,
@@ -1533,6 +1533,55 @@ code code code
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("Third point:");
         expect(r.getKey()).toBe("r924843090");
+    });
+
+   test("MarkdownFileParseHTMLFollowedByCodeBlocks", function() {
+        expect.assertions(3);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(`
+<Tab>
+
+\`\`\`cs
+var metadataValues = new Dictionary<string, object>()
+{ 
+  cards: [{
+    "type": "skill_card",
+    "skill_card_type": "keyword",
+    "skill_card_title": {
+      "code": "license-plates",
+      "message": "Licence Plates"
+    },
+    "skill": {
+      "type": "service"
+      "id": "license-plates-service"
+    },
+    "invocation": {
+      "type": "skill_invocation"
+      "id": "license-plates-service-123"
+    },
+    "entries": {
+      { "text": "DD-26-YT" },
+      { "text": "DN86 BOX" }
+    }
+  }] 
+};
+Dictionary<string, object> metadata = await client.MetadataManager
+    .CreateFileMetadataAsync(fileId: "12345", metadataValues, "global", "asdf");
+\`\`\`
+
+</Tab>
+`
+        );
+
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+
+        // no resources, but also it didn't crash while trying to parse that!
     });
 
     test("MarkdownFileParseNonBreakingEmphasisOutside", function() {
