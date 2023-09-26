@@ -1,5 +1,5 @@
 /*
- * testReactPlugin.js - test the Javascript plugin
+ * ReactPlugin.test.js - test the Javascript plugin
  *
  * Copyright © 2023 Box, Inc.
  *
@@ -20,68 +20,58 @@ import { Parser } from 'i18nlint-common';
 
 import ReactPlugin from '../src/index.js';
 
-export const testReactPlugin = {
-    testReactPlugin: function(test) {
-        test.expect(1);
+describe("testReactPlugin", () => {
+    test("ReactPlugin", () => {
+        expect.assertions(1);
 
         const jp = new ReactPlugin();
-        test.ok(jp);
+        expect(jp).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testReactPluginGetParsers: function(test) {
-        test.expect(3);
+    test("ReactPluginGetParsers", () => {
+        expect.assertions(3);
 
         const jp = new ReactPlugin();
-        test.ok(jp);
+        expect(jp).toBeTruthy();
 
         const parsers = jp.getParsers();
-        test.ok(parsers);
-        test.equal(parsers.length, 3);
+        expect(parsers).toBeTruthy();
+        expect(parsers.length).toBe(3);
+    });
 
-        test.done();
-    },
-
-    testReactPluginGetRules: function(test) {
-        test.expect(3);
+    test("ReactPluginGetRules", () => {
+        expect.assertions(3);
 
         const jp = new ReactPlugin();
-        test.ok(jp);
+        expect(jp).toBeTruthy();
 
         const rules = jp.getRules();
-        test.ok(rules);
-        test.equal(rules.length, 0);
+        expect(rules).toBeTruthy();
+        expect(rules.length).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testReactPluginGetFormatters: function(test) {
-        test.expect(3);
+    test("ReactPluginGetFormatters", () => {
+        expect.assertions(3);
 
         const jp = new ReactPlugin();
-        test.ok(jp);
+        expect(jp).toBeTruthy();
 
         const formatters = jp.getFormatters();
-        test.ok(formatters);
-        test.equal(formatters.length, 0);
+        expect(formatters).toBeTruthy();
+        expect(formatters.length).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testReactPluginGetRulesets: function(test) {
-        test.expect(2);
+    test("ReactPluginGetRulesets", () => {
+        expect.assertions(2);
 
         const jp = new ReactPlugin();
-        test.ok(jp);
+        expect(jp).toBeTruthy();
 
         const sets = jp.getRuleSets();
-        test.ok(!sets);
+        expect(!sets).toBeTruthy();
         /*
-        test.ok(sets.react);
-        test.equal(Object.keys(sets.react).length, 0);
+        expect(sets.react).toBeTruthy();
+        expect(Object.keys(sets.react).length).toBe(0);
         */
-
-        test.done();
-    }
-};
+    });
+});

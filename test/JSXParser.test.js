@@ -1,5 +1,5 @@
 /*
- * testJSXParser.js - test the React JSX parser
+ * JSXParser.test.js - test the React JSX parser
  *
  * Copyright © 2023 Box, Inc.
  *
@@ -22,68 +22,59 @@ import JSXParser from '../src/parsers/JSXParser.js';
 
 import { Result } from 'i18nlint-common';
 
-export const testJSXParser = {
-    testJSXParserConstructorEmpty: function(test) {
-        test.expect(1);
+describe("testJSXParser", () => {
+    test("JSXParserConstructorEmpty", () => {
+        expect.assertions(1);
 
         const parser = new JSXParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJSXParserConstructorPath: function(test) {
-        test.expect(1);
+    test("JSXParserConstructorPath", () => {
+        expect.assertions(1);
 
         const parser = new JSXParser({
-            filePath: "./test/testfiles/test.jsx"
+            filePath: "./test/testfiles/testfile.jsx"
         });
-        test.ok(parser);
+        expect(parser).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testJSXParserGetDescription: function(test) {
-        test.expect(2);
+    test("JSXParserGetDescription", () => {
+        expect.assertions(2);
 
         const parser = new JSXParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getDescription(), "A parser for React JSX files.");
+        expect(parser.getDescription()).toBe("A parser for React JSX files.");
+    });
 
-        test.done();
-    },
-
-    testJSXParserGetName: function(test) {
-        test.expect(2);
+    test("JSXParserGetName", () => {
+        expect.assertions(2);
 
         const parser = new JSXParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getName(), "jsx");
+        expect(parser.getName()).toBe("jsx");
+    });
 
-        test.done();
-    },
-
-    testJSXParserGetExtensions: function(test) {
-        test.expect(2);
+    test("JSXParserGetExtensions", () => {
+        expect.assertions(2);
 
         const parser = new JSXParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.deepEqual(parser.getExtensions(), [ "jsx" ]);
+        expect(parser.getExtensions()).toStrictEqual([ "jsx" ]);
+    });
 
-        test.done();
-    },
-
-    testJSXParserSimple: function(test) {
-        test.expect(3);
+    test("JSXParserSimple", () => {
+        expect.assertions(3);
 
         const parser = new JSXParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
         const actual = parser.parseString("import foo from '../src/index.js';", "x/y");
-        test.ok(actual);
+        expect(actual).toBeTruthy();
+        const actualSimplified = JSON.parse(JSON.stringify(actual));
 
         const expected = {
             type: "ast-jstree",
@@ -140,19 +131,16 @@ export const testJSXParser = {
                 ],
                 sourceType: 'module'
             },
-            filePath: "x/y",
-            stats: undefined
+            filePath: "x/y"
         };
-        test.deepEqual(actual, expected);
+        expect(actualSimplified).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testJSXParserMoreComplex: function(test) {
-        test.expect(3);
+    test("JSXParserMoreComplex", () => {
+        expect.assertions(3);
 
         const parser = new JSXParser();
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
         const actual = parser.parseString(
             `// comment
@@ -160,7 +148,8 @@ export const testJSXParser = {
 
             const str = <b>String</b>;
             `, "x/y");
-        test.ok(actual);
+        expect(actual).toBeTruthy();
+        const actualSimplified = JSON.parse(JSON.stringify(actual));
 
         const expected = {
             type: "ast-jstree",
@@ -310,12 +299,9 @@ export const testJSXParser = {
                 ],
                 "sourceType": "module"
             },
-            filePath: "x/y",
-            stats: undefined
+            filePath: "x/y"
         };
-        test.deepEqual(actual, expected);
-
-        test.done();
-    },
-};
+        expect(actualSimplified).toStrictEqual(expected);
+    });
+});
 

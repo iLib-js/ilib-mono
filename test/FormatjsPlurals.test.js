@@ -1,5 +1,5 @@
 /*
- * testFormatjsPlurals.js - test the formatjs plural syntax rule
+ * FormatjsPlurals.test.js - test the formatjs plural syntax rule
  *
  * Copyright © 2023 Box, Inc.
  *
@@ -18,21 +18,21 @@
  */
 import { Result } from 'i18nlint-common';
 
-import JSXParser from '../src/JSXParser.js';
+import JSXParser from '../src/parsers/JSXParser.js';
 import FormatjsPlurals from '../src/rules/FormatjsPlurals.js';
 
-export const testFormatjsPlurals = {
-    testFormatjsPluralsMatchNoError: function(test) {
-        test.expect(2);
+describe("testFormatjsPlurals", () => {
+    test("FormatjsPluralsMatchNoError", () => {
+        expect.assertions(2);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
         const parser = new JSXParser();
         const ir = parser.parseString(
             `
             // @flow
             import { defineMessages } from 'react-intl';
-            
+
             const messages = defineMessages({
                 message1: {
                     id: "myprogram.message1",
@@ -46,22 +46,20 @@ export const testFormatjsPlurals = {
         const actual = rule.match({
             ir
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFormatjsPluralsMatchSyntaxError: function(test) {
-        test.expect(3);
+    test("FormatjsPluralsMatchSyntaxError", () => {
+        expect.assertions(3);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
         const parser = new JSXParser();
         const ir = parser.parseString(
             `
             // @flow
             import { defineMessages } from 'react-intl';
-            
+
             const messages = defineMessages({
                 message1: {
                     id: "myprogram.message1",
@@ -82,7 +80,7 @@ export const testFormatjsPlurals = {
         const actual = rule.match({
             ir
         });
-        test.ok(actual);
+        expect(actual).toBeTruthy();
         const expected = new Result({
             severity: "error",
             description: "Incorrect plural or select syntax in string: SyntaxError: EXPECT_ARGUMENT_CLOSING_BRACE",
@@ -92,17 +90,15 @@ export const testFormatjsPlurals = {
             pathName: "x/y",
             lineNumber: 14
         });
-        test.deepEqual(actual, expected);
-
-        test.done();
-    },
+        expect(actual).toStrictEqual(expected);
+    });
 
 /*
-    testFormatjsPluralsMatchNestedNoError: function(test) {
-        test.expect(2);
+    test("FormatjsPluralsMatchNestedNoError", () => {
+        expect.assertions(2);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -116,16 +112,14 @@ export const testFormatjsPlurals = {
             }),
             file: "x/y"
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFormatjsPluralsMatchNestedMultiLineNoError: function(test) {
-        test.expect(2);
+    test("FormatjsPluralsMatchNestedMultiLineNoError", () => {
+        expect.assertions(2);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -165,16 +159,14 @@ export const testFormatjsPlurals = {
             }),
             file: "x/y"
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFormatjsPluralsMatchTooManyOpenBraces: function(test) {
-        test.expect(2);
+    test("FormatjsPluralsMatchTooManyOpenBraces", () => {
+        expect.assertions(2);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -197,16 +189,14 @@ export const testFormatjsPlurals = {
             rule,
             pathName: "x/y"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFormatjsPluralsMatchUnclosedOpenBraces: function(test) {
-        test.expect(2);
+    test("FormatjsPluralsMatchUnclosedOpenBraces", () => {
+        expect.assertions(2);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -229,16 +219,14 @@ export const testFormatjsPlurals = {
             rule,
             pathName: "x/y"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFormatjsPluralsMatchMissingCategoriesInSource: function(test) {
-        test.expect(2);
+    test("FormatjsPluralsMatchMissingCategoriesInSource", () => {
+        expect.assertions(2);
 
         const rule = new FormatjsPlurals();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "ru-RU",
@@ -261,10 +249,8 @@ export const testFormatjsPlurals = {
             pathName: "x/y",
             source: '{count, plural, other {This is plural}}'
         });
-        test.deepEqual(actual, expected);
-
-        test.done();
-    },
+        expect(actual).toStrictEqual(expected);
+    });
     */
-};
+});
 
