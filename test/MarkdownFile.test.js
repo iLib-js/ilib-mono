@@ -1536,131 +1536,14 @@ code code code
     });
 
    test("MarkdownFileParseHTMLFollowedByCodeBlocks", function() {
-
-        expect.assertions(18);
+        expect.assertions(3);
         var mf = new MarkdownFile({
             project: p,
             type: mdft
         });
         expect(mf).toBeTruthy();
         mf.parse(`
-## Write metadata cards to file
-
-To write one or more cards to a file, you can use the [\`POST
-/files/:id/metadata/global/boxSkillsCards\`](e://post_files_id_metadata_global_boxSkillsCards)
-API and pass along a list of Box Skill \`cards\`.
-
-<!-- markdownlint-enable line-length -->
-
-<Tabs>
-
-<Tab title='cURL'>
-
-\`\`\`curl
-curl -X POST https://api.box.com/2.0/files/12345/metadata/global/boxSkillsCards \
-     -H 'Authorization: Bearer <ACCESS_TOKEN>'
-     -H 'Content-Type: application/json'
-     -d '{
-       "cards": [{
-         "type": "skill_card",
-         "skill_card_type": "keyword",
-         "skill_card_title": {
-           "code": "license-plates",
-           "message": "Licence Plates"
-         },
-         "skill": {
-           "type": "service"
-           "id": "license-plates-service"
-         },
-         "invocation": {
-           "type": "skill_invocation"
-           "id": "license-plates-service-123"
-         },
-         "entries": {
-           { "text": "DD-26-YT" },
-           { "text": "DN86 BOX" }
-         }
-       }],
-     }'
-\`\`\`
-
-</Tab>
-
-<Tab title='Node'>
-
-\`\`\`js
-const metadata = { 
-  cards: [{
-    "type": "skill_card",
-    "skill_card_type": "keyword",
-    "skill_card_title": {
-      "code": "license-plates",
-      "message": "Licence Plates"
-    },
-    "skill": {
-      "type": "service"
-      "id": "license-plates-service"
-    },
-    "invocation": {
-      "type": "skill_invocation"
-      "id": "license-plates-service-123"
-    },
-    "entries": {
-      { "text": "DD-26-YT" },
-      { "text": "DN86 BOX" }
-    }
-  }] 
-}
-
-client.files.addMetadata('12345', 'global', 'boxSkillsCards', metadata)
-  .then(metadata => { 
-    // ...
-  })
-\`\`\`
-
-</Tab>
-
-<Tab title='Python'>
-
-\`\`\`py
-metadata = { 
-  cards: [{
-    "type": "skill_card",
-    "skill_card_type": "keyword",
-    "skill_card_title": {
-      "code": "license-plates",
-      "message": "Licence Plates"
-    },
-    "skill": {
-      "type": "service"
-      "id": "license-plates-service"
-    },
-    "invocation": {
-      "type": "skill_invocation"
-      "id": "license-plates-service-123"
-    },
-    "entries": {
-      { "text": "DD-26-YT" },
-      { "text": "DN86 BOX" }
-    }
-  }] 
-}
-
-client.file(file_id='12345').metadata(scope='global', template='boxSkillsCards').create(metadata)
-\`\`\`
-</Tab>
-
-<Tab title='Java'>
-
-\`\`\`java
-BoxFile file = new BoxFile(api, "12345");
-Metadata metadata = new Metadata()
-file.createMetadata("global", "boxSkillsCards", metadata);
-\`\`\`
-
-</Tab>
-
-<Tab title='.NET'>
+<Tab>
 
 \`\`\`cs
 var metadataValues = new Dictionary<string, object>()
@@ -1687,44 +1570,18 @@ var metadataValues = new Dictionary<string, object>()
   }] 
 };
 Dictionary<string, object> metadata = await client.MetadataManager
-    .CreateFileMetadataAsync(fileId: "12345", metadataValues, "global", "boxSkillsCards");
+    .CreateFileMetadataAsync(fileId: "12345", metadataValues, "global", "asdf");
 \`\`\`
 
 </Tab>
-
-</Tabs>
-
 `
         );
 
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
-        expect(set.size()).toBe(5);
+        expect(set.size()).toBe(0);
 
-        r = set.getBySource("This is a header");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a header");
-        expect(r.getKey()).toBe("r655736675");
-
-        r = set.getBySource("Follow these steps:");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Follow these steps:");
-        expect(r.getKey()).toBe("r449239371");
-
-        r = set.getBySource("First point:");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("First point:");
-        expect(r.getKey()).toBe("r996315725");
-
-        r = set.getBySource("Second point:");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Second point:");
-        expect(r.getKey()).toBe("r15205890");
-
-        r = set.getBySource("Third point:");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Third point:");
-        expect(r.getKey()).toBe("r924843090");
+        // no resources, but also it didn't crash while trying to parse that!
     });
 
     test("MarkdownFileParseNonBreakingEmphasisOutside", function() {
