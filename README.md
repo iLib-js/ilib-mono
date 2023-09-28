@@ -39,16 +39,13 @@ limitations under the License.
 
 ## Release Notes
 
-### v2.2.2
-
-- updated dependencies
-- converted all unit tests from nodeunit to jest
-
 ### v2.2.1
 
 - changed the documentation for the return value of getRules and getFormatters
   so that it can be an array of classes or objects that definition declarative
   rules or formatters. This was already the case, but not documented properly.
+- updated dependencies
+- converted all unit tests from nodeunit to jest
 
 ### v2.2.0
 
