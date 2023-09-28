@@ -1,5 +1,5 @@
 /*
- * testParser.js - test the parser superclass object
+ * Parser.test.js - test the parser superclass object
  *
  * Copyright © 2022-2023 JEDLSoft
  *
@@ -32,97 +32,83 @@ class MockParser extends Parser {
     }
 }
 
-export const testParser = {
-    testParserNormal: function(test) {
-        test.expect(1);
+describe("testParser", () => {
+    test("ParserNormal", () => {
+        expect.assertions(1);
 
         const parser = new MockParser({
             filePath: "a/b/c.x"
         });
 
-        test.ok(parser);
+        expect(parser).toBeTruthy();
+    });
 
-        test.done();
-    },
+    test("ParserCannotInstantiateAbstractClass", () => {
+        expect.assertions(1);
 
-    testParserCannotInstantiateAbstractClass: function(test) {
-        test.expect(1);
-
-        test.throws(() => {
+        expect(() => {
             new Parser();
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testParserGetName: function(test) {
-        test.expect(2);
+    test("ParserGetName", () => {
+        expect.assertions(2);
 
         const parser = new MockParser({
             filePath: "a/b/c.x"
         });
 
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getName(), "mock");
+        expect(parser.getName()).toBe("mock");
+    });
 
-        test.done();
-    },
-
-    testParserGetDescription: function(test) {
-        test.expect(2);
+    test("ParserGetDescription", () => {
+        expect.assertions(2);
 
         const parser = new MockParser({
             filePath: "a/b/c.x"
         });
 
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getDescription(), "A mock parser that doesn't really do a whole heck of a lot of anything.");
+        expect(parser.getDescription()).toBe("A mock parser that doesn't really do a whole heck of a lot of anything.");
+    });
 
-        test.done();
-    },
-
-    testParserGetExtensions: function(test) {
-        test.expect(2);
+    test("ParserGetExtensions", () => {
+        expect.assertions(2);
 
         const parser = new MockParser({
             filePath: "a/b/c.x"
         });
 
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equalIgnoringOrder(parser.getExtensions(), [ "x", "y", "z" ]);
+        expect(parser.getExtensions()).toEqual([ "x", "y", "z" ]);
+    });
 
-        test.done();
-    },
-
-    testParserGetType: function(test) {
-        test.expect(2);
+    test("ParserGetType", () => {
+        expect.assertions(2);
 
         const parser = new MockParser({
             filePath: "a/b/c.x"
         });
 
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.getType(), "ast");
+        expect(parser.getType()).toBe("ast");
+    });
 
-        test.done();
-    },
-
-    testParserGetCanWrite: function(test) {
-        test.expect(2);
+    test("ParserGetCanWrite", () => {
+        expect.assertions(2);
 
         const parser = new MockParser({
             filePath: "a/b/c.x"
         });
 
-        test.ok(parser);
+        expect(parser).toBeTruthy();
 
-        test.equal(parser.canWrite, false);
-
-        test.done();
-    },
-};
+        expect(parser.canWrite).toBe(false);
+    });
+});
 

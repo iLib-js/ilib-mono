@@ -1,7 +1,7 @@
 /*
- * testResult.js - test the result object
+ * Result.test.js - test the result object
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ class MockRule extends Rule {
 
 const rule = new MockRule();
 
-export const testResult = {
-    testResultNormal: function(test) {
-        test.expect(1);
+describe("testResult", () => {
+    test("ResultNormal", () => {
+        expect.assertions(1);
 
         const result = new Result({
             severity: "warning",
@@ -46,13 +46,11 @@ export const testResult = {
             rule
         });
 
-        test.ok(result);
+        expect(result).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testResultFull: function(test) {
-        test.expect(11);
+    test("ResultFull", () => {
+        expect.assertions(11);
 
         const result = new Result({
             severity: "warning",
@@ -68,24 +66,22 @@ export const testResult = {
             rule
         });
 
-        test.ok(result);
+        expect(result).toBeTruthy();
 
-        test.equal(result.severity, "warning");
-        test.equal(result.pathName, "a/b/c.js");
-        test.equal(result.description, "test");
-        test.equal(result.id, "x");
-        test.equal(result.highlight, "test<e0/>");
-        test.equal(result.lineNumber, 23);
-        test.equal(result.charNumber, 14);
-        test.equal(result.endLineNumber, 24);
-        test.equal(result.endCharNumber, 5);
-        test.equal(result.locale, "de-DE");
+        expect(result.severity).toBe("warning");
+        expect(result.pathName).toBe("a/b/c.js");
+        expect(result.description).toBe("test");
+        expect(result.id).toBe("x");
+        expect(result.highlight).toBe("test<e0/>");
+        expect(result.lineNumber).toBe(23);
+        expect(result.charNumber).toBe(14);
+        expect(result.endLineNumber).toBe(24);
+        expect(result.endCharNumber).toBe(5);
+        expect(result.locale).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testResultLineZero: function(test) {
-        test.expect(2);
+    test("ResultLineZero", () => {
+        expect.assertions(2);
 
         const result = new Result({
             severity: "warning",
@@ -100,15 +96,13 @@ export const testResult = {
             lineNumber: 0
         });
 
-        test.ok(result);
+        expect(result).toBeTruthy();
 
-        test.equal(result.lineNumber, 0);
+        expect(result.lineNumber).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testResultNormalizeSeverity: function(test) {
-        test.expect(4);
+    test("ResultNormalizeSeverity", () => {
+        expect.assertions(4);
 
         const result = new Result({
             severity: "issue",
@@ -117,88 +111,74 @@ export const testResult = {
             rule
         });
 
-        test.ok(result);
-        test.equal(result.severity, "warning");
-        test.equal(result.pathName, "a/b/c.js");
-        test.equal(result.description, "test");
+        expect(result).toBeTruthy();
+        expect(result.severity).toBe("warning");
+        expect(result.pathName).toBe("a/b/c.js");
+        expect(result.description).toBe("test");
+    });
 
-        test.done();
-    },
+    test("ResultMissingSeverity", () => {
+        expect.assertions(1);
 
-    testResultMissingSeverity: function(test) {
-        test.expect(1);
-
-        test.throws(test => {
+        expect(test => {
             new Result({
                 pathName: "a/b/c.js",
                 description: "test",
                 rule
             });
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
+    test("ResultMissingPathName", () => {
+        expect.assertions(1);
 
-    testResultMissingPathName: function(test) {
-        test.expect(1);
-
-        test.throws(test => {
+        expect(test => {
             new Result({
                 severity: "issue",
                 description: "test",
                 rule
             });
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
+    test("ResultMissingDescription", () => {
+        expect.assertions(1);
 
-    testResultMissingDescription: function(test) {
-        test.expect(1);
-
-        test.throws(test => {
+        expect(test => {
             new Result({
                 severity: "issue",
                 pathName: "a/b/c.js",
                 rule
             });
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
+    test("ResultMissingRule", () => {
+        expect.assertions(1);
 
-    testResultMissingRule: function(test) {
-        test.expect(1);
-
-        test.throws(test => {
+        expect(test => {
             new Result({
                 severity: "issue",
                 pathName: "a/b/c.js",
                 description: "test"
             });
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
+    test("ResultMissingEverything", () => {
+        expect.assertions(1);
 
-    testResultMissingEverything: function(test) {
-        test.expect(1);
-
-        test.throws(test => {
+        expect(test => {
             new Result({});
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
+    test("ResultMissingParameter", () => {
+        expect.assertions(1);
 
-    testResultMissingParameter: function(test) {
-        test.expect(1);
-
-        test.throws(test => {
+        expect(test => {
             new Result();
-        });
-
-        test.done();
-    },
-};
+        }).toThrow();
+    });
+});
 

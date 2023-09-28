@@ -39,6 +39,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.2.2
+
+- updated dependencies
+- converted all unit tests from nodeunit to jest
+
 ### v2.2.1
 
 - changed the documentation for the return value of getRules and getFormatters
