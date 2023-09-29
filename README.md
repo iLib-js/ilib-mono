@@ -69,6 +69,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.2
+
+- updated dependencies
+- converted all unit tests from nodeunit to jest
+
 ### v1.1.1
 
 - fixed a bug where doubled curly braces (= escaped curly braces) were

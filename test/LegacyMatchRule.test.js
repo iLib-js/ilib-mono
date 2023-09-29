@@ -1,5 +1,5 @@
 /*
- * testLegacyMatchRule.js - test the substitution parameter rule
+ * LegacyMatchRule.test.js - test the substitution parameter rule
  *
  * Copyright © 2023 JEDLSoft
  *
@@ -22,69 +22,59 @@ import LegacyMatchRule from '../src/LegacyMatchRule.js';
 
 import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
-export const testLegacyMatchRules = {
-    testLegacyMatchRuleStyle: function(test) {
-        test.expect(1);
+describe("testLegacyMatchRules", () => {
+    test("LegacyMatchRuleStyle", () => {
+        expect.assertions(1);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleStyleName: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleStyleName", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getName(), "resource-python-legacy-match");
+        expect(rule.getName()).toBe("resource-python-legacy-match");
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleStyleDescription: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleStyleDescription", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getDescription(), "Test that the legacy substitution parameters match in the source and target strings.");
+        expect(rule.getDescription()).toBe("Test that the legacy substitution parameters match in the source and target strings.");
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleStyleSourceLocale: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleStyleSourceLocale", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getSourceLocale(), "de-DE");
+        expect(rule.getSourceLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleStyleGetRuleType: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleStyleGetRuleType", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getRuleType(), "resource");
+        expect(rule.getRuleType()).toBe("resource");
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchMissingInTarget: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchMissingInTarget", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -111,16 +101,14 @@ export const testLegacyMatchRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchNoParams: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchNoParams", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -138,16 +126,14 @@ export const testLegacyMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchExtraParamsInTarget: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchExtraParamsInTarget", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -185,16 +171,14 @@ export const testLegacyMatchRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchMatchingParams: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchMatchingParams", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -212,16 +196,14 @@ export const testLegacyMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchMatchingParamsIgnoreWhitespaceInSource: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchMatchingParamsIgnoreWhitespaceInSource", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
@@ -239,16 +221,14 @@ export const testLegacyMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
@@ -266,16 +246,14 @@ export const testLegacyMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testLegacyMatchRuleMatchMatchingParamsMultiple: function(test) {
-        test.expect(2);
+    test("LegacyMatchRuleMatchMatchingParamsMultiple", () => {
+        expect.assertions(2);
 
         const rule = new LegacyMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -293,9 +271,7 @@ export const testLegacyMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
-
-        test.done();
-    }
-};
+        expect(!actual).toBeTruthy();
+    });
+});
 
