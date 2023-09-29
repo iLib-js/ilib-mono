@@ -1,7 +1,7 @@
 /*
- * testYamlResourceFile.js - test the Yaml resource file object.
+ * YamlResourceFile.test.js - test the Yaml resource file object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,64 +55,57 @@ var p = new CustomProject({
 
 var yft = new YamlResourceFileType(p);
 
-module.exports.yamlresourcefile = {
-    testYamlInit: function(test) {
-        p.init(function() {
-            test.done();
-        });
-    },
+beforeAll(function() {
+    p.init(function() {
+    });
+});
 
-    testYamlConstructorEmpty: function(test) {
-        test.expect(1);
+describe("yamlresourcefile", function() {
+    test("YamlConstructorEmpty", function() {
+        expect.assertions(1);
 
         var y = new YamlResourceFile({
             project: p,
             type: yft
         });
-        test.ok(y);
+        expect(y).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testYamlConstructorFull: function(test) {
-        test.expect(2);
+    test("YamlConstructorFull", function() {
+        expect.assertions(2);
 
        var y = new YamlResourceFile({
             project: p,
             pathName: "a/b/en-US.yml",
             type: yft
         });
-        test.ok(y);
+        expect(y).toBeTruthy();
 
-        test.equal(y.getPath(), "a/b/en-US.yml");
+        expect(y.getPath()).toBe("a/b/en-US.yml");
+    });
 
-        test.done();
-    },
-
-    testYamlGetPath: function(test) {
-        test.expect(2);
+    test("YamlGetPath", function() {
+        expect.assertions(2);
 
         var y = new YamlResourceFile({
             project: p,
             pathName: "foo/bar/x.yml",
             type: yft
         });
-        test.ok(y);
+        expect(y).toBeTruthy();
 
-        test.equal(y.getPath(), "foo/bar/x.yml");
+        expect(y.getPath()).toBe("foo/bar/x.yml");
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileParseSimpleGetByKey: function(test) {
-        test.expect(6);
+    test("YamlResourceFileParseSimpleGetByKey", function() {
+        expect.assertions(6);
 
          var yml = new YamlResourceFile({
             project: p,
             type: yft,
             locale: "en-US"
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.parse('---\n' +
                 'Working_at_MyCompany: Working at MyCompany\n' +
@@ -124,28 +117,26 @@ module.exports.yamlresourcefile = {
                 '  directly from experienced, successful entrepreneurs.\n');
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getBy({
             reskey: "Jobs"
         });
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r[0].getSource(), "Jobs");
-        test.equal(r[0].getKey(), "Jobs");
-        test.ok(!r[0].getComment());
+        expect(r[0].getSource()).toBe("Jobs");
+        expect(r[0].getKey()).toBe("Jobs");
+        expect(!r[0].getComment()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileParseWithSubkeys: function(test) {
-        test.expect(28);
+    test("YamlResourceFileParseWithSubkeys", function() {
+        expect.assertions(28);
 
         var yml = new YamlResourceFile({
             project: p,
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.parse(
                 '---\n' +
@@ -165,57 +156,54 @@ module.exports.yamlresourcefile = {
                 '      test: test of many levels\n');
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getAll();
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.length, 6);
+        expect(r.length).toBe(6);
 
-        test.equal(r[0].getSource(), "Jobs");
-        test.equal(r[0].getSourceLocale(), "en-US"); // source locale
-        test.equal(r[0].getKey(), "r9834724545");
-        test.equal(r[0].getContext(), "feelgood/foo/bar/x.en-US.html.haml");
+        expect(r[0].getSource()).toBe("Jobs");
+        expect(r[0].getSourceLocale()).toBe("en-US"); // source locale
+        expect(r[0].getKey()).toBe("r9834724545");
+        expect(r[0].getContext()).toBe("feelgood/foo/bar/x.en-US.html.haml");
 
-        test.equal(r[1].getSource(), "Our internship program");
-        test.equal(r[1].getSourceLocale(), "en-US"); // source locale
-        test.equal(r[1].getKey(), "r9483762220");
-        test.equal(r[1].getContext(), "feelgood/foo/bar/x.en-US.html.haml");
+        expect(r[1].getSource()).toBe("Our internship program");
+        expect(r[1].getSourceLocale()).toBe("en-US"); // source locale
+        expect(r[1].getKey()).toBe("r9483762220");
+        expect(r[1].getContext()).toBe("feelgood/foo/bar/x.en-US.html.haml");
 
-        test.equal(r[2].getSource(),
-                'Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
+        expect(r[2].getSource()).toBe('Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
                 'and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
                 'directly from experienced, successful entrepreneurs.\n');
-        test.equal(r[2].getSourceLocale(), "en-US"); // source locale
-        test.equal(r[2].getKey(), "r6782977423");
-        test.equal(r[2].getContext(), "feelgood/foo/bar/x.en-US.html.haml");
+        expect(r[2].getSourceLocale()).toBe("en-US"); // source locale
+        expect(r[2].getKey()).toBe("r6782977423");
+        expect(r[2].getContext()).toBe("feelgood/foo/bar/x.en-US.html.haml");
 
-        test.equal(r[3].getSource(), "Working at MyCompany");
-        test.equal(r[3].getSourceLocale(), "en-US"); // source locale
-        test.equal(r[3].getKey(), "r4524523454");
-        test.equal(r[3].getContext(), "feelgood/foo/ssss/asdf.en-US.html.haml");
+        expect(r[3].getSource()).toBe("Working at MyCompany");
+        expect(r[3].getSourceLocale()).toBe("en-US"); // source locale
+        expect(r[3].getKey()).toBe("r4524523454");
+        expect(r[3].getContext()).toBe("feelgood/foo/ssss/asdf.en-US.html.haml");
 
-        test.equal(r[4].getSource(), "Jobs");
-        test.equal(r[4].getSourceLocale(), "en-US"); // source locale
-        test.equal(r[4].getKey(), "r3254356823");
-        test.equal(r[4].getContext(), "feelgood/foo/ssss/asdf.en-US.html.haml");
+        expect(r[4].getSource()).toBe("Jobs");
+        expect(r[4].getSourceLocale()).toBe("en-US"); // source locale
+        expect(r[4].getKey()).toBe("r3254356823");
+        expect(r[4].getContext()).toBe("feelgood/foo/ssss/asdf.en-US.html.haml");
 
-        test.equal(r[5].getSource(), "test of many levels");
-        test.equal(r[5].getSourceLocale(), "en-US"); // source locale
-        test.equal(r[5].getKey(), "test");
-        test.equal(r[5].getContext(), "foo@bar@asdf");
+        expect(r[5].getSource()).toBe("test of many levels");
+        expect(r[5].getSourceLocale()).toBe("en-US"); // source locale
+        expect(r[5].getKey()).toBe("test");
+        expect(r[5].getContext()).toBe("foo@bar@asdf");
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileParseWithLocaleAndSubkeys: function(test) {
-        test.expect(28);
+    test("YamlResourceFileParseWithLocaleAndSubkeys", function() {
+        expect.assertions(28);
 
         var yml = new YamlResourceFile({
             project: p,
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.parse(
                 '---\n' +
@@ -236,58 +224,55 @@ module.exports.yamlresourcefile = {
                 '        test: test of many levels\n');
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getAll();
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.length, 6);
+        expect(r.length).toBe(6);
 
-        test.equal(r[0].getTarget(), "Jobs");
-        test.equal(r[0].getTargetLocale(), "zh-Hans-CN");
-        test.equal(r[0].getKey(), "r9834724545");
-        test.equal(r[0].getContext(), "feelgood/foo/bar/x.en-US.html.haml");
+        expect(r[0].getTarget()).toBe("Jobs");
+        expect(r[0].getTargetLocale()).toBe("zh-Hans-CN");
+        expect(r[0].getKey()).toBe("r9834724545");
+        expect(r[0].getContext()).toBe("feelgood/foo/bar/x.en-US.html.haml");
 
-        test.equal(r[1].getTarget(), "Our internship program");
-        test.equal(r[1].getTargetLocale(), "zh-Hans-CN");
-        test.equal(r[1].getKey(), "r9483762220");
-        test.equal(r[1].getContext(), "feelgood/foo/bar/x.en-US.html.haml");
+        expect(r[1].getTarget()).toBe("Our internship program");
+        expect(r[1].getTargetLocale()).toBe("zh-Hans-CN");
+        expect(r[1].getKey()).toBe("r9483762220");
+        expect(r[1].getContext()).toBe("feelgood/foo/bar/x.en-US.html.haml");
 
-        test.equal(r[2].getTarget(),
-                'Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
+        expect(r[2].getTarget()).toBe('Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
                 'and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
                 'directly from experienced, successful entrepreneurs.\n');
-        test.equal(r[2].getTargetLocale(), "zh-Hans-CN");
-        test.equal(r[2].getKey(), "r6782977423");
-        test.equal(r[2].getContext(), "feelgood/foo/bar/x.en-US.html.haml");
+        expect(r[2].getTargetLocale()).toBe("zh-Hans-CN");
+        expect(r[2].getKey()).toBe("r6782977423");
+        expect(r[2].getContext()).toBe("feelgood/foo/bar/x.en-US.html.haml");
 
-        test.equal(r[3].getTarget(), "Working at MyCompany");
-        test.equal(r[3].getTargetLocale(), "zh-Hans-CN");
-        test.equal(r[3].getKey(), "r4524523454");
-        test.equal(r[3].getContext(), "feelgood/foo/ssss/asdf.en-US.html.haml");
+        expect(r[3].getTarget()).toBe("Working at MyCompany");
+        expect(r[3].getTargetLocale()).toBe("zh-Hans-CN");
+        expect(r[3].getKey()).toBe("r4524523454");
+        expect(r[3].getContext()).toBe("feelgood/foo/ssss/asdf.en-US.html.haml");
 
-        test.equal(r[4].getTarget(), "Jobs");
-        test.equal(r[4].getTargetLocale(), "zh-Hans-CN");
-        test.equal(r[4].getKey(), "r3254356823");
-        test.equal(r[4].getContext(), "feelgood/foo/ssss/asdf.en-US.html.haml");
+        expect(r[4].getTarget()).toBe("Jobs");
+        expect(r[4].getTargetLocale()).toBe("zh-Hans-CN");
+        expect(r[4].getKey()).toBe("r3254356823");
+        expect(r[4].getContext()).toBe("feelgood/foo/ssss/asdf.en-US.html.haml");
 
-        test.equal(r[5].getTarget(), "test of many levels");
-        test.equal(r[5].getTargetLocale(), "zh-Hans-CN");
-        test.equal(r[5].getKey(), "test");
-        test.equal(r[5].getContext(), "foo@bar@asdf");
+        expect(r[5].getTarget()).toBe("test of many levels");
+        expect(r[5].getTargetLocale()).toBe("zh-Hans-CN");
+        expect(r[5].getKey()).toBe("test");
+        expect(r[5].getContext()).toBe("foo@bar@asdf");
+    });
 
-        test.done();
-    },
-
-    testYamlFileParseCustomizationFileWithFlavor: function(test) {
-        test.expect(19);
+    test("YamlFileParseCustomizationFileWithFlavor", function() {
+        expect.assertions(19);
 
         var yml = new YamlResourceFile({
             project: p,
             type: yft,
             path: "config/customization/en-US-CHOCOLATE.yml"
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.parse(
             '---\n' +
@@ -300,49 +285,46 @@ module.exports.yamlresourcefile = {
             '    directly from experienced, successful entrepreneurs.\n');
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.getAll();
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.length, 3);
+        expect(r.length).toBe(3);
 
         // locale is not special for this type of yml file, so it should appear in the context
-        test.equal(r[0].getSource(), "Jobs");
-        test.equal(r[0].getSourceLocale(), "en-US-CHOCOLATE");
-        test.equal(r[0].getKey(), "r9834724545");
-        test.ok(!r[0].getContext());
-        test.equal(r[0].getFlavor(), "CHOCOLATE");
+        expect(r[0].getSource()).toBe("Jobs");
+        expect(r[0].getSourceLocale()).toBe("en-US-CHOCOLATE");
+        expect(r[0].getKey()).toBe("r9834724545");
+        expect(!r[0].getContext()).toBeTruthy();
+        expect(r[0].getFlavor()).toBe("CHOCOLATE");
 
-        test.equal(r[1].getSource(), "Our internship program");
-        test.equal(r[1].getSourceLocale(), "en-US-CHOCOLATE");
-        test.equal(r[1].getKey(), "r9483762220");
-        test.ok(!r[1].getContext());
-        test.equal(r[1].getFlavor(), "CHOCOLATE");
+        expect(r[1].getSource()).toBe("Our internship program");
+        expect(r[1].getSourceLocale()).toBe("en-US-CHOCOLATE");
+        expect(r[1].getKey()).toBe("r9483762220");
+        expect(!r[1].getContext()).toBeTruthy();
+        expect(r[1].getFlavor()).toBe("CHOCOLATE");
 
-        test.equal(r[2].getSource(),
-            'Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
+        expect(r[2].getSource()).toBe('Completing an internship at MyCompany gives you the opportunity to experience innovation\n' +
             'and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
             'directly from experienced, successful entrepreneurs.\n');
-        test.equal(r[2].getSourceLocale(), "en-US-CHOCOLATE");
-        test.equal(r[2].getKey(), "r6782977423");
-        test.ok(!r[2].getContext());
-        test.equal(r[2].getFlavor(), "CHOCOLATE");
+        expect(r[2].getSourceLocale()).toBe("en-US-CHOCOLATE");
+        expect(r[2].getKey()).toBe("r6782977423");
+        expect(!r[2].getContext()).toBeTruthy();
+        expect(r[2].getFlavor()).toBe("CHOCOLATE");
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileParseSimpleRightSize: function(test) {
-        test.expect(4);
+    test("YamlResourceFileParseSimpleRightSize", function() {
+        expect.assertions(4);
 
         var yml = new YamlResourceFile({
             project: p,
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         var set = yml.getTranslationSet();
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
 
         yml.parse('---\n' +
                 'es-US:\n' +
@@ -354,98 +336,90 @@ module.exports.yamlresourcefile = {
                 '    and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
                 '    directly from experienced, successful entrepreneurs.\n');
 
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileExtractFile: function(test) {
-        test.expect(14);
+    test("YamlResourceFileExtractFile", function() {
+        expect.assertions(14);
 
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./test.yml",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         // should read the file
         yml.extract();
 
         var set = yml.getTranslationSet();
 
-        test.equal(set.size(), 10);
+        expect(set.size()).toBe(10);
 
         var r = set.getBy({
             reskey: "Marketing"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Marketing");
-        test.equal(r[0].getKey(), "Marketing");
-        test.ok(!r[0].getComment());
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Marketing");
+        expect(r[0].getKey()).toBe("Marketing");
+        expect(!r[0].getComment()).toBeTruthy();
 
         var r = set.getBy({
             reskey: "Everyone_at_MyCompany_has_not_only_welcomed_us_interns,_but_given_us_a_chance_to_ask_questions_and_really_learn_about_what_they_do._That's_why_I'm_thrilled_to_be_a_part_of_this_team_and_part_of_a_company_that_will,_I'm_sure,_soon_be_a_household_name."
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Everyone at MyCompany has not only welcomed us interns, but given us a chance to ask questions and really learn about what they do. That's why I'm thrilled to be a part of this team and part of a company that will, I'm sure, soon be a household name.");
-        test.equal(r[0].getKey(), "Everyone_at_MyCompany_has_not_only_welcomed_us_interns,_but_given_us_a_chance_to_ask_questions_and_really_learn_about_what_they_do._That's_why_I'm_thrilled_to_be_a_part_of_this_team_and_part_of_a_company_that_will,_I'm_sure,_soon_be_a_household_name.");
-        test.ok(!r[0].getComment());
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Everyone at MyCompany has not only welcomed us interns, but given us a chance to ask questions and really learn about what they do. That's why I'm thrilled to be a part of this team and part of a company that will, I'm sure, soon be a household name.");
+        expect(r[0].getKey()).toBe("Everyone_at_MyCompany_has_not_only_welcomed_us_interns,_but_given_us_a_chance_to_ask_questions_and_really_learn_about_what_they_do._That's_why_I'm_thrilled_to_be_a_part_of_this_team_and_part_of_a_company_that_will,_I'm_sure,_soon_be_a_household_name.");
+        expect(!r[0].getComment()).toBeTruthy();
 
         var r = set.getBy({
             reskey: "Learn_by_contributing_to_a_venture_that_will_change_the_world"
         });
-        test.ok(r);
-        test.equal(r[0].getSource(), "Learn by contributing to a venture that will change the world");
-        test.equal(r[0].getKey(), "Learn_by_contributing_to_a_venture_that_will_change_the_world");
-        test.ok(!r[0].getComment());
+        expect(r).toBeTruthy();
+        expect(r[0].getSource()).toBe("Learn by contributing to a venture that will change the world");
+        expect(r[0].getKey()).toBe("Learn_by_contributing_to_a_venture_that_will_change_the_world");
+        expect(!r[0].getComment()).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("YamlResourceFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         // should attempt to read the file and not fail
         yml.extract();
 
         var set = yml.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("YamlResourceFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./objc/en.lproj/asdf.yml",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         // should attempt to read the file and not fail
         yml.extract();
 
         var set = yml.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContent: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContent", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -453,7 +427,7 @@ module.exports.yamlresourcefile = {
             locale: "de-DE",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         [
             new ContextResourceString({
@@ -485,13 +459,11 @@ module.exports.yamlresourcefile = {
 
         diff(yml.getContent(), expected);
 
-        test.equal(yml.getContent(), expected);
+        expect(yml.getContent()).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContentComplicated: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContentComplicated", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -499,7 +471,7 @@ module.exports.yamlresourcefile = {
             locale: "zh-Hans-CN",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         [
             new ContextResourceString({
@@ -529,13 +501,11 @@ module.exports.yamlresourcefile = {
 
         diff(yml.getContent(), expected);
 
-        test.equal(yml.getContent(), expected);
+        expect(yml.getContent()).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContentWithNewlines: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContentWithNewlines", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -543,7 +513,7 @@ module.exports.yamlresourcefile = {
             locale: "zh-Hans-CN",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         [
             new ContextResourceString({
@@ -575,13 +545,11 @@ module.exports.yamlresourcefile = {
 
         diff(yml.getContent(), expected);
 
-        test.equal(yml.getContent(), expected);
+        expect(yml.getContent()).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContentEmpty: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContentEmpty", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -589,15 +557,13 @@ module.exports.yamlresourcefile = {
             locale: "de-DE",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
-        test.equal(yml.getContent(), '{}\n');
+        expect(yml.getContent()).toBe('{}\n');
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileRealContent: function(test) {
-        test.expect(5);
+    test("YamlResourceFileRealContent", function() {
+        expect.assertions(5);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -605,24 +571,22 @@ module.exports.yamlresourcefile = {
             locale: "en-US",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.extract();
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("webapp", undefined, "en-US", "The_perks_of_interning", "x-yaml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "The perks of interning");
-        test.equal(r.getKey(), "The_perks_of_interning");
+        expect(r.getSource()).toBe("The perks of interning");
+        expect(r.getKey()).toBe("The_perks_of_interning");
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileRealContent2: function(test) {
-        test.expect(7);
+    test("YamlResourceFileRealContent2", function() {
+        expect.assertions(7);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -630,26 +594,24 @@ module.exports.yamlresourcefile = {
             locale: "en-US",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.extract();
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("webapp", "saved_someone_else_time", "en-US", "subject", "x-yaml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "Someone said a colleague’s answer to your question saved them a lot of time:");
-        test.equal(r.getKey(), "subject");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getContext(), "saved_someone_else_time");
+        expect(r.getSource()).toBe("Someone said a colleague’s answer to your question saved them a lot of time:");
+        expect(r.getKey()).toBe("subject");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getContext()).toBe("saved_someone_else_time");
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileAtInKeyName: function(test) {
-        test.expect(7);
+    test("YamlResourceFileAtInKeyName", function() {
+        expect.assertions(7);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -657,26 +619,24 @@ module.exports.yamlresourcefile = {
             locale: "en-US",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.extract();
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("webapp", "member_question_asked\\@answered", "en-US", "email_subject", "x-yaml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "%1, %2 has answered a question you asked!");
-        test.equal(r.getKey(), "email_subject");
-        test.equal(r.getSourceLocale(), "en-US");
-        test.equal(r.getContext(), "member_question_asked\\@answered");
+        expect(r.getSource()).toBe("%1, %2 has answered a question you asked!");
+        expect(r.getKey()).toBe("email_subject");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getContext()).toBe("member_question_asked\\@answered");
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileRightResourceType: function(test) {
-        test.expect(4);
+    test("YamlResourceFileRightResourceType", function() {
+        expect.assertions(4);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -684,23 +644,21 @@ module.exports.yamlresourcefile = {
             locale: "en-US",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         yml.extract();
 
         var set = yml.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("webapp", "member_question_asked\\@answered", "en-US", "email_subject", "x-yaml"));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.ok(r instanceof ContextResourceString);
+        expect(r instanceof ContextResourceString).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContentDontUseSourceHash: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContentDontUseSourceHash", function() {
+        expect.assertions(2);
 
         var yml = new YamlResourceFile({
             project: p,
@@ -708,7 +666,7 @@ module.exports.yamlresourcefile = {
             locale: "zh-Hans-CN",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         [
             new ContextResourceString({
@@ -740,20 +698,18 @@ module.exports.yamlresourcefile = {
             "    So, we put a new line in the middle of it.\n";
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContentResourcePlural: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContentResourcePlural", function() {
+        expect.assertions(2);
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
             locale: "zh-Hans-CN",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         [
             new ResourcePlural({
@@ -778,20 +734,18 @@ module.exports.yamlresourcefile = {
             "    other: There are %{count} tests\n";
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testYamlResourceFileGetContentResourcePluralAndString: function(test) {
-        test.expect(2);
+    test("YamlResourceFileGetContentResourcePluralAndString", function() {
+        expect.assertions(2);
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
             locale: "zh-Hans-CN",
             type: yft
         });
-        test.ok(yml);
+        expect(yml).toBeTruthy();
 
         [
             new ResourcePlural({
@@ -829,8 +783,6 @@ module.exports.yamlresourcefile = {
             "    other: There are %{count} tests\n";
 
         diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    }
-};
+        expect(actual).toBe(expected);
+    });
+});
