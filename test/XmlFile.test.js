@@ -1,7 +1,7 @@
 /*
- * testXmlFile.js - test the XML file handler object.
+ * XmlFile.test.js - test the XML file handler object.
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,27 +164,24 @@ var p2 = new CustomProject({
 
 var t2 = new XmlFileType(p2);
 
-module.exports.xmlfile = {
-    testXmlFileInit: function(test) {
-        // initialize so we get the right resource string type
-        p.init(function() {
-            p2.init(function() {
-                test.done();
-            });
+beforeAll(function() {
+    // initialize so we get the right resource string type
+    p.init(function() {
+        p2.init(function() {
         });
-    },
+    });
+});
 
-    testXmlFileConstructor: function(test) {
-        test.expect(1);
+describe("xmlfile", function() {
+    test("XmlFileConstructor", function() {
+        expect.assertions(1);
 
         var xf = new XmlFile({project: p, type: t});
-        test.ok(xf);
+        expect(xf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileConstructorParams: function(test) {
-        test.expect(1);
+    test("XmlFileConstructorParams", function() {
+        expect.assertions(1);
 
         var xf = new XmlFile({
             project: p,
@@ -192,143 +189,111 @@ module.exports.xmlfile = {
             type: t
         });
 
-        test.ok(xf);
+        expect(xf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileConstructorNoFile: function(test) {
-        test.expect(1);
+    test("XmlFileConstructorNoFile", function() {
+        expect.assertions(1);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
+    });
 
-        test.done();
-    },
+    test("XmlFileEscapeProp", function() {
+        expect.assertions(1);
 
-    testXmlFileEscapeProp: function(test) {
-        test.expect(1);
+        expect(XmlFile.escapeProp("escape/tilde~tilde")).toBe("escape~1tilde~0tilde");
+    });
 
-        test.ok(XmlFile.escapeProp("escape/tilde~tilde"), "escape~0tilde~1tilde");
+    test("XmlFileEscapePropNoChange", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(XmlFile.escapeProp("permissions")).toBe("permissions");
+    });
 
-    testXmlFileEscapePropNoChange: function(test) {
-        test.expect(1);
+    test("XmlFileEscapePropDontEscapeOthers", function() {
+        expect.assertions(1);
 
-        test.ok(XmlFile.escapeProp("permissions"), "permissions");
+        expect(XmlFile.escapeProp("permissions% \" ^ | \\")).toBe("permissions% \" ^ | \\");
+    });
 
-        test.done();
-    },
+    test("XmlFileUnescapeProp", function() {
+        expect.assertions(1);
 
-    testXmlFileEscapePropDontEscapeOthers: function(test) {
-        test.expect(1);
+        expect(XmlFile.unescapeProp("escape~0tilde~1tilde")).toBe("escape~tilde/tilde");
+    });
 
-        test.ok(XmlFile.escapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+    test("XmlFileUnescapePropTricky", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(XmlFile.unescapeProp("escape~3tilde~4tilde")).toBe("escape~3tilde~4tilde");
+    });
 
-    testXmlFileUnescapeProp: function(test) {
-        test.expect(1);
+    test("XmlFileUnescapePropNoChange", function() {
+        expect.assertions(1);
 
-        test.ok(XmlFile.unescapeProp("escape~0tilde~1tilde"), "escape/tilde~tilde");
+        expect(XmlFile.unescapeProp("permissions")).toBe("permissions");
+    });
 
-        test.done();
-    },
+    test("XmlFileUnescapePropDontEscapeOthers", function() {
+        expect.assertions(1);
 
-    testXmlFileUnescapePropTricky: function(test) {
-        test.expect(1);
+        expect(XmlFile.unescapeProp("permissions% \" ^ | \\")).toBe("permissions% \" ^ | \\");
+    });
 
-        test.ok(XmlFile.unescapeProp("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
+    test("XmlFileEscapeRef", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(XmlFile.escapeRef("escape/tilde~tilde")).toBe("escape~1tilde~0tilde");
+    });
 
-    testXmlFileUnescapePropNoChange: function(test) {
-        test.expect(1);
+    test("XmlFileEscapeRefNoChange", function() {
+        expect.assertions(1);
 
-        test.ok(XmlFile.unescapeProp("permissions"), "permissions");
+        expect(XmlFile.escapeRef("permissions")).toBe("permissions");
+    });
 
-        test.done();
-    },
+    test("XmlFileEscapeRefDontEscapeOthers", function() {
+        expect.assertions(1);
 
-    testXmlFileUnescapePropDontEscapeOthers: function(test) {
-        test.expect(1);
+        expect(XmlFile.escapeRef("permissions% \" ^ | \\")).toBe("permissions%25%20%22%20%5E%20%7C%20%5C");
+    });
 
-        test.ok(XmlFile.unescapeProp("permissions% \" ^ | \\"), "permissions% \" ^ | \\");
+    test("XmlFileUnescapeRef", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(XmlFile.unescapeRef("escape~0tilde~1tilde")).toBe("escape~tilde/tilde");
+    });
 
-    testXmlFileEscapeRef: function(test) {
-        test.expect(1);
+    test("XmlFileUnescapeRefTricky", function() {
+        expect.assertions(1);
 
-        test.ok(XmlFile.escapeRef("escape/tilde~tilde"), "escape~0tilde~1tilde");
+        expect(XmlFile.unescapeRef("escape~3tilde~4tilde")).toBe("escape~3tilde~4tilde");
+    });
 
-        test.done();
-    },
+    test("XmlFileUnescapeRefNoChange", function() {
+        expect.assertions(1);
 
-    testXmlFileEscapeRefNoChange: function(test) {
-        test.expect(1);
+        expect(XmlFile.unescapeRef("permissions")).toBe("permissions");
+    });
 
-        test.ok(XmlFile.escapeRef("permissions"), "permissions");
+    test("XmlFileUnescapeRefDontEscapeOthers", function() {
+        expect.assertions(1);
 
-        test.done();
-    },
+        expect(XmlFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C")).toBe("permissions% \" ^ | \\");
+    });
 
-    testXmlFileEscapeRefDontEscapeOthers: function(test) {
-        test.expect(1);
-
-        test.ok(XmlFile.escapeRef("permissions% \" ^ | \\"), "permissions%25%20%22%20%5E%20%7C%20%5C");
-
-        test.done();
-    },
-
-    testXmlFileUnescapeRef: function(test) {
-        test.expect(1);
-
-        test.ok(XmlFile.unescapeRef("escape~0tilde~1tilde"), "escape/tilde~tilde");
-
-        test.done();
-    },
-
-    testXmlFileUnescapeRefTricky: function(test) {
-        test.expect(1);
-
-        test.ok(XmlFile.unescapeRef("escape~3tilde~4tilde"), "escape~3tilde~4tilde");
-
-        test.done();
-    },
-
-    testXmlFileUnescapeRefNoChange: function(test) {
-        test.expect(1);
-
-        test.ok(XmlFile.unescapeRef("permissions"), "permissions");
-
-        test.done();
-    },
-
-    testXmlFileUnescapeRefDontEscapeOthers: function(test) {
-        test.expect(1);
-
-        test.ok(XmlFile.unescapeRef("permissions%25%20%22%20%5E%20%7C%20%5C"), "permissions% \" ^ | \\");
-
-        test.done();
-    },
-
-    testXmlFileParseSimpleGetByKey: function(test) {
-        test.expect(5);
+    test("XmlFileParseSimpleGetByKey", function() {
+        expect.assertions(5);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -338,25 +303,23 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", undefined, "en-US", "string 1", "xml", undefined));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "this is string one");
-        test.equal(r.getKey(), "string 1");
+        expect(r.getSource()).toBe("this is string one");
+        expect(r.getKey()).toBe("string 1");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseSimpleRightStrings: function(test) {
-        test.expect(8);
+    test("XmlFileParseSimpleRightStrings", function() {
+        expect.assertions(8);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -366,29 +329,27 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "string 2");
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("string 2");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseSimpleExtractEmpty: function(test) {
-        test.expect(10);
+    test("XmlFileParseSimpleExtractEmpty", function() {
+        expect.assertions(10);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -398,31 +359,29 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getType(), "string");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getType()).toBe("string");
 
-        test.equal(resources[1].getSource(), "");
-        test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getType(), "string");
+        expect(resources[1].getSource()).toBe("");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getType()).toBe("string");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseAllFields: function(test) {
-        test.expect(16);
+    test("XmlFileParseAllFields", function() {
+        expect.assertions(16);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -432,37 +391,35 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(), "this is comment 1");
-        test.equal(resources[0].getSourceLocale(), "de-DE");
-        test.equal(resources[0].getContext(), "fooasdf");
-        test.ok(resources[0].formatted);
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe("this is comment 1");
+        expect(resources[0].getSourceLocale()).toBe("de-DE");
+        expect(resources[0].getContext()).toBe("fooasdf");
+        expect(resources[0].formatted).toBeTruthy();
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getComment(), "this is comment 2");
-        test.equal(resources[1].getSourceLocale(), "zh-Hans-CN");
-        test.equal(resources[1].getContext(), "badda bing");
-        test.ok(!resources[1].formatted);
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getComment()).toBe("this is comment 2");
+        expect(resources[1].getSourceLocale()).toBe("zh-Hans-CN");
+        expect(resources[1].getContext()).toBe("badda bing");
+        expect(!resources[1].formatted).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseNormalizeLocale: function(test) {
-        test.expect(7);
+    test("XmlFileParseNormalizeLocale", function() {
+        expect.assertions(7);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -471,27 +428,25 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getSourceLocale(), "de-DE");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getSourceLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseEscapeStringKeys: function(test) {
-        test.expect(8);
+    test("XmlFileParseEscapeStringKeys", function() {
+        expect.assertions(8);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -501,29 +456,27 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string < 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string < 1");
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "string & 2");
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("string & 2");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseSimpleRejectThingsThatAreNotInTheSchema: function(test) {
-        test.expect(6);
+    test("XmlFileParseSimpleRejectThingsThatAreNotInTheSchema", function() {
+        expect.assertions(6);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<resources>\n' +
@@ -535,27 +488,25 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 1);
+        expect(set.size()).toBe(1);
         var resources = set.getAll();
-        test.equal(resources.length, 1);
+        expect(resources.length).toBe(1);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseAllAttributes: function(test) {
-        test.expect(8);
+    test("XmlFileParseAllAttributes", function() {
+        expect.assertions(8);
 
         // should default to the android strings schema
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -565,22 +516,20 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", "asdf", "en-US", "string 1", "xml", undefined));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "this is string one");
-        test.equal(r.getKey(), "string 1");
-        test.equal(r.getContext(), "asdf");
-        test.equal(r.getComment(), "comment");
-        test.ok(r.formatted);
+        expect(r.getSource()).toBe("this is string one");
+        expect(r.getKey()).toBe("string 1");
+        expect(r.getContext()).toBe("asdf");
+        expect(r.getComment()).toBe("comment");
+        expect(r.formatted).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseComplexRightSize: function(test) {
-        test.expect(3);
+    test("XmlFileParseComplexRightSize", function() {
+        expect.assertions(3);
 
         // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
@@ -588,7 +537,7 @@ module.exports.xmlfile = {
             pathName: "i18n/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<messages>\n' +
@@ -614,14 +563,13 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
-        test.done();
-    },
+        expect(set.size()).toBe(4);
+    });
 
-    testXmlFileParseComplexRightStrings: function(test) {
-        test.expect(26);
+    test("XmlFileParseComplexRightStrings", function() {
+        expect.assertions(26);
 
         // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
@@ -629,7 +577,7 @@ module.exports.xmlfile = {
             pathName: "i18n/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<messages>\n' +
@@ -655,45 +603,43 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "bar");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("bar");
         var pluralStrings = resources[0].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "singular");
-        test.equal(pluralStrings.many, "many");
-        test.equal(pluralStrings.other, "plural");
-        test.ok(!pluralStrings.zero);
-        test.ok(!pluralStrings.two);
-        test.ok(!pluralStrings.few);
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("singular");
+        expect(pluralStrings.many).toBe("many");
+        expect(pluralStrings.other).toBe("plural");
+        expect(!pluralStrings.zero).toBeTruthy();
+        expect(!pluralStrings.two).toBeTruthy();
+        expect(!pluralStrings.few).toBeTruthy();
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("b");
+        expect(resources[1].getKey()).toBe("a");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "c");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("d");
+        expect(resources[2].getKey()).toBe("c");
 
-        test.equal(resources[3].getType(), "array");
-        test.equal(resources[3].getKey(), "asdf");
+        expect(resources[3].getType()).toBe("array");
+        expect(resources[3].getKey()).toBe("asdf");
         var arrayStrings = resources[3].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings.length).toBe(3);
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseComplexNestedStrings: function(test) {
-        test.expect(10);
+    test("XmlFileParseComplexNestedStrings", function() {
+        expect.assertions(10);
 
         // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
@@ -701,7 +647,7 @@ module.exports.xmlfile = {
             pathName: "force-app/default/main/translations/app.translation-meta.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -718,25 +664,23 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "Section One");
-        test.equal(resources[0].getKey(), "Section1");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("Section One");
+        expect(resources[0].getKey()).toBe("Section1");
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getKey(), "Report1");
-        test.equal(resources[1].getSource(), "Report One");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getKey()).toBe("Report1");
+        expect(resources[1].getSource()).toBe("Report One");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseArrayOfStrings: function(test) {
-        test.expect(11);
+    test("XmlFileParseArrayOfStrings", function() {
+        expect.assertions(11);
 
         // when it's named arrays.xml, it should apply the arrays schema
         var xf = new XmlFile({
@@ -744,7 +688,7 @@ module.exports.xmlfile = {
             pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -757,33 +701,31 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
 
         var resources = set.getAll();
-        test.equal(resources.length, 1);
-        test.equal(resources[0].getType(), 'array');
-        test.equal(resources[0].getKey(), 'strings');
+        expect(resources.length).toBe(1);
+        expect(resources[0].getType()).toBe('array');
+        expect(resources[0].getKey()).toBe('strings');
 
         var arrayStrings = resources[0].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings.length, 3);
-        test.equal(arrayStrings[0], "string 1");
-        test.equal(arrayStrings[1], "string 2");
-        test.equal(arrayStrings[2], "string 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings.length).toBe(3);
+        expect(arrayStrings[0]).toBe("string 1");
+        expect(arrayStrings[1]).toBe("string 2");
+        expect(arrayStrings[2]).toBe("string 3");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseArrayOfNumbers: function(test) {
-        test.expect(12);
+    test("XmlFileParseArrayOfNumbers", function() {
+        expect.assertions(12);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<resources>\n' +
@@ -797,34 +739,32 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
 
         var resources = set.getAll();
-        test.equal(resources.length, 1);
-        test.equal(resources[0].getType(), 'array');
-        test.equal(resources[0].getKey(), 'numbers');
+        expect(resources.length).toBe(1);
+        expect(resources[0].getType()).toBe('array');
+        expect(resources[0].getKey()).toBe('numbers');
 
         var arrayNumbers = resources[0].getSourceArray();
-        test.ok(arrayNumbers);
-        test.equal(arrayNumbers.length, 4);
-        test.equal(arrayNumbers[0], "15");
-        test.equal(arrayNumbers[1], "-3");
-        test.equal(arrayNumbers[2], "1.18");
-        test.equal(arrayNumbers[3], "0");
+        expect(arrayNumbers).toBeTruthy();
+        expect(arrayNumbers.length).toBe(4);
+        expect(arrayNumbers[0]).toBe("15");
+        expect(arrayNumbers[1]).toBe("-3");
+        expect(arrayNumbers[2]).toBe("1.18");
+        expect(arrayNumbers[3]).toBe("0");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseArrayOfBooleans: function(test) {
-        test.expect(10);
+    test("XmlFileParseArrayOfBooleans", function() {
+        expect.assertions(10);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -836,25 +776,23 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 1);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
 
         var resources = set.getAll();
-        test.equal(resources.length, 1);
-        test.equal(resources[0].getType(), 'array');
-        test.equal(resources[0].getKey(), 'booleans');
+        expect(resources.length).toBe(1);
+        expect(resources[0].getType()).toBe('array');
+        expect(resources[0].getKey()).toBe('booleans');
 
         var arrayBooleans = resources[0].getSourceArray();
-        test.ok(arrayBooleans);
-        test.equal(arrayBooleans.length, 2);
-        test.equal(arrayBooleans[0], "true");
-        test.equal(arrayBooleans[1], "false");
+        expect(arrayBooleans).toBeTruthy();
+        expect(arrayBooleans.length).toBe(2);
+        expect(arrayBooleans[0]).toBe("true");
+        expect(arrayBooleans[1]).toBe("false");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseWithBasename: function(test) {
-        test.expect(8);
+    test("XmlFileParseWithBasename", function() {
+        expect.assertions(8);
 
         // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
@@ -862,7 +800,7 @@ module.exports.xmlfile = {
             pathName: "i18n/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<messages>\n' +
@@ -888,23 +826,21 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("b");
+        expect(resources[1].getKey()).toBe("a");
         // basename of the path to this xml file with no extensions
-        test.equal(resources[1].getContext(), "messages");
+        expect(resources[1].getContext()).toBe("messages");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseWithPathname: function(test) {
-        test.expect(8);
+    test("XmlFileParseWithPathname", function() {
+        expect.assertions(8);
 
         // when it's named messages.xml, it should apply the messages-schema schema
         var xf = new XmlFile({
@@ -912,7 +848,7 @@ module.exports.xmlfile = {
             pathName: "i18n/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<messages>\n' +
@@ -938,30 +874,28 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 4);
+        expect(set.size()).toBe(4);
         var resources = set.getAll();
-        test.equal(resources.length, 4);
+        expect(resources.length).toBe(4);
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("b");
+        expect(resources[1].getKey()).toBe("a");
         // the path to the file
-        test.equal(resources[1].getContext(), "i18n/messages.xml");
+        expect(resources[1].getContext()).toBe("i18n/messages.xml");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseDeepRightSize: function(test) {
-        test.expect(3);
+    test("XmlFileParseDeepRightSize", function() {
+        expect.assertions(3);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/deep.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<root>\n' +
@@ -988,21 +922,20 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
-        test.done();
-    },
+        expect(set.size()).toBe(3);
+    });
 
-    testXmlFileParseDeepRightStrings: function(test) {
-        test.expect(22);
+    test("XmlFileParseDeepRightStrings", function() {
+        expect.assertions(22);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/deep.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<root>\n' +
@@ -1029,48 +962,46 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
         var resources = set.getAll();
-        test.equal(resources.length, 3);
+        expect(resources.length).toBe(3);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "bar");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("bar");
         var pluralStrings = resources[0].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "singular");
-        test.equal(pluralStrings.many, "many");
-        test.equal(pluralStrings.other, "plural");
-        test.ok(!pluralStrings.zero);
-        test.ok(!pluralStrings.two);
-        test.ok(!pluralStrings.few);
-        test.equal(resources[0].flavor, "chocolate");
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("singular");
+        expect(pluralStrings.many).toBe("many");
+        expect(pluralStrings.other).toBe("plural");
+        expect(!pluralStrings.zero).toBeTruthy();
+        expect(!pluralStrings.two).toBeTruthy();
+        expect(!pluralStrings.few).toBeTruthy();
+        expect(resources[0].flavor).toBe("chocolate");
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "b");
-        test.equal(resources[1].getKey(), "a");
-        test.equal(resources[1].flavor, "chocolate");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("b");
+        expect(resources[1].getKey()).toBe("a");
+        expect(resources[1].flavor).toBe("chocolate");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "d");
-        test.equal(resources[2].getKey(), "c");
-        test.equal(resources[2].flavor, "chocolate");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("d");
+        expect(resources[2].getKey()).toBe("c");
+        expect(resources[2].flavor).toBe("chocolate");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseTestInvalidXml: function(test) {
-        test.expect(2);
+    test("XmlFileParseTestInvalidXml", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/deep.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
-        test.throws(function(test) {
+        expect(function(test) {
             xf.parse(
                 '<root>\n' +
                 '    <x>\n' +
@@ -1094,20 +1025,18 @@ module.exports.xmlfile = {
                 '    </a>\n' +
                 '</root>\n'
             );
-         });
+         }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseRefsRightSize: function(test) {
-        test.expect(3);
+    test("XmlFileParseRefsRightSize", function() {
+        expect.assertions(3);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/refs.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<root>\n' +
@@ -1136,21 +1065,20 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
-        test.done();
-    },
+        expect(set.size()).toBe(3);
+    });
 
-    testXmlFileParseRefsRightStrings: function(test) {
-        test.expect(13);
+    test("XmlFileParseRefsRightStrings", function() {
+        expect.assertions(13);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/refs.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<root>\n' +
@@ -1179,36 +1107,34 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 3);
+        expect(set.size()).toBe(3);
         var resources = set.getAll();
-        test.equal(resources.length, 3);
+        expect(resources.length).toBe(3);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getSource(), "Mobile");
-        test.equal(resources[0].getKey(), "root/owner/phone/type");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("Mobile");
+        expect(resources[0].getKey()).toBe("root/owner/phone/type");
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getSource(), "Home");
-        test.equal(resources[1].getKey(), "root/customer1/phone/type");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getSource()).toBe("Home");
+        expect(resources[1].getKey()).toBe("root/customer1/phone/type");
 
-        test.equal(resources[2].getType(), "string");
-        test.equal(resources[2].getSource(), "Work");
-        test.equal(resources[2].getKey(), "root/customer2/phone/type");
+        expect(resources[2].getType()).toBe("string");
+        expect(resources[2].getSource()).toBe("Work");
+        expect(resources[2].getKey()).toBe("root/customer2/phone/type");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseDefaultSchema: function(test) {
-        test.expect(5);
+    test("XmlFileParseDefaultSchema", function() {
+        expect.assertions(5);
 
         var xf = new XmlFile({
             project: p,
             pathName: "a/b/c/str.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1218,25 +1144,23 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
         var r = set.get(ContextResourceString.hashKey("foo", undefined, "en-US", "string 1", "xml", undefined));
-        test.ok(r);
+        expect(r).toBeTruthy();
 
-        test.equal(r.getSource(), "this is string one");
-        test.equal(r.getKey(), "string 1");
+        expect(r.getSource()).toBe("this is string one");
+        expect(r.getKey()).toBe("string 1");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseExtractComments: function(test) {
-        test.expect(10);
+    test("XmlFileParseExtractComments", function() {
+        expect.assertions(10);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1246,32 +1170,30 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getSource(), "this is string one");
-        test.equal(resources[0].getKey(), "string 1");
-        test.equal(resources[0].getComment(), "comment for string 1");
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe("comment for string 1");
 
-        test.equal(resources[1].getSource(), "this is string two");
-        test.equal(resources[1].getKey(), "string 2");
-        test.equal(resources[1].getComment(), "comment for string 2");
+        expect(resources[1].getSource()).toBe("this is string two");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getComment()).toBe("comment for string 2");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseArraysOfArrays: function(test) {
-        test.expect(18);
+    test("XmlFileParseArraysOfArrays", function() {
+        expect.assertions(18);
 
         var xf = new XmlFile({
             project: p,
             pathName: "xml/values/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<resources>\n' +
@@ -1289,42 +1211,40 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getType(), "array");
-        test.equal(resources[0].getKey(), "array1");
+        expect(resources[0].getType()).toBe("array");
+        expect(resources[0].getKey()).toBe("array1");
         var arr = resources[0].getSourceArray();
-        test.ok(arr);
-        test.equal(arr.length, 3);
-        test.equal(arr[0], "array 1 item 1");
-        test.equal(arr[1], "array 1 item 2");
-        test.equal(arr[2], "array 1 item 3");
+        expect(arr).toBeTruthy();
+        expect(arr.length).toBe(3);
+        expect(arr[0]).toBe("array 1 item 1");
+        expect(arr[1]).toBe("array 1 item 2");
+        expect(arr[2]).toBe("array 1 item 3");
 
-        test.equal(resources[1].getType(), "array");
-        test.equal(resources[1].getKey(), "array2");
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getKey()).toBe("array2");
         arr = resources[1].getSourceArray();
-        test.ok(arr);
-        test.equal(arr.length, 3);
-        test.equal(arr[0], "array 2 item 1");
-        test.equal(arr[1], "array 2 item 2");
-        test.equal(arr[2], "array 2 item 3");
+        expect(arr).toBeTruthy();
+        expect(arr.length).toBe(3);
+        expect(arr[0]).toBe("array 2 item 1");
+        expect(arr[1]).toBe("array 2 item 2");
+        expect(arr[2]).toBe("array 2 item 3");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseArraysOfPlurals: function(test) {
-        test.expect(16);
+    test("XmlFileParseArraysOfPlurals", function() {
+        expect.assertions(16);
 
         var xf = new XmlFile({
             project: p,
             pathName: "xml/values/plurals.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<resources>\n' +
@@ -1342,40 +1262,38 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "plural1");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("plural1");
         var plural = resources[0].getSourcePlurals();
-        test.ok(plural);
-        test.equal(plural.one, "plural 1 item 1");
-        test.equal(plural.many, "plural 1 item 2");
-        test.equal(plural.other, "plural 1 item 3");
+        expect(plural).toBeTruthy();
+        expect(plural.one).toBe("plural 1 item 1");
+        expect(plural.many).toBe("plural 1 item 2");
+        expect(plural.other).toBe("plural 1 item 3");
 
-        test.equal(resources[1].getType(), "plural");
-        test.equal(resources[1].getKey(), "plural2");
+        expect(resources[1].getType()).toBe("plural");
+        expect(resources[1].getKey()).toBe("plural2");
         plural = resources[1].getSourcePlurals();
-        test.ok(plural);
-        test.equal(plural.one, "plural 2 item 1");
-        test.equal(plural.many, "plural 2 item 2");
-        test.equal(plural.other, "plural 2 item 3");
+        expect(plural).toBeTruthy();
+        expect(plural.one).toBe("plural 2 item 1");
+        expect(plural.many).toBe("plural 2 item 2");
+        expect(plural.other).toBe("plural 2 item 3");
+    });
 
-        test.done();
-    },
-
-    testXmlFileParseArraysOfStrings: function(test) {
-        test.expect(10);
+    test("XmlFileParseArraysOfStrings", function() {
+        expect.assertions(10);
 
         var xf = new XmlFile({
             project: p,
             pathName: "xml/values/strings.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<resources>\n' +
@@ -1385,105 +1303,101 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
+        expect(set).toBeTruthy();
 
-        test.equal(set.size(), 2);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        test.equal(resources.length, 2);
+        expect(resources.length).toBe(2);
 
-        test.equal(resources[0].getType(), "string");
-        test.equal(resources[0].getKey(), "string1");
-        test.equal(resources[0].getSource(), "This is string1");
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getKey()).toBe("string1");
+        expect(resources[0].getSource()).toBe("This is string1");
 
-        test.equal(resources[1].getType(), "string");
-        test.equal(resources[1].getKey(), "string2");
-        test.equal(resources[1].getSource(), "This is string2");
+        expect(resources[1].getType()).toBe("string");
+        expect(resources[1].getKey()).toBe("string2");
+        expect(resources[1].getSource()).toBe("This is string2");
+    });
 
-        test.done();
-    },
-
-    testXmlFileExtractFile: function(test) {
-        test.expect(46);
+    test("XmlFileExtractFile", function() {
+        expect.assertions(46);
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
 
         var set = xf.getTranslationSet();
 
-        test.equal(set.size(), 9);
+        expect(set.size()).toBe(9);
 
         var resources = set.getAll();
-        test.equal(resources.length, 9);
+        expect(resources.length).toBe(9);
 
-        test.equal(resources[0].getType(), "plural");
+        expect(resources[0].getType()).toBe("plural");
         var categories = resources[0].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.other, "asdf");
-        test.ok(!categories.many);
-        test.ok(!categories.one);
-        test.equal(resources[0].getKey(), "foo");
+        expect(categories).toBeTruthy();
+        expect(categories.other).toBe("asdf");
+        expect(!categories.many).toBeTruthy();
+        expect(!categories.one).toBeTruthy();
+        expect(resources[0].getKey()).toBe("foo");
 
-        test.equal(resources[1].getType(), "plural");
+        expect(resources[1].getType()).toBe("plural");
         categories = resources[1].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one");
-        test.equal(categories.many, "many");
-        test.equal(categories.other, "other");
-        test.equal(resources[1].getKey(), "bar");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one");
+        expect(categories.many).toBe("many");
+        expect(categories.other).toBe("other");
+        expect(resources[1].getKey()).toBe("bar");
 
-        test.equal(resources[2].getType(), "plural");
+        expect(resources[2].getType()).toBe("plural");
         categories = resources[2].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one");
-        test.equal(categories.many, "many");
-        test.equal(categories.other, "other");
-        test.equal(resources[2].getKey(), "attribute");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one");
+        expect(categories.many).toBe("many");
+        expect(categories.other).toBe("other");
+        expect(resources[2].getKey()).toBe("attribute");
 
-        test.equal(resources[3].getType(), "plural");
+        expect(resources[3].getType()).toBe("plural");
         categories = resources[3].getSourcePlurals();
-        test.ok(categories);
-        test.equal(categories.one, "one");
-        test.equal(categories.many, "many");
-        test.equal(categories.other, "other");
-        test.equal(resources[3].getKey(), "hybrid");
+        expect(categories).toBeTruthy();
+        expect(categories.one).toBe("one");
+        expect(categories.many).toBe("many");
+        expect(categories.other).toBe("other");
+        expect(resources[3].getKey()).toBe("hybrid");
 
-        test.equal(resources[4].getType(), "array");
+        expect(resources[4].getType()).toBe("array");
         var arr = resources[4].getSourceArray();
-        test.ok(arr);
-        test.equal(arr.length, 3);
-        test.equal(arr[0], "value 1");
-        test.equal(arr[1], "value 2");
-        test.equal(arr[2], "value 3");
-        test.equal(resources[4].getKey(), "asdf");
+        expect(arr).toBeTruthy();
+        expect(arr.length).toBe(3);
+        expect(arr[0]).toBe("value 1");
+        expect(arr[1]).toBe("value 2");
+        expect(arr[2]).toBe("value 3");
+        expect(resources[4].getKey()).toBe("asdf");
 
-        test.equal(resources[5].getType(), "string");
-        test.equal(resources[5].getSource(), "b");
-        test.equal(resources[5].getKey(), "a");
+        expect(resources[5].getType()).toBe("string");
+        expect(resources[5].getSource()).toBe("b");
+        expect(resources[5].getKey()).toBe("a");
 
-        test.equal(resources[6].getType(), "string");
-        test.equal(resources[6].getSource(), "d");
-        test.equal(resources[6].getKey(), "c");
+        expect(resources[6].getType()).toBe("string");
+        expect(resources[6].getSource()).toBe("d");
+        expect(resources[6].getKey()).toBe("c");
 
-        test.equal(resources[7].getType(), "string");
-        test.equal(resources[7].getSource(), "f");
-        test.equal(resources[7].getKey(), "key1");
+        expect(resources[7].getType()).toBe("string");
+        expect(resources[7].getSource()).toBe("f");
+        expect(resources[7].getKey()).toBe("key1");
 
-        test.equal(resources[8].getType(), "string");
-        test.equal(resources[8].getSource(), "g");
-        test.equal(resources[8].getKey(), "key2");
+        expect(resources[8].getType()).toBe("string");
+        expect(resources[8].getSource()).toBe("g");
+        expect(resources[8].getKey()).toBe("key2");
+    });
 
-        test.done();
-    },
-
-    testXmlFileExtractUndefinedFile: function(test) {
-        test.expect(2);
+    test("XmlFileExtractUndefinedFile", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -1491,20 +1405,18 @@ module.exports.xmlfile = {
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should attempt to read the file and not fail
         xf.extract();
 
         var set = xf.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testXmlFileExtractBogusFile: function(test) {
-        test.expect(2);
+    test("XmlFileExtractBogusFile", function() {
+        expect.assertions(2);
 
         var base = path.dirname(module.id);
 
@@ -1513,26 +1425,24 @@ module.exports.xmlfile = {
             pathName: "./xml/bogus.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should attempt to read the file and not fail
         xf.extract();
 
         var set = xf.getTranslationSet();
 
-        test.equal(set.size(), 0);
+        expect(set.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeTextSimple: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextSimple", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1560,18 +1470,17 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeTextRemoveComments: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextRemoveComments", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1599,18 +1508,17 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeWithEmptyStringInFile: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeWithEmptyStringInFile", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1638,18 +1546,17 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeTheEmptyString: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTheEmptyString", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1686,19 +1593,18 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeTextWithSchema: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextWithSchema", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<messages>\n' +
@@ -1801,19 +1707,18 @@ module.exports.xmlfile = {
             '</messages>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeTextMethodSparse: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextMethodSparse", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/sparse.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1840,19 +1745,18 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeTextWithSchemaSparseComplex: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextWithSchemaSparseComplex", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/sparse2.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
              '<messages>\n' +
@@ -1919,19 +1823,18 @@ module.exports.xmlfile = {
              '</messages>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeArrayOfStrings: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeArrayOfStrings", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -1973,20 +1876,18 @@ module.exports.xmlfile = {
              '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeArrayOfStringsSparse: function(test) {
-        test.expect(6);
+    test("XmlFileLocalizeArrayOfStringsSparse", function() {
+        expect.assertions(6);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/arrays-sparse.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -2004,8 +1905,8 @@ module.exports.xmlfile = {
         );
 
         var set = xf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 2);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
 
         var translations = new TranslationSet('en-US');
         translations.add(new ResourceArray({
@@ -2037,24 +1938,22 @@ module.exports.xmlfile = {
              '</resources>\n';
 
         set = xf.getTranslationSet();
-        test.ok(set);
-        test.equal(set.size(), 2);
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeArrayOfNumbers: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeArrayOfNumbers", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "i18n/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -2102,20 +2001,18 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeTextUsePseudoForMissing: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextUsePseudoForMissing", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p2,
             pathName: "./xml/messages.xml",
             type: t2
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<messages>\n' +
@@ -2147,41 +2044,40 @@ module.exports.xmlfile = {
             '<messages>\n' +
             '    <plurals name="foo">\n' +
             '        <bar>\n' +
-            '            <one>šíñğüľàŕ3210</one>\n' +
-            '            <many>màñÿ10</many>\n' +
-            '            <other>þľüŕàľ210</other>\n' +
+            '            <one>[šíñğüľàŕ3210]</one>\n' +
+            '            <many>[màñÿ10]</many>\n' +
+            '            <other>[þľüŕàľ210]</other>\n' +
             '        </bar>\n' +
             '    </plurals>\n' +
             '    <strings>\n' +
-            '        <a>b0</a>\n' +
-            '        <c>ð0</c>\n' +
+            '        <a>[b0]</a>\n' +
+            '        <c>[ð0]</c>\n' +
             '    </strings>\n' +
             '    <arrays>\n' +
             '        <asdf i18n="comment">\n' +
-            '            <item>Šţŕíñğ 13210</item>\n' +
-            '            <item>Šţŕíñğ 23210</item>\n' +
-            '            <item>Šţŕíñğ 33210</item>\n' +
+            '            <item>[Šţŕíñğ 13210]</item>\n' +
+            '            <item>[Šţŕíñğ 23210]</item>\n' +
+            '            <item>[Šţŕíñğ 33210]</item>\n' +
             '        </asdf>\n' +
             '    </arrays>\n' +
             '</messages>\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
 /*
     not implemented yet
 
-    testXmlFileLocalizeTextMethodSpread: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextMethodSpread", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/spread.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '{\n' +
@@ -2221,19 +2117,18 @@ module.exports.xmlfile = {
             '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXmlFileLocalizeTextMethodSpreadMultilingual: function(test) {
-        test.expect(2);
+    test("XmlFileLocalizeTextMethodSpreadMultilingual", function() {
+        expect.assertions(2);
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/spread.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '{\n' +
@@ -2293,13 +2188,12 @@ module.exports.xmlfile = {
             '}\n';
 
         diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 */
 
-    testXmlGetLocalizedPath: function(test) {
-        test.expect(4);
+    test("XmlGetLocalizedPath", function() {
+        expect.assertions(4);
 
         // mapping contains a locale map
         var xf = new XmlFile({
@@ -2307,17 +2201,15 @@ module.exports.xmlfile = {
             pathName: "./xml/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
-        test.equal(xf.getLocalizedPath("de-DE"), "resources/de/arrays.xml");
-        test.equal(xf.getLocalizedPath("fr-FR"), "resources/fr/arrays.xml");
-        test.equal(xf.getLocalizedPath("en-001"), "resources/en/GB/arrays.xml");
+        expect(xf.getLocalizedPath("de-DE")).toBe("resources/de/arrays.xml");
+        expect(xf.getLocalizedPath("fr-FR")).toBe("resources/fr/arrays.xml");
+        expect(xf.getLocalizedPath("en-001")).toBe("resources/en/GB/arrays.xml");
+    });
 
-        test.done();
-    },
-
-    testXmlGetLocalizedPathNonMapping: function(test) {
-        test.expect(3);
+    test("XmlGetLocalizedPathNonMapping", function() {
+        expect.assertions(3);
 
         // mapping contains a locale map
         var xf = new XmlFile({
@@ -2325,17 +2217,15 @@ module.exports.xmlfile = {
             pathName: "./xml/arrays.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // non-mappings
-        test.equal(xf.getLocalizedPath("da"), "resources/da/arrays.xml");
-        test.equal(xf.getLocalizedPath("en-CA"), "resources/en/CA/arrays.xml");
+        expect(xf.getLocalizedPath("da")).toBe("resources/da/arrays.xml");
+        expect(xf.getLocalizedPath("en-CA")).toBe("resources/en/CA/arrays.xml");
+    });
 
-        test.done();
-    },
-
-    testXmlGetLocalizedPathNoLocaleMap: function(test) {
-        test.expect(4);
+    test("XmlGetLocalizedPathNoLocaleMap", function() {
+        expect.assertions(4);
 
         // mapping does not contain a locale map
         var xf = new XmlFile({
@@ -2343,17 +2233,15 @@ module.exports.xmlfile = {
             pathName: "xml/values/strings.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
-        test.equal(xf.getLocalizedPath("de-DE"), "resources/values-de-rDE/strings.xml");
-        test.equal(xf.getLocalizedPath("fr-FR"), "resources/values-fr-rFR/strings.xml");
-        test.equal(xf.getLocalizedPath("en-001"), "resources/values-en-r001/strings.xml");
+        expect(xf.getLocalizedPath("de-DE")).toBe("resources/values-de-rDE/strings.xml");
+        expect(xf.getLocalizedPath("fr-FR")).toBe("resources/values-fr-rFR/strings.xml");
+        expect(xf.getLocalizedPath("en-001")).toBe("resources/values-en-r001/strings.xml");
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalize: function(test) {
-        test.expect(7);
+    test("XmlFileLocalize", function() {
+        expect.assertions(7);
 
         var base = path.dirname(module.id);
 
@@ -2364,15 +2252,15 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
@@ -2486,8 +2374,8 @@ module.exports.xmlfile = {
 
         xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"), "utf-8");
 
@@ -2526,7 +2414,7 @@ module.exports.xmlfile = {
 
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.xml"), "utf-8");
 
@@ -2564,13 +2452,11 @@ module.exports.xmlfile = {
             '</messages>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeNoTranslations: function(test) {
-        test.expect(5);
+    test("XmlFileLocalizeNoTranslations", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2581,15 +2467,15 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/messages.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
@@ -2599,14 +2485,12 @@ module.exports.xmlfile = {
         xf.localize(translations, ["fr-FR", "de-DE"]);
 
         // should produce the files, even if there is nothing to localize in them
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.xml"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeMethodSparse: function(test) {
-        test.expect(7);
+    test("XmlFileLocalizeMethodSparse", function() {
+        expect.assertions(7);
 
         var base = path.dirname(module.id);
 
@@ -2617,15 +2501,15 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/sparse2.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
@@ -2684,8 +2568,8 @@ module.exports.xmlfile = {
 
         xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"))).toBeTruthy();
 
         // should only contain the things that were actually translated
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"), "utf-8");
@@ -2704,7 +2588,7 @@ module.exports.xmlfile = {
              '</messages>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
 
         content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"), "utf-8");
 
@@ -2721,13 +2605,11 @@ module.exports.xmlfile = {
              '    </strings>\n' +
              '</messages>\n';
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeExtractNewStrings: function(test) {
-        test.expect(65);
+    test("XmlFileLocalizeExtractNewStrings", function() {
+        expect.assertions(65);
 
         var base = path.dirname(module.id);
 
@@ -2738,19 +2620,19 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/sparse2.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // make sure we start off with no new strings
         t.newres.clear();
-        test.equal(t.newres.size(), 0);
+        expect(t.newres.size()).toBe(0);
 
         // should read the file
         xf.extract();
@@ -2794,94 +2676,92 @@ module.exports.xmlfile = {
 
         xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/sparse2.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.xml"))).toBeTruthy();
 
         // now verify that the strings which did not have translations show up in the
         // new strings translation set
-        test.equal(t.newres.size(), 7);
+        expect(t.newres.size()).toBe(7);
         var resources = t.newres.getAll();
-        test.equal(resources.length, 7);
+        expect(resources.length).toBe(7);
 
-        test.equal(resources[0].getType(), "plural");
-        test.equal(resources[0].getKey(), "foo");
-        test.equal(resources[0].getTargetLocale(), "fr-FR");
+        expect(resources[0].getType()).toBe("plural");
+        expect(resources[0].getKey()).toBe("foo");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
         var pluralStrings = resources[0].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.ok(!pluralStrings.one);
-        test.equal(pluralStrings.other, "asdf");
+        expect(pluralStrings).toBeTruthy();
+        expect(!pluralStrings.one).toBeTruthy();
+        expect(pluralStrings.other).toBe("asdf");
         pluralStrings = resources[0].getTargetPlurals();
-        test.ok(pluralStrings);
-        test.ok(!pluralStrings.one);
-        test.equal(pluralStrings.other, "asdf");
+        expect(pluralStrings).toBeTruthy();
+        expect(!pluralStrings.one).toBeTruthy();
+        expect(pluralStrings.other).toBe("asdf");
 
-        test.equal(resources[1].getType(), "plural");
-        test.equal(resources[1].getKey(), "bar");
-        test.equal(resources[1].getTargetLocale(), "fr-FR");
+        expect(resources[1].getType()).toBe("plural");
+        expect(resources[1].getKey()).toBe("bar");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
         var pluralStrings = resources[1].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "one");
-        test.equal(pluralStrings.other, "other");
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("one");
+        expect(pluralStrings.other).toBe("other");
         pluralStrings = resources[1].getTargetPlurals();
-        test.ok(pluralStrings);
-        test.equal(pluralStrings.one, "one");
-        test.equal(pluralStrings.other, "other");
+        expect(pluralStrings).toBeTruthy();
+        expect(pluralStrings.one).toBe("one");
+        expect(pluralStrings.other).toBe("other");
 
-        test.equal(resources[2].getType(), "array");
-        test.equal(resources[2].getKey(), "asdf");
-        test.equal(resources[2].getTargetLocale(), "fr-FR");
+        expect(resources[2].getType()).toBe("array");
+        expect(resources[2].getKey()).toBe("asdf");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
         var arrayStrings = resources[2].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
         arrayStrings = resources[2].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
 
-        test.equal(resources[3].getType(), "string");
-        test.equal(resources[3].getSource(), "d");
-        test.equal(resources[3].getKey(), "c");
-        test.equal(resources[3].getTargetLocale(), "fr-FR");
+        expect(resources[3].getType()).toBe("string");
+        expect(resources[3].getSource()).toBe("d");
+        expect(resources[3].getKey()).toBe("c");
+        expect(resources[3].getTargetLocale()).toBe("fr-FR");
 
-        test.equal(resources[4].getType(), "plural");
-        test.equal(resources[4].getKey(), "foo");
-        test.equal(resources[4].getTargetLocale(), "de-DE");
+        expect(resources[4].getType()).toBe("plural");
+        expect(resources[4].getKey()).toBe("foo");
+        expect(resources[4].getTargetLocale()).toBe("de-DE");
         var pluralStrings = resources[4].getSourcePlurals();
-        test.ok(pluralStrings);
-        test.ok(!pluralStrings.one);
-        test.equal(pluralStrings.other, "asdf");
+        expect(pluralStrings).toBeTruthy();
+        expect(!pluralStrings.one).toBeTruthy();
+        expect(pluralStrings.other).toBe("asdf");
         pluralStrings = resources[4].getTargetPlurals();
-        test.ok(pluralStrings);
-        test.ok(!pluralStrings.one);
-        test.equal(pluralStrings.other, "asdf");
+        expect(pluralStrings).toBeTruthy();
+        expect(!pluralStrings.one).toBeTruthy();
+        expect(pluralStrings.other).toBe("asdf");
 
-        test.equal(resources[5].getType(), "array");
-        test.equal(resources[5].getKey(), "asdf");
-        test.equal(resources[5].getTargetLocale(), "de-DE");
+        expect(resources[5].getType()).toBe("array");
+        expect(resources[5].getKey()).toBe("asdf");
+        expect(resources[5].getTargetLocale()).toBe("de-DE");
         var arrayStrings = resources[5].getSourceArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
         arrayStrings = resources[5].getTargetArray();
-        test.ok(arrayStrings);
-        test.equal(arrayStrings[0], "value 1");
-        test.equal(arrayStrings[1], "value 2");
-        test.equal(arrayStrings[2], "value 3");
+        expect(arrayStrings).toBeTruthy();
+        expect(arrayStrings[0]).toBe("value 1");
+        expect(arrayStrings[1]).toBe("value 2");
+        expect(arrayStrings[2]).toBe("value 3");
 
-        test.equal(resources[6].getType(), "string");
-        test.equal(resources[6].getSource(), "d");
-        test.equal(resources[6].getKey(), "c");
-        test.equal(resources[6].getTargetLocale(), "de-DE");
+        expect(resources[6].getType()).toBe("string");
+        expect(resources[6].getSource()).toBe("d");
+        expect(resources[6].getKey()).toBe("c");
+        expect(resources[6].getTargetLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeWithAlternateFileNameTemplate: function(test) {
-        test.expect(5);
+    test("XmlFileLocalizeWithAlternateFileNameTemplate", function() {
+        expect.assertions(5);
 
         var base = path.dirname(module.id);
 
@@ -2892,15 +2772,15 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/deep_de-DE.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml")));
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml"))).toBeTruthy();
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/deep.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
@@ -2910,14 +2790,12 @@ module.exports.xmlfile = {
 
         xf.localize(translations, ["fr-FR", "de-DE"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml")));
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/deep_fr-FR.xml"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "testfiles/resources/deep_de-DE.xml"))).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeDefaultMethodAndTemplate: function(test) {
-        test.expect(4);
+    test("XmlFileLocalizeDefaultMethodAndTemplate", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -2926,7 +2804,7 @@ module.exports.xmlfile = {
             pathName: "x/y/nomatch.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -2951,11 +2829,11 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"))).toBeTruthy();
 
         xf.localize(translations, ["fr-FR"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/x/y/nomatch-fr_FR.xml"), "utf-8");
 
@@ -2967,13 +2845,11 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeWithRussianPlurals: function(test) {
-        test.expect(4);
+    test("XmlFileLocalizeWithRussianPlurals", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -2981,14 +2857,14 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
@@ -3033,7 +2909,7 @@ module.exports.xmlfile = {
 
         xf.localize(translations, ["ru-RU"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/ru/RU/messages.xml"), "utf-8");
 
@@ -3077,13 +2953,11 @@ module.exports.xmlfile = {
             '</messages>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeWithJapanesePlurals: function(test) {
-        test.expect(4);
+    test("XmlFileLocalizeWithJapanesePlurals", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -3091,14 +2965,14 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"))).toBeTruthy();
 
         var xf = new XmlFile({
             project: p,
             pathName: "./xml/messages.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         // should read the file
         xf.extract();
@@ -3140,7 +3014,7 @@ module.exports.xmlfile = {
 
         xf.localize(translations, ["ja-JP"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/ja/JP/messages.xml"), "utf-8");
 
@@ -3176,13 +3050,11 @@ module.exports.xmlfile = {
             '</messages>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeDefaultSchemaAndroidPluralTemplate: function(test) {
-        test.expect(4);
+    test("XmlFileLocalizeDefaultSchemaAndroidPluralTemplate", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -3191,7 +3063,7 @@ module.exports.xmlfile = {
             pathName: "x/y/nomatch.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -3236,11 +3108,11 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"))).toBeTruthy();
 
         xf.localize(translations, ["ru-RU"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/x/y/nomatch-ru_RU.xml"), "utf-8");
 
@@ -3256,13 +3128,11 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
+        expect(content).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXmlFileLocalizeDefaultSchemaAndroidPluralTemplateJA: function(test) {
-        test.expect(4);
+    test("XmlFileLocalizeDefaultSchemaAndroidPluralTemplateJA", function() {
+        expect.assertions(4);
 
         var base = path.dirname(module.id);
 
@@ -3271,7 +3141,7 @@ module.exports.xmlfile = {
             pathName: "x/y/nomatch.xml",
             type: t
         });
-        test.ok(xf);
+        expect(xf).toBeTruthy();
 
         xf.parse(
             '<resources>\n' +
@@ -3314,11 +3184,11 @@ module.exports.xmlfile = {
             fs.unlinkSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"));
         }
 
-        test.ok(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml")));
+        expect(!fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"))).toBeTruthy();
 
         xf.localize(translations, ["ja-JP"]);
 
-        test.ok(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml")));
+        expect(fs.existsSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"))).toBeTruthy();
 
         var content = fs.readFileSync(path.join(base, "testfiles/x/y/nomatch-ja_JP.xml"), "utf-8");
 
@@ -3332,8 +3202,6 @@ module.exports.xmlfile = {
             '</resources>\n';
 
         diff(content, expected);
-        test.equal(content, expected);
-
-        test.done();
-    }
-};
+        expect(content).toBe(expected);
+    });
+});
