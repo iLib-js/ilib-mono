@@ -1,5 +1,5 @@
 /*
- * testPrintfNumberedRule.js - test the substitution parameter numbering rule
+ * PrintfNumberedRule.test.js - test the substitution parameter numbering rule
  *
  * Copyright © 2022-2023 JEDLSoft
  *
@@ -22,69 +22,59 @@ import PrintfNumberedRule from '../src/PrintfNumberedRule.js';
 
 import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
-export const testPrintfNumberedRules = {
-    testPrintfNumberedRuleStyle: function(test) {
-        test.expect(1);
+describe("testPrintfNumberedRules", () => {
+    test("PrintfNumberedRuleStyle", () => {
+        expect.assertions(1);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleStyleName: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleStyleName", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getName(), "resource-printf-params-numbered");
+        expect(rule.getName()).toBe("resource-printf-params-numbered");
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleStyleDescription: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleStyleDescription", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getDescription(), "Test that the printf-like substitution parameters in the source are numbered if there are multiple.");
+        expect(rule.getDescription()).toBe("Test that the printf-like substitution parameters in the source are numbered if there are multiple.");
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleStyleSourceLocale: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleStyleSourceLocale", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getSourceLocale(), "de-DE");
+        expect(rule.getSourceLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleStyleGetRuleType: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleStyleGetRuleType", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getRuleType(), "resource");
+        expect(rule.getRuleType()).toBe("resource");
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMissingNumbering: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMissingNumbering", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -118,16 +108,14 @@ export const testPrintfNumberedRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMatchNoParams: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMatchNoParams", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -143,16 +131,14 @@ export const testPrintfNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMatchOneNumbered: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMatchOneNumbered", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -168,16 +154,14 @@ export const testPrintfNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMatchOneUnnumbered: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMatchOneUnnumbered", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -193,16 +177,14 @@ export const testPrintfNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMissingOneNumberedOneNot: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMissingOneNumberedOneNot", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -226,16 +208,14 @@ export const testPrintfNumberedRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMissingTwoNumberedOneNot: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMissingTwoNumberedOneNot", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -259,16 +239,14 @@ export const testPrintfNumberedRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testPrintfNumberedRuleMissingOneNumberedTwoNot: function(test) {
-        test.expect(2);
+    test("PrintfNumberedRuleMissingOneNumberedTwoNot", () => {
+        expect.assertions(2);
 
         const rule = new PrintfNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -302,8 +280,6 @@ export const testPrintfNumberedRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
-
-        test.done();
-    }
-};
+        expect(actual).toStrictEqual(expected);
+    });
+});

@@ -1,5 +1,5 @@
 /*
- * testPrintfMatchRule.js - test the substitution parameter rule
+ * PrintfMatchRule.test.js - test the substitution parameter rule
  *
  * Copyright © 2022-2023 JEDLSoft
  *
@@ -22,69 +22,59 @@ import PrintfMatchRule from '../src/PrintfMatchRule.js';
 
 import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
-export const testPrintfMatchRules = {
-    testPrintfMatchRuleStyle: function(test) {
-        test.expect(1);
+describe("testPrintfMatchRules", () => {
+    test("PrintfMatchRuleStyle", () => {
+        expect.assertions(1);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleStyleName: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleStyleName", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getName(), "resource-printf-params-match");
+        expect(rule.getName()).toBe("resource-printf-params-match");
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleStyleDescription: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleStyleDescription", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getDescription(), "Test that the printf-like substitution parameters match in the source and target strings.");
+        expect(rule.getDescription()).toBe("Test that the printf-like substitution parameters match in the source and target strings.");
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleStyleSourceLocale: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleStyleSourceLocale", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getSourceLocale(), "de-DE");
+        expect(rule.getSourceLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleStyleGetRuleType: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleStyleGetRuleType", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getRuleType(), "resource");
+        expect(rule.getRuleType()).toBe("resource");
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchMissingInTarget: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchMissingInTarget", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -111,16 +101,14 @@ export const testPrintfMatchRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchNoParams: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchNoParams", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -138,16 +126,14 @@ export const testPrintfMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchExtraParamsInTarget: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchExtraParamsInTarget", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -174,16 +160,14 @@ export const testPrintfMatchRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchMatchingParams: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchMatchingParams", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -201,16 +185,14 @@ export const testPrintfMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchMatchingParamsMultiple: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchMatchingParamsMultiple", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -228,16 +210,14 @@ export const testPrintfMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchMatchingParamsComplicated: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchMatchingParamsComplicated", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -255,16 +235,14 @@ export const testPrintfMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchNonMatchingParamsComplicated: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchNonMatchingParamsComplicated", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -302,16 +280,14 @@ export const testPrintfMatchRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testPrintfMatchRuleMatchMatchingParamsNumbered: function(test) {
-        test.expect(2);
+    test("PrintfMatchRuleMatchMatchingParamsNumbered", () => {
+        expect.assertions(2);
 
         const rule = new PrintfMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -329,9 +305,7 @@ export const testPrintfMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
-
-        test.done();
-    }
-};
+        expect(!actual).toBeTruthy();
+    });
+});
 
