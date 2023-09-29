@@ -58,7 +58,7 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "jest": "^29.7.0",
+        "jest": "^26.3.0",
         "loctool": "^2.20.2"
     }
 }
