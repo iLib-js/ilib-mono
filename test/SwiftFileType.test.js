@@ -1,7 +1,7 @@
 /*
- * testSwiftFileTypeType.js - test the Swift file type handler object.
+ * SwiftFileTypeType.test.js - test the Swift file type handler object.
  *
- * Copyright © 2019, Box, Inc.
+ * Copyright © 2019, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,69 +39,57 @@ var p = new CustomProject({
     targetDir: "testfiles"
 });
 
-module.exports.swiftfiletype = {
-    testSwiftFileTypeConstructor: function(test) {
-        test.expect(1);
+describe("swiftfiletype", function() {
+    test("SwiftFileTypeConstructor", function() {
+        expect.assertions(1);
 
         var stf = new SwiftFileType(p);
 
-        test.ok(stf);
+        expect(stf).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testSwiftFileTypeHandlesTrue: function(test) {
-        test.expect(2);
+    test("SwiftFileTypeHandlesTrue", function() {
+        expect.assertions(2);
 
         var stf = new SwiftFileType(p);
-        test.ok(stf);
+        expect(stf).toBeTruthy();
 
-        test.ok(stf.handles("foo.swift"));
+        expect(stf.handles("foo.swift")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testSwiftFileTypeHandlesHeaderFileTrue: function(test) {
-        test.expect(2);
+    test("SwiftFileTypeHandlesHeaderFileTrue", function() {
+        expect.assertions(2);
 
         var stf = new SwiftFileType(p);
-        test.ok(stf);
+        expect(stf).toBeTruthy();
 
-        test.ok(stf.handles("foo.h"));
+        expect(stf.handles("foo.h")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testSwiftFileTypeHandlesFalseClose: function(test) {
-        test.expect(2);
+    test("SwiftFileTypeHandlesFalseClose", function() {
+        expect.assertions(2);
 
         var stf = new SwiftFileType(p);
-        test.ok(stf);
+        expect(stf).toBeTruthy();
 
-        test.ok(!stf.handles("fooswift"));
+        expect(!stf.handles("fooswift")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testSwiftFileTypeHandlesFalse: function(test) {
-        test.expect(2);
+    test("SwiftFileTypeHandlesFalse", function() {
+        expect.assertions(2);
 
         var stf = new SwiftFileType(p);
-        test.ok(stf);
+        expect(stf).toBeTruthy();
 
-        test.ok(!stf.handles("foo.html"));
+        expect(!stf.handles("foo.html")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testSwiftFileTypeHandlesTrueWithDir: function(test) {
-        test.expect(2);
+    test("SwiftFileTypeHandlesTrueWithDir", function() {
+        expect.assertions(2);
 
         var stf = new SwiftFileType(p);
-        test.ok(stf);
+        expect(stf).toBeTruthy();
 
-        test.ok(stf.handles("a/b/c/foo.swift"));
-
-        test.done();
-    }
-};
+        expect(stf.handles("a/b/c/foo.swift")).toBeTruthy();
+    });
+});
