@@ -1,5 +1,5 @@
 /*
- * testFStringMatchRule.js - test the substitution parameter rule
+ * FStringMatchRule.test.js - test the substitution parameter rule
  *
  * Copyright © 2023 JEDLSoft
  *
@@ -22,69 +22,59 @@ import FStringMatchRule from '../src/FStringMatchRule.js';
 
 import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
-export const testFStringMatchRules = {
-    testFStringMatchRuleStyle: function(test) {
-        test.expect(1);
+describe("testFStringMatchRules", () => {
+    test("FStringMatchRuleStyle", () => {
+        expect.assertions(1);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleStyleName: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleStyleName", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getName(), "resource-python-fstrings-match");
+        expect(rule.getName()).toBe("resource-python-fstrings-match");
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleStyleDescription: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleStyleDescription", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getDescription(), "Test that the f-string substitution parameters match in the source and target strings.");
+        expect(rule.getDescription()).toBe("Test that the f-string substitution parameters match in the source and target strings.");
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleStyleSourceLocale: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleStyleSourceLocale", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getSourceLocale(), "de-DE");
+        expect(rule.getSourceLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleStyleGetRuleType: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleStyleGetRuleType", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getRuleType(), "resource");
+        expect(rule.getRuleType()).toBe("resource");
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMissingInTarget: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMissingInTarget", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -111,16 +101,14 @@ export const testFStringMatchRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchNoParams: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchNoParams", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -138,16 +126,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchExtraParamsInTarget: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchExtraParamsInTarget", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -174,16 +160,14 @@ export const testFStringMatchRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParams: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParams", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -201,16 +185,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInSource: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInSource", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
@@ -228,16 +210,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget1: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget1", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
@@ -255,16 +235,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget2: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget2", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
@@ -282,16 +260,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget3: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParamsIgnoreWhitespaceInTarget3", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
@@ -309,16 +285,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParamsMultiple: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParamsMultiple", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -336,16 +310,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchMatchingParamsComplicated: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchMatchingParamsComplicated", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -363,16 +335,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchNonMatchingParamsComplicated: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchNonMatchingParamsComplicated", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -410,16 +380,14 @@ export const testFStringMatchRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleMatchNumericParams: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleMatchNumericParams", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // numeric params in source and target is okay
         const actual = rule.match({
@@ -437,16 +405,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleNonMatchNumericParams: function(test) {
-        test.expect(3);
+    test("FStringMatchRuleNonMatchNumericParams", () => {
+        expect.assertions(3);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -463,7 +429,7 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(actual);
+        expect(actual).toBeTruthy();
 
         const expected = [
             new Result({
@@ -485,16 +451,14 @@ export const testFStringMatchRules = {
                 pathName: "x"
             }),
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleNonMatchNumericTargetParams: function(test) {
-        test.expect(3);
+    test("FStringMatchRuleNonMatchNumericTargetParams", () => {
+        expect.assertions(3);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -511,7 +475,7 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(actual);
+        expect(actual).toBeTruthy();
 
         const expected = [
             new Result({
@@ -533,16 +497,14 @@ export const testFStringMatchRules = {
                 pathName: "x"
             }),
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleDoNotMatchDoubleCurlies1: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleDoNotMatchDoubleCurlies1", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // Double curly braces render to a single one in the output
         // and do not indicate the presence of a replacement param
@@ -561,16 +523,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleDoNotMatchDoubleCurlies2: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleDoNotMatchDoubleCurlies2", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // Double curly braces render to a single one in the output
         // and do not indicate the presence of a replacement param
@@ -589,16 +549,14 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringMatchRuleDoNotMatchDoubleCurlies3: function(test) {
-        test.expect(2);
+    test("FStringMatchRuleDoNotMatchDoubleCurlies3", () => {
+        expect.assertions(2);
 
         const rule = new FStringMatchRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // Double curly braces render to a single one in the output
         // and do not indicate the presence of a replacement param
@@ -617,9 +575,7 @@ export const testFStringMatchRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
-
-        test.done();
-    },
-};
+        expect(!actual).toBeTruthy();
+    });
+});
 

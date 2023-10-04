@@ -1,5 +1,5 @@
 /*
- * testPythonGnuPlugin.js - test the Xliff plugin
+ * PythonGnuPlugin.test.js - test the Xliff plugin
  *
  * Copyright © 2023 JEDLSoft
  *
@@ -20,52 +20,44 @@ import { Parser } from 'i18nlint-common';
 
 import PythonPlugin from '../src/index.js';
 
-export const testPythonPlugin = {
-    testPythonPlugin: function(test) {
-        test.expect(1);
+describe("testPythonPlugin", () => {
+    test("PythonPlugin", () => {
+        expect.assertions(1);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPythonPluginGetParsers: function(test) {
-        test.expect(3);
+    test("PythonPluginGetParsers", () => {
+        expect.assertions(3);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
 
         const parsers = xp.getParsers();
-        test.ok(parsers);
-        test.equal(parsers.length, 0);
+        expect(parsers).toBeTruthy();
+        expect(parsers.length).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPythonPluginGetRules: function(test) {
-        test.expect(3);
+    test("PythonPluginGetRules", () => {
+        expect.assertions(3);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
 
         const rules = xp.getRules();
-        test.ok(rules);
-        test.equal(rules.length, 3);
+        expect(rules).toBeTruthy();
+        expect(rules.length).toBe(3);
+    });
 
-        test.done();
-    },
-
-    testPythonPluginGetFormatters: function(test) {
-        test.expect(3);
+    test("PythonPluginGetFormatters", () => {
+        expect.assertions(3);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
 
         const formatters = xp.getFormatters();
-        test.ok(formatters);
-        test.equal(formatters.length, 0);
-
-        test.done();
-    }
-};
+        expect(formatters).toBeTruthy();
+        expect(formatters.length).toBe(0);
+    });
+});

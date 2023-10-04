@@ -1,5 +1,5 @@
 /*
- * testFStringNumberedRule.js - test the substitution parameter numbering rule
+ * FStringNumberedRule.test.js - test the substitution parameter numbering rule
  *
  * Copyright © 2023 JEDLSoft
  *
@@ -21,69 +21,59 @@ import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
 import FStringNumberedRule from '../src/FStringNumberedRule.js';
 
-export const testFStringNumberedRules = {
-    testFStringNumberedRuleStyle: function(test) {
-        test.expect(1);
+describe("testFStringNumberedRules", () => {
+    test("FStringNumberedRuleStyle", () => {
+        expect.assertions(1);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleStyleName: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleStyleName", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getName(), "resource-python-fstrings-numbered");
+        expect(rule.getName()).toBe("resource-python-fstrings-numbered");
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleStyleDescription: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleStyleDescription", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getDescription(), "Test that f-string substitution parameters in the source are named or numbered if there are multiple.");
+        expect(rule.getDescription()).toBe("Test that f-string substitution parameters in the source are named or numbered if there are multiple.");
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleStyleSourceLocale: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleStyleSourceLocale", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getSourceLocale(), "de-DE");
+        expect(rule.getSourceLocale()).toBe("de-DE");
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleStyleGetRuleType: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleStyleGetRuleType", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule({
             sourceLocale: "de-DE"
         });
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
-        test.equal(rule.getRuleType(), "resource");
+        expect(rule.getRuleType()).toBe("resource");
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMissingNumbering: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMissingNumbering", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -117,16 +107,14 @@ export const testFStringNumberedRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMatchNoParams: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMatchNoParams", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -142,16 +130,14 @@ export const testFStringNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMatchOneNumbered: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMatchOneNumbered", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -167,16 +153,14 @@ export const testFStringNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMatchOneUnnumbered: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMatchOneUnnumbered", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         // no parameters in source or target is okay
         const actual = rule.match({
@@ -192,16 +176,14 @@ export const testFStringNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMissingOneNumberedOneNot: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMissingOneNumberedOneNot", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -225,16 +207,14 @@ export const testFStringNumberedRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMissingTwoNumberedOneNot: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMissingTwoNumberedOneNot", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -258,16 +238,14 @@ export const testFStringNumberedRules = {
             rule,
             pathName: "x"
         });
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleMissingOneNumberedTwoNot: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleMissingOneNumberedTwoNot", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -301,16 +279,14 @@ export const testFStringNumberedRules = {
                 pathName: "x"
             })
         ];
-        test.deepEqual(actual, expected);
+        expect(actual).toStrictEqual(expected);
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleIgnoreDoubleCurlies1: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleIgnoreDoubleCurlies1", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -325,16 +301,14 @@ export const testFStringNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testFStringNumberedRuleIgnoreDoubleCurlies2: function(test) {
-        test.expect(2);
+    test("FStringNumberedRuleIgnoreDoubleCurlies2", () => {
+        expect.assertions(2);
 
         const rule = new FStringNumberedRule();
-        test.ok(rule);
+        expect(rule).toBeTruthy();
 
         const actual = rule.match({
             locale: "de-DE",
@@ -349,9 +323,7 @@ export const testFStringNumberedRules = {
                 filePath: "x"
             })
         });
-        test.ok(!actual);
+        expect(!actual).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-};
+});
