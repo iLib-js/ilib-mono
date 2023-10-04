@@ -1,7 +1,7 @@
 /*
- * testXmlFileType.js - test the XML file type handler object.
+ * XmlFileType.test.js - test the XML file type handler object.
  *
- * Copyright © 2021, Box, Inc.
+ * Copyright © 2021, 2023 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,190 +94,162 @@ var p2 = new CustomProject({
 });
 
 
-module.exports.xmlfiletype = {
-    testXmlFileTypeConstructor: function(test) {
-        test.expect(1);
+describe("xmlfiletype", function() {
+    test("XmlFileTypeConstructor", function() {
+        expect.assertions(1);
 
         var xft = new XmlFileType(p);
 
-        test.ok(xft);
+        expect(xft).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-     testXmlFileTypeGetMapping1: function(test) {
-        test.expect(2);
+     test("XmlFileTypeGetMapping1", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.deepEqual(xft.getMapping("x/y/messages.xml"), {
+        expect(xft.getMapping("x/y/messages.xml")).toStrictEqual({
             "schema": "http://www.lge.com/xml/messages",
             "method": "copy",
             "template": "resources/[localeDir]/messages.xml"
         });
+    });
 
-        test.done();
-    },
-
-     testXmlFileTypeGetMapping2: function(test) {
-        test.expect(2);
+     test("XmlFileTypeGetMapping2", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.deepEqual(xft.getMapping("resources/en/US/strings.xml"), {
+        expect(xft.getMapping("resources/en/US/strings.xml")).toStrictEqual({
             "schema": "http://www.lge.com/xml/strings",
             "method": "copy",
             "template": "resources/[localeDir]/strings.xml"
         });
+    });
 
-        test.done();
-    },
-
-     testXmlFileTypeGetMappingNoMatch: function(test) {
-        test.expect(2);
+     test("XmlFileTypeGetMappingNoMatch", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(!xft.getMapping("x/y/msg.xml"));
+        expect(!xft.getMapping("x/y/msg.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesExtensionTrue: function(test) {
-        test.expect(5);
+    test("XmlFileTypeHandlesExtensionTrue", function() {
+        expect.assertions(5);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(xft.handles("strings.xml"));
-        test.ok(xft.handles("strings.properties"));
-        test.ok(xft.handles("strings.xlsx"));
-        test.ok(xft.handles("strings.docx"));
+        expect(xft.handles("strings.xml")).toBeTruthy();
+        expect(xft.handles("strings.properties")).toBeTruthy();
+        expect(xft.handles("strings.xlsx")).toBeTruthy();
+        expect(xft.handles("strings.docx")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesExtensionFalse: function(test) {
-        test.expect(4);
+    test("XmlFileTypeHandlesExtensionFalse", function() {
+        expect.assertions(4);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(!xft.handles("strings.xmlhandle"));
+        expect(!xft.handles("strings.xmlhandle")).toBeTruthy();
 
         // handled, but no mappings, so we don't read them
-        test.ok(!xft.handles("strings.uml"));
-        test.ok(!xft.handles("strings.iml"));
+        expect(!xft.handles("strings.uml")).toBeTruthy();
+        expect(!xft.handles("strings.iml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesNotSource: function(test) {
-        test.expect(2);
+    test("XmlFileTypeHandlesNotSource", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(!xft.handles("foo.xml"));
+        expect(!xft.handles("foo.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesTrueWithDir: function(test) {
-        test.expect(2);
+    test("XmlFileTypeHandlesTrueWithDir", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(xft.handles("x/y/z/messages.xml"));
+        expect(xft.handles("x/y/z/messages.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesFalseWrongDir: function(test) {
-        test.expect(2);
+    test("XmlFileTypeHandlesFalseWrongDir", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(!xft.handles("x/y/z/str.xml"));
+        expect(!xft.handles("x/y/z/str.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesFalseRightDir: function(test) {
-        test.expect(2);
+    test("XmlFileTypeHandlesFalseRightDir", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(xft.handles("x/y/z/test/str.xml"));
+        expect(xft.handles("x/y/z/test/str.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesTrueSourceLocale: function(test) {
-        test.expect(4);
+    test("XmlFileTypeHandlesTrueSourceLocale", function() {
+        expect.assertions(4);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
-        test.ok(xft.handles("resources/en/US/messages.xml"));
-        test.ok(xft.handles("resources/messages_en_US.properties"));
-        test.ok(xft.handles("file_en-US.docx"));
+        expect(xft.handles("resources/en/US/messages.xml")).toBeTruthy();
+        expect(xft.handles("resources/messages_en_US.properties")).toBeTruthy();
+        expect(xft.handles("file_en-US.docx")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesAlreadyLocalizedGB: function(test) {
-        test.expect(4);
+    test("XmlFileTypeHandlesAlreadyLocalizedGB", function() {
+        expect.assertions(4);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
         // This matches one of the templates, but the locale is
         // not the source locale, so we don't need to
         // localize it again.
-        test.ok(!xft.handles("resources/en/GB/messages.xml"));
-        test.ok(!xft.handles("props/messages_en_GB.properties"));
-        test.ok(!xft.handles("files/file_en-GB.docx"));
+        expect(!xft.handles("resources/en/GB/messages.xml")).toBeTruthy();
+        expect(!xft.handles("props/messages_en_GB.properties")).toBeTruthy();
+        expect(!xft.handles("files/file_en-GB.docx")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesAlreadyLocalizedCN: function(test) {
-        test.expect(2);
+    test("XmlFileTypeHandlesAlreadyLocalizedCN", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
         // This matches one of the templates, but thge locale is
         // not the source locale, so we don't need to
         // localize it again.
-        test.ok(!xft.handles("resources/zh/Hans/CN/messages.xml"));
+        expect(!xft.handles("resources/zh/Hans/CN/messages.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXmlFileTypeHandlesNotAlreadyLocalizedenUS: function(test) {
-        test.expect(2);
+    test("XmlFileTypeHandlesNotAlreadyLocalizedenUS", function() {
+        expect.assertions(2);
 
         var xft = new XmlFileType(p);
-        test.ok(xft);
+        expect(xft).toBeTruthy();
 
         // we figure this out from the template
-        test.ok(xft.handles("resources/en/US/messages.xml"));
+        expect(xft.handles("resources/en/US/messages.xml")).toBeTruthy();
+    });
 
-        test.done();
-    },
+    test("XmlFileTypeRejectInvalidSchema", function() {
+        expect.assertions(1);
 
-    testXmlFileTypeRejectInvalidSchema: function(test) {
-        test.expect(1);
-
-        test.throws(function(test) {
+        expect(function(test) {
             var mockproject = {
                 getAPI: p.getAPI.bind(p),
                 getSourceLocale: p.getSourceLocale.bind(p),
@@ -302,8 +274,6 @@ module.exports.xmlfiletype = {
 
             // should throw an exception while trying to parse the invalid.json
             var xft = new XmlFileType(mockproject);
-        });
-
-        test.done();
-    }
-};
+        }).toThrow();
+    });
+});
