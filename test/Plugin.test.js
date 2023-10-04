@@ -1,5 +1,5 @@
 /*
- * testPlugin.js - test the plugin superclass object
+ * Plugin.test.js - test the plugin superclass object
  *
  * Copyright © 2022-2023 JEDLSoft
  *
@@ -25,81 +25,69 @@ class MockPlugin extends Plugin {
     }
 }
 
-export const testPlugin = {
-    testPluginNormal: function(test) {
-        test.expect(1);
+describe("testPlugin", () => {
+    test("PluginNormal", () => {
+        expect.assertions(1);
 
         const plugin = new MockPlugin();
 
-        test.ok(plugin);
+        expect(plugin).toBeTruthy();
+    });
 
-        test.done();
-    },
+    test("PluginCannotInstantiateAbstractClass", () => {
+        expect.assertions(1);
 
-    testPluginCannotInstantiateAbstractClass: function(test) {
-        test.expect(1);
-
-        test.throws(() => {
+        expect(() => {
             new Plugin();
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testPluginGetRulesDefault: function(test) {
-        test.expect(3);
+    test("PluginGetRulesDefault", () => {
+        expect.assertions(3);
 
         const plugin = new MockPlugin();
 
-        test.ok(plugin);
+        expect(plugin).toBeTruthy();
 
         const rules = plugin.getRules();
-        test.ok(rules);
-        test.equal(rules.length, 0);
+        expect(rules).toBeTruthy();
+        expect(rules.length).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPluginGetRuleSetsDefault: function(test) {
-        test.expect(3);
+    test("PluginGetRuleSetsDefault", () => {
+        expect.assertions(3);
 
         const plugin = new MockPlugin();
 
-        test.ok(plugin);
+        expect(plugin).toBeTruthy();
 
         const sets = plugin.getRuleSets();
-        test.ok(sets);
-        test.deepEqual(sets, {});
+        expect(sets).toBeTruthy();
+        expect(sets).toStrictEqual({});
+    });
 
-        test.done();
-    },
-
-    testPluginGetFormattersDefault: function(test) {
-        test.expect(3);
+    test("PluginGetFormattersDefault", () => {
+        expect.assertions(3);
 
         const plugin = new MockPlugin();
 
-        test.ok(plugin);
+        expect(plugin).toBeTruthy();
 
         const formatters = plugin.getFormatters();
-        test.ok(formatters);
-        test.equal(formatters.length, 0);
+        expect(formatters).toBeTruthy();
+        expect(formatters.length).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testPluginGetParsersDefault: function(test) {
-        test.expect(3);
+    test("PluginGetParsersDefault", () => {
+        expect.assertions(3);
 
         const plugin = new MockPlugin();
 
-        test.ok(plugin);
+        expect(plugin).toBeTruthy();
 
         const parsers = plugin.getParsers();
-        test.ok(parsers);
-        test.equal(parsers.length, 0);
-
-        test.done();
-    }
-};
+        expect(parsers).toBeTruthy();
+        expect(parsers.length).toBe(0);
+    });
+});
 

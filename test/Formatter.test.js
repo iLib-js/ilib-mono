@@ -1,7 +1,7 @@
 /*
- * testFormatter.js - test the formatter superclass object
+ * Formatter.test.js - test the formatter superclass object
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,49 +27,41 @@ class MockFormatter extends Formatter {
     }
 }
 
-export const testFormatter = {
-    testFormatterNormal: function(test) {
-        test.expect(1);
+describe("testFormatter", () => {
+    test("FormatterNormal", () => {
+        expect.assertions(1);
 
         const formatter = new MockFormatter();
 
-        test.ok(formatter);
+        expect(formatter).toBeTruthy();
+    });
 
-        test.done();
-    },
+    test("FormatterCannotInstantiateAbstractClass", () => {
+        expect.assertions(1);
 
-    testFormatterCannotInstantiateAbstractClass: function(test) {
-        test.expect(1);
-
-        test.throws(() => {
+        expect(() => {
             new Formatter();
-        });
+        }).toThrow();
+    });
 
-        test.done();
-    },
-
-    testFormatterGetName: function(test) {
-        test.expect(2);
+    test("FormatterGetName", () => {
+        expect.assertions(2);
 
         const formatter = new MockFormatter();
 
-        test.ok(formatter);
+        expect(formatter).toBeTruthy();
 
-        test.equal(formatter.getName(), "mock");
+        expect(formatter.getName()).toBe("mock");
+    });
 
-        test.done();
-    },
-
-    testFormatterGetDescription: function(test) {
-        test.expect(2);
+    test("FormatterGetDescription", () => {
+        expect.assertions(2);
 
         const formatter = new MockFormatter();
 
-        test.ok(formatter);
+        expect(formatter).toBeTruthy();
 
-        test.equal(formatter.getDescription(), "asdf asdf");
-
-        test.done();
-    }
-};
+        expect(formatter.getDescription()).toBe("asdf asdf");
+    });
+});
 
