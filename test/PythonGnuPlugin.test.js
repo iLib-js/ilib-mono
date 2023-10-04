@@ -1,7 +1,7 @@
 /*
- * testPythonGnuPlugin.js - test the Xliff plugin
+ * PythonGnuPlugin.test.js - test the Xliff plugin
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright ©  2022-2023JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,52 +20,44 @@ import { Parser } from 'i18nlint-common';
 
 import PythonPlugin from '../src/index.js';
 
-export const testPythonGnuPlugin = {
-    testPythonPlugin: function(test) {
-        test.expect(1);
+describe("testPythonGnuPlugin", () => {
+    test("PythonPlugin", () => {
+        expect.assertions(1);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testPythonPluginGetParsers: function(test) {
-        test.expect(3);
+    test("PythonPluginGetParsers", () => {
+        expect.assertions(3);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
 
         const parsers = xp.getParsers();
-        test.ok(parsers);
-        test.equal(parsers.length, 1);
+        expect(parsers).toBeTruthy();
+        expect(parsers.length).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testPythonPluginGetRules: function(test) {
-        test.expect(3);
+    test("PythonPluginGetRules", () => {
+        expect.assertions(3);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
 
         const rules = xp.getRules();
-        test.ok(rules);
-        test.equal(rules.length, 2);
+        expect(rules).toBeTruthy();
+        expect(rules.length).toBe(2);
+    });
 
-        test.done();
-    },
-
-    testPythonPluginGetFormatters: function(test) {
-        test.expect(3);
+    test("PythonPluginGetFormatters", () => {
+        expect.assertions(3);
 
         const xp = new PythonPlugin();
-        test.ok(xp);
+        expect(xp).toBeTruthy();
 
         const formatters = xp.getFormatters();
-        test.ok(formatters);
-        test.equal(formatters.length, 0);
-
-        test.done();
-    }
-};
+        expect(formatters).toBeTruthy();
+        expect(formatters.length).toBe(0);
+    });
+});
