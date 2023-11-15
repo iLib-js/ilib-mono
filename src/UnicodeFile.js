@@ -47,6 +47,9 @@ import fs from 'fs';
  * <li>commentString - defines the string that introduces a line comment.
  * Everything after this string to the end of the line is ignored as a comment.
  * Default is the hash char '#'.
+ * <li>multilineComments - this file can have comments that start with an @
+ * and then continue with empty fields to start each line. The initial line
+ * and all the continuation lines should be skipped.
  * </ul>
  *
  * @param {Object.<path:string,string:string,splitChar:string,commentString:string>} options options governing the construction of this file
@@ -72,6 +75,9 @@ export default class UnicodeFile {
             if (options.commentString) {
                 this.commentString = options.commentString;
             }
+            if (typeof(options.multilineComments) === "boolean" || options.multilineComments) {
+                this.multilineComments = !!options.multilineComments;
+            }
         }
 
         if (!data) {
@@ -83,7 +89,13 @@ export default class UnicodeFile {
         let row;
 
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].trim().charAt(0) !== '@') {
+            if (rows[i].trim().charAt(0) === '@') {
+                if (this.multilineComments) {
+                    while (i+1 < rows.length && rows[i+1].charAt(0) === this.splitChar) {
+                        i++;
+                    }
+                }
+            } else {
                 const commentStart = rows[i].indexOf(this.commentString);
                 row = (commentStart === -1) ? rows[i] : rows[i].substring(0, commentStart);
                 row = row.trim();

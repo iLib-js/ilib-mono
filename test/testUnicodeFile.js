@@ -40,6 +40,34 @@ const unifileData2 =
     "     # indented comment\n" +
     "FF76;HALFWIDTH KATAKANA LETTER KA;Lo;0;L;<narrow> 30AB;;;;N;;;;;\n";
 
+const unifileData3 =
+    "@ this is a tab defined file\n" +
+    "\n" +
+    "0041\tLATIN CAPITAL LETTER A\n" +
+    "00A8\tDIAERESIS\n" +
+    "\n" +
+    "@Part 2\n" +
+    "\n" +
+    "00C4\tLATIN CAPITAL LETTER A WITH DIAERESIS\n" +
+    "0160\tLATIN CAPITAL LETTER S WITH CARON\n" +
+    "     @ indented comment\n" +
+    "FF76\tHALFWIDTH KATAKANA LETTER KA\n";
+
+const unifileData4 =
+    "@@@+ this is a tab defined file\n" +
+    "\twith multi-line comments\n" +
+    "\twith multi-line comments\n" +
+    "\twith multi-line comments\n" +
+    "@ in it\n" +
+    "0041\tLATIN CAPITAL LETTER A\n" +
+    "00A8\tDIAERESIS\n" +
+    "\n" +
+    "@Part 2\n" +
+    "\n" +
+    "00C4\tLATIN CAPITAL LETTER A WITH DIAERESIS\n" +
+    "0160\tLATIN CAPITAL LETTER S WITH CARON\n" +
+    "     @ indented comment\n" +
+    "FF76\tHALFWIDTH KATAKANA LETTER KA\n";
 
 module.exports.testUnicodeFile = {
     testUFConstructor: function(test) {
@@ -141,6 +169,47 @@ module.exports.testUnicodeFile = {
         test.equal("", row[12]);
         test.equal("00E4", row[13]);
         test.equal("", row[14]);
+        test.done()
+    },
+    testUFTabFile: function(test) {
+        test.expect(7);
+        var uf = new UnicodeFile({
+            string: unifileData3,
+            splitChar: "\t",
+            commentString: "@"
+        });
+        test.ok(uf !== null);
+
+        var row = uf.get(2);
+        test.ok(row !== null);
+        test.equal("00C4", row[0]);
+        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
+
+        row = uf.get(4);
+        test.ok(row !== null);
+        test.equal("FF76", row[0]);
+        test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
+        test.done()
+    },
+    testUFTabFileWithMultilineComments: function(test) {
+        test.expect(7);
+        var uf = new UnicodeFile({
+            string: unifileData4,
+            splitChar: "\t",
+            commentString: "@",
+            multilineComments: true
+        });
+        test.ok(uf !== null);
+
+        var row = uf.get(2);
+        test.ok(row !== null);
+        test.equal("00C4", row[0]);
+        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
+
+        row = uf.get(4);
+        test.ok(row !== null);
+        test.equal("FF76", row[0]);
+        test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
         test.done()
     }
 }

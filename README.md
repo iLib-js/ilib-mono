@@ -28,6 +28,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.0
+
+- added the ability to parse Unicode data files that have continuation
+  comments. These are introduced with an initial @ at the beginning
+  of a line, and are continued with empty fields in the subsequent
+  lines. They end when there is a line that does not contain an
+  empty field.
+
 ### v1.1.0
 
 - added localeMergeAndPrune which uses the Utils.getSublocales to build
