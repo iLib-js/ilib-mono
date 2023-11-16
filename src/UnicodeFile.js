@@ -98,8 +98,7 @@ export default class UnicodeFile {
             } else {
                 const commentStart = rows[i].indexOf(this.commentString);
                 row = (commentStart === -1) ? rows[i] : rows[i].substring(0, commentStart);
-                row = row.trim();
-                if (row.length > 0) {
+                if (row.trim().length > 0) {
                     this.rows.push(row);
                 }
             }

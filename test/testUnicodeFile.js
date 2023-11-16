@@ -69,6 +69,14 @@ const unifileData4 =
     "     @ indented comment\n" +
     "FF76\tHALFWIDTH KATAKANA LETTER KA\n";
 
+const unifileData5 =
+    "@@@+ this is a tab defined file\n" +
+    "0041\tLATIN CAPITAL LETTER A\n" +
+    "\t= property\n" +
+    "00A8\tDIAERESIS\n" +
+    "\tx property\n" +
+    "\n";
+
 module.exports.testUnicodeFile = {
     testUFConstructor: function(test) {
         test.expect(1);
@@ -210,6 +218,27 @@ module.exports.testUnicodeFile = {
         test.ok(row !== null);
         test.equal("FF76", row[0]);
         test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
+        test.done()
+    },
+    testUFTabFileWithEmptyInitialFields: function(test) {
+        test.expect(7);
+        var uf = new UnicodeFile({
+            string: unifileData5,
+            splitChar: "\t",
+            commentString: "@",
+            multilineComments: true
+        });
+        test.ok(uf !== null);
+
+        var row = uf.get(1);
+        test.ok(row !== null);
+        test.equal("", row[0]);
+        test.equal("= property", row[1]);
+
+        row = uf.get(3);
+        test.ok(row !== null);
+        test.equal("", row[0]);
+        test.equal("x property", row[1]);
         test.done()
     }
 }
