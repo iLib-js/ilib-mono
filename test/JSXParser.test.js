@@ -96,7 +96,7 @@ describe("testJSXParser", () => {
 
         expect(actualSimplified).toMatchSnapshot();
     });
-    
+
     test("JSX with a high-order component in it", () => {
         expect.assertions(3);
 
@@ -114,20 +114,20 @@ describe("testJSXParser", () => {
                 }
               };
             };
-            
+
             // A component that displays a title
             const DisplayTitle = ({ title }) => {
               return <h1>{title}</h1>;
             };
-            
+
             // Using the HOC to create a new component
             const DisplayTitleWithEnhancement = withTitle(DisplayTitle, 'My Enhanced Title');
-            
+
             // App component using the enhanced component
             const App = () => {
               return <DisplayTitleWithEnhancement />;
             };
-            
+
             export default App;`, "x/y");
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));

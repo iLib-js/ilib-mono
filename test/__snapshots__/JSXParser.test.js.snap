@@ -580,9 +580,9 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
       {
         "declarations": [
           {
-            "end": 575,
+            "end": 563,
             "id": {
-              "end": 503,
+              "end": 491,
               "loc": {
                 "end": {
                   "column": 30,
@@ -594,7 +594,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 },
               },
               "name": "DisplayTitle",
-              "start": 491,
+              "start": 479,
               "type": "Identifier",
             },
             "init": {
@@ -605,9 +605,9 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                     "argument": {
                       "children": [
                         {
-                          "end": 555,
+                          "end": 543,
                           "expression": {
-                            "end": 554,
+                            "end": 542,
                             "loc": {
                               "end": {
                                 "column": 31,
@@ -619,7 +619,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                               },
                             },
                             "name": "title",
-                            "start": 549,
+                            "start": 537,
                             "type": "Identifier",
                           },
                           "loc": {
@@ -632,12 +632,12 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                               "line": 14,
                             },
                           },
-                          "start": 548,
+                          "start": 536,
                           "type": "JSXExpressionContainer",
                         },
                       ],
                       "closingElement": {
-                        "end": 560,
+                        "end": 548,
                         "loc": {
                           "end": {
                             "column": 37,
@@ -649,7 +649,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                           },
                         },
                         "name": {
-                          "end": 559,
+                          "end": 547,
                           "loc": {
                             "end": {
                               "column": 36,
@@ -661,13 +661,13 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                             },
                           },
                           "name": "h1",
-                          "start": 557,
+                          "start": 545,
                           "type": "JSXIdentifier",
                         },
-                        "start": 555,
+                        "start": 543,
                         "type": "JSXClosingElement",
                       },
-                      "end": 560,
+                      "end": 548,
                       "loc": {
                         "end": {
                           "column": 37,
@@ -680,7 +680,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                       },
                       "openingElement": {
                         "attributes": [],
-                        "end": 548,
+                        "end": 536,
                         "loc": {
                           "end": {
                             "column": 25,
@@ -692,7 +692,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                           },
                         },
                         "name": {
-                          "end": 547,
+                          "end": 535,
                           "loc": {
                             "end": {
                               "column": 24,
@@ -704,17 +704,17 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                             },
                           },
                           "name": "h1",
-                          "start": 545,
+                          "start": 533,
                           "type": "JSXIdentifier",
                         },
                         "selfClosing": false,
-                        "start": 544,
+                        "start": 532,
                         "type": "JSXOpeningElement",
                       },
-                      "start": 544,
+                      "start": 532,
                       "type": "JSXElement",
                     },
-                    "end": 561,
+                    "end": 549,
                     "loc": {
                       "end": {
                         "column": 38,
@@ -725,11 +725,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                         "line": 14,
                       },
                     },
-                    "start": 537,
+                    "start": 525,
                     "type": "ReturnStatement",
                   },
                 ],
-                "end": 575,
+                "end": 563,
                 "loc": {
                   "end": {
                     "column": 13,
@@ -740,10 +740,10 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                     "line": 13,
                   },
                 },
-                "start": 521,
+                "start": 509,
                 "type": "BlockStatement",
               },
-              "end": 575,
+              "end": 563,
               "expression": false,
               "generator": false,
               "id": null,
@@ -759,7 +759,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
               },
               "params": [
                 {
-                  "end": 516,
+                  "end": 504,
                   "loc": {
                     "end": {
                       "column": 43,
@@ -773,9 +773,9 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                   "properties": [
                     {
                       "computed": false,
-                      "end": 514,
+                      "end": 502,
                       "key": {
-                        "end": 514,
+                        "end": 502,
                         "loc": {
                           "end": {
                             "column": 41,
@@ -787,7 +787,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                           },
                         },
                         "name": "title",
-                        "start": 509,
+                        "start": 497,
                         "type": "Identifier",
                       },
                       "kind": "init",
@@ -803,10 +803,10 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                       },
                       "method": false,
                       "shorthand": true,
-                      "start": 509,
+                      "start": 497,
                       "type": "Property",
                       "value": {
-                        "end": 514,
+                        "end": 502,
                         "loc": {
                           "end": {
                             "column": 41,
@@ -818,16 +818,16 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                           },
                         },
                         "name": "title",
-                        "start": 509,
+                        "start": 497,
                         "type": "Identifier",
                       },
                     },
                   ],
-                  "start": 507,
+                  "start": 495,
                   "type": "ObjectPattern",
                 },
               ],
-              "start": 506,
+              "start": 494,
               "type": "ArrowFunctionExpression",
             },
             "loc": {
@@ -840,11 +840,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 "line": 13,
               },
             },
-            "start": 491,
+            "start": 479,
             "type": "VariableDeclarator",
           },
         ],
-        "end": 576,
+        "end": 564,
         "kind": "const",
         "loc": {
           "end": {
@@ -856,15 +856,15 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
             "line": 13,
           },
         },
-        "start": 485,
+        "start": 473,
         "type": "VariableDeclaration",
       },
       {
         "declarations": [
           {
-            "end": 737,
+            "end": 713,
             "id": {
-              "end": 690,
+              "end": 666,
               "loc": {
                 "end": {
                   "column": 45,
@@ -876,13 +876,13 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 },
               },
               "name": "DisplayTitleWithEnhancement",
-              "start": 663,
+              "start": 639,
               "type": "Identifier",
             },
             "init": {
               "arguments": [
                 {
-                  "end": 715,
+                  "end": 691,
                   "loc": {
                     "end": {
                       "column": 70,
@@ -894,11 +894,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                     },
                   },
                   "name": "DisplayTitle",
-                  "start": 703,
+                  "start": 679,
                   "type": "Identifier",
                 },
                 {
-                  "end": 736,
+                  "end": 712,
                   "loc": {
                     "end": {
                       "column": 91,
@@ -910,13 +910,13 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                     },
                   },
                   "raw": "'My Enhanced Title'",
-                  "start": 717,
+                  "start": 693,
                   "type": "Literal",
                   "value": "My Enhanced Title",
                 },
               ],
               "callee": {
-                "end": 702,
+                "end": 678,
                 "loc": {
                   "end": {
                     "column": 57,
@@ -928,10 +928,10 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                   },
                 },
                 "name": "withTitle",
-                "start": 693,
+                "start": 669,
                 "type": "Identifier",
               },
-              "end": 737,
+              "end": 713,
               "loc": {
                 "end": {
                   "column": 92,
@@ -943,7 +943,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 },
               },
               "optional": false,
-              "start": 693,
+              "start": 669,
               "type": "CallExpression",
             },
             "loc": {
@@ -956,11 +956,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 "line": 18,
               },
             },
-            "start": 663,
+            "start": 639,
             "type": "VariableDeclarator",
           },
         ],
-        "end": 738,
+        "end": 714,
         "kind": "const",
         "loc": {
           "end": {
@@ -972,15 +972,15 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
             "line": 18,
           },
         },
-        "start": 657,
+        "start": 633,
         "type": "VariableDeclaration",
       },
       {
         "declarations": [
           {
-            "end": 909,
+            "end": 873,
             "id": {
-              "end": 831,
+              "end": 795,
               "loc": {
                 "end": {
                   "column": 21,
@@ -992,7 +992,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 },
               },
               "name": "App",
-              "start": 828,
+              "start": 792,
               "type": "Identifier",
             },
             "init": {
@@ -1003,7 +1003,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                     "argument": {
                       "children": [],
                       "closingElement": null,
-                      "end": 894,
+                      "end": 858,
                       "loc": {
                         "end": {
                           "column": 52,
@@ -1016,7 +1016,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                       },
                       "openingElement": {
                         "attributes": [],
-                        "end": 894,
+                        "end": 858,
                         "loc": {
                           "end": {
                             "column": 52,
@@ -1028,7 +1028,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                           },
                         },
                         "name": {
-                          "end": 891,
+                          "end": 855,
                           "loc": {
                             "end": {
                               "column": 49,
@@ -1040,17 +1040,17 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                             },
                           },
                           "name": "DisplayTitleWithEnhancement",
-                          "start": 864,
+                          "start": 828,
                           "type": "JSXIdentifier",
                         },
                         "selfClosing": true,
-                        "start": 863,
+                        "start": 827,
                         "type": "JSXOpeningElement",
                       },
-                      "start": 863,
+                      "start": 827,
                       "type": "JSXElement",
                     },
-                    "end": 895,
+                    "end": 859,
                     "loc": {
                       "end": {
                         "column": 53,
@@ -1061,11 +1061,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                         "line": 22,
                       },
                     },
-                    "start": 856,
+                    "start": 820,
                     "type": "ReturnStatement",
                   },
                 ],
-                "end": 909,
+                "end": 873,
                 "loc": {
                   "end": {
                     "column": 13,
@@ -1076,10 +1076,10 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                     "line": 21,
                   },
                 },
-                "start": 840,
+                "start": 804,
                 "type": "BlockStatement",
               },
-              "end": 909,
+              "end": 873,
               "expression": false,
               "generator": false,
               "id": null,
@@ -1094,7 +1094,7 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 },
               },
               "params": [],
-              "start": 834,
+              "start": 798,
               "type": "ArrowFunctionExpression",
             },
             "loc": {
@@ -1107,11 +1107,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
                 "line": 21,
               },
             },
-            "start": 828,
+            "start": 792,
             "type": "VariableDeclarator",
           },
         ],
-        "end": 910,
+        "end": 874,
         "kind": "const",
         "loc": {
           "end": {
@@ -1123,12 +1123,12 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
             "line": 21,
           },
         },
-        "start": 822,
+        "start": 786,
         "type": "VariableDeclaration",
       },
       {
         "declaration": {
-          "end": 954,
+          "end": 906,
           "loc": {
             "end": {
               "column": 30,
@@ -1140,10 +1140,10 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
             },
           },
           "name": "App",
-          "start": 951,
+          "start": 903,
           "type": "Identifier",
         },
-        "end": 955,
+        "end": 907,
         "loc": {
           "end": {
             "column": 31,
@@ -1154,11 +1154,11 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
             "line": 25,
           },
         },
-        "start": 936,
+        "start": 888,
         "type": "ExportDefaultDeclaration",
       },
     ],
-    "end": 955,
+    "end": 907,
     "loc": {
       "end": {
         "column": 31,
