@@ -1,0 +1,656 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testFlowParser FlowParserMoreComplex 1`] = `
+{
+  "filePath": "x/y",
+  "ir": {
+    "body": [
+      {
+        "importKind": "value",
+        "leadingComments": [
+          {
+            "loc": {
+              "end": {
+                "column": 10,
+                "line": 1,
+              },
+              "source": null,
+              "start": {
+                "column": 0,
+                "line": 1,
+              },
+            },
+            "range": [
+              0,
+              10,
+            ],
+            "type": "Line",
+            "value": " comment",
+          },
+        ],
+        "loc": {
+          "end": {
+            "column": 46,
+            "line": 2,
+          },
+          "source": null,
+          "start": {
+            "column": 12,
+            "line": 2,
+          },
+        },
+        "range": [
+          23,
+          57,
+        ],
+        "source": {
+          "loc": {
+            "end": {
+              "column": 45,
+              "line": 2,
+            },
+            "source": null,
+            "start": {
+              "column": 28,
+              "line": 2,
+            },
+          },
+          "range": [
+            39,
+            56,
+          ],
+          "raw": "'../src/index.js'",
+          "type": "Literal",
+          "value": "../src/index.js",
+        },
+        "specifiers": [
+          {
+            "loc": {
+              "end": {
+                "column": 22,
+                "line": 2,
+              },
+              "source": null,
+              "start": {
+                "column": 19,
+                "line": 2,
+              },
+            },
+            "local": {
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "line": 2,
+                },
+                "source": null,
+                "start": {
+                  "column": 19,
+                  "line": 2,
+                },
+              },
+              "name": "foo",
+              "optional": false,
+              "range": [
+                30,
+                33,
+              ],
+              "type": "Identifier",
+              "typeAnnotation": null,
+            },
+            "range": [
+              30,
+              33,
+            ],
+            "type": "ImportDefaultSpecifier",
+          },
+        ],
+        "type": "ImportDeclaration",
+      },
+      {
+        "declarations": [
+          {
+            "id": {
+              "loc": {
+                "end": {
+                  "column": 29,
+                  "line": 4,
+                },
+                "source": null,
+                "start": {
+                  "column": 18,
+                  "line": 4,
+                },
+              },
+              "name": "str",
+              "optional": false,
+              "range": [
+                77,
+                88,
+              ],
+              "type": "Identifier",
+              "typeAnnotation": {
+                "loc": {
+                  "end": {
+                    "column": 29,
+                    "line": 4,
+                  },
+                  "source": null,
+                  "start": {
+                    "column": 21,
+                    "line": 4,
+                  },
+                },
+                "range": [
+                  80,
+                  88,
+                ],
+                "type": "TypeAnnotation",
+                "typeAnnotation": {
+                  "loc": {
+                    "end": {
+                      "column": 29,
+                      "line": 4,
+                    },
+                    "source": null,
+                    "start": {
+                      "column": 23,
+                      "line": 4,
+                    },
+                  },
+                  "range": [
+                    82,
+                    88,
+                  ],
+                  "type": "StringTypeAnnotation",
+                },
+              },
+            },
+            "init": {
+              "loc": {
+                "end": {
+                  "column": 40,
+                  "line": 4,
+                },
+                "source": null,
+                "start": {
+                  "column": 32,
+                  "line": 4,
+                },
+              },
+              "range": [
+                91,
+                99,
+              ],
+              "raw": ""String"",
+              "type": "Literal",
+              "value": "String",
+            },
+            "loc": {
+              "end": {
+                "column": 40,
+                "line": 4,
+              },
+              "source": null,
+              "start": {
+                "column": 18,
+                "line": 4,
+              },
+            },
+            "range": [
+              77,
+              99,
+            ],
+            "type": "VariableDeclarator",
+          },
+        ],
+        "kind": "const",
+        "loc": {
+          "end": {
+            "column": 41,
+            "line": 4,
+          },
+          "source": null,
+          "start": {
+            "column": 12,
+            "line": 4,
+          },
+        },
+        "range": [
+          71,
+          100,
+        ],
+        "type": "VariableDeclaration",
+      },
+      {
+        "declaration": {
+          "loc": {
+            "end": {
+              "column": 30,
+              "line": 6,
+            },
+            "source": null,
+            "start": {
+              "column": 27,
+              "line": 6,
+            },
+          },
+          "name": "str",
+          "optional": false,
+          "range": [
+            129,
+            132,
+          ],
+          "type": "Identifier",
+          "typeAnnotation": null,
+        },
+        "exportKind": "value",
+        "loc": {
+          "end": {
+            "column": 31,
+            "line": 6,
+          },
+          "source": null,
+          "start": {
+            "column": 12,
+            "line": 6,
+          },
+        },
+        "range": [
+          114,
+          133,
+        ],
+        "type": "ExportDefaultDeclaration",
+      },
+    ],
+    "comments": [
+      {
+        "loc": {
+          "end": {
+            "column": 10,
+            "line": 1,
+          },
+          "source": null,
+          "start": {
+            "column": 0,
+            "line": 1,
+          },
+        },
+        "range": [
+          0,
+          10,
+        ],
+        "type": "Line",
+        "value": " comment",
+      },
+    ],
+    "errors": [],
+    "loc": {
+      "end": {
+        "column": 31,
+        "line": 6,
+      },
+      "source": null,
+      "start": {
+        "column": 12,
+        "line": 2,
+      },
+    },
+    "range": [
+      23,
+      133,
+    ],
+    "type": "Program",
+  },
+  "type": "ast-jstree",
+}
+`;
+
+exports[`testFlowParser FlowParserSimple 1`] = `
+{
+  "filePath": "x/y",
+  "ir": {
+    "body": [
+      {
+        "importKind": "value",
+        "loc": {
+          "end": {
+            "column": 46,
+            "line": 2,
+          },
+          "source": null,
+          "start": {
+            "column": 12,
+            "line": 2,
+          },
+        },
+        "range": [
+          21,
+          55,
+        ],
+        "source": {
+          "loc": {
+            "end": {
+              "column": 45,
+              "line": 2,
+            },
+            "source": null,
+            "start": {
+              "column": 28,
+              "line": 2,
+            },
+          },
+          "range": [
+            37,
+            54,
+          ],
+          "raw": "'../src/index.js'",
+          "type": "Literal",
+          "value": "../src/index.js",
+        },
+        "specifiers": [
+          {
+            "loc": {
+              "end": {
+                "column": 22,
+                "line": 2,
+              },
+              "source": null,
+              "start": {
+                "column": 19,
+                "line": 2,
+              },
+            },
+            "local": {
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "line": 2,
+                },
+                "source": null,
+                "start": {
+                  "column": 19,
+                  "line": 2,
+                },
+              },
+              "name": "foo",
+              "optional": false,
+              "range": [
+                28,
+                31,
+              ],
+              "type": "Identifier",
+              "typeAnnotation": null,
+            },
+            "range": [
+              28,
+              31,
+            ],
+            "type": "ImportDefaultSpecifier",
+          },
+        ],
+        "type": "ImportDeclaration",
+      },
+      {
+        "declaration": {
+          "async": false,
+          "body": {
+            "body": [
+              {
+                "argument": {
+                  "arguments": [
+                    {
+                      "loc": {
+                        "end": {
+                          "column": 32,
+                          "line": 4,
+                        },
+                        "source": null,
+                        "start": {
+                          "column": 27,
+                          "line": 4,
+                        },
+                      },
+                      "range": [
+                        142,
+                        147,
+                      ],
+                      "raw": "'x/y'",
+                      "type": "Literal",
+                      "value": "x/y",
+                    },
+                  ],
+                  "callee": {
+                    "loc": {
+                      "end": {
+                        "column": 26,
+                        "line": 4,
+                      },
+                      "source": null,
+                      "start": {
+                        "column": 23,
+                        "line": 4,
+                      },
+                    },
+                    "name": "foo",
+                    "optional": false,
+                    "range": [
+                      138,
+                      141,
+                    ],
+                    "type": "Identifier",
+                    "typeAnnotation": null,
+                  },
+                  "loc": {
+                    "end": {
+                      "column": 33,
+                      "line": 4,
+                    },
+                    "source": null,
+                    "start": {
+                      "column": 23,
+                      "line": 4,
+                    },
+                  },
+                  "range": [
+                    138,
+                    148,
+                  ],
+                  "type": "CallExpression",
+                  "typeArguments": null,
+                },
+                "loc": {
+                  "end": {
+                    "column": 34,
+                    "line": 4,
+                  },
+                  "source": null,
+                  "start": {
+                    "column": 16,
+                    "line": 4,
+                  },
+                },
+                "range": [
+                  131,
+                  149,
+                ],
+                "type": "ReturnStatement",
+              },
+            ],
+            "loc": {
+              "end": {
+                "column": 13,
+                "line": 5,
+              },
+              "source": null,
+              "start": {
+                "column": 57,
+                "line": 3,
+              },
+            },
+            "range": [
+              113,
+              163,
+            ],
+            "type": "BlockStatement",
+          },
+          "expression": false,
+          "generator": false,
+          "id": {
+            "loc": {
+              "end": {
+                "column": 46,
+                "line": 3,
+              },
+              "source": null,
+              "start": {
+                "column": 36,
+                "line": 3,
+              },
+            },
+            "name": "pathToFile",
+            "optional": false,
+            "range": [
+              92,
+              102,
+            ],
+            "type": "Identifier",
+            "typeAnnotation": null,
+          },
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 5,
+            },
+            "source": null,
+            "start": {
+              "column": 27,
+              "line": 3,
+            },
+          },
+          "params": [],
+          "predicate": null,
+          "range": [
+            83,
+            163,
+          ],
+          "returnType": {
+            "loc": {
+              "end": {
+                "column": 56,
+                "line": 3,
+              },
+              "source": null,
+              "start": {
+                "column": 48,
+                "line": 3,
+              },
+            },
+            "range": [
+              104,
+              112,
+            ],
+            "type": "TypeAnnotation",
+            "typeAnnotation": {
+              "loc": {
+                "end": {
+                  "column": 56,
+                  "line": 3,
+                },
+                "source": null,
+                "start": {
+                  "column": 50,
+                  "line": 3,
+                },
+              },
+              "range": [
+                106,
+                112,
+              ],
+              "type": "StringTypeAnnotation",
+            },
+          },
+          "type": "FunctionDeclaration",
+          "typeParameters": null,
+        },
+        "exportKind": "value",
+        "loc": {
+          "end": {
+            "column": 13,
+            "line": 5,
+          },
+          "source": null,
+          "start": {
+            "column": 12,
+            "line": 3,
+          },
+        },
+        "range": [
+          68,
+          163,
+        ],
+        "type": "ExportDefaultDeclaration",
+      },
+    ],
+    "comments": [
+      {
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "source": null,
+          "start": {
+            "column": 0,
+            "line": 1,
+          },
+        },
+        "range": [
+          0,
+          8,
+        ],
+        "type": "Line",
+        "value": " @flow",
+      },
+    ],
+    "errors": [],
+    "leadingComments": [
+      {
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "source": null,
+          "start": {
+            "column": 0,
+            "line": 1,
+          },
+        },
+        "range": [
+          0,
+          8,
+        ],
+        "type": "Line",
+        "value": " @flow",
+      },
+    ],
+    "loc": {
+      "end": {
+        "column": 13,
+        "line": 5,
+      },
+      "source": null,
+      "start": {
+        "column": 12,
+        "line": 2,
+      },
+    },
+    "range": [
+      21,
+      163,
+    ],
+    "type": "Program",
+  },
+  "type": "ast-jstree",
+}
+`;

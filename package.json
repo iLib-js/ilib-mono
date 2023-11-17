@@ -39,6 +39,7 @@
         "@formatjs/intl": "^2.9.3",
         "acorn": "^8.10.0",
         "acorn-jsx": "^5.3.2",
+        "flow-parser": "^0.222.0",
         "i18nlint-common": "^2.2.0",
         "ilib-istring": "^1.0.1",
         "ilib-locale": "^1.2.2",
