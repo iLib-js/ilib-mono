@@ -1,7 +1,7 @@
 /*
  * UnicodeFile.js - read and parse a file downloaded from the unicode repository
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2022-2023, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,11 +85,11 @@ export default class UnicodeFile {
         }
 
         const string = (data.charAt(data.length-1) === '\n') ? data.substring(0, data.length-1): data;
-        const rows =  string.split('\n');
+        const rows = string.split('\n');
         let row;
 
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].trim().charAt(0) === '@') {
+            if (rows[i].trim().charAt(0) === this.commentString) {
                 if (this.multilineComments) {
                     while (i+1 < rows.length && rows[i+1].charAt(0) === this.splitChar) {
                         i++;

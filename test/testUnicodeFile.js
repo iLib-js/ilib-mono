@@ -1,7 +1,7 @@
 /*
  * testUnicodeFile.js - test the Unicode file loading class
  * 
- * Copyright © 2012, 2020, 2022 JEDLSoft
+ * Copyright © 2012, 2020, 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,6 +77,20 @@ const unifileData5 =
     "\tx property\n" +
     "\n";
 
+const unifileData6 =
+    "#   L; 7\n" +
+    "#   L LRE; 7\n" +
+    "#\n" +
+    "\n" +
+    "@Levels:    x\n" +
+    "@Reorder:   \n" +
+    "LRE; 7\n" +
+    "LRO; 7\n" +
+    "RLE; 7\n" +
+    "RLO; 7\n" +
+    "PDF; 7\n" +
+    "BN; 7\n";
+
 module.exports.testUnicodeFile = {
     testUFConstructor: function(test) {
         test.expect(1);
@@ -141,7 +155,7 @@ module.exports.testUnicodeFile = {
         var uf = new UnicodeFile({string: unifileData2});
         test.ok(uf !== null);
 
-        test.equal(5, uf.length());
+        test.equal(6, uf.length());
         test.done()
     },
     testUFSkipTrailingComments: function(test) {
@@ -160,7 +174,7 @@ module.exports.testUnicodeFile = {
         var uf = new UnicodeFile({string: unifileData2});
         test.ok(uf !== null);
 
-        var row = uf.get(2);
+        var row = uf.get(3);
         test.ok(row !== null);
         test.equal("00C4", row[0]);
         test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
