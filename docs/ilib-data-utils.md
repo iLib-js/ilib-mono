@@ -94,6 +94,7 @@ represented by a CharacterInfo object.</p>
     * [.isMember(arr, num)](#module_Utils.isMember) ⇒ <code>boolean</code>
     * [.coelesce(ranges, skip)](#module_Utils.coelesce) ⇒ <code>Array.&lt;{Array.&lt;(string\|number)&gt;}&gt;</code>
     * [.merge(object1, object2, [name1], [name2])](#module_Utils.merge) ⇒ <code>Object</code>
+    * [.localeMergeAndPrune(localeData)](#module_Utils.localeMergeAndPrune) ⇒ <code>Object</code>
 
 
 * * *
@@ -133,7 +134,7 @@ Return the character that is represented by the given hexadecimal encoding.
 
 ### Utils.hexStringUTF16String(hex) ⇒ <code>string</code>
 Return a string created by interpretting the space-separated Unicode characters
-encoded as hex digits. 
+encoded as hex digits.
 
 Example: "0065 0066"  -> "ab"
 
@@ -172,7 +173,7 @@ is a single number, it must match exactly for that element to be returned
 as a match. If the element is a range array, then the range array
 has the low end of the range encoded in the 0th element, and the
 high end in the 1st element. The range array may contain more elements
-after that, but the extra elements are ignored. They may be used to 
+after that, but the extra elements are ignored. They may be used to
 indicate other information about the range, such as a name for example.
 
 **Kind**: static method of [<code>Utils</code>](#module_Utils)  
@@ -222,7 +223,7 @@ where A, B, and C represent particular values. Handle each case properly.
 | Param | Type | Description |
 | --- | --- | --- |
 | ranges | <code>Array.&lt;{Array.&lt;(string\|number)&gt;}&gt;</code> | an array of range arrays |
-| skip | <code>number</code> | the number of elements to skip before the range.   If it is 0, look at elements 0 and 1, and if it is 1, then the range is  in elements 1 and 2. |
+| skip | <code>number</code> | the number of elements to skip before the range. If it is 0, look at elements 0 and 1, and if it is 1, then the range is in elements 1 and 2. |
 
 
 * * *
@@ -247,6 +248,49 @@ Name1 and name2 are for creating debug output only. They are not necessary.<p>
 | object2 | <code>\*</code> | the object to merge |
 | [name1] | <code>string</code> | name of the object being merged into |
 | [name2] | <code>string</code> | name of the object being merged in |
+
+
+* * *
+
+<a name="module_Utils.localeMergeAndPrune"></a>
+
+### Utils.localeMergeAndPrune(localeData) ⇒ <code>Object</code>
+This merge and prune uses the locale hierarchy to determine which
+locales are parents and which are children. This is the same hierarchy that
+ilib itself uses, which allows us to get the right merging and pruning.
+
+The function getSublocales in ilib-common lists out the locale hierarchy
+that ilib uses, and we follow this hierarchy here.
+
+The input is an object where the property name is the locale spec (partial
+or full) and the value is an object containing the property "data" which
+contains the raw data as loaded from CLDR.
+
+Once the merge and prune is done, each one will have three properties:
+
+<ol>
+<li>data - the raw data as loaded from the CLDR files. Should not be
+be modified from the original input data.
+<li>merged - the fully merged data. This merges the highest level data
+(root) into successively lower levels along the locale hierarchy such
+that the most specific locale has a superset of all the data of all
+its ancestors.
+<li>pruned - the pruned version of the merged data where the data is
+the children nodes is removed if it is the same as its immediate parent
+node. That is, merging from the root locale down to a particular locale
+should produce the same thing as what the merged property above contains,
+but with a smaller footprint because duplicates are removed.
+</ol>
+
+After this function is done, the caller should read the "pruned" property
+for each locale.
+
+**Kind**: static method of [<code>Utils</code>](#module_Utils)  
+**Returns**: <code>Object</code> - merged/pruned object  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| localeData | <code>Object</code> | data to merge and prune |
 
 
 * * *

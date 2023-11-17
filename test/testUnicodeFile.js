@@ -1,7 +1,7 @@
 /*
  * testUnicodeFile.js - test the Unicode file loading class
  * 
- * Copyright © 2012, 2020, 2022 JEDLSoft
+ * Copyright © 2012, 2020, 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,56 @@ const unifileData2 =
     "     # indented comment\n" +
     "FF76;HALFWIDTH KATAKANA LETTER KA;Lo;0;L;<narrow> 30AB;;;;N;;;;;\n";
 
+const unifileData3 =
+    "@ this is a tab defined file\n" +
+    "\n" +
+    "0041\tLATIN CAPITAL LETTER A\n" +
+    "00A8\tDIAERESIS\n" +
+    "\n" +
+    "@Part 2\n" +
+    "\n" +
+    "00C4\tLATIN CAPITAL LETTER A WITH DIAERESIS\n" +
+    "0160\tLATIN CAPITAL LETTER S WITH CARON\n" +
+    "     @ indented comment\n" +
+    "FF76\tHALFWIDTH KATAKANA LETTER KA\n";
+
+const unifileData4 =
+    "@@@+ this is a tab defined file\n" +
+    "\twith multi-line comments\n" +
+    "\twith multi-line comments\n" +
+    "\twith multi-line comments\n" +
+    "@ in it\n" +
+    "0041\tLATIN CAPITAL LETTER A\n" +
+    "00A8\tDIAERESIS\n" +
+    "\n" +
+    "@Part 2\n" +
+    "\n" +
+    "00C4\tLATIN CAPITAL LETTER A WITH DIAERESIS\n" +
+    "0160\tLATIN CAPITAL LETTER S WITH CARON\n" +
+    "     @ indented comment\n" +
+    "FF76\tHALFWIDTH KATAKANA LETTER KA\n";
+
+const unifileData5 =
+    "@@@+ this is a tab defined file\n" +
+    "0041\tLATIN CAPITAL LETTER A\n" +
+    "\t= property\n" +
+    "00A8\tDIAERESIS\n" +
+    "\tx property\n" +
+    "\n";
+
+const unifileData6 =
+    "#   L; 7\n" +
+    "#   L LRE; 7\n" +
+    "#\n" +
+    "\n" +
+    "@Levels:    x\n" +
+    "@Reorder:   \n" +
+    "LRE; 7\n" +
+    "LRO; 7\n" +
+    "RLE; 7\n" +
+    "RLO; 7\n" +
+    "PDF; 7\n" +
+    "BN; 7\n";
 
 module.exports.testUnicodeFile = {
     testUFConstructor: function(test) {
@@ -105,7 +155,7 @@ module.exports.testUnicodeFile = {
         var uf = new UnicodeFile({string: unifileData2});
         test.ok(uf !== null);
 
-        test.equal(5, uf.length());
+        test.equal(6, uf.length());
         test.done()
     },
     testUFSkipTrailingComments: function(test) {
@@ -124,7 +174,7 @@ module.exports.testUnicodeFile = {
         var uf = new UnicodeFile({string: unifileData2});
         test.ok(uf !== null);
 
-        var row = uf.get(2);
+        var row = uf.get(3);
         test.ok(row !== null);
         test.equal("00C4", row[0]);
         test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
@@ -141,6 +191,68 @@ module.exports.testUnicodeFile = {
         test.equal("", row[12]);
         test.equal("00E4", row[13]);
         test.equal("", row[14]);
+        test.done()
+    },
+    testUFTabFile: function(test) {
+        test.expect(7);
+        var uf = new UnicodeFile({
+            string: unifileData3,
+            splitChar: "\t",
+            commentString: "@"
+        });
+        test.ok(uf !== null);
+
+        var row = uf.get(2);
+        test.ok(row !== null);
+        test.equal("00C4", row[0]);
+        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
+
+        row = uf.get(4);
+        test.ok(row !== null);
+        test.equal("FF76", row[0]);
+        test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
+        test.done()
+    },
+    testUFTabFileWithMultilineComments: function(test) {
+        test.expect(7);
+        var uf = new UnicodeFile({
+            string: unifileData4,
+            splitChar: "\t",
+            commentString: "@",
+            multilineComments: true
+        });
+        test.ok(uf !== null);
+
+        var row = uf.get(2);
+        test.ok(row !== null);
+        test.equal("00C4", row[0]);
+        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
+
+        row = uf.get(4);
+        test.ok(row !== null);
+        test.equal("FF76", row[0]);
+        test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
+        test.done()
+    },
+    testUFTabFileWithEmptyInitialFields: function(test) {
+        test.expect(7);
+        var uf = new UnicodeFile({
+            string: unifileData5,
+            splitChar: "\t",
+            commentString: "@",
+            multilineComments: true
+        });
+        test.ok(uf !== null);
+
+        var row = uf.get(1);
+        test.ok(row !== null);
+        test.equal("", row[0]);
+        test.equal("= property", row[1]);
+
+        row = uf.get(3);
+        test.ok(row !== null);
+        test.equal("", row[0]);
+        test.equal("x property", row[1]);
         test.done()
     }
 }

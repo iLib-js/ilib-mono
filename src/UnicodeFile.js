@@ -1,7 +1,7 @@
 /*
  * UnicodeFile.js - read and parse a file downloaded from the unicode repository
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2022-2023, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,9 @@ import fs from 'fs';
  * <li>commentString - defines the string that introduces a line comment.
  * Everything after this string to the end of the line is ignored as a comment.
  * Default is the hash char '#'.
+ * <li>multilineComments - this file can have comments that start with an @
+ * and then continue with empty fields to start each line. The initial line
+ * and all the continuation lines should be skipped.
  * </ul>
  *
  * @param {Object.<path:string,string:string,splitChar:string,commentString:string>} options options governing the construction of this file
@@ -72,6 +75,9 @@ export default class UnicodeFile {
             if (options.commentString) {
                 this.commentString = options.commentString;
             }
+            if (typeof(options.multilineComments) === "boolean" || options.multilineComments) {
+                this.multilineComments = !!options.multilineComments;
+            }
         }
 
         if (!data) {
@@ -79,15 +85,20 @@ export default class UnicodeFile {
         }
 
         const string = (data.charAt(data.length-1) === '\n') ? data.substring(0, data.length-1): data;
-        const rows =  string.split('\n');
+        const rows = string.split('\n');
         let row;
 
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].trim().charAt(0) !== '@') {
+            if (rows[i].trim().charAt(0) === this.commentString) {
+                if (this.multilineComments) {
+                    while (i+1 < rows.length && rows[i+1].charAt(0) === this.splitChar) {
+                        i++;
+                    }
+                }
+            } else {
                 const commentStart = rows[i].indexOf(this.commentString);
                 row = (commentStart === -1) ? rows[i] : rows[i].substring(0, commentStart);
-                row = row.trim();
-                if (row.length > 0) {
+                if (row.trim().length > 0) {
                     this.rows.push(row);
                 }
             }
