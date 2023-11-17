@@ -1,5 +1,5 @@
 /*
- * FlowParser.test.js - test the React JSX with flow parser
+ * FlowParser.test.js - test the React JSX + flow parser
  *
  * Copyright © 2023 Box, Inc.
  *
@@ -24,15 +24,15 @@ import FlowParser from '../src/parsers/FlowParser.js';
 
 import { Result } from 'i18nlint-common';
 
-describe("testFlowParser", () => {
-    test("FlowParserConstructorEmpty", () => {
+describe("test the flow parser with jsx code", () => {
+    test("empty flow parser constructor", () => {
         expect.assertions(1);
 
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
     });
 
-    test("FlowParserConstructorPath", () => {
+    test("Flow parser constructor with path", () => {
         expect.assertions(1);
 
         const parser = new FlowParser({
@@ -41,7 +41,7 @@ describe("testFlowParser", () => {
         expect(parser).toBeTruthy();
     });
 
-    test("FlowParserGetDescription", () => {
+    test("Flow parser GetDescription", () => {
         expect.assertions(2);
 
         const parser = new FlowParser();
@@ -50,7 +50,7 @@ describe("testFlowParser", () => {
         expect(parser.getDescription()).toBe("A parser for JS and JSX files with flow type definitions.");
     });
 
-    test("FlowParserGetName", () => {
+    test("Flow parser GetName", () => {
         expect.assertions(2);
 
         const parser = new FlowParser();
@@ -59,7 +59,7 @@ describe("testFlowParser", () => {
         expect(parser.getName()).toBe("js");
     });
 
-    test("FlowParserGetExtensions", () => {
+    test("Flow parser GetExtensions", () => {
         expect.assertions(2);
 
         const parser = new FlowParser();
@@ -68,7 +68,7 @@ describe("testFlowParser", () => {
         expect(parser.getExtensions()).toStrictEqual([ "js", "jsx" ]);
     });
 
-    test("FlowParserSimple", () => {
+    test("Flow parser simple", () => {
         expect.assertions(3);
 
         const parser = new FlowParser();
@@ -87,7 +87,7 @@ describe("testFlowParser", () => {
         expect(actualSimplified).toMatchSnapshot();
     });
 
-    test("FlowParserMoreComplex", () => {
+    test("Flow parser more complex", () => {
         expect.assertions(3);
 
         const parser = new FlowParser();
