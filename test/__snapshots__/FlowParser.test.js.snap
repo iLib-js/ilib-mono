@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`testFlowParser FlowParserMoreComplex 1`] = `
+exports[`testFlowParser Flow parser more complex example 1`] = `
 {
   "filePath": "x/y",
   "ir": {
@@ -305,7 +305,7 @@ exports[`testFlowParser FlowParserMoreComplex 1`] = `
 }
 `;
 
-exports[`testFlowParser FlowParserSimple 1`] = `
+exports[`testFlowParser Flow parser simple 1`] = `
 {
   "filePath": "x/y",
   "ir": {

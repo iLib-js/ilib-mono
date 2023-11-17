@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`testFlowParser FlowParserMoreComplex 1`] = `
+exports[`test the flow parser with jsx code Flow parser more complex 1`] = `
 {
   "filePath": "x/y",
   "ir": {
@@ -422,7 +422,7 @@ exports[`testFlowParser FlowParserMoreComplex 1`] = `
 }
 `;
 
-exports[`testFlowParser FlowParserSimple 1`] = `
+exports[`test the flow parser with jsx code Flow parser simple 1`] = `
 {
   "filePath": "x/y",
   "ir": {
@@ -772,7 +772,7 @@ exports[`testFlowParser FlowParserSimple 1`] = `
 }
 `;
 
-exports[`testFlowParser JSX with a high-order component in it 1`] = `
+exports[`test the flow parser with jsx code JSX with a high-order component in it 1`] = `
 {
   "filePath": "x/y",
   "ir": {
