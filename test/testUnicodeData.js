@@ -69,7 +69,7 @@ module.exports.testUnicodeData = {
         test.equal("Ä", row.getCharacter());
         test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row.getName());
         test.equal("Lu", row.getCategory());
-        test.equal(0, row.getCombiningClass());
+        test.equal(row.getCombiningClass(), 0);
         test.equal("L", row.getBidiClass());
         test.equal("canon", row.getDecompositionType());
         test.equal("Ä", row.getDecomposition());
@@ -90,7 +90,7 @@ module.exports.testUnicodeData = {
         test.equal("̤", row.getCharacter());
         test.equal("COMBINING DIAERESIS BELOW", row.getName());
         test.equal("Mn", row.getCategory());
-        test.equal(220, row.getCombiningClass());
+        test.equal(row.getCombiningClass(), 220);
         test.equal("NSM", row.getBidiClass());
         test.equal("", row.getDecompositionType());
         test.equal("̤", row.getDecomposition());
@@ -105,7 +105,7 @@ module.exports.testUnicodeData = {
         var ud = new UnicodeData({string: sampleData});
         test.ok(ud !== null);
 
-        test.equal(21, ud.length());
+        test.equal(ud.length(), 21);
         test.done();
     },
     testUDGetOtherDecompType: function(test) {

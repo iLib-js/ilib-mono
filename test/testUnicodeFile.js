@@ -103,7 +103,7 @@ module.exports.testUnicodeFile = {
         var uf = new UnicodeFile({string: unifileData});
         test.ok(uf !== null);
 
-        test.equal(5, uf.length());
+        test.equal(uf.length(), 5);
         test.done()
     },
     testUFGetRow: function(test) {
@@ -122,7 +122,7 @@ module.exports.testUnicodeFile = {
 
         var row = uf.get(2);
         test.ok(row !== null);
-        test.equal(15, row.length);
+        test.equal(row.length, 15);
         test.done()
     },
     testUFGetRowRightData: function(test) {
@@ -155,7 +155,7 @@ module.exports.testUnicodeFile = {
         var uf = new UnicodeFile({string: unifileData2});
         test.ok(uf !== null);
 
-        test.equal(6, uf.length());
+        test.equal(uf.length(), 6);
         test.done()
     },
     testUFSkipTrailingComments: function(test) {
@@ -166,7 +166,7 @@ module.exports.testUnicodeFile = {
         var row = uf.get(0);
         test.ok(row !== null);
 
-        test.equal(15, row.length);
+        test.equal(row.length, 15);
         test.done()
     },
     testUFSkipCommentsRightData: function(test) {

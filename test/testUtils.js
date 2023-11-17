@@ -91,7 +91,7 @@ export const testUtils = {
         test.expect(3)
         var str = Utils.codePointToUTF16(0x10302);
 
-        test.equal(2, str.length);
+        test.equal(str.length, 2);
         test.equal(0xD800, str.charCodeAt(0));
         test.equal(0xDF02, str.charCodeAt(1));
         test.done();
@@ -100,7 +100,7 @@ export const testUtils = {
         test.expect(3)
         var str = Utils.codePointToUTF16(0x10FFFD);
 
-        test.equal(2, str.length);
+        test.equal(str.length, 2);
         test.equal(0xDBFF, str.charCodeAt(0));
         test.equal(0xDFFD, str.charCodeAt(1));
         test.done();
@@ -109,7 +109,7 @@ export const testUtils = {
         test.expect(3)
         var str = Utils.codePointToUTF16(0x10000);
 
-        test.equal(2, str.length);
+        test.equal(str.length, 2);
         test.equal(0xD800, str.charCodeAt(0));
         test.equal(0xDC00, str.charCodeAt(1));
         test.done();
@@ -118,7 +118,7 @@ export const testUtils = {
         test.expect(2)
         var str = Utils.codePointToUTF16(0xFFFF);
 
-        test.equal(1, str.length);
+        test.equal(str.length, 1);
         test.equal(0xFFFF, str.charCodeAt(0));
         test.done();
     },
@@ -126,7 +126,7 @@ export const testUtils = {
         test.expect(2)
         var str = Utils.codePointToUTF16(0x0302);
 
-        test.equal(1, str.length);
+        test.equal(str.length, 1);
         test.equal(0x0302, str.charCodeAt(0));
         test.done();
     },
@@ -241,10 +241,10 @@ export const testUtils = {
         var a = [[1], [2], [4], [5], [7]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
+        test.equal(b.length, 3);
+        test.equal(b[0].length, 2);
+        test.equal(b[1].length, 2);
+        test.equal(b[2].length, 1);
         test.done();
     },
     testCoelesceCase1RightContent: function(test) {
@@ -252,11 +252,11 @@ export const testUtils = {
         var a = [[1], [2], [4], [5], [7]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(2, b[0][1]);
-        test.equal(4, b[1][0]);
-        test.equal(5, b[1][1]);
-        test.equal(7, b[2][0]);
+        test.equal(b[0][0], 1);
+        test.equal(b[0][1], 2);
+        test.equal(b[1][0], 4);
+        test.equal(b[1][1], 5);
+        test.equal(b[2][0], 7);
         test.done();
     },
     testCoelesceCase2RightLength: function(test) {
@@ -264,10 +264,10 @@ export const testUtils = {
         var a = [[1], [2,3], [5], [6,10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
+        test.equal(b.length, 3);
+        test.equal(b[0].length, 2);
+        test.equal(b[1].length, 2);
+        test.equal(b[2].length, 1);
         test.done();
     },
     testCoelesceCase2RightContent: function(test) {
@@ -275,11 +275,11 @@ export const testUtils = {
         var a = [[1], [2,3], [5], [6,10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(3, b[0][1]);
-        test.equal(5, b[1][0]);
-        test.equal(10, b[1][1]);
-        test.equal(12, b[2][0]);
+        test.equal(b[0][0], 1);
+        test.equal(b[0][1], 3);
+        test.equal(b[1][0], 5);
+        test.equal(b[1][1], 10);
+        test.equal(b[2][0], 12);
         test.done();
     },
     testCoelesceCase3RightLength: function(test) {
@@ -287,10 +287,10 @@ export const testUtils = {
         var a = [[1,3], [4], [6,9], [10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
+        test.equal(b.length, 3);
+        test.equal(b[0].length, 2);
+        test.equal(b[1].length, 2);
+        test.equal(b[2].length, 1);
         test.done();
     },
     testCoelesceCase3RightContent: function(test) {
@@ -298,11 +298,11 @@ export const testUtils = {
         var a = [[1,3], [4], [6,9], [10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(4, b[0][1]);
-        test.equal(6, b[1][0]);
-        test.equal(10, b[1][1]);
-        test.equal(12, b[2][0]);
+        test.equal(b[0][0], 1);
+        test.equal(b[0][1], 4);
+        test.equal(b[1][0], 6);
+        test.equal(b[1][1], 10);
+        test.equal(b[2][0], 12);
         test.done();
     },
     testCoelesceCase4RightLength: function(test) {
@@ -310,10 +310,10 @@ export const testUtils = {
         var a = [[1,3], [4,6], [10,12], [13,15], [17]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
+        test.equal(b.length, 3);
+        test.equal(b[0].length, 2);
+        test.equal(b[1].length, 2);
+        test.equal(b[2].length, 1);
         test.done();
     },
     testCoelesceCase4RightContent: function(test) {
@@ -321,11 +321,11 @@ export const testUtils = {
         var a = [[1,3], [4,6], [10,12], [13,15], [17]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(6, b[0][1]);
-        test.equal(10, b[1][0]);
-        test.equal(15, b[1][1]);
-        test.equal(17, b[2][0]);
+        test.equal(b[0][0], 1);
+        test.equal(b[0][1], 6);
+        test.equal(b[1][0], 10);
+        test.equal(b[1][1], 15);
+        test.equal(b[2][0], 17);
         test.done();
     },
     testCoelesceMultipleCasesLength: function(test) {
@@ -333,7 +333,7 @@ export const testUtils = {
         var a = [[1], [2,3], [4], [5], [6,10], [11,15]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b.length);
+        test.equal(b.length, 1);
         test.done();
     },
     testCoelesceMultipleCasesContent: function(test) {
@@ -341,8 +341,8 @@ export const testUtils = {
         var a = [[1], [2,3], [4], [5], [6,10], [11,15]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(15, b[0][1]);
+        test.equal(b[0][0], 1);
+        test.equal(b[0][1], 15);
         test.done();
     },
     testCoelesceMultipleCasesWithSkipLength: function(test) {
@@ -363,10 +363,10 @@ export const testUtils = {
 
         var b = Utils.coelesce(a, 1);
 
-        test.equal(3, b.length);
-        test.equal(3, b[0].length);
-        test.equal(3, b[1].length);
-        test.equal(3, b[2].length);
+        test.equal(b.length, 3);
+        test.equal(b[0].length, 3);
+        test.equal(b[1].length, 3);
+        test.equal(b[2].length, 3);
         test.done();
     },
 
@@ -389,14 +389,14 @@ export const testUtils = {
         var b = Utils.coelesce(a, 1);
 
         test.equal("foo", b[0][0]);
-        test.equal(1, b[0][1]);
-        test.equal(5, b[0][2]);
+        test.equal(b[0][1], 1);
+        test.equal(b[0][2], 5);
         test.equal("bar", b[1][0]);
-        test.equal(6, b[1][1]);
-        test.equal(17, b[1][2]);
+        test.equal(b[1][1], 6);
+        test.equal(b[1][2], 17);
         test.equal("foo", b[2][0]);
-        test.equal(26, b[2][1]);
-        test.equal(35, b[2][2]);
+        test.equal(b[2][1], 26);
+        test.equal(b[2][2], 35);
         test.done();
     },*/
     testCoelesceEmpty: function(test) {
@@ -404,7 +404,7 @@ export const testUtils = {
         var a = [];
         var b = Utils.coelesce(a, 0);
         test.ok(typeof(b) !== "undefined");
-        test.equal(0, b.length);
+        test.equal(b.length, 0);
         test.done();
     },
     testPrune: function(test) {
