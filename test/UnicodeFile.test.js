@@ -1,6 +1,6 @@
 /*
- * testUnicodeFile.js - test the Unicode file loading class
- * 
+ * UnicodeFile.test.js - test the Unicode file loading class
+ *
  * Copyright © 2012, 2020, 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,168 +91,157 @@ const unifileData6 =
     "PDF; 7\n" +
     "BN; 7\n";
 
-module.exports.testUnicodeFile = {
-    testUFConstructor: function(test) {
-        test.expect(1);
+describe("testUnicodeFile", () => {
+    test("UFConstructor", () => {
+        expect.assertions(1);
         var uf = new UnicodeFile({string: unifileData});
-        test.ok(uf !== null);
-        test.done()
-    },
-    testUFLength: function(test) {
-        test.expect(2);
+        expect(uf !== null).toBeTruthy();
+    });
+    test("UFLength", () => {
+        expect.assertions(2);
         var uf = new UnicodeFile({string: unifileData});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
-        test.equal(uf.length(), 5);
-        test.done()
-    },
-    testUFGetRow: function(test) {
-        test.expect(2);
+        expect(uf.length()).toBe(5);
+    });
+    test("UFGetRow", () => {
+        expect.assertions(2);
         var uf = new UnicodeFile({string: unifileData});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(2);
-        test.ok(row !== null);
-        test.done()
-    },
-    testUFGetRowRightLength: function(test) {
-        test.expect(3);
+        expect(row !== null).toBeTruthy();
+    });
+    test("UFGetRowRightLength", () => {
+        expect.assertions(3);
         var uf = new UnicodeFile({string: unifileData});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(2);
-        test.ok(row !== null);
-        test.equal(row.length, 15);
-        test.done()
-    },
-    testUFGetRowRightData: function(test) {
-        test.expect(17);
+        expect(row !== null).toBeTruthy();
+        expect(row.length).toBe(15);
+    });
+    test("UFGetRowRightData", () => {
+        expect.assertions(17);
         var uf = new UnicodeFile({string: unifileData});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(2);
-        test.ok(row !== null);
+        expect(row !== null).toBeTruthy();
 
-        test.equal("00C4", row[0]);
-        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
-        test.equal("Lu", row[2]);
-        test.equal("0", row[3]);
-        test.equal("L", row[4]);
-        test.equal("0041 0308", row[5]);
-        test.equal("", row[6]);
-        test.equal("", row[7]);
-        test.equal("", row[8]);
-        test.equal("N", row[9]);
-        test.equal("LATIN CAPITAL LETTER A DIAERESIS", row[10]);
-        test.equal("", row[11]);
-        test.equal("", row[12]);
-        test.equal("00E4", row[13]);
-        test.equal("", row[14]);
-        test.done()
-    },
-    testUFSkipCommentsAndBlankLines: function(test) {
-        test.expect(2);
+        expect("00C4").toBe(row[0]);
+        expect("LATIN CAPITAL LETTER A WITH DIAERESIS").toBe(row[1]);
+        expect("Lu").toBe(row[2]);
+        expect("0").toBe(row[3]);
+        expect("L").toBe(row[4]);
+        expect("0041 0308").toBe(row[5]);
+        expect("").toBe(row[6]);
+        expect("").toBe(row[7]);
+        expect("").toBe(row[8]);
+        expect("N").toBe(row[9]);
+        expect("LATIN CAPITAL LETTER A DIAERESIS").toBe(row[10]);
+        expect("").toBe(row[11]);
+        expect("").toBe(row[12]);
+        expect("00E4").toBe(row[13]);
+        expect("").toBe(row[14]);
+    });
+    test("UFSkipCommentsAndBlankLines", () => {
+        expect.assertions(2);
         var uf = new UnicodeFile({string: unifileData2});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
-        test.equal(uf.length(), 6);
-        test.done()
-    },
-    testUFSkipTrailingComments: function(test) {
-        test.expect(3);
+        expect(uf.length()).toBe(6);
+    });
+    test("UFSkipTrailingComments", () => {
+        expect.assertions(3);
         var uf = new UnicodeFile({string: unifileData2});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(0);
-        test.ok(row !== null);
+        expect(row !== null).toBeTruthy();
 
-        test.equal(row.length, 15);
-        test.done()
-    },
-    testUFSkipCommentsRightData: function(test) {
-        test.expect(17);
+        expect(row.length).toBe(15);
+    });
+    test("UFSkipCommentsRightData", () => {
+        expect.assertions(17);
         var uf = new UnicodeFile({string: unifileData2});
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(3);
-        test.ok(row !== null);
-        test.equal("00C4", row[0]);
-        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
-        test.equal("Lu", row[2]);
-        test.equal("0", row[3]);
-        test.equal("L", row[4]);
-        test.equal("0041 0308", row[5]);
-        test.equal("", row[6]);
-        test.equal("", row[7]);
-        test.equal("", row[8]);
-        test.equal("N", row[9]);
-        test.equal("LATIN CAPITAL LETTER A DIAERESIS", row[10]);
-        test.equal("", row[11]);
-        test.equal("", row[12]);
-        test.equal("00E4", row[13]);
-        test.equal("", row[14]);
-        test.done()
-    },
-    testUFTabFile: function(test) {
-        test.expect(7);
+        expect(row !== null).toBeTruthy();
+        expect("00C4").toBe(row[0]);
+        expect("LATIN CAPITAL LETTER A WITH DIAERESIS").toBe(row[1]);
+        expect("Lu").toBe(row[2]);
+        expect("0").toBe(row[3]);
+        expect("L").toBe(row[4]);
+        expect("0041 0308").toBe(row[5]);
+        expect("").toBe(row[6]);
+        expect("").toBe(row[7]);
+        expect("").toBe(row[8]);
+        expect("N").toBe(row[9]);
+        expect("LATIN CAPITAL LETTER A DIAERESIS").toBe(row[10]);
+        expect("").toBe(row[11]);
+        expect("").toBe(row[12]);
+        expect("00E4").toBe(row[13]);
+        expect("").toBe(row[14]);
+    });
+    test("UFTabFile", () => {
+        expect.assertions(7);
         var uf = new UnicodeFile({
             string: unifileData3,
             splitChar: "\t",
             commentString: "@"
         });
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(2);
-        test.ok(row !== null);
-        test.equal("00C4", row[0]);
-        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
+        expect(row !== null).toBeTruthy();
+        expect("00C4").toBe(row[0]);
+        expect("LATIN CAPITAL LETTER A WITH DIAERESIS").toBe(row[1]);
 
         row = uf.get(4);
-        test.ok(row !== null);
-        test.equal("FF76", row[0]);
-        test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
-        test.done()
-    },
-    testUFTabFileWithMultilineComments: function(test) {
-        test.expect(7);
+        expect(row !== null).toBeTruthy();
+        expect("FF76").toBe(row[0]);
+        expect("HALFWIDTH KATAKANA LETTER KA").toBe(row[1]);
+    });
+    test("UFTabFileWithMultilineComments", () => {
+        expect.assertions(7);
         var uf = new UnicodeFile({
             string: unifileData4,
             splitChar: "\t",
             commentString: "@",
             multilineComments: true
         });
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(2);
-        test.ok(row !== null);
-        test.equal("00C4", row[0]);
-        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row[1]);
+        expect(row !== null).toBeTruthy();
+        expect("00C4").toBe(row[0]);
+        expect("LATIN CAPITAL LETTER A WITH DIAERESIS").toBe(row[1]);
 
         row = uf.get(4);
-        test.ok(row !== null);
-        test.equal("FF76", row[0]);
-        test.equal("HALFWIDTH KATAKANA LETTER KA", row[1]);
-        test.done()
-    },
-    testUFTabFileWithEmptyInitialFields: function(test) {
-        test.expect(7);
+        expect(row !== null).toBeTruthy();
+        expect("FF76").toBe(row[0]);
+        expect("HALFWIDTH KATAKANA LETTER KA").toBe(row[1]);
+    });
+    test("UFTabFileWithEmptyInitialFields", () => {
+        expect.assertions(7);
         var uf = new UnicodeFile({
             string: unifileData5,
             splitChar: "\t",
             commentString: "@",
             multilineComments: true
         });
-        test.ok(uf !== null);
+        expect(uf !== null).toBeTruthy();
 
         var row = uf.get(1);
-        test.ok(row !== null);
-        test.equal("", row[0]);
-        test.equal("= property", row[1]);
+        expect(row !== null).toBeTruthy();
+        expect("").toBe(row[0]);
+        expect("= property").toBe(row[1]);
 
         row = uf.get(3);
-        test.ok(row !== null);
-        test.equal("", row[0]);
-        test.equal("x property", row[1]);
-        test.done()
-    }
-}
+        expect(row !== null).toBeTruthy();
+        expect("").toBe(row[0]);
+        expect("x property").toBe(row[1]);
+    });
+});
