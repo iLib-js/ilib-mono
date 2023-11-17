@@ -1,7 +1,7 @@
 /*
- * testUtils.js - test the common routines
+ * Utils.test.js - test the common routines
  *
- * Copyright © 2020-2022, JEDLSoft
+ * Copyright © 2020, 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,309 +44,276 @@ var memberTest4 = [
     8,
 ];
 
-export const testUtils = {
-    testUTFToCodePoint: function(test) {
-        test.expect(1)
+describe("testUtils", () => {
+    test("UTFToCodePoint", () => {
+        expect.assertions(1)
 
         var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDF02);
-        test.equal(0x10302, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePoint: function(test) {
-        test.expect(1)
+        expect(0x10302).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePoint", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDF02);
 
-        test.equal(0x10302, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointLast: function(test) {
-        test.expect(1)
+        expect(0x10302).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointLast", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xDBFF) + String.fromCharCode(0xDFFD);
 
-        test.equal(0x10FFFD, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointFirst: function(test) {
-        test.expect(1)
+        expect(0x10FFFD).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointFirst", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDC00);
 
-        test.equal(0x10000, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointBeforeFirst: function(test) {
-        test.expect(1)
+        expect(0x10000).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointBeforeFirst", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xFFFF);
 
-        test.equal(0xFFFF, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointNotSupplementary: function(test) {
-        test.expect(1)
+        expect(0xFFFF).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointNotSupplementary", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0x0302);
 
-        test.equal(0x0302, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testCodePointToUTF: function(test) {
-        test.expect(3)
+        expect(0x0302).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("CodePointToUTF", () => {
+        expect.assertions(3)
         var str = Utils.codePointToUTF16(0x10302);
 
-        test.equal(2, str.length);
-        test.equal(0xD800, str.charCodeAt(0));
-        test.equal(0xDF02, str.charCodeAt(1));
-        test.done();
-    },
-    testCodePointToUTFLast: function(test) {
-        test.expect(3)
+        expect(str.length).toBe(2);
+        expect(0xD800).toBe(str.charCodeAt(0));
+        expect(0xDF02).toBe(str.charCodeAt(1));
+    });
+    test("CodePointToUTFLast", () => {
+        expect.assertions(3)
         var str = Utils.codePointToUTF16(0x10FFFD);
 
-        test.equal(2, str.length);
-        test.equal(0xDBFF, str.charCodeAt(0));
-        test.equal(0xDFFD, str.charCodeAt(1));
-        test.done();
-    },
-    testCodePointToUTFFirst: function(test) {
-        test.expect(3)
+        expect(str.length).toBe(2);
+        expect(0xDBFF).toBe(str.charCodeAt(0));
+        expect(0xDFFD).toBe(str.charCodeAt(1));
+    });
+    test("CodePointToUTFFirst", () => {
+        expect.assertions(3)
         var str = Utils.codePointToUTF16(0x10000);
 
-        test.equal(2, str.length);
-        test.equal(0xD800, str.charCodeAt(0));
-        test.equal(0xDC00, str.charCodeAt(1));
-        test.done();
-    },
-    testCodePointToUTFBeforeFirst: function(test) {
-        test.expect(2)
+        expect(str.length).toBe(2);
+        expect(0xD800).toBe(str.charCodeAt(0));
+        expect(0xDC00).toBe(str.charCodeAt(1));
+    });
+    test("CodePointToUTFBeforeFirst", () => {
+        expect.assertions(2)
         var str = Utils.codePointToUTF16(0xFFFF);
 
-        test.equal(1, str.length);
-        test.equal(0xFFFF, str.charCodeAt(0));
-        test.done();
-    },
-    testCodePointToUTFNotSupplementary: function(test) {
-        test.expect(2)
+        expect(str.length).toBe(1);
+        expect(0xFFFF).toBe(str.charCodeAt(0));
+    });
+    test("CodePointToUTFNotSupplementary", () => {
+        expect.assertions(2)
         var str = Utils.codePointToUTF16(0x0302);
 
-        test.equal(1, str.length);
-        test.equal(0x0302, str.charCodeAt(0));
-        test.done();
-    },
-    testUTFToCodePoint: function(test) {
-        test.expect(1)
+        expect(str.length).toBe(1);
+        expect(0x0302).toBe(str.charCodeAt(0));
+    });
+    test("UTFToCodePoint", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDF02);
 
-        test.equal(0x10302, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointLast: function(test) {
-        test.expect(1)
+        expect(0x10302).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointLast", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xDBFF) + String.fromCharCode(0xDFFD);
 
-        test.equal(0x10FFFD, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointFirst: function(test) {
-        test.expect(1)
+        expect(0x10FFFD).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointFirst", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDC00);
 
-        test.equal(0x10000, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointBeforeFirst: function(test) {
-        test.expect(1)
+        expect(0x10000).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointBeforeFirst", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0xFFFF);
 
-        test.equal(0xFFFF, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testUTFToCodePointNotSupplementary: function(test) {
-        test.expect(1)
+        expect(0xFFFF).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("UTFToCodePointNotSupplementary", () => {
+        expect.assertions(1)
         var str = String.fromCharCode(0x0302);
 
-        test.equal(0x0302, Utils.UTF16ToCodePoint(str));
-        test.done();
-    },
-    testIsMemberTrue: function(test) {
-        test.expect(4)
-        test.ok(Utils.isMember(memberTest1, 2));
-        test.ok(Utils.isMember(memberTest1, 4));
-        test.ok(Utils.isMember(memberTest1, 6));
-        test.ok(Utils.isMember(memberTest1, 8));
-        test.done();
-    },
-    testIsMemberFalse: function(test) {
-        test.expect(5)
-        test.ok(!Utils.isMember(memberTest1, 1));
-        test.ok(!Utils.isMember(memberTest1, 3));
-        test.ok(!Utils.isMember(memberTest1, 5));
-        test.ok(!Utils.isMember(memberTest1, 7));
-        test.ok(!Utils.isMember(memberTest1, 9));
-        test.done();
-    },
-    testIsMemberEmpty: function(test) {
-        test.expect(4)
-        test.ok(!Utils.isMember(memberTest2, 2));
-        test.ok(!Utils.isMember(memberTest2, 4));
-        test.ok(!Utils.isMember(memberTest2, 6));
-        test.ok(!Utils.isMember(memberTest2, 8));
-        test.done();
-    },
-    testIsMemberRange: function(test) {
-        test.expect(7)
-        test.ok(Utils.isMember(memberTest3, 2));
-        test.ok(Utils.isMember(memberTest3, 4));
-        test.ok(Utils.isMember(memberTest3, 5));
-        test.ok(Utils.isMember(memberTest3, 6));
-        test.ok(Utils.isMember(memberTest3, 7));
-        test.ok(Utils.isMember(memberTest3, 8));
-        test.ok(Utils.isMember(memberTest3, 10));
-        test.done();
-    },
-    testIsMemberOutsideRange: function(test) {
-        test.expect(4)
-        test.ok(!Utils.isMember(memberTest3, 1));
-        test.ok(!Utils.isMember(memberTest3, 3));
-        test.ok(!Utils.isMember(memberTest3, 9));
-        test.ok(!Utils.isMember(memberTest3, 11));
-        test.done();
-    },
-    testIsMemberWithNegativeRanges: function(test) {
-        test.expect(10)
-        test.ok(Utils.isMember(memberTest4, -8));
-        test.ok(Utils.isMember(memberTest4, -4));
-        test.ok(Utils.isMember(memberTest4, -3));
-        test.ok(Utils.isMember(memberTest4, -2));
-        test.ok(Utils.isMember(memberTest4, 0));
-        test.ok(Utils.isMember(memberTest4, 1));
-        test.ok(Utils.isMember(memberTest4, 4));
-        test.ok(Utils.isMember(memberTest4, 5));
-        test.ok(Utils.isMember(memberTest4, 6));
-        test.ok(Utils.isMember(memberTest4, 8));
-        test.done();
-    },
-    testIsMemberOutsideRange2: function(test) {
-        test.expect(8)
-        test.ok(!Utils.isMember(memberTest4, -9));
-        test.ok(!Utils.isMember(memberTest4, -7));
-        test.ok(!Utils.isMember(memberTest4, -5));
-        test.ok(!Utils.isMember(memberTest4, -1));
-        test.ok(!Utils.isMember(memberTest4, 2));
-        test.ok(!Utils.isMember(memberTest4, 3));
-        test.ok(!Utils.isMember(memberTest4, 7));
-        test.ok(!Utils.isMember(memberTest4, 9));
-        test.done();
-    },
-    testCoelesceCase1RightLength: function(test) {
-        test.expect()
+        expect(0x0302).toBe(Utils.UTF16ToCodePoint(str));
+    });
+    test("IsMemberTrue", () => {
+        expect.assertions(4)
+        expect(Utils.isMember(memberTest1, 2)).toBeTruthy();
+        expect(Utils.isMember(memberTest1, 4)).toBeTruthy();
+        expect(Utils.isMember(memberTest1, 6)).toBeTruthy();
+        expect(Utils.isMember(memberTest1, 8)).toBeTruthy();
+    });
+    test("IsMemberFalse", () => {
+        expect.assertions(5)
+        expect(!Utils.isMember(memberTest1, 1)).toBeTruthy();
+        expect(!Utils.isMember(memberTest1, 3)).toBeTruthy();
+        expect(!Utils.isMember(memberTest1, 5)).toBeTruthy();
+        expect(!Utils.isMember(memberTest1, 7)).toBeTruthy();
+        expect(!Utils.isMember(memberTest1, 9)).toBeTruthy();
+    });
+    test("IsMemberEmpty", () => {
+        expect.assertions(4)
+        expect(!Utils.isMember(memberTest2, 2)).toBeTruthy();
+        expect(!Utils.isMember(memberTest2, 4)).toBeTruthy();
+        expect(!Utils.isMember(memberTest2, 6)).toBeTruthy();
+        expect(!Utils.isMember(memberTest2, 8)).toBeTruthy();
+    });
+    test("IsMemberRange", () => {
+        expect.assertions(7)
+        expect(Utils.isMember(memberTest3, 2)).toBeTruthy();
+        expect(Utils.isMember(memberTest3, 4)).toBeTruthy();
+        expect(Utils.isMember(memberTest3, 5)).toBeTruthy();
+        expect(Utils.isMember(memberTest3, 6)).toBeTruthy();
+        expect(Utils.isMember(memberTest3, 7)).toBeTruthy();
+        expect(Utils.isMember(memberTest3, 8)).toBeTruthy();
+        expect(Utils.isMember(memberTest3, 10)).toBeTruthy();
+    });
+    test("IsMemberOutsideRange", () => {
+        expect.assertions(4)
+        expect(!Utils.isMember(memberTest3, 1)).toBeTruthy();
+        expect(!Utils.isMember(memberTest3, 3)).toBeTruthy();
+        expect(!Utils.isMember(memberTest3, 9)).toBeTruthy();
+        expect(!Utils.isMember(memberTest3, 11)).toBeTruthy();
+    });
+    test("IsMemberWithNegativeRanges", () => {
+        expect.assertions(10)
+        expect(Utils.isMember(memberTest4, -8)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, -4)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, -3)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, -2)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, 0)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, 1)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, 4)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, 5)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, 6)).toBeTruthy();
+        expect(Utils.isMember(memberTest4, 8)).toBeTruthy();
+    });
+    test("IsMemberOutsideRange2", () => {
+        expect.assertions(8)
+        expect(!Utils.isMember(memberTest4, -9)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, -7)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, -5)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, -1)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, 2)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, 3)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, 7)).toBeTruthy();
+        expect(!Utils.isMember(memberTest4, 9)).toBeTruthy();
+    });
+    test("CoelesceCase1RightLength", () => {
+        expect.assertions()
 
         var a = [[1], [2], [4], [5], [7]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
-        test.done();
-    },
-    testCoelesceCase1RightContent: function(test) {
-        test.expect(5)
+        expect(b.length).toBe(3);
+        expect(b[0].length).toBe(2);
+        expect(b[1].length).toBe(2);
+        expect(b[2].length).toBe(1);
+    });
+    test("CoelesceCase1RightContent", () => {
+        expect.assertions(5)
         var a = [[1], [2], [4], [5], [7]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(2, b[0][1]);
-        test.equal(4, b[1][0]);
-        test.equal(5, b[1][1]);
-        test.equal(7, b[2][0]);
-        test.done();
-    },
-    testCoelesceCase2RightLength: function(test) {
-        test.expect(4)
+        expect(b[0][0]).toBe(1);
+        expect(b[0][1]).toBe(2);
+        expect(b[1][0]).toBe(4);
+        expect(b[1][1]).toBe(5);
+        expect(b[2][0]).toBe(7);
+    });
+    test("CoelesceCase2RightLength", () => {
+        expect.assertions(4)
         var a = [[1], [2,3], [5], [6,10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
-        test.done();
-    },
-    testCoelesceCase2RightContent: function(test) {
-        test.expect(5)
+        expect(b.length).toBe(3);
+        expect(b[0].length).toBe(2);
+        expect(b[1].length).toBe(2);
+        expect(b[2].length).toBe(1);
+    });
+    test("CoelesceCase2RightContent", () => {
+        expect.assertions(5)
         var a = [[1], [2,3], [5], [6,10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(3, b[0][1]);
-        test.equal(5, b[1][0]);
-        test.equal(10, b[1][1]);
-        test.equal(12, b[2][0]);
-        test.done();
-    },
-    testCoelesceCase3RightLength: function(test) {
-        test.expect(4)
+        expect(b[0][0]).toBe(1);
+        expect(b[0][1]).toBe(3);
+        expect(b[1][0]).toBe(5);
+        expect(b[1][1]).toBe(10);
+        expect(b[2][0]).toBe(12);
+    });
+    test("CoelesceCase3RightLength", () => {
+        expect.assertions(4)
         var a = [[1,3], [4], [6,9], [10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
-        test.done();
-    },
-    testCoelesceCase3RightContent: function(test) {
-        test.expect(5)
+        expect(b.length).toBe(3);
+        expect(b[0].length).toBe(2);
+        expect(b[1].length).toBe(2);
+        expect(b[2].length).toBe(1);
+    });
+    test("CoelesceCase3RightContent", () => {
+        expect.assertions(5)
         var a = [[1,3], [4], [6,9], [10], [12]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(4, b[0][1]);
-        test.equal(6, b[1][0]);
-        test.equal(10, b[1][1]);
-        test.equal(12, b[2][0]);
-        test.done();
-    },
-    testCoelesceCase4RightLength: function(test) {
-        test.expect(4)
+        expect(b[0][0]).toBe(1);
+        expect(b[0][1]).toBe(4);
+        expect(b[1][0]).toBe(6);
+        expect(b[1][1]).toBe(10);
+        expect(b[2][0]).toBe(12);
+    });
+    test("CoelesceCase4RightLength", () => {
+        expect.assertions(4)
         var a = [[1,3], [4,6], [10,12], [13,15], [17]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(3, b.length);
-        test.equal(2, b[0].length);
-        test.equal(2, b[1].length);
-        test.equal(1, b[2].length);
-        test.done();
-    },
-    testCoelesceCase4RightContent: function(test) {
-        test.expect(5)
+        expect(b.length).toBe(3);
+        expect(b[0].length).toBe(2);
+        expect(b[1].length).toBe(2);
+        expect(b[2].length).toBe(1);
+    });
+    test("CoelesceCase4RightContent", () => {
+        expect.assertions(5)
         var a = [[1,3], [4,6], [10,12], [13,15], [17]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(6, b[0][1]);
-        test.equal(10, b[1][0]);
-        test.equal(15, b[1][1]);
-        test.equal(17, b[2][0]);
-        test.done();
-    },
-    testCoelesceMultipleCasesLength: function(test) {
-        test.expect(1)
+        expect(b[0][0]).toBe(1);
+        expect(b[0][1]).toBe(6);
+        expect(b[1][0]).toBe(10);
+        expect(b[1][1]).toBe(15);
+        expect(b[2][0]).toBe(17);
+    });
+    test("CoelesceMultipleCasesLength", () => {
+        expect.assertions(1)
         var a = [[1], [2,3], [4], [5], [6,10], [11,15]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b.length);
-        test.done();
-    },
-    testCoelesceMultipleCasesContent: function(test) {
-        test.expect(2)
+        expect(b.length).toBe(1);
+    });
+    test("CoelesceMultipleCasesContent", () => {
+        expect.assertions(2)
         var a = [[1], [2,3], [4], [5], [6,10], [11,15]];
         var b = Utils.coelesce(a, 0);
 
-        test.equal(1, b[0][0]);
-        test.equal(15, b[0][1]);
-        test.done();
-    },
-    testCoelesceMultipleCasesWithSkipLength: function(test) {
-        test.expect(4)
+        expect(b[0][0]).toBe(1);
+        expect(b[0][1]).toBe(15);
+    });
+    test("CoelesceMultipleCasesWithSkipLength", () => {
+        expect.assertions(4)
         var a = [
             ["foo", 1],
             ["foo", 2, 3],
@@ -363,15 +330,14 @@ export const testUtils = {
 
         var b = Utils.coelesce(a, 1);
 
-        test.equal(3, b.length);
-        test.equal(3, b[0].length);
-        test.equal(3, b[1].length);
-        test.equal(3, b[2].length);
-        test.done();
-    },
+        expect(b.length).toBe(3);
+        expect(b[0].length).toBe(3);
+        expect(b[1].length).toBe(3);
+        expect(b[2].length).toBe(3);
+    });
 
-    /*testCoelesceMultipleCasesWithSkipContent: function(test) {
-        test.expect(9)
+    /*test("CoelesceMultipleCasesWithSkipContent", () => {
+        expect.assertions(9)
         var a = [
             ["foo", 1],
             ["foo", 2, 3],
@@ -388,27 +354,25 @@ export const testUtils = {
 
         var b = Utils.coelesce(a, 1);
 
-        test.equal("foo", b[0][0]);
-        test.equal(1, b[0][1]);
-        test.equal(5, b[0][2]);
-        test.equal("bar", b[1][0]);
-        test.equal(6, b[1][1]);
-        test.equal(17, b[1][2]);
-        test.equal("foo", b[2][0]);
-        test.equal(26, b[2][1]);
-        test.equal(35, b[2][2]);
-        test.done();
+        expect("foo").toBe(b[0][0]);
+        expect(b[0][1]).toBe(1);
+        expect(b[0][2]).toBe(5);
+        expect("bar").toBe(b[1][0]);
+        expect(b[1][1]).toBe(6);
+        expect(b[1][2]).toBe(17);
+        expect("foo").toBe(b[2][0]);
+        expect(b[2][1]).toBe(26);
+        expect(b[2][2]).toBe(35);
     },*/
-    testCoelesceEmpty: function(test) {
-        test.expect(2)
+    test("CoelesceEmpty", () => {
+        expect.assertions(2)
         var a = [];
         var b = Utils.coelesce(a, 0);
-        test.ok(typeof(b) !== "undefined");
-        test.equal(0, b.length);
-        test.done();
-    },
-    testPrune: function(test) {
-        test.expect(1)
+        expect(typeof(b) !== "undefined").toBeTruthy();
+        expect(b.length).toBe(0);
+    });
+    test("Prune", () => {
+        expect.assertions(1)
         var parent = {
             "a": 0,
             "b": 1,
@@ -429,11 +393,10 @@ export const testUtils = {
             "e": 6
         };
         var pruned = Utils.prune(parent, child);
-        test.deepEqual(expected, pruned);
-        test.done();
-    },
-    testPruneWithSubobjects: function(test) {
-        test.expect(1)
+        expect(expected).toStrictEqual(pruned);
+    });
+    test("PruneWithSubobjects", () => {
+        expect.assertions(1)
         var parent = {
             "a": 0,
             "b": 1,
@@ -467,11 +430,10 @@ export const testUtils = {
             }
         };
         var pruned = Utils.prune(parent, child);
-        test.deepEqual(expected, pruned);
-        test.done();
-    },
-    testPruneMissingChildValues: function(test) {
-        test.expect(1)
+        expect(expected).toStrictEqual(pruned);
+    });
+    test("PruneMissingChildValues", () => {
+        expect.assertions(1)
         var parent = {
             "a": 0,
             "b": 1,
@@ -487,11 +449,10 @@ export const testUtils = {
             "b": 2
         };
         var pruned = Utils.prune(parent, child);
-        test.deepEqual(expected, pruned);
-        test.done();
-    },
-    testMergeAndPruneAllSame: function(test) {
-        test.expect(2)
+        expect(expected).toStrictEqual(pruned);
+    });
+    test("MergeAndPruneAllSame", () => {
+        expect.assertions(2)
         var data = {
             data: {
                 "sun": 0,
@@ -560,7 +521,7 @@ export const testUtils = {
         Utils.mergeAndPrune(data);
         var adata = {
         };
-        test.deepEqual(adata, data.a.data);
+        expect(adata).toStrictEqual(data.a.data);
 
         var adatamerged = {
             "sun": 0,
@@ -573,11 +534,10 @@ export const testUtils = {
             "east": "west",
             "west": "east"
         };
-        test.deepEqual(adatamerged, data.a.merged);
-        test.done();
-    },
-    testMergeAndPruneAddProps: function(test) {
-        test.expect(2)
+        expect(adatamerged).toStrictEqual(data.a.merged);
+    });
+    test("MergeAndPruneAddProps", () => {
+        expect.assertions(2)
         var data = {
             data: {
                 "sun": 0,
@@ -612,7 +572,7 @@ export const testUtils = {
         var andata = {
             days: 7   // add property that ancestors don't have
         };
-        test.deepEqual(andata, data.a.n.data);
+        expect(andata).toStrictEqual(data.a.n.data);
         var andatamerged = {
             "sun": 0,
             "mon": 1,
@@ -625,11 +585,10 @@ export const testUtils = {
             "west": "east",
             "days": 7
         };
-        test.deepEqual(andatamerged, data.a.n.merged);
-        test.done();
-    },
-    testMergeAndPruneDontAddSame: function(test) {
-        test.expect(2)
+        expect(andatamerged).toStrictEqual(data.a.n.merged);
+    });
+    test("MergeAndPruneDontAddSame", () => {
+        expect.assertions(2)
         var data = {
             data: {
                 "sun": 0,
@@ -668,7 +627,7 @@ export const testUtils = {
             "days": 7,
             "mon": 2    // sun and tue were same as parent
         };
-        test.deepEqual(amdata, data.a.m.data);
+        expect(amdata).toStrictEqual(data.a.m.data);
         var amdatamerged = {
             "sun": 0,
             "mon": 2,
@@ -681,11 +640,10 @@ export const testUtils = {
             "west": "east",
             "days": 7
         };
-        test.deepEqual(amdatamerged, data.a.m.merged);
-        test.done();
-    },
-    testMergeAndPruneDontOverrideGrandParent: function(test) {
-        test.expect(2)
+        expect(amdatamerged).toStrictEqual(data.a.m.merged);
+    });
+    test("MergeAndPruneDontOverrideGrandParent", () => {
+        expect.assertions(2)
         var data = {
             data: {
                 "sun": 0,
@@ -725,7 +683,7 @@ export const testUtils = {
             "mon": 1,
             "sat": 6 // should not contain east: west from the grandparent
         };
-        test.deepEqual(bydata, data.b.y.data);
+        expect(bydata).toStrictEqual(data.b.y.data);
         var bydatamerged = {
             "sun": 100,
             "mon": 1,
@@ -738,11 +696,10 @@ export const testUtils = {
             "west": "east",
             "foo": "asdf"
         };
-        test.deepEqual(bydatamerged, data.b.y.merged);
-        test.done();
-    },
-    testMergeAndPruneOverrideGrandparentOnly: function(test) {
-        test.expect(2)
+        expect(bydatamerged).toStrictEqual(data.b.y.merged);
+    });
+    test("MergeAndPruneOverrideGrandparentOnly", () => {
+        expect.assertions(2)
         var data = {
             data: {
                 "sun": 0,
@@ -777,7 +734,7 @@ export const testUtils = {
         var amdata = {
             "east": "north"
         };
-        test.deepEqual(amdata, data.a.m.data);
+        expect(amdata).toStrictEqual(data.a.m.data);
         var amdatamerged = {
             "sun": 0,
             "mon": 1,
@@ -789,11 +746,10 @@ export const testUtils = {
             "east": "north",
             "west": "east"
         };
-        test.deepEqual(amdatamerged, data.a.m.merged);
-        test.done();
-    },
-    testMergeAndPruneComplexObject: function(test) {
-        test.expect(1)
+        expect(amdatamerged).toStrictEqual(data.a.m.merged);
+    });
+    test("MergeAndPruneComplexObject", () => {
+        expect.assertions(1)
         var data = {
             data: {
                 "sun": 0,
@@ -832,48 +788,40 @@ export const testUtils = {
         };
         Utils.mergeAndPrune(data);
         //console.log("data.a.m.data is " + JSON.stringify(data.a.m.data));
-        test.ok(Utils.isEmpty(data.a.m.data));
-        test.done();
-    },
+        expect(Utils.isEmpty(data.a.m.data)).toBeTruthy();
+    });
 
-    testHexToChar0: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("1"), '\u0001');
-        test.done();
-    },
-    testHexToChar1: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("20"), ' ');
-        test.done();
-    },
-    testHexToChar2: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("65"), 'e');
-        test.done();
-    },
-    testHexToChar3: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("1E0A"), 'Ḋ');
-        test.done();
-    },
-    testHexToChar3: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("1E0A"), 'Ḋ');
-        test.done();
-    },
-    testHexToChar4: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("10190"), '𐆐');
-        test.done();
-    },
-    testHexToChar5: function(test) {
-        test.expect(1)
-        test.equal(Utils.hexToChar("016FF0"), '𖿰');
-        test.done();
-    },
+    test("HexToChar0", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("1")).toBe('\u0001');
+    });
+    test("HexToChar1", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("20")).toBe(' ');
+    });
+    test("HexToChar2", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("65")).toBe('e');
+    });
+    test("HexToChar3", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("1E0A")).toBe('Ḋ');
+    });
+    test("HexToChar3", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("1E0A")).toBe('Ḋ');
+    });
+    test("HexToChar4", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("10190")).toBe('𐆐');
+    });
+    test("HexToChar5", () => {
+        expect.assertions(1)
+        expect(Utils.hexToChar("016FF0")).toBe('𖿰');
+    });
 
-    testLocaleMergeAndPrune: function(test) {
-        test.expect(1)
+    test("LocaleMergeAndPrune", () => {
+        expect.assertions(1)
 
         var data = {
             "root": {
@@ -970,12 +918,11 @@ export const testUtils = {
                 }
             }
         };
-        test.deepEqual(data, expected);
-        test.done();
-    },
+        expect(data).toStrictEqual(expected);
+    });
 
-    testLocaleMergeAndPruneDoPruneExtraSettings: function(test) {
-        test.expect(1)
+    test("LocaleMergeAndPruneDoPruneExtraSettings", () => {
+        expect.assertions(1)
 
         var data = {
             "root": {
@@ -1083,12 +1030,11 @@ export const testUtils = {
                 }
             }
         };
-        test.deepEqual(data, expected);
-        test.done();
-    },
+        expect(data).toStrictEqual(expected);
+    });
 
-    testLocaleMergeAndPruneMissingLocales: function(test) {
-        test.expect(1)
+    test("LocaleMergeAndPruneMissingLocales", () => {
+        expect.assertions(1)
 
         var data = {
             "root": {
@@ -1156,12 +1102,11 @@ export const testUtils = {
                 }
             }
         };
-        test.deepEqual(data, expected);
-        test.done();
-    },
+        expect(data).toStrictEqual(expected);
+    });
 
-    testLocaleMergeAndPruneNoChangeFromParentMeansEmptyPruned: function(test) {
-        test.expect(1)
+    test("LocaleMergeAndPruneNoChangeFromParentMeansEmptyPruned", () => {
+        expect.assertions(1)
 
         var data = {
             "root": {
@@ -1225,12 +1170,11 @@ export const testUtils = {
                 }
             }
         };
-        test.deepEqual(data, expected);
-        test.done();
-    },
+        expect(data).toStrictEqual(expected);
+    });
 
-    testLocaleMergeAndPruneDeepMerge: function(test) {
-        test.expect(1)
+    test("LocaleMergeAndPruneDeepMerge", () => {
+        expect.assertions(1)
 
         var data = {
             "root": {
@@ -1348,8 +1292,6 @@ export const testUtils = {
                 }
             }
         };
-        test.deepEqual(data, expected);
-        test.done();
-    },
-
-};
+        expect(data).toStrictEqual(expected);
+    });
+});

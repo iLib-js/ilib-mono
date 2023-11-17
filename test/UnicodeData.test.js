@@ -1,7 +1,7 @@
 /*
- * testUnicodeData.js - test the UnicodeData parsing routines
- * 
- * Copyright © 2012, 2020, 2022 JEDLSoft
+ * UnicodeData.test.js - test the UnicodeData parsing routines
+ *
+ * Copyright © 2012, 2020, 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,90 +34,84 @@ const sampleData =
     "3204;PARENTHESIZED HANGUL MIEUM;So;0;L;<compat> 0028 1106 0029;;;;N;;;;;\n" +
     "3260;CIRCLED HANGUL KIYEOK;So;0;L;<circle> 1100;;;;N;CIRCLED HANGUL GIYEOG;;;;\n" +
     "3319;SQUARE GURAMUTON;So;0;L;<square> 30B0 30E9 30E0 30C8 30F3;;;;N;SQUARED GURAMUTON;;;;\n" +
-    "A8D3;SAURASHTRA DIGIT THREE;Nd;0;L;;3;3;3;N;;;;;\n" +
     "FB21;HEBREW LETTER WIDE ALEF;Lo;0;R;<font> 05D0;;;;N;;;;;\n" +
+    "A8D3;SAURASHTRA DIGIT THREE;Nd;0;L;;3;3;3;N;;;;;\n" +
     "FB88;ARABIC LETTER DDAL ISOLATED FORM;Lo;0;AL;<isolated> 0688;;;;N;;;;;\n" +
     "FBD8;ARABIC LETTER U FINAL FORM;Lo;0;AL;<final> 06C7;;;;N;;;;\n" +
     "FD2F;ARABIC LIGATURE SHEEN WITH KHAH INITIAL FORM;Lo;0;AL;<initial> 0634 062E;;;;N;;;;;\n" +
     "FF08;FULLWIDTH LEFT PARENTHESIS;Ps;0;ON;<wide> 0028;;;;Y;FULLWIDTH OPENING PARENTHESIS;;;;\n" +
     "FF76;HALFWIDTH KATAKANA LETTER KA;Lo;0;L;<narrow> 30AB;;;;N;;;;;\n";
 
-module.exports.testUnicodeData = {
-    testUDConstructor: function(test) {
-        test.expect(1);
+describe("testUnicodeData", () => {
+    test("UDConstructor", () => {
+        expect.assertions(1);
         var ud = new UnicodeData({string: sampleData});
-        test.ok(ud !== null);
-        test.done();
-    },
-    testUDGetRow: function(test) {
-        test.expect(2);
+        expect(ud !== null).toBeTruthy();
+    });
+    test("UDGetRow", () => {
+        expect.assertions(2);
         var ud = new UnicodeData({string: sampleData});
-        test.ok(ud !== null);
+        expect(ud !== null).toBeTruthy();
 
         var row = ud.get(2);
-        test.ok(row !== null);
-        test.done();
-    },
-    testUDGetRowRightData: function(test) {
-        test.expect(13);
+        expect(row !== null).toBeTruthy();
+    });
+    test("UDGetRowRightData", () => {
+        expect.assertions(13);
         var ud = new UnicodeData({string: sampleData});
-        test.ok(ud !== null);
+        expect(ud !== null).toBeTruthy();
 
         var row = ud.get(2);
-        test.ok(row !== null);
+        expect(row !== null).toBeTruthy();
 
-        test.equal("Ä", row.getCharacter());
-        test.equal("LATIN CAPITAL LETTER A WITH DIAERESIS", row.getName());
-        test.equal("Lu", row.getCategory());
-        test.equal(0, row.getCombiningClass());
-        test.equal("L", row.getBidiClass());
-        test.equal("canon", row.getDecompositionType());
-        test.equal("Ä", row.getDecomposition());
-        test.equal(false, row.getBidiMirrored());
-        test.equal("", row.getSimpleUppercase());
-        test.equal("ä", row.getSimpleLowercase());
-        test.equal("", row.getSimpleTitlecase());
-        test.done();
-    },
-    testUDGetRowRightData2: function(test) {
-        test.expect(13);
+        expect("Ä").toBe(row.getCharacter());
+        expect("LATIN CAPITAL LETTER A WITH DIAERESIS").toBe(row.getName());
+        expect("Lu").toBe(row.getCategory());
+        expect(row.getCombiningClass()).toBe(0);
+        expect("L").toBe(row.getBidiClass());
+        expect("canon").toBe(row.getDecompositionType());
+        expect("Ä").toBe(row.getDecomposition());
+        expect(false).toBe(row.getBidiMirrored());
+        expect("").toBe(row.getSimpleUppercase());
+        expect("ä").toBe(row.getSimpleLowercase());
+        expect("").toBe(row.getSimpleTitlecase());
+    });
+    test("UDGetRowRightData2", () => {
+        expect.assertions(13);
         var ud = new UnicodeData({string: sampleData});
-        test.ok(ud !== null);
+        expect(ud !== null).toBeTruthy();
 
         var row = ud.get(7);
-        test.ok(row !== null);
+        expect(row !== null).toBeTruthy();
 
-        test.equal("̤", row.getCharacter());
-        test.equal("COMBINING DIAERESIS BELOW", row.getName());
-        test.equal("Mn", row.getCategory());
-        test.equal(220, row.getCombiningClass());
-        test.equal("NSM", row.getBidiClass());
-        test.equal("", row.getDecompositionType());
-        test.equal("̤", row.getDecomposition());
-        test.equal(false, row.getBidiMirrored());
-        test.equal("", row.getSimpleUppercase());
-        test.equal("", row.getSimpleLowercase());
-        test.equal("", row.getSimpleTitlecase());
-        test.done();
-    },
-    testUDGetRowRightNumberOfFields: function(test) {
-        test.expect(2);
+        expect("̤").toBe(row.getCharacter());
+        expect("COMBINING DIAERESIS BELOW").toBe(row.getName());
+        expect("Mn").toBe(row.getCategory());
+        expect(row.getCombiningClass()).toBe(220);
+        expect("NSM").toBe(row.getBidiClass());
+        expect("").toBe(row.getDecompositionType());
+        expect("̤").toBe(row.getDecomposition());
+        expect(false).toBe(row.getBidiMirrored());
+        expect("").toBe(row.getSimpleUppercase());
+        expect("").toBe(row.getSimpleLowercase());
+        expect("").toBe(row.getSimpleTitlecase());
+    });
+    test("UDGetRowRightNumberOfFields", () => {
+        expect.assertions(2);
         var ud = new UnicodeData({string: sampleData});
-        test.ok(ud !== null);
+        expect(ud !== null).toBeTruthy();
 
-        test.equal(21, ud.length());
-        test.done();
-    },
-    testUDGetOtherDecompType: function(test) {
-        test.expect(4);
+        expect(ud.length()).toBe(21);
+    });
+    test("UDGetOtherDecompType", () => {
+        expect.assertions(4);
         var ud = new UnicodeData({string: sampleData});
-        test.ok(ud !== null);
+        expect(ud !== null).toBeTruthy();
 
         var row = ud.get(4);
-        test.ok(row !== null);
+        expect(row !== null).toBeTruthy();
 
-        test.equal("compat", row.getDecompositionType());
-        test.equal("dz", row.getDecomposition());
-        test.done();
-    }
-}
+        expect("compat").toBe(row.getDecompositionType());
+        expect("dz").toBe(row.getDecomposition());
+    });
+});
