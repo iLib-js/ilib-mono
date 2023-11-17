@@ -1,5 +1,5 @@
 /*
- * JSParser.test.js - test the React JS parser
+ * FlowParser.test.js - test the React JS + flow parser
  *
  * Copyright © 2023 Box, Inc.
  *
@@ -18,78 +18,86 @@
  */
 import { ResourceString } from 'ilib-tools-common';
 
-import JSParser from '../src/parsers/JSParser.js';
+import FlowParser from '../src/parsers/FlowParser.js';
 
 import { Result, IntermediateRepresentation } from 'i18nlint-common';
 
-describe("testJSParser", () => {
-    test("JSParserConstructorEmpty", () => {
+describe("testFlowParser", () => {
+    test("Flow parser empty constructor", () => {
         expect.assertions(1);
 
-        const parser = new JSParser();
+        const parser = new FlowParser();
         expect(parser).toBeTruthy();
     });
 
-    test("JSParserConstructorPath", () => {
+    test("Flow parser constructor with path", () => {
         expect.assertions(1);
 
-        const parser = new JSParser({
+        const parser = new FlowParser({
             filePath: "./test/testfiles/testfile.js"
         });
         expect(parser).toBeTruthy();
     });
 
-    test("JSParserGetDescription", () => {
+    test("Flow parser GetDescription", () => {
         expect.assertions(2);
 
-        const parser = new JSParser();
+        const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getDescription()).toBe("A parser for JS files.");
+        expect(parser.getDescription()).toBe("A parser for JS and JSX files with flow type definitions.");
     });
 
-    test("JSParserGetName", () => {
+    test("Flow parser GetName", () => {
         expect.assertions(2);
 
-        const parser = new JSParser();
+        const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
         expect(parser.getName()).toBe("js");
     });
 
-    test("JSParserGetExtensions", () => {
+    test("Flow parser GetExtensions", () => {
         expect.assertions(2);
 
-        const parser = new JSParser();
+        const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getExtensions()).toStrictEqual([ "js" ]);
+        expect(parser.getExtensions()).toStrictEqual([ "js", "jsx" ]);
     });
 
-    test("JSParserSimple", () => {
+    test("Flow parser simple", () => {
         expect.assertions(3);
 
-        const parser = new JSParser();
+        const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
-        const actual = parser.parseString("import foo from '../src/index.js';", "x/y");
+        const actual = parser.parseString(
+            `// @flow
+            import foo from '../src/index.js';
+            export default function pathToFile(): string {
+                return foo('x/y');
+            }
+            `, "x/y");
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
         expect(actualSimplified).toMatchSnapshot();
     });
 
-    test("JSParserMoreComplex", () => {
+    test("Flow parser more complex example", () => {
         expect.assertions(3);
 
-        const parser = new JSParser();
+        const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
         const actual = parser.parseString(
             `// comment
             import foo from '../src/index.js';
 
-            const str = "String";
+            const str: string = "String";
+
+            export default str;
             `, "x/y");
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));

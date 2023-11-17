@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testJSParser JSParserMoreComplex 1`] = `
+{
+  "filePath": "x/y",
+  "ir": {
+    "body": [
+      {
+        "end": 57,
+        "loc": {
+          "end": {
+            "column": 46,
+            "line": 2,
+          },
+          "start": {
+            "column": 12,
+            "line": 2,
+          },
+        },
+        "source": {
+          "end": 56,
+          "loc": {
+            "end": {
+              "column": 45,
+              "line": 2,
+            },
+            "start": {
+              "column": 28,
+              "line": 2,
+            },
+          },
+          "raw": "'../src/index.js'",
+          "start": 39,
+          "type": "Literal",
+          "value": "../src/index.js",
+        },
+        "specifiers": [
+          {
+            "end": 33,
+            "loc": {
+              "end": {
+                "column": 22,
+                "line": 2,
+              },
+              "start": {
+                "column": 19,
+                "line": 2,
+              },
+            },
+            "local": {
+              "end": 33,
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "line": 2,
+                },
+                "start": {
+                  "column": 19,
+                  "line": 2,
+                },
+              },
+              "name": "foo",
+              "start": 30,
+              "type": "Identifier",
+            },
+            "start": 30,
+            "type": "ImportDefaultSpecifier",
+          },
+        ],
+        "start": 23,
+        "type": "ImportDeclaration",
+      },
+      {
+        "declarations": [
+          {
+            "end": 91,
+            "id": {
+              "end": 80,
+              "loc": {
+                "end": {
+                  "column": 21,
+                  "line": 4,
+                },
+                "start": {
+                  "column": 18,
+                  "line": 4,
+                },
+              },
+              "name": "str",
+              "start": 77,
+              "type": "Identifier",
+            },
+            "init": {
+              "end": 91,
+              "loc": {
+                "end": {
+                  "column": 32,
+                  "line": 4,
+                },
+                "start": {
+                  "column": 24,
+                  "line": 4,
+                },
+              },
+              "raw": ""String"",
+              "start": 83,
+              "type": "Literal",
+              "value": "String",
+            },
+            "loc": {
+              "end": {
+                "column": 32,
+                "line": 4,
+              },
+              "start": {
+                "column": 18,
+                "line": 4,
+              },
+            },
+            "start": 77,
+            "type": "VariableDeclarator",
+          },
+        ],
+        "end": 92,
+        "kind": "const",
+        "loc": {
+          "end": {
+            "column": 33,
+            "line": 4,
+          },
+          "start": {
+            "column": 12,
+            "line": 4,
+          },
+        },
+        "start": 71,
+        "type": "VariableDeclaration",
+      },
+    ],
+    "end": 105,
+    "loc": {
+      "end": {
+        "column": 12,
+        "line": 5,
+      },
+      "start": {
+        "column": 0,
+        "line": 1,
+      },
+    },
+    "sourceType": "module",
+    "start": 0,
+    "type": "Program",
+  },
+  "type": "ast-jstree",
+}
+`;
+
+exports[`testJSParser JSParserSimple 1`] = `
+{
+  "filePath": "x/y",
+  "ir": {
+    "body": [
+      {
+        "end": 34,
+        "loc": {
+          "end": {
+            "column": 34,
+            "line": 1,
+          },
+          "start": {
+            "column": 0,
+            "line": 1,
+          },
+        },
+        "source": {
+          "end": 33,
+          "loc": {
+            "end": {
+              "column": 33,
+              "line": 1,
+            },
+            "start": {
+              "column": 16,
+              "line": 1,
+            },
+          },
+          "raw": "'../src/index.js'",
+          "start": 16,
+          "type": "Literal",
+          "value": "../src/index.js",
+        },
+        "specifiers": [
+          {
+            "end": 10,
+            "loc": {
+              "end": {
+                "column": 10,
+                "line": 1,
+              },
+              "start": {
+                "column": 7,
+                "line": 1,
+              },
+            },
+            "local": {
+              "end": 10,
+              "loc": {
+                "end": {
+                  "column": 10,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 7,
+                  "line": 1,
+                },
+              },
+              "name": "foo",
+              "start": 7,
+              "type": "Identifier",
+            },
+            "start": 7,
+            "type": "ImportDefaultSpecifier",
+          },
+        ],
+        "start": 0,
+        "type": "ImportDeclaration",
+      },
+    ],
+    "end": 34,
+    "loc": {
+      "end": {
+        "column": 34,
+        "line": 1,
+      },
+      "start": {
+        "column": 0,
+        "line": 1,
+      },
+    },
+    "sourceType": "module",
+    "start": 0,
+    "type": "Program",
+  },
+  "type": "ast-jstree",
+}
+`;

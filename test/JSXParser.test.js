@@ -76,64 +76,7 @@ describe("testJSXParser", () => {
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
-        const expected = {
-            type: "ast-jstree",
-            ir: {
-                type: 'Program',
-                start: 0,
-                end: 34,
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 34 }
-                },
-                body: [
-                    {
-                        type: 'ImportDeclaration',
-                        start: 0,
-                        end: 34,
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 34 }
-                        },
-                        specifiers: [
-                            {
-                                type: 'ImportDefaultSpecifier',
-                                start: 7,
-                                end: 10,
-                                loc: {
-                                    start: { line: 1, column: 7 },
-                                    end: { line: 1, column: 10 }
-                                },
-                                local: {
-                                    type: 'Identifier',
-                                    start: 7,
-                                    end: 10,
-                                    loc: {
-                                        start: { line: 1, column: 7 },
-                                        end: { line: 1, column: 10 }
-                                    },
-                                    name: 'foo'
-                                }
-                            }
-                        ],
-                        source: {
-                            type: 'Literal',
-                            start: 16,
-                            end: 33,
-                            loc: {
-                                start: { line: 1, column: 16 },
-                                end: { line: 1, column: 33 }
-                            },
-                            value: '../src/index.js',
-                            raw: "'../src/index.js'"
-                        }
-                    }
-                ],
-                sourceType: 'module'
-            },
-            filePath: "x/y"
-        };
-        expect(actualSimplified).toStrictEqual(expected);
+        expect(actualSimplified).toMatchSnapshot();
     });
 
     test("JSXParserMoreComplex", () => {
@@ -151,157 +94,45 @@ describe("testJSXParser", () => {
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
-        const expected = {
-            type: "ast-jstree",
-            ir: {
-                "type": "Program",
-                "start": 0,
-                "end": 110,
-                "loc": {
-                    "start": { "line": 1, "column": 0 },
-                    "end": { "line": 5, "column": 12 }
-                },
-                "body": [
-                    {
-                        "type": "ImportDeclaration",
-                        "start": 23,
-                        "end": 57,
-                        "loc": {
-                            "start": { "line": 2, "column": 12 },
-                            "end": { "line": 2, "column": 46 }
-                        },
-                        "specifiers": [
-                            {
-                                "type": "ImportDefaultSpecifier",
-                                "start": 30,
-                                "end": 33,
-                                "loc": {
-                                    "start": { "line": 2, "column": 19 },
-                                    "end": { "line": 2, "column": 22 }
-                                },
-                                "local": {
-                                    "type": "Identifier",
-                                    "start": 30,
-                                    "end": 33,
-                                    "loc": {
-                                        "start": { "line": 2, "column": 19 },
-                                        "end": { "line": 2, "column": 22 }
-                                    },
-                                    "name": "foo"
-                                }
-                            }
-                        ],
-                        "source": {
-                            "type": "Literal",
-                            "start": 39,
-                            "end": 56,
-                            "loc": {
-                                "start": { "line": 2, "column": 28 },
-                                "end": { "line": 2, "column": 45 }
-                            },
-                            "value": "../src/index.js",
-                            "raw": "'../src/index.js'"
-                        }
-                    },
-                    {
-                        "type": "VariableDeclaration",
-                        "start": 71,
-                        "end": 97,
-                        "loc": {
-                            "start": { "line": 4, "column": 12 },
-                            "end": { "line": 4, "column": 38 }
-                        },
-                        "declarations": [
-                            {
-                                "type": "VariableDeclarator",
-                                "start": 77,
-                                "end": 96,
-                                "loc": {
-                                    "start": { "line": 4, "column": 18 },
-                                    "end": { "line": 4, "column": 37 }
-                                },
-                                "id": {
-                                    "type": "Identifier",
-                                    "start": 77,
-                                    "end": 80,
-                                    "loc": {
-                                        "start": { "line": 4, "column": 18 },
-                                        "end": { "line": 4, "column": 21 }
-                                    },
-                                    "name": "str"
-                                },
-                                "init": {
-                                    "type": "JSXElement",
-                                    "start": 83,
-                                    "end": 96,
-                                    "loc": {
-                                        "start": { "line": 4, "column": 24 },
-                                        "end": { "line": 4, "column": 37 }
-                                    },
-                                    "openingElement": {
-                                        "type": "JSXOpeningElement",
-                                        "start": 83,
-                                        "end": 86,
-                                        "loc": {
-                                            "start": { "line": 4, "column": 24 },
-                                            "end": { "line": 4, "column": 27 }
-                                        },
-                                        "attributes": [],
-                                        "name": {
-                                            "type": "JSXIdentifier",
-                                            "start": 84,
-                                            "end": 85,
-                                            "loc": {
-                                                "start": { "line": 4, "column": 25 },
-                                                "end": { "line": 4, "column": 26 }
-                                            },
-                                            "name": "b"
-                                        },
-                                        "selfClosing": false
-                                    },
-                                    "closingElement": {
-                                        "type": "JSXClosingElement",
-                                        "start": 92,
-                                        "end": 96,
-                                        "loc": {
-                                            "start": { "line": 4, "column": 33 },
-                                            "end": { "line": 4, "column": 37 }
-                                        },
-                                        "name": {
-                                            "type": "JSXIdentifier",
-                                            "start": 94,
-                                            "end": 95,
-                                            "loc": {
-                                                "start": { "line": 4, "column": 35 },
-                                                "end": { "line": 4, "column": 36 }
-                                            },
-                                            "name": "b"
-                                        }
-                                    },
-                                    "children": [
-                                        {
-                                            "type": "JSXText",
-                                            "start": 86,
-                                            "end": 92,
-                                            "loc": {
-                                                "start": { "line": 4, "column": 27 },
-                                                "end": { "line": 4, "column": 33 }
-                                            },
-                                            "value": "String",
-                                            "raw": "String"
-                                        }
-                                    ]
-                                }
-                            }
-                        ],
-                        "kind": "const"
-                    }
-                ],
-                "sourceType": "module"
-            },
-            filePath: "x/y"
-        };
-        expect(actualSimplified).toStrictEqual(expected);
+        expect(actualSimplified).toMatchSnapshot();
+    });
+
+    test("JSX with a high-order component in it", () => {
+        expect.assertions(3);
+
+        const parser = new JSXParser();
+        expect(parser).toBeTruthy();
+
+        const actual = parser.parseString(
+            `import React, { Component } from 'react';
+
+            // A Higher-Order Component (HOC) that adds a "title" prop to the wrapped component
+            const withTitle = (WrappedComponent, title) => {
+              return class WithTitle extends Component {
+                render() {
+                  return <WrappedComponent {...this.props} title={title} />;
+                }
+              };
+            };
+
+            // A component that displays a title
+            const DisplayTitle = ({ title }) => {
+              return <h1>{title}</h1>;
+            };
+
+            // Using the HOC to create a new component
+            const DisplayTitleWithEnhancement = withTitle(DisplayTitle, 'My Enhanced Title');
+
+            // App component using the enhanced component
+            const App = () => {
+              return <DisplayTitleWithEnhancement />;
+            };
+
+            export default App;`, "x/y");
+        expect(actual).toBeTruthy();
+        const actualSimplified = JSON.parse(JSON.stringify(actual));
+
+        expect(actualSimplified).toMatchSnapshot();
     });
 });
 
