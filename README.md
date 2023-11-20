@@ -93,9 +93,6 @@ limitations under the License.
 - add a parser for JS or JSX code that uses flow types (FlowParser).
   This parser produces the same ESTree style of AST as the JS and
   JSX parsers.
-
-### v1.1.2
-
 - update dependencies
 - convert unit tests from nodeunit to jest
 
