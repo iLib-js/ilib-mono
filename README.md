@@ -28,6 +28,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.1 (not published yet)
+
+- removed unused dependencies
+
 ### v1.2.0
 
 - added the ability to parse Unicode data files that have continuation
