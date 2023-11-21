@@ -1,7 +1,7 @@
 /*
  * ctype_ranges.js - Character type data
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,59 +18,6 @@
  */
 
 export const ctype_ranges = {
-    "ascii": [
-        [
-            32,
-            127
-        ]
-    ],
-    "digit": [
-        [
-            48,
-            57
-        ]
-    ],
-    "xdigit": [
-        [
-            48,
-            57
-        ],
-        [
-            65,
-            70
-        ],
-        [
-            97,
-            102
-        ]
-    ],
-    "blank": [
-        [
-            9,
-            9
-        ],
-        [
-            32,
-            32
-        ]
-    ],
-    "space": [
-        [
-            9,
-            13
-        ],
-        [
-            32,
-            32
-        ],
-        [
-            133
-        ],
-        [
-            8232,
-            8233
-        ]
-    ],
     "adlam": [
         [
             125184,
@@ -86,7 +33,7 @@ export const ctype_ranges = {
     "ahom": [
         [
             71424,
-            71487
+            71503
         ]
     ],
     "albanian": [
@@ -133,6 +80,18 @@ export const ctype_ranges = {
             126719
         ]
     ],
+    "arabic extended-b": [
+        [
+            2160,
+            2207
+        ]
+    ],
+    "arabic extended-c": [
+        [
+            69312,
+            69375
+        ]
+    ],
     "aramaic": [
         [
             67648,
@@ -165,6 +124,12 @@ export const ctype_ranges = {
         [
             129024,
             129279
+        ]
+    ],
+    "ascii": [
+        [
+            32,
+            127
         ]
     ],
     "avestan": [
@@ -211,6 +176,16 @@ export const ctype_ranges = {
         [
             72704,
             72815
+        ]
+    ],
+    "blank": [
+        [
+            9,
+            9
+        ],
+        [
+            32,
+            32
         ]
     ],
     "block": [
@@ -349,6 +324,18 @@ export const ctype_ranges = {
             201551
         ]
     ],
+    "cjk unified ideographs extension h": [
+        [
+            201552,
+            205743
+        ]
+    ],
+    "cjk unified ideographs extension i": [
+        [
+            191472,
+            192095
+        ]
+    ],
     "cjkcompatibility": [
         [
             13056,
@@ -449,6 +436,12 @@ export const ctype_ranges = {
             67647
         ]
     ],
+    "cypro-minoan": [
+        [
+            77712,
+            77823
+        ]
+    ],
     "cyrillic": [
         [
             1024,
@@ -467,6 +460,12 @@ export const ctype_ranges = {
             42655
         ]
     ],
+    "cyrillic extended-d": [
+        [
+            122928,
+            123023
+        ]
+    ],
     "deseret": [
         [
             66560,
@@ -481,6 +480,18 @@ export const ctype_ranges = {
         [
             43232,
             43263
+        ]
+    ],
+    "devanagari extended-a": [
+        [
+            72448,
+            72543
+        ]
+    ],
+    "digit": [
+        [
+            48,
+            57
         ]
     ],
     "dingbats": [
@@ -516,7 +527,7 @@ export const ctype_ranges = {
     "egyptian hieroglyph format controls": [
         [
             78896,
-            78911
+            78943
         ]
     ],
     "elbasan": [
@@ -569,6 +580,12 @@ export const ctype_ranges = {
         [
             43776,
             43823
+        ]
+    ],
+    "ethiopic extended-b": [
+        [
+            124896,
+            124927
         ]
     ],
     "geometric": [
@@ -915,10 +932,22 @@ export const ctype_ranges = {
             69839
         ]
     ],
+    "kaktovik numerals": [
+        [
+            119488,
+            119519
+        ]
+    ],
     "kana extended-a": [
         [
             110848,
             110895
+        ]
+    ],
+    "kana extended-b": [
+        [
+            110576,
+            110591
         ]
     ],
     "kanbun": [
@@ -945,6 +974,12 @@ export const ctype_ranges = {
         [
             110592,
             110847
+        ]
+    ],
+    "kawi": [
+        [
+            73472,
+            73567
         ]
     ],
     "kayahli": [
@@ -1015,6 +1050,18 @@ export const ctype_ranges = {
         [
             43824,
             43887
+        ]
+    ],
+    "latin extended-f": [
+        [
+            67456,
+            67519
+        ]
+    ],
+    "latin extended-g": [
+        [
+            122624,
+            122879
         ]
     ],
     "lepcha": [
@@ -1257,6 +1304,12 @@ export const ctype_ranges = {
             67759
         ]
     ],
+    "nag mundari": [
+        [
+            124112,
+            124159
+        ]
+    ],
     "nandinagari": [
         [
             72096,
@@ -1321,6 +1374,12 @@ export const ctype_ranges = {
         [
             69376,
             69423
+        ]
+    ],
+    "old uyghur": [
+        [
+            69488,
+            69551
         ]
     ],
     "oldhungarian": [
@@ -1595,6 +1654,23 @@ export const ctype_ranges = {
             72367
         ]
     ],
+    "space": [
+        [
+            9,
+            13
+        ],
+        [
+            32,
+            32
+        ],
+        [
+            133
+        ],
+        [
+            8232,
+            8233
+        ]
+    ],
     "spacing": [
         [
             688,
@@ -1719,6 +1795,12 @@ export const ctype_ranges = {
             73727
         ]
     ],
+    "tangsa": [
+        [
+            92784,
+            92879
+        ]
+    ],
     "tangut": [
         [
             94176,
@@ -1728,7 +1810,7 @@ export const ctype_ranges = {
     "tangut supplement": [
         [
             101632,
-            101775
+            101759
         ]
     ],
     "telugu": [
@@ -1767,10 +1849,22 @@ export const ctype_ranges = {
             70879
         ]
     ],
+    "toto": [
+        [
+            123536,
+            123583
+        ]
+    ],
     "ugaritic": [
         [
             66432,
             66463
+        ]
+    ],
+    "unified canadian aboriginal syllabics extended-a": [
+        [
+            72368,
+            72383
         ]
     ],
     "vai": [
@@ -1801,6 +1895,12 @@ export const ctype_ranges = {
             65055
         ]
     ],
+    "vithkuqi": [
+        [
+            66928,
+            67007
+        ]
+    ],
     "wancho": [
         [
             123584,
@@ -1817,6 +1917,20 @@ export const ctype_ranges = {
         [
             65280,
             65519
+        ]
+    ],
+    "xdigit": [
+        [
+            48,
+            57
+        ],
+        [
+            65,
+            70
+        ],
+        [
+            97,
+            102
         ]
     ],
     "yezidi": [
@@ -1841,6 +1955,12 @@ export const ctype_ranges = {
         [
             72192,
             72271
+        ]
+    ],
+    "znamenny musical notation": [
+        [
+            118528,
+            118735
         ]
     ]
 };

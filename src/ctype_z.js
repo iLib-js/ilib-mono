@@ -1,7 +1,7 @@
 /*
  * ctype_z.js - Character type data
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,16 @@
  */
 
 export const ctype_z = {
+    "Zl": [
+        [
+            8232
+        ]
+    ],
+    "Zp": [
+        [
+            8233
+        ]
+    ],
     "Zs": [
         [
             32
@@ -40,16 +50,6 @@ export const ctype_z = {
         ],
         [
             12288
-        ]
-    ],
-    "Zl": [
-        [
-            8232
-        ]
-    ],
-    "Zp": [
-        [
-            8233
         ]
     ]
 };
