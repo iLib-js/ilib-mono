@@ -1,0 +1,17 @@
+{
+    "language.name": "Kuvi",
+    "locale": "kxv",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "secgroupSize": 2
+    },
+    "scripts": [
+        "Latn",
+        "Deva",
+        "Orya",
+        "Telu"
+    ]
+}

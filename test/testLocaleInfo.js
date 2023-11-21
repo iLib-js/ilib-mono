@@ -1,7 +1,7 @@
 /*
  * testLocaleInfo.js - test the locale info object
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1116,7 +1116,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("es-CO");
         test.ok(info !== null);
 
-        test.equal(info.getPercentageFormat(), "{n} %");
+        test.equal(info.getPercentageFormat(), "{n}%");
         test.done();
     },
 
@@ -1143,7 +1143,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("es-CO");
         test.ok(info !== null);
 
-        test.equal(info.getNegativePercentageFormat(), "-{n} %");
+        test.equal(info.getNegativePercentageFormat(), "-{n}%");
         test.done();
     },
 
@@ -2410,7 +2410,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ar-AE");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, '{s} {n}');
+        test.equal(info.getCurrencyFormats().common, '‏{n} {s}');
         test.done();
     },
 
@@ -2437,7 +2437,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ar-AE");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, '‎-{s} {n}');
+        test.equal(info.getCurrencyFormats().commonNegative, '‏-{n} {s}');
         test.done();
     },
 
@@ -2501,7 +2501,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ar-DZ");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, '‏{n} {s}');
         test.done();
     },
 
@@ -2528,7 +2528,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ar-DZ");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "‎-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, '‏-{n} {s}');
         test.done();
     },
 
@@ -2592,7 +2592,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ar-TN");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, '‏{n} {s}');
         test.done();
     },
 
@@ -2619,7 +2619,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ar-TN");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "‎-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, '‏-{n} {s}');
         test.done();
     },
 
@@ -3215,7 +3215,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("bn-IN");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{n}{s}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -3242,7 +3242,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("bn-IN");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "-{n}{s}");
+        test.equal(info.getCurrencyFormats().commonNegative, "-{s}{n}");
         test.done();
     },
 
@@ -3475,7 +3475,7 @@ export const testLocaleInfo = {
         test.expect(2);
         var info = new LocaleInfo("bs-BS");
         test.ok(info !== null);
-        test.equal(info.getPercentageFormat(), "{n} %");
+        test.equal(info.getPercentageFormat(), "{n}%");
         test.done();
 
     },
@@ -3494,7 +3494,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("bs-BS");
         test.ok(info !== null);
 
-        test.equal(info.getNegativePercentageFormat(), "-{n} %");
+        test.equal(info.getNegativePercentageFormat(), "-{n}%");
         test.done();
     },
 
@@ -3559,7 +3559,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("bs-ME");
         test.ok(info !== null);
 
-        test.equal(info.getPercentageFormat(), "{n} %");
+        test.equal(info.getPercentageFormat(), "{n}%");
         test.done();
     },
 
@@ -3586,7 +3586,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("bs-ME");
         test.ok(info !== null);
 
-        test.equal(info.getNegativePercentageFormat(), "-{n} %");
+        test.equal(info.getNegativePercentageFormat(), "-{n}%");
         test.done();
     },
 
@@ -3648,7 +3648,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ca-FR");
         test.ok(info !== null);
 
-        test.equal(info.getPercentageFormat(), "{n}%");
+        test.equal(info.getPercentageFormat(), "{n} %");
         test.done();
     },
 
@@ -3675,7 +3675,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ca-FR");
         test.ok(info !== null);
 
-        test.equal(info.getNegativePercentageFormat(), "-{n}%");
+        test.equal(info.getNegativePercentageFormat(), "-{n} %");
         test.done();
     },
 
@@ -5300,7 +5300,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("he-IL");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "‏{n} {s}");
+        test.equal(info.getCurrencyFormats().common, '‏{n} ‏{s}');
         test.done();
     },
 
@@ -5327,7 +5327,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("he-IL");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "‏-{n} {s}");
+        test.equal(info.getCurrencyFormats().commonNegative, "‏-{n} ‏{s}");
         test.done();
     },
 
@@ -7682,7 +7682,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("no-BV");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, '{n} {s}');
         test.done();
     },
 
@@ -7709,7 +7709,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("no-BV");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, '{s} -{n}');
+        test.equal(info.getCurrencyFormats().commonNegative, '-{n} {s}');
         test.done();
     },
 
@@ -7773,7 +7773,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("no-SJ");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, '{n} {s}');
         test.done();
     },
 
@@ -7800,7 +7800,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("no-SJ");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, '{s} -{n}');
+        test.equal(info.getCurrencyFormats().commonNegative, '-{n} {s}');
         test.done();
     },
 
@@ -10203,7 +10203,7 @@ export const testLocaleInfo = {
         test.expect(2);
         var info = new LocaleInfo("ss-ZA");
         test.ok(info !== null);
-        test.equal(info.getDecimalSeparator(), ".");
+        test.equal(info.getDecimalSeparator(), ",");
         test.done();
     },
 
@@ -10212,7 +10212,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ss-ZA");
         test.ok(info !== null);
 
-        test.equal(info.getGroupingSeparator(), ',');
+        test.equal(info.getGroupingSeparator(), ' ');
         test.done();
     },
 
@@ -10230,7 +10230,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ss-ZA");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -10257,7 +10257,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ss-ZA");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, "-{s}{n}");
         test.done();
     },
 
@@ -10295,7 +10295,7 @@ export const testLocaleInfo = {
         test.expect(2);
         var info = new LocaleInfo("st-LS");
         test.ok(info !== null);
-        test.equal(info.getDecimalSeparator(), ".");
+        test.equal(info.getDecimalSeparator(), ",");
         test.done();
     },
 
@@ -10304,7 +10304,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("st-LS");
         test.ok(info !== null);
 
-        test.equal(info.getGroupingSeparator(), ",");
+        test.equal(info.getGroupingSeparator(), ' ');
         test.done();
     },
 
@@ -10322,7 +10322,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("st-LS");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -10349,7 +10349,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("st-LS");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, "-{s}{n}");
         test.done();
     },
 
@@ -10598,7 +10598,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ta-LK");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -10625,7 +10625,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ta-LK");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, "-{s}{n}");
         test.done();
     },
 
@@ -11055,7 +11055,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ur");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -11082,7 +11082,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ur");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "‎-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, "‎-{s}{n}");
         test.done();
     },
 
@@ -11237,7 +11237,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ur-PK");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().common, "{s} {n}");
+        test.equal(info.getCurrencyFormats().common, "{s}{n}");
         test.done();
     },
 
@@ -11264,7 +11264,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("ur-PK");
         test.ok(info !== null);
 
-        test.equal(info.getCurrencyFormats().commonNegative, "‎-{s} {n}");
+        test.equal(info.getCurrencyFormats().commonNegative, "‎-{s}{n}");
         test.done();
     },
 
@@ -12123,7 +12123,7 @@ export const testLocaleInfo = {
         test.expect(2);
         var info = new LocaleInfo("km-KH");
         test.ok(info !== null);
-        test.equal(info.getDecimalSeparator(), ",");
+        test.equal(info.getDecimalSeparator(), ".");
         test.done();
     },
 
@@ -12132,7 +12132,7 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("km-KH");
         test.ok(info !== null);
 
-        test.equal(info.getGroupingSeparator(), ".");
+        test.equal(info.getGroupingSeparator(), ",");
         test.done();
     },
 
@@ -13286,8 +13286,8 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("es-ES");
         test.ok(info !== null);
 
-        test.equal(info.getDelimiterQuotationStart(), "«");
-        test.equal(info.getDelimiterQuotationEnd(), "»");
+        test.equal(info.getDelimiterQuotationStart(), "“");
+        test.equal(info.getDelimiterQuotationEnd(), "”");
         test.done();
     },
 
@@ -13505,8 +13505,8 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("eu-ES");
         test.ok(info !== null);
 
-        test.equal(info.getDelimiterQuotationStart(), "“");
-        test.equal(info.getDelimiterQuotationEnd(), "”");
+        test.equal(info.getDelimiterQuotationStart(), "«");
+        test.equal(info.getDelimiterQuotationEnd(), "»");
         test.equal(info.getPaperSize(), "A4");
         test.done();
     },
@@ -13555,8 +13555,8 @@ export const testLocaleInfo = {
         var info = new LocaleInfo("tg-TJ");
         test.ok(info !== null);
 
-        test.equal(info.getDelimiterQuotationStart(), "“");
-        test.equal(info.getDelimiterQuotationEnd(), "”");
+        test.equal(info.getDelimiterQuotationStart(), "»");
+        test.equal(info.getDelimiterQuotationEnd(), "«");
         test.equal(info.getPaperSize(), "A4");
         test.done();
     },

@@ -1,6 +1,10 @@
 {
     "language.name": "Lombard",
     "locale": "lmo",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "’"
+    },
     "scripts": [
         "Latn"
     ]

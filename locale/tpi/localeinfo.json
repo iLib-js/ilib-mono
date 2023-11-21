@@ -1,6 +1,12 @@
 {
     "language.name": "Tok Pisin",
     "locale": "tpi",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        }
+    },
     "scripts": [
         "Latn"
     ]

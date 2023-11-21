@@ -1,7 +1,7 @@
 {
     "clock": "24",
     "currency": "CNY",
-    "firstDayOfWeek": 0,
+    "firstDayOfWeek": 1,
     "locale": "und-CN",
     "region.name": "China",
     "timezone": "Asia/Shanghai"

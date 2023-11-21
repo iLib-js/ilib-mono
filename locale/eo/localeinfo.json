@@ -2,6 +2,10 @@
     "language.name": "Esperanto",
     "locale": "eo",
     "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
         "decimalChar": ",",
         "groupChar": " "
     },

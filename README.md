@@ -381,6 +381,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.0
+
+* Updated to CLDR v44.0.0
+
 ### v1.0.5
 
 * Fixed Taiwan info when the locale spec is "zh-TW" instead of "zh-Hant-TW".

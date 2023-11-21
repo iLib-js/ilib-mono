@@ -1,6 +1,28 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "›",
+        "alternateQuotationStart": "‹",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
     "language.name": "Southern Kurdish",
     "locale": "sdh",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "؜-{n} {s}"
+        },
+        "decimalChar": "٫",
+        "digits": "٠١٢٣٤٥٦٧٨٩",
+        "exponential": "اس",
+        "groupChar": "٬",
+        "negativenumFmt": "؜-{n}",
+        "negativepctFmt": "؜-{n}٪؜",
+        "pctChar": "٪؜",
+        "pctFmt": "{n}٪؜",
+        "script": "Arab",
+        "useNative": true
+    },
     "scripts": [
         "Arab"
     ]

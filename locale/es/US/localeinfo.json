@@ -1,4 +1,10 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
     "locale": "es-US",
     "numfmt": {
         "currencyFormats": {
@@ -6,6 +12,8 @@
             "commonNegative": "-{s}{n}"
         },
         "decimalChar": ".",
-        "groupChar": ","
+        "groupChar": ",",
+        "negativepctFmt": "-{n}%",
+        "pctFmt": "{n}%"
     }
 }

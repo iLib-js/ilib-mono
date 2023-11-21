@@ -23,9 +23,7 @@
         "currencyFormats": {
             "common": "{n}{s}",
             "commonNegative": "-{n}{s}"
-        },
-        "decimalChar": ",",
-        "groupChar": "."
+        }
     },
     "scripts": [
         "Khmr"

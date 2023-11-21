@@ -4,9 +4,5 @@
         "alternateQuotationStart": "‚",
         "quotationEnd": "“"
     },
-    "locale": "bs-Cyrl",
-    "numfmt": {
-        "negativepctFmt": "-{n}%",
-        "pctFmt": "{n}%"
-    }
+    "locale": "bs-Cyrl"
 }
