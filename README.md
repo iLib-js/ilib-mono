@@ -574,6 +574,7 @@ limitations under the License.
 ### v1.0.2
 
 - added the documentation above
+- updated dependencies
 
 ### v1.0.1
 
