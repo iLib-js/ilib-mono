@@ -1,7 +1,7 @@
 /*
  * ctype_n.js - Character type data
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -236,8 +236,16 @@ export const ctype_n = {
             73129
         ],
         [
+            73552,
+            73561
+        ],
+        [
             92768,
             92777
+        ],
+        [
+            92864,
+            92873
         ],
         [
             93008,
@@ -254,6 +262,10 @@ export const ctype_n = {
         [
             123632,
             123641
+        ],
+        [
+            124144,
+            124153
         ],
         [
             125264,
@@ -554,6 +566,10 @@ export const ctype_n = {
         [
             93824,
             93846
+        ],
+        [
+            119488,
+            119507
         ],
         [
             119520,
