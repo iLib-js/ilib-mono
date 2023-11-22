@@ -65,6 +65,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.0
+
+* Update to CLDR v44.0.0
+
 ### v1.2.2
 
 * This module is now a hybrid ESM/CommonJS package that works under node

@@ -89,12 +89,12 @@ export const testLocaleMatch = {
     testLocaleMatcherGetLikelyLocaleByLanguage6: function(test) {
         test.expect(3);
         var lm = new LocaleMatcher({
-            locale: "adp"
+            locale: "dz"
         });
         test.ok(typeof(lm) !== "undefined");
         var locale = lm.getLikelyLocale();
         test.ok(typeof(locale) !== "undefined");
-        test.equal(locale.getSpec(), "adp-Tibt-BT");
+        test.equal(locale.getSpec(), "dz-Tibt-BT");
         test.done();
     },
     testLocaleMatcherGetLikelyLocaleByLanguage7: function(test) {
@@ -1100,7 +1100,7 @@ export const testLocaleMatch = {
         test.ok(typeof(lm) !== "undefined");
         var locale = lm.getLikelyLocale();
         test.ok(typeof(locale) !== "undefined");
-        test.equal(locale.getSpec(), "hr-Latn-ME");
+        test.equal(locale.getSpec(), "sr-Latn-ME");
         test.done();
     },
 
