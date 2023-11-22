@@ -326,7 +326,7 @@ The formatter does the right thing here for the script. Here is what the value o
 
 ## License
 
-Copyright © 2022, JEDLSoft
+Copyright © 2022-2023, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -343,7 +343,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.0.1
+
+- Updated dependencies
+
 ### v1.0.0
 
 - Initial version copied from ilib 14.15.2
-
