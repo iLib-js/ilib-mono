@@ -18,8 +18,8 @@
  */
 import { Result } from 'i18nlint-common';
 
-import JSXParser from '../src/parsers/JSXParser.js';
-import FormatjsPlurals from '../src/rules/FormatjsPlurals.js';
+import JSXParser from '../../src/parsers/JSXParser.js';
+import FormatjsPlurals from '../../src/rules/FormatjsPlurals.js';
 
 describe("testFormatjsPlurals", () => {
     test("FormatjsPluralsMatchNoError", () => {
