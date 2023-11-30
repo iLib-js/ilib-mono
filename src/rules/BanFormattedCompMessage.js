@@ -46,11 +46,11 @@ export class BanFormattedCompMessage extends Rule {
 
         const /** @type {unknown} */ tree = ir.getRepresentation();
 
-        // find JSX Opening elements with matching name
+        // find JSX opening elements with matching name
         const jsxElements = /** @type {unknown[]} */ (
             jsonpath.query(
                 tree,
-                "$..[?(@.type == 'JSXOpeningElement' && @.name.name == 'FormattedCompMessage')]"
+                "$..[?(@.type == 'JSXOpeningElement' && @.name.name == 'FormattedCompMessage')].name"
             )
         );
 
