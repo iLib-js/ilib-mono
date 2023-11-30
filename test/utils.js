@@ -17,16 +17,28 @@
  * limitations under the License.
  */
 
+/**
+ * Remove a common indent from each line of a multiline string. Exact indent
+ * sequence is based on the indent of first non-empty line. Lines which don't
+ * begin with the detected indent are not modified.
+ */
 export const trimIndent = (/** @type {string} */ str) => {
-    // find first line indent (excluding leading newline)
-    const indent = /(?:\n)?(\s+)/g.exec(str)?.[1];
+    const lines = str.split("\n");
+
+    // skip leading empty lines
+    const firstLine = lines.find((line) => line.trim().length > 0);
+    if (!firstLine) {
+        return str;
+    }
+
+    // find first line indent
+    const indent = /^(?:\n)?(\s+)/.exec(firstLine)?.[1];
     if (!indent) {
         return str;
     }
 
     // trim it from each line
-    return str
-        .split("\n")
+    return lines
         .map((line) =>
             line.startsWith(indent) ? line.slice(indent.length) : line
         )
@@ -34,17 +46,24 @@ export const trimIndent = (/** @type {string} */ str) => {
 };
 
 /**
+ * Returns distinct elements from a sequence by using a specified
+ * {@link equalityComparer} to compare values.
+ *
  * @template T
  * @param {T[]} items
- * @param {(one: T, other: T) => boolean} equals
+ * @param {(one: T, other: T) => boolean} equalityComparer
  * @returns {T[]}
  */
-export const distinct = (items, equals = (one, other) => one === other) => {
-    const /** @type {T[]} */ distinctItems = [];
+export const distinct = (
+    items,
+    equalityComparer = (one, other) => one === other
+) => {
+    const /** @type {T[]} */ picked = [];
     for (const item of items) {
-        if (!distinctItems.some(picked => equals(picked, item))) {
-            distinctItems.push(item);
+        if (picked.some((pick) => equalityComparer(pick, item))) {
+            continue;
         }
+        picked.push(item);
     }
-    return distinctItems;
+    return picked;
 };
