@@ -1,7 +1,7 @@
 /*
- * testenv.js - test the environment detection functions
+ * env.test.js - test the environment detection functions
  *
- * Copyright © 2021-2022, JEDLSoft
+ * Copyright © 2021-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,56 +19,50 @@
 
 import * as ilibEnv from '../src/index.js';
 
-export const testEnv = {
-    testGetLocaleDefault: function(test) {
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "en-US");
-        test.done();
-    },
+describe("testEnv", () => {
+    test("GetLocaleDefault", () => {
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("en-US");
+    });
 
-    testSetLocale: function(test) {
-        test.expect(1);
+    test("SetLocale", () => {
+        expect.assertions(1);
         ilibEnv.setLocale("ja-JP");
-        test.equal(ilibEnv.getLocale(), "ja-JP");
-        test.done();
-    },
+        expect(ilibEnv.getLocale()).toBe("ja-JP");
+    });
 
-    testSetLocaleNonString1: function(test) {
-        test.expect(1);
+    test("SetLocaleNonString1", () => {
+        expect.assertions(1);
         ilibEnv.setLocale("ja-JP");
         ilibEnv.setLocale(true);
         // should not change
-        test.equal(ilibEnv.getLocale(), "ja-JP");
-        test.done();
-    },
+        expect(ilibEnv.getLocale()).toBe("ja-JP");
+    });
 
-    testSetLocaleNonString2: function(test) {
-        test.expect(1);
+    test("SetLocaleNonString2", () => {
+        expect.assertions(1);
         ilibEnv.setLocale("ja-JP");
         ilibEnv.setLocale(4);
         // should not change
-        test.equal(ilibEnv.getLocale(), "ja-JP");
-        test.done();
-    },
+        expect(ilibEnv.getLocale()).toBe("ja-JP");
+    });
 
-    testSetLocaleClear: function(test) {
-        test.expect(1);
+    test("SetLocaleClear", () => {
+        expect.assertions(1);
         ilibEnv.setLocale("ja-JP");
         ilibEnv.setLocale();
         // should revert back to the default
-        test.equal(ilibEnv.getLocale(), "en-US");
-        test.done();
-    },
+        expect(ilibEnv.getLocale()).toBe("en-US");
+    });
 
-    testGetTimeZoneDefault: function(test) {
+    test("GetTimeZoneDefault", () => {
         // use a different test when the Intl object is available
         ilibEnv.clearCache();
         if (ilibEnv.isGlobal("Intl")) {
-            test.done();
             return;
         }
 
-        test.expect(1);
+        expect.assertions(1);
         ilibEnv.clearCache();
 
         var tmp;
@@ -80,15 +74,13 @@ export const testEnv = {
         if (ilibEnv.getPlatform() === "browser") {
             navigator.timezone = undefined;
         }
-        test.equal(ilibEnv.getTimeZone(), "local");
+        expect(ilibEnv.getTimeZone()).toBe("local");
         process.env.TZ = tmp;
-        test.done();
-    },
+    });
 
-    testGetTimeZoneDefaultWithIntl: function(test) {
+    test("GetTimeZoneDefaultWithIntl", () => {
         // only test when the Intl object is available
         if (!ilibEnv.globalVar("Intl")) {
-            test.done();
             return;
         }
 
@@ -96,17 +88,15 @@ export const testEnv = {
         var ro = new Intl.DateTimeFormat().resolvedOptions();
         var expected = ro && ro.timeZone;
         if (expected) {
-            test.expect(1);
+            expect.assertions(1);
             ilibEnv.clearCache();
-            test.equal(ilibEnv.getTimeZone(), expected);
+            expect(ilibEnv.getTimeZone()).toBe(expected);
         }
-        test.done();
-    },
+    });
 
-    testGetTimeZoneBrowserWithoutIntl: function(test) {
+    test("GetTimeZoneBrowserWithoutIntl", () => {
         if (ilibEnv.getPlatform() !== "browser" || ilibEnv.globalVar("Intl")) {
             // only testable on a browser without the Intl object available
-            test.done();
             return;
         }
 
@@ -114,18 +104,16 @@ export const testEnv = {
 
         navigator.timezone = "America/New_York";
 
-        test.expect(1);
-        test.equal(ilibEnv.getTimeZone(), "America/New_York");
+        expect.assertions(1);
+        expect(ilibEnv.getTimeZone()).toBe("America/New_York");
 
         ilibEnv.clearCache();
+    });
 
-        test.done();
-    },
-
-    testGetTimeZoneNodejs: function(test) {
+    test("GetTimeZoneNodejs", () => {
         // only test on older nodejs where the Intl object is not available
         if (ilibEnv.getPlatform() === "nodejs" && !ilibEnv.globalVar("Intl")) {
-            test.expect(1);
+            expect.assertions(1);
             ilibEnv.clearCache();
             if (typeof(process) === 'undefined') {
                 process = {
@@ -136,17 +124,15 @@ export const testEnv = {
             var tmp = process.env.TZ;
             process.env.TZ = "America/Phoenix";
 
-            test.equal(ilibEnv.getTimeZone(), "America/Phoenix");
+            expect(ilibEnv.getTimeZone()).toBe("America/Phoenix");
 
             process.env.TZ = tmp;
         }
-        test.done();
-    },
+    });
 
-    testGetTimeZoneRhino: function(test) {
+    test("GetTimeZoneRhino", () => {
         if (ilibEnv.getPlatform() !== "rhino" || ilibEnv.globalVar("Intl")) {
             // only test this in rhino
-            test.done();
             return;
         }
         ilibEnv.clearCache();
@@ -158,90 +144,79 @@ export const testEnv = {
             process.env.TZ = "America/New_York";
         }
 
-        test.expect(1);
-        test.equal(ilibEnv.getTimeZone(), "America/New_York");
-        test.done();
-    },
+        expect.assertions(1);
+        expect(ilibEnv.getTimeZone()).toBe("America/New_York");
+    });
 
-    testGetTimeZoneWebOS: function(test) {
+    test("GetTimeZoneWebOS", () => {
         if (ilibEnv.getPlatform() !== "webos" || ilibEnv.globalVar("Intl")) {
             // only test this in webos
-            test.done();
             return;
         }
         ilibEnv.clearCache();
 
         PalmSystem.timezone = "Europe/London";
 
-        test.expect(1);
-        test.equal(ilibEnv.getTimeZone(), "Europe/London");
-        test.done();
-    },
+        expect.assertions(1);
+        expect(ilibEnv.getTimeZone()).toBe("Europe/London");
+    });
 
-    testSetTimeZone: function(test) {
+    test("SetTimeZone", () => {
         ilibEnv.clearCache();
 
-        test.expect(1);
+        expect.assertions(1);
 
         ilibEnv.setTimeZone("Europe/London");
 
-        test.equal(ilibEnv.getTimeZone(), "Europe/London");
-        test.done();
-    },
+        expect(ilibEnv.getTimeZone()).toBe("Europe/London");
+    });
 
-    testSetTimeZoneNonString1: function(test) {
+    test("SetTimeZoneNonString1", () => {
         ilibEnv.clearCache();
 
-        test.expect(1);
+        expect.assertions(1);
 
         let tz = ilibEnv.getTimeZone();
 
         ilibEnv.setTimeZone(true);
 
         // should not change
-        test.equal(ilibEnv.getTimeZone(), tz);
+        expect(ilibEnv.getTimeZone()).toBe(tz);
+    });
 
-        test.done();
-    },
-
-    testSetTimeZoneNonString1: function(test) {
+    test("SetTimeZoneNonString1", () => {
         ilibEnv.clearCache();
 
-        test.expect(1);
+        expect.assertions(1);
 
         let tz = ilibEnv.getTimeZone();
 
         ilibEnv.setTimeZone(2);
 
         // should not change
-        test.equal(ilibEnv.getTimeZone(), tz);
+        expect(ilibEnv.getTimeZone()).toBe(tz);
+    });
 
-        test.done();
-    },
-
-    testSetTimeZoneReset: function(test) {
+    test("SetTimeZoneReset", () => {
         ilibEnv.clearCache();
 
-        test.expect(2);
+        expect.assertions(2);
 
         let tz = ilibEnv.getTimeZone();
 
         ilibEnv.setTimeZone("Europe/London");
 
-        test.equal(ilibEnv.getTimeZone(), "Europe/London");
+        expect(ilibEnv.getTimeZone()).toBe("Europe/London");
 
         ilibEnv.setTimeZone();
 
         // should not change
-        test.equal(ilibEnv.getTimeZone(), tz);
+        expect(ilibEnv.getTimeZone()).toBe(tz);
+    });
 
-        test.done();
-    },
-
-    testGetLocaleNodejs: function(test) {
+    test("GetLocaleNodejs", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -250,18 +225,16 @@ export const testEnv = {
 
         process.env.LANG = "th-TH";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "th-TH");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("th-TH");
 
         process.env.LANG = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejs2: function(test) {
+    test("GetLocaleNodejs2", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -269,18 +242,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "th-TH";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "th-TH");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("th-TH");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsFullLocale: function(test) {
+    test("GetLocaleNodejsFullLocale", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -288,18 +259,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "zh-Hans-CN";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
-        test.done();
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-    },
+    });
 
-    testGetLocaleNodejsLangScript: function(test) {
+    test("GetLocaleNodejsLangScript", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -307,18 +276,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "zh-Hans";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsLangOnly: function(test) {
+    test("GetLocaleNodejsLangOnly", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -326,18 +293,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "zh";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsPosixLocale: function(test) {
+    test("GetLocaleNodejsPosixLocale", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -345,18 +310,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "C";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "en-US");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("en-US");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsPosixLocaleFull: function(test) {
+    test("GetLocaleNodejsPosixLocaleFull", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -364,18 +327,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "C.UTF8";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "en-US");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("en-US");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsThreeLetterLanguage2: function(test) {
+    test("GetLocaleNodejsThreeLetterLanguage2", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -383,18 +344,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "yue-Hant"; // Cantonese
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "yue-Hant");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("yue-Hant");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsThreeLetterLanguage3: function(test) {
+    test("GetLocaleNodejsThreeLetterLanguage3", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -402,18 +361,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "yue-Hant-CN"; // Cantonese
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "yue-Hant-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("yue-Hant-CN");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsThreeDigitRegion: function(test) {
+    test("GetLocaleNodejsThreeDigitRegion", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -421,18 +378,16 @@ export const testEnv = {
 
         process.env.LC_ALL = "en-001"; // Cantonese
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "en-001");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("en-001");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsUnderscoreLocale: function(test) {
+    test("GetLocaleNodejsUnderscoreLocale", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -441,18 +396,16 @@ export const testEnv = {
         // on some platforms, it uses underscores instead of dashes
         process.env.LC_ALL = "de_DE";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-DE");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-DE");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsLocaleWithVariant1: function(test) {
+    test("GetLocaleNodejsLocaleWithVariant1", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -461,18 +414,16 @@ export const testEnv = {
         // should ignore variants
         process.env.LC_ALL = "de-DE-FOOBAR";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-DE");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-DE");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsLocaleWithVariant2: function(test) {
+    test("GetLocaleNodejsLocaleWithVariant2", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -481,18 +432,16 @@ export const testEnv = {
         // should ignore variants
         process.env.LC_ALL = "zh-Hans-CN-FOOBAR";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleNodejsLocaleWithLongVariant: function(test) {
+    test("GetLocaleNodejsLocaleWithLongVariant", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -501,18 +450,16 @@ export const testEnv = {
         // should ignore variants
         process.env.LC_ALL = "zh-Hans-CN-u-col-pinyin";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
 
         process.env.LC_ALL = "";
         ilibEnv.clearCache();
-        test.done();
-    },
+    });
 
-    testGetLocaleSimulateRhino: function(test) {
+    test("GetLocaleSimulateRhino", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -526,20 +473,17 @@ export const testEnv = {
             }
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-AT");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-AT");
 
         // clean up
         ilibEnv.clearCache();
         global.environment = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateTrireme1: function(test) {
+    test("GetLocaleSimulateTrireme1", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -548,20 +492,17 @@ export const testEnv = {
 
         process.env.LANG = "de-AT";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-AT");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-AT");
 
         // clean up
         ilibEnv.clearCache();
         process.env.LANG = "";
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateTrireme2: function(test) {
+    test("GetLocaleSimulateTrireme2", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -570,20 +511,17 @@ export const testEnv = {
 
         process.env.LANGUAGE = "de-AT";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-AT");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-AT");
 
         // clean up
         ilibEnv.clearCache();
         process.env.LANGUAGE = "";
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateTrireme3: function(test) {
+    test("GetLocaleSimulateTrireme3", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -592,20 +530,17 @@ export const testEnv = {
 
         process.env.LC_ALL = "de-AT";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-AT");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-AT");
 
         // clean up
         ilibEnv.clearCache();
         process.env.LC_ALL = "";
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateTriremeFullSpecifier: function(test) {
+    test("GetLocaleSimulateTriremeFullSpecifier", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -614,20 +549,17 @@ export const testEnv = {
 
         process.env.LC_ALL = "de_DE.UTF8";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-DE");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-DE");
 
         // clean up
         ilibEnv.clearCache();
         process.env.LC_ALL = "";
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateTriremeFullLocale: function(test) {
+    test("GetLocaleSimulateTriremeFullLocale", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -636,20 +568,17 @@ export const testEnv = {
 
         process.env.LC_ALL = "zh-Hans-CN";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
 
         // clean up
         ilibEnv.clearCache();
         process.env.LC_ALL = "";
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateWebOS: function(test) {
+    test("GetLocaleSimulateWebOS", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -660,20 +589,17 @@ export const testEnv = {
             locale: "ru-RU"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ru-RU");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ru-RU");
 
         // clean up
         ilibEnv.clearCache();
         global.PalmSystem = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateWebOSWebapp: function(test) {
+    test("GetLocaleSimulateWebOSWebapp", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -684,20 +610,17 @@ export const testEnv = {
             locale: "ru-RU"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ru-RU");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ru-RU");
 
         // clean up
         ilibEnv.clearCache();
         global.PalmSystem = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateRegularBrowser: function(test) {
+    test("GetLocaleSimulateRegularBrowser", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -710,20 +633,17 @@ export const testEnv = {
             language: "ja-JP"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ja-JP");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ja-JP");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateRegularBrowserLangOnly: function(test) {
+    test("GetLocaleSimulateRegularBrowserLangOnly", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -736,20 +656,17 @@ export const testEnv = {
             language: "ja"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ja");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ja");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateRegularBrowserFullLocale: function(test) {
+    test("GetLocaleSimulateRegularBrowserFullLocale", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -762,20 +679,17 @@ export const testEnv = {
             language: "zh-Hans-CN"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateRegularBrowserNonBCP47: function(test) {
+    test("GetLocaleSimulateRegularBrowserNonBCP47", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -788,20 +702,17 @@ export const testEnv = {
             language: "ja_jp"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ja-JP");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ja-JP");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateIEBrowser1: function(test) {
+    test("GetLocaleSimulateIEBrowser1", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -814,20 +725,17 @@ export const testEnv = {
             browserLanguage: "ja-JP"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ja-JP");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ja-JP");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateIEBrowser2: function(test) {
+    test("GetLocaleSimulateIEBrowser2", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -840,20 +748,17 @@ export const testEnv = {
             userLanguage: "ko-KR"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ko-KR");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ko-KR");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateIEBrowser3: function(test) {
+    test("GetLocaleSimulateIEBrowser3", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -866,20 +771,17 @@ export const testEnv = {
             systemLanguage: "zh-CN"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-CN");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateIEBrowserNonBCP: function(test) {
+    test("GetLocaleSimulateIEBrowserNonBCP", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -892,20 +794,17 @@ export const testEnv = {
             systemLanguage: "zh_cn"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-CN");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateIEBrowserFull: function(test) {
+    test("GetLocaleSimulateIEBrowserFull", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -918,20 +817,17 @@ export const testEnv = {
             systemLanguage: "zh-Hans-CN"
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "zh-Hans-CN");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
 
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleSimulateQt: function(test) {
+    test("GetLocaleSimulateQt", () => {
         if (ilibEnv.getPlatform() !== "nodejs") {
             // only test this in nodejs
-            test.done();
             return;
         }
 
@@ -948,20 +844,17 @@ export const testEnv = {
             }
         };
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "fr-FR");
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("fr-FR");
 
         // clean up
         ilibEnv.clearCache();
         global.Qt = undefined;
+    });
 
-        test.done();
-    },
-
-    testGetLocaleRhino: function(test) {
+    test("GetLocaleRhino", () => {
         if (ilibEnv.getPlatform() !== "rhino") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -976,9 +869,8 @@ export const testEnv = {
             process.env.LANG = "de_AT.UTF8";
         }
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "de-AT");
-        test.done();
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("de-AT");
 
         if (typeof(process) === 'undefined') {
             // under plain rhino
@@ -987,12 +879,11 @@ export const testEnv = {
         } else {
             process.env.LANG = "en_US.UTF8";
         }
-    },
+    });
 
-    testGetLocaleWebOS: function(test) {
+    test("GetLocaleWebOS", () => {
         if (ilibEnv.getPlatform() !== "webos") {
             // only test this in node
-            test.done();
             return;
         }
 
@@ -1000,17 +891,15 @@ export const testEnv = {
 
         PalmSystem.locale = "ru-RU";
 
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), "ru-RU");
-        test.done();
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe("ru-RU");
 
         PalmSystem.locale = undefined;
-    },
+    });
 
-    testGetLocaleBrowser: function(test) {
+    test("GetLocaleBrowser", () => {
         if (ilibEnv.getPlatform() !== "browser") {
             // only test this in a real browser
-            test.done();
             return;
         }
         ilibEnv.clearCache();
@@ -1028,44 +917,39 @@ export const testEnv = {
         if (loc === "en") {
             loc = "en-US";
         }
-        test.expect(1);
-        test.equal(ilibEnv.getLocale(), loc);
-        test.done();
-    },
+        expect.assertions(1);
+        expect(ilibEnv.getLocale()).toBe(loc);
+    });
 
-    testIsGlobal: function(test) {
-        test.expect(1);
+    test("IsGlobal", () => {
+        expect.assertions(1);
         var platform = ilibEnv.getPlatform();
         if (platform === "nodejs" || platform === "trireme" || platform === "rhino") {
             global.testGlobalNumber = 32;
         } else {
             window.testGlobalNumber = 32;
         }
-        test.ok(ilibEnv.isGlobal("testGlobalNumber"));
-        test.done();
-    },
+        expect(ilibEnv.isGlobal("testGlobalNumber")).toBeTruthy();
+    });
 
-    testIsGlobalNot: function(test) {
-        test.expect(1);
-        test.ok(!ilibEnv.isGlobal("asdfasdfasdf"));
-        test.done();
-    },
+    test("IsGlobalNot", () => {
+        expect.assertions(1);
+        expect(!ilibEnv.isGlobal("asdfasdfasdf")).toBeTruthy();
+    });
 
-    testGlobal: function(test) {
-        test.expect(1);
+    test("Global", () => {
+        expect.assertions(1);
         var platform = ilibEnv.getPlatform();
         if (platform !== "nodejs" && platform !== "trireme" && platform !== "rhino") {
             window.testGlobalNumber = 42;
         } else {
             global.testGlobalNumber = 42;
         }
-        test.equal(ilibEnv.globalVar("testGlobalNumber"), 42);
-        test.done();
-    },
+        expect(ilibEnv.globalVar("testGlobalNumber")).toBe(42);
+    });
 
-    testGlobalUndefined: function(test) {
-        test.expect(1);
-        test.ok(typeof(ilibEnv.globalVar("testGlobalNumber2")) === "undefined");
-        test.done();
-    }
-};
+    test("GlobalUndefined", () => {
+        expect.assertions(1);
+        expect(typeof(ilibEnv.globalVar("testGlobalNumber2")) === "undefined").toBeTruthy();
+    });
+});
