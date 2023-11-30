@@ -66,19 +66,20 @@ export class BanFormattedCompMessage extends Rule {
             (one, other) => rangesEqual(getRange(one), getRange(other))
         );
 
-        return [...jsxElements, ...identifiers].map((node) => {
-            const range = getRange(node);
-
-            return new Result({
-                pathName: ir.filePath,
-                severity: "error",
-                rule: this,
-                description: `Do not use deprecated FormattedCompMessage component.`,
-                id: undefined,
-                // @TODO make a real highlight once IR contains raw content of the linted source file
-                highlight: `Range: <e0>${range[0]}:${range[1]}</e0>`
+        return [...jsxElements, ...identifiers]
+            .map((node) => getRange(node))
+            .sort((a, b) => rangesCompare(a, b))
+            .map((range) => {
+                return new Result({
+                    pathName: ir.filePath,
+                    severity: "error",
+                    rule: this,
+                    description: `Do not use deprecated FormattedCompMessage component.`,
+                    id: undefined,
+                    // @TODO make a real highlight once IR contains raw content of the linted source file
+                    highlight: `Range: <e0>${range[0]}:${range[1]}</e0>`
+                });
             });
-        });
     }
 }
 
@@ -111,7 +112,14 @@ const getRange = /** @type {(node: any) => Range} */ (node) => {
 };
 
 const rangesEqual = (/** @type {Range} */ one, /** @type {Range} */ other) => {
-    return one[0] === other[0] && one[1] === other[1];
+    return rangesCompare(one, other) === 0;
+};
+
+const rangesCompare = (
+    /** @type {Range} */ one,
+    /** @type {Range} */ other
+) => {
+    return one[0] === other[0] ? one[0] - other[0] : one[1] - other[1];
 };
 
 export default BanFormattedCompMessage;
