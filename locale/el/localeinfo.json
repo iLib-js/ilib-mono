@@ -1,7 +1,5 @@
 {
     "delimiter": {
-        "alternateQuotationEnd": "”",
-        "alternateQuotationStart": "“",
         "quotationEnd": "»",
         "quotationStart": "«"
     },

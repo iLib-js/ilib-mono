@@ -7,7 +7,8 @@
     "locale": "no",
     "numfmt": {
         "currencyFormats": {
-            "commonNegative": "{s} -{n}"
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
         },
         "decimalChar": ",",
         "groupChar": " ",

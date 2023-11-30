@@ -1,10 +1,4 @@
 {
-    "delimiter": {
-        "alternateQuotationEnd": "”",
-        "alternateQuotationStart": "“",
-        "quotationEnd": "’",
-        "quotationStart": "‘"
-    },
     "language.name": "Xhosa",
     "locale": "xh",
     "numfmt": {

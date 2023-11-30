@@ -1,15 +1,11 @@
 {
-    "delimiter": {
-        "alternateQuotationEnd": "’",
-        "alternateQuotationStart": "‘",
-        "quotationEnd": "”",
-        "quotationStart": "“"
-    },
     "locale": "es-BO",
     "numfmt": {
         "currencyFormats": {
             "common": "{s}{n}",
             "commonNegative": "-{s}{n}"
-        }
+        },
+        "negativepctFmt": "-{n}%",
+        "pctFmt": "{n}%"
     }
 }

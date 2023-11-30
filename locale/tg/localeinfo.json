@@ -1,4 +1,8 @@
 {
+    "delimiter": {
+        "quotationEnd": "«",
+        "quotationStart": "»"
+    },
     "language.name": "Tajik",
     "locale": "tg",
     "numfmt": {

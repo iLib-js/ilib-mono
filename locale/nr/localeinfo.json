@@ -1,6 +1,14 @@
 {
     "language.name": "South Ndebele",
     "locale": "nr",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
     "scripts": [
         "Latn"
     ]

@@ -1,6 +1,19 @@
 {
+    "delimiter": {
+        "alternateQuotationEnd": "«",
+        "alternateQuotationStart": "»",
+        "quotationStart": "„"
+    },
     "language.name": "Silesian",
     "locale": "szl",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
     "scripts": [
         "Latn"
     ]

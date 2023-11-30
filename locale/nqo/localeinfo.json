@@ -1,6 +1,12 @@
 {
     "language.name": "N’Ko",
     "locale": "nqo",
+    "numfmt": {
+        "digits": "߀߁߂߃߄߅߆߇߈߉",
+        "groupChar": "،",
+        "script": "Nkoo",
+        "useNative": true
+    },
     "scripts": [
         "Nkoo"
     ]

@@ -1,10 +1,4 @@
 {
-    "delimiter": {
-        "alternateQuotationEnd": "”",
-        "alternateQuotationStart": "“",
-        "quotationEnd": "»",
-        "quotationStart": "«"
-    },
     "language.name": "Spanish",
     "locale": "es",
     "numfmt": {
