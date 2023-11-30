@@ -22,6 +22,7 @@ import * as ilibEnv from '../src/index.js';
 describe("testEnv", () => {
     test("GetLocaleDefault", () => {
         expect.assertions(1);
+        ilibEnv.clearCache();
         expect(ilibEnv.getLocale()).toBe("en-US");
     });
 
@@ -57,7 +58,6 @@ describe("testEnv", () => {
 
     test("GetTimeZoneDefault", () => {
         // use a different test when the Intl object is available
-        ilibEnv.clearCache();
         if (ilibEnv.isGlobal("Intl")) {
             return;
         }
@@ -951,5 +951,19 @@ describe("testEnv", () => {
     test("GlobalUndefined", () => {
         expect.assertions(1);
         expect(typeof(ilibEnv.globalVar("testGlobalNumber2")) === "undefined").toBeTruthy();
+    });
+
+    test("test clearing the cache", () => {
+        expect.assertions(5);
+
+        ilibEnv.setLocale("af-ZA");
+        expect(ilibEnv.getLocale()).toBe("af-ZA");
+        expect(ilibEnv.isGlobal("locale")).toBeTruthy();
+        expect(ilibEnv.globalVar("locale")).toBe("af-ZA");
+
+        ilibEnv.clearCache();
+
+        expect(ilibEnv.isGlobal("locale")).toBeFalsy();
+        expect(ilibEnv.globalVar("locale")).toBeUndefined();
     });
 });
