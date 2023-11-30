@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Result } from "i18nlint-common";
 import FlowParser from "../../src/parsers/FlowParser.js";
 import JSParser from "../../src/parsers/JSParser.js";
 import JSXParser from "../../src/parsers/JSXParser.js";
@@ -67,7 +68,26 @@ describe("BanFormattedCompMessage", () => {
 
             const result = rule.match({ ir });
 
-            expect(result.length).toEqual(2);
+            const expected = [
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>65:85</e0>"
+                }),
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>227:247</e0>"
+                })
+            ];
+
+            expect(result).toStrictEqual(expected);
         });
 
         test("component not used in file", () => {
@@ -149,7 +169,26 @@ describe("BanFormattedCompMessage", () => {
 
             const result = rule.match({ ir });
 
-            expect(result.length).toEqual(2);
+            const expected = [
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>56:76</e0>"
+                }),
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>218:238</e0>"
+                })
+            ];
+
+            expect(result).toStrictEqual(expected);
         });
 
         test("component not used in file", () => {
@@ -233,7 +272,26 @@ describe("BanFormattedCompMessage", () => {
 
             const result = rule.match({ ir });
 
-            expect(result.length).toEqual(2);
+            const expected = [
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>65:85</e0>"
+                }),
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>307:327</e0>"
+                })
+            ];
+
+            expect(result).toStrictEqual(expected);
         });
 
         test("component not used in file", () => {
@@ -314,7 +372,26 @@ describe("BanFormattedCompMessage", () => {
 
             const result = rule.match({ ir });
 
-            expect(result.length).toEqual(2);
+            const expected = [
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>56:76</e0>"
+                }),
+                new Result({
+                    severity: "error",
+                    description:
+                        "Do not use deprecated FormattedCompMessage component.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: "Range: <e0>298:318</e0>"
+                })
+            ];
+
+            expect(result).toStrictEqual(expected);
         });
 
         test("component not used in file", () => {
