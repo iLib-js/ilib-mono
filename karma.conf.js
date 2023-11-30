@@ -32,7 +32,7 @@ module.exports = function (config) {
             "./test/**/*.test.js": ["webpack"],
         },
 
-        browsers: ["Chrome"],
+        browsers: ["ChromeHeadless"],
         
         webpack: {
             mode: "development",
@@ -45,7 +45,6 @@ module.exports = function (config) {
                     {
                         test: /\.js$/,
                         exclude: /\/node_modules\//,
-                        //include: /node_modules\/ilib-/,
                         use: {
                             loader: 'babel-loader',
                             options: {
@@ -67,25 +66,7 @@ module.exports = function (config) {
                         }
                     }
                 ]
-            },
-/*
-            resolve: {
-                fallback: {
-                    buffer: require.resolve("buffer"),
-                    path: false,
-                    util: false,
-                    fs: false,
-                    process: false,
-                    os: false,
-                    vm: false,
-                    crypto: false,
-                    repl: false,
-                    "fs:node": false
-                    console: require.resolve("console-browserify"),
-                    "assert": require.resolve("karma-assert")
-                }
             }
-*/
         }
     });
 };
