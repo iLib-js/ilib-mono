@@ -54,7 +54,7 @@ module.exports = function (config) {
                                     '@babel/preset-env',
                                     {
                                         "targets": {
-                                            "node": "current",
+                                            "node": process.versions.node,
                                             "browsers": "cover 99.5%"
                                         }
                                     }
