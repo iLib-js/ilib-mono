@@ -53,7 +53,8 @@ function getPlatformValue() {
  */
 export function top() {
     let topScope;
-    switch (getPlatformValue()) {
+    const platformValue = typeof(platform) !== 'undefined' ? platform : getPlatformValue();
+    switch (platformValue) {
         case "rhino":
             topScope = (function() {
                 return (typeof global === 'object') ? global : this;

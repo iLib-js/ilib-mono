@@ -20,6 +20,11 @@
 import * as ilibEnv from '../src/index.js';
 
 describe("testEnv", () => {
+    beforeEach(() => {
+        // make sure we start with a clean slate
+        ilibEnv.clearCache();
+    });
+
     test("GetLocaleDefault", () => {
         expect.assertions(1);
         ilibEnv.clearCache();
@@ -588,6 +593,7 @@ describe("testEnv", () => {
         global.PalmSystem = {
             locale: "ru-RU"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ru-RU");
@@ -595,6 +601,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.PalmSystem = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateWebOSWebapp", () => {
@@ -609,6 +616,7 @@ describe("testEnv", () => {
         global.PalmSystem = {
             locale: "ru-RU"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ru-RU");
@@ -616,6 +624,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.PalmSystem = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateRegularBrowser", () => {
@@ -632,6 +641,7 @@ describe("testEnv", () => {
         global.navigator = {
             language: "ja-JP"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ja-JP");
@@ -639,6 +649,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateRegularBrowserLangOnly", () => {
@@ -655,6 +666,7 @@ describe("testEnv", () => {
         global.navigator = {
             language: "ja"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ja");
@@ -662,6 +674,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateRegularBrowserFullLocale", () => {
@@ -678,6 +691,7 @@ describe("testEnv", () => {
         global.navigator = {
             language: "zh-Hans-CN"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
@@ -685,6 +699,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateRegularBrowserNonBCP47", () => {
@@ -701,6 +716,7 @@ describe("testEnv", () => {
         global.navigator = {
             language: "ja_jp"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ja-JP");
@@ -708,6 +724,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateIEBrowser1", () => {
@@ -724,6 +741,7 @@ describe("testEnv", () => {
         global.navigator = {
             browserLanguage: "ja-JP"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ja-JP");
@@ -731,6 +749,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateIEBrowser2", () => {
@@ -747,6 +766,7 @@ describe("testEnv", () => {
         global.navigator = {
             userLanguage: "ko-KR"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("ko-KR");
@@ -754,6 +774,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateIEBrowser3", () => {
@@ -770,6 +791,7 @@ describe("testEnv", () => {
         global.navigator = {
             systemLanguage: "zh-CN"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("zh-CN");
@@ -777,6 +799,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateIEBrowserNonBCP", () => {
@@ -793,6 +816,7 @@ describe("testEnv", () => {
         global.navigator = {
             systemLanguage: "zh_cn"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("zh-CN");
@@ -800,6 +824,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateIEBrowserFull", () => {
@@ -816,6 +841,7 @@ describe("testEnv", () => {
         global.navigator = {
             systemLanguage: "zh-Hans-CN"
         };
+        global.window = global;
 
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe("zh-Hans-CN");
@@ -823,6 +849,7 @@ describe("testEnv", () => {
         // clean up
         ilibEnv.clearCache();
         global.navigator = undefined;
+        global.window = undefined;
     });
 
     test("GetLocaleSimulateQt", () => {
