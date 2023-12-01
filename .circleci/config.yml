@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  browser-tools: circle-ci/browser-tools
+  browser-tools: circle-ci/browser-tools@1.4.6
 jobs:
   testold:
     parameters:
