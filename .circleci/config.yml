@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  browser-tools: circle-ci/browser-tools@1.3.0
 jobs:
   testold:
     parameters:
@@ -29,13 +31,12 @@ jobs:
       - image: << parameters.docker_image >>
     steps:
       - checkout
+	  - browser-tools/install-browser-tools
       - run:
           name: Setup
           command: |
             rm -rf node_modules package-lock.json
             npm install
-            browser-tools/install-chrome
-            browser-tools/install-chromedriver
       - run:
           name: Running all unit tests
           command: |
@@ -47,7 +48,7 @@ workflows:
   version: 2
   test-all-node-versions:
     jobs:
-      - testold:
+      - test:
           docker_image: circleci/node:10-browsers
       - testold:
           docker_image: circleci/node:12-browsers
