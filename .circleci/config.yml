@@ -19,7 +19,7 @@ jobs:
           command: |
             node -v
             npm -v
-            npm run test
+            CHROME_BIN=/usr/bin/google-chrome npm run test
 
 workflows:
   version: 2
