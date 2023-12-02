@@ -203,6 +203,14 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.3
+
+* Fixed a problem where platform detection would happen every time it was
+  called instead of using the cached value of the platform.
+* converted all tests from nodeunit to jest
+* updated dependencies
+* added the ability to test on headless browsers from the command-line
+
 ### v1.3.2
 
 * This module is now a hybrid ESM/CommonJS package that works under node
