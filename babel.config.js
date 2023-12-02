@@ -1,4 +1,4 @@
-{
+module.exports = {
     "presets": [[
       "@babel/preset-env", {
          "targets": {
@@ -8,4 +8,4 @@
       }
    ]],
    "plugins": ["add-module-exports"]
-}
+};
