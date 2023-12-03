@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { Plugin } from 'i18nlint-common';
+import { Plugin } from "i18nlint-common";
 
 import JSParser from "./parsers/JSParser.js";
 import JSXParser from "./parsers/JSXParser.js";
 import PropertiesParser from "./parsers/PropertiesParser.js";
 import FlowParser from "./parsers/FlowParser.js";
 import TSXParser from "./parsers/TSXParser.js";
+import BanFormattedCompMessage from "./rules/BanFormattedCompMessage.js";
 // import FormatjsPlurals from './rules/FormatjsPlurals.js';
 
 class ReactPlugin extends Plugin {
@@ -50,20 +51,20 @@ class ReactPlugin extends Plugin {
     /** @override */
     getRules() {
         //console.log("ReactPlugin.getRules() called");
-        // return [ FormatjsPlurals ]; not ready for prime time yet
-        return [];
+        return [
+            // FormatjsPlurals // not ready for prime time yet
+            BanFormattedCompMessage
+        ];
     }
 
     /** @override */
     getRuleSets() {
-        /*
-        not ready for prime time yet
         return {
-            "react": {
-                "source-formatjs-plurals": true
+            react: {
+                // "source-formatjs-plurals": true, // not ready for prime time yet
+                "ban-formattedcompmessage": true
             }
         };
-        */
     }
 }
 
