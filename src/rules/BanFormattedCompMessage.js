@@ -119,7 +119,10 @@ const rangesCompare = (
     /** @type {Range} */ one,
     /** @type {Range} */ other
 ) => {
-    return one[0] === other[0] ? one[0] - other[0] : one[1] - other[1];
+    const leftDiff = one[0] - other[0];
+    if (leftDiff !== 0) return leftDiff;
+    const rightDiff = one[1] - other[1];
+    return rightDiff;
 };
 
 export default BanFormattedCompMessage;
