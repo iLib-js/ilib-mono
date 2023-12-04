@@ -36,7 +36,7 @@ describe("testReactPlugin", () => {
 
         const parsers = jp.getParsers();
         expect(parsers).toBeTruthy();
-        expect(parsers.length).toBe(4);
+        expect(parsers.length).toBe(5);
     });
 
     test("ReactPluginGetRules", () => {
