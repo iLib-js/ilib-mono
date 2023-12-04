@@ -1,0 +1,2420 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TSXParser parse TS file 1`] = `
+[
+  IntermediateRepresentation {
+    "filePath": "./test/testfiles/TsxParser_TsFile.ts",
+    "ir": Node {
+      "comments": [],
+      "end": 436,
+      "errors": [],
+      "loc": SourceLocation {
+        "end": Position {
+          "column": 0,
+          "index": 436,
+          "line": 18,
+        },
+        "filename": undefined,
+        "identifierName": undefined,
+        "start": Position {
+          "column": 0,
+          "index": 0,
+          "line": 1,
+        },
+      },
+      "program": Node {
+        "body": [
+          Node {
+            "end": 31,
+            "importKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 31,
+                "index": 31,
+                "line": 1,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 0,
+                "line": 1,
+              },
+            },
+            "source": Node {
+              "end": 30,
+              "extra": {
+                "raw": ""react"",
+                "rawValue": "react",
+              },
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 30,
+                  "index": 30,
+                  "line": 1,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 23,
+                  "index": 23,
+                  "line": 1,
+                },
+              },
+              "start": 23,
+              "type": "StringLiteral",
+              "value": "react",
+            },
+            "specifiers": [
+              Node {
+                "end": 17,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 17,
+                    "index": 17,
+                    "line": 1,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 7,
+                    "index": 7,
+                    "line": 1,
+                  },
+                },
+                "local": Node {
+                  "end": 17,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 17,
+                      "index": 17,
+                      "line": 1,
+                    },
+                    "filename": undefined,
+                    "identifierName": "React",
+                    "start": Position {
+                      "column": 12,
+                      "index": 12,
+                      "line": 1,
+                    },
+                  },
+                  "name": "React",
+                  "start": 12,
+                  "type": "Identifier",
+                },
+                "start": 7,
+                "type": "ImportNamespaceSpecifier",
+              },
+            ],
+            "start": 0,
+            "type": "ImportDeclaration",
+          },
+          Node {
+            "end": 89,
+            "importKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 57,
+                "index": 89,
+                "line": 2,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 32,
+                "line": 2,
+              },
+            },
+            "source": Node {
+              "end": 88,
+              "extra": {
+                "raw": ""components"",
+                "rawValue": "components",
+              },
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 56,
+                  "index": 88,
+                  "line": 2,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 44,
+                  "index": 76,
+                  "line": 2,
+                },
+              },
+              "start": 76,
+              "type": "StringLiteral",
+              "value": "components",
+            },
+            "specifiers": [
+              Node {
+                "end": 50,
+                "importKind": "value",
+                "imported": Node {
+                  "end": 50,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 18,
+                      "index": 50,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "Component",
+                    "start": Position {
+                      "column": 9,
+                      "index": 41,
+                      "line": 2,
+                    },
+                  },
+                  "name": "Component",
+                  "start": 41,
+                  "type": "Identifier",
+                },
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 18,
+                    "index": 50,
+                    "line": 2,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 9,
+                    "index": 41,
+                    "line": 2,
+                  },
+                },
+                "local": Node {
+                  "end": 50,
+                  "extra": undefined,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 18,
+                      "index": 50,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "Component",
+                    "start": Position {
+                      "column": 9,
+                      "index": 41,
+                      "line": 2,
+                    },
+                  },
+                  "name": "Component",
+                  "range": undefined,
+                  "start": 41,
+                  "type": "Identifier",
+                },
+                "start": 41,
+                "type": "ImportSpecifier",
+              },
+              Node {
+                "end": 68,
+                "importKind": "type",
+                "imported": Node {
+                  "end": 68,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 36,
+                      "index": 68,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "CommonProps",
+                    "start": Position {
+                      "column": 25,
+                      "index": 57,
+                      "line": 2,
+                    },
+                  },
+                  "name": "CommonProps",
+                  "start": 57,
+                  "type": "Identifier",
+                },
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 36,
+                    "index": 68,
+                    "line": 2,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 20,
+                    "index": 52,
+                    "line": 2,
+                  },
+                },
+                "local": Node {
+                  "end": 68,
+                  "extra": undefined,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 36,
+                      "index": 68,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "CommonProps",
+                    "start": Position {
+                      "column": 25,
+                      "index": 57,
+                      "line": 2,
+                    },
+                  },
+                  "name": "CommonProps",
+                  "range": undefined,
+                  "start": 57,
+                  "type": "Identifier",
+                },
+                "start": 52,
+                "type": "ImportSpecifier",
+              },
+            ],
+            "start": 32,
+            "type": "ImportDeclaration",
+          },
+          Node {
+            "body": Node {
+              "body": [
+                Node {
+                  "computed": false,
+                  "end": 163,
+                  "key": Node {
+                    "end": 154,
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 9,
+                        "index": 154,
+                        "line": 5,
+                      },
+                      "filename": undefined,
+                      "identifierName": "count",
+                      "start": Position {
+                        "column": 4,
+                        "index": 149,
+                        "line": 5,
+                      },
+                    },
+                    "name": "count",
+                    "start": 149,
+                    "type": "Identifier",
+                  },
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 18,
+                      "index": 163,
+                      "line": 5,
+                    },
+                    "filename": undefined,
+                    "identifierName": undefined,
+                    "start": Position {
+                      "column": 4,
+                      "index": 149,
+                      "line": 5,
+                    },
+                  },
+                  "start": 149,
+                  "type": "TSPropertySignature",
+                  "typeAnnotation": Node {
+                    "end": 162,
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 17,
+                        "index": 162,
+                        "line": 5,
+                      },
+                      "filename": undefined,
+                      "identifierName": undefined,
+                      "start": Position {
+                        "column": 9,
+                        "index": 154,
+                        "line": 5,
+                      },
+                    },
+                    "start": 154,
+                    "type": "TSTypeAnnotation",
+                    "typeAnnotation": Node {
+                      "end": 162,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 17,
+                          "index": 162,
+                          "line": 5,
+                        },
+                        "filename": undefined,
+                        "identifierName": undefined,
+                        "start": Position {
+                          "column": 11,
+                          "index": 156,
+                          "line": 5,
+                        },
+                      },
+                      "start": 156,
+                      "type": "TSNumberKeyword",
+                    },
+                  },
+                },
+              ],
+              "end": 165,
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 1,
+                  "index": 165,
+                  "line": 6,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 52,
+                  "index": 143,
+                  "line": 4,
+                },
+              },
+              "start": 143,
+              "type": "TSInterfaceBody",
+            },
+            "end": 165,
+            "extends": [
+              Node {
+                "end": 142,
+                "expression": Node {
+                  "end": 142,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 51,
+                      "index": 142,
+                      "line": 4,
+                    },
+                    "filename": undefined,
+                    "identifierName": "CommonProps",
+                    "start": Position {
+                      "column": 40,
+                      "index": 131,
+                      "line": 4,
+                    },
+                  },
+                  "name": "CommonProps",
+                  "start": 131,
+                  "type": "Identifier",
+                },
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 51,
+                    "index": 142,
+                    "line": 4,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 40,
+                    "index": 131,
+                    "line": 4,
+                  },
+                },
+                "start": 131,
+                "type": "TSExpressionWithTypeArguments",
+              },
+            ],
+            "id": Node {
+              "end": 122,
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 31,
+                  "index": 122,
+                  "line": 4,
+                },
+                "filename": undefined,
+                "identifierName": "WrappedComponentProps",
+                "start": Position {
+                  "column": 10,
+                  "index": 101,
+                  "line": 4,
+                },
+              },
+              "name": "WrappedComponentProps",
+              "start": 101,
+              "type": "Identifier",
+            },
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 1,
+                "index": 165,
+                "line": 6,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 91,
+                "line": 4,
+              },
+            },
+            "start": 91,
+            "type": "TSInterfaceDeclaration",
+            "typeParameters": undefined,
+          },
+          Node {
+            "declaration": Node {
+              "body": Node {
+                "body": [
+                  Node {
+                    "async": false,
+                    "body": Node {
+                      "body": [
+                        Node {
+                          "argument": Node {
+                            "arguments": [
+                              Node {
+                                "end": 305,
+                                "loc": SourceLocation {
+                                  "end": Position {
+                                    "column": 44,
+                                    "index": 305,
+                                    "line": 10,
+                                  },
+                                  "filename": undefined,
+                                  "identifierName": "Component",
+                                  "start": Position {
+                                    "column": 35,
+                                    "index": 296,
+                                    "line": 10,
+                                  },
+                                },
+                                "name": "Component",
+                                "start": 296,
+                                "type": "Identifier",
+                              },
+                              Node {
+                                "end": 391,
+                                "loc": SourceLocation {
+                                  "end": Position {
+                                    "column": 9,
+                                    "index": 391,
+                                    "line": 13,
+                                  },
+                                  "filename": undefined,
+                                  "identifierName": undefined,
+                                  "start": Position {
+                                    "column": 46,
+                                    "index": 307,
+                                    "line": 10,
+                                  },
+                                },
+                                "properties": [
+                                  Node {
+                                    "computed": false,
+                                    "end": 344,
+                                    "key": Node {
+                                      "end": 326,
+                                      "loc": SourceLocation {
+                                        "end": Position {
+                                          "column": 17,
+                                          "index": 326,
+                                          "line": 11,
+                                        },
+                                        "filename": undefined,
+                                        "identifierName": "label",
+                                        "start": Position {
+                                          "column": 12,
+                                          "index": 321,
+                                          "line": 11,
+                                        },
+                                      },
+                                      "name": "label",
+                                      "start": 321,
+                                      "type": "Identifier",
+                                    },
+                                    "loc": SourceLocation {
+                                      "end": Position {
+                                        "column": 35,
+                                        "index": 344,
+                                        "line": 11,
+                                      },
+                                      "filename": undefined,
+                                      "identifierName": undefined,
+                                      "start": Position {
+                                        "column": 12,
+                                        "index": 321,
+                                        "line": 11,
+                                      },
+                                    },
+                                    "method": false,
+                                    "shorthand": false,
+                                    "start": 321,
+                                    "type": "ObjectProperty",
+                                    "value": Node {
+                                      "computed": false,
+                                      "end": 344,
+                                      "loc": SourceLocation {
+                                        "end": Position {
+                                          "column": 35,
+                                          "index": 344,
+                                          "line": 11,
+                                        },
+                                        "filename": undefined,
+                                        "identifierName": undefined,
+                                        "start": Position {
+                                          "column": 19,
+                                          "index": 328,
+                                          "line": 11,
+                                        },
+                                      },
+                                      "object": Node {
+                                        "computed": false,
+                                        "end": 338,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 29,
+                                            "index": 338,
+                                            "line": 11,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": undefined,
+                                          "start": Position {
+                                            "column": 19,
+                                            "index": 328,
+                                            "line": 11,
+                                          },
+                                        },
+                                        "object": Node {
+                                          "end": 332,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 23,
+                                              "index": 332,
+                                              "line": 11,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": undefined,
+                                            "start": Position {
+                                              "column": 19,
+                                              "index": 328,
+                                              "line": 11,
+                                            },
+                                          },
+                                          "start": 328,
+                                          "type": "ThisExpression",
+                                        },
+                                        "property": Node {
+                                          "end": 338,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 29,
+                                              "index": 338,
+                                              "line": 11,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": "props",
+                                            "start": Position {
+                                              "column": 24,
+                                              "index": 333,
+                                              "line": 11,
+                                            },
+                                          },
+                                          "name": "props",
+                                          "start": 333,
+                                          "type": "Identifier",
+                                        },
+                                        "start": 328,
+                                        "type": "MemberExpression",
+                                      },
+                                      "property": Node {
+                                        "end": 344,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 35,
+                                            "index": 344,
+                                            "line": 11,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": "label",
+                                          "start": Position {
+                                            "column": 30,
+                                            "index": 339,
+                                            "line": 11,
+                                          },
+                                        },
+                                        "name": "label",
+                                        "start": 339,
+                                        "type": "Identifier",
+                                      },
+                                      "start": 328,
+                                      "type": "MemberExpression",
+                                    },
+                                  },
+                                  Node {
+                                    "computed": false,
+                                    "end": 381,
+                                    "key": Node {
+                                      "end": 363,
+                                      "loc": SourceLocation {
+                                        "end": Position {
+                                          "column": 17,
+                                          "index": 363,
+                                          "line": 12,
+                                        },
+                                        "filename": undefined,
+                                        "identifierName": "count",
+                                        "start": Position {
+                                          "column": 12,
+                                          "index": 358,
+                                          "line": 12,
+                                        },
+                                      },
+                                      "name": "count",
+                                      "start": 358,
+                                      "type": "Identifier",
+                                    },
+                                    "loc": SourceLocation {
+                                      "end": Position {
+                                        "column": 35,
+                                        "index": 381,
+                                        "line": 12,
+                                      },
+                                      "filename": undefined,
+                                      "identifierName": undefined,
+                                      "start": Position {
+                                        "column": 12,
+                                        "index": 358,
+                                        "line": 12,
+                                      },
+                                    },
+                                    "method": false,
+                                    "shorthand": false,
+                                    "start": 358,
+                                    "type": "ObjectProperty",
+                                    "value": Node {
+                                      "computed": false,
+                                      "end": 381,
+                                      "loc": SourceLocation {
+                                        "end": Position {
+                                          "column": 35,
+                                          "index": 381,
+                                          "line": 12,
+                                        },
+                                        "filename": undefined,
+                                        "identifierName": undefined,
+                                        "start": Position {
+                                          "column": 19,
+                                          "index": 365,
+                                          "line": 12,
+                                        },
+                                      },
+                                      "object": Node {
+                                        "computed": false,
+                                        "end": 375,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 29,
+                                            "index": 375,
+                                            "line": 12,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": undefined,
+                                          "start": Position {
+                                            "column": 19,
+                                            "index": 365,
+                                            "line": 12,
+                                          },
+                                        },
+                                        "object": Node {
+                                          "end": 369,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 23,
+                                              "index": 369,
+                                              "line": 12,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": undefined,
+                                            "start": Position {
+                                              "column": 19,
+                                              "index": 365,
+                                              "line": 12,
+                                            },
+                                          },
+                                          "start": 365,
+                                          "type": "ThisExpression",
+                                        },
+                                        "property": Node {
+                                          "end": 375,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 29,
+                                              "index": 375,
+                                              "line": 12,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": "props",
+                                            "start": Position {
+                                              "column": 24,
+                                              "index": 370,
+                                              "line": 12,
+                                            },
+                                          },
+                                          "name": "props",
+                                          "start": 370,
+                                          "type": "Identifier",
+                                        },
+                                        "start": 365,
+                                        "type": "MemberExpression",
+                                      },
+                                      "property": Node {
+                                        "end": 381,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 35,
+                                            "index": 381,
+                                            "line": 12,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": "count",
+                                          "start": Position {
+                                            "column": 30,
+                                            "index": 376,
+                                            "line": 12,
+                                          },
+                                        },
+                                        "name": "count",
+                                        "start": 376,
+                                        "type": "Identifier",
+                                      },
+                                      "start": 365,
+                                      "type": "MemberExpression",
+                                    },
+                                  },
+                                ],
+                                "start": 307,
+                                "type": "ObjectExpression",
+                              },
+                            ],
+                            "callee": Node {
+                              "computed": false,
+                              "end": 295,
+                              "loc": SourceLocation {
+                                "end": Position {
+                                  "column": 34,
+                                  "index": 295,
+                                  "line": 10,
+                                },
+                                "filename": undefined,
+                                "identifierName": undefined,
+                                "start": Position {
+                                  "column": 15,
+                                  "index": 276,
+                                  "line": 10,
+                                },
+                              },
+                              "object": Node {
+                                "end": 281,
+                                "loc": SourceLocation {
+                                  "end": Position {
+                                    "column": 20,
+                                    "index": 281,
+                                    "line": 10,
+                                  },
+                                  "filename": undefined,
+                                  "identifierName": "React",
+                                  "start": Position {
+                                    "column": 15,
+                                    "index": 276,
+                                    "line": 10,
+                                  },
+                                },
+                                "name": "React",
+                                "start": 276,
+                                "type": "Identifier",
+                              },
+                              "property": Node {
+                                "end": 295,
+                                "loc": SourceLocation {
+                                  "end": Position {
+                                    "column": 34,
+                                    "index": 295,
+                                    "line": 10,
+                                  },
+                                  "filename": undefined,
+                                  "identifierName": "createElement",
+                                  "start": Position {
+                                    "column": 21,
+                                    "index": 282,
+                                    "line": 10,
+                                  },
+                                },
+                                "name": "createElement",
+                                "start": 282,
+                                "type": "Identifier",
+                              },
+                              "start": 276,
+                              "type": "MemberExpression",
+                            },
+                            "end": 392,
+                            "loc": SourceLocation {
+                              "end": Position {
+                                "column": 10,
+                                "index": 392,
+                                "line": 13,
+                              },
+                              "filename": undefined,
+                              "identifierName": undefined,
+                              "start": Position {
+                                "column": 15,
+                                "index": 276,
+                                "line": 10,
+                              },
+                            },
+                            "start": 276,
+                            "type": "CallExpression",
+                          },
+                          "end": 393,
+                          "loc": SourceLocation {
+                            "end": Position {
+                              "column": 11,
+                              "index": 393,
+                              "line": 13,
+                            },
+                            "filename": undefined,
+                            "identifierName": undefined,
+                            "start": Position {
+                              "column": 8,
+                              "index": 269,
+                              "line": 10,
+                            },
+                          },
+                          "start": 269,
+                          "type": "ReturnStatement",
+                        },
+                      ],
+                      "directives": [],
+                      "end": 399,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 5,
+                          "index": 399,
+                          "line": 14,
+                        },
+                        "filename": undefined,
+                        "identifierName": undefined,
+                        "start": Position {
+                          "column": 13,
+                          "index": 259,
+                          "line": 9,
+                        },
+                      },
+                      "start": 259,
+                      "type": "BlockStatement",
+                    },
+                    "computed": false,
+                    "end": 399,
+                    "generator": false,
+                    "id": null,
+                    "key": Node {
+                      "end": 256,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 10,
+                          "index": 256,
+                          "line": 9,
+                        },
+                        "filename": undefined,
+                        "identifierName": "render",
+                        "start": Position {
+                          "column": 4,
+                          "index": 250,
+                          "line": 9,
+                        },
+                      },
+                      "name": "render",
+                      "start": 250,
+                      "type": "Identifier",
+                    },
+                    "kind": "method",
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 5,
+                        "index": 399,
+                        "line": 14,
+                      },
+                      "filename": undefined,
+                      "identifierName": undefined,
+                      "start": Position {
+                        "column": 4,
+                        "index": 250,
+                        "line": 9,
+                      },
+                    },
+                    "params": [],
+                    "start": 250,
+                    "static": false,
+                    "type": "ClassMethod",
+                  },
+                ],
+                "end": 401,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 1,
+                    "index": 401,
+                    "line": 15,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 77,
+                    "index": 244,
+                    "line": 8,
+                  },
+                },
+                "start": 244,
+                "type": "ClassBody",
+              },
+              "end": 401,
+              "id": Node {
+                "end": 196,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 29,
+                    "index": 196,
+                    "line": 8,
+                  },
+                  "filename": undefined,
+                  "identifierName": "WrappedComponent",
+                  "start": Position {
+                    "column": 13,
+                    "index": 180,
+                    "line": 8,
+                  },
+                },
+                "name": "WrappedComponent",
+                "start": 180,
+                "type": "Identifier",
+              },
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 1,
+                  "index": 401,
+                  "line": 15,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 7,
+                  "index": 174,
+                  "line": 8,
+                },
+              },
+              "start": 174,
+              "superClass": Node {
+                "computed": false,
+                "end": 220,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 53,
+                    "index": 220,
+                    "line": 8,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 38,
+                    "index": 205,
+                    "line": 8,
+                  },
+                },
+                "object": Node {
+                  "end": 210,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 43,
+                      "index": 210,
+                      "line": 8,
+                    },
+                    "filename": undefined,
+                    "identifierName": "React",
+                    "start": Position {
+                      "column": 38,
+                      "index": 205,
+                      "line": 8,
+                    },
+                  },
+                  "name": "React",
+                  "start": 205,
+                  "type": "Identifier",
+                },
+                "property": Node {
+                  "end": 220,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 53,
+                      "index": 220,
+                      "line": 8,
+                    },
+                    "filename": undefined,
+                    "identifierName": "Component",
+                    "start": Position {
+                      "column": 44,
+                      "index": 211,
+                      "line": 8,
+                    },
+                  },
+                  "name": "Component",
+                  "start": 211,
+                  "type": "Identifier",
+                },
+                "start": 205,
+                "type": "MemberExpression",
+              },
+              "superTypeParameters": Node {
+                "end": 243,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 76,
+                    "index": 243,
+                    "line": 8,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 53,
+                    "index": 220,
+                    "line": 8,
+                  },
+                },
+                "params": [
+                  Node {
+                    "end": 242,
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 75,
+                        "index": 242,
+                        "line": 8,
+                      },
+                      "filename": undefined,
+                      "identifierName": undefined,
+                      "start": Position {
+                        "column": 54,
+                        "index": 221,
+                        "line": 8,
+                      },
+                    },
+                    "start": 221,
+                    "type": "TSTypeReference",
+                    "typeName": Node {
+                      "end": 242,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 75,
+                          "index": 242,
+                          "line": 8,
+                        },
+                        "filename": undefined,
+                        "identifierName": "WrappedComponentProps",
+                        "start": Position {
+                          "column": 54,
+                          "index": 221,
+                          "line": 8,
+                        },
+                      },
+                      "name": "WrappedComponentProps",
+                      "start": 221,
+                      "type": "Identifier",
+                    },
+                  },
+                ],
+                "start": 220,
+                "type": "TSTypeParameterInstantiation",
+              },
+              "type": "ClassDeclaration",
+            },
+            "end": 401,
+            "exportKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 1,
+                "index": 401,
+                "line": 15,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 167,
+                "line": 8,
+              },
+            },
+            "source": null,
+            "specifiers": [],
+            "start": 167,
+            "type": "ExportNamedDeclaration",
+          },
+          Node {
+            "declaration": Node {
+              "end": 434,
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 31,
+                  "index": 434,
+                  "line": 17,
+                },
+                "filename": undefined,
+                "identifierName": "WrappedComponent",
+                "start": Position {
+                  "column": 15,
+                  "index": 418,
+                  "line": 17,
+                },
+              },
+              "name": "WrappedComponent",
+              "start": 418,
+              "type": "Identifier",
+            },
+            "end": 435,
+            "exportKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 32,
+                "index": 435,
+                "line": 17,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 403,
+                "line": 17,
+              },
+            },
+            "start": 403,
+            "type": "ExportDefaultDeclaration",
+          },
+        ],
+        "directives": [],
+        "end": 436,
+        "interpreter": null,
+        "loc": SourceLocation {
+          "end": Position {
+            "column": 0,
+            "index": 436,
+            "line": 18,
+          },
+          "filename": undefined,
+          "identifierName": undefined,
+          "start": Position {
+            "column": 0,
+            "index": 0,
+            "line": 1,
+          },
+        },
+        "sourceType": "module",
+        "start": 0,
+        "type": "Program",
+      },
+      "start": 0,
+      "type": "File",
+    },
+    "stats": undefined,
+    "type": "babel-ast",
+  },
+]
+`;
+
+exports[`TSXParser parse TSX file 1`] = `
+[
+  IntermediateRepresentation {
+    "filePath": "./test/testfiles/TsxParser_TsxFile.tsx",
+    "ir": Node {
+      "comments": [],
+      "end": 383,
+      "errors": [],
+      "loc": SourceLocation {
+        "end": Position {
+          "column": 0,
+          "index": 383,
+          "line": 15,
+        },
+        "filename": undefined,
+        "identifierName": undefined,
+        "start": Position {
+          "column": 0,
+          "index": 0,
+          "line": 1,
+        },
+      },
+      "program": Node {
+        "body": [
+          Node {
+            "end": 31,
+            "importKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 31,
+                "index": 31,
+                "line": 1,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 0,
+                "line": 1,
+              },
+            },
+            "source": Node {
+              "end": 30,
+              "extra": {
+                "raw": ""react"",
+                "rawValue": "react",
+              },
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 30,
+                  "index": 30,
+                  "line": 1,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 23,
+                  "index": 23,
+                  "line": 1,
+                },
+              },
+              "start": 23,
+              "type": "StringLiteral",
+              "value": "react",
+            },
+            "specifiers": [
+              Node {
+                "end": 17,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 17,
+                    "index": 17,
+                    "line": 1,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 7,
+                    "index": 7,
+                    "line": 1,
+                  },
+                },
+                "local": Node {
+                  "end": 17,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 17,
+                      "index": 17,
+                      "line": 1,
+                    },
+                    "filename": undefined,
+                    "identifierName": "React",
+                    "start": Position {
+                      "column": 12,
+                      "index": 12,
+                      "line": 1,
+                    },
+                  },
+                  "name": "React",
+                  "start": 12,
+                  "type": "Identifier",
+                },
+                "start": 7,
+                "type": "ImportNamespaceSpecifier",
+              },
+            ],
+            "start": 0,
+            "type": "ImportDeclaration",
+          },
+          Node {
+            "end": 89,
+            "importKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 57,
+                "index": 89,
+                "line": 2,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 32,
+                "line": 2,
+              },
+            },
+            "source": Node {
+              "end": 88,
+              "extra": {
+                "raw": ""components"",
+                "rawValue": "components",
+              },
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 56,
+                  "index": 88,
+                  "line": 2,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 44,
+                  "index": 76,
+                  "line": 2,
+                },
+              },
+              "start": 76,
+              "type": "StringLiteral",
+              "value": "components",
+            },
+            "specifiers": [
+              Node {
+                "end": 50,
+                "importKind": "value",
+                "imported": Node {
+                  "end": 50,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 18,
+                      "index": 50,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "Component",
+                    "start": Position {
+                      "column": 9,
+                      "index": 41,
+                      "line": 2,
+                    },
+                  },
+                  "name": "Component",
+                  "start": 41,
+                  "type": "Identifier",
+                },
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 18,
+                    "index": 50,
+                    "line": 2,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 9,
+                    "index": 41,
+                    "line": 2,
+                  },
+                },
+                "local": Node {
+                  "end": 50,
+                  "extra": undefined,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 18,
+                      "index": 50,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "Component",
+                    "start": Position {
+                      "column": 9,
+                      "index": 41,
+                      "line": 2,
+                    },
+                  },
+                  "name": "Component",
+                  "range": undefined,
+                  "start": 41,
+                  "type": "Identifier",
+                },
+                "start": 41,
+                "type": "ImportSpecifier",
+              },
+              Node {
+                "end": 68,
+                "importKind": "type",
+                "imported": Node {
+                  "end": 68,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 36,
+                      "index": 68,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "CommonProps",
+                    "start": Position {
+                      "column": 25,
+                      "index": 57,
+                      "line": 2,
+                    },
+                  },
+                  "name": "CommonProps",
+                  "start": 57,
+                  "type": "Identifier",
+                },
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 36,
+                    "index": 68,
+                    "line": 2,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 20,
+                    "index": 52,
+                    "line": 2,
+                  },
+                },
+                "local": Node {
+                  "end": 68,
+                  "extra": undefined,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 36,
+                      "index": 68,
+                      "line": 2,
+                    },
+                    "filename": undefined,
+                    "identifierName": "CommonProps",
+                    "start": Position {
+                      "column": 25,
+                      "index": 57,
+                      "line": 2,
+                    },
+                  },
+                  "name": "CommonProps",
+                  "range": undefined,
+                  "start": 57,
+                  "type": "Identifier",
+                },
+                "start": 52,
+                "type": "ImportSpecifier",
+              },
+            ],
+            "start": 32,
+            "type": "ImportDeclaration",
+          },
+          Node {
+            "body": Node {
+              "body": [
+                Node {
+                  "computed": false,
+                  "end": 163,
+                  "key": Node {
+                    "end": 154,
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 9,
+                        "index": 154,
+                        "line": 5,
+                      },
+                      "filename": undefined,
+                      "identifierName": "count",
+                      "start": Position {
+                        "column": 4,
+                        "index": 149,
+                        "line": 5,
+                      },
+                    },
+                    "name": "count",
+                    "start": 149,
+                    "type": "Identifier",
+                  },
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 18,
+                      "index": 163,
+                      "line": 5,
+                    },
+                    "filename": undefined,
+                    "identifierName": undefined,
+                    "start": Position {
+                      "column": 4,
+                      "index": 149,
+                      "line": 5,
+                    },
+                  },
+                  "start": 149,
+                  "type": "TSPropertySignature",
+                  "typeAnnotation": Node {
+                    "end": 162,
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 17,
+                        "index": 162,
+                        "line": 5,
+                      },
+                      "filename": undefined,
+                      "identifierName": undefined,
+                      "start": Position {
+                        "column": 9,
+                        "index": 154,
+                        "line": 5,
+                      },
+                    },
+                    "start": 154,
+                    "type": "TSTypeAnnotation",
+                    "typeAnnotation": Node {
+                      "end": 162,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 17,
+                          "index": 162,
+                          "line": 5,
+                        },
+                        "filename": undefined,
+                        "identifierName": undefined,
+                        "start": Position {
+                          "column": 11,
+                          "index": 156,
+                          "line": 5,
+                        },
+                      },
+                      "start": 156,
+                      "type": "TSNumberKeyword",
+                    },
+                  },
+                },
+              ],
+              "end": 165,
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 1,
+                  "index": 165,
+                  "line": 6,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 52,
+                  "index": 143,
+                  "line": 4,
+                },
+              },
+              "start": 143,
+              "type": "TSInterfaceBody",
+            },
+            "end": 165,
+            "extends": [
+              Node {
+                "end": 142,
+                "expression": Node {
+                  "end": 142,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 51,
+                      "index": 142,
+                      "line": 4,
+                    },
+                    "filename": undefined,
+                    "identifierName": "CommonProps",
+                    "start": Position {
+                      "column": 40,
+                      "index": 131,
+                      "line": 4,
+                    },
+                  },
+                  "name": "CommonProps",
+                  "start": 131,
+                  "type": "Identifier",
+                },
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 51,
+                    "index": 142,
+                    "line": 4,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 40,
+                    "index": 131,
+                    "line": 4,
+                  },
+                },
+                "start": 131,
+                "type": "TSExpressionWithTypeArguments",
+              },
+            ],
+            "id": Node {
+              "end": 122,
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 31,
+                  "index": 122,
+                  "line": 4,
+                },
+                "filename": undefined,
+                "identifierName": "WrappedComponentProps",
+                "start": Position {
+                  "column": 10,
+                  "index": 101,
+                  "line": 4,
+                },
+              },
+              "name": "WrappedComponentProps",
+              "start": 101,
+              "type": "Identifier",
+            },
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 1,
+                "index": 165,
+                "line": 6,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 91,
+                "line": 4,
+              },
+            },
+            "start": 91,
+            "type": "TSInterfaceDeclaration",
+            "typeParameters": undefined,
+          },
+          Node {
+            "declaration": Node {
+              "body": Node {
+                "body": [
+                  Node {
+                    "async": false,
+                    "body": Node {
+                      "body": [
+                        Node {
+                          "argument": Node {
+                            "children": [],
+                            "closingElement": null,
+                            "end": 339,
+                            "loc": SourceLocation {
+                              "end": Position {
+                                "column": 78,
+                                "index": 339,
+                                "line": 10,
+                              },
+                              "filename": undefined,
+                              "identifierName": undefined,
+                              "start": Position {
+                                "column": 15,
+                                "index": 276,
+                                "line": 10,
+                              },
+                            },
+                            "openingElement": Node {
+                              "attributes": [
+                                Node {
+                                  "end": 311,
+                                  "loc": SourceLocation {
+                                    "end": Position {
+                                      "column": 50,
+                                      "index": 311,
+                                      "line": 10,
+                                    },
+                                    "filename": undefined,
+                                    "identifierName": undefined,
+                                    "start": Position {
+                                      "column": 26,
+                                      "index": 287,
+                                      "line": 10,
+                                    },
+                                  },
+                                  "name": Node {
+                                    "end": 292,
+                                    "loc": SourceLocation {
+                                      "end": Position {
+                                        "column": 31,
+                                        "index": 292,
+                                        "line": 10,
+                                      },
+                                      "filename": undefined,
+                                      "identifierName": undefined,
+                                      "start": Position {
+                                        "column": 26,
+                                        "index": 287,
+                                        "line": 10,
+                                      },
+                                    },
+                                    "name": "label",
+                                    "start": 287,
+                                    "type": "JSXIdentifier",
+                                  },
+                                  "start": 287,
+                                  "type": "JSXAttribute",
+                                  "value": Node {
+                                    "end": 311,
+                                    "expression": Node {
+                                      "computed": false,
+                                      "end": 310,
+                                      "loc": SourceLocation {
+                                        "end": Position {
+                                          "column": 49,
+                                          "index": 310,
+                                          "line": 10,
+                                        },
+                                        "filename": undefined,
+                                        "identifierName": undefined,
+                                        "start": Position {
+                                          "column": 33,
+                                          "index": 294,
+                                          "line": 10,
+                                        },
+                                      },
+                                      "object": Node {
+                                        "computed": false,
+                                        "end": 304,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 43,
+                                            "index": 304,
+                                            "line": 10,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": undefined,
+                                          "start": Position {
+                                            "column": 33,
+                                            "index": 294,
+                                            "line": 10,
+                                          },
+                                        },
+                                        "object": Node {
+                                          "end": 298,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 37,
+                                              "index": 298,
+                                              "line": 10,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": undefined,
+                                            "start": Position {
+                                              "column": 33,
+                                              "index": 294,
+                                              "line": 10,
+                                            },
+                                          },
+                                          "start": 294,
+                                          "type": "ThisExpression",
+                                        },
+                                        "property": Node {
+                                          "end": 304,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 43,
+                                              "index": 304,
+                                              "line": 10,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": "props",
+                                            "start": Position {
+                                              "column": 38,
+                                              "index": 299,
+                                              "line": 10,
+                                            },
+                                          },
+                                          "name": "props",
+                                          "start": 299,
+                                          "type": "Identifier",
+                                        },
+                                        "start": 294,
+                                        "type": "MemberExpression",
+                                      },
+                                      "property": Node {
+                                        "end": 310,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 49,
+                                            "index": 310,
+                                            "line": 10,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": "label",
+                                          "start": Position {
+                                            "column": 44,
+                                            "index": 305,
+                                            "line": 10,
+                                          },
+                                        },
+                                        "name": "label",
+                                        "start": 305,
+                                        "type": "Identifier",
+                                      },
+                                      "start": 294,
+                                      "type": "MemberExpression",
+                                    },
+                                    "loc": SourceLocation {
+                                      "end": Position {
+                                        "column": 50,
+                                        "index": 311,
+                                        "line": 10,
+                                      },
+                                      "filename": undefined,
+                                      "identifierName": undefined,
+                                      "start": Position {
+                                        "column": 32,
+                                        "index": 293,
+                                        "line": 10,
+                                      },
+                                    },
+                                    "start": 293,
+                                    "type": "JSXExpressionContainer",
+                                  },
+                                },
+                                Node {
+                                  "end": 336,
+                                  "loc": SourceLocation {
+                                    "end": Position {
+                                      "column": 75,
+                                      "index": 336,
+                                      "line": 10,
+                                    },
+                                    "filename": undefined,
+                                    "identifierName": undefined,
+                                    "start": Position {
+                                      "column": 51,
+                                      "index": 312,
+                                      "line": 10,
+                                    },
+                                  },
+                                  "name": Node {
+                                    "end": 317,
+                                    "loc": SourceLocation {
+                                      "end": Position {
+                                        "column": 56,
+                                        "index": 317,
+                                        "line": 10,
+                                      },
+                                      "filename": undefined,
+                                      "identifierName": undefined,
+                                      "start": Position {
+                                        "column": 51,
+                                        "index": 312,
+                                        "line": 10,
+                                      },
+                                    },
+                                    "name": "count",
+                                    "start": 312,
+                                    "type": "JSXIdentifier",
+                                  },
+                                  "start": 312,
+                                  "type": "JSXAttribute",
+                                  "value": Node {
+                                    "end": 336,
+                                    "expression": Node {
+                                      "computed": false,
+                                      "end": 335,
+                                      "loc": SourceLocation {
+                                        "end": Position {
+                                          "column": 74,
+                                          "index": 335,
+                                          "line": 10,
+                                        },
+                                        "filename": undefined,
+                                        "identifierName": undefined,
+                                        "start": Position {
+                                          "column": 58,
+                                          "index": 319,
+                                          "line": 10,
+                                        },
+                                      },
+                                      "object": Node {
+                                        "computed": false,
+                                        "end": 329,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 68,
+                                            "index": 329,
+                                            "line": 10,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": undefined,
+                                          "start": Position {
+                                            "column": 58,
+                                            "index": 319,
+                                            "line": 10,
+                                          },
+                                        },
+                                        "object": Node {
+                                          "end": 323,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 62,
+                                              "index": 323,
+                                              "line": 10,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": undefined,
+                                            "start": Position {
+                                              "column": 58,
+                                              "index": 319,
+                                              "line": 10,
+                                            },
+                                          },
+                                          "start": 319,
+                                          "type": "ThisExpression",
+                                        },
+                                        "property": Node {
+                                          "end": 329,
+                                          "loc": SourceLocation {
+                                            "end": Position {
+                                              "column": 68,
+                                              "index": 329,
+                                              "line": 10,
+                                            },
+                                            "filename": undefined,
+                                            "identifierName": "props",
+                                            "start": Position {
+                                              "column": 63,
+                                              "index": 324,
+                                              "line": 10,
+                                            },
+                                          },
+                                          "name": "props",
+                                          "start": 324,
+                                          "type": "Identifier",
+                                        },
+                                        "start": 319,
+                                        "type": "MemberExpression",
+                                      },
+                                      "property": Node {
+                                        "end": 335,
+                                        "loc": SourceLocation {
+                                          "end": Position {
+                                            "column": 74,
+                                            "index": 335,
+                                            "line": 10,
+                                          },
+                                          "filename": undefined,
+                                          "identifierName": "count",
+                                          "start": Position {
+                                            "column": 69,
+                                            "index": 330,
+                                            "line": 10,
+                                          },
+                                        },
+                                        "name": "count",
+                                        "start": 330,
+                                        "type": "Identifier",
+                                      },
+                                      "start": 319,
+                                      "type": "MemberExpression",
+                                    },
+                                    "loc": SourceLocation {
+                                      "end": Position {
+                                        "column": 75,
+                                        "index": 336,
+                                        "line": 10,
+                                      },
+                                      "filename": undefined,
+                                      "identifierName": undefined,
+                                      "start": Position {
+                                        "column": 57,
+                                        "index": 318,
+                                        "line": 10,
+                                      },
+                                    },
+                                    "start": 318,
+                                    "type": "JSXExpressionContainer",
+                                  },
+                                },
+                              ],
+                              "end": 339,
+                              "loc": SourceLocation {
+                                "end": Position {
+                                  "column": 78,
+                                  "index": 339,
+                                  "line": 10,
+                                },
+                                "filename": undefined,
+                                "identifierName": undefined,
+                                "start": Position {
+                                  "column": 15,
+                                  "index": 276,
+                                  "line": 10,
+                                },
+                              },
+                              "name": Node {
+                                "end": 286,
+                                "loc": SourceLocation {
+                                  "end": Position {
+                                    "column": 25,
+                                    "index": 286,
+                                    "line": 10,
+                                  },
+                                  "filename": undefined,
+                                  "identifierName": undefined,
+                                  "start": Position {
+                                    "column": 16,
+                                    "index": 277,
+                                    "line": 10,
+                                  },
+                                },
+                                "name": "Component",
+                                "start": 277,
+                                "type": "JSXIdentifier",
+                              },
+                              "selfClosing": true,
+                              "start": 276,
+                              "type": "JSXOpeningElement",
+                            },
+                            "start": 276,
+                            "type": "JSXElement",
+                          },
+                          "end": 340,
+                          "loc": SourceLocation {
+                            "end": Position {
+                              "column": 79,
+                              "index": 340,
+                              "line": 10,
+                            },
+                            "filename": undefined,
+                            "identifierName": undefined,
+                            "start": Position {
+                              "column": 8,
+                              "index": 269,
+                              "line": 10,
+                            },
+                          },
+                          "start": 269,
+                          "type": "ReturnStatement",
+                        },
+                      ],
+                      "directives": [],
+                      "end": 346,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 5,
+                          "index": 346,
+                          "line": 11,
+                        },
+                        "filename": undefined,
+                        "identifierName": undefined,
+                        "start": Position {
+                          "column": 13,
+                          "index": 259,
+                          "line": 9,
+                        },
+                      },
+                      "start": 259,
+                      "type": "BlockStatement",
+                    },
+                    "computed": false,
+                    "end": 346,
+                    "generator": false,
+                    "id": null,
+                    "key": Node {
+                      "end": 256,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 10,
+                          "index": 256,
+                          "line": 9,
+                        },
+                        "filename": undefined,
+                        "identifierName": "render",
+                        "start": Position {
+                          "column": 4,
+                          "index": 250,
+                          "line": 9,
+                        },
+                      },
+                      "name": "render",
+                      "start": 250,
+                      "type": "Identifier",
+                    },
+                    "kind": "method",
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 5,
+                        "index": 346,
+                        "line": 11,
+                      },
+                      "filename": undefined,
+                      "identifierName": undefined,
+                      "start": Position {
+                        "column": 4,
+                        "index": 250,
+                        "line": 9,
+                      },
+                    },
+                    "params": [],
+                    "start": 250,
+                    "static": false,
+                    "type": "ClassMethod",
+                  },
+                ],
+                "end": 348,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 1,
+                    "index": 348,
+                    "line": 12,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 77,
+                    "index": 244,
+                    "line": 8,
+                  },
+                },
+                "start": 244,
+                "type": "ClassBody",
+              },
+              "end": 348,
+              "id": Node {
+                "end": 196,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 29,
+                    "index": 196,
+                    "line": 8,
+                  },
+                  "filename": undefined,
+                  "identifierName": "WrappedComponent",
+                  "start": Position {
+                    "column": 13,
+                    "index": 180,
+                    "line": 8,
+                  },
+                },
+                "name": "WrappedComponent",
+                "start": 180,
+                "type": "Identifier",
+              },
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 1,
+                  "index": 348,
+                  "line": 12,
+                },
+                "filename": undefined,
+                "identifierName": undefined,
+                "start": Position {
+                  "column": 7,
+                  "index": 174,
+                  "line": 8,
+                },
+              },
+              "start": 174,
+              "superClass": Node {
+                "computed": false,
+                "end": 220,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 53,
+                    "index": 220,
+                    "line": 8,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 38,
+                    "index": 205,
+                    "line": 8,
+                  },
+                },
+                "object": Node {
+                  "end": 210,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 43,
+                      "index": 210,
+                      "line": 8,
+                    },
+                    "filename": undefined,
+                    "identifierName": "React",
+                    "start": Position {
+                      "column": 38,
+                      "index": 205,
+                      "line": 8,
+                    },
+                  },
+                  "name": "React",
+                  "start": 205,
+                  "type": "Identifier",
+                },
+                "property": Node {
+                  "end": 220,
+                  "loc": SourceLocation {
+                    "end": Position {
+                      "column": 53,
+                      "index": 220,
+                      "line": 8,
+                    },
+                    "filename": undefined,
+                    "identifierName": "Component",
+                    "start": Position {
+                      "column": 44,
+                      "index": 211,
+                      "line": 8,
+                    },
+                  },
+                  "name": "Component",
+                  "start": 211,
+                  "type": "Identifier",
+                },
+                "start": 205,
+                "type": "MemberExpression",
+              },
+              "superTypeParameters": Node {
+                "end": 243,
+                "loc": SourceLocation {
+                  "end": Position {
+                    "column": 76,
+                    "index": 243,
+                    "line": 8,
+                  },
+                  "filename": undefined,
+                  "identifierName": undefined,
+                  "start": Position {
+                    "column": 53,
+                    "index": 220,
+                    "line": 8,
+                  },
+                },
+                "params": [
+                  Node {
+                    "end": 242,
+                    "loc": SourceLocation {
+                      "end": Position {
+                        "column": 75,
+                        "index": 242,
+                        "line": 8,
+                      },
+                      "filename": undefined,
+                      "identifierName": undefined,
+                      "start": Position {
+                        "column": 54,
+                        "index": 221,
+                        "line": 8,
+                      },
+                    },
+                    "start": 221,
+                    "type": "TSTypeReference",
+                    "typeName": Node {
+                      "end": 242,
+                      "loc": SourceLocation {
+                        "end": Position {
+                          "column": 75,
+                          "index": 242,
+                          "line": 8,
+                        },
+                        "filename": undefined,
+                        "identifierName": "WrappedComponentProps",
+                        "start": Position {
+                          "column": 54,
+                          "index": 221,
+                          "line": 8,
+                        },
+                      },
+                      "name": "WrappedComponentProps",
+                      "start": 221,
+                      "type": "Identifier",
+                    },
+                  },
+                ],
+                "start": 220,
+                "type": "TSTypeParameterInstantiation",
+              },
+              "type": "ClassDeclaration",
+            },
+            "end": 348,
+            "exportKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 1,
+                "index": 348,
+                "line": 12,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 167,
+                "line": 8,
+              },
+            },
+            "source": null,
+            "specifiers": [],
+            "start": 167,
+            "type": "ExportNamedDeclaration",
+          },
+          Node {
+            "declaration": Node {
+              "end": 381,
+              "loc": SourceLocation {
+                "end": Position {
+                  "column": 31,
+                  "index": 381,
+                  "line": 14,
+                },
+                "filename": undefined,
+                "identifierName": "WrappedComponent",
+                "start": Position {
+                  "column": 15,
+                  "index": 365,
+                  "line": 14,
+                },
+              },
+              "name": "WrappedComponent",
+              "start": 365,
+              "type": "Identifier",
+            },
+            "end": 382,
+            "exportKind": "value",
+            "loc": SourceLocation {
+              "end": Position {
+                "column": 32,
+                "index": 382,
+                "line": 14,
+              },
+              "filename": undefined,
+              "identifierName": undefined,
+              "start": Position {
+                "column": 0,
+                "index": 350,
+                "line": 14,
+              },
+            },
+            "start": 350,
+            "type": "ExportDefaultDeclaration",
+          },
+        ],
+        "directives": [],
+        "end": 383,
+        "interpreter": null,
+        "loc": SourceLocation {
+          "end": Position {
+            "column": 0,
+            "index": 383,
+            "line": 15,
+          },
+          "filename": undefined,
+          "identifierName": undefined,
+          "start": Position {
+            "column": 0,
+            "index": 0,
+            "line": 1,
+          },
+        },
+        "sourceType": "module",
+        "start": 0,
+        "type": "Program",
+      },
+      "start": 0,
+      "type": "File",
+    },
+    "stats": undefined,
+    "type": "babel-ast",
+  },
+]
+`;
