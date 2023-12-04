@@ -21,8 +21,11 @@
  * Remove a common indent from each line of a multiline string. Exact indent
  * sequence is based on the indent of first non-empty line. Lines which don't
  * begin with the detected indent are not modified.
+ *
+ * @param {string} str
+ * @returns {string}
  */
-export const trimIndent = (/** @type {string} */ str) => {
+export const trimIndent = (str) => {
     const lines = str.split("\n");
 
     // skip leading empty lines
