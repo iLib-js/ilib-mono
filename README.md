@@ -186,7 +186,7 @@ if (ilibEnv.isGlobal("variableName")) {
 
 ## License
 
-Copyright © 2021-2022, JEDLSoft
+Copyright © 2021-2023, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -202,6 +202,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.3.3
+
+* Fixed a problem where platform detection would happen every time it was
+  called instead of using the cached value of the platform.
+* converted all tests from nodeunit to jest
+* updated dependencies
+* added the ability to test on headless browsers from the command-line
 
 ### v1.3.2
 
