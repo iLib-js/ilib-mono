@@ -35,7 +35,7 @@ export class BanFormattedCompMessage extends Rule {
         "https://github.com/ilib-js/ilib-lint-react/blob/main/docs/ban-formattedcompmessage.md";
 
     /** @readonly */
-    type = "ast-jstree";
+    type = "babel-ast";
 
     /** @override */
     match(/** @type {{ ir: IntermediateRepresentation }} */ { ir }) {
