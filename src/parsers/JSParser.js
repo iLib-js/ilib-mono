@@ -18,7 +18,7 @@
  */
 
 import fs from 'fs';
-import { Parser as AcornParser } from 'acorn';
+import BabelParser from "@babel/parser";
 
 import { Parser, IntermediateRepresentation } from 'i18nlint-common';
 
@@ -47,11 +47,9 @@ class JSParser extends Parser {
      */ 
     parseString(string, path) {
         return new IntermediateRepresentation({
-            type: "ast-jstree",
-            ir: AcornParser.parse(string, {
-                locations: true,
-                ecmaVersion: 2020,
-                sourceType: "module"
+            type: "babel-ast",
+            ir: BabelParser.parse(string, {
+                sourceType: "unambiguous"
             }),
             filePath: path
         });

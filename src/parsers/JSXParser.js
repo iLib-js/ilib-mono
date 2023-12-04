@@ -18,12 +18,9 @@
  */
 
 import fs from 'fs';
-import { Parser as AcornParser } from 'acorn';
-import acornJsx from 'acorn-jsx'; 
+import BabelParser from "@babel/parser";
 
 import { Parser, IntermediateRepresentation } from 'i18nlint-common';
-
-const JsxParse = AcornParser.extend(acornJsx());
 
 /**
  * @class Parser for Javascript files based on the acorn library.
@@ -50,11 +47,12 @@ class JSXParser extends Parser {
      */ 
     parseString(string, path) {
         return new IntermediateRepresentation({
-            type: "ast-jstree",
-            ir: JsxParse.parse(string, {
-                locations: true,
-                ecmaVersion: 2020,
-                sourceType: "module"
+            type: "babel-ast",
+            ir: BabelParser.parse(string, {
+                sourceType: "unambiguous",
+                plugins: [
+                    'jsx'
+                ]
             }),
             filePath: path
         });

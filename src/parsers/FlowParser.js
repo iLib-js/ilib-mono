@@ -19,7 +19,7 @@
  */
 
 import fs from 'fs';
-import FParser from 'flow-parser';
+import BabelParser from "@babel/parser";
 
 import { Parser, IntermediateRepresentation } from 'i18nlint-common';
 
@@ -48,12 +48,13 @@ class FlowParser extends Parser {
      */
     parseString(string, path) {
         return new IntermediateRepresentation({
-            type: "ast-jstree",
-            ir: FParser.parse(string, {
-                comments: true,
-                enums: true,
-                esproposal_decorators: true,
-                esproposal_export_star_as: true
+            type: "babel-ast",
+            ir: BabelParser.parse(string, {
+                sourceType: "unambiguous",
+                plugins: [
+                    'flow',
+                    'jsx'
+                ]
             }),
             filePath: path
         });
