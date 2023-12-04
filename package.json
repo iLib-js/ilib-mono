@@ -66,6 +66,7 @@
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/.bin/jest --testEnvironment node --watch",
         "test:all": "npm-run-all test:cli test:web",
         "debug": "npm run build:dev ; node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --testEnvironment node -i",
+        "debug:web": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/.bin/karma start --reporters dots",
         "clean": "git clean -f -d src test; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
