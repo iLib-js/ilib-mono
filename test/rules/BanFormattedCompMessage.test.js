@@ -234,7 +234,7 @@ describe("BanFormattedCompMessage", () => {
             /** @type {string} */ filePath,
             /** @type {string} */ content
         ) => {
-            const parser = new JSParser();
+            const parser = new FlowParser();
             parser.data = trimIndent(content);
             parser.path = filePath;
             const [ir] = parser.parse();
