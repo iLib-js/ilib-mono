@@ -47,26 +47,3 @@ export const trimIndent = (str) => {
         )
         .join("\n");
 };
-
-/**
- * Returns distinct elements from a sequence by using a specified
- * {@link equalityComparer} to compare values.
- *
- * @template T
- * @param {T[]} items
- * @param {(one: T, other: T) => boolean} equalityComparer
- * @returns {T[]}
- */
-export const distinct = (
-    items,
-    equalityComparer = (one, other) => one === other
-) => {
-    const /** @type {T[]} */ picked = [];
-    for (const item of items) {
-        if (picked.some((pick) => equalityComparer(pick, item))) {
-            continue;
-        }
-        picked.push(item);
-    }
-    return picked;
-};

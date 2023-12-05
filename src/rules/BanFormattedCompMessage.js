@@ -19,7 +19,6 @@
 
 import { Result, Rule } from "i18nlint-common";
 import jsonpath from "jsonpath";
-import { distinct } from "../../test/utils.js";
 
 // type imports
 /** @typedef {import("i18nlint-common").IntermediateRepresentation} IntermediateRepresentation */
@@ -56,14 +55,17 @@ export class BanFormattedCompMessage extends Rule {
 
         // find every non-JSX identifier with matching name (catch all kinds of imports and requires);
         // avoid duplicate matches (e.g. an import statement outputs two identifiers in the same range)
-        const identifiers = distinct(
+        const identifiers = distinctByKey(
             /** @type {unknown[]} */ (
                 jsonpath.query(
                     tree,
                     "$..[?(@.type == 'Identifier' && @.name == 'FormattedCompMessage')]"
                 )
             ),
-            (one, other) => rangesEqual(getRange(one), getRange(other))
+            (node) => {
+                const range = getRange(node);
+                return `${range[0]}:${range[1]}`;
+            }
         );
 
         return [...jsxElements, ...identifiers]
@@ -123,6 +125,29 @@ const rangesCompare = (
     if (leftDiff !== 0) return leftDiff;
     const rightDiff = one[1] - other[1];
     return rightDiff;
+};
+
+/**
+ * Returns distinct elements from a sequence comparing by a specified key
+ * obtained with {@link getKey}.
+ *
+ * @template T
+ * @param {T[]} items
+ * @param {(element: T) => string} getKey
+ * @returns {T[]}
+ */
+const distinctByKey = (items, getKey) => {
+    const /** @type {Set<string>} */ keys = new Set();
+    const /** @type {T[]} */ picked = [];
+    for (const item of items) {
+        const key = getKey(item);
+        if (keys.has(key)) {
+            continue;
+        }
+        keys.add(key);
+        picked.push(item);
+    }
+    return picked;
 };
 
 export default BanFormattedCompMessage;
