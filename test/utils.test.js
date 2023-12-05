@@ -1,7 +1,7 @@
 /*
- * testutils.js - test the utility routines
- * 
- * Copyright © 2012-2015, 2017-2019, 2021-2022 JEDLSoft
+ * utils.test.js - test the utility routines
+ *
+ * Copyright © 2012-2015, 2017-2019, 2023 2021- 2022-2023JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,403 +27,368 @@ import ISet from '../src/ISet.js';
 
 let set = new ISet();
 
-export const testUtils = {
-    testMergeSimple: function(test) {
-        test.expect(1);
+describe("testUtils", () => {
+    test("MergeSimple", () => {
+        expect.assertions(1);
         let object1 = {"a": "A", "b": "B"},
             object2 = {"c": "C", "d": "D"};
-        
+
         let expected = {"a": "A", "b": "B", "c": "C", "d": "D"};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeSimpleNoSideEffects: function(test) {
-        test.expect(2);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeSimpleNoSideEffects", () => {
+        expect.assertions(2);
         let object1 = {"a": "A", "b": "B"},
             object2 = {"c": "C", "d": "D"};
-        
+
         let x = JSUtils.merge(object1, object2);
-        
-        test.ok(typeof(x) !== "undefined");
+
+        expect(typeof(x) !== "undefined").toBeTruthy();
         let expected = {"a": "A", "b": "B"};
-        test.deepEqual(object1, expected);
-        test.done();
-    },
-    
-    testMergeArrays: function(test) {
-        test.expect(1);
+        expect(object1).toEqual(expected);
+    });
+
+    test("MergeArrays", () => {
+        expect.assertions(1);
         let object1 = {"a": ["b", "c"]},
             object2 = {"a": ["d"]};
-    
+
         let expected = {"a": ["b", "c", "d"]};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeArraysDups: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeArraysDups", () => {
+        expect.assertions(1);
         let object1 = {"a": ["b", "c"]},
             object2 = {"a": ["c", "d"]};
-        
+
         let expected = {"a": ["b", "c", "c", "d"]};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeArraysEmptySource: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeArraysEmptySource", () => {
+        expect.assertions(1);
         let object1 = {"a": []},
             object2 = {"a": ["d"]};
-        
+
         let expected = {"a": ["d"]};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeArraysEmptyTarget: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeArraysEmptyTarget", () => {
+        expect.assertions(1);
         let object1 = {"a": ["b", "c"]},
             object2 = {"a": []};
-        
+
         let expected = {"a": ["b", "c"]};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeArraysIncongruentTypes1: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeArraysIncongruentTypes1", () => {
+        expect.assertions(1);
         let object1 = {"a": ["b", "c"]},
             object2 = {"a": "d"};
-        
+
         let expected = {"a": "d"};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeArraysIncongruentTypes2: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeArraysIncongruentTypes2", () => {
+        expect.assertions(1);
         let object1 = {"a": "b"},
             object2 = {"a": ["d"]};
-        
+
         let expected = {"a": ["d"]};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeSimpleProperty: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeSimpleProperty", () => {
+        expect.assertions(1);
         let object1 = {"a": "A", "b": "B"},
             object2 = {"b": "X"};
-        
+
         let expected = {"a": "A", "b": "X"};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeComplexProperty: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeComplexProperty", () => {
+        expect.assertions(1);
         let object1 = {"a": "A", "b": {"x": "B"}},
             object2 = {"b": "X"};
-        
+
         let expected = {"a": "A", "b": "X"};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeSubobjects: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeSubobjects", () => {
+        expect.assertions(1);
         let object1 = {"b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N"}};
-        
+
         let expected = {"b": {"x": "M", "y": "N"}};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeSubobjectsLeaveObj1PropsUntouched: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeSubobjectsLeaveObj1PropsUntouched", () => {
+        expect.assertions(1);
         let object1 = {"a": "A", "b": {"x": "X", "y": "Y", "z": "Z"}},
             object2 = {"b": {"x": "M", "y": "N"}};
-        
+
         let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeSubobjectsAddProps: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeSubobjectsAddProps", () => {
+        expect.assertions(1);
         let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-        
+
         let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeSubobjectsAddProps: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeSubobjectsAddProps", () => {
+        expect.assertions(1);
         let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
             object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-        
+
         let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeBooleans: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeBooleans", () => {
+        expect.assertions(1);
         let object1 = {"a": true, "b": true},
             object2 = {"b": false};
-        
+
         let expected = {"a": true, "b": false};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeAddBooleans: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeAddBooleans", () => {
+        expect.assertions(1);
         let object1 = {"a": true, "b": true},
             object2 = {"c": false};
-        
+
         let expected = {"a": true, "b": true, "c": false};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeNumbers: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeNumbers", () => {
+        expect.assertions(1);
         let object1 = {"a": 1, "b": 2},
             object2 = {"b": 3};
-        
+
         let expected = {"a": 1, "b": 3};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeNumbersWithZero: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeNumbersWithZero", () => {
+        expect.assertions(1);
         let object1 = {"a": 1, "b": 2},
             object2 = {"b": 0};
-        
+
         let expected = {"a": 1, "b": 0};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testMergeNumbersAddZero: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("MergeNumbersAddZero", () => {
+        expect.assertions(1);
         let object1 = {"a": 1, "b": 2},
             object2 = {"c": 0};
-        
+
         let expected = {"a": 1, "b": 2, "c": 0};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
+        expect(actual).toEqual(expected);
+    });
 
-    testMergeUndefined: function(test) {
-        test.expect(1);
+    test("MergeUndefined", () => {
+        expect.assertions(1);
         let object1 = undefined,
             object2 = {"a": 1, "b": 2};
 
         let expected = {"a": 1, "b": 2};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
+        expect(actual).toEqual(expected);
+    });
 
-    testMergeUndefined2: function(test) {
-        test.expect(1);
+    test("MergeUndefined2", () => {
+        expect.assertions(1);
         let object1 = {"a": 1, "b": 2},
             object2 = undefined;
 
         let expected = {"a": 1, "b": 2};
         let actual = JSUtils.merge(object1, object2);
-        test.deepEqual(actual, expected);
-        test.done();
-    },
-    
-    testIsEmptyFalse: function(test) {
-        test.expect(1);
+        expect(actual).toEqual(expected);
+    });
+
+    test("IsEmptyFalse", () => {
+        expect.assertions(1);
         let object = {"a": "A"};
-        
-        test.ok(!JSUtils.isEmpty(object));
-        test.done();
-    },
-    
-    testIsEmptyTrue: function(test) {
-        test.expect(1);
+
+        expect(!JSUtils.isEmpty(object)).toBeTruthy();
+    });
+
+    test("IsEmptyTrue", () => {
+        expect.assertions(1);
         let object = {};
-        
-        test.ok(JSUtils.isEmpty(object));
-        test.done();
-    },
-    
-    testIsEmptyUndefined: function(test) {
-        test.expect(1);
-        test.ok(JSUtils.isEmpty(undefined));
-        test.done();
-    },
-    
-    testIsEmptyUndefinedProperties: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.isEmpty(object)).toBeTruthy();
+    });
+
+    test("IsEmptyUndefined", () => {
+        expect.assertions(1);
+        expect(JSUtils.isEmpty(undefined)).toBeTruthy();
+    });
+
+    test("IsEmptyUndefinedProperties", () => {
+        expect.assertions(1);
         let object = {"a": undefined};
-        
-        test.ok(JSUtils.isEmpty(object));
-        test.done();
-    },
-    
-    testIsEmptyFalsyValues: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.isEmpty(object)).toBeTruthy();
+    });
+
+    test("IsEmptyFalsyValues", () => {
+        expect.assertions(1);
         let object = {"a": false, "b": 0};
-        
-        test.ok(!JSUtils.isEmpty(object));
-        test.done();
-    },
-    
-    testShallowCopy: function(test) {
-        test.expect(2);
+
+        expect(!JSUtils.isEmpty(object)).toBeTruthy();
+    });
+
+    test("ShallowCopy", () => {
+        expect.assertions(2);
         let src = {"a": "b"};
         let tgt = {};
-        
-        test.ok(typeof(tgt.a) === "undefined");
-        
+
+        expect(typeof(tgt.a) === "undefined").toBeTruthy();
+
         JSUtils.shallowCopy(src, tgt);
-        
-        test.ok(typeof(tgt.a) !== "undefined");
-        test.done();
-    },
-    
-    testShallowCopyRightValues: function(test) {
-        test.expect(4);
+
+        expect(typeof(tgt.a) !== "undefined").toBeTruthy();
+    });
+
+    test("ShallowCopyRightValues", () => {
+        expect.assertions(4);
         let src = {
-            "a": "b", 
+            "a": "b",
             "c": {
-                "d": "e", 
+                "d": "e",
                 "f": 23
             }
         };
         let tgt = {};
-        
-        test.ok(typeof(tgt.a) === "undefined");
-        
+
+        expect(typeof(tgt.a) === "undefined").toBeTruthy();
+
         JSUtils.shallowCopy(src, tgt);
-        
-        test.equal(tgt.a, "b");
-        test.equal(tgt.c.d, "e");
-        test.equal(tgt.c.f, 23);
-        test.done();
-    },
-    
-    testShallowCopyUndefined: function(test) {
-        test.expect(4);
+
+        expect(tgt.a).toBe("b");
+        expect(tgt.c.d).toBe("e");
+        expect(tgt.c.f).toBe(23);
+    });
+
+    test("ShallowCopyUndefined", () => {
+        expect.assertions(4);
         let src = undefined;
         let tgt = {};
-        
-        test.ok(typeof(tgt) !== "undefined");
-        test.ok(JSUtils.isEmpty(tgt));
-        
+
+        expect(typeof(tgt) !== "undefined").toBeTruthy();
+        expect(JSUtils.isEmpty(tgt)).toBeTruthy();
+
         JSUtils.shallowCopy(src, tgt);
-        
-        test.ok(typeof(tgt) !== "undefined");
-        test.ok(JSUtils.isEmpty(tgt));
-        test.done();
-    },
-    
-    testShallowCopyToUndefined: function(test) {
+
+        expect(typeof(tgt) !== "undefined").toBeTruthy();
+        expect(JSUtils.isEmpty(tgt)).toBeTruthy();
+    });
+
+    test("ShallowCopyToUndefined", () => {
         let src = {
-            "a": "b", 
+            "a": "b",
             "c": {
-                "d": "e", 
+                "d": "e",
                 "f": 23
             }
         };
         let tgt = undefined;
-        
-        test.ok(typeof(tgt) === "undefined");
-        
+
+        expect(typeof(tgt) === "undefined").toBeTruthy();
+
         try {
             JSUtils.shallowCopy(src, tgt);
-            test.ok(typeof(tgt) === "undefined");
+            expect(typeof(tgt) === "undefined").toBeTruthy();
         } catch (e) {
             test.fail();
         }
-        test.done();
-    },
-    
-    testShallowCopyEmpty: function(test) {
-        test.expect(2);
+    });
+
+    test("ShallowCopyEmpty", () => {
+        expect.assertions(2);
         let src = {};
         let tgt = {};
-        
-        test.ok(JSUtils.isEmpty(tgt));
+
+        expect(JSUtils.isEmpty(tgt)).toBeTruthy();
         JSUtils.shallowCopy(src, tgt);
-        test.ok(JSUtils.isEmpty(tgt));
-        test.done();
-    },
-    
-    testShallowCopyEmptyValues: function(test) {
-        test.expect(4);
+        expect(JSUtils.isEmpty(tgt)).toBeTruthy();
+    });
+
+    test("ShallowCopyEmptyValues", () => {
+        expect.assertions(4);
         let src = {
-            "a": 0, 
+            "a": 0,
             "b": "",
             "c": null,
             "d": undefined
         };
         let tgt = {};
-        
+
         JSUtils.shallowCopy(src, tgt);
-        
-        test.equal(tgt.a, 0);
-        test.equal(tgt.b, "");
-        test.equal(tgt.c, null);
-        test.equal(tgt.d, undefined);
-        test.done();
-    },
-    
-    testGetSublocalesENUS: function(test) {
-        test.expect(1);
 
-        test.deepEqual(Utils.getSublocales("en-US"), ["root", "en", "und-US", "en-US"]);
-        test.done();
-    },
+        expect(tgt.a).toBe(0);
+        expect(tgt.b).toBe("");
+        expect(tgt.c).toBe(null);
+        expect(tgt.d).toBe(undefined);
+    });
 
-    testGetSublocalesESUS: function(test) {
-        test.expect(1);
+    test("GetSublocalesENUS", () => {
+        expect.assertions(1);
 
-        test.deepEqual(Utils.getSublocales("es-US"), ["root", "es", "und-US", "es-US"]);
-        test.done();
-    },
+        expect(Utils.getSublocales("en-US")).toEqual(["root", "en", "und-US", "en-US"]);
+    });
 
-    testGetSublocalesZHCN: function(test) {
-        test.expect(1);
+    test("GetSublocalesESUS", () => {
+        expect.assertions(1);
 
-        test.deepEqual(Utils.getSublocales("zh-Hans-CN"), ["root", "zh", "und-CN", "zh-Hans", "zh-CN", "zh-Hans-CN"]);
-        test.done();
-    },
+        expect(Utils.getSublocales("es-US")).toEqual(["root", "es", "und-US","es-US"]);
+    });
 
-    testGetSublocalesWithVariant: function(test) {
-        test.expect(1);
+    test("GetSublocalesZHCN", () => {
+        expect.assertions(1);
 
-        test.deepEqual(Utils.getSublocales("es-US-ASDF"), [
+        expect(Utils.getSublocales("zh-Hans-CN")).toEqual(["root", "zh", "und-CN", "zh-Hans", "zh-CN", "zh-Hans-CN"]);
+    });
+
+    test("GetSublocalesWithVariant", () => {
+        expect.assertions(1);
+
+        expect(Utils.getSublocales("es-US-ASDF")).toEqual([
             "root",
             "es",
             "und-US",
@@ -432,13 +397,12 @@ export const testUtils = {
             "und-US-ASDF",
             "es-US-ASDF"
         ]);
-        test.done();
-    },
+    });
 
-    testGetSublocalesWithScriptAndVariant: function(test) {
-        test.expect(1);
+    test("GetSublocalesWithScriptAndVariant", () => {
+        expect.assertions(1);
 
-        test.deepEqual(Utils.getSublocales("zh-Hans-CN-ASDF"), [
+        expect(Utils.getSublocales("zh-Hans-CN-ASDF")).toEqual([
             "root",
             "zh",
             "und-CN",
@@ -451,12 +415,11 @@ export const testUtils = {
             "zh-CN-ASDF",
             "zh-Hans-CN-ASDF"
         ]);
-        test.done();
-    },
+    });
 
 /*
-    testMergeLocData: function(test) {
-        test.expect(3);
+    test("MergeLocData", () => {
+        expect.assertions(3);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -473,21 +436,19 @@ export const testUtils = {
         ilib.data.foobar_de_Latn_DE_SAP = {
             g: "i"
         };
-    
+
         let locale = new Locale("de-DE-Latn-SAP");
         let m = Utils.mergeLocData("foobar", locale);
-        test.equal(m.a, "e");
-        test.equal(m.c, "f");
-        test.equal(m.g, "i");
-        
+        expect(m.a).toBe("e");
+        expect(m.c).toBe("f");
+        expect(m.g).toBe("i");
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataNoLocale: function(test) {
-        test.expect(3);
+    });
+
+    test("MergeLocDataNoLocale", () => {
+        expect.assertions(3);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -504,21 +465,19 @@ export const testUtils = {
         ilib.data.foobar_de_Latn_DE_SAP = {
             g: "i"
         };
-    
+
         let locale = new Locale("-");
         let m = Utils.mergeLocData("foobar", locale);
-        test.equal(m.a, "b");
-        test.equal(m.c, "d");
-        test.ok(typeof(m.g) === "undefined");
-        
+        expect(m.a).toBe("b");
+        expect(m.c).toBe("d");
+        expect(typeof(m.g) === "undefined").toBeTruthy();
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataNonLeafLocale: function(test) {
-        test.expect(3);
+    });
+
+    test("MergeLocDataNonLeafLocale", () => {
+        expect.assertions(3);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -535,21 +494,19 @@ export const testUtils = {
         ilib.data.foobar_de_Latn_DE_SAP = {
             g: "i"
         };
-    
+
         let locale = new Locale("de-DE");
         let m = Utils.mergeLocData("foobar", locale);
-        test.equal(m.a, "e");
-        test.equal(m.c, "f");
-        test.ok(typeof(m.g) === "undefined");
-        
+        expect(m.a).toBe("e");
+        expect(m.c).toBe("f");
+        expect(typeof(m.g) === "undefined").toBeTruthy();
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataMissingData: function(test) {
-        test.expect(1);
+    });
+
+    test("MergeLocDataMissingData", () => {
+        expect.assertions(1);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -566,19 +523,17 @@ export const testUtils = {
         ilib.data.foobar_de_Latn_DE_SAP = {
            g: "i"
         };
-    
+
         let locale = new Locale("de-DE-Latn-SAP");
         let m = Utils.mergeLocData("asdf", locale);
-        test.ok(m);
-        
+        expect(m).toBeTruthy();
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataNoName: function(test) {
-        test.expect(1);
+    });
+
+    test("MergeLocDataNoName", () => {
+        expect.assertions(1);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -595,19 +550,17 @@ export const testUtils = {
         ilib.data.foobar_de_Latn_DE_SAP = {
             g: "i"
         };
-    
+
         let locale = new Locale("de-DE-Latn-SAP");
         let m = Utils.mergeLocData(undefined, locale);
-        test.ok(m);
-        
+        expect(m).toBeTruthy();
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataNoLocale: function(test) {
-        test.expect(4);
+    });
+
+    test("MergeLocDataNoLocale", () => {
+        expect.assertions(4);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -624,22 +577,20 @@ export const testUtils = {
         ilib.data.foobar_en_Latn_US_SAP = {
             g: "i"
         };
-    
+
         let m = Utils.mergeLocData("foobar"); // use the current locale -- en-US
-        test.ok(typeof(m) !== "undefined");
-        
-        test.equal(m.a, "e");
-        test.equal(m.c, "f");
-        test.ok(typeof(m.g) === "undefined");
-        
+        expect(typeof(m) !== "undefined").toBeTruthy();
+
+        expect(m.a).toBe("e");
+        expect(m.c).toBe("f");
+        expect(typeof(m.g) === "undefined").toBeTruthy();
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_en = ilib.data.foobar_en_US = ilib.data.foobar_en_Latn_US = ilib.data.foobar_en_Latn_US_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataNoSideEffects: function(test) {
-        test.expect(4);
+    });
+
+    test("MergeLocDataNoSideEffects", () => {
+        expect.assertions(4);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -656,22 +607,20 @@ export const testUtils = {
         ilib.data.foobar_de_Latn_DE_SAP = {
             g: "i"
         };
-    
+
         let locale = new Locale("de-DE-Latn-SAP");
         let m = Utils.mergeLocData("foobar", locale);
-        test.ok(typeof(m) !== "undefined");
-        test.equal(ilib.data.foobar.a, "b");
-        test.equal(ilib.data.foobar.c, "d");
-        test.ok(typeof(ilib.data.foobar.g) === "undefined");
-        
+        expect(typeof(m) !== "undefined").toBeTruthy();
+        expect(ilib.data.foobar.a).toBe("b");
+        expect(ilib.data.foobar.c).toBe("d");
+        expect(typeof(ilib.data.foobar.g) === "undefined").toBeTruthy();
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
-        
-        test.done();
-    },
-    
-    testMergeLocDataNoBase: function(test) {
-        test.expect(3);
+    });
+
+    test("MergeLocDataNoBase", () => {
+        expect.assertions(3);
         ilib.data.asdf_de = {
             a: "e"
         };
@@ -684,20 +633,19 @@ export const testUtils = {
         ilib.data.asdf_de_Latn_DE_SAP = {
             g: "i"
         };
-    
+
         let locale = new Locale("de-DE-Latn-SAP");
         let m = Utils.mergeLocData("asdf", locale);
-        test.equal(m.a, "e");
-        test.equal(m.c, "f");
-        test.equal(m.g, "i");
-        test.done();
-        
+        expect(m.a).toBe("e");
+        expect(m.c).toBe("f");
+        expect(m.g).toBe("i");
+
         // clean up for the other tests
         ilib.data.asdf_de = ilib.data.asdf_de_DE = ilib.data.asdf_de_Latn_DE = ilib.data.asdf_de_Latn_DE_SAP = undefined;
-    },
-    
-    testMergeLocDataMissingLocaleParts: function(test) {
-        test.expect(3);
+    });
+
+    test("MergeLocDataMissingLocaleParts", () => {
+        expect.assertions(3);
         ilib.data.foobar = {
             a: "b",
             c: "d"
@@ -708,50 +656,46 @@ export const testUtils = {
         ilib.data.foobar_de_Latn = {
             g: "i"
         };
-    
+
         let locale = new Locale("de-Latn");
         let m = Utils.mergeLocData("foobar", locale);
-        test.equal(m.a, "e");
-        test.equal(m.c, "d");
-        test.equal(m.g, "i");
-        
+        expect(m.a).toBe("e");
+        expect(m.c).toBe("d");
+        expect(m.g).toBe("i");
+
         // clean up for the other tests
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_Latn = undefined;
-
-        test.done();
-    },
+    });
 */
-    
-    testGetLocFilesLanguageOnly: function(test) {
-        test.expect(2);
+
+    test("GetLocFilesLanguageOnly", () => {
+        expect.assertions(2);
         let locale = new Locale("en");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
             "localeinfo.json",
             "en/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesRegionOnly: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesRegionOnly", () => {
+        expect.assertions(2);
         let locale = new Locale("US");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
             "localeinfo.json",
             "und/US/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesLangScript: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesLangScript", () => {
+        expect.assertions(2);
         let locale = new Locale("en-Latn");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -759,14 +703,13 @@ export const testUtils = {
             "en/localeinfo.json",
             "en/Latn/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesLangRegion: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesLangRegion", () => {
+        expect.assertions(2);
         let locale = new Locale("en-US");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -775,14 +718,13 @@ export const testUtils = {
             "und/US/localeinfo.json",
             "en/US/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesLangVariant: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesLangVariant", () => {
+        expect.assertions(2);
         let locale = new Locale("en-govt");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -790,28 +732,26 @@ export const testUtils = {
             "en/localeinfo.json",
             "en/govt/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesScriptRegion: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesScriptRegion", () => {
+        expect.assertions(2);
         let locale = new Locale("Latn-US");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
             "localeinfo.json",
             "und/US/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesRegionVariant: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesRegionVariant", () => {
+        expect.assertions(2);
         let locale = new Locale("US-GOVT");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -819,14 +759,13 @@ export const testUtils = {
             "und/US/localeinfo.json",
             "und/US/GOVT/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesLangScriptRegion: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesLangScriptRegion", () => {
+        expect.assertions(2);
         let locale = new Locale("en-Latn-US");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -837,14 +776,13 @@ export const testUtils = {
             "en/US/localeinfo.json",
             "en/Latn/US/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesLangScriptVariant: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesLangScriptVariant", () => {
+        expect.assertions(2);
         let locale = new Locale("en-Latn-govt");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -854,14 +792,13 @@ export const testUtils = {
             "en/govt/localeinfo.json",
             "en/Latn/govt/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesLangRegionVariant: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesLangRegionVariant", () => {
+        expect.assertions(2);
         let locale = new Locale("en-US-govt");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -873,14 +810,13 @@ export const testUtils = {
             "und/US/govt/localeinfo.json",
             "en/US/govt/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesAll: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesAll", () => {
+        expect.assertions(2);
         let locale = new Locale("en-US-Latn-govt");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
@@ -896,27 +832,25 @@ export const testUtils = {
             "en/US/govt/localeinfo.json",
             "en/Latn/US/govt/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesNoLocale: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesNoLocale", () => {
+        expect.assertions(2);
         let locale = new Locale("-");
         let f = Utils.getLocFiles(locale, "localeinfo.json");
         let expected = [
             "localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesNoBasename: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesNoBasename", () => {
+        expect.assertions(2);
         let locale = new Locale("en-US-Latn-govt");
         let f = Utils.getLocFiles(locale, undefined);
         let expected = [
@@ -932,14 +866,13 @@ export const testUtils = {
             "en/US/govt/resources.json",
             "en/Latn/US/govt/resources.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testGetLocFilesDefaultLocale: function(test) {
-        test.expect(2);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("GetLocFilesDefaultLocale", () => {
+        expect.assertions(2);
         let f = Utils.getLocFiles(undefined, "localeinfo.json");
         let expected = [
             "localeinfo.json",
@@ -947,180 +880,155 @@ export const testUtils = {
             "und/US/localeinfo.json",
             "en/US/localeinfo.json"
         ];
-        
-        test.equal(f.length, expected.length);
-        test.deepEqual(f, expected);
-        test.done();
-    },
-    
-    testHashCodeEmptyString: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(""), 0);
-        test.done();
-    },
-    
-    testHashCodeEmptyNumber: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(0), 48);
-        test.done();
-    },
-    
-    testHashCodeEmptyObject: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode({}), 0);
-        test.done();
-    },
-    
-    testHashCodeEmptyBoolean: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(false), 0);
-        test.done();
-    },
-    
-    testHashCodeUndefined: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(undefined), 0);
-        test.done();
-    },
-    
-    testHashCodeNull: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(null), 0);
-        test.done();
-    },
-    
-    testHashCodeFunction: function(test) {
-        test.expect(1);
-        test.ok(0 < JSUtils.hashCode(function(asdf) { return asdf * 38; }));
-        test.done();
-    },
-    
-    testHashCodeEqualStrings: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode("abcdef"), JSUtils.hashCode("abcdef"));
-        test.done();
-    },
-    
-    testHashCodeNotEqualStrings: function(test) {
-        test.expect(1);
-        test.notEqual(JSUtils.hashCode("abcdef"), JSUtils.hashCode("abcdefg"));
-        test.done();
-    },
-    
-    testHashCodeEqualNumbers: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(23455), JSUtils.hashCode(23455));
-        test.done();
-    },
-    
-    testHashCodeNotEqualNumbers: function(test) {
-        test.expect(1);
-        test.notEqual(JSUtils.hashCode(33455), JSUtils.hashCode(23455));
-        test.done();
-    },
-    
-    testHashCodeEqualBoolean: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.hashCode(true), JSUtils.hashCode(true));
-        test.done();
-    },
-    
-    testHashCodeNotEqualBoolean: function(test) {
-        test.expect(1);
-        test.notEqual(JSUtils.hashCode(true), JSUtils.hashCode(false));
-        test.done();
-    },
-    
-    testHashCodeEqualFunction: function(test) {
-        test.expect(1);
+
+        expect(f.length).toBe(expected.length);
+        expect(f).toEqual(expected);
+    });
+
+    test("HashCodeEmptyString", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode("")).toBe(0);
+    });
+
+    test("HashCodeEmptyNumber", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(0)).toBe(48);
+    });
+
+    test("HashCodeEmptyObject", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode({})).toBe(0);
+    });
+
+    test("HashCodeEmptyBoolean", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(false)).toBe(0);
+    });
+
+    test("HashCodeUndefined", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(undefined)).toBe(0);
+    });
+
+    test("HashCodeNull", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(null)).toBe(0);
+    });
+
+    test("HashCodeFunction", () => {
+        expect.assertions(1);
+        expect(0 < JSUtils.hashCode(function(asdf) { return asdf * 38; })).toBeTruthy();
+    });
+
+    test("HashCodeEqualStrings", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode("abcdef")).toBe(JSUtils.hashCode("abcdef"));
+    });
+
+    test("HashCodeNotEqualStrings", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode("abcdef")).not.toBe(JSUtils.hashCode("abcdefg"));
+    });
+
+    test("HashCodeEqualNumbers", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(23455)).toBe(JSUtils.hashCode(23455));
+    });
+
+    test("HashCodeNotEqualNumbers", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(33455)).not.toBe(JSUtils.hashCode(23455));
+    });
+
+    test("HashCodeEqualBoolean", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(true)).toBe(JSUtils.hashCode(true));
+    });
+
+    test("HashCodeNotEqualBoolean", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode(true)).not.toBe(JSUtils.hashCode(false));
+    });
+
+    test("HashCodeEqualFunction", () => {
+        expect.assertions(1);
         let expected = JSUtils.hashCode(function a() { return "a"; });
-        test.equal(JSUtils.hashCode(function a() { return "a"; }), expected);
-        test.done();
-    },
-    
-    testHashCodeEqualFunctionDifferentSpacing: function(test) {
-        test.expect(1);
-        let plat = ilibEnv.getPlatform(); 
+        expect(JSUtils.hashCode(function a() { return "a"; })).toBe(expected);
+    });
+
+    test("HashCodeEqualFunctionDifferentSpacing", () => {
+        expect.assertions(1);
+        let plat = ilibEnv.getPlatform();
         if (plat === "qt" || plat === "rhino" || plat === "trireme" || plat === "browser") {
-            // the qt javascript engine doesn't allow you to see the code of a function, so all 
+            // the qt javascript engine doesn't allow you to see the code of a function, so all
             // functions should have the same hash. On Rhino, you can see the code, but the white
             // space is all normalized nicely to the same thing, so logically equivalent functions
-            // that only differ in white space compare the same. (This seems the most logical to 
+            // that only differ in white space compare the same. (This seems the most logical to
             // me out of all of these!)
             let expected = JSUtils.hashCode(function a () { return "a"; });
-            test.equal(JSUtils.hashCode(function a(){return "a";}), expected);
+            expect(JSUtils.hashCode(function a(){return "a";})).toBe(expected);
         } else {
             let expected = JSUtils.hashCode(Function("function a () { return \"a\"; }"));
-            test.notEqual(JSUtils.hashCode(Function("function a(){return \"a\";}")), expected);
+            expect(JSUtils.hashCode(Function("function a(){return \"a\";}"))).not.toBe(expected);
         }
-        test.done();
-    },
-    
-    testHashCodeNotEqualFunctionDifferentNames: function(test) {
-        test.expect(1);
+    });
+
+    test("HashCodeNotEqualFunctionDifferentNames", () => {
+        expect.assertions(1);
         let expected = JSUtils.hashCode(function a() { return "a"; });
-        test.notEqual(JSUtils.hashCode(function b() { return "a"; }), expected);
-        test.done();
-    },
-    testHashCodeNotEqualFunctionDifferentContents: function(test) {
-        test.expect(1);
+        expect(JSUtils.hashCode(function b() { return "a"; })).not.toBe(expected);
+    });
+    test("HashCodeNotEqualFunctionDifferentContents", () => {
+        expect.assertions(1);
         if (ilibEnv.getPlatform() === "qt") {
-            // the qt javascript engine doesn't allow you to see the code of a function, so all 
+            // the qt javascript engine doesn't allow you to see the code of a function, so all
             // functions should have the same hash
             let expected = JSUtils.hashCode(function a() { return "a"; });
-            test.equal(JSUtils.hashCode(function a() { return "b"; }), expected);
+            expect(JSUtils.hashCode(function a() { return "b"; })).toBe(expected);
         } else {
             let expected = JSUtils.hashCode(function a() { return "a"; });
-            test.notEqual(JSUtils.hashCode(function a() { return "b"; }), expected);
+            expect(JSUtils.hashCode(function a() { return "b"; })).not.toBe(expected);
         }
-        test.done();
-    },
-    
-    testHashCodeEqualObjects: function(test) {
-        test.expect(1);
+    });
+
+    test("HashCodeEqualObjects", () => {
+        expect.assertions(1);
         let expected = JSUtils.hashCode({name: "abcdef"});
-        test.equal(JSUtils.hashCode({name: "abcdef"}), expected);
-        test.done();
-    },
-    
-    testHashCodeNotEqualObjectProperties: function(test) {
-        test.expect(1);
-        test.notEqual(JSUtils.hashCode({value: "abcdef"}), JSUtils.hashCode({name: "abcdef"}));
-        test.done();
-    },
-    
-    testHashCodeNotEqualObjectOneEmpty: function(test) {
-        test.expect(1);
-        test.notEqual(JSUtils.hashCode({value: "abcdef"}), JSUtils.hashCode({}));
-        test.done();
-    },
-    
-    testHashCodeNotEqualObjectValues: function(test) {
-        test.expect(1);
-        test.notEqual(JSUtils.hashCode({name: "abcdef"}), JSUtils.hashCode({name: "abcXdef"}));
-        test.done();
-    },
-    
-    testHashCodeEqualObjectScrambledProperties: function(test) {
-        test.expect(1);
+        expect(JSUtils.hashCode({name: "abcdef"})).toBe(expected);
+    });
+
+    test("HashCodeNotEqualObjectProperties", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode({value: "abcdef"})).not.toBe(JSUtils.hashCode({name: "abcdef"}));
+    });
+
+    test("HashCodeNotEqualObjectOneEmpty", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode({value: "abcdef"})).not.toBe(JSUtils.hashCode({}));
+    });
+
+    test("HashCodeNotEqualObjectValues", () => {
+        expect.assertions(1);
+        expect(JSUtils.hashCode({name: "abcdef"})).not.toBe(JSUtils.hashCode({name: "abcXdef"}));
+    });
+
+    test("HashCodeEqualObjectScrambledProperties", () => {
+        expect.assertions(1);
         let expected = JSUtils.hashCode({name: "abcdef", num: 3, value: "asdf"});
-        test.equal(JSUtils.hashCode({value: "asdf", name: "abcdef", num: 3}), expected);
-        test.done();
-    },
-    
-    testHashCodeNotEqualObjectValuesComplex: function(test) {
-        test.expect(1);
+        expect(JSUtils.hashCode({value: "asdf", name: "abcdef", num: 3})).toBe(expected);
+    });
+
+    test("HashCodeNotEqualObjectValuesComplex", () => {
+        expect.assertions(1);
         let expected = JSUtils.hashCode({num: 3, apple: "jacks", type: false, name: "abcXdef"});
-        test.notEqual(JSUtils.hashCode({name: "abcdef", apple: "jacks", num: 3, type: false}), expected);
-        test.done();
-    },
+        expect(JSUtils.hashCode({name: "abcdef", apple: "jacks", num: 3, type: false})).not.toBe(expected);
+    });
 
 /*
-    testLoadDataCorrectType: function(test) {
+    test("LoadDataCorrectType", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
@@ -1134,18 +1042,16 @@ export const testUtils = {
             sync: true,
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.ok(typeof(results) === 'object');
-                test.done();
+                expect.assertions(1);
+                expect(typeof(results) === 'object').toBeTruthy();
             }
         });
-    },
-    
-    testLoadDataCorrectItems: function(test) {
+    });
+
+    test("LoadDataCorrectItems", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
@@ -1160,18 +1066,16 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "b", "c": "m", "e": "y"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataWithLocale: function(test) {
+    });
+
+    test("LoadDataWithLocale", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
@@ -1186,18 +1090,16 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "a1", "c": "de2", "e": "f"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataWithLocaleMissingParts: function(test) {
+    });
+
+    test("LoadDataWithLocaleMissingParts", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
@@ -1212,18 +1114,16 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "b", "c": "fr1", "e": "f"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataDefaultLocale: function(test) {
+    });
+
+    test("LoadDataDefaultLocale", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
@@ -1237,22 +1137,20 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "b", "c": "m", "e": "y"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    
-    testLoadDataNonJson: function(test) {
+    });
+
+
+    test("LoadDataNonJson", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
-        
+
         ilib.clearCache();
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
         ilib.setLoaderCallback(mockLoaderUtil);
@@ -1266,21 +1164,19 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"e": "y"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataAsynch: function(test) {
+    });
+
+    test("LoadDataAsynch", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
-        
+
         ilib.clearCache();
         ilib.data.foo = ilib.data.foo_en = ilib.data.foo_und_US = ilib.data.foo_en_US = undefined;
         ilib.setLoaderCallback(mockLoaderUtil);
@@ -1294,18 +1190,16 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "b", "c": "m", "e": "y"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataDefaults: function(test) {
+    });
+
+    test("LoadDataDefaults", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.clearCache();
@@ -1316,18 +1210,16 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "b", "c": "m", "e": "y"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataNonJson_en_US: function(test) {
+    });
+
+    test("LoadDataNonJson_en_US", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.clearCache();
@@ -1338,18 +1230,16 @@ export const testUtils = {
             type: "html",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>This is the generic, shared foo.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results, "<html><body>This is the generic).toEqual(shared foo.</body></html>");
             }
         });
-    },
-    
-    testLoadDataNonJson_de: function(test) {
+    });
+
+    test("LoadDataNonJson_de", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
@@ -1360,18 +1250,16 @@ export const testUtils = {
             locale: "de",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>Diese ist Foo auf Deutsch.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual("<html><body>Diese ist Foo auf Deutsch.</body></html>");
             }
         });
-    },
-    
-    testLoadDataNonJson_de_DE: function(test) {
+    });
+
+    test("LoadDataNonJson_de_DE", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
@@ -1382,18 +1270,16 @@ export const testUtils = {
             locale: "de-DE",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>Diese ist Foo auf Deutsch fuer Deutschland.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual("<html><body>Diese ist Foo auf Deutsch fuer Deutschland.</body></html>");
             }
         });
-    },
-    
-    testLoadDataNonJson_DE: function(test) {
+    });
+
+    test("LoadDataNonJson_DE", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
@@ -1404,41 +1290,37 @@ export const testUtils = {
             locale: "DE",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>Diese ist Foo fuer Deutschland.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual("<html><body>Diese ist Foo fuer Deutschland.</body></html>");
             }
         });
-    },
-    
-    testLoadDataNonJsonWithFallbackToLanguage: function(test) {
+    });
+
+    test("LoadDataNonJsonWithFallbackToLanguage", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_fr = ilib.data.foo_und_FR = ilib.data.foo_fr_FR = undefined;
         ilib.setLoaderCallback(mockLoaderUtil);
-    
+
         Utils.loadData({
             name: "foo.html",
             type: "html",
             locale: "fr-FR",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>Ceci est foo en francais.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual("<html><body>Ceci est foo en francais.</body></html>");
             }
         });
-    },
-    
-    testLoadDataNonJsonWithFallbackToRoot: function(test) {
+    });
+
+    test("LoadDataNonJsonWithFallbackToRoot", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_es = ilib.data.foo_und_ES = ilib.data.foo_es_ES = undefined;
@@ -1449,18 +1331,16 @@ export const testUtils = {
             locale: "es-ES",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>This is the generic, shared foo.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results, "<html><body>This is the generic).toEqual(shared foo.</body></html>");
             }
         });
-    },
-    
-    testLoadDataNonJsonInferFileTypeFromExtension: function(test) {
+    });
+
+    test("LoadDataNonJsonInferFileTypeFromExtension", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
@@ -1470,18 +1350,16 @@ export const testUtils = {
             locale: "de",
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
-                test.expect(1);
-                test.deepEqual(results, "<html><body>Diese ist Foo auf Deutsch.</body></html>");
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual("<html><body>Diese ist Foo auf Deutsch.</body></html>");
             }
         });
-    },
-    
-    testLoadDataJsonInferFileTypeFromExtension: function(test) {
+    });
+
+    test("LoadDataJsonInferFileTypeFromExtension", () => {
         if (ilib.isDynData()) {
             // don't need to test loading on the dynamic load version because we are testing
             // it via all the other tests already.
-            test.done();
             return;
         }
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
@@ -1492,31 +1370,29 @@ export const testUtils = {
             callback: function (results) {
                 ilib.setLoaderCallback(oldLoader);
                 let expected = {"a": "a1", "c": "de2", "e": "f"};
-                test.expect(1);
-                test.deepEqual(results, expected);
-                test.done();
+                expect.assertions(1);
+                expect(results).toEqual(expected);
             }
         });
-    },
-    
-    testLoadDataCacheResult: function(test) {
+    });
+
+    test("LoadDataCacheResult", () => {
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
         ilib.setLoaderCallback(mockLoaderNoMulti);
         try {
-            test.expect(2);
+            expect.assertions(2);
             Utils.loadData({
                 name: "foo.json",
                 locale: "de-DE",
                 callback: function (results) {
-                    test.ok(results);
+                    expect(results).toBeTruthy();
                     Utils.loadData({
                         name: "foo.json",
                         locale: "de-DE",
                         callback: function (results2) {
                             // if there is a cache miss when it attempts to load a file from disk twice
                             // then the mock loader will throw an exception
-                            test.ok(results2);
-                            test.done();
+                            expect(results2).toBeTruthy();
                         }
                     });
                 }
@@ -1524,11 +1400,10 @@ export const testUtils = {
         } catch (e) {
             console.log("Exception caught: " + e.stack);
             test.fail(e);
-            test.done();
         }
-    },
+    });
 
-    testLoadDataDontMixDifferentBasePaths: function(test) {
+    test("LoadDataDontMixDifferentBasePaths", () => {
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
         ilib.setLoaderCallback(mockLoaderNoMulti);
         try {
@@ -1537,7 +1412,7 @@ export const testUtils = {
                 locale: "de-DE",
                 basePath: "asdf",
                 callback: function (results) {
-                    test.ok(results);
+                    expect(results).toBeTruthy();
                     Utils.loadData({
                         name: "foo.json",
                         locale: "de-DE",
@@ -1548,38 +1423,35 @@ export const testUtils = {
                             // because the base paths are different and Utils.loadData should try to
                             // load two files with the same name but different bases.
                             test.fail();
-                            test.done();
                         }
                     });
                 }
             });
         } catch (e) {
-            test.done();
         }
-    },
+    });
 
-    testLoadDataCacheResultAlreadyMerged: function(test) {
+    test("LoadDataCacheResultAlreadyMerged", () => {
         ilib.data.foo = ilib.data.foo_de = ilib.data.foo_und_DE = ilib.data.foo_de_DE = undefined;
         ilib.setLoaderCallback(mockLoaderNoMulti);
         let cacheMerged = ilib._cacheMerged;
         set = new ISet(); // clear the mock loader's cache
         try {
-            test.expect(2);
+            expect.assertions(2);
             ilib._cacheMerged = true;
             Utils.loadData({
                 name: "foo.json",
                 locale: "de-DE",
                 callback: function (results) {
-                    test.ok(results);
+                    expect(results).toBeTruthy();
                     Utils.loadData({
                         name: "foo.json",
                         locale: "de-DE",
                         callback: function (results2) {
                             // if there is a cache miss when it attempts to load a file from disk twice
                             // then the mock loader will throw an exception
-                            test.ok(results2);
+                            expect(results2).toBeTruthy();
                             ilib._cacheMerged = cacheMerged;
-                            test.done();
                         }
                     });
                 }
@@ -1587,311 +1459,265 @@ export const testUtils = {
         } catch (e) {
             console.log("Exception caught: " + e.stack);
             test.fail(e);
-            test.done();
         } finally {
             ilib._cacheMerged = cacheMerged;
         }
-    },
+    });
 */
-    testMapStringDigits: function(test) {
-        test.expect(1);
+    test("MapStringDigits", () => {
+        expect.assertions(1);
         let map = "abcdefghij".split("");
-    
-        test.equal(JSUtils.mapString("9876543210", map), "jihgfedcba");
-        test.done();
-    },
-    
-    testMapStringDigitsUnknown: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.mapString("9876543210", map)).toBe("jihgfedcba");
+    });
+
+    test("MapStringDigitsUnknown", () => {
+        expect.assertions(1);
         let map = "abcde".split("");
-    
-        test.equal(JSUtils.mapString("9876543210", map), "98765edcba");
-        test.done();
-    },
-    
-    testMapStringHash: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.mapString("9876543210", map)).toBe("98765edcba");
+    });
+
+    test("MapStringHash", () => {
+        expect.assertions(1);
         let map = {
             "a": "x",
             "b": "y",
             "c": "z"
         };
-    
-        test.equal(JSUtils.mapString("abccb", map), "xyzzy");
-        test.done();
-    },
-    
-    testMapStringUndefined: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.mapString("abccb", map)).toBe("xyzzy");
+    });
+
+    test("MapStringUndefined", () => {
+        expect.assertions(1);
         let map = {
             "a": "x",
             "b": "y",
             "c": "z"
         };
-    
-        test.ok(typeof(JSUtils.mapString(undefined, map)) === "undefined");
-        test.done();
-    },
-    
-    testMapStringUndefinedMap: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.mapString("abccb", undefined), "abccb");
-        test.done();
-    },
-    
-    testMapStringHashUnknown: function(test) {
-        test.expect(1);
+
+        expect(typeof(JSUtils.mapString(undefined, map)) === "undefined").toBeTruthy();
+    });
+
+    test("MapStringUndefinedMap", () => {
+        expect.assertions(1);
+        expect(JSUtils.mapString("abccb", undefined)).toBe("abccb");
+    });
+
+    test("MapStringHashUnknown", () => {
+        expect.assertions(1);
         let map = {
             "a": "x",
             "b": "y",
             "c": "z"
         };
-    
-        test.equal(JSUtils.mapString("abcdefabc", map), "xyzdefxyz");
-        test.done();
-    },
-    
-    testMapStringHashMulti: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.mapString("abcdefabc", map)).toBe("xyzdefxyz");
+    });
+
+    test("MapStringHashMulti", () => {
+        expect.assertions(1);
         let map = {
             "a": "xm",
             "b": "yn",
             "c": "zo"
         };
-    
-        test.equal(JSUtils.mapString("abcabc", map), "xmynzoxmynzo");
-        test.done();
-    },
-    
-    testIndexOf: function(test) {
-        test.expect(1);
+
+        expect(JSUtils.mapString("abcabc", map)).toBe("xmynzoxmynzo");
+    });
+
+    test("IndexOf", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, "b"), 1);
-        test.done();
-    },
-    
-    testIndexOfNeg: function(test) {
-        test.expect(1);
+        expect(JSUtils.indexOf(arr, "b")).toBe(1);
+    });
+
+    test("IndexOfNeg", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, "d"), -1);
-        test.done();
-    },
-    
-    testIndexOfBeginning: function(test) {
-        test.expect(1);
+        expect(JSUtils.indexOf(arr, "d")).toBe(-1);
+    });
+
+    test("IndexOfBeginning", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, "a"), 0);
-        test.done();
-    },
-    
-    testIndexOfEnd: function(test) {
-        test.expect(1);
+        expect(JSUtils.indexOf(arr, "a")).toBe(0);
+    });
+
+    test("IndexOfEnd", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, "c"), 2);
-        test.done();
-    },
-    
-    testIndexOfCaseSensitive: function(test) {
-        test.expect(1);
+        expect(JSUtils.indexOf(arr, "c")).toBe(2);
+    });
+
+    test("IndexOfCaseSensitive", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, "C"), -1);
-        test.done();
-    },
-    
-    testIndexOfWrongObjectType: function(test) {
-        test.expect(1);
+        expect(JSUtils.indexOf(arr, "C")).toBe(-1);
+    });
+
+    test("IndexOfWrongObjectType", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, 2), -1);
-        test.done();
-    },
-    
-    testIndexOfUndefinedSearchTerm: function(test) {
-        test.expect(1);
+        expect(JSUtils.indexOf(arr, 2)).toBe(-1);
+    });
+
+    test("IndexOfUndefinedSearchTerm", () => {
+        expect.assertions(1);
         let arr = ["a", "b", "c"];
-        test.equal(JSUtils.indexOf(arr, undefined), -1);
-        test.done();
-    },
-    
-    testIndexOfUndefinedArray: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.indexOf(undefined, "a"), -1);
-        test.done();
-    },
-    
-    testToHexStringSimple: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.toHexString("a"), "0061");
-        test.done();
-    },
-    
-    testToHexStringWithLengthLimit2: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.toHexString("a", 2), "61");
-        test.done();
-    },
-    
-    testToHexStringWithLengthLimit8: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.toHexString("a", 8), "00000061");
-        test.done();
-    },
-    
-    testToHexStringChinese: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.toHexString("㗀"), "35C0");
-        test.done();
-    },
-    
-    testToHexStringComplex: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.toHexString("a㗀จఓ"), "006135C00E080C13");
-        test.done();
-    },
-    
-    testPad2lt10: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(1, 2), "01");
-        test.done();
-    },
-    
-    testPad2lt0: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-1, 2), "-01");
-        test.done();
-    },
-    
-    testPad2gt10: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(11, 2), "11");
-        test.done();
-    },
-    
-    testPad2ltMinus10: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-11, 2), "-11");
-        test.done();
-    },
-    
-    testPad2gt100: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(111, 2), "111");
-        test.done();
-    },
-    
-    testPad2ltMinus100: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-111, 2), "-111");
-        test.done();
-    },
-    
-    testPad0: function(test) {
-        test.expect(2);
-        test.equal(JSUtils.pad(1, 0), "1");
-        test.equal(JSUtils.pad(10, 0), "10");
-        test.done();
-    },
-    
-    testPad0Neg: function(test) {
-        test.expect(2);
-        test.equal(JSUtils.pad(-1, 0), "-1");
-        test.equal(JSUtils.pad(-10, 0), "-10");
-        test.done();
-    },
-    
-    testPad4_1: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(6, 4), "0006");
-        test.done();
-    },
-    
-    testPad4_2: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(67, 4), "0067");
-        test.done();
-    },
-    
-    testPad4_3: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(679, 4), "0679");
-        test.done();
-    },
-    
-    testPad4_4: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(6792, 4), "6792");
-        test.done();
-    },
-    
-    testPad4_5: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(67925, 4), "67925");
-        test.done();
-    },
-    
-    testPad4_6: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-1, 4), "-0001");
-        test.done();
-    },
-    
-    testPad4_7: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-10, 4), "-0010");
-        test.done();
-    },
-    
-    testPad4_8: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-112, 4), "-0112");
-        test.done();
-    },
-    
-    testPad4_9: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-1123, 4), "-1123");
-        test.done();
-    },
-    
-    testPad4_10: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad(-11233, 4), "-11233");
-        test.done();
-    },
-    
-    testPad2lt10String: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad("1", 2), "01");
-        test.done();
-    },
-    
-    testPad2gt10String: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad("11", 2), "11");
-        test.done();
-    },
-    
-    testPad2gt100String: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad("111", 2), "111");
-        test.done();
-    },
-    
-    testPadRightSide4: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad("123", 6, true), "123000");
-        test.done();
-    },
-    
-    testPadRightSide4Decimal: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad("1.0", 6, true), "1.0000");
-        test.done();
-    },
-    
-    testPadRightSideEnough: function(test) {
-        test.expect(1);
-        test.equal(JSUtils.pad("1.234323", 4, true), "1.234323");
-        test.done();
-    }
-    
-};
+        expect(JSUtils.indexOf(arr, undefined)).toBe(-1);
+    });
+
+    test("IndexOfUndefinedArray", () => {
+        expect.assertions(1);
+        expect(JSUtils.indexOf(undefined, "a")).toBe(-1);
+    });
+
+    test("ToHexStringSimple", () => {
+        expect.assertions(1);
+        expect(JSUtils.toHexString("a")).toBe("0061");
+    });
+
+    test("ToHexStringWithLengthLimit2", () => {
+        expect.assertions(1);
+        expect(JSUtils.toHexString("a", 2)).toBe("61");
+    });
+
+    test("ToHexStringWithLengthLimit8", () => {
+        expect.assertions(1);
+        expect(JSUtils.toHexString("a", 8)).toBe("00000061");
+    });
+
+    test("ToHexStringChinese", () => {
+        expect.assertions(1);
+        expect(JSUtils.toHexString("㗀")).toBe("35C0");
+    });
+
+    test("ToHexStringComplex", () => {
+        expect.assertions(1);
+        expect(JSUtils.toHexString("a㗀จఓ")).toBe("006135C00E080C13");
+    });
+
+    test("Pad2lt10", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(1, 2)).toBe("01");
+    });
+
+    test("Pad2lt0", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-1, 2)).toBe("-01");
+    });
+
+    test("Pad2gt10", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(11, 2)).toBe("11");
+    });
+
+    test("Pad2ltMinus10", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-11, 2)).toBe("-11");
+    });
+
+    test("Pad2gt100", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(111, 2)).toBe("111");
+    });
+
+    test("Pad2ltMinus100", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-111, 2)).toBe("-111");
+    });
+
+    test("Pad0", () => {
+        expect.assertions(2);
+        expect(JSUtils.pad(1, 0)).toBe("1");
+        expect(JSUtils.pad(10, 0)).toBe("10");
+    });
+
+    test("Pad0Neg", () => {
+        expect.assertions(2);
+        expect(JSUtils.pad(-1, 0)).toBe("-1");
+        expect(JSUtils.pad(-10, 0)).toBe("-10");
+    });
+
+    test("Pad4_1", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(6, 4)).toBe("0006");
+    });
+
+    test("Pad4_2", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(67, 4)).toBe("0067");
+    });
+
+    test("Pad4_3", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(679, 4)).toBe("0679");
+    });
+
+    test("Pad4_4", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(6792, 4)).toBe("6792");
+    });
+
+    test("Pad4_5", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(67925, 4)).toBe("67925");
+    });
+
+    test("Pad4_6", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-1, 4)).toBe("-0001");
+    });
+
+    test("Pad4_7", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-10, 4)).toBe("-0010");
+    });
+
+    test("Pad4_8", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-112, 4)).toBe("-0112");
+    });
+
+    test("Pad4_9", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-1123, 4)).toBe("-1123");
+    });
+
+    test("Pad4_10", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad(-11233, 4)).toBe("-11233");
+    });
+
+    test("Pad2lt10String", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad("1", 2)).toBe("01");
+    });
+
+    test("Pad2gt10String", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad("11", 2)).toBe("11");
+    });
+
+    test("Pad2gt100String", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad("111", 2)).toBe("111");
+    });
+
+    test("PadRightSide4", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad("123", 6, true)).toBe("123000");
+    });
+
+    test("PadRightSide4Decimal", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad("1.0", 6, true)).toBe("1.0000");
+    });
+
+    test("PadRightSideEnough", () => {
+        expect.assertions(1);
+        expect(JSUtils.pad("1.234323", 4, true)).toBe("1.234323");
+    });
+});

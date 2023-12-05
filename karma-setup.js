@@ -1,7 +1,8 @@
 /*
- * testSuiteWeb.js - test suite for this directory
+ * karma-setup.js - set up the karma testing environment before
+ * running the tests
  *
- * Copyright © 2021-2022, JEDLSoft
+ * Copyright © 2023, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Add missing Jest functions
+window.test = window.it;
+window.test.each = (inputs) => (testName, test) =>
+  inputs.forEach((args) => window.it(testName, () => test(...args)));
+window.test.todo = function () {
+  return undefined;
+};
 
-import { testSearch } from './testsearch.js';
-import { testMathUtils } from './testmath.js';
-import { testGlobal } from './testglobal.js';
-import { testSet } from './testset.js';
-import { testPath } from './testpath.js';
-import { testUtils } from './testutils.js';
-import { testStrings } from './teststrings.js';
+window.expect.assertions = (num) => { return undefined; };
 
-export const tests = [
-    testSearch,
-    testMathUtils,
-    testGlobal,
-    testSet,
-    testPath,
-    testUtils,
-    testStrings
-];
