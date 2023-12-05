@@ -19,10 +19,11 @@
 
 import { Plugin } from 'i18nlint-common';
 
-import JSParser from './parsers/JSParser.js';
-import JSXParser from './parsers/JSXParser.js';
-import PropertiesParser from './parsers/PropertiesParser.js';
-import FlowParser from './parsers/FlowParser.js';
+import JSParser from "./parsers/JSParser.js";
+import JSXParser from "./parsers/JSXParser.js";
+import PropertiesParser from "./parsers/PropertiesParser.js";
+import FlowParser from "./parsers/FlowParser.js";
+import TSXParser from "./parsers/TSXParser.js";
 // import FormatjsPlurals from './rules/FormatjsPlurals.js';
 
 class ReactPlugin extends Plugin {
@@ -41,7 +42,8 @@ class ReactPlugin extends Plugin {
             JSParser,
             JSXParser,
             PropertiesParser,
-            FlowParser
+            FlowParser,
+            TSXParser
         ];
     }
 
