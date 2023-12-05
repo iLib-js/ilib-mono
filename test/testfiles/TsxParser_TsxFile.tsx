@@ -6,7 +6,7 @@ interface WrappedComponentProps extends CommonProps {
 }
 
 export class WrappedComponent extends React.Component<WrappedComponentProps> {
-    render() {
+    render(): JSX.Element {
         return <Component label={this.props.label} count={this.props.count} />;
     }
 }
