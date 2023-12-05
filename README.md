@@ -100,7 +100,7 @@ codes in the ISO standard that governs that part:
 
 # License
 
-Copyright © 2021, JEDLSoft
+Copyright © 2021-2023, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -116,6 +116,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 # Release Notes
+
+### v1.2.3
+
+* Convert all unit tests from nodeunit to jest
+* added ability to run tests on browsers via karma
 
 ### v1.2.2
 
