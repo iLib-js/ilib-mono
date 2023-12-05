@@ -36,6 +36,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.4 (unreleased)
+
+* convert all unit tests from nodeunit to jest
+* add the ability to run web tests in headless chrome
+
 ### v1.1.3
 
 * Make Utils.getSublocales work the same way it did under ilib so that
