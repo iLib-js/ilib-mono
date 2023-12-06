@@ -47,7 +47,7 @@ describe("testReactPlugin", () => {
 
         const rules = jp.getRules();
         expect(rules).toBeTruthy();
-        expect(rules.length).toBe(0);
+        expect(rules.length).toBe(1);
     });
 
     test("ReactPluginGetFormatters", () => {
@@ -62,16 +62,14 @@ describe("testReactPlugin", () => {
     });
 
     test("ReactPluginGetRulesets", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const jp = new ReactPlugin();
         expect(jp).toBeTruthy();
 
         const sets = jp.getRuleSets();
-        expect(!sets).toBeTruthy();
-        /*
+
         expect(sets.react).toBeTruthy();
-        expect(Object.keys(sets.react).length).toBe(0);
-        */
+        expect(Object.keys(sets.react).length).toBe(1);
     });
 });
