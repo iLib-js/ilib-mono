@@ -65,6 +65,13 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.1
+
+* Convert all unit tests from nodeunit to jest
+    * tests are now able to be run on headless browsers via karma
+* Fixed a bug where the territory containment reverse was generated
+  incorrectly
+
 ### v1.3.0
 
 * Update to CLDR v44.0.0
