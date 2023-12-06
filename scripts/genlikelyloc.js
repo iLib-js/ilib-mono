@@ -1,7 +1,7 @@
 /*
- * genlikelyloc.js - ilib tool to generate the localematch.json files from 
+ * genlikelyloc.js - ilib tool to generate the localematch.json files from
  * the CLDR data files
- * 
+ *
  * Copyright © 2013-2020, 2022-2023 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
  */
 
 /*
- * This code is intended to be run under node.js 
+ * This code is intended to be run under node.js
  */
 
 var fs = require('fs');
@@ -172,7 +172,7 @@ for (var territory in data) {
         } else {
             containment[territory] = data[territory]["_contains"];
         }
-        
+
         containment[territory].forEach(function(region) {
             if (!parentsHash[region]) parentsHash[region] = [];
             parentsHash[region].push(territory);
@@ -194,16 +194,16 @@ function toArray(set) {
     set.forEach(function(element) {
         elements.push(element);
     });
-    
+
     return elements;
 }
 
 function getAncestors(region) {
     // already calculated previously
     if (containmentReverse[region]) return containmentReverse[region];
-    
+
     if (!parentsHash[region]) return []; // only the whole world has no parents
-    
+
     // get all the ancestors of the current region...
     var parentsArray = parentsHash[region].map(function(parent) {
         return getAncestors(parent).concat([parent]);
@@ -214,7 +214,7 @@ function getAncestors(region) {
     parentsArray.sort(function(left, right) {
         return left.length - right.length;
     });
-    
+
     // take care of duplicates using a set
     var set = new Set();
     // do a breadth-first insert into the set so that the largest territories
@@ -229,15 +229,69 @@ function getAncestors(region) {
             }
         });
     }
-    
-    containmentReverse[region] = toArray(set);
+
+    containmentReverse[region] = toArray(set).reverse();
     return containmentReverse[region];
 }
 
-// make sure to calculate the ancestors of all regions
-for (var region in parentsHash) {
-    getAncestors(region);
+var empty = new Set();
+
+function topologicalCompare(ancestors, left, right) {
+    var leftNode = ancestors[left] || empty;
+    var rightNode = ancestors[right] || empty;
+
+    if (rightNode.has(left)) {
+        if (!leftNode.has(right)) {
+            return 1;
+        }
+    } else if (leftNode.has(right)) {
+        return -1;
+    }
+    return 0;
 }
+
+function getAncestors(parentList, set, code) {
+    if (parentList[code]) {
+        parentList[code].forEach(function(subcode) {
+            set.add(subcode);
+            getAncestors(parentList, set, subcode);
+        });
+    }
+}
+
+function generateTerritoryHierarchy(containment) {
+    var parentList = {};
+    var code;
+
+    for (code in containment) {
+        var children = containment[code];
+        children.forEach(function(child) {
+            if (!parentList[child]) {
+                parentList[child] = [];
+            }
+            parentList[child].push(code);
+        });
+    }
+
+    // enumerate all ancestors for each node
+    var ancestors = {};
+    for (code in parentList) {
+        var set = new Set();
+        getAncestors(parentList, set, code);
+        ancestors[code] = set;
+    }
+
+    // now sort them topologically
+    var containmentReverse = {};
+    for (code in ancestors) {
+        var list = toArray(ancestors[code]);
+        containmentReverse[code] = list.sort(topologicalCompare.bind(null, ancestors));
+    }
+
+    return containmentReverse;
+}
+
+containmentReverse = generateTerritoryHierarchy(containment);
 
 localematch.territoryContainment = sortObject(containment);
 localematch.territoryContainmentReverse = sortObject(containmentReverse);

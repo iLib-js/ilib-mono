@@ -294,8 +294,8 @@ class LocaleMatcher {
             } else {
                 // check for containment
                 const containers = matchdata.territoryContainmentReverse[this.locale.region] || [];
-                // end at 1 because 0 is "001" which is "the whole world" -- which is not useful
-                for (i = containers.length-1; i > 0; i--) {
+                // end at length-1 because the end is "001" which is "the whole world" -- which is not useful
+                for (i = 0; i < containers.length-1; i++) {
                     const container = matchdata.territoryContainment[containers[i]];
                     if (container && container.indexOf(other.region) > -1) {
                         // same area only accounts for 20% of the region score
@@ -379,9 +379,7 @@ class LocaleMatcher {
         const thisRegions = this._getRegionContainment(thisRegion);
         const otherRegions = this._getRegionContainment(otherRegion);
 
-        // region containment arrays are arranged from largest to smallest, so start
-        // at the end of the array
-        for (let i = thisRegions.length-1; i > 0; i--) {
+        for (let i = 0; i < thisRegions.length; i++) {
             if (otherRegions.indexOf(thisRegions[i]) > -1) {
                 return thisRegions[i];
             }
