@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-import { getPlatform } from 'ilib-env';
+import { getPlatform, clearCache } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index.js';
 
 describe("testNodeLoader", () => {
+    clearCache();
+
     if (getPlatform() === "nodejs") {
         test("LoaderGetName", () => {
             expect.assertions(1);
