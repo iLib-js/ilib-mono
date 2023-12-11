@@ -50,7 +50,7 @@ module.exports = function (config) {
             "./test/**/*.test.js": ["webpack"],
         },
 
-        browsers: ["Chrome"],
+        browsers: ["ChromeHeadless"],
 
         webpack: {
             mode: "development",
