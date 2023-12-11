@@ -18,6 +18,6 @@
  * limitations under the License.
  */
 
- module.exports.requireShim = function (path) {
+module.exports.requireShim = function (path) {
     return require(path);
- };
+};
