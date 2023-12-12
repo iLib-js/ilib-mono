@@ -18,10 +18,13 @@
  */
 
 import { Result, Rule } from "i18nlint-common";
-import jsonpath from "jsonpath";
+
+import _traverse from "@babel/traverse";
+const traverse = _traverse.default;
 
 // type imports
 /** @typedef {import("i18nlint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
 
 export class BanFormattedCompMessage extends Rule {
     /** @readonly */
@@ -43,33 +46,45 @@ export class BanFormattedCompMessage extends Rule {
             throw new Error(`Unexpected representation type!`);
         }
 
-        const /** @type {unknown} */ tree = ir.getRepresentation();
+        const /** @type {ParseResult} */ tree = ir.getRepresentation();
 
-        // find JSX opening elements with matching name
-        const jsxElements = /** @type {unknown[]} */ (
-            jsonpath.query(
-                tree,
-                "$..[?(@.type == 'JSXOpeningElement' && @.name.name == 'FormattedCompMessage')].name"
-            )
-        );
+        const /** @type {import("@babel/types").JSXIdentifier[]} */ jsxNames =
+                [];
+        const /** @type {{ [rangeKey: string]: import("@babel/types").Identifier }} */ identifiers =
+                {};
 
-        // find every non-JSX identifier with matching name (catch all kinds of imports and requires);
-        // avoid duplicate matches (e.g. an import statement outputs two identifiers in the same range)
-        const identifiers = distinctByKey(
-            /** @type {unknown[]} */ (
-                jsonpath.query(
-                    tree,
-                    "$..[?(@.type == 'Identifier' && @.name == 'FormattedCompMessage')]"
-                )
-            ),
-            (node) => {
-                const range = getRange(node);
-                return `${range[0]}:${range[1]}`;
+        traverse(tree, {
+            // find JSX opening elements with matching name
+            JSXOpeningElement(path) {
+                const nameNode = path.node.name;
+                if (
+                    nameNode.type === "JSXIdentifier" &&
+                    nameNode.name === "FormattedCompMessage"
+                ) {
+                    jsxNames.push(nameNode);
+                }
+            },
+            // find every non-JSX identifier with matching name (catch all kinds of imports and requires)
+            Identifier(path) {
+                if (path.node.name === "FormattedCompMessage") {
+                    // avoid duplicate matches (e.g. an import statement outputs two identifiers in the same range)
+                    const rangeKey = [path.node.start, path.node.end].join(":");
+                    if (rangeKey && !(rangeKey in identifiers)) {
+                        identifiers[rangeKey] = path.node;
+                    }
+                }
             }
-        );
+        });
 
-        return [...jsxElements, ...identifiers]
+        const ranges = [...jsxNames, ...Object.values(identifiers)]
             .map((node) => getRange(node))
+            .filter(
+                /** @type {<T>(e: T | undefined) => e is T} */ (
+                    (range) => range !== undefined
+                )
+            );
+
+        return ranges
             .sort((a, b) => rangesCompare(a, b))
             .map((range) => {
                 return new Result({
@@ -85,37 +100,13 @@ export class BanFormattedCompMessage extends Rule {
     }
 }
 
-/** @typedef {{ range: [number, number] }} FlowRange */
-const isFlowRange = /** @type {(node: any) => node is FlowRange} */ (node) => {
-    return (
-        "range" in node &&
-        Array.isArray(node.range) &&
-        node.range.length === 2 &&
-        !node.range.some((/** @type {any} */ idx) => "number" !== typeof idx)
-    );
-};
+/** @typedef {readonly [number, number]} Range */
 
-/** @typedef {{ start: number; end: number }} AcornRange */
-const isAcornRange = /** @type {(node: any) => node is AcornRange} */ (
-    node
-) => {
-    return "number" === typeof node.start && "number" === typeof node.end;
-};
-
-/** @typedef {[number, number]} Range */
-const getRange = /** @type {(node: any) => Range} */ (node) => {
-    if (isFlowRange(node)) {
-        return node.range;
-    }
-    if (isAcornRange(node)) {
-        return [node.start, node.end];
-    }
-    throw new Error(`Unexpected AST node shape: missing range`);
-};
-
-const rangesEqual = (/** @type {Range} */ one, /** @type {Range} */ other) => {
-    return rangesCompare(one, other) === 0;
-};
+const getRange = (/** @type {import("@babel/types").Node} */ node) =>
+    (typeof node.start === "number" &&
+        typeof node.end === "number" &&
+        /** @type {Range} */ ([node.start, node.end])) ||
+    undefined;
 
 const rangesCompare = (
     /** @type {Range} */ one,
@@ -125,29 +116,6 @@ const rangesCompare = (
     if (leftDiff !== 0) return leftDiff;
     const rightDiff = one[1] - other[1];
     return rightDiff;
-};
-
-/**
- * Returns distinct elements from a sequence comparing by a specified key
- * obtained with {@link getKey}.
- *
- * @template T
- * @param {T[]} items
- * @param {(element: T) => string} getKey
- * @returns {T[]}
- */
-const distinctByKey = (items, getKey) => {
-    const /** @type {Set<string>} */ keys = new Set();
-    const /** @type {T[]} */ picked = [];
-    for (const item of items) {
-        const key = getKey(item);
-        if (keys.has(key)) {
-            continue;
-        }
-        keys.add(key);
-        picked.push(item);
-    }
-    return picked;
 };
 
 export default BanFormattedCompMessage;
