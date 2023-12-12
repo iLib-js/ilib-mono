@@ -88,6 +88,11 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.3.0
+- added Typescript and TSX parser
+- changed existing JavaScript, JSX, Flow, FlowJSX parsers to all produce Babel-style AST
+- added rule to ban usage of FormattedCompMessage
+
 ### v1.2.0
 
 - add a parser for JS or JSX code that uses flow types (FlowParser).
