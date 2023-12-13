@@ -67,7 +67,7 @@ class FormatjsPlurals extends Rule {
     }
 
     getRuleType() {
-        return "ast-jstree";
+        return "babel-ast";
     }
 
     /**
@@ -141,7 +141,7 @@ class FormatjsPlurals extends Rule {
         let problems = [];
 
         // don't parse representations we don't know about
-        if ( ir.getType() !== "ast-jstree") return;
+        if ( ir.getType() !== "babel-ast") return;
 
         // use jsonpath to parse the abstract syntax tree
         const messageNodes = jp.query(ir.getRepresentation(), '$..[?(@.type=="CallExpression" && @.callee.name == "defineMessages")].arguments[0].properties[*].value.properties');
