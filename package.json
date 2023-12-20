@@ -43,7 +43,7 @@
         "i18nlint-common": "^2.2.1",
         "ilib-istring": "^1.0.1",
         "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "^1.8.1",
+        "ilib-tools-common": "file:../ilib-tools-common/ilib-tools-common-1.9.1.tgz",
         "jsonpath": "^1.1.1",
         "regenerator-runtime": "^0.14.0"
     }
