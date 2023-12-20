@@ -650,7 +650,7 @@ describe("NoHardCodedStrings", () => {
                         return React.createElement(
                             React.Fragment,
                             {},
-                            React.createElement(input, { placeholder: intl.formatMessage(...messages.myMessage), type: "button" })
+                            React.createElement(input, { placeholder: intl.formatMessage(messages.myMessage), type: "button" })
                         );
                     }
                 }
