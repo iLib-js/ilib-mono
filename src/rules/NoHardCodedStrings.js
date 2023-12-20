@@ -69,8 +69,70 @@ class NoHardCodedStrings extends Rule {
             JSXElement(path) {
                 const nameNode = path.node?.openingElement.name;
                 if (nameNode?.type === "JSXIdentifier" && skipComponents.has(nameNode?.name)) {
-                    // skip components that should have text in them
+                    // skip components that are allowed to have text in them
                     path.skip();
+                }
+            },
+
+            // for Flow/imperative React
+            CallExpression(path) {
+                const callee = path.node.callee;
+                // only check arguments to the calls to React.createElement()
+                if (callee?.object?.name === "React" && 
+                        callee.property?.name === "createElement" && 
+                        path.node?.arguments.length > 0) {
+                    const args = path.node.arguments;
+                    if (args[0].type === "Identifier") {
+                        const name = args[0].name;
+
+                        if (skipComponents.has(name)) {
+                            // skip components that are allowed to have text in them
+                            path.skip();
+                            return;
+                        }
+
+                        args.shift();
+
+                        const attributes = args[0];
+                        if (attributes.type === "ObjectExpression") {
+                            attributes.properties.forEach(attribute => {
+                                if (isAttributeLocalizable(name, attribute.key.name) &&
+                                        attribute.value.type === "StringLiteral") {
+                                    results.push({
+                                        pathName: ir.filePath,
+                                        severity: "error",
+                                        description: `Found unlocalizable hard-coded attribute value. Use intl.formatMessage() instead.`,
+                                        id: undefined,
+                                        lineNumber: attribute.loc.start.line,
+                                        charNumber: attribute.loc.start.column,
+                                        endLineNumber: attribute.loc.end.line,
+                                        endCharNumber: attribute.loc.end.column,
+                                        // @TODO make a real highlight once IR contains raw content of the linted source file
+                                        highlight: `<e0>${generate(attribute).code}</e0>`
+                                    });
+                                }
+                            });
+                        }
+
+                        args.shift();
+
+                        args.forEach(argument => {
+                            if (argument.type === "StringLiteral") {
+                                results.push({
+                                    pathName: ir.filePath,
+                                    severity: "error",
+                                    description: `Found unlocalizable hard-coded string. Use intl.formatMessage() instead.`,
+                                    id: undefined,
+                                    lineNumber: argument.loc.start.line,
+                                    charNumber: argument.loc.start.column,
+                                    endLineNumber: argument.loc.end.line,
+                                    endCharNumber: argument.loc.end.column,
+                                    // @TODO make a real highlight once IR contains raw content of the linted source file
+                                    highlight: `<e0>${argument.value.trim()}</e0>`
+                                });
+                            }
+                        });
+                    }
                 }
             },
 
