@@ -92,6 +92,7 @@ limitations under the License.
 - added Typescript and TSX parser
 - changed existing JavaScript, JSX, Flow, FlowJSX parsers to all produce Babel-style AST
 - added rule to ban usage of FormattedCompMessage
+- added rule to check for hard-coded strings and attributes in React code
 
 ### v1.2.0
 
