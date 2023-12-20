@@ -78,8 +78,8 @@ class NoHardCodedStrings extends Rule {
             CallExpression(path) {
                 const callee = path.node.callee;
                 // only check arguments to the calls to React.createElement()
-                if (callee?.object?.name === "React" && 
-                        callee.property?.name === "createElement" && 
+                if (callee?.object?.name === "React" &&
+                        callee.property?.name === "createElement" &&
                         path.node?.arguments.length > 0) {
                     const args = path.node.arguments;
                     if (args[0].type === "Identifier") {

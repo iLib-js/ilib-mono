@@ -43,7 +43,7 @@ describe("NoHardCodedStrings", () => {
                 // @flow
                 import * as React from "react";
                 import { Button, Link, FormattedCompMessage } from "components";
-                
+
                 export class CustomComponent extends React.Component {
                     render() {
                         return (
@@ -178,7 +178,7 @@ describe("NoHardCodedStrings", () => {
                 // @flow
                 import * as React from "react";
                 import { Button, Link, FormattedCompMessage } from "components";
-                
+
                 export class CustomComponent extends React.Component {
                     render() {
                         return (
@@ -220,7 +220,7 @@ describe("NoHardCodedStrings", () => {
                 // @flow
                 import * as React from "react";
                 import { Button, Link, FormattedCompMessage } from "components";
-                
+
                 export class CustomComponent extends React.Component {
                     render() {
                         return (
@@ -256,7 +256,7 @@ describe("NoHardCodedStrings", () => {
                 `
                 import * as React from "react";
                 import { Button, Link, FormattedCompMessage } from "components";
-                
+
                 export class CustomComponent extends React.Component {
                     render() {
                         return (
@@ -387,7 +387,7 @@ describe("NoHardCodedStrings", () => {
                 `
                 import * as React from "react";
                 import { Button, Link, FormattedCompMessage } from "components";
-                
+
                 export class CustomComponent extends React.Component {
                     render() {
                         return (
@@ -428,7 +428,7 @@ describe("NoHardCodedStrings", () => {
                 `
                 import * as React from "react";
                 import { Button, Link, FormattedCompMessage } from "components";
-                
+
                 export class CustomComponent extends React.Component {
                     render() {
                         return (
