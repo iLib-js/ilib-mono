@@ -107,7 +107,7 @@ describe("BanFormattedCompMessage", () => {
                                     description="Some message description"
                                     defaultMessage="Some message with <Link>link text</Link> and more text."
                                     values={{
-                                        Link: (chunks) => <Link href="example.com">chunks</Link>,
+                                        Link: (chunks) => <Link href="example.com">{...chunks}</Link>,
                                     }}
                                 />
                                 <Button className="some-button" type="button">
@@ -207,7 +207,7 @@ describe("BanFormattedCompMessage", () => {
                                     description="Some message description"
                                     defaultMessage="Some message with <Link>link text</Link> and more text."
                                     values={{
-                                        Link: (chunks) => <Link href="example.com">chunks</Link>,
+                                        Link: (chunks) => <Link href="example.com">{...chunks}</Link>,
                                     }}
                                 />
                                 <Button className="some-button" type="button">
