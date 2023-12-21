@@ -25,6 +25,7 @@ import PropertiesParser from "./parsers/PropertiesParser.js";
 import FlowParser from "./parsers/FlowParser.js";
 import TSXParser from "./parsers/TSXParser.js";
 import BanFormattedCompMessage from "./rules/BanFormattedCompMessage.js";
+import NoHardCodedStrings from "./rules/NoHardCodedStrings.js";
 // import FormatjsPlurals from './rules/FormatjsPlurals.js';
 
 class ReactPlugin extends Plugin {
@@ -53,7 +54,8 @@ class ReactPlugin extends Plugin {
         //console.log("ReactPlugin.getRules() called");
         return [
             // FormatjsPlurals // not ready for prime time yet
-            BanFormattedCompMessage
+            BanFormattedCompMessage,
+            NoHardCodedStrings
         ];
     }
 
@@ -62,7 +64,8 @@ class ReactPlugin extends Plugin {
         return {
             react: {
                 // "source-formatjs-plurals": true, // not ready for prime time yet
-                "ban-formattedcompmessage": true
+                "ban-formattedcompmessage": true,
+                "no-hard-coded-strings": true
             }
         };
     }
