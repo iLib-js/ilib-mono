@@ -26,6 +26,7 @@ import FlowParser from "./parsers/FlowParser.js";
 import TSXParser from "./parsers/TSXParser.js";
 import BanFormattedCompMessage from "./rules/BanFormattedCompMessage.js";
 import NoHardCodedStrings from "./rules/NoHardCodedStrings.js";
+import NoNestedMessages from "./rules/NoNestedMessages.js";
 // import FormatjsPlurals from './rules/FormatjsPlurals.js';
 
 class ReactPlugin extends Plugin {
@@ -55,7 +56,8 @@ class ReactPlugin extends Plugin {
         return [
             // FormatjsPlurals // not ready for prime time yet
             BanFormattedCompMessage,
-            NoHardCodedStrings
+            NoHardCodedStrings,
+            NoNestedMessages
         ];
     }
 
@@ -65,7 +67,8 @@ class ReactPlugin extends Plugin {
             react: {
                 // "source-formatjs-plurals": true, // not ready for prime time yet
                 "ban-formattedcompmessage": true,
-                "no-hard-coded-strings": true
+                "no-hard-coded-strings": true,
+                "no-nested-messages": true
             }
         };
     }
