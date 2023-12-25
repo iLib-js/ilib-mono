@@ -35,7 +35,7 @@ describe("No Nested FormattedMessage components rule", () => {
             return ir;
         };
 
-        test("hard coded string in Flow JSX", () => {
+        test("Nested FormattedMessage inside of another", () => {
             const ir = getFlowJsxIr(
                 "x/y.js",
                 `
@@ -90,5 +90,172 @@ describe("No Nested FormattedMessage components rule", () => {
 
             expect(result).toStrictEqual(expected);
         });
+
+        test("Nested FormattedMessage inside of another, using ids instead of the string directly in the code", () => {
+            const ir = getFlowJsxIr(
+                "x/y.js",
+                `
+                // @flow
+                import * as React from "react";
+                import { Button, Link, FormattedCompMessage } from "components";
+                import messages from './messages.js';
+
+                export class CustomComponent extends React.Component {
+                    render() {
+                        return (
+                            <>
+                                <FormattedMessage {...messages.unique_id} 
+                                    values={{
+                                        termsAndConditions:
+                                            <a href="terms.html">
+                                                <FormattedMessage {...messages.terms.and.conditions} />
+                                            </a>
+                                    }}
+                                />
+                            </>
+                        );
+                    }
+                }
+                `
+            );
+
+            const rule = new NoNestedMessages();
+
+            const result = rule.match({ ir });
+
+            const expected = [
+                new Result({
+                    severity: "error",
+                    description:
+                        "Found a FormattedMessage component inside of another FormattedMessage component. This indicates a broken string.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: `<e0><FormattedMessage {...messages.terms.and.conditions} /></e0>`,
+                    lineNumber: 15,
+                    charNumber: 32,
+                    endLineNumber: 15,
+                    endCharNumber: 87,
+                })
+            ];
+
+            expect(result).toStrictEqual(expected);
+        });
+
+        test("No nested FormattedMessage inside of another", () => {
+            // this is the recommended rich text way of doing it
+            const ir = getFlowJsxIr(
+                "x/y.js",
+                `
+                // @flow
+                import * as React from "react";
+                import { Button, Link, FormattedCompMessage } from "components";
+
+                export class CustomComponent extends React.Component {
+                    render() {
+                        return (
+                            <>
+                                <FormattedMessage
+                                    id="unique.id"
+                                    defaultMessage="You agree to the <a>terms and conditions</a> by using this product."
+                                    description="translator's note"
+                                    values={{
+                                        termsAndConditions: chunks => <a href="terms.html">{...chunks}</a>
+                                    }}
+                                />
+                            </>
+                        );
+                    }
+                }
+                `
+            );
+
+            const rule = new NoNestedMessages();
+
+            const result = rule.match({ ir });
+
+            expect(result.length).toEqual(0);
+        });
+
+        test("No FormattedMessage at all", () => {
+            const ir = getFlowJsxIr(
+                "x/y.js",
+                `
+                // @flow
+                import * as React from "react";
+                import { Button, Link, FormattedCompMessage } from "components";
+
+                export class CustomComponent extends React.Component {
+                    render() {
+                        return (
+                            <>
+                                <span>You agree to the <a href="terms.html">terms and conditions</a> by using this product.</span>
+                            </>
+                        );
+                    }
+                }
+                `
+            );
+
+            const rule = new NoNestedMessages();
+
+            const result = rule.match({ ir });
+
+            expect(result.length).toEqual(0);
+        });
+
+        test("Nested intl.formatMessage inside of a FormattedMessage", () => {
+            const ir = getFlowJsxIr(
+                "x/y.js",
+                `
+                // @flow
+                import * as React from "react";
+                import { Button, Link, FormattedCompMessage } from "components";
+                import messages from './messages.js';
+
+                export class CustomComponent extends React.Component {
+                    render() {
+                        return (
+                            <>
+                                <FormattedMessage
+                                    id="unique.id"
+                                    defaultMessage="You agree to the {termsAndConditions} by using this product."
+                                    description="translator's note"
+                                    values={{
+                                        termsAndConditions:
+                                            <a href="terms.html">
+                                                {intl.formatMessage(messages.unique_id)}
+                                            </a>
+                                    }}
+                                />
+                            </>
+                        );
+                    }
+                }
+                `
+            );
+
+            const rule = new NoNestedMessages();
+
+            const result = rule.match({ ir });
+
+            const expected = [
+                new Result({
+                    severity: "error",
+                    description:
+                        "Found a call to intl.formatMessage() inside of a FormattedMessage component. This indicates a broken string.",
+                    pathName: "x/y.js",
+                    rule,
+                    highlight: `<e0>intl.formatMessage(messages.unique_id)</e0>`,
+                    lineNumber: 18,
+                    charNumber: 33,
+                    endLineNumber: 18,
+                    endCharNumber: 71,
+                })
+            ];
+
+            expect(result).toStrictEqual(expected);
+        });
+
     });
+
 });
