@@ -84,7 +84,6 @@ class NoNestedMessages extends Rule {
 
             JSXOpeningElement(path) {
                 const nameNode = path.node.name;
-debugger;
                 if (nameNode.type === "JSXIdentifier" &&
                         nameNode.name === "FormattedMessage") {
                     const parent = path.findParent(ancestor => {
