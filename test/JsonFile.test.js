@@ -1745,6 +1745,79 @@ describe("jsonfile", function() {
         expect(actual).toBe(expected);
     });
 
+    test("Localize an array of objects that includes an empty object", function() {
+        expect.assertions(2);
+
+        var jf = new JsonFile({
+            project: p,
+            pathName: "i18n/arrays.json",
+            type: t
+        });
+        expect(jf).toBeTruthy();
+
+        jf.parse('{\n' +
+                '  "objects": [\n' +
+                '    {},\n' +
+                '    {\n' +
+                '      "name": "First Object",\n' +
+                '      "randomProp": "Non-translatable"\n' +
+                '    },\n' +
+                '    {\n' +
+                '      "name": "Second Object",\n' +
+                '      "description": "String property"\n' +
+                '    }\n' +
+                '  ]\n' +
+                '}\n');
+
+        var translations = new TranslationSet('en-US');
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "objects/item_1/name",
+            source: "First Object",
+            sourceLocale: "en-US",
+            target: "Premier objet",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "objects/item_2/name",
+            source: "Second Object",
+            sourceLocale: "en-US",
+            target: "Deuxième objet",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "objects/item_2/description",
+            source: "String Property",
+            sourceLocale: "en-US",
+            target: "Propriété String",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        var actual = jf.localizeText(translations, "fr-FR");
+        var expected =
+                '{\n' +
+                '    "objects": [\n' +
+                '        {},\n' +
+                '        {\n' +
+                '            "name": "Premier objet",\n' +
+                '            "randomProp": "Non-translatable"\n' +
+                '        },\n' +
+                '        {\n' +
+                '            "name": "Deuxième objet",\n' +
+                '            "description": "Propriété String"\n' +
+                '        }\n' +
+                '    ]\n' +
+                '}\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
     test("JsonFileLocalizeTextUsePseudoForMissing", function() {
         expect.assertions(2);
 

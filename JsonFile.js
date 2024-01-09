@@ -212,7 +212,7 @@ var pluralCategories = {
 function isPlural(node) {
     if (!node) return false;
     var props = Object.keys(node);
-    return props.every(function(prop) {
+    return Object.keys(node).length && props.every(function(prop) {
         return pluralCategories[prop] && typeof(node[prop]) === "string";
     });
 }
@@ -597,18 +597,22 @@ JsonFile.prototype.parseObjArray = function(json, root, schema, ref, name, local
         // Continue parsing and treat array as a set of regular elements.
         var returnValue = [];
         for (var i = 0; i < json.length; i++) {
-            returnValue.push(
-                this.parseObj(
-                        json[i],
-                        root,
-                        schema.items,
-                        ref + '/' + JsonFile.escapeRef("item_" + i),
-                        "item_" + i,
-                        localizable,
-                        translations,
-                        locale
-                )
-            )
+            var element = this.parseObj(
+                json[i],
+                root,
+                schema.items,
+                ref + '/' + JsonFile.escapeRef("item_" + i),
+                "item_" + i,
+                localizable,
+                translations,
+                locale
+            );
+            if (!element) {
+                // Arrays are special -- put the original element back even if the
+                // subvalue contains nothing localizable
+                element = this.sparseValue(json[i]);
+            }
+            returnValue.push(element);
         }
 
         return returnValue;
