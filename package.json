@@ -46,7 +46,7 @@
         "test:watch": "jest --watch",
         "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d test",
-        "postinstall": "conditional-install"
+        "prepare": "conditional-install"
     },
     "engines": {
         "node": ">=8.0"
@@ -54,7 +54,7 @@
     "dependencies": {
         "ilib": "^14.19.0",
         "ilib-loctool-ghfm": "^1.11.4",
-        "ilib-loctool-json": "^1.5.3"
+        "ilib-loctool-json": "^1.5.4"
     },
     "devDependencies": {
         "conditional-install": "^1.0.1",
@@ -62,14 +62,10 @@
     },
     "conditionalDependencies": {
         "process.versions.node < 14.0.0": {
-            "jest": "^26.0.0",
-            "jest-mock": "^26.0.0",
-            "expect": "^26.0.0"
+            "jest": "^26.0.0"
         },
         "process.versions.node >= 14.0.0": {
-            "jest": "^29.0.0",
-            "jest-mock": "^29.0.0",
-            "expect": "^29.0.0"
+            "jest": "^29.0.0"
         }
     }
 }
