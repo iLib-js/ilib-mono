@@ -381,6 +381,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.5.4
+
+- fixed a bug where array entries without any localizable values in
+  them were being coming out as `null` in the localized json files.
+- updated dependencies
+
 ### v1.5.3
 
 - update dependencies
