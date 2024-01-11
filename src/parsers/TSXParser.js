@@ -35,24 +35,36 @@ class TSXParser extends Parser {
     /** @readonly */
     type = "babel-ast";
 
+    /**
+     * Construct a new plugin.
+     * @constructor
+     */
+    constructor(options = {}) {
+        super(options);
+        this.filePath = options.filePath;
+    }
+
+    /**
+     * @private
+     */
+    parseString(content, path) {
+        return new IntermediateRepresentation({
+            type: this.type,
+            ir: BabelParser.parse(content, {
+                plugins: ["typescript", "jsx"],
+                sourceType: "unambiguous"
+            }),
+            filePath: path
+        });
+    }
+
     /** @override */
     parse() {
         if (!this.filePath) {
             throw new Error(`Cannot parse because filePath is not set`);
         }
         const content = fs.readFileSync(this.filePath, "utf-8");
-        const parsed = BabelParser.parse(content, {
-            plugins: ["typescript", "jsx"],
-            sourceType: "unambiguous"
-        });
-
-        return [
-            new IntermediateRepresentation({
-                type: this.type,
-                filePath: this.filePath,
-                ir: parsed
-            })
-        ];
+        return [this.parseString(content, this.filePath)];
     }
 }
 
