@@ -35,7 +35,7 @@
                     }
                 },
                 "nonlocalized": {
-                    test: {}
+                    "test": {}
                 }
             }
         },
