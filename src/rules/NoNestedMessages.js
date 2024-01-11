@@ -57,7 +57,7 @@ class NoNestedMessages extends Rule {
             // for Flow/imperative React
             CallExpression(path) {
                 const callee = path.node.callee;
-                // only check arguments to the calls to React.createElement()
+                // only check the parents of calls to intl.formatMessage()
                 if (callee?.object?.name === "intl" &&
                         callee.property?.name === "formatMessage" &&
                         path.node?.arguments.length > 0) {
