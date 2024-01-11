@@ -88,6 +88,12 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.4.0
+
+- added rule to check for usages of FormattedMessage or calls to intl.formatMessage()
+  within the children of another FormattedMessage component. That indicates broken
+  and unlocalizable strings.
+
 ### v1.3.0
 - added Typescript and TSX parser
 - changed existing JavaScript, JSX, Flow, FlowJSX parsers to all produce Babel-style AST
