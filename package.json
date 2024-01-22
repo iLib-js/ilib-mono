@@ -1,6 +1,6 @@
 {
-    "name": "i18nlint-common",
-    "version": "2.2.1",
+    "name": "ilib-lint-common",
+    "version": "3.0.0",
     "module": "./src/index.js",
     "type": "module",
     "exports": {
@@ -19,8 +19,8 @@
         "lint",
         "locale"
     ],
-    "homepage": "https://github.com/iLib-js/i18nlint-common",
-    "bugs": "https://github.com/iLib-js/i18nlint-common/issues",
+    "homepage": "https://github.com/iLib-js/ilib-lint-common",
+    "bugs": "https://github.com/iLib-js/ilib-lint-common/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -46,7 +46,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/i18nlint-common.git"
+        "url": "https://github.com/iLib-js/ilib-lint-common.git"
     },
     "engines": {
         "node": ">=14.0.0"
@@ -61,7 +61,7 @@
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules ./node_modules/.bin/jest --watch",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/i18nlint-common.md ; npm run doc:html",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-lint-common.md ; npm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json",
         "types": "tsc -p ./jsconfig.json"
     },
