@@ -1,6 +1,7 @@
 # ilib-lint-common
 
-Common ilib-lint routines that the plugins will need.
+Common ilib-lint routines and class that the plugins will need in order
+to implement.
 
 
 ## Installation
@@ -41,6 +42,26 @@ limitations under the License.
 
 ### v3.0.0
 
+- Update major version because of these breaking changes which need to be
+  updated in the plugins:
+    - Added a SourceFile class to represent the original source file
+      that is being parsed. This gives access to the raw bytes of the file,
+      the file represented as a single string in Unicode, or to the file
+      as an array of lines in Unicode.
+    - Parser constructor no longer takes a filePath argument in the
+      options object. Instead, the parse() method now takes a SourceFile
+      argument. This means that ilib-lint will only create 1 instance of
+      the parser instead of one per source file as it did before. It will
+      then call the parse method multiple times with different source
+      files to produce the intermediate representations of that file
+    - The IntermediateRepresentation constructor no longer takes a filePath
+      argument in the options object as well. Instead, it takes a SourceFile
+      instance, giving the IntermediateRepresentation and any class that
+      uses it access to the original raw content of the file or the
+      representation of the file as a string or an array of lines. This will
+      make it easier for Fixer and Fix instances to operate on the original
+      file and for the Rules to generate the correct snippets of the original
+      file to show where the issue occurred.
 - renamed from i18nlint-common to ilib-lint-common to go along with the name of
   the tool
 

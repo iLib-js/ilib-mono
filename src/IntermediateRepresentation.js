@@ -2,7 +2,7 @@
  * IntermediateRepresentation.js - representation of the results of parsing
  * an input file
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,12 @@ class IntermediateRepresentation {
      * @param {Object} params parameters for this representation
      * @param {String} params.type a unique name for this type of representation
      * @param {any} params.ir the intermediate representation of this file
-     * @param {String} params.filePath the path to the current file
+     * @param {SourceFile} params.sourceFile the file that is being represented
      * @param {FileStats} [params.stats] statistics about the file that was parsed
      * @constructor
      */
     constructor(params) {
-        const requiredFields = ["type", "ir", "filePath"];
+        const requiredFields = ["type", "ir", "sourceFile"];
         const missing = requiredFields.filter(field => undefined === params[field]);
         if (missing.length) {
             throw new Error("Missing required parameters in the IntermediateRepresentation constructor: " + missing.join(", "));
@@ -43,7 +43,7 @@ class IntermediateRepresentation {
 
         this.type = params.type;
         this.ir = params.ir;
-        this.filePath = params.filePath;
+        this.sourceFile = params.sourceFile;
         this.stats = params.stats;
     }
 
@@ -79,19 +79,20 @@ class IntermediateRepresentation {
     }
 
     /**
-     * Path to the file that was parsed
+     * Instance of a source file class of the file that was parsed
      * @type {string}
      * @readonly
      */
-    filePath;
+    sourceFile;
 
     /**
-     * Return the file path to the file that was parsed.
+     * Return the source file that was parsed.
      *
-     * @returns {String} the path to the file that was parsed
+     * @returns {String} the instance of a source file class for
+     * the source file that was parsed
      */
-    getPath() {
-        return this.filePath;
+    getSourceFile() {
+        return this.sourceFile;
     }
 
     /** 

@@ -1,7 +1,7 @@
 /*
  * Result.js - Represent an ilib-lint rule check result
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,9 +102,6 @@ class Result {
         this.severity = (fields.severity === "error" || fields.severity === "warning" || fields.severity === "suggestion") ?
             fields.severity :
             "warning";
-        this.description = fields.description;
-        this.pathName = fields.pathName;
-        this.rule = fields.rule;
         this.description = fields.description;
         this.pathName = fields.pathName;
         this.rule = fields.rule;

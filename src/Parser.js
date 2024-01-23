@@ -1,7 +1,7 @@
 /*
  * Parser.js - common SPI for parser plugins
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,9 @@ import NotImplementedError from "./NotImplementedError.js";
  */
 class Parser {
     /**
-     * Construct a new plugin.
+     * Construct a new parser instance.
      *
      * @param {Object} [options] options to the constructor
-     * @param {string} [options.filePath] path to the file that should be parsed
      * @param {Function} [options.getLogger] a callback function provided by
      * @param {object} [options.settings] additional settings that can be passed to the parser
      * the linter to retrieve the log4js logger
@@ -38,7 +37,6 @@ class Parser {
         if (this.constructor === Parser) {
             throw new Error("Cannot instantiate abstract class Plugin directly!");
         }
-        this.filePath = options?.filePath;
         this.getLogger = options?.getLogger;
     }
 
@@ -144,10 +142,11 @@ class Parser {
      *   resource files like Java properties or xliff. There are many
      *   rules that already know how to process Resource instances.
      *
+     * @param {SourceFile} sourceFile the source file to parse
      * @abstract
      * @returns {IntermediateRepresentation[]} the intermediate representations
      */
-    parse() {
+    parse(sourceFile) {
         throw new NotImplementedError();
     }
 
@@ -179,8 +178,8 @@ class Parser {
      * Subclass must define {@link Parser.type}.
      *
      * @abstract
-     * @returns {String} the name of the current type of intermediate
-     * representation.
+     * @returns {String} the name of the type of intermediate representation
+     * that this parser produces
      */
     getType() {
         return this.type;

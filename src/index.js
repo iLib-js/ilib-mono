@@ -1,7 +1,7 @@
 /*
  * index.js - export everything from all of the files
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import Rule from './Rule.js';
 import IntermediateRepresentation from './IntermediateRepresentation.js';
 import Fix from './Fix.js';
 import Fixer from './Fixer.js';
+import SourceFile from './SourceFile.js';
 
 export * from './utils.js';
 
@@ -38,5 +39,6 @@ export {
     Rule,
     IntermediateRepresentation,
     Fix,
-    Fixer
+    Fixer,
+    SourceFile
 };

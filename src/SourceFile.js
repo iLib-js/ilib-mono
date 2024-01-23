@@ -220,7 +220,9 @@ class SourceFile {
      * if there was some error
      */
     write(filePath) {
-        fs.writeFileSync(filePath || this.filePath, this.getContent(), "utf-8");
+        if (filePath || this.isDirty()) {
+            fs.writeFileSync(filePath || this.filePath, this.getContent(), "utf-8");
+        }
     }
 }
 
