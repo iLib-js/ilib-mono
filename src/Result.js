@@ -99,7 +99,7 @@ class Result {
         if (!fields || !fields.severity || !fields.description || !fields.pathName || !fields.rule) {
             throw "Missing fields in Result constructor";
         }
-        this.severity = (fields.severity === "error" || fields.severity === "warning") ?
+        this.severity = (fields.severity === "error" || fields.severity === "warning" || fields.severity === "suggestion") ?
             fields.severity :
             "warning";
         this.description = fields.description;
