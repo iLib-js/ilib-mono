@@ -67,14 +67,14 @@ class SourceFile {
      * @type {Function | undefined}
      * @protected
      */
-    logger;
+    #logger;
 
     /**
      * URI or path to the source file. 
      * @type {String}
      * @protected
      */
-    filePath;
+    #filePath;
 
     /**
      * Get the URI or path to this source file.
@@ -90,7 +90,7 @@ class SourceFile {
      * @type {Buffer}
      * @protected
      */
-    raw;
+    #raw;
     
     /**
      * Return the raw contents of the file as a Buffer of bytes.
@@ -111,7 +111,7 @@ class SourceFile {
      * @type {String}
      * @protected
      */
-    content;
+    #content;
     
     /**
      * Get the content of this file encoded as a regular Javascript
@@ -165,7 +165,7 @@ class SourceFile {
      * @type {String}
      * @protected
      */
-    type;
+    #type;
     
     /**
      * Return the type of this file.
@@ -180,7 +180,7 @@ class SourceFile {
      * @type {Boolean}
      * @protected
      */
-    dirty = false;
+    #dirty = false;
 
     /**
      * Return whether or not this instance has been modifed
@@ -198,7 +198,7 @@ class SourceFile {
      * @type {string}
      * @protected
      */
-    sourceLocale;
+    #sourceLocale;
 
     /**
      * Get the source locale for this rule.
