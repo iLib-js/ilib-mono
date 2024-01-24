@@ -1,4 +1,4 @@
-# i18nlint-common
+# ilib-lint-common
 
 Common ilib-lint routines that the plugins will need.
 
@@ -6,11 +6,11 @@ Common ilib-lint routines that the plugins will need.
 ## Installation
 
 ```
-npm install i18nlint-common
+npm install ilib-lint-common
 
 or
 
-yarn add i18nlint-common
+yarn add ilib-lint-common
 ```
 
 This package is usually imported by the ilib-lint tool itself or plugins for
@@ -18,11 +18,11 @@ the ilib-lint tool.
 
 ## Full API Docs
 
-See the [full API docs](./docs/i18nlint-common.md) for more information.
+See the [full API docs](./docs/ilib-lint-common.md) for more information.
 
 ## License
 
-Copyright © 2022-2023, JEDLSoft
+Copyright © 2022-2024, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,6 +38,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v3.0.0
+
+- renamed from i18nlint-common to ilib-lint-common to go along with the name of
+  the tool
 
 ### v2.2.1
 
