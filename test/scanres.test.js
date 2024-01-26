@@ -1,7 +1,7 @@
 /*
- * testscanres.js - test the resource file scanner
+ * scanres.test.js - test the resource file scanner
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import path from 'path';
 
 import scanResources from '../src/scanres.js';
 
-export const testScanResources = {
-    testScanResourcesDir: function(test) {
-        test.expect(1);
+describe("testScanResources", () => {
+    test("ScanResourcesDir", () => {
+        expect.assertions(1);
         scanResources("test/testfiles/resources", {quiet: true}).then(data => {
             let expected = {
                 "root": {
@@ -47,14 +47,12 @@ export const testScanResources = {
                     }
                 }
             };
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-    testScanResourcesDirSubdir: function(test) {
-        test.expect(1);
+    test("ScanResourcesDirSubdir", () => {
+        expect.assertions(1);
         scanResources("test/testfiles/resources/de", {quiet: true}).then(data => {
             let expected = {
                 "root": {
@@ -68,24 +66,20 @@ export const testScanResources = {
                     }
                 }
             };
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-    testScanResourcesDirBogusDir: function(test) {
-        test.expect(1);
+    test("ScanResourcesDirBogusDir", () => {
+        expect.assertions(1);
         scanResources("test/testfiles/resources34534", {quiet: true}).then(data => {
             let expected = {};
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-    testScanResourcesDirWithNonStrings: function(test) {
-        test.expect(1);
+    test("ScanResourcesDirWithNonStrings", () => {
+        expect.assertions(1);
         scanResources("test/testfiles/resources2", {quiet: true}).then(data => {
             let expected = {
                 "root": {
@@ -114,14 +108,12 @@ export const testScanResources = {
                     }
                 },
             };
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-    testScanResourcesDirNonNormalizedDir: function(test) {
-        test.expect(1);
+    test("ScanResourcesDirNonNormalizedDir", () => {
+        expect.assertions(1);
         scanResources("./test/testfiles/resources2", {quiet: true}).then(data => {
             let expected = {
                 "root": {
@@ -150,14 +142,12 @@ export const testScanResources = {
                     }
                 },
             };
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-    testScanResourcesDirNonNormalizedDir2: function(test) {
-        test.expect(1);
+    test("ScanResourcesDirNonNormalizedDir2", () => {
+        expect.assertions(1);
         scanResources("./test/../test/testfiles/resources2", {quiet: true}).then(data => {
             let expected = {
                 "root": {
@@ -186,14 +176,12 @@ export const testScanResources = {
                     }
                 },
             };
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-    testScanResourcesDirAbsolutePath: function(test) {
-        test.expect(1);
+    test("ScanResourcesDirAbsolutePath", () => {
+        expect.assertions(1);
         scanResources(path.join(process.cwd(), "test/testfiles/resources2"), {quiet: true}).then(data => {
             let expected = {
                 "root": {
@@ -222,10 +210,8 @@ export const testScanResources = {
                     }
                 },
             };
-            test.deepEqual(data, expected);
-
-            test.done();
+            expect(data).toStrictEqual(expected);
         });
-    },
+    });
 
-};
+});
