@@ -44,26 +44,22 @@ describe('SourceFile', () => {
     });
 
     test('should create a SourceFile instance with the correct properties', () => {
-        expect.assertions(3);
+        expect.assertions(2);
 
         const sourceFile = new SourceFile(filePath1, { getLogger });
         expect(sourceFile.getPath()).toBe(filePath1);
-        expect(sourceFile.getSourceLocale()).toBe('en-US');
         expect(sourceFile.getType()).toBe("");
     });
     
     test('should create a SourceFile instance with provided options', () => {
-        expect.assertions(3);
+        expect.assertions(2);
 
         const customLogger = { log: jest.fn() };
-        const customLocale = 'fr-FR';
         const type = "test";
         const sourceFile = new SourceFile(filePath1, {
-            sourceLocale: customLocale,
             type
         });
         expect(sourceFile.getPath()).toBe(filePath1);
-        expect(sourceFile.getSourceLocale()).toBe(customLocale);
         expect(sourceFile.getType()).toBe("test");
     });
 
@@ -162,7 +158,7 @@ describe('SourceFile', () => {
 
         const sourceFile = new SourceFile(filePath3, { getLogger });
 
-        expect(sourceFile.getLines()).toEqual(['', '', '']);
+        expect(sourceFile.getLines()).toEqual(['', '']);
     });
 
     test('should handle a single line in the file content', () => {

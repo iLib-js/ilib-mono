@@ -1,7 +1,7 @@
 # ilib-lint-common
 
-Common ilib-lint routines and class that the plugins will need in order
-to implement.
+Common ilib-lint routines and classes/interfaces that the ilib-lint plugins
+will need to implement the plugin functionality.
 
 
 ## Installation

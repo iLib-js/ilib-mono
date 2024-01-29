@@ -80,7 +80,7 @@ class IntermediateRepresentation {
 
     /**
      * Instance of a source file class of the file that was parsed
-     * @type {string}
+     * @type {SourceFile}
      * @readonly
      */
     sourceFile;
@@ -88,7 +88,7 @@ class IntermediateRepresentation {
     /**
      * Return the source file that was parsed.
      *
-     * @returns {String} the instance of a source file class for
+     * @returns {SourceFile} the instance of a source file class for
      * the source file that was parsed
      */
     getSourceFile() {
