@@ -1,7 +1,7 @@
 /*
  * Parser.test.js - test the parser superclass object
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,7 @@ describe("testParser", () => {
     test("ParserNormal", () => {
         expect.assertions(1);
 
-        const parser = new MockParser({
-            filePath: "a/b/c.x"
-        });
+        const parser = new MockParser();
 
         expect(parser).toBeTruthy();
     });
@@ -54,9 +52,7 @@ describe("testParser", () => {
     test("ParserGetName", () => {
         expect.assertions(2);
 
-        const parser = new MockParser({
-            filePath: "a/b/c.x"
-        });
+        const parser = new MockParser();
 
         expect(parser).toBeTruthy();
 
@@ -66,9 +62,7 @@ describe("testParser", () => {
     test("ParserGetDescription", () => {
         expect.assertions(2);
 
-        const parser = new MockParser({
-            filePath: "a/b/c.x"
-        });
+        const parser = new MockParser();
 
         expect(parser).toBeTruthy();
 
@@ -78,9 +72,7 @@ describe("testParser", () => {
     test("ParserGetExtensions", () => {
         expect.assertions(2);
 
-        const parser = new MockParser({
-            filePath: "a/b/c.x"
-        });
+        const parser = new MockParser();
 
         expect(parser).toBeTruthy();
 
@@ -90,9 +82,7 @@ describe("testParser", () => {
     test("ParserGetType", () => {
         expect.assertions(2);
 
-        const parser = new MockParser({
-            filePath: "a/b/c.x"
-        });
+        const parser = new MockParser();
 
         expect(parser).toBeTruthy();
 
@@ -102,9 +92,7 @@ describe("testParser", () => {
     test("ParserGetCanWrite", () => {
         expect.assertions(2);
 
-        const parser = new MockParser({
-            filePath: "a/b/c.x"
-        });
+        const parser = new MockParser();
 
         expect(parser).toBeTruthy();
 
