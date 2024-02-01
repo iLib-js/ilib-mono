@@ -54,7 +54,7 @@ describe("testJSParser", () => {
         const parser = new JSParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("js");
+        expect(parser.getName()).toBe("JSParser");
     });
 
     test("JSParserGetExtensions", () => {

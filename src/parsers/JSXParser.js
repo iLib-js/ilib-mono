@@ -23,7 +23,11 @@ import BabelParser from "@babel/parser";
 import { Parser, IntermediateRepresentation } from 'i18nlint-common';
 
 /**
- * @class Parser for Javascript files based on the acorn library.
+ * @class Parser for Javascript files that may contain React JSX elements,
+ * based on the the Babel parser. By default, this parser will parse
+ * .jsx files. If you put your JSX in a file with a different file name
+ * extension, you can use the name "JSXParser" in your filetype parsers array
+ * to use this parser.
  */
 class JSXParser extends Parser {
     /**
@@ -35,7 +39,7 @@ class JSXParser extends Parser {
         this.path = options.filePath;
 
         this.extensions = [ "jsx" ];
-        this.name = "jsx";
+        this.name = "JSXParser";
         this.description = "A parser for React JSX files.";
         if (this.path) {
             this.data = fs.readFileSync(this.path, "utf-8");

@@ -39,7 +39,7 @@ describe("TSXParser", () => {
 
     test("get parser name", () => {
         const parser = new TSXParser();
-        expect(parser.getName()).toBe("tsx");
+        expect(parser.getName()).toBe("TSXParser");
     });
 
     test("get parser file extensions", () => {

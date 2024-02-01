@@ -157,7 +157,7 @@ describe("testPropertiesParser", () => {
         const parser = new PropertiesParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("properties");
+        expect(parser.getName()).toBe("PropertiesParser");
     });
 
     test("PropertiesParserGetExtensions", () => {

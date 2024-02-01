@@ -21,10 +21,16 @@ import fs from "fs";
 import BabelParser from "@babel/parser";
 import { Parser, IntermediateRepresentation } from "i18nlint-common";
 
-/** @class Parser For Javascript files based on the acorn library. */
+/** @class Parser For Typescript files based on the Babel parser.
+ * This parser can parse any Typescript file with or without React
+ * JSX elements in it. By default, this parser will parse .ts and
+ * .tsx files. If you put your typescript in a file with a different
+ * file name extension, you can use the name "TSXParser" in your
+ * filetype parsers array to use this parser. 
+*/
 class TSXParser extends Parser {
     /** @readonly */
-    name = "tsx";
+    name = "TSXParser";
 
     /** @readonly */
     description = "A parser for Typescript files (with React support).";

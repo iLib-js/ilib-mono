@@ -54,7 +54,7 @@ describe("testFlowParser", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("js");
+        expect(parser.getName()).toBe("FlowParser");
     });
 
     test("Flow parser GetExtensions", () => {

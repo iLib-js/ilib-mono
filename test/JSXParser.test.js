@@ -30,6 +30,13 @@ describe("testJSXParser", () => {
         expect(parser).toBeTruthy();
     });
 
+    test("Plain Javascript with React JSX parser has the right name", () => {
+        expect.assertions(1);
+
+        const parser = new JSXParser();
+        expect(parser.getName()).toBe("JSXParser");
+    });
+
     test("JSXParserConstructorPath", () => {
         expect.assertions(1);
 
@@ -54,7 +61,7 @@ describe("testJSXParser", () => {
         const parser = new JSXParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("jsx");
+        expect(parser.getName()).toBe("JSXParser");
     });
 
     test("JSXParserGetExtensions", () => {

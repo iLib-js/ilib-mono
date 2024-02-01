@@ -74,7 +74,11 @@ const nullLogger = {
 };
 
 /**
- * @class Parser for Java style properties files as used with react-intl.
+ * @class Parser for Java style properties files. By default, this parser
+ * will parse .properties files. If you put your properties in a file with
+ * a different file name extension, you can use the name "PropertiesParser"
+ * in your filetype parsers array to use this parser. N.B. This parser does
+ * not parse new-style xml properties files, only the older "a = b" style.
  */
 class PropertiesParser extends Parser {
     /**
@@ -88,7 +92,7 @@ class PropertiesParser extends Parser {
         this.logger = options.getLogger ? options.getLogger("ilib-lint.plugin.propertiesParser") : nullLogger;
 
         this.extensions = [ "properties" ];
-        this.name = "properties";
+        this.name = "PropertiesParser";
         this.description = "A parser for properties files.";
         this.type = "resource";
 
