@@ -186,10 +186,15 @@ the file name of output files.
 
 ## License
 
-This plugin is license under Apache2. See the [LICENSE](./LICENSE)
+This plugin is licensed under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
 ## Release Notes
+
+### v1.11.5
+
+- fixed incorrect imports of certain dependencies, which caused this
+  plugin to fail when they were updated
 
 ### v1.11.4
 
