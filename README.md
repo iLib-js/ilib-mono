@@ -9,6 +9,12 @@ file for more details.
 
 ## Release Notes
 
+### v1.0.6
+
+- update dependencies
+- fixed a bug where a dependency was imported incorrectly causing
+  exceptions
+
 ### v1.0.5
 
 - update dependencies
