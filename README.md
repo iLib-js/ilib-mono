@@ -203,7 +203,7 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.3.4
+### v1.4.0
 * Update to detect webOS platform with webOSSystem value.
 
 ### v1.3.3
