@@ -1,7 +1,7 @@
 /*
  * index.js - detect various things in the runtime environment
  *
- * Copyright © 2021-2023, JEDLSoft
+ * Copyright © 2021-2024, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ function getPlatformValue() {
         return "nodejs";
     } else if (typeof(Qt) !== 'undefined') {
         return "qt";
-    } else if (typeof(PalmSystem) !== 'undefined') {
+    } else if ((typeof(PalmSystem) !== 'undefined')|| (typeof(webOSSystem) !== 'undefined'))  {
         return (typeof(window) !== 'undefined') ? "webos-webapp" : "webos";
     } else if (typeof(window) !== 'undefined') {
         return "browser";
@@ -260,6 +260,8 @@ export function getLocale() {
                     globalScope.locale = parseLocale(PalmSystem.locales.UI);
                 } else if (typeof(PalmSystem.locale) !== 'undefined') {
                     globalScope.locale = parseLocale(PalmSystem.locale);
+                } else if (typeof(webOSSystem.locale) !== 'undefined') {
+                    ilib.locale = parseLocale(webOSSystem.locale);
                 } else {
                     globalScope.locale = undefined;
                 }
@@ -340,7 +342,7 @@ export function getTimeZone() {
                 return globalScope.tz;
             }
         }
-        let timezone;
+        let timezone, timeZone;
 
         switch (getPlatform()) {
             case 'browser':
@@ -354,7 +356,8 @@ export function getTimeZone() {
             case 'webos':
                 // running in webkit on webOS
                 ({ timezone } = PalmSystem);
-                if (timezone && timezone.length > 0) {
+                ({ timeZone } = webOSSystem);
+                if ((timezone && timezone.length > 0) || (timeZone && timeZone.length > 0)) {
                     tz = timezone;
                 }
                 break;
