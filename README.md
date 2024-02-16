@@ -42,14 +42,17 @@ is written with ESM modules.
 
 This plugin provides multiple parsers:
 
-- JSParser - parser for regular Javascript files
-- JSXParser - parser for React JSX files
+- FlowParser - parser for Javascript using flow type definitions, and for
+JSX files that use flow type definitions
+- JSParser - parser for plain Javascript files
+- JSXParser - parser for Javscript React JSX files
+- TSXParser - parser for Typescript files that may use React JSX
 - PropertiesParser - parser for properties files as used for translated
   strings in the react-intl library
 
 Some projects use the file extension "js" instead of "jsx" for their JSX
 files. If you are not sure what is in your files that have a "js" extension,
-then use the jsx parser to be safe. Both parsers produce the same form of
+then use the JSXParser to be safe. Both parsers produce the same form of
 intermediate representation that the rules can parse, and the JSX parser
 has the ability to parse regular javascript as well as JSX syntax. You
 should use the JSParser only if you want strict Javascript syntax which
@@ -60,6 +63,13 @@ throws exceptions if the file attempts to use JSX syntax.
 The following rules apply to any resources from any file type, but are
 designed to check resources that come from react code:
 
+- [ban-formattedcompmessage](./docs/ban-formattedcompmessage.md) - The component
+  FormattedCompMessage in the box-ui-elements is deprecated and should not be used
+- [no-hard-coded-strings](./docs/no-hard-coded-strings.md) - Check for hard-coded
+  strings in your jsx code
+- [no-nested-messages](./docs/no-nested-messages.md) - Check whether the
+  component FormattedMessage from react-intl is used in the children of another
+  FormattedMessage
 - source-formatjs-plurals - check that any React-intl style plurals have
   correct syntax (NOT IMPLEMENTED YET)
 
@@ -71,7 +81,7 @@ file types.
 
 ## License
 
-Copyright © 2023, Box, Inc.
+Copyright © 2023-2024, Box, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -87,6 +97,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.4.1
+
+- fixed a bug where the different parsers did not have unique names
+- clarified the documentation about the various parser names and what the
+  parsers are used for
+- minor documentation updates
 
 ### v1.4.0
 

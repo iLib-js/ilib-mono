@@ -1,7 +1,7 @@
 /*
  * FlowParser.test.js - test the React JS + flow parser
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ describe("testFlowParser", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("js");
+        expect(parser.getName()).toBe("FlowParser");
     });
 
     test("Flow parser GetExtensions", () => {

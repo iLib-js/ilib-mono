@@ -1,7 +1,7 @@
 /*
  * JSParser.js - Parser for plain Javascript files
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,11 @@ import BabelParser from "@babel/parser";
 import { Parser, IntermediateRepresentation } from 'i18nlint-common';
 
 /**
- * @class Parser for Javascript files based on the acorn library.
+ * @class Parser for Javascript files based on the Babel parser.
+ * By default, this parser will parse .js files. If you put your
+ * javascript in a file with a different file name extension, you
+ * can use the name "JSParser" in your filetype parsers array to
+ * use this parser.
  */
 class JSParser extends Parser {
     /**
@@ -35,7 +39,7 @@ class JSParser extends Parser {
         this.path = options.filePath;
 
         this.extensions = [ "js" ];
-        this.name = "js";
+        this.name = "JSParser";
         this.description = "A parser for JS files.";
         if (this.path) {
             this.data = fs.readFileSync(this.path, "utf-8");

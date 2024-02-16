@@ -2,7 +2,7 @@
  * FlowParser.js - Parser for plain Javascript files using flow type
  * definitions
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,13 @@ import BabelParser from "@babel/parser";
 import { Parser, IntermediateRepresentation } from 'i18nlint-common';
 
 /**
- * @class Parser for Javascript files based on the acorn library.
+ * @class Parser for Javascript files based on the Babel parser. This
+ * parser can parse Javascript with flow types and with React JSX
+ * elements. It can also parse regular Javascript with flow without
+ * any React JSX in it. By default, this parser will parse .js and
+ * .jsx files. If you put your javascript with flow in a file with a
+ * different file name extension, you can use the name "FlowParser"
+ * in your filetype parsers array to use this parser.
  */
 class FlowParser extends Parser {
     /**
@@ -36,7 +42,7 @@ class FlowParser extends Parser {
         this.path = options.filePath;
 
         this.extensions = [ "js", "jsx" ];
-        this.name = "js";
+        this.name = "FlowParser";
         this.description = "A parser for JS and JSX files with flow type definitions.";
         if (this.path) {
             this.data = fs.readFileSync(this.path, "utf-8");
