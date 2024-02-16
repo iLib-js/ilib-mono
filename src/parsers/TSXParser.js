@@ -1,7 +1,7 @@
 /*
  * TSXParser.js
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import { Parser, IntermediateRepresentation } from "i18nlint-common";
  * JSX elements in it. By default, this parser will parse .ts and
  * .tsx files. If you put your typescript in a file with a different
  * file name extension, you can use the name "TSXParser" in your
- * filetype parsers array to use this parser. 
+ * filetype parsers array to use this parser.
 */
 class TSXParser extends Parser {
     /** @readonly */
