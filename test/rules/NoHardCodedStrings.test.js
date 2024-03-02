@@ -225,6 +225,33 @@ describe("NoHardCodedStrings", () => {
                     render() {
                         return (
                             <>
+                                <input type="button" alt="" />
+                            </>
+                        );
+                    }
+                }
+                `
+            );
+
+            const rule = new NoHardCodedStrings();
+
+            const result = rule.match({ ir });
+
+            expect(result.length).toEqual(0);
+        });
+
+        test("no hard coded string in HTML attribute if the value is empty", () => {
+            const ir = getFlowJsxIr(
+                "x/y.js",
+                `
+                // @flow
+                import * as React from "react";
+                import { Button, Link, FormattedCompMessage } from "components";
+
+                export class CustomComponent extends React.Component {
+                    render() {
+                        return (
+                            <>
                                 <input type="button" placeholder={intl.formatMessage(...messages.myMessage)} />
                             </>
                         );

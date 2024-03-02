@@ -97,7 +97,8 @@ class NoHardCodedStrings extends Rule {
                         if (attributes.type === "ObjectExpression") {
                             attributes.properties.forEach(attribute => {
                                 if (isAttributeLocalizable(name, attribute.key.name) &&
-                                        attribute.value.type === "StringLiteral") {
+                                        attribute.value.type === "StringLiteral" &&
+                                        attribute.value.value.trim().length > 0) {
                                     results.push({
                                         pathName: ir.filePath,
                                         severity: "error",
@@ -144,7 +145,8 @@ class NoHardCodedStrings extends Rule {
                         if (attribute.type === "JSXAttribute" &&
                                 attribute.name?.type === "JSXIdentifier" &&
                                 isAttributeLocalizable(tagName, attribute.name.name) &&
-                                attribute.value?.type === "StringLiteral") {
+                                attribute.value?.type === "StringLiteral" &&
+                                attribute.value.value.trim().length > 0) {
                             results.push({
                                 pathName: ir.filePath,
                                 severity: "error",
