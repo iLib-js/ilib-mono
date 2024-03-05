@@ -98,6 +98,13 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.4.2
+
+- fixed a bug where HTML attribute values that are localizable but which
+  are empty were marked as hard-coded strings. Now it no longer complains
+  about those attribute values unless there is at least one non-whitespace
+  character in the string.
+
 ### v1.4.1
 
 - fixed a bug where the different parsers did not have unique names
