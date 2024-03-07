@@ -1,7 +1,7 @@
 /*
  * PrintfMatchRule.test.js - test the substitution parameter rule
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import PrintfMatchRule from '../src/PrintfMatchRule.js';
 
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 describe("testPrintfMatchRules", () => {
     test("PrintfMatchRuleStyle", () => {
@@ -76,6 +76,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -88,7 +89,7 @@ describe("testPrintfMatchRules", () => {
                     target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -99,7 +100,7 @@ describe("testPrintfMatchRules", () => {
             source: 'This string contains a %s string in it.',
             highlight: '<e0>Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.</e0>',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -110,6 +111,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -123,7 +125,7 @@ describe("testPrintfMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -135,6 +137,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -147,7 +150,7 @@ describe("testPrintfMatchRules", () => {
                     target: "Diese Zeichenfolge enthält %s anderen Zeichenfolgen %s.",
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -158,7 +161,7 @@ describe("testPrintfMatchRules", () => {
             source: 'This string contains a %s string in it.',
             highlight: 'Diese Zeichenfolge enthält <e0>%s</e0> anderen Zeichenfolgen <e0>%s</e0>.',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -169,6 +172,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -182,7 +186,7 @@ describe("testPrintfMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -194,6 +198,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -207,7 +212,7 @@ describe("testPrintfMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %s %d.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -219,6 +224,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -232,7 +238,7 @@ describe("testPrintfMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %0$-#05.2zd.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -244,6 +250,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -257,7 +264,7 @@ describe("testPrintfMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %0$-#05.2zd.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         const expected = [
@@ -268,7 +275,7 @@ describe("testPrintfMatchRules", () => {
                 source: 'This string contains %0$-#05.2d in it.',
                 highlight: '<e0>Diese Zeichenfolge enthält %0$-#05.2zd.</e0>',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -277,7 +284,7 @@ describe("testPrintfMatchRules", () => {
                 source: 'This string contains %0$-#05.2d in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>%0$-#05.2zd</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);
@@ -289,6 +296,7 @@ describe("testPrintfMatchRules", () => {
         const rule = new PrintfMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -302,7 +310,7 @@ describe("testPrintfMatchRules", () => {
                     target: 'Diese %1$s Zeichenfolge enthält %0$s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();

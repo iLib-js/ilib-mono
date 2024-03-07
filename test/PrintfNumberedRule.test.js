@@ -1,7 +1,7 @@
 /*
  * PrintfNumberedRule.test.js - test the substitution parameter numbering rule
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import PrintfNumberedRule from '../src/PrintfNumberedRule.js';
 
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 describe("testPrintfNumberedRules", () => {
     test("PrintfNumberedRuleStyle", () => {
@@ -76,6 +76,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -86,7 +87,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This %d string contains a %s string in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -97,7 +98,7 @@ describe("testPrintfNumberedRules", () => {
                 id: "printf.test",
                 highlight: 'This <e0>%d</e0> string contains a %s string in it.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -105,7 +106,7 @@ describe("testPrintfNumberedRules", () => {
                 id: "printf.test",
                 highlight: 'This %d string contains a <e0>%s</e0> string in it.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);
@@ -117,6 +118,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -128,7 +130,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This string contains no substitution parameters in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -140,6 +142,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -151,7 +154,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This string contains a %3$s substitution parameter in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -163,6 +166,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -174,7 +178,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This string contains a %s substitution parameter in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -186,6 +190,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -196,7 +201,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This %1$d string contains a %s string in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -206,7 +211,7 @@ describe("testPrintfNumberedRules", () => {
             id: "printf.test",
             highlight: 'This %1$d string contains a <e0>%s</e0> string in it.',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -217,6 +222,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -227,7 +233,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This %1$d string contains a %s string in %2$s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -237,7 +243,7 @@ describe("testPrintfNumberedRules", () => {
             id: "printf.test",
             highlight: 'This %1$d string contains a <e0>%s</e0> string in %2$s.',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -248,6 +254,7 @@ describe("testPrintfNumberedRules", () => {
         const rule = new PrintfNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -258,7 +265,7 @@ describe("testPrintfNumberedRules", () => {
                     source: 'This %1$d string contains a %s string in %s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -269,7 +276,7 @@ describe("testPrintfNumberedRules", () => {
                 id: "printf.test",
                 highlight: 'This %1$d string contains a <e0>%s</e0> string in <e0>%s</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -277,7 +284,7 @@ describe("testPrintfNumberedRules", () => {
                 id: "printf.test",
                 highlight: 'This %1$d string contains a <e0>%s</e0> string in <e0>%s</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);

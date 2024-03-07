@@ -1,7 +1,7 @@
 /*
  * POParser.js - a parser for PO files
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { Parser, IntermediateRepresentation } from 'i18nlint-common';
+import { Parser, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 import {
     ResourceString,
     ResourceArray,
@@ -76,6 +76,7 @@ const shimAPI = {
     }
 };
 
+// this is a shim between the loctool plugin ilib-loctool-po and this ilib-lint plugin
 class ShimProject {
     constructor(options) {
         this.sourceLocale = options.sourceLocale;
@@ -101,7 +102,6 @@ class POParser extends Parser {
     constructor(options) {
         super(options);
         this.name = "parser-po";
-        this.filePath = options && options.filePath;
         let projOptions = {
             sourceLocale: (options && options.sourceLocale) || "en-US",
             root: ".",
@@ -137,15 +137,16 @@ class POParser extends Parser {
 
     /**
      * Parse the current file into an intermediate representation.
+     * @param {SourceFile} sourceFile the file to parse
      */
-    parse() {
-        const pofile = this.potype.newFile(this.filePath);
+    parse(sourceFile) {
+        const pofile = this.potype.newFile(sourceFile.getPath());
         pofile.extract();
         this.ts = pofile.getTranslationSet();
         return [new IntermediateRepresentation({
             type: "resource",
             ir: this.ts.getAll(),
-            filePath: this.filePath
+            sourceFile
         })];
     }
 }

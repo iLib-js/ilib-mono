@@ -1,7 +1,7 @@
 /*
  * POParser.test.js - test the parser factory
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Parser } from 'i18nlint-common';
+import { Parser, SourceFile } from 'ilib-lint-common';
 
 import POParser from '../src/POParser.js';
 
@@ -33,7 +33,7 @@ describe("testPOParser", () => {
         expect.assertions(1);
 
         const parser = new POParser({
-            filePath: "./test/testfiles/test.po"
+            sourceLocale: "en-US"
         });
         expect(parser).toBeTruthy();
     });
@@ -42,10 +42,11 @@ describe("testPOParser", () => {
         expect.assertions(6);
 
         const parser = new POParser({
-            filePath: "./test/testfiles/test.po"
+            sourceLocale: "en-US"
         });
         expect(parser).toBeTruthy();
-        const irArray = parser.parse();
+        const sourceFile = new SourceFile("./test/testfiles/test.po", {});
+        const irArray = parser.parse(sourceFile);
         expect(Array.isArray(irArray)).toBeTruthy();
         expect(irArray[0].getType()).toBe("resource");
 
@@ -59,10 +60,11 @@ describe("testPOParser", () => {
         expect.assertions(19);
 
         const parser = new POParser({
-            filePath: "./test/testfiles/test.po"
+            sourceLocale: "en-US"
         });
         expect(parser).toBeTruthy();
-        const irArray = parser.parse();
+        const sourceFile = new SourceFile("./test/testfiles/test.po", {});
+        const irArray = parser.parse(sourceFile);
         expect(Array.isArray(irArray)).toBeTruthy();
 
         const resources = irArray[0].getRepresentation();
@@ -96,10 +98,11 @@ describe("testPOParser", () => {
         expect.assertions(27);
 
         const parser = new POParser({
-            filePath: "./test/testfiles/de-DE.po"
+            sourceLocale: "en-US"
         });
         expect(parser).toBeTruthy();
-        const irArray = parser.parse();
+        const sourceFile = new SourceFile("./test/testfiles/de-DE.po", {});
+        const irArray = parser.parse(sourceFile);
         expect(Array.isArray(irArray)).toBeTruthy();
 
         const resources = irArray[0].getRepresentation();
@@ -150,7 +153,8 @@ describe("testPOParser", () => {
             }
         });
         expect(parser).toBeTruthy();
-        const irArray = parser.parse();
+        const sourceFile = new SourceFile("./test/testfiles/test_de_DE.po", {});
+        const irArray = parser.parse(sourceFile);
         expect(Array.isArray(irArray)).toBeTruthy();
 
         const resources = irArray[0].getRepresentation();

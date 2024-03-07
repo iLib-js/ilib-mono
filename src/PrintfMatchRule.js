@@ -1,7 +1,7 @@
 /*
  * PrintfMatchRule.js - a rule to match printf-style substition parameters
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  */
 
 import Locale from 'ilib-locale';
-import { Rule, Result } from 'i18nlint-common';
+import { Rule, Result } from 'ilib-lint-common';
 
 // from https://pubs.opengroup.org/onlinepubs/007904975/functions/fprintf.html
 const printfRegExp = /%(\d\$)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[diouxXfFeEgGaAcCsSpn]/g;
@@ -137,7 +137,7 @@ class PrintfMatchRule extends Rule {
                 case 'string':
                     const tarString = resource.getTarget();
                     if (tarString) {
-                        return this.checkString(resource.getSource(), tarString, ir.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
+                        return this.checkString(resource.getSource(), tarString, ir.sourceFile.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
                     }
                     break;
     
@@ -147,7 +147,7 @@ class PrintfMatchRule extends Rule {
                     if (tarArray) {
                         return srcArray.flatMap((item, i) => {
                             if (i < tarArray.length && tarArray[i]) {
-                                return this.checkString(srcArray[i], tarArray[i], ir.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
+                                return this.checkString(srcArray[i], tarArray[i], ir.sourceFile.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
                             }
                         }).filter(element => {
                             return element;
@@ -160,7 +160,7 @@ class PrintfMatchRule extends Rule {
                     const tarPlural = resource.getTarget();
                     if (tarPlural) {
                         return categories.flatMap(category => {
-                            return this.checkString(srcPlural.other, tarPlural[category], ir.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
+                            return this.checkString(srcPlural.other, tarPlural[category], ir.sourceFile.getPath(), resource, sourceLocale, options.locale, options.lineNumber);
                         });
                     }
                     break;
