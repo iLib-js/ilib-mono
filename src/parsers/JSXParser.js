@@ -20,7 +20,7 @@
 import fs from 'fs';
 import BabelParser from "@babel/parser";
 
-import { Parser, IntermediateRepresentation } from 'i18nlint-common';
+import { Parser, IntermediateRepresentation } from 'ilib-lint-common';
 
 /**
  * @class Parser for Javascript files that may contain React JSX elements,
@@ -49,7 +49,7 @@ class JSXParser extends Parser {
     /**
      * @private
      */ 
-    parseString(string, path) {
+    parseString(string, sourceFile) {
         return new IntermediateRepresentation({
             type: "babel-ast",
             ir: BabelParser.parse(string, {
@@ -58,17 +58,18 @@ class JSXParser extends Parser {
                     'jsx'
                 ]
             }),
-            filePath: path
+            sourceFile
         });
     }
 
     /**
      * Parse the current file into an intermediate representation.
+     * @param {SourceFile} sourceFile the source file to parse
      * @returns {Array.<IntermediateRepresentation>} the AST representation
      * of the jsx file
      */
-    parse() {
-        return [this.parseString(this.data, this.path)];
+    parse(sourceFile) {
+        return [this.parseString(sourceFile.getContent(), sourceFile)];
     }
 
     getExtensions() {

@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import JSXParser from '../src/parsers/JSXParser.js';
 
-import { Result } from 'i18nlint-common';
+import { Result, SourceFile } from 'ilib-lint-common';
 
 describe("testJSXParser", () => {
     test("JSXParserConstructorEmpty", () => {
@@ -79,7 +79,8 @@ describe("testJSXParser", () => {
         const parser = new JSXParser();
         expect(parser).toBeTruthy();
 
-        const actual = parser.parseString("import foo from '../src/index.js';", "x/y");
+        const sourceFile = new SourceFile("x/y", {});
+        const actual = parser.parseString("import foo from '../src/index.js';", sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
@@ -92,12 +93,13 @@ describe("testJSXParser", () => {
         const parser = new JSXParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// comment
             import foo from '../src/index.js';
 
             const str = <b>String</b>;
-            `, "x/y");
+            `, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
@@ -110,6 +112,7 @@ describe("testJSXParser", () => {
         const parser = new JSXParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `import React, { Component } from 'react';
 
@@ -135,7 +138,7 @@ describe("testJSXParser", () => {
               return <DisplayTitleWithEnhancement />;
             };
 
-            export default App;`, "x/y");
+            export default App;`, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 

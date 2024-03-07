@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { Result, Rule } from "i18nlint-common";
+import { Result, Rule } from "ilib-lint-common";
 import { localizableAttributes } from 'ilib-tools-common';
 
 import _traverse from "@babel/traverse";
@@ -27,7 +27,7 @@ import _generate from "@babel/generator";
 const generate = _generate.default;
 
 // type imports
-/** @typedef {import("i18nlint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
 /** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
 
 class NoNestedMessages extends Rule {
@@ -67,7 +67,7 @@ class NoNestedMessages extends Rule {
                     });
                     if (parent) {
                         results.push({
-                            pathName: ir.filePath,
+                            pathName: ir.sourceFile.getPath(),
                             severity: "error",
                             description: `Found a call to intl.formatMessage() inside of a FormattedMessage component. This indicates a broken string.`,
                             id: undefined,
@@ -92,7 +92,7 @@ class NoNestedMessages extends Rule {
                     });
                     if (parent) {
                         results.push({
-                            pathName: ir.filePath,
+                            pathName: ir.sourceFile.getPath(),
                             severity: "error",
                             description: `Found a FormattedMessage component inside of another FormattedMessage component. This indicates a broken string.`,
                             id: undefined,

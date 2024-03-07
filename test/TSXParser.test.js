@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { SourceFile } from 'ilib-lint-common';
+
 import TSXParser from '../src/parsers/TSXParser.js';
 
 describe("TSXParser", () => {
@@ -54,17 +56,19 @@ describe("TSXParser", () => {
 
     test("parse TSX file", () => {
         const parser = new TSXParser({
-            filePath: "./test/testfiles/TsxParser_TsxFile.tsx"
+            sourceLocale: "en-US"
         });
-        const result = parser.parse();
+        const sourceFile = new SourceFile("./test/testfiles/TsxParser_TsxFile.tsx", { sourceLocale: "en-US" });
+        const result = parser.parse(sourceFile);
         expect(result).toMatchSnapshot();
     });
 
     test("parse TS file", () => {
         const parser = new TSXParser({
-            filePath: "./test/testfiles/TsxParser_TsFile.ts"
+            sourceLocale: "en-US"
         });
-        const result = parser.parse();
+        const sourceFile = new SourceFile("./test/testfiles/TsxParser_TsFile.ts", { sourceLocale: "en-US" });
+        const result = parser.parse(sourceFile);
         expect(result).toMatchSnapshot();
     });
 });

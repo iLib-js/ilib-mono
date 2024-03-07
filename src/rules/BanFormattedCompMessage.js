@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { Result, Rule } from "i18nlint-common";
+import { Result, Rule } from "ilib-lint-common";
 
 import _traverse from "@babel/traverse";
 const traverse = _traverse.default;
 
 // type imports
-/** @typedef {import("i18nlint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
 /** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
 
 export class BanFormattedCompMessage extends Rule {
@@ -88,7 +88,7 @@ export class BanFormattedCompMessage extends Rule {
             .sort((a, b) => rangesCompare(a, b))
             .map((range) => {
                 return new Result({
-                    pathName: ir.filePath,
+                    pathName: ir.sourceFile.getPath(),
                     severity: "error",
                     rule: this,
                     description: `Do not use deprecated FormattedCompMessage component.`,

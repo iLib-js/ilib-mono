@@ -22,7 +22,7 @@ import fs from 'fs';
 import IString from 'ilib-istring';
 import Locale from 'ilib-locale';
 
-import { Parser, IntermediateRepresentation } from 'i18nlint-common';
+import { Parser, IntermediateRepresentation } from 'ilib-lint-common';
 import { ResourceString, parsePath } from 'ilib-tools-common';
 
 function skipLine(line) {
@@ -95,31 +95,26 @@ class PropertiesParser extends Parser {
         this.name = "PropertiesParser";
         this.description = "A parser for properties files.";
         this.type = "resource";
-
-        if (!options.filePath) return;
-
-        // Now figure out if we were given a source or a target properties file
-        // If it was a source, just read it. If it was a target, try to figure
-        // out what the source was, and then read that as well.
-
-        this.guessLocaleAndFindSourceFile(options.filePath);
     }
 
     /**
      * @private
      */
-    guessLocaleAndFindSourceFile(filePath) {
+    guessLocaleAndFindSourcePath(sourceFile) {
         let prefix;
-        let locale = new Locale(this.sourceLocale);
+        const filePath = sourceFile.getPath();
+        let locale = new Locale(sourceFile.sourceLocale);
         let fileTemplate = "[dir]/[basename]_[locale].properties";
         let parts = parsePath(fileTemplate, filePath);
+        let returnValue = {};
 
         if (parts.locale?.length) {
-            if (parts.locale === this.sourceLocale || parts.language === locale.getLanguage()) {
-                this.sourcePath = filePath;
+            returnValue.sourceLocale = sourceFile.sourceLocale ?? this.sourceLocale;
+            if (parts.locale === returnValue.sourceLocale || parts.language === locale.getLanguage()) {
+                returnValue.sourcePath = filePath;
             } else {
-                this.path = filePath;
-                this.targetLocale = parts.locale;
+                returnValue.targetPath = filePath;
+                returnValue.targetLocale = parts.locale;
                 prefix = `${parts.dir}/${parts.basename}_`;
             }
         } else {
@@ -128,44 +123,49 @@ class PropertiesParser extends Parser {
             parts = parsePath(fileTemplate, filePath);
 
             if (parts.locale?.length) {
-                if (parts.locale === this.sourceLocale || parts.language === locale.getLanguage()) {
-                    this.sourcePath = filePath;
+                returnValue.sourceLocale = sourceFile.sourceLocale ?? this.sourceLocale;
+                if (parts.locale === returnValue.sourceLocale || parts.language === locale.getLanguage()) {
+                    returnValue.sourcePath = filePath;
                 } else {
-                    this.path = filePath;
-                    this.targetLocale = parts.locale;
+                    returnValue.targetPath = filePath;
+                    returnValue.targetLocale = parts.locale;
                     prefix = `${parts.dir}/`;
                 }
             } else {
-                // try one last time, but this time without the locale. (ie. this is a source file)
+                // else try one last time, but this time without the locale. (ie. this is a source file)
                 fileTemplate = "[dir]/[basename].properties";
                 parts = parsePath(fileTemplate, filePath);
 
                 if (parts.basename) {
-                    this.sourcePath = filePath;
+                    returnValue.sourcePath = filePath;
+                    returnValue.sourceLocale = sourceFile.sourceLocale ?? this.sourceLocale;
                 }
             }
         }
 
-        if (this.targetLocale && !this.sourcePath) {
+        if (returnValue.targetLocale && !returnValue.sourcePath) {
             // This is a translation file. Now we need to guess what the path
             // to the source file is by going up the locale hierarchy:
-            this.sourcePath = `${prefix}${this.sourceLocale}.properties`;
-            if (!fs.existsSync(this.sourcePath)) {
-                this.sourcePath = `${prefix}${locale.getLangSpec()}.properties`;
-                if (!fs.existsSync(this.sourcePath)) {
-                    this.sourcePath = `${prefix}${locale.getLanguage()}.properties`;
-                    if (!fs.existsSync(this.sourcePath)) {
-                        this.sourcePath = `${parts.dir}/${parts.basename}.properties`;
-                        if (!fs.existsSync(this.sourcePath)) {
+            returnValue.sourcePath = `${prefix}${returnValue.sourceLocale}.properties`;
+            if (!fs.existsSync(returnValue.sourcePath)) {
+                returnValue.sourcePath = `${prefix}${locale.getLangSpec()}.properties`;
+                if (!fs.existsSync(returnValue.sourcePath)) {
+                    returnValue.sourcePath = `${prefix}${locale.getLanguage()}.properties`;
+                    if (!fs.existsSync(returnValue.sourcePath)) {
+                        returnValue.sourcePath = `${parts.dir}/${parts.basename}.properties`;
+                        if (!fs.existsSync(returnValue.sourcePath)) {
                             // no source strings available! I guess we have to produce target-only
                             // resources
-                            this.logger.warn(`Could not find source strings for target file ${this.path}`);
-                            this.sourcePath = undefined;
+                            this.logger.warn(`Could not find source strings for target file ${returnValue.path}`);
+                            returnValue.sourcePath = undefined;
+                            returnValue.sourceLocale = undefined;
                         }
                     }
                 }
             }
         } // else this is a source file, so just read it as such and produce source-only resources
+
+        return returnValue;
     }
 
     /**
@@ -220,50 +220,52 @@ class PropertiesParser extends Parser {
      * file is a target (translation) file, then also attempt to read the
      * source locale file in order to get complete resources.
      *
+     * @param {SourceFile} sourceFile the source file to parse
      * @returns {Array.<IntermediateRepresentation>} the AST representation
      * of the properties file
      */
-    parse() {
-        let sourceStrings = {}, targetStrings;
+    parse(sourceFile) {
+        let sourceStrings, targetStrings;
         let res, resources = [];
 
-        if (this.path) {
-            const targetData = fs.readFileSync(this.path, "utf-8");
-            targetStrings = this.parseString(targetData);
-        }
+        // Now figure out if we were given a source or a target properties file
+        // If it was a source, just read it. If it was a target, try to figure
+        // out what the source was, and then read that as well.
+        const pathInfo = this.guessLocaleAndFindSourcePath(sourceFile);
 
-        if (this.sourcePath) {
-            const sourceData = fs.readFileSync(this.sourcePath, "utf-8");
-            sourceStrings = this.parseString(sourceData);
+        const strings = this.parseString(sourceFile.getContent());
+
+        if (pathInfo.sourcePath) {
+            if (!pathInfo.targetPath) {
+                // source-only file
+                sourceStrings = strings;
+            } else {
+                // source and target are both available
+                const sourceData = fs.readFileSync(pathInfo.sourcePath, "utf-8");
+                sourceStrings = this.parseString(sourceData);
+                targetStrings = strings;
+            }
+        } else {
+            // target-only file
+            targetStrings = strings;
         }
 
         if (targetStrings) {
             for (const id in targetStrings) {
-                if (sourceStrings[id]) {
-                    res = new ResourceString({
-                        key: id,
-                        sourceLocale: this.sourceLocale,
-                        source: unescapeString(sourceStrings[id].source),
-                        targetLocale: this.targetLocale,
-                        target: unescapeString(targetStrings[id].source),
-                        pathName: this.path,
-                        state: "new",
-                        comment: sourceStrings[id].comment,
-                        datatype: "properties"
-                    });
-                } else {
-                    // target-only resources?
-                    res = new ResourceString({
-                        key: id,
-                        sourceLocale: this.sourceLocale,
-                        targetLocale: this.targetLocale,
-                        target: unescapeString(targetStrings[id].source),
-                        pathName: this.path,
-                        state: "new",
-                        comment: targetStrings[id].comment,
-                        datatype: "properties"
-                    });
+                const opts = {
+                    key: id,
+                    sourceLocale: pathInfo.sourceLocale,
+                    targetLocale: pathInfo.targetLocale,
+                    target: unescapeString(targetStrings[id].source),
+                    pathName: pathInfo.targetPath,
+                    state: "new",
+                    datatype: "properties"
+                };
+                if (sourceStrings?.[id]) {
+                    opts.source = unescapeString(sourceStrings[id].source);
                 }
+                opts.comment = sourceStrings?.[id]?.comment ?? targetStrings[id].comment;
+                res = new ResourceString(opts);
                 resources.push(res);
             }
         } else {
@@ -272,9 +274,9 @@ class PropertiesParser extends Parser {
             for (const id in sourceStrings) {
                 const res = new ResourceString({
                     key: id,
-                    sourceLocale: this.sourceLocale,
+                    sourceLocale: pathInfo.sourceLocale,
                     source: unescapeString(sourceStrings[id].source),
-                    pathName: this.sourcePath,
+                    pathName: pathInfo.sourcePath,
                     state: "new",
                     comment: sourceStrings[id].comment,
                     datatype: "properties"
@@ -286,7 +288,7 @@ class PropertiesParser extends Parser {
         return [new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            filePath: this.path || this.sourcePath
+            sourceFile
         })];
     }
 

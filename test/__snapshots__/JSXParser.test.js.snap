@@ -2,7 +2,6 @@
 
 exports[`testJSXParser JSX with a high-order component in it 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -1578,13 +1577,18 @@ exports[`testJSXParser JSX with a high-order component in it 1`] = `
     "start": 0,
     "type": "File",
   },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
   "type": "babel-ast",
 }
 `;
 
 exports[`testJSXParser JSXParserMoreComplex 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -1911,13 +1915,18 @@ exports[`testJSXParser JSXParserMoreComplex 1`] = `
     "start": 0,
     "type": "File",
   },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
   "type": "babel-ast",
 }
 `;
 
 exports[`testJSXParser JSXParserSimple 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [],
     "end": 34,
@@ -2035,6 +2044,12 @@ exports[`testJSXParser JSXParserSimple 1`] = `
     },
     "start": 0,
     "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
   },
   "type": "babel-ast",
 }

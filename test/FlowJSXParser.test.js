@@ -22,7 +22,7 @@ import { ResourceString } from 'ilib-tools-common';
 // parser for JSX
 import FlowParser from '../src/parsers/FlowParser.js';
 
-import { Result } from 'i18nlint-common';
+import { Result, SourceFile } from 'ilib-lint-common';
 
 describe("test the flow parser with jsx code", () => {
     test("empty flow parser constructor", () => {
@@ -74,13 +74,14 @@ describe("test the flow parser with jsx code", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// @flow
             import foo from '../src/index.js';
             export default function pathToFile(): string {
                 return foo('x/y');
             }
-            `, "x/y");
+            `, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
@@ -93,13 +94,14 @@ describe("test the flow parser with jsx code", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// @flow
 
             import foo from '../src/index.js';
 
             const str: React$Element<'b'> = <b>String</b>;
-            `, "x/y");
+            `, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
@@ -112,6 +114,7 @@ describe("test the flow parser with jsx code", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// @flow
 
@@ -147,7 +150,7 @@ describe("test the flow parser with jsx code", () => {
                 return <DisplayTitleWithEnhancement />;
             };
 
-            export default App;`, "x/y");
+            export default App;`, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 

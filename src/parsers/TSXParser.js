@@ -19,7 +19,7 @@
 
 import fs from "fs";
 import BabelParser from "@babel/parser";
-import { Parser, IntermediateRepresentation } from "i18nlint-common";
+import { Parser, IntermediateRepresentation } from "ilib-lint-common";
 
 /** @class Parser For Typescript files based on the Babel parser.
  * This parser can parse any Typescript file with or without React
@@ -53,24 +53,20 @@ class TSXParser extends Parser {
     /**
      * @private
      */
-    parseString(content, path) {
+    parseString(content, sourceFile) {
         return new IntermediateRepresentation({
             type: this.type,
             ir: BabelParser.parse(content, {
                 plugins: ["typescript", "jsx"],
                 sourceType: "unambiguous"
             }),
-            filePath: path
+            sourceFile
         });
     }
 
     /** @override */
-    parse() {
-        if (!this.filePath) {
-            throw new Error(`Cannot parse because filePath is not set`);
-        }
-        const content = fs.readFileSync(this.filePath, "utf-8");
-        return [this.parseString(content, this.filePath)];
+    parse(sourceFile) {
+        return [this.parseString(sourceFile.getContent(), sourceFile)];
     }
 }
 

@@ -21,7 +21,7 @@
 import fs from 'fs';
 import BabelParser from "@babel/parser";
 
-import { Parser, IntermediateRepresentation } from 'i18nlint-common';
+import { Parser, IntermediateRepresentation } from 'ilib-lint-common';
 
 /**
  * @class Parser for Javascript files based on the Babel parser. This
@@ -44,15 +44,12 @@ class FlowParser extends Parser {
         this.extensions = [ "js", "jsx" ];
         this.name = "FlowParser";
         this.description = "A parser for JS and JSX files with flow type definitions.";
-        if (this.path) {
-            this.data = fs.readFileSync(this.path, "utf-8");
-        }
     }
 
     /**
      * @private
      */
-    parseString(string, path) {
+    parseString(string, sourceFile) {
         return new IntermediateRepresentation({
             type: "babel-ast",
             ir: BabelParser.parse(string, {
@@ -62,7 +59,7 @@ class FlowParser extends Parser {
                     'jsx'
                 ]
             }),
-            filePath: path
+            sourceFile
         });
     }
 
@@ -71,8 +68,8 @@ class FlowParser extends Parser {
      * @returns {Array.<IntermediateRepresentation>} the AST representation
      * of the jsx file
      */
-    parse() {
-        return [this.parseString(this.data, this.path)];
+    parse(sourceFile) {
+        return [this.parseString(sourceFile.getContent(), sourceFile)];
     }
 
     getExtensions() {

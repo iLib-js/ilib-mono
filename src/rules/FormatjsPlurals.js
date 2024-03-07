@@ -19,7 +19,7 @@
 
 import { IntlMessageFormat } from 'intl-messageformat';
 import Locale from 'ilib-locale';
-import { Rule, Result } from 'i18nlint-common';
+import { Rule, Result } from 'ilib-lint-common';
 // import { findNodeAt } from 'acorn-walk';
 import { default as jp } from 'jsonpath';
 
@@ -160,7 +160,7 @@ class FormatjsPlurals extends Rule {
                     message.location = locations[i];
                 }
                 //console.log(`message is ${JSON.stringify(message, undefined, 2)}`);
-                return this.checkString(message, ir.getPath(), sourceLocale);
+                return this.checkString(message, ir.sourceFile.getPath(), sourceLocale);
             }).flat();
             return (results.length < 2) ? results[0] : results;
         } else {
