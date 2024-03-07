@@ -1,7 +1,7 @@
 /*
  * TestRule.js - test an i18nlint Rule plugin
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  */
 
 import Locale from 'ilib-locale';
-import { Rule, Result } from 'i18nlint-common';
+import { Rule, Result } from 'ilib-lint-common';
 
 // from https://pubs.opengroup.org/onlinepubs/007904975/functions/fprintf.html
 const fstringRegExp = /\{(\}\}|[^}])*?\}/g;
@@ -92,13 +92,13 @@ class FStringNumberedRule extends Rule {
         const results = resources.flatMap(resource => {
             switch (resource.getType()) {
                 case 'string':
-                    return this.checkString(resource.getSource(), ir.getPath(), resource, options.lineNumber);
+                    return this.checkString(resource.getSource(), ir.sourceFile.getPath(), resource, options.lineNumber);
                     break;
 
                 case 'array':
                     const srcArray = resource.getSource();
                     return srcArray.flatMap(item => {
-                        return this.checkString(item, ir.getPath(), resource, options.lineNumber);
+                        return this.checkString(item, ir.sourceFile.getPath(), resource, options.lineNumber);
                     }).filter(element => {
                         return element;
                     });
@@ -108,7 +108,7 @@ class FStringNumberedRule extends Rule {
                     const srcPlural = resource.getSource();
                     const categories = Object.keys(srcPlural);
                     return categories.flatMap(category => {
-                        return this.checkString(srcPlural[category], ir.getPath(), resource, options.lineNumber);
+                        return this.checkString(srcPlural[category], ir.sourceFile.getPath(), resource, options.lineNumber);
                     });
                     break;
             }

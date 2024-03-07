@@ -1,7 +1,7 @@
 /*
  * LegacyMatchRule.test.js - test the substitution parameter rule
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import LegacyMatchRule from '../src/LegacyMatchRule.js';
 
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 describe("testLegacyMatchRules", () => {
     test("LegacyMatchRuleStyle", () => {
@@ -76,6 +76,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -88,7 +89,7 @@ describe("testLegacyMatchRules", () => {
                     target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -99,7 +100,7 @@ describe("testLegacyMatchRules", () => {
             source: 'This string contains a %(name)s string in it.',
             highlight: '<e0>Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.</e0>',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -110,6 +111,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -123,7 +125,7 @@ describe("testLegacyMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -135,6 +137,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -147,7 +150,7 @@ describe("testLegacyMatchRules", () => {
                     target: "Diese Zeichenfolge enthält %(name)s anderen Zeichenfolgen %(name)s.",
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -159,7 +162,7 @@ describe("testLegacyMatchRules", () => {
                 source: 'This string contains a name string in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>%(name)s</e0> anderen Zeichenfolgen <e0>%(name)s</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -168,7 +171,7 @@ describe("testLegacyMatchRules", () => {
                 source: 'This string contains a name string in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>%(name)s</e0> anderen Zeichenfolgen <e0>%(name)s</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);
@@ -180,6 +183,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -193,7 +197,7 @@ describe("testLegacyMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %(name)s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -205,6 +209,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -218,7 +223,7 @@ describe("testLegacyMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %(name)s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -230,6 +235,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -243,7 +249,7 @@ describe("testLegacyMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %( name )s.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -255,6 +261,7 @@ describe("testLegacyMatchRules", () => {
         const rule = new LegacyMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -268,7 +275,7 @@ describe("testLegacyMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält %(name)s %(number)d.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
