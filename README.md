@@ -98,6 +98,15 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.0.0
+
+- Updated dependency from i18nlint-common to ilib-lint-common
+    - IntermediateRepresentation now takes a SourceFile as an
+      parameter to the constructor instead of a file path
+    - Parser constructor no longer takes a file path. Instead,
+      the Parser.parse method takes a SourceFile parameter
+    - can now be loaded by ilib-lint >= v2
+
 ### v1.4.2
 
 - fixed a bug where HTML attribute values that are localizable but which
