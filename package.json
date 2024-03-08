@@ -6,6 +6,9 @@
     "exports": {
         ".": {
             "import": "./src/index.js"
+        },
+        "package.json": {
+            "import": "./package.json"
         }
     },
     "description": "ilib-lint plugin to lint react files for i18n problems",
