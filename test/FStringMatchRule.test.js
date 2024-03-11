@@ -1,7 +1,7 @@
 /*
  * FStringMatchRule.test.js - test the substitution parameter rule
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import FStringMatchRule from '../src/FStringMatchRule.js';
 
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 describe("testFStringMatchRules", () => {
     test("FStringMatchRuleStyle", () => {
@@ -76,6 +76,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -88,7 +89,7 @@ describe("testFStringMatchRules", () => {
                     target: "Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.",
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -99,7 +100,7 @@ describe("testFStringMatchRules", () => {
             source: 'This string contains a {name} string in it.',
             highlight: '<e0>Diese Zeichenfolge enthält keinen anderen Zeichenfolgen.</e0>',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -110,6 +111,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -123,7 +125,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -135,6 +137,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -147,7 +150,7 @@ describe("testFStringMatchRules", () => {
                     target: "Diese Zeichenfolge enthält {name} anderen Zeichenfolgen {name}.",
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -158,7 +161,7 @@ describe("testFStringMatchRules", () => {
             source: 'This string contains a {name} string in it.',
             highlight: 'Diese Zeichenfolge enthält <e0>{name}</e0> anderen Zeichenfolgen <e0>{name}</e0>.',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -169,6 +172,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -182,7 +186,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {name}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -194,6 +198,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -207,7 +212,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {name}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -219,6 +224,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -232,7 +238,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält { name }.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -244,6 +250,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -257,7 +264,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält { name}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -269,6 +276,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // whitespace in parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -282,7 +290,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {name }.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -294,6 +302,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -307,7 +316,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {name} {number}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -319,6 +328,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -332,7 +342,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {number:.3d}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -344,6 +354,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -357,7 +368,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {number:3.3d}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         const expected = [
@@ -368,7 +379,7 @@ describe("testFStringMatchRules", () => {
                 source: 'This string contains {number:.3d} in it.',
                 highlight: '<e0>Diese Zeichenfolge enthält {number:3.3d}.</e0>',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -377,7 +388,7 @@ describe("testFStringMatchRules", () => {
                 source: 'This string contains {number:.3d} in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>{number:3.3d}</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);
@@ -389,6 +400,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // numeric params in source and target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -402,7 +414,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {0}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -414,6 +426,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -426,7 +439,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {name}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(actual).toBeTruthy();
@@ -439,7 +452,7 @@ describe("testFStringMatchRules", () => {
                 source: 'This string contains {0} in it.',
                 highlight: '<e0>Diese Zeichenfolge enthält {name}.</e0>',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -448,7 +461,7 @@ describe("testFStringMatchRules", () => {
                 source: 'This string contains {0} in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>{name}</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
         ];
         expect(actual).toStrictEqual(expected);
@@ -460,6 +473,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -472,7 +486,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält {0}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(actual).toBeTruthy();
@@ -485,7 +499,7 @@ describe("testFStringMatchRules", () => {
                 source: 'This string contains {name} in it.',
                 highlight: '<e0>Diese Zeichenfolge enthält {0}.</e0>',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -494,7 +508,7 @@ describe("testFStringMatchRules", () => {
                 source: 'This string contains {name} in it.',
                 highlight: 'Diese Zeichenfolge enthält <e0>{0}</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
         ];
         expect(actual).toStrictEqual(expected);
@@ -506,6 +520,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // Double curly braces render to a single one in the output
         // and do not indicate the presence of a replacement param
         const actual = rule.match({
@@ -520,7 +535,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält einen {{ und einen }} Zeichen.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -532,6 +547,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // Double curly braces render to a single one in the output
         // and do not indicate the presence of a replacement param
         const actual = rule.match({
@@ -546,7 +562,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält einen {{und}} Zeichen.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -558,6 +574,7 @@ describe("testFStringMatchRules", () => {
         const rule = new FStringMatchRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // Double curly braces render to a single one in the output
         // and do not indicate the presence of a replacement param
         const actual = rule.match({
@@ -572,7 +589,7 @@ describe("testFStringMatchRules", () => {
                     target: 'Diese Zeichenfolge enthält einen {{ und}} Zeichen.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();

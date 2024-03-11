@@ -1,7 +1,7 @@
 /*
  * FStringMatchRule.js - implement a rule to match f-string substitution parameters
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  */
 
 import Locale from 'ilib-locale';
-import { Rule, Result } from 'i18nlint-common';
+import { Rule, Result } from 'ilib-lint-common';
 
 // from https://peps.python.org/pep-0498/
 const fstringRegExp = /\{\s*((\}\}|[^}])*?)\s*\}/g;
@@ -147,7 +147,7 @@ class FStringMatchRule extends Rule {
                 case 'string':
                     const tarString = resource.getTarget();
                     if (tarString) {
-                        return this.checkString(resource.getSource(), tarString, ir.getPath(), resource, options.lineNumber);
+                        return this.checkString(resource.getSource(), tarString, ir.sourceFile.getPath(), resource, options.lineNumber);
                     }
                     break;
 
@@ -157,7 +157,7 @@ class FStringMatchRule extends Rule {
                     if (tarArray) {
                         return srcArray.flatMap((item, i) => {
                             if (i < tarArray.length && tarArray[i]) {
-                                return this.checkString(srcArray[i], tarArray[i], ir.getPath(), resource, options.lineNumber);
+                                return this.checkString(srcArray[i], tarArray[i], ir.sourceFile.getPath(), resource, options.lineNumber);
                             }
                         }).filter(element => {
                             return element;
@@ -171,7 +171,7 @@ class FStringMatchRule extends Rule {
                     if (tarPlural) {
                         const categories = Array.from(new Set(Object.keys(srcPlural).concat(Object.keys(tarPlural))).values());
                         return categories.flatMap(category => {
-                            return this.checkString(srcPlural[category] || srcPlural.other, tarPlural[category] || tarPlural.other, ir.getPath(), resource, options.lineNumber);
+                            return this.checkString(srcPlural[category] || srcPlural.other, tarPlural[category] || tarPlural.other, ir.sourceFile.getPath(), resource, options.lineNumber);
                         });
                     }
                     break;

@@ -1,7 +1,7 @@
 /*
  * FStringNumberedRule.test.js - test the substitution parameter numbering rule
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import { ResourceString } from 'ilib-tools-common';
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 import FStringNumberedRule from '../src/FStringNumberedRule.js';
 
@@ -75,6 +75,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -85,7 +86,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This {} string contains a {} string in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -96,7 +97,7 @@ describe("testFStringNumberedRules", () => {
                 id: "fstring.test",
                 highlight: 'This <e0>{}</e0> string contains a <e0>{}</e0> string in it.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -104,7 +105,7 @@ describe("testFStringNumberedRules", () => {
                 id: "fstring.test",
                 highlight: 'This <e0>{}</e0> string contains a <e0>{}</e0> string in it.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);
@@ -116,6 +117,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -127,7 +129,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This string contains no substitution parameters in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -139,6 +141,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -150,7 +153,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This string contains a {name} substitution parameter in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -162,6 +165,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         // no parameters in source or target is okay
         const actual = rule.match({
             locale: "de-DE",
@@ -173,7 +177,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This string contains a {} substitution parameter in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -185,6 +189,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -195,7 +200,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This {name} string contains a {} string in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -205,7 +210,7 @@ describe("testFStringNumberedRules", () => {
             id: "fstring.test",
             highlight: 'This {name} string contains a <e0>{}</e0> string in it.',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -216,6 +221,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -226,7 +232,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This {name} string contains a {} string in {location}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -236,7 +242,7 @@ describe("testFStringNumberedRules", () => {
             id: "fstring.test",
             highlight: 'This {name} string contains a <e0>{}</e0> string in {location}.',
             rule,
-            pathName: "x"
+            pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -247,6 +253,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -257,7 +264,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This {name} string contains a {} string in {}.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         // if the source contains native quotes, the target must too
@@ -268,7 +275,7 @@ describe("testFStringNumberedRules", () => {
                 id: "fstring.test",
                 highlight: 'This {name} string contains a <e0>{}</e0> string in <e0>{}</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             }),
             new Result({
                 severity: "error",
@@ -276,7 +283,7 @@ describe("testFStringNumberedRules", () => {
                 id: "fstring.test",
                 highlight: 'This {name} string contains a <e0>{}</e0> string in <e0>{}</e0>.',
                 rule,
-                pathName: "x"
+                pathName: "a/b/c.xliff"
             })
         ];
         expect(actual).toStrictEqual(expected);
@@ -288,6 +295,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -298,7 +306,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This string contains a {{}} string in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();
@@ -310,6 +318,7 @@ describe("testFStringNumberedRules", () => {
         const rule = new FStringNumberedRule();
         expect(rule).toBeTruthy();
 
+        const sourceFile = new SourceFile("a/b/c.xliff", {});
         const actual = rule.match({
             locale: "de-DE",
             ir: new IntermediateRepresentation({
@@ -320,7 +329,7 @@ describe("testFStringNumberedRules", () => {
                     source: 'This string contains a {{ }} string in it.',
                     pathName: "a/b/c.xliff"
                 })],
-                filePath: "x"
+                sourceFile
             })
         });
         expect(!actual).toBeTruthy();

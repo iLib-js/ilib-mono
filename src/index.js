@@ -1,7 +1,7 @@
 /*
  * index.js - main program of python gnu plugin
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Plugin } from 'i18nlint-common';
+import { Plugin } from 'ilib-lint-common';
 
 import FStringMatchRule from './FStringMatchRule.js';
 import FStringNumberedRule from './FStringNumberedRule.js';
