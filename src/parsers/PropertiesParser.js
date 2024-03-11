@@ -98,7 +98,17 @@ class PropertiesParser extends Parser {
     }
 
     /**
+     * See if the current source file contains target strings or source
+     * strings. If it contains target strings, check if there is a file
+     * beside it that contains source strings. That way, we can read both
+     * files and create whole Resource instances instead of target-only
+     * ones. If the locale of the file is already a source locale, we
+     * should produce source-only Resource instances.
+     *
      * @private
+     * @param {SourceFile} sourceFile the properties file to check
+     * @returns {{sourcePath: string, sourceLocale: string, targetPath: string, targetLocale: string}} information
+     * about the given source file
      */
     guessLocaleAndFindSourcePath(sourceFile) {
         let prefix;
