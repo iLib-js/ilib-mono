@@ -20,22 +20,13 @@ import { ResourceString } from 'ilib-tools-common';
 
 import JSParser from '../src/parsers/JSParser.js';
 
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 describe("testJSParser", () => {
     test("JSParserConstructorEmpty", () => {
         expect.assertions(1);
 
         const parser = new JSParser();
-        expect(parser).toBeTruthy();
-    });
-
-    test("JSParserConstructorPath", () => {
-        expect.assertions(1);
-
-        const parser = new JSParser({
-            filePath: "./test/testfiles/testfile.js"
-        });
         expect(parser).toBeTruthy();
     });
 
@@ -72,7 +63,8 @@ describe("testJSParser", () => {
         const parser = new JSParser();
         expect(parser).toBeTruthy();
 
-        const actual = parser.parseString("import foo from '../src/index.js';", "x/y");
+        const sourceFile = new SourceFile("x/y", {});
+        const actual = parser.parseString("import foo from '../src/index.js';", sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
@@ -85,12 +77,13 @@ describe("testJSParser", () => {
         const parser = new JSParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// comment
             import foo from '../src/index.js';
 
             const str = "String";
-            `, "x/y");
+            `, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 

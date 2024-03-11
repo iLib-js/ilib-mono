@@ -2,7 +2,6 @@
 
 exports[`test the flow parser with jsx code Flow parser more complex 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -424,13 +423,18 @@ exports[`test the flow parser with jsx code Flow parser more complex 1`] = `
     "start": 0,
     "type": "File",
   },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
   "type": "babel-ast",
 }
 `;
 
 exports[`test the flow parser with jsx code Flow parser simple 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -777,13 +781,18 @@ exports[`test the flow parser with jsx code Flow parser simple 1`] = `
     "start": 0,
     "type": "File",
   },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
   "type": "babel-ast",
 }
 `;
 
 exports[`test the flow parser with jsx code JSX with a high-order component in it 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -3050,6 +3059,12 @@ exports[`test the flow parser with jsx code JSX with a high-order component in i
     },
     "start": 0,
     "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
   },
   "type": "babel-ast",
 }

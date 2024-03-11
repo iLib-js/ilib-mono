@@ -2,7 +2,6 @@
 
 exports[`testFlowParser Flow parser more complex example 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -309,13 +308,18 @@ exports[`testFlowParser Flow parser more complex example 1`] = `
     "start": 0,
     "type": "File",
   },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
   "type": "babel-ast",
 }
 `;
 
 exports[`testFlowParser Flow parser simple 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -661,6 +665,12 @@ exports[`testFlowParser Flow parser simple 1`] = `
     },
     "start": 0,
     "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
   },
   "type": "babel-ast",
 }

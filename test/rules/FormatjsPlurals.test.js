@@ -1,7 +1,7 @@
 /*
  * FormatjsPlurals.test.js - test the formatjs plural syntax rule
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Result } from 'i18nlint-common';
+import { Result, SourceFile } from 'ilib-lint-common';
 
 import JSXParser from '../../src/parsers/JSXParser.js';
 import FormatjsPlurals from '../../src/rules/FormatjsPlurals.js';
@@ -28,6 +28,7 @@ describe("testFormatjsPlurals", () => {
         const rule = new FormatjsPlurals();
         expect(rule).toBeTruthy();
         const parser = new JSXParser();
+        const sourceFile = new SourceFile("x/y", {});
         const ir = parser.parseString(
             `
             // @flow
@@ -41,7 +42,7 @@ describe("testFormatjsPlurals", () => {
                 }
             });
             export default messages;
-            `, "x/y");
+            `, sourceFile);
 
         const actual = rule.match({
             ir
@@ -55,6 +56,7 @@ describe("testFormatjsPlurals", () => {
         const rule = new FormatjsPlurals();
         expect(rule).toBeTruthy();
         const parser = new JSXParser();
+        const sourceFile = new SourceFile("x/y", {});
         const ir = parser.parseString(
             `
             // @flow
@@ -73,7 +75,7 @@ describe("testFormatjsPlurals", () => {
                 }
             });
             export default messages;
-            `, "x/y");
+            `, sourceFile);
 
         //console.log(JSON.stringify(intermediateRepresentation, undefined, 2));
 

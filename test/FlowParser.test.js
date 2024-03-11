@@ -20,7 +20,7 @@ import { ResourceString } from 'ilib-tools-common';
 
 import FlowParser from '../src/parsers/FlowParser.js';
 
-import { Result, IntermediateRepresentation } from 'i18nlint-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 describe("testFlowParser", () => {
     test("Flow parser empty constructor", () => {
@@ -72,13 +72,14 @@ describe("testFlowParser", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// @flow
             import foo from '../src/index.js';
             export default function pathToFile(): string {
                 return foo('x/y');
             }
-            `, "x/y");
+            `, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 
@@ -91,6 +92,7 @@ describe("testFlowParser", () => {
         const parser = new FlowParser();
         expect(parser).toBeTruthy();
 
+        const sourceFile = new SourceFile("x/y", {});
         const actual = parser.parseString(
             `// comment
             import foo from '../src/index.js';
@@ -98,7 +100,7 @@ describe("testFlowParser", () => {
             const str: string = "String";
 
             export default str;
-            `, "x/y");
+            `, sourceFile);
         expect(actual).toBeTruthy();
         const actualSimplified = JSON.parse(JSON.stringify(actual));
 

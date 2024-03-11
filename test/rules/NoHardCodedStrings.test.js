@@ -1,7 +1,7 @@
 /*
  * NoHardCodedStrings.test.js
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,23 @@
  * limitations under the License.
  */
 
-import { Result } from "i18nlint-common";
+import { Result, SourceFile } from "ilib-lint-common";
+
 import FlowParser from "../../src/parsers/FlowParser.js";
 import JSParser from "../../src/parsers/JSParser.js";
 import JSXParser from "../../src/parsers/JSXParser.js";
 import NoHardCodedStrings from "../../src/rules/NoHardCodedStrings.js";
 import { trimIndent } from "../utils.js";
 
-/** @typedef {import("i18nlint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
 
 describe("NoHardCodedStrings", () => {
     describe("Flow JSX", () => {
         const getFlowJsxIr = (filePath, content) => {
             const parser = new FlowParser();
-            parser.data = trimIndent(content);
-            parser.path = filePath;
-            const [ir] = parser.parse();
+            const sourceFile = new SourceFile(filePath, {});
+            sourceFile.content = trimIndent(content);
+            const [ir] = parser.parse(sourceFile);
             return ir;
         };
 
@@ -271,9 +272,9 @@ describe("NoHardCodedStrings", () => {
     describe("JSX", () => {
         const getJsxIr = (filePath, content) => {
             const parser = new JSXParser();
-            parser.data = trimIndent(content);
-            parser.path = filePath;
-            const [ir] = parser.parse();
+            const sourceFile = new SourceFile(filePath, {});
+            sourceFile.content = trimIndent(content);
+            const [ir] = parser.parse(sourceFile);
             return ir;
         };
 
@@ -479,9 +480,9 @@ describe("NoHardCodedStrings", () => {
     describe("Flow", () => {
         const getFlowIr = (filePath, content) => {
             const parser = new FlowParser();
-            parser.data = trimIndent(content);
-            parser.path = filePath;
-            const [ir] = parser.parse();
+            const sourceFile = new SourceFile(filePath, {});
+            sourceFile.content = trimIndent(content);
+            const [ir] = parser.parse(sourceFile);
             return ir;
         };
 

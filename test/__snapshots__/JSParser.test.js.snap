@@ -2,7 +2,6 @@
 
 exports[`testJSParser JSParserMoreComplex 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [
       {
@@ -238,13 +237,18 @@ exports[`testJSParser JSParserMoreComplex 1`] = `
     "start": 0,
     "type": "File",
   },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
   "type": "babel-ast",
 }
 `;
 
 exports[`testJSParser JSParserSimple 1`] = `
 {
-  "filePath": "x/y",
   "ir": {
     "comments": [],
     "end": 34,
@@ -362,6 +366,12 @@ exports[`testJSParser JSParserSimple 1`] = `
     },
     "start": 0,
     "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
   },
   "type": "babel-ast",
 }

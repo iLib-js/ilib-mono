@@ -1,7 +1,7 @@
 /*
  * index.js - main program of the React plugin
  *
- * Copyright © 2023 Box, Inc.
+ * Copyright © 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Plugin } from "i18nlint-common";
+import { Plugin } from "ilib-lint-common";
 
 import JSParser from "./parsers/JSParser.js";
 import JSXParser from "./parsers/JSXParser.js";

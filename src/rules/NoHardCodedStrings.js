@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Result, Rule } from "i18nlint-common";
+import { Result, Rule } from "ilib-lint-common";
 import { Utils } from 'ilib-common';
 import { localizableAttributes } from 'ilib-tools-common';
 
@@ -39,7 +39,7 @@ const skipComponents = new Set([
 ]);
 
 // type imports
-/** @typedef {import("i18nlint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
 /** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
 
 class NoHardCodedStrings extends Rule {
@@ -100,7 +100,7 @@ class NoHardCodedStrings extends Rule {
                                         attribute.value.type === "StringLiteral" &&
                                         attribute.value.value.trim().length > 0) {
                                     results.push({
-                                        pathName: ir.filePath,
+                                        pathName: ir.sourceFile.getPath(),
                                         severity: "error",
                                         description: `Found unlocalizable hard-coded attribute value. Use intl.formatMessage() instead.`,
                                         id: undefined,
@@ -120,7 +120,7 @@ class NoHardCodedStrings extends Rule {
                         args.forEach(argument => {
                             if (argument.type === "StringLiteral") {
                                 results.push({
-                                    pathName: ir.filePath,
+                                    pathName: ir.sourceFile.getPath(),
                                     severity: "error",
                                     description: `Found unlocalizable hard-coded string. Use intl.formatMessage() instead.`,
                                     id: undefined,
@@ -148,7 +148,7 @@ class NoHardCodedStrings extends Rule {
                                 attribute.value?.type === "StringLiteral" &&
                                 attribute.value.value.trim().length > 0) {
                             results.push({
-                                pathName: ir.filePath,
+                                pathName: ir.sourceFile.getPath(),
                                 severity: "error",
                                 description: `Found unlocalizable hard-coded attribute value. Use intl.formatMessage() instead.`,
                                 id: undefined,
@@ -169,7 +169,7 @@ class NoHardCodedStrings extends Rule {
                 // don't report on all whitespace strings!
                 if (text?.value.trim() !== "") {
                     results.push({
-                        pathName: ir.filePath,
+                        pathName: ir.sourceFile.getPath(),
                         severity: "error",
                         description: `Found unlocalizable hard-coded string. Use a FormattedMessage component instead.`,
                         id: undefined,
