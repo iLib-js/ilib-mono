@@ -1,7 +1,7 @@
 /*
  * Formatter.js - Formats result output
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,17 @@ class Formatter {
      * @returns {String} the formatted result
      */
     format(result) {
+    }
+    /**
+     * Provide the information for the formatter as an object and
+     * return the formatted string that contains a lot of information
+     * according to the formatter's needs.
+     *
+     * @abstract
+     * @param {Object} [options] the options that needs for formatter
+     * @returns {String} the formatted result
+     */
+    formatOutput(options) {
     }
 }
 
