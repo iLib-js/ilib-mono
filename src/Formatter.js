@@ -70,8 +70,22 @@ class Formatter {
      * return the formatted string that contains a lot of information
      * according to the formatter's needs.
      *
+     * The method supposed to format the entire output, including headers,
+     * footers and summaries and formatted Result instances.
+     * If the formatOutput is defined, the linter does not call format()
+     * directly and it is up to formatOutput to do so. If formatOutput
+     * is not defined in a Formatter plugin, then ilib-lint will use its
+     * own default headers and footers and will call format to format each Result.
+     *
      * @abstract
-     * @param {Object} [options] the options that needs for formatter
+     * @param {Object} [options] Information that the method can use to format the output
+     * @param {string} [options.name] name of the this project
+     * @param {string} [options.fileStats] The stats information of the file
+     * @param {string} [options.resultStats] Information about the lint result of the  file
+     * @param {string} [options.results] list containing all issues in this project
+     * @param {string} [options.score] I18N score for this project
+     * @param {string} [options.totalTime] Total elapsed time by the tool for this project
+     * @param {string} [options.errorOnly] true, if only errors are displayed
      * @returns {String} the formatted result
      */
     formatOutput(options) {
