@@ -80,7 +80,7 @@ class Formatter {
      * @abstract
      * @param {Object} [options] Information that the method can use to format the output
      * @param {string} [options.name] name of the this project
-     * @param {Object} [options.fileStats] The stats information of the file
+     * @param {FileStats} [options.fileStats] The stats information of the file
      * @param {Object} [options.resultStats] Information about the lint result of the  file
      * @param {Object} [options.results] list containing all issues in this project
      * @param {Number} [options.score] I18N score for this project
