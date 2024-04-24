@@ -1,15 +1,15 @@
 {
     "name": "ilib-lint-react",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "main": "./src/index.js",
     "type": "module",
     "exports": {
         ".": {
-            "import": "./src/index.js"
+            "default": {
+                "default": "./src/index.js"
+            }
         },
-        "package.json": {
-            "import": "./package.json"
-        }
+        "./package.json": "./package.json"
     },
     "description": "ilib-lint plugin to lint react files for i18n problems",
     "files": [
