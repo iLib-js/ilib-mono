@@ -70,6 +70,10 @@ limitations under the License.
 
 ## Release Notes
 
+### v2.0.1
+
+- Fixed a bug where the exports were not properly set up in the package.json
+
 ### v2.0.0
 
 - Updated dependency from i18nlint-common to ilib-lint-common
