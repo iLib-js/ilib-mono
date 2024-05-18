@@ -22,10 +22,11 @@ var path = require("path");
 var Yaml = require("ilib-yaml");
 var Locale = require("ilib/lib/Locale.js");
 var tools = require("ilib-tools-common");
+const TranslationSet = require("loctool/lib/TranslationSet");
 
 var ResourceString = tools.ResourceString;
 var ResourcePlural = tools.ResourcePlural;
-var TranslationSet = tools.TranslationSet;
+var ResourceArray = tools.ResourceArray;
 
 /**
  * @class Represents a yaml source file.
@@ -95,7 +96,7 @@ var pluralSuffices = {
     "_11": "many",
     "_0": "zero",
     "_1": "one",
-    "_2": "two", 
+    "_2": "two",
     "_3": "few"
 };
 
@@ -108,7 +109,7 @@ var pluralSuffices = {
  * then this method returns an empty string to indicate that
  * this is part of a plural, but it has no suffix. If the resource
  * is not a plural form, then this method returns undefined.
- * 
+ *
  * @param {ResourceString} resource the resource to check
  * @returns {string|undefined} the plural category string if
  * this resource represents a plural form, or undefined if it
@@ -136,7 +137,7 @@ function isPluralForm(set, resource) {
         });
         return resources.length ? resources[0] : false;
     });
-    
+
     return suffix ? "" : undefined;
 }
 
@@ -312,27 +313,29 @@ YamlFile.prototype.addAll = function(resources) {
 /**
  * Generate the content of the resource file.
  *
+ * @param {TranslationSet} set the set to use to get the content
  * @private
  * @returns {String} the content of the resource file
  */
-YamlFile.prototype.getContent = function() {
+YamlFile.prototype.getContent = function(set) {
     // Run through each resource and convert any plural resources
     // into string resources so that they can be represented in
     // the yaml file properly as tap-i18n expects it. All other
     // types of resources are just left as-is.
-    var resources = this.set.getAll();
+    var resources = set.getAll();
     var filtered = new TranslationSet();
 
     resources.forEach(function(resource) {
         if (resource.getType() === "plural") {
             var sourcePlurals = resource.getSource();
             var targetPlurals = resource.getTarget();
-            var pluralCategories = Object.keys(sourcePlurals).sort();
+            var pluralCategories = Object.keys(targetPlurals ?? sourcePlurals).sort();
             pluralCategories.forEach(function(category) {
                 var newres = new ResourceString({
                     key: resource.getKey() + "_" + category,
                     sourceLocale: resource.getSourceLocale(),
-                    source: sourcePlurals[category],
+                    // there should always at least be an "other" category
+                    source: sourcePlurals[category] ?? sourcePlurals.other,
                     project: resource.getProject(),
                     pathName: resource.getPath(),
                     datatype: resource.getDataType(),
@@ -351,11 +354,18 @@ YamlFile.prototype.getContent = function() {
         }
     }.bind(this));
 
-    var set = this.yaml.getTranslationSet();
-    set.clear();
-    set.addAll(filtered.getAll());
+    var y = new Yaml({
+        pathName: this.pathName,
+        project: this.project.getProjectId(),
+        locale: this.locale,
+        context: this.context,
+        datatype: this.type.getDataType(),
+        flavor: this.flavor,
+        commentPrefix: this.getCommentPrefix()
+    });
+    y.addResources(filtered.getAll());
 
-    return this.yaml.serialize();
+    return y.serialize();
 };
 
 //we don't write to yaml source files
@@ -390,6 +400,26 @@ YamlFile.prototype.getLocalizedPath = function(locale) {
 };
 
 /**
+ *
+ * @param {string} type type of the resource to create.
+ * Must be one of "string", "array", or "plural"
+ * @param {Object} options options to construct the new instance
+ * @returns {Resource} a new resource instance
+ * @private
+ */
+function testResourceFactory(type, options) {
+    switch (type) {
+        default:
+        case 'string':
+            return new ResourceString(options);
+        case 'array':
+            return new ResourceArray(options);
+        case 'plural':
+            return new ResourcePlural(options);
+    }
+}
+
+/**
  * Localize the text of the current file to the given locale and return
  * the results.
  *
@@ -399,6 +429,7 @@ YamlFile.prototype.getLocalizedPath = function(locale) {
  */
 YamlFile.prototype.localizeText = function(translations, locale) {
     var resources = this.set.getAll();
+    var localizedSet = new TranslationSet(this.sourceLocale);
 
     var translatedYaml = new Yaml({
         pathName: this.pathName,
@@ -414,15 +445,15 @@ YamlFile.prototype.localizeText = function(translations, locale) {
         var reskey = resource.getKey();
         var source = resource.getSource();
 
-        var tester = new ResourceString({
-            resType: "string",
+        var tester = testResourceFactory(resource.getType(), {
             project: this.project.getProjectId(),
             sourceLocale: this.project.getSourceLocale(),
+            source: resource.getSource(),
             reskey: reskey,
             pathName: this.pathName,
             datatype: this.type.datatype
         });
-        var hashkey = tester.hashKeyForTranslation(locale); 
+        var hashkey = tester.hashKeyForTranslation(locale);
         var translatedResource = translations.get(hashkey);
         var translation;
 
@@ -469,10 +500,10 @@ YamlFile.prototype.localizeText = function(translations, locale) {
         tester.setTarget(translation);
         tester.setTargetLocale(locale);
 
-        translatedYaml.addResource(tester);
+        localizedSet.add(tester);
     }.bind(this));
 
-    return translatedYaml.serialize();
+    return this.getContent(localizedSet);
 };
 
 /**

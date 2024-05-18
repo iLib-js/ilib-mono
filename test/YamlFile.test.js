@@ -24,6 +24,7 @@ var CustomProject =  require("loctool/lib/CustomProject.js");
 
 var ResourceString = tools.ResourceString;
 var ResourcePlural = tools.ResourcePlural;
+var ResourceArray = tools.ResourceArray;
 var TranslationSet = tools.TranslationSet;
 
 var path = require("path");
@@ -171,7 +172,7 @@ describe("yamlfile", function() {
                 '  and personal growth at one of the best companies in Silicon Valley, all while learning\n' +
                 '  directly from experienced, successful entrepreneurs.\n' +
                 'Working_at_MyCompany: Working at My Company, Inc.\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getBy({
             reskey: "Jobs"
@@ -205,7 +206,7 @@ describe("yamlfile", function() {
                 '  bar:\n' +
                 '    asdf:\n' +
                 '      test: test of many levels\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
@@ -262,7 +263,7 @@ describe("yamlfile", function() {
                 '    bar:\n' +
                 '      asdf:\n' +
                 '        test: test of many levels\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
@@ -314,7 +315,7 @@ describe("yamlfile", function() {
                 '    bar:\n' +
                 '      asdf:\n' +
                 '        test: test of many levels\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
@@ -363,7 +364,7 @@ describe("yamlfile", function() {
             '      a: x y z\n' +
             '      c: a b c\n'
         );
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
@@ -398,14 +399,14 @@ describe("yamlfile", function() {
             project: p,
             type: yft
         });
-debugger;
+
         expect(yml).toBeTruthy();
         yml.parse('---\n' +
                 'Jobs: Job\n' +
                 'Jobs_plural: Jobs\n' +
                 'file_count: There is {n} file in the folder.\n' +
                 'file_count_plural: There are {n} files in the folder.\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getBy({
             reskey: "Jobs"
@@ -440,7 +441,7 @@ debugger;
                 'Jobs_other: Jobs\n' +
                 'file_count_one: There is {n} file in the folder.\n' +
                 'file_count_other: There are {n} files in the folder.\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getBy({
             reskey: "Jobs"
@@ -469,7 +470,7 @@ debugger;
             type: yft
         });
         expect(yml).toBeTruthy();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(0);
         yml.parse(
                 'Working_at_MyCompany: Working at MyCompany\n' +
@@ -490,7 +491,7 @@ debugger;
             type: yft
         });
         expect(yml).toBeTruthy();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(0);
         yml.parse('#first_a comment\n' +
             'first_a:\n' +
@@ -540,7 +541,7 @@ debugger;
             'second: "string"\n' +
             '#   space both multiple        \n' +
             'third: "string"');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(3);
         var r = set.getAll();
         expect(r[0].getComment()).toBe("space before");
@@ -560,7 +561,7 @@ debugger;
             '# comment    \n' +
             'second: "string"\n' +
             'third: "string"\n');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(3);
         var r = set.getAll();
         expect(r[0].getComment()).toBe(undefined);
@@ -575,7 +576,7 @@ debugger;
             type: yft
         });
         expect(yml).toBeTruthy();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(0);
         yml.parse(
                 '---\n' +
@@ -585,7 +586,7 @@ debugger;
                 '  - three\n' +
                 '  - four\n');
         expect(set).toBeTruthy();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
@@ -606,7 +607,7 @@ debugger;
             type: yft
         });
         expect(yml).toBeTruthy();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(0);
         yml.parse(
             '---\n' +
@@ -619,7 +620,7 @@ debugger;
             '  #second level comment\n' +
             '  - four\n');
         expect(set).toBeTruthy();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
@@ -633,6 +634,154 @@ debugger;
         expect(r[0].getComment()).toBe("first level comment");
     });
 
+    test("YamlFileParseWithFlavor", function() {
+        expect.assertions(15);
+        var yml = new YamlFile({
+            project: p,
+            locale: "en-US",
+            type: yft,
+            flavor: "CHOCOLATE"
+        });
+        expect(yml).toBeTruthy();
+        yml.parse('---\n' +
+                'a: foobar\n' +
+                'b: barfoo\n');
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        var r = set.getAll();
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(2);
+        expect(r[0].getSource()).toBe("foobar");
+        expect(r[0].getSourceLocale()).toBe("en-US");
+        expect(r[0].getKey()).toBe("a");
+        expect(r[0].getContext()).toBeFalsy();
+        expect(r[0].getFlavor()).toBe("CHOCOLATE");
+        expect(r[1].getSource()).toBe("barfoo");
+        expect(r[1].getSourceLocale()).toBe("en-US");
+        expect(r[1].getKey()).toBe("b");
+        expect(r[1].getContext()).toBeFalsy();
+        expect(r[1].getFlavor()).toBe("CHOCOLATE");
+    });
+
+    test("YamlFileParseWithNoFlavor", function() {
+        expect.assertions(15);
+        var yml = new YamlFile({
+            project: p,
+            locale: "en-US",
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse('---\n' +
+                'a: foobar\n' +
+                'b: barfoo\n');
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        var r = set.getAll();
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(2);
+        expect(r[0].getSource()).toBe("foobar");
+        expect(r[0].getSourceLocale()).toBe("en-US");
+        expect(r[0].getKey()).toBe("a");
+        expect(r[0].getContext()).toBeFalsy();
+        expect(r[0].getFlavor()).toBeFalsy();
+        expect(r[1].getSource()).toBe("barfoo");
+        expect(r[1].getSourceLocale()).toBe("en-US");
+        expect(r[1].getKey()).toBe("b");
+        expect(r[1].getContext()).toBeFalsy();
+        expect(r[1].getFlavor()).toBeFalsy();
+    });
+
+    test("YamlFileParseTargetWithNoFlavor", function() {
+        expect.assertions(17);
+        var yml = new YamlFile({
+            project: p,
+            locale: "es-US",
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse('---\n' +
+                'a: foobar\n' +
+                'b: barfoo\n');
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        var r = set.getAll();
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(2);
+        expect(r[0].getTarget()).toBe("foobar");
+        expect(r[0].getTargetLocale()).toBe("es-US");
+        expect(r[0].getSourceLocale()).toBe("en-US");
+        expect(r[0].getKey()).toBe("a");
+        expect(r[0].getContext()).toBeFalsy();
+        expect(r[0].getFlavor()).toBeFalsy();
+        expect(r[1].getTarget()).toBe("barfoo");
+        expect(r[1].getTargetLocale()).toBe("es-US");
+        expect(r[1].getSourceLocale()).toBe("en-US");
+        expect(r[1].getKey()).toBe("b");
+        expect(r[1].getContext()).toBeFalsy();
+        expect(r[1].getFlavor()).toBeFalsy();
+    });
+
+    test("YamlFileParseWithGleanedFlavor", function() {
+        expect.assertions(13);
+        var yml = new YamlFile({
+            project: p,
+            locale: "en-US",
+            type: yft,
+            pathName: "customization/en-CHOCOLATE.yml"
+        });
+        expect(yml).toBeTruthy();
+        yml.parse('---\n' +
+                'a: foobar\n' +
+                'b: barfoo\n');
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        var r = set.getAll();
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(2);
+        expect(r[0].getSource()).toBe("foobar");
+        expect(r[0].getSourceLocale()).toBe("en-US");
+        expect(r[0].getKey()).toBe("a");
+        expect(r[0].getFlavor()).toBe("CHOCOLATE");
+        expect(r[1].getSource()).toBe("barfoo");
+        expect(r[1].getSourceLocale()).toBe("en-US");
+        expect(r[1].getKey()).toBe("b");
+        expect(r[1].getFlavor()).toBe("CHOCOLATE");
+    });
+
+    test("YamlFileParseWithNoGleanedFlavor", function() {
+        expect.assertions(15);
+        var yml = new YamlFile({
+            project: p,
+            locale: "en-ZA",
+            type: yft,
+            pathName: "customization/en-ZA.yml"
+        });
+        expect(yml).toBeTruthy();
+        yml.parse('---\n' +
+                'a: foobar\n' +
+                'b: barfoo\n');
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        var r = set.getAll();
+        expect(r).toBeTruthy();
+        expect(r.length).toBe(2);
+        expect(r[0].getTarget()).toBe("foobar");
+        expect(r[0].getTargetLocale()).toBe("en-ZA");
+        expect(r[0].getSourceLocale()).toBe("en-US");
+        expect(r[0].getKey()).toBe("a");
+        expect(r[0].getFlavor()).toBeFalsy();
+        expect(r[1].getTarget()).toBe("barfoo");
+        expect(r[1].getTargetLocale()).toBe("en-ZA");
+        expect(r[1].getSourceLocale()).toBe("en-US");
+        expect(r[1].getKey()).toBe("b");
+        expect(r[1].getFlavor()).toBeFalsy();
+    });
+
     test("YamlFileExtractFile", function() {
         expect.assertions(14);
         var yml = new YamlFile({
@@ -643,7 +792,7 @@ debugger;
         expect(yml).toBeTruthy();
         // should read the file
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(10);
         var r = set.getBy({
             reskey: "Marketing"
@@ -677,7 +826,7 @@ debugger;
         expect(yml).toBeTruthy();
         // should attempt to read the file and not fail
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(0);
     });
 
@@ -691,7 +840,7 @@ debugger;
         expect(yml).toBeTruthy();
         // should attempt to read the file and not fail
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(0);
     });
 
@@ -726,11 +875,11 @@ debugger;
         ].forEach(function(res) {
             yml.addResource(res);
         });
-        diff(yml.getContent(),
+        diff(yml.getContent(yml.getTranslationSet()),
             'more_source_text: mehr Quellen\"text\n' +
             'source_text: Quellen\"text\n'
         );
-        expect(yml.getContent()).toBe('more_source_text: mehr Quellen\"text\n' +
+        expect(yml.getContent(yml.getTranslationSet())).toBe('more_source_text: mehr Quellen\"text\n' +
             'source_text: Quellen\"text\n'
         );
     });
@@ -769,8 +918,8 @@ debugger;
         var expected =
             '"&apos;&#41;, url&#40;imgs/masks/top_bar": "&apos;&#41;, url&#40;imgs/masks/top_bar康生活相"\n' +
             '• &amp;nbsp; Address a particular topic: • &amp;nbsp; 解决一个特定的主题\n';
-        diff(yml.getContent(), expected);
-        expect(yml.getContent()).toBe(expected);
+        diff(yml.getContent(yml.getTranslationSet()), expected);
+        expect(yml.getContent(yml.getTranslationSet())).toBe(expected);
     });
 
     test("YamlFileGetContentWithNewlines", function() {
@@ -809,8 +958,8 @@ debugger;
             "short key: |-\n" +
             "  this is text that is relatively long and can run past the end of the page\n" +
             "  So, we put a new line in the middle of it.\n";
-        diff(yml.getContent(), expected);
-        expect(yml.getContent()).toBe(expected);
+        diff(yml.getContent(yml.getTranslationSet()), expected);
+        expect(yml.getContent(yml.getTranslationSet())).toBe(expected);
     });
 
     test("YamlFileGetContentWithSubkeys", function() {
@@ -848,8 +997,8 @@ debugger;
             "    asdf:\n" +
             "      key2: short text\n" +
             "    key1: medium length text that doesn't go beyond one line\n";
-        diff(yml.getContent(), expected);
-        expect(yml.getContent()).toBe(expected);
+        diff(yml.getContent(yml.getTranslationSet()), expected);
+        expect(yml.getContent(yml.getTranslationSet())).toBe(expected);
     });
 
     test("YamlFileGetContentEmpty", function() {
@@ -861,7 +1010,41 @@ debugger;
             locale: "de-DE"
         });
         expect(yml).toBeTruthy();
-        expect(yml.getContent()).toBe('{}\n');
+        expect(yml.getContent(yml.getTranslationSet())).toBe('{}\n');
+    });
+
+    test("YamlFileGetContentPlural", function() {
+        expect.assertions(2);
+        var yml = new YamlFile({
+            project: p,
+            type: yft,
+            pathName: "./asdf.yml",
+            locale: "de-DE"
+        });
+        expect(yml).toBeTruthy();
+        [
+            new ResourcePlural({
+                project: "webapp",
+                sourceLocale: "de-DE",
+                key: "asdf",
+                sourceStrings: {
+                    "one": "This is singular",
+                    "two": "This is double",
+                    "few": "This is a different case"
+                },
+                pathName: "a/b/c.java",
+                comment: "foobar foo",
+                state: "accepted"
+            })
+        ].forEach(function(res) {
+            yml.addResource(res);
+        });
+        var expected =
+            "asdf_few: This is a different case\n" +
+            "asdf_one: This is singular\n" +
+            "asdf_two: This is double\n";
+        diff(yml.getContent(yml.getTranslationSet()),expected);
+        expect(yml.getContent(yml.getTranslationSet())).toBe(expected);
     });
 
     test("YamlFileRealContent", function() {
@@ -875,7 +1058,7 @@ debugger;
         });
         expect(yml).toBeTruthy();
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "The_perks_of_interning", "x-yaml"));
         expect(r).toBeTruthy();
@@ -893,7 +1076,7 @@ debugger;
         });
         expect(yml).toBeTruthy();
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "saved_someone_else_time.subject", "x-yaml"));
         expect(r).toBeTruthy();
@@ -912,7 +1095,7 @@ debugger;
         });
         expect(yml).toBeTruthy();
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "member_question_asked@answered.email_subject", "x-yaml"));
         expect(r).toBeTruthy();
@@ -931,7 +1114,7 @@ debugger;
         });
         expect(yml).toBeTruthy();
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "member_question_asked@answered.email_subject", "x-yaml"));
         expect(r).toBeTruthy();
@@ -940,7 +1123,7 @@ debugger;
 
     test("YamlFileLocalizeText", function() {
         expect.assertions(7);
-debugger;
+
         var yml = new YamlFile({
             project: p,
             type: yft,
@@ -958,14 +1141,14 @@ debugger;
             '  setting_name: thanked_note_time_saved\n' +
             '  daily_limit_exception_email: true\n'
         );
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getBySource('%1, you’re saving time!');
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('%1, you’re saving time!');
         expect(r.getSourceLocale()).toBe('en-US');
         expect(r.getKey()).toBe('thanked_note_time_saved.email_subject');
-        var translations = new TranslationSet();
+        var translations = new TranslationSet("en-US");
         translations.add(new ResourceString({
             project: "webapp",
             key: 'thanked_note_time_saved.email_subject',
@@ -1006,7 +1189,7 @@ debugger;
             '  setting_name: thanked_note_time_saved\n' +
             '  daily_limit_exception_email: true\n'
         );
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getBySource('%1, You\'re saving time!');
         expect(r).toBeTruthy();
@@ -1020,7 +1203,7 @@ debugger;
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('You\'ve saved time! View %1');
         expect(r.getKey()).toBe('thanked_note_time_saved.push_data');
-        var translations = new TranslationSet();
+        var translations = new TranslationSet("en-US");
         translations.addAll([
             new ResourceString({
                 project: "webapp",
@@ -1061,6 +1244,226 @@ debugger;
         expect(actual).toBe(expected);
     });
 
+    test("YamlFile localize text with arrays", function() {
+        expect.assertions(7);
+debugger;
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject:\n' +
+            '    - "%1, You\'re saving time!"\n' +
+            '    - "You’ve been thanked for saving a colleague\'s time!"\n' +
+            '    - View %1\n'
+        );
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        var resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        var r = resources[0];
+        expect(r).toBeTruthy();
+        expect(r.getType()).toBe("array");
+
+        expect(r.getSource()).toStrictEqual([
+            '%1, You\'re saving time!',
+            'You’ve been thanked for saving a colleague\'s time!',
+            'View %1'
+        ]);
+
+        var translations = new TranslationSet("en-US");
+        translations.add(
+            new ResourceArray({
+                project: "webapp",
+                key: 'thanked_note_time_saved.email_subject',
+                source: [
+                    '%1, You\'re saving time!',
+                    'You’ve been thanked for saving a colleague\'s time!',
+                    'View %1'
+                ],
+                sourceLocale: "en-US",
+                target: [
+                    '%1, vous économisez du temps!',
+                    'Vous avez été remercié pour économiser du temps!',
+                    'Voir %1'
+                ],
+                targetLocale: "fr-FR",
+                datatype: "x-yaml"
+            })
+        );
+        var actual = yml.localizeText(translations, "fr-FR");
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  email_subject:\n' +
+            '    - "%1, vous économisez du temps!"\n' +
+            '    - Vous avez été remercié pour économiser du temps!\n' +
+            '    - Voir %1\n';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("YamlFile localize text with plurals", function() {
+        expect.assertions(7);
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject_one: There is {n} item.\n' +
+            '  email_subject_other: There are {n} items.\n'
+        );
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        var resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        var r = resources[0];
+        expect(r).toBeTruthy();
+        expect(r.getType()).toBe("plural");
+
+        expect(r.getSource()).toStrictEqual({
+            one: "There is {n} item.",
+            other: "There are {n} items."
+        });
+
+        var translations = new TranslationSet("en-US");
+        translations.add(
+            new ResourcePlural({
+                project: "webapp",
+                key: 'thanked_note_time_saved.email_subject',
+                source: {
+                    one: "There is {n} item.",
+                    other: "There are {n} items."
+                },
+                sourceLocale: "en-US",
+                target: {
+                    one: "Il y a {n} élément.",
+                    other: "Il y a {n} éléments."
+                },
+                targetLocale: "fr-FR",
+                datatype: "x-yaml"
+            })
+        );
+        var actual = yml.localizeText(translations, "fr-FR");
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  email_subject_one: Il y a {n} élément.\n' +
+            '  email_subject_other: Il y a {n} éléments.\n';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("YamlFile localize text with plurals and adding a plural category", function() {
+        expect.assertions(7);
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject_one: There is {n} item.\n' +
+            '  email_subject_other: There are {n} items.\n'
+        );
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        var resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        var r = resources[0];
+        expect(r).toBeTruthy();
+        expect(r.getType()).toBe("plural");
+
+        expect(r.getSource()).toStrictEqual({
+            one: "There is {n} item.",
+            other: "There are {n} items."
+        });
+
+        var translations = new TranslationSet("en-US");
+        translations.add(
+            new ResourcePlural({
+                project: "webapp",
+                key: 'thanked_note_time_saved.email_subject',
+                source: {
+                    one: "There is {n} item.",
+                    other: "There are {n} items."
+                },
+                sourceLocale: "en-US",
+                target: {
+                    one: "Jest {n} pozycja.",
+                    few: "Jest {n} pozycje.",
+                    other: "Jest {n} pozycji."
+                },
+                targetLocale: "pl-PL",
+                datatype: "x-yaml"
+            })
+        );
+        var actual = yml.localizeText(translations, "pl-PL");
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  email_subject_few: Jest {n} pozycje.\n' +
+            '  email_subject_one: Jest {n} pozycja.\n' +
+            '  email_subject_other: Jest {n} pozycji.\n';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("YamlFile localize text with plurals and removing a plural category", function() {
+        expect.assertions(7);
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject_one: There is {n} item.\n' +
+            '  email_subject_other: There are {n} items.\n'
+        );
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        var resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        var r = resources[0];
+        expect(r).toBeTruthy();
+        expect(r.getType()).toBe("plural");
+
+        expect(r.getSource()).toStrictEqual({
+            one: "There is {n} item.",
+            other: "There are {n} items."
+        });
+
+        var translations = new TranslationSet("en-US");
+        translations.add(
+            new ResourcePlural({
+                project: "webapp",
+                key: 'thanked_note_time_saved.email_subject',
+                source: {
+                    one: "There is {n} item.",
+                    other: "There are {n} items."
+                },
+                sourceLocale: "en-US",
+                target: {
+                    other: "{n}件の商品があります。"
+                },
+                targetLocale: "ja-JP",
+                datatype: "x-yaml"
+            })
+        );
+        var actual = yml.localizeText(translations, "ja-JP");
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  email_subject_other: "{n}件の商品があります。"\n';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
     test("YamlFileLocalizeTextWithPath", function() {
         expect.assertions(7);
         var yml = new YamlFile({
@@ -1081,14 +1484,14 @@ debugger;
             '  setting_name: thanked_note_time_saved\n' +
             '  daily_limit_exception_email: true\n'
         );
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         var r = set.getBySource('%1, you’re saving time!');
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('%1, you’re saving time!');
         expect(r.getSourceLocale()).toBe('en-US');
         expect(r.getKey()).toBe('thanked_note_time_saved.email_subject');
-        var translations = new TranslationSet();
+        var translations = new TranslationSet("en-US");
         translations.add(new ResourceString({
             project: "webapp",
             key: 'thanked_note_time_saved.email_subject',
@@ -1121,188 +1524,6 @@ debugger;
         expect(y).toBeTruthy();
         y.extract();
         expect(y.getLocalizedPath('de-DE')).toBe('de-DE.yml');
-    });
-
-    test("YamlFileGetContentPlural", function() {
-        expect.assertions(2);
-        var yml = new YamlFile({
-            project: p,
-            type: yft,
-            pathName: "./asdf.yml",
-            locale: "de-DE"
-        });
-        expect(yml).toBeTruthy();
-        [
-            new ResourcePlural({
-                project: "webapp",
-                sourceLocale: "de-DE",
-                key: "asdf",
-                sourceStrings: {
-                    "one": "This is singular",
-                    "two": "This is double",
-                    "few": "This is a different case"
-                },
-                pathName: "a/b/c.java",
-                comment: "foobar foo",
-                state: "accepted"
-            })
-        ].forEach(function(res) {
-            yml.addResource(res);
-        });
-        var expected =
-            "asdf_few: This is a different case\n" +
-            "asdf_one: This is singular\n" +
-            "asdf_two: This is double\n";
-        diff(yml.getContent(),expected);
-        expect(yml.getContent()).toBe(expected);
-    });
-
-    test("YamlFileParseWithFlavor", function() {
-        expect.assertions(15);
-        var yml = new YamlFile({
-            project: p,
-            locale: "en-US",
-            type: yft,
-            flavor: "CHOCOLATE"
-        });
-        expect(yml).toBeTruthy();
-        yml.parse('---\n' +
-                'a: foobar\n' +
-                'b: barfoo\n');
-        var set = yml.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var r = set.getAll();
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(2);
-        expect(r[0].getSource()).toBe("foobar");
-        expect(r[0].getSourceLocale()).toBe("en-US");
-        expect(r[0].getKey()).toBe("a");
-        expect(r[0].getContext()).toBeFalsy();
-        expect(r[0].getFlavor()).toBe("CHOCOLATE");
-        expect(r[1].getSource()).toBe("barfoo");
-        expect(r[1].getSourceLocale()).toBe("en-US");
-        expect(r[1].getKey()).toBe("b");
-        expect(r[1].getContext()).toBeFalsy();
-        expect(r[1].getFlavor()).toBe("CHOCOLATE");
-    });
-
-    test("YamlFileParseWithNoFlavor", function() {
-        expect.assertions(15);
-        var yml = new YamlFile({
-            project: p,
-            locale: "en-US",
-            type: yft
-        });
-        expect(yml).toBeTruthy();
-        yml.parse('---\n' +
-                'a: foobar\n' +
-                'b: barfoo\n');
-        var set = yml.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var r = set.getAll();
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(2);
-        expect(r[0].getSource()).toBe("foobar");
-        expect(r[0].getSourceLocale()).toBe("en-US");
-        expect(r[0].getKey()).toBe("a");
-        expect(r[0].getContext()).toBeFalsy();
-        expect(r[0].getFlavor()).toBeFalsy();
-        expect(r[1].getSource()).toBe("barfoo");
-        expect(r[1].getSourceLocale()).toBe("en-US");
-        expect(r[1].getKey()).toBe("b");
-        expect(r[1].getContext()).toBeFalsy();
-        expect(r[1].getFlavor()).toBeFalsy();
-    });
-
-    test("YamlFileParseTargetWithNoFlavor", function() {
-        expect.assertions(17);
-        var yml = new YamlFile({
-            project: p,
-            locale: "es-US",
-            type: yft
-        });
-        expect(yml).toBeTruthy();
-        yml.parse('---\n' +
-                'a: foobar\n' +
-                'b: barfoo\n');
-        var set = yml.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var r = set.getAll();
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(2);
-        expect(r[0].getTarget()).toBe("foobar");
-        expect(r[0].getTargetLocale()).toBe("es-US");
-        expect(r[0].getSourceLocale()).toBe("en-US");
-        expect(r[0].getKey()).toBe("a");
-        expect(r[0].getContext()).toBeFalsy();
-        expect(r[0].getFlavor()).toBeFalsy();
-        expect(r[1].getTarget()).toBe("barfoo");
-        expect(r[1].getTargetLocale()).toBe("es-US");
-        expect(r[1].getSourceLocale()).toBe("en-US");
-        expect(r[1].getKey()).toBe("b");
-        expect(r[1].getContext()).toBeFalsy();
-        expect(r[1].getFlavor()).toBeFalsy();
-    });
-
-    test("YamlFileParseWithGleanedFlavor", function() {
-        expect.assertions(13);
-        var yml = new YamlFile({
-            project: p,
-            locale: "en-US",
-            type: yft,
-            pathName: "customization/en-CHOCOLATE.yml"
-        });
-        expect(yml).toBeTruthy();
-        yml.parse('---\n' +
-                'a: foobar\n' +
-                'b: barfoo\n');
-        var set = yml.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var r = set.getAll();
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(2);
-        expect(r[0].getSource()).toBe("foobar");
-        expect(r[0].getSourceLocale()).toBe("en-US");
-        expect(r[0].getKey()).toBe("a");
-        expect(r[0].getFlavor()).toBe("CHOCOLATE");
-        expect(r[1].getSource()).toBe("barfoo");
-        expect(r[1].getSourceLocale()).toBe("en-US");
-        expect(r[1].getKey()).toBe("b");
-        expect(r[1].getFlavor()).toBe("CHOCOLATE");
-    });
-
-    test("YamlFileParseWithNoGleanedFlavor", function() {
-        expect.assertions(15);
-        var yml = new YamlFile({
-            project: p,
-            locale: "en-ZA",
-            type: yft,
-            pathName: "customization/en-ZA.yml"
-        });
-        expect(yml).toBeTruthy();
-        yml.parse('---\n' +
-                'a: foobar\n' +
-                'b: barfoo\n');
-        var set = yml.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var r = set.getAll();
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(2);
-        expect(r[0].getTarget()).toBe("foobar");
-        expect(r[0].getTargetLocale()).toBe("en-ZA");
-        expect(r[0].getSourceLocale()).toBe("en-US");
-        expect(r[0].getKey()).toBe("a");
-        expect(r[0].getFlavor()).toBeFalsy();
-        expect(r[1].getTarget()).toBe("barfoo");
-        expect(r[1].getTargetLocale()).toBe("en-ZA");
-        expect(r[1].getSourceLocale()).toBe("en-US");
-        expect(r[1].getKey()).toBe("b");
-        expect(r[1].getFlavor()).toBeFalsy();
     });
 });
 
@@ -1354,7 +1575,7 @@ describe("yamlfile testsWithMapping", function() {
             'second: "string"\n' +
             '# Not prefixed comment with L10N in it \n' +
             'third: "string"');
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set.size()).toBe(3);
         var r = set.getAll();
         expect(r[0].getComment()).toBe("Prefixed comment");
@@ -1372,12 +1593,24 @@ describe("yamlfile testsWithMapping", function() {
         expect(yml).toBeTruthy();
         expect(yml.getCommentPrefix()).toBe('L10N:');
         yml.extract();
-        var set = yml.getTranslationSet();
+        var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
         expect(set.size()).toBe(3);
         var r = set.getAll();
         expect(r[0].getComment()).toBe('Comment with prefix');
         expect(r[1].getComment()).toBe('Comment without prefix');
         expect(r[2].getComment()).toBeUndefined();
+    });
+
+    test("Yaml GetLocalizedPath alternate", function() {
+        expect.assertions(2);
+
+        var y = new YamlFile({
+            project: projectWithMappings,
+            type: yamlFileTypeWithMappings,
+            pathName: "a/b/c/source.yaml"
+        });
+        expect(y).toBeTruthy();
+        expect(y.getLocalizedPath('de-DE')).toBe('localized.de-DE.yaml');
     });
 });
