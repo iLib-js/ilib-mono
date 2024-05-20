@@ -66,7 +66,7 @@ var YamlFileType = function(project) {
  * @type Object
  **/
 var defaultMappings = {
-    "**/*.y?(a)ml": {
+    "**/*.ya?ml": {
         template: "[dir]/[locale].[extension]"
     }
 };
@@ -94,7 +94,7 @@ YamlFileType.prototype.getMapping = function (pathName) {
  * @returns {Object}
  */
 YamlFileType.prototype.getDefaultMapping = function() {
-    return defaultMappings["**/*.y?(a)ml"];
+    return defaultMappings["**/*.ya?ml"];
 }
 
 /**
