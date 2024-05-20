@@ -517,21 +517,6 @@ YamlFile.prototype.localizeText = function(translations, locale) {
 YamlFile.prototype.localize = function(translations, locales) {
     for (var i = 0; i < locales.length; i++) {
         var p, pathName = this.getLocalizedPath(locales[i]);
-        this.logger.debug("Checking for existing output file " + pathName);
-
-        try {
-            p = path.join(this.project.root, pathName);
-            if (fs.existsSync(p)) {
-                var data = fs.readFileSync(p, "utf8");
-                if (data) {
-                    this.parseOutputFile(data);
-                }
-            }
-        } catch (e) {
-            this.logger.warn("Could not read file: " + p);
-            this.logger.warn(e);
-        }
-
         this.logger.debug("Writing file " + pathName);
         p = path.join(this.project.target, pathName);
         var dir = path.dirname(p);

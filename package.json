@@ -57,7 +57,7 @@
     },
     "devDependencies": {
         "conditional-install": "^1.0.1",
-        "loctool": "^2.23.1"
+        "loctool": "^2.24.0"
     },
     "conditionalDependencies": {
         "process.versions.node < 14.0.0": {
