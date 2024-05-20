@@ -52,8 +52,8 @@ var YamlFile = function(props) {
 
     this.API = this.project.getAPI();
     this.logger = this.API.getLogger("loctool.plugin.TapI18nYamlFile");
-
-    this.locale = this.locale || (this.project && this.project.sourceLocale) || "en-US";
+    this.sourceLocale = (this.project && this.project.sourceLocale) || "en-US";
+    this.locale = this.locale || this.sourceLocale;
     this.mapping = this.type.getMapping(this.pathName);
 
     if (this.pathName && this.project && this.project.flavorList) {
@@ -67,6 +67,7 @@ var YamlFile = function(props) {
     this.yaml = new Yaml({
         pathName: this.pathName,
         project: this.project.getProjectId(),
+        sourceLocale: this.sourceLocale,
         locale: this.locale,
         context: this.context,
         datatype: this.type.getDataType(),
