@@ -1246,7 +1246,7 @@ describe("yamlfile", function() {
 
     test("YamlFile localize text with arrays", function() {
         expect.assertions(7);
-debugger;
+
         var yml = new YamlFile({
             project: p,
             type: yft
