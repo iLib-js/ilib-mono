@@ -51,13 +51,13 @@
         "node": ">=10.0"
     },
     "dependencies": {
-        "ilib-yaml": "file:../ilib-yaml/ilib-yaml-1.0.0.tgz",
+        "ilib-yaml": "^1.0.0",
         "micromatch": "^4.0.5",
         "yaml": "2.0.0"
     },
     "devDependencies": {
         "conditional-install": "^1.0.1",
-        "loctool": "^2.24.0"
+        "loctool": "^2.24.1"
     },
     "conditionalDependencies": {
         "process.versions.node < 14.0.0": {
