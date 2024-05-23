@@ -78,6 +78,9 @@ var YamlFile = function(props) {
     this.set = new TranslationSet(this.project.sourceLocale);
 };
 
+// For documentation about the plural suffices, see the following:
+// https://github.com/TAPevents/tap-i18n?tab=readme-ov-file#the-_--helper (search for code examples 5 & 6)
+// https://i18next.github.io/i18next/pages/doc_features.html   (tap depends on i18next)
 var pluralSuffices = {
     "_plural_indefinite": "other",
     "_plural_100": "other",
