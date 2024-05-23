@@ -22,7 +22,7 @@ var path = require("path");
 var Yaml = require("ilib-yaml");
 var Locale = require("ilib/lib/Locale.js");
 var tools = require("ilib-tools-common");
-const TranslationSet = require("loctool/lib/TranslationSet");
+var TranslationSet = require("loctool/lib/TranslationSet");
 
 var ResourceString = tools.ResourceString;
 var ResourcePlural = tools.ResourcePlural;

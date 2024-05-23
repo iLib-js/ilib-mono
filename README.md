@@ -6,8 +6,8 @@ resource files.
 ## Configuration
 
 By default, plugin will localize source `.yml` and `.yaml` files,
-e.g. `/project/en.yml`,  and write localized files
-to a parallel file named for the locale: `/project/ru-RU.yml`.
+e.g. `/project/en.i18n.yml`,  and write localized files
+to a parallel file named for the locale: `/project/ru-RU.i18n.yml`.
 
 The plugin will look for the `tap` property within the `settings`
 of your `project.json` file. The following settings are
@@ -51,8 +51,7 @@ used within the yaml property:
       underscores to separate the locale parts instead of dashes.
       eg. "zh-Hans-CN" -> "zh_Hans_CN"
   - `commentPrefix` - a string that defines prefix for context comment for
-    translators. Only comments that start with the provided string will
-    be extracted and added to ResultSet, all other are ignored.
+    translators. The prefix will be stripped when comments are extracted.
 
 Example configuration:
 
@@ -61,11 +60,11 @@ Example configuration:
   "settings": {
     "tap": {
       "mappings": {
-        "**/source.yml": {
-          "template": "resources/[localeDir]/source.yaml"
+        "**/source.i18n.yml": {
+          "template": "resources/[localeDir]/source.i18n.yaml"
         },
-        "src/**/strings.yaml": {
-          "template": "[dir]/strings.[locale].yaml",
+        "src/**/en-US.i18n.yaml": {
+          "template": "[dir]/[locale].i18n.yaml",
           "commentPrefix": "L10N:"
         }
       }
@@ -74,10 +73,11 @@ Example configuration:
 }
 ```
 
-In the above example, any file named `source.yml` will be parsed.
-The output files are saved to the `resources` directory.
+In the above example, any file named `source.i18n.yml` will be parsed.
+The output files are saved to the `resources` directory under a directory
+named for the locale.
 
-Also files named `strings.yaml` that are located in directory `src`
+Also files named `en-US.i18n.yaml` that are located in directory `src`
 or any of its subdirectories will be parsed using the given `commentPrefix`
 rules.
 
@@ -92,16 +92,18 @@ It's also possible to use multiline comments.
 **Same line comments are ignored!**
 
 ```yaml
-header_text: "Header" #ignored comment
+header_text: "Header" # this comment is ignored
+
 # Comment for article_title.
 article_title: "Article:"
+
 # Comment for article_summary,
 # it includes view count and edit count values.
 article_summary: "Stats: {view_count} views, {edit_count} edits"
 ```
 
-Comments are trimmed upon extraction, therefore there's no
-difference between these two comments.
+Comments are trimmed upon extraction, so therefore there's no
+difference between these two example comments:
 
 ```yaml
 #comment
@@ -112,7 +114,7 @@ second: "second"
 
 Multiline comments will preserve line breaks as well as spaces
 on a new line (only space chars at the beginning of the
-first line and at the end of the last is trimmed):
+first line and at the end of the last are trimmed):
 
 ```yaml
 #    Multiline comment
@@ -122,7 +124,7 @@ would be parsed as
 `Multiline comment\n    with some extra spaces in between`
 
 Comments that start with the given `commentPrefix` in the mapping
-will be extracted, but the prefix will be stripped out first.
+will be extracted, but that prefix will be stripped out first.
 
 Example when the mapping says that the commentPrefix is "L10N:"
 
@@ -144,5 +146,3 @@ file for more details.
 ### v1.0.0
 
 - Initial version
-
-

@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-var Locale = require("ilib/lib/Locale.js");
-var ResBundle = require("ilib/lib/ResBundle.js");
 var mm = require("micromatch");
 
 var YamlFile = require("./YamlFile.js");
