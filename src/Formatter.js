@@ -1,7 +1,7 @@
 /*
  * Formatter.js - Formats result output
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,31 @@ class Formatter {
      * @returns {String} the formatted result
      */
     format(result) {
+    }
+    /**
+     * Provide the information for the formatter as an object and
+     * return the formatted string that contains a lot of information
+     * according to the formatter's needs.
+     *
+     * The method supposed to format the entire output, including headers,
+     * footers and summaries and formatted Result instances.
+     * If the formatOutput is defined, the linter does not call format()
+     * directly and it is up to formatOutput to do so. If formatOutput
+     * is not defined in a Formatter plugin, then ilib-lint will use its
+     * own default headers and footers and will call format to format each Result.
+     *
+     * @abstract
+     * @param {Object} [options] Information that the method can use to format the output
+     * @param {string} [options.name] name of the this project
+     * @param {FileStats} [options.fileStats] The stats information of the file
+     * @param {Object} [options.resultStats] Information about the lint result of the  file
+     * @param {Object} [options.results] list containing all issues in this project
+     * @param {Number} [options.score] I18N score for this project
+     * @param {Number} [options.totalTime] Total elapsed time by the tool for this project
+     * @param {Boolean} [options.errorOnly] true, if only errors are displayed
+     * @returns {String} the formatted result
+     */
+    formatOutput(options) {
     }
 }
 

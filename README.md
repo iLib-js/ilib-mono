@@ -40,6 +40,9 @@ limitations under the License.
 
 ## Release Notes
 
+### v3.1.0
+- added formatOutput() method to the Formatter class
+
 ### v3.0.0
 
 - Update major version because of these breaking changes which need to be
