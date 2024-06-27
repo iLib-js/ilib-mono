@@ -64,6 +64,7 @@ var projectWithMappings = new CustomProject({
     ]
 }, "./test/testfiles", {
     locales:["en-GB"],
+    localeMap: {"es-419": "es-MX"},
     nopseudo: true,
     targetDir: "testfiles",
     tap: {
@@ -1612,5 +1613,17 @@ describe("yamlfile testsWithMapping", function() {
         });
         expect(y).toBeTruthy();
         expect(y.getLocalizedPath('de-DE')).toBe('localized.de-DE.yaml');
+    });
+
+    test("Yaml GetLocalizedPath localeMap", function() {
+        expect.assertions(2);
+
+        var y = new YamlFile({
+            project: projectWithMappings,
+            type: yamlFileTypeWithMappings,
+            pathName: "a/b/c/source.yaml"
+        });
+        expect(y).toBeTruthy();
+        expect(y.getLocalizedPath('es-419')).toBe('localized.es-MX.yaml');
     });
 });

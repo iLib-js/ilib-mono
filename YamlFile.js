@@ -395,6 +395,7 @@ YamlFile.prototype.getTranslationSet = function() {
  * @returns {String} the localized path name
  */
 YamlFile.prototype.getLocalizedPath = function(locale) {
+    locale = this.project.getOutputLocale(locale);
     var mapping = this.mapping || this.type.getMapping(this.pathName) || this.type.getDefaultMapping();
 
     return path.normalize(this.API.utils.formatPath(mapping.template, {
