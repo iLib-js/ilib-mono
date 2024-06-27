@@ -143,6 +143,10 @@ file for more details.
 
 ## Release Notes
 
+### v1.1.0
+
+- Added the ability to use the global locale mapping
+
 ### v1.0.0
 
 - Initial version
