@@ -24,9 +24,6 @@ var Locale = require("ilib/lib/Locale.js");
 var tools = require("ilib-tools-common");
 var TranslationSet = require("loctool/lib/TranslationSet");
 
-var ResourceString = tools.ResourceString;
-var ResourcePlural = tools.ResourcePlural;
-var ResourceArray = tools.ResourceArray;
 
 /**
  * @class Represents a yaml source file.
@@ -185,8 +182,10 @@ YamlFile.prototype.parse = function(str) {
             }
             if (!basePlural) {
                 // no plural there yet, so create a new one
-                basePlural = new ResourcePlural({
+                basePlural = this.API.newResource({
+                    resType: "plural",
                     key: basekey,
+                    sourceStrings: {},
                     sourceLocale: resource.getSourceLocale(),
                     project: resource.getProject(),
                     pathName: resource.getPath(),
@@ -199,16 +198,16 @@ YamlFile.prototype.parse = function(str) {
                 pluralSet.add(basePlural);
             }
 
-            basePlural.addSourcePlural(category, resource.getSource());
+            basePlural.addSource(category, resource.getSource());
 
             var target = resource.getTarget();
             if (target) {
-                basePlural.addTargetPlural(category, target);
+                basePlural.addTarget(category, target);
                 basePlural.setTargetLocale(resource.getTargetLocale());
             }
         } else {
             // this is just a simple string resource
-            stringSet.add(resource);
+            stringSet.add(this.convertToLoctoolResource(resource));
         }
     }.bind(this));
 
@@ -314,6 +313,70 @@ YamlFile.prototype.addAll = function(resources) {
     this.set.addAll(resources);
 };
 
+YamlFile.prototype.convertToLoctoolResource = function(resource) {
+    var resType = resource.getType();
+    var options = {
+        resType: resType,
+        key: resource.getKey(),
+        sourceLocale: resource.getSourceLocale(),
+        targetLocale: resource.getTargetLocale(),
+        project: resource.getProject(),
+        pathName: resource.getPath(),
+        datatype: resource.getDataType(),
+        flavor: resource.getFlavor(),
+        comment: resource.getComment(),
+        state: "new"
+    };
+
+    switch (resType) {
+        case 'plural':
+            options.sourcePlurals = resource.getSource();
+            options.targetPlurals = resource.getTarget();
+            break;
+        case 'array':
+            options.sourceArray = resource.getSource();
+            options.targetArray = resource.getTarget();
+            break;
+        default:
+            options.source = resource.getSource();
+            options.target = resource.getTarget();
+            break;
+    }
+
+    return this.API.newResource(options);
+};
+
+YamlFile.prototype.convertToToolsResource = function(resource) {
+    var resType = resource.getType();
+    var options = {
+        resType: resType,
+        key: resource.getKey(),
+        sourceLocale: resource.getSourceLocale(),
+        targetLocale: resource.getTargetLocale(),
+        project: resource.getProject(),
+        pathName: resource.getPath(),
+        datatype: resource.getDataType(),
+        flavor: resource.getFlavor(),
+        comment: resource.getComment(),
+        state: "new"
+    };
+
+    switch (resType) {
+        case 'plural':
+            options.source = resource.getSourcePlurals();
+            options.target = resource.getTargetPlurals();
+            return new tools.ResourcePlural(options);
+        case 'array':
+            options.source = resource.getSourceArray();
+            options.target = resource.getTargetArray();
+            return new tools.ResourceArray(options);
+        default:
+            options.source = resource.getSource();
+            options.target = resource.getTarget();
+            return new tools.ResourceString(options);
+    }
+};
+
 /**
  * Generate the content of the resource file.
  *
@@ -331,11 +394,11 @@ YamlFile.prototype.getContent = function(set) {
 
     resources.forEach(function(resource) {
         if (resource.getType() === "plural") {
-            var sourcePlurals = resource.getSource();
-            var targetPlurals = resource.getTarget();
-            var pluralCategories = Object.keys(targetPlurals ?? sourcePlurals).sort();
+            var sourcePlurals = resource.getSourcePlurals();
+            var targetPlurals = resource.getTargetPlurals();
+            var pluralCategories = Object.keys(targetPlurals || sourcePlurals).sort();
             pluralCategories.forEach(function(category) {
-                var newres = new ResourceString({
+                var newres = new tools.ResourceString({
                     key: resource.getKey() + "_" + category,
                     sourceLocale: resource.getSourceLocale(),
                     // there should always at least be an "other" category
@@ -352,9 +415,9 @@ YamlFile.prototype.getContent = function(set) {
                     newres.setTargetLocale(resource.getTargetLocale());
                 }
                 filtered.add(newres);
-            });
+            }.bind(this));
         } else {
-            filtered.add(resource);
+            filtered.add(this.convertToToolsResource(resource));
         }
     }.bind(this));
 
@@ -404,24 +467,48 @@ YamlFile.prototype.getLocalizedPath = function(locale) {
     }));
 };
 
-/**
- *
- * @param {string} type type of the resource to create.
- * Must be one of "string", "array", or "plural"
- * @param {Object} options options to construct the new instance
- * @returns {Resource} a new resource instance
- * @private
- */
-function testResourceFactory(type, options) {
-    switch (type) {
-        default:
-        case 'string':
-            return new ResourceString(options);
-        case 'array':
-            return new ResourceArray(options);
-        case 'plural':
-            return new ResourcePlural(options);
+function getSource(resource) {
+    var resType = resource.getType();
+    if (resType === "plural") {
+        return resource.getSourcePlurals();
+    } else if (resType === "array") {
+        return resource.getSourceArray()
     }
+
+    return resource.getSource();
+}
+
+function setSource(resource, source) {
+    var resType = resource.getType();
+    if (resType === "plural") {
+        return resource.setSourcePlurals(source);
+    } else if (resType === "array") {
+        return resource.setSourceArray(source)
+    }
+
+    return resource.setSource(source);
+}
+
+function getTranslation(resource) {
+    var resType = resource.getType();
+    if (resType === "plural") {
+        return resource.getTargetPlurals();
+    } else if (resType === "array") {
+        return resource.getTargetArray()
+    }
+
+    return resource.getTarget();
+}
+
+function setTranslation(resource, translation) {
+    var resType = resource.getType();
+    if (resType === "plural") {
+        return resource.setTargetPlurals(translation);
+    } else if (resType === "array") {
+        return resource.setTargetArray(translation)
+    }
+
+    return resource.setTarget(translation);
 }
 
 /**
@@ -448,16 +535,41 @@ YamlFile.prototype.localizeText = function(translations, locale) {
 
     resources.forEach(function(resource) {
         var reskey = resource.getKey();
-        var source = resource.getSource();
+        var source = getSource(resource);
+        var resType = resource.getType();
+        var tester;
 
-        var tester = testResourceFactory(resource.getType(), {
-            project: this.project.getProjectId(),
-            sourceLocale: this.project.getSourceLocale(),
-            source: resource.getSource(),
-            reskey: reskey,
-            pathName: this.pathName,
-            datatype: this.type.datatype
-        });
+        if (resType === "plural") {
+            tester = this.API.newResource({
+                resType: resType,
+                project: this.project.getProjectId(),
+                sourceLocale: this.project.getSourceLocale(),
+                sourceStrings: resource.getSourcePlurals(),
+                reskey: reskey,
+                pathName: this.pathName,
+                datatype: this.type.datatype
+            });
+        } else if (resType === "array") {
+            tester = this.API.newResource({
+                resType: resType,
+                project: this.project.getProjectId(),
+                sourceLocale: this.project.getSourceLocale(),
+                sourceArray: resource.getSourceArray(),
+                reskey: reskey,
+                pathName: this.pathName,
+                datatype: this.type.datatype
+            });
+        } else {
+            tester = this.API.newResource({
+                resType: resType,
+                project: this.project.getProjectId(),
+                sourceLocale: this.project.getSourceLocale(),
+                source: resource.getSource(),
+                reskey: reskey,
+                pathName: this.pathName,
+                datatype: this.type.datatype
+            });
+        }
         var hashkey = tester.hashKeyForTranslation(locale);
         var translatedResource = translations.get(hashkey);
         var translation;
@@ -475,18 +587,17 @@ YamlFile.prototype.localizeText = function(translations, locale) {
                 translation = this.type.pseudos[locale].getString(source);
             }
         } else {
-            if (translatedResource && this.API.utils.cleanString(translatedResource.getSource()) === this.API.utils.cleanString(source)) {
-                this.logger.trace("Translation: " + translatedResource.getTarget());
-                translation = translatedResource.getTarget();
+            if (translatedResource) {
+                translation = getTranslation(translatedResource);
+                this.logger.trace("Translation: " + translation);
             } else {
                 var note = translatedResource ? 'The source string has changed. Please update the translation to match if necessary. Previous source: "' + translatedResource.getSource() + '"' : undefined;
                 if (this.type) {
-                    this.type.newres.add(new ResourceString({
+                    var newResource = this.API.newResource({
+                        resType: resType,
                         project: this.project.getProjectId(),
                         key: reskey,
-                        source: source,
                         sourceLocale: this.project.sourceLocale,
-                        target: (translatedResource && translatedResource.getTarget()) || source,
                         targetLocale: locale,
                         pathName: this.pathName,
                         datatype: this.type.datatype,
@@ -494,7 +605,10 @@ YamlFile.prototype.localizeText = function(translations, locale) {
                         flavor: this.flavor,
                         comment: note,
                         index: this.resourceIndex++
-                    }));
+                    });
+                    setSource(newResource, source);
+                    setTranslation(newResource, translatedResource || source);
+                    this.type.newres.add(newResource);
                 }
                 this.logger.trace("Missing translation");
                 translation = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
@@ -502,7 +616,7 @@ YamlFile.prototype.localizeText = function(translations, locale) {
             }
         }
 
-        tester.setTarget(translation);
+        setTranslation(tester, translation);
         tester.setTargetLocale(locale);
 
         localizedSet.add(tester);
