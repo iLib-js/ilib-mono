@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-tap-i18n",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "main": "./YamlFileType.js",
     "description": "A loctool plugin that knows how to process tap-i18n style yaml files",
     "license": "Apache-2.0",
@@ -52,8 +52,7 @@
     },
     "dependencies": {
         "ilib-yaml": "^1.0.0",
-        "micromatch": "^4.0.5",
-        "yaml": "2.0.0"
+        "micromatch": "^4.0.5"
     },
     "devDependencies": {
         "conditional-install": "^1.0.1",
