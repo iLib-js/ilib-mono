@@ -1276,7 +1276,7 @@ describe("yamlfile", function() {
             'You’ve been thanked for saving a colleague\'s time!',
             'View %1'
         ]);
-debugger;
+
         var translations = new TranslationSet("en-US");
         translations.add(
             new ResourceArray({
