@@ -19,13 +19,12 @@
 
 var YamlFile = require("../YamlFile.js");
 var YamlFileType = require("../YamlFileType.js");
-var tools = require("ilib-tools-common");
 var CustomProject =  require("loctool/lib/CustomProject.js");
 
-var ResourceString = tools.ResourceString;
-var ResourcePlural = tools.ResourcePlural;
-var ResourceArray = tools.ResourceArray;
-var TranslationSet = tools.TranslationSet;
+var ResourceString = require("loctool/lib/ResourceString.js");
+var ResourcePlural = require("loctool/lib/ResourcePlural.js");
+var ResourceArray = require("loctool/lib/ResourceArray.js");
+var TranslationSet = require("loctool/lib/TranslationSet.js");
 
 var path = require("path");
 function diff(a, b) {
@@ -413,7 +412,8 @@ describe("yamlfile", function() {
             reskey: "Jobs"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toStrictEqual({
+
+        expect(r[0].getSourcePlurals()).toStrictEqual({
             "one": "Job",
             "other": "Jobs"
         });
@@ -422,7 +422,7 @@ describe("yamlfile", function() {
             reskey: "file_count"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toStrictEqual({
+        expect(r[0].getSourcePlurals()).toStrictEqual({
             "one": "There is {n} file in the folder.",
             "other": "There are {n} files in the folder."
         });
@@ -448,7 +448,7 @@ describe("yamlfile", function() {
             reskey: "Jobs"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toStrictEqual({
+        expect(r[0].getSourcePlurals()).toStrictEqual({
             "one": "Job",
             "other": "Jobs"
         });
@@ -457,7 +457,7 @@ describe("yamlfile", function() {
             reskey: "file_count"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toStrictEqual({
+        expect(r[0].getSourcePlurals()).toStrictEqual({
             "one": "There is {n} file in the folder.",
             "other": "There are {n} files in the folder."
         });
@@ -593,7 +593,7 @@ describe("yamlfile", function() {
         expect(r).toBeTruthy();
         expect(r.length).toBe(1);
         expect(r[0].getKey()).toBe("Jobs");
-        expect(r[0].getSource()).toStrictEqual([
+        expect(r[0].getSourceArray()).toStrictEqual([
             "one and",
             "two and",
             "three",
@@ -626,7 +626,7 @@ describe("yamlfile", function() {
         var r = set.getAll();
         expect(r).toBeTruthy();
         expect(r[0].getKey()).toBe("Jobs");
-        expect(r[0].getSource()).toStrictEqual([
+        expect(r[0].getSourceArray()).toStrictEqual([
             "one and",
             "two and",
             "three",
@@ -1061,6 +1061,7 @@ describe("yamlfile", function() {
         yml.extract();
         var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
+
         var r = set.get(ResourceString.hashKey("webapp", "en-US", "The_perks_of_interning", "x-yaml"));
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("The perks of interning");
@@ -1131,6 +1132,7 @@ describe("yamlfile", function() {
             locale: "en-US"
         });
         expect(yml).toBeTruthy();
+
         yml.parse(
             'thanked_note_time_saved:\n' +
             '  email_subject: \'%1, you’re saving time!\'\n' +
@@ -1144,7 +1146,7 @@ describe("yamlfile", function() {
         );
         var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
-        var r = set.getBySource('%1, you’re saving time!');
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "thanked_note_time_saved.email_subject", "x-yaml"));
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('%1, you’re saving time!');
         expect(r.getSourceLocale()).toBe('en-US');
@@ -1192,15 +1194,15 @@ describe("yamlfile", function() {
         );
         var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
-        var r = set.getBySource('%1, You\'re saving time!');
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "thanked_note_time_saved.email_subject", "x-yaml"));
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('%1, You\'re saving time!');
         expect(r.getKey()).toBe('thanked_note_time_saved.email_subject');
-        r = set.getBySource('You’ve been thanked for saving a colleague\'s time!');
+        r = set.get(ResourceString.hashKey("webapp", "en-US", "thanked_note_time_saved.subject", "x-yaml"));
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('You’ve been thanked for saving a colleague\'s time!');
         expect(r.getKey()).toBe('thanked_note_time_saved.subject');
-        r = set.getBySource('You\'ve saved time! View %1');
+        r = set.get(ResourceString.hashKey("webapp", "en-US", "thanked_note_time_saved.push_data", "x-yaml"));
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('You\'ve saved time! View %1');
         expect(r.getKey()).toBe('thanked_note_time_saved.push_data');
@@ -1269,7 +1271,7 @@ describe("yamlfile", function() {
         expect(r).toBeTruthy();
         expect(r.getType()).toBe("array");
 
-        expect(r.getSource()).toStrictEqual([
+        expect(r.getSourceArray()).toStrictEqual([
             '%1, You\'re saving time!',
             'You’ve been thanked for saving a colleague\'s time!',
             'View %1'
@@ -1280,13 +1282,13 @@ describe("yamlfile", function() {
             new ResourceArray({
                 project: "webapp",
                 key: 'thanked_note_time_saved.email_subject',
-                source: [
+                sourceArray: [
                     '%1, You\'re saving time!',
                     'You’ve been thanked for saving a colleague\'s time!',
                     'View %1'
                 ],
                 sourceLocale: "en-US",
-                target: [
+                targetArray: [
                     '%1, vous économisez du temps!',
                     'Vous avez été remercié pour économiser du temps!',
                     'Voir %1'
@@ -1327,7 +1329,7 @@ describe("yamlfile", function() {
         expect(r).toBeTruthy();
         expect(r.getType()).toBe("plural");
 
-        expect(r.getSource()).toStrictEqual({
+        expect(r.getSourcePlurals()).toStrictEqual({
             one: "There is {n} item.",
             other: "There are {n} items."
         });
@@ -1337,12 +1339,12 @@ describe("yamlfile", function() {
             new ResourcePlural({
                 project: "webapp",
                 key: 'thanked_note_time_saved.email_subject',
-                source: {
+                sourcePlurals: {
                     one: "There is {n} item.",
                     other: "There are {n} items."
                 },
                 sourceLocale: "en-US",
-                target: {
+                targetPlurals: {
                     one: "Il y a {n} élément.",
                     other: "Il y a {n} éléments."
                 },
@@ -1380,7 +1382,7 @@ describe("yamlfile", function() {
         expect(r).toBeTruthy();
         expect(r.getType()).toBe("plural");
 
-        expect(r.getSource()).toStrictEqual({
+        expect(r.getSourcePlurals()).toStrictEqual({
             one: "There is {n} item.",
             other: "There are {n} items."
         });
@@ -1390,12 +1392,12 @@ describe("yamlfile", function() {
             new ResourcePlural({
                 project: "webapp",
                 key: 'thanked_note_time_saved.email_subject',
-                source: {
+                sourceStrings: {
                     one: "There is {n} item.",
                     other: "There are {n} items."
                 },
                 sourceLocale: "en-US",
-                target: {
+                targetStrings: {
                     one: "Jest {n} pozycja.",
                     few: "Jest {n} pozycje.",
                     other: "Jest {n} pozycji."
@@ -1435,7 +1437,7 @@ describe("yamlfile", function() {
         expect(r).toBeTruthy();
         expect(r.getType()).toBe("plural");
 
-        expect(r.getSource()).toStrictEqual({
+        expect(r.getSourcePlurals()).toStrictEqual({
             one: "There is {n} item.",
             other: "There are {n} items."
         });
@@ -1445,12 +1447,12 @@ describe("yamlfile", function() {
             new ResourcePlural({
                 project: "webapp",
                 key: 'thanked_note_time_saved.email_subject',
-                source: {
+                sourceStrings: {
                     one: "There is {n} item.",
                     other: "There are {n} items."
                 },
                 sourceLocale: "en-US",
-                target: {
+                targetStrings: {
                     other: "{n}件の商品があります。"
                 },
                 targetLocale: "ja-JP",
@@ -1487,7 +1489,7 @@ describe("yamlfile", function() {
         );
         var set = yml.getTranslationSet("en-US");
         expect(set).toBeTruthy();
-        var r = set.getBySource('%1, you’re saving time!');
+        var r = set.get(ResourceString.hashKey("webapp", "en-US", "thanked_note_time_saved.email_subject", "x-yaml"));
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('%1, you’re saving time!');
         expect(r.getSourceLocale()).toBe('en-US');
