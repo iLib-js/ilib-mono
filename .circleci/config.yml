@@ -29,13 +29,15 @@ workflows:
   test-all-node-versions:
     jobs:
       - test:
-          docker_image: circleci/node:10-browsers
+          docker_image: cimg/node:10.24.1-browsers
       - test:
-          docker_image: circleci/node:12-browsers
+          docker_image: cimg/node:12.22.12-browsers
       - test:
-          docker_image: circleci/node:13-browsers
+          docker_image: cimg/node:14.21.3-browsers
       - test:
-          docker_image: circleci/node:14-browsers
+          docker_image: cimg/node:16.20.2-browsers
       - test:
-          docker_image: circleci/node:16-browsers
+          docker_image: cimg/node:18.20.4-browsers
+      - test:
+          docker_image: cimg/node:20.15.1-browsers
       - test
