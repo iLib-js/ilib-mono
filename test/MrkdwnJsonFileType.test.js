@@ -29,19 +29,19 @@ var p = new CustomProject({
     locales:["en-GB"],
     mrkdwn: {
         "mappings": {
-            "file.md": {
-                "template": "resources/[localeDir]/file.md"
+            "file.json": {
+                "template": "resources/[localeDir]/file.json"
             },
-            "resources/en/US/file.md": {
-                "template": "resources/[localeDir]/file.md"
+            "resources/en/US/file.json": {
+                "template": "resources/[localeDir]/file.json"
             },
-            "**/messages.md": {
-                "template": "resources/[localeDir]/messages.md"
+            "**/messages.json": {
+                "template": "resources/[localeDir]/messages.json"
             },
-            "**/test/str.md": {
-                "template": "[dir]/[localeDir]/str.md"
+            "**/test/str.json": {
+                "template": "[dir]/[localeDir]/str.json"
             },
-            "**/*.md": {
+            "**/*.json": {
                 "template": "[localeDir]/[filename]"
             }
         }
@@ -59,108 +59,108 @@ var p2 = new CustomProject({
 describe("mrkdwnfiletype", function() {
     test("MrkdwnJsonFileTypeConstructor", function() {
         expect.assertions(1);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
     });
      test("MrkdwnJsonFileTypeGetMapping1", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.getMapping("x/y/messages.md")).toStrictEqual({
-            "template": "resources/[localeDir]/messages.md"
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.getMapping("x/y/messages.json")).toStrictEqual({
+            "template": "resources/[localeDir]/messages.json"
         });
     });
      test("MrkdwnJsonFileTypeGetMapping2", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.getMapping("resources/en/US/file.md")).toStrictEqual({
-            "template": "resources/[localeDir]/file.md"
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.getMapping("resources/en/US/file.json")).toStrictEqual({
+            "template": "resources/[localeDir]/file.json"
         });
     });
      test("MrkdwnJsonFileTypeGetMappingNoMatch", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(!mdft.getMapping("x/y/msg.mdx")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.getMapping("x/y/msg.jsonx")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesMD", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.json")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesMrkdwn", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.mrkdwn")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.mrkdwn")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesMdown", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.mdown")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.jsonown")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesMkd", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.mkd")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.mkd")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesRst", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.rst")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.rst")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesRmd", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.rmd")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.rmd")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesFalseClose", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(!mdft.handles("foo.tml")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.tml")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesTrueWithDir", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("a/b/c/foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("a/b/c/foo.json")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeHandlesAlreadyLocalizedGB", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(!mdft.handles("en-GB/a/b/c/foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("en-GB/a/b/c/foo.json")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesAlreadyLocalizedCN", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p);
-        expect(mdft).toBeTruthy();
-        expect(!mdft.handles("zh-Hans-CN/a/b/c/foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("zh-Hans-CN/a/b/c/foo.json")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesAlreadyLocalizedWithFlavor", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p2);
-        expect(mdft).toBeTruthy();
-        expect(!mdft.handles("en-ZA-ASDF/a/b/c/foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p2);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("en-ZA-ASDF/a/b/c/foo.json")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandleszhHKAlreadyLocalizedWithFlavor", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p2);
-        expect(mdft).toBeTruthy();
-        expect(!mdft.handles("zh-Hant-HK-ASDF/a/b/c/foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p2);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("zh-Hant-HK-ASDF/a/b/c/foo.json")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesSourceDirIsNotLocalized", function() {
         expect.assertions(2);
-        var mdft = new MrkdwnJsonFileType(p2);
-        expect(mdft).toBeTruthy();
-        expect(mdft.handles("en-US/a/b/c/foo.md")).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p2);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("en-US/a/b/c/foo.json")).toBeTruthy();
     });
     test("MrkdwnJsonFileTypeProjectCloseFullyTranslatedOn", function() {
         expect.assertions(3);
@@ -169,33 +169,33 @@ describe("mrkdwnfiletype", function() {
                 fullyTranslated: true
             }
         });
-        var mdft = new MrkdwnJsonFileType(p2);
-        expect(mdft).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p2);
+        expect(mdjft).toBeTruthy();
         var statii = [
-            {path: "fr-FR/a/b/c.md", locale: "fr-FR", fullyTranslated: false},
-            {path: "de-DE/a/b/c.md", locale: "de-DE", fullyTranslated: true},
-            {path: "ja-JP/a/b/c.md", locale: "ja-JP", fullyTranslated: false},
-            {path: "fr-FR/x/y.md", locale: "fr-FR", fullyTranslated: true},
-            {path: "de-DE/x/y.md", locale: "de-DE", fullyTranslated: false},
-            {path: "ja-JP/x/y.md", locale: "ja-JP", fullyTranslated: true}
+            {path: "fr-FR/a/b/c.json", locale: "fr-FR", fullyTranslated: false},
+            {path: "de-DE/a/b/c.json", locale: "de-DE", fullyTranslated: true},
+            {path: "ja-JP/a/b/c.json", locale: "ja-JP", fullyTranslated: false},
+            {path: "fr-FR/x/y.json", locale: "fr-FR", fullyTranslated: true},
+            {path: "de-DE/x/y.json", locale: "de-DE", fullyTranslated: false},
+            {path: "ja-JP/x/y.json", locale: "ja-JP", fullyTranslated: true}
         ];
         statii.forEach(function(status) {
-            mdft.addTranslationStatus(status);
+            mdjft.addTranslationStatus(status);
         });
-        mdft.projectClose();
+        mdjft.projectClose();
         expect(fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
         var contents = fs.readFileSync("./test/testfiles/subproject/translation-status.json", "utf-8");
         var actual = JSON.parse(contents);
         var expected = {
             translated: [
-                "de-DE/a/b/c.md",
-                "fr-FR/x/y.md",
-                "ja-JP/x/y.md"
+                "de-DE/a/b/c.json",
+                "fr-FR/x/y.json",
+                "ja-JP/x/y.json"
             ],
             untranslated: [
-                "fr-FR/a/b/c.md",
-                "ja-JP/a/b/c.md",
-                "de-DE/x/y.md"
+                "fr-FR/a/b/c.json",
+                "ja-JP/a/b/c.json",
+                "de-DE/x/y.json"
             ]
         };
         expect(actual).toStrictEqual(expected);
@@ -204,22 +204,22 @@ describe("mrkdwnfiletype", function() {
         expect.assertions(3);
         // clean up first
         fs.unlinkSync("./test/testfiles/subproject/translation-status.json");
-        expect(!fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
+        expect(fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeFalsy();
         var p2 = ProjectFactory("./test/testfiles/subproject", {});
-        var mdft = new MrkdwnJsonFileType(p2);
-        expect(mdft).toBeTruthy();
+        var mdjft = new MrkdwnJsonFileType(p2);
+        expect(mdjft).toBeTruthy();
         var statii = [
-            {path: "fr-FR/a/b/c.md", locale: "fr-FR", fullyTranslated: false},
-            {path: "de-DE/a/b/c.md", locale: "de-DE", fullyTranslated: true},
-            {path: "ja-JP/a/b/c.md", locale: "ja-JP", fullyTranslated: false},
-            {path: "fr-FR/x/y.md", locale: "fr-FR", fullyTranslated: true},
-            {path: "de-DE/x/y.md", locale: "de-DE", fullyTranslated: false},
-            {path: "ja-JP/x/y.md", locale: "ja-JP", fullyTranslated: true}
+            {path: "fr-FR/a/b/c.json", locale: "fr-FR", fullyTranslated: false},
+            {path: "de-DE/a/b/c.json", locale: "de-DE", fullyTranslated: true},
+            {path: "ja-JP/a/b/c.json", locale: "ja-JP", fullyTranslated: false},
+            {path: "fr-FR/x/y.json", locale: "fr-FR", fullyTranslated: true},
+            {path: "de-DE/x/y.json", locale: "de-DE", fullyTranslated: false},
+            {path: "ja-JP/x/y.json", locale: "ja-JP", fullyTranslated: true}
         ];
         statii.forEach(function(status) {
-            mdft.addTranslationStatus(status);
+            mdjft.addTranslationStatus(status);
         });
-        mdft.projectClose();
-        expect(!fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
+        mdjft.projectClose();
+        expect(fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeFalsy();
     });
 });

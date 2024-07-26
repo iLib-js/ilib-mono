@@ -24,46 +24,10 @@ var Node = require("ilib-tree-node");
 var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
-var unified = require("unified");
-var markdown = require("remark-parse");
-var highlight = require('remark-highlight.js');
-var raw = require('rehype-raw');
-var stringify = require('remark-stringify');
-var frontmatter = require('remark-frontmatter');
-var footnotes = require('remark-footnotes');
-var he = require("he");
-var unistFilter = require('unist-util-filter');
-var u = require('unist-builder');
-var rehype = require("rehype-parse");
 
 // load the data for these
 isAlnum._init();
 isIdeo._init();
-
-var mdparser = unified().
-    use(markdown, {
-        commonmark: true,
-        gfm: true
-    }).
-    use(frontmatter, ['yaml']).
-    use(footnotes).
-    use(highlight).
-    use(raw);
-
-var mdstringify = unified().
-    use(stringify, {
-        commonmark: true,
-        gfm: true,
-        rule: '-',
-        ruleSpaces: false,
-        bullet: '*',
-        listItemIndent: 1
-    }).
-    use(footnotes).
-    use(frontmatter, ['yaml'])();
-
-var htmlparser = unified().
-    use(rehype);
 
 function escapeQuotes(str) {
     var ret = "";
@@ -162,8 +126,6 @@ var MrkdwnJsonFile = function(options) {
 MrkdwnJsonFile.unescapeString = function(string) {
     var unescaped = string;
 
-    unescaped = he.decode(unescaped);
-
     unescaped = unescaped.
         replace(/^\\\\/g, "\\").
         replace(/([^\\])\\\\/g, "$1\\").
@@ -235,7 +197,7 @@ MrkdwnJsonFile.prototype._addTransUnit = function(text, comment) {
  * and the trailing whitespace
  */
 function trim(API, text) {
-    var i, pre = "", post = "", ret = {};
+    var i, ret = {};
     if (!text) {
         return {
             pre: ""

@@ -21,7 +21,6 @@ var fs = require("fs");
 var path = require("path");
 var mm = require("micromatch");
 var MrkdwnJsonFile = require("./MrkdwnJsonFile.js");
-var YamlFileType = require('ilib-loctool-yaml');
 
 var MrkdwnJsonFileType = function(project) {
     this.type = "mrkdwn";
@@ -56,8 +55,6 @@ var MrkdwnJsonFileType = function(project) {
         translated: [],
         untranslated: []
     }
-
-    this.yamlFileType = new YamlFileType(this.project);
 };
 
 var defaultMappings = {
@@ -234,7 +231,6 @@ MrkdwnJsonFileType.prototype.getNew = function() {
     // get the new strings from the front matter and the file itself and
     // put them together
     var set = this.API.newTranslationSet(this.project.getSourceLocale());
-    set.addSet(this.yamlFileType.getNew());
     set.addSet(this.newres);
     return set;
 };
@@ -250,7 +246,6 @@ MrkdwnJsonFileType.prototype.getPseudo = function() {
     // get the pseudo strings from the front matter and the file itself and
     // put them together
     var set = this.API.newTranslationSet(this.project.getSourceLocale());
-    set.addSet(this.yamlFileType.getPseudo());
     set.addSet(this.pseudo);
     return set;
 };
@@ -268,13 +263,6 @@ MrkdwnJsonFileType.prototype.projectClose = function() {
         var fileName = path.join(this.project.root, "translation-status.json");
         fs.writeFileSync(fileName, JSON.stringify(this.fileInfo, undefined, 4), "utf-8");
     }
-};
-
-/**
- * @private
- */
-MrkdwnJsonFileType.prototype.getYamlFileType = function() {
-    return this.yamlFileType;
 };
 
 module.exports = MrkdwnJsonFileType;
