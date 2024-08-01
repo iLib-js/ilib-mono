@@ -192,6 +192,9 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.2.2
+- Removed the `mkdirp` package dependency.
+
 ### v1.2.0
 
 - added --resources option to include translated resource files into the
