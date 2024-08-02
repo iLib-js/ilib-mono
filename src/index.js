@@ -4,7 +4,7 @@
  * classes and then assembling the locale data for those classes into
  * files that can be included in webpack
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import Locale from 'ilib-locale';
 import { JSUtils, Utils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
-import mkdirp from 'mkdirp';
 import json5 from 'json5';
 
 import walk from './walk.js';
 import scan from './scan.js';
 import scanModule from './scanmodule.js';
 import scanResources from './scanres.js';
+import assembleilib from './legacyilibassemble.js';
 
 const optionConfig = {
     help: {
@@ -75,6 +75,19 @@ const optionConfig = {
         short: "r",
         multi: true,
         help: "Include translated resource files in the output files such that they can be loaded with ilib-resbundle. The resource files should come from ilib's loctool or other such localization tool which produces a set of translated resource files. VAL is the path to the root of a resource file tree."
+    },
+    legacyilib: {
+        short: "o",
+        flag: true,
+        help: "assemble the legecy version of ilib"
+    },
+    ilibPath: {
+        short: "i",
+        help: "path where the ilib is installed"
+    },
+    ilibincPath: {
+        short: "f",
+        help: "inc file path"
     }
 };
 
@@ -89,7 +102,7 @@ if (options.args.length < 1) {
     process.exit(1);
 }
 
-if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022 JEDLsoft, All rights reserved.");
+if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022, 2024 JEDLsoft, All rights reserved.");
 
 const outputPath = options.args[0];
 let stat;
@@ -99,7 +112,7 @@ try {
 
 if (!stat) {
     // file not found, so let's make it
-    mkdirp(outputPath);
+    fs.mkdirSync(outputPath, { recursive: true });
     if (!options.opt.quiet) console.log(`Created output path: ${outputPath}`);
 } else if (stat.errno) {
     console.log(`Could not access ${outputPath}`);
@@ -110,149 +123,157 @@ if (!stat) {
     process.exit(3);
 }
 
-let paths = options.args.slice(1);
-if (paths.length === 0) {
-    paths.push(".");
-}
-
-if (options.opt.localefile) {
-    const json = json5.parse(fs.readFileSync(options.opt.localefile, "utf-8"));
-    options.opt.locales = json.locales;
-} else if (options.opt.locales) {
-    options.opt.locales = options.opt.locales.split(/,/g);
-}
-// normalize the locale specs
-options.opt.locales = options.opt.locales.map(spec => {
-    let loc = new Locale(spec);
-    if (!loc.getLanguage()) {
-        loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+if (!options.opt.legacyilib) {
+    let paths = options.args.slice(1);
+    if (paths.length === 0) {
+        paths.push(".");
     }
-    return loc.getSpec();
-});
-if (!options.opt.format) {
-    options.opt.format = "js";
-}
 
-if (!options.opt.quiet) console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
-
-if (!options.opt.quiet) console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
-
-let files = [];
-
-paths.forEach((pathName) => {
-    if (!options.opt.quiet) console.log(`  Scanning ${pathName} for Javascript files...`);
-    files = files.concat(walk(pathName, options.opt));
-});
-
-let ilibModules = new Set();
-
-if (!options.opt.quiet) console.log(`\n\nScanning javascript files...`);
-
-files.forEach((file) => {
-    if (!options.opt.quiet) console.log(`  ${file} ...`);
-    scan(file, ilibModules);
-});
-
-if (options.opt.module) {
-    options.opt.module.forEach(module => {
-        if (!options.opt.quiet) console.log(`\nAdding module ${module} to the list of modules to search`);
-        ilibModules.add((module[0] === '.') ? path.join(process.cwd(), module) : module);
+    if (options.opt.localefile) {
+        const json = json5.parse(fs.readFileSync(options.opt.localefile, "utf-8"));
+        options.opt.locales = json.locales;
+    } else if (options.opt.locales) {
+        options.opt.locales = options.opt.locales.split(/,/g);
+    }
+    // normalize the locale specs
+    options.opt.locales = options.opt.locales.map(spec => {
+        let loc = new Locale(spec);
+        if (!loc.getLanguage()) {
+            loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+        }
+        return loc.getSpec();
     });
-}
+    if (!options.opt.format) {
+        options.opt.format = "js";
+    }
 
-let localeData = {};
+    if (!options.opt.quiet) console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
 
-if (!options.opt.quiet) console.log(`\n\nScanning ilib modules for locale data`);
-let promise = Promise.resolve(false);
-ilibModules.forEach((module) => {
-    if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
-    promise = promise.then(result => {
-        return scanModule(module, options.opt).then(data => {
-            if (data && typeof(data) === "object") {
-                // merge in the sublocales separately
-                for (const sublocale in data) {
-                    localeData = JSUtils.merge(localeData, data[sublocale], true);
-                }
-                return true;
-            }
-            return result;
+    if (!options.opt.quiet) console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
+
+    let files = [];
+
+    paths.forEach((pathName) => {
+        if (!options.opt.quiet) console.log(`  Scanning ${pathName} for Javascript files...`);
+        files = files.concat(walk(pathName, options.opt));
+    });
+
+    let ilibModules = new Set();
+
+    if (!options.opt.quiet) console.log(`\n\nScanning javascript files...`);
+
+    files.forEach((file) => {
+        if (!options.opt.quiet) console.log(`  ${file} ...`);
+        scan(file, ilibModules);
+    });
+
+    if (options.opt.module) {
+        options.opt.module.forEach(module => {
+            if (!options.opt.quiet) console.log(`\nAdding module ${module} to the list of modules to search`);
+            ilibModules.add((module[0] === '.') ? path.join(process.cwd(), module) : module);
         });
-    });
-});
+    }
 
+    let localeData = {};
 
-if (!options.opt.quiet) {
-    promise.then(result => {
-        console.log(`\n\nScanning directories for resource files`);
-    });
-}
-
-if (options.opt.resources) {
-    options.opt.resources.forEach(resDir => {
+    if (!options.opt.quiet) console.log(`\n\nScanning ilib modules for locale data`);
+    let promise = Promise.resolve(false);
+    ilibModules.forEach((module) => {
+        if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
         promise = promise.then(result => {
-            if (!options.opt.quiet) console.log(`  ${resDir} ...`);
-            return scanResources(resDir, options).then(data => {
-                // console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
-                if (data) {
-                    localeData = JSUtils.merge(localeData, data, true);
+            return scanModule(module, options.opt).then(data => {
+                if (data && typeof(data) === "object") {
+                    // merge in the sublocales separately
+                    for (const sublocale in data) {
+                        localeData = JSUtils.merge(localeData, data[sublocale], true);
+                    }
                     return true;
                 }
                 return result;
             });
         });
     });
-}
 
-const spaces = "                                                                                                                 ";
-function indent(str, howMany) {
-    return str.split(/\n/g).map(line => {
-        return spaces.substring(0, howMany*4) + line;
-    }).join("\n");
-};
 
-promise.then(result => {
-    // console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
-
-    let hadOutput = false;
-    if (result) {
-        if (!options.opt.quiet) console.log("\n\nWriting out data...");
-
-        for (let i = 0; i < options.opt.locales.length; i++) {
-            const locale = options.opt.locales[i];
-            // assemble all the sublocales into a single file
-            const sublocales = Utils.getSublocales(locale);
-            const contents = {};
-            sublocales.forEach((sublocale) => {
-                if (!JSUtils.isEmpty(localeData[sublocale])) {
-                    contents[sublocale] = localeData[sublocale];
-                }
-            });
-
-            const outputName = path.join(outputPath, `${locale}.js`);
-            let contentStr = options.opt.compressed ?
-                JSON.stringify(contents) :
-                JSON.stringify(contents, undefined, 4);
-            switch (options.opt.format) {
-                case 'js':
-                    contentStr =
-                        "export default function getLocaleData() {\n" +
-                        `    return ${indent(contentStr, 1)};\n` +
-                        "};";
-                    break;
-                case 'cjs':
-                    contentStr = `module.exports = ${contentStr};`;
-                    break;
-            }
-            if (contentStr.length) {
-                fs.writeFileSync(outputName, contentStr, "utf-8");
-                hadOutput = true;
-            }
-        }
-        if (hadOutput) {
-            if (!options.opt.quiet) console.log(`Done. Output is in ${outputPath}.`);
-            return true;
-        }
+    if (!options.opt.quiet) {
+        promise.then(result => {
+            console.log(`\n\nScanning directories for resource files`);
+        });
     }
-    if (!options.opt.quiet) console.log("Done. No locale data found.");
-});
 
+    if (options.opt.resources) {
+        options.opt.resources.forEach(resDir => {
+            promise = promise.then(result => {
+                if (!options.opt.quiet) console.log(`  ${resDir} ...`);
+                return scanResources(resDir, options).then(data => {
+                    // console.log(`Received data ${JSON.stringify(data, undefined, 4)}`);
+                    if (data) {
+                        localeData = JSUtils.merge(localeData, data, true);
+                        return true;
+                    }
+                    return result;
+                });
+            });
+        });
+    }
+
+    const spaces = "                                                                                                                 ";
+    function indent(str, howMany) {
+        return str.split(/\n/g).map(line => {
+            return spaces.substring(0, howMany*4) + line;
+        }).join("\n");
+    };
+
+    promise.then(result => {
+        // console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
+
+        let hadOutput = false;
+        if (result) {
+            if (!options.opt.quiet) console.log("\n\nWriting out data...");
+
+            for (let i = 0; i < options.opt.locales.length; i++) {
+                const locale = options.opt.locales[i];
+                // assemble all the sublocales into a single file
+                const sublocales = Utils.getSublocales(locale);
+                const contents = {};
+                sublocales.forEach((sublocale) => {
+                    if (!JSUtils.isEmpty(localeData[sublocale])) {
+                        contents[sublocale] = localeData[sublocale];
+                    }
+                });
+
+                const outputName = path.join(outputPath, `${locale}.js`);
+                let contentStr = options.opt.compressed ?
+                    JSON.stringify(contents) :
+                    JSON.stringify(contents, undefined, 4);
+                switch (options.opt.format) {
+                    case 'js':
+                        contentStr =
+                            "export default function getLocaleData() {\n" +
+                            `    return ${indent(contentStr, 1)};\n` +
+                            "};";
+                        break;
+                    case 'cjs':
+                        contentStr = `module.exports = ${contentStr};`;
+                        break;
+                }
+                if (contentStr.length) {
+                    fs.writeFileSync(outputName, contentStr, "utf-8");
+                    hadOutput = true;
+                }
+            }
+            if (hadOutput) {
+                if (!options.opt.quiet) console.log(`Done. Output is in ${outputPath}.`);
+                return true;
+            }
+        }
+        if (!options.opt.quiet) console.log("Done. No locale data found.");
+    });
+
+    } else {
+    //assemble to legacy version of ilib
+    console.log("here!!!");
+        assembleilib(options);
+
+    }
+    console.log("'DONE");
