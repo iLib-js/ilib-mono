@@ -98,7 +98,7 @@ try {
 
 if (!stat) {
     // file not found, so let's make it
-    fs.mkdirSync(outputPath);
+    fs.mkdirSync(outputPath, { recursive: true });
     if (!options.opt.quiet) console.log(`Created output path: ${outputPath}`);
 } else if (stat.errno) {
     console.log(`Could not access ${outputPath}`);
