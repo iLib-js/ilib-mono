@@ -21,11 +21,14 @@
 import fs from 'fs';
 import path from 'path';
 import Locale from 'ilib-locale';
+//import uglifyjs from 'uglify-js';
 
 let ilibPath;
 let ilibincPath;
 let outDir;
 let locales;
+let outFileName;
+let isCompressed;
 let jsFileList = [];
 let allJSList = [];
 
@@ -47,11 +50,12 @@ const localeIndependent = [
 ];
 
 function assembleilib(options) {
-    //console.log(options);
     ilibPath = options.opt.ilibPath;
     ilibincPath = options.opt.ilibincPath;
-    locales = options.opt.locales;
+    locales = options.opt.locales || defaultlocales;
     outDir = options.args[0];
+    outFileName = options.opt.outjsFileName || "ilib-assemble.js";
+    isCompressed = options.opt.compressed || false;
     readIncFile(options.opt.ilibincPath);
     readJSFiles();
 }
@@ -115,7 +119,7 @@ function readJSFiles() {
     allJSList = [...new Set([...dependentJS, ...jsFileList])];
 
     assemblejs();
-    //assemblelocale();
+    assemblelocale();
 }
 
 function deletePatterns(data) {
@@ -127,13 +131,12 @@ function deletePatterns(data) {
 
 function assembleLocaleIndepententData() {
     let readData;
-    let allData;
+    let allData = "";
     dependentData.forEach(function(data){
         if (localeIndependent.indexOf(data) != -1) {
             let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
-            //ilib.data.plurals_af = {"one":{"eq":["n",1]}};
             readData = readFile(dataPath);
-            allData += "ilib.data." + data + " = " + readData;
+            allData += "ilib.data." + data + " = " + readData + ";\n";
         }
     });
     return allData;
@@ -181,7 +184,79 @@ function assemblejs() {
     assembleJSAll += assembleLocaleIndepententData();
     assembleJSAll += assembleZoneinfo();
 
-    fs.writeFileSync('result.js', assembleJSAll, 'utf-8');
+    if (isCompressed) {
+        // uglify-js : JS_Parse_Error
+        //fs.writeFileSync(path.join(outDir, outFileName), uglifyjs.minify(assembleJSAll).code, 'utf-8');
+    } else {
+        fs.writeFileSync(path.join(outDir, outFileName), assembleJSAll, 'utf-8');
+    }
+}
+
+let outFile = {};
+function assemblelocale() {
+    let iliblocalePath = path.join(ilibPath, "js/data/locale");
+    locales.forEach(function(loc){
+        let lo = new Locale(loc);
+        let lang = lo.language;
+        let script = lo.script;
+        let region = lo.region;
+
+        let jsonPath;
+        let readData;
+        dependentData.forEach(function(jsonName) {
+            if (localeIndependent.indexOf(jsonName) == -1) {
+                if (outFile[lang] == undefined) {
+                    outFile[lang] = {};
+                }
+
+                if (lang) {
+                    jsonPath = path.join(iliblocalePath, lang, jsonName + ".json");
+                    readData = readFile(jsonPath);
+                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang] = readData;
+
+                    if (script) {
+                        jsonPath = path.join(iliblocalePath, lang, script, jsonName + ".json");
+                        readData = readFile(jsonPath);
+                        if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script] = readData;
+
+                        if (region) {
+                            jsonPath = path.join(iliblocalePath, lang, script, region, jsonName + ".json");
+                            readData = readFile(jsonPath);
+                            if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region] = readData;
+
+                            jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
+                            readData = readFile(jsonPath);
+                           if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                        }
+                    }
+                } else if (region) {
+                    jsonPath = path.join(iliblocalePath, lang, region, jsonName + "json");
+                    readData = readFile(jsonPath);
+                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
+
+                    jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
+                    readData = readFile(jsonPath);
+                    if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                } else {
+                    console.log("The locale " + lo.getSpec() +  " is missing language code.");
+                }
+            }
+        });
+    });
+
+    for (let loc in outFile) {
+        let contents = "";
+        for(let keys in outFile[loc]){
+            contents += keys + " = " + outFile[loc][keys] + "\n";
+        }
+        console.log("writing " + outDir + "/"+ loc + ".js file.");
+        let resultFilePath = path.join(outDir, loc + ".js");
+        if (isCompressed) {
+            //fs.writeFileSync(resultFilePath, uglifyjs.minify(contents).code, "utf-8");
+        } else {
+            fs.writeFileSync(resultFilePath, contents, "utf-8");
+        }
+    }
 }
 
 export default assembleilib;

@@ -88,6 +88,10 @@ const optionConfig = {
     ilibincPath: {
         short: "f",
         help: "inc file path"
+    },
+    outjsFileName: {
+        short: "n",
+        help: "generated assemble js file name"
     }
 };
 
@@ -123,26 +127,27 @@ if (!stat) {
     process.exit(3);
 }
 
+if (options.opt.localefile) {
+    const json = json5.parse(fs.readFileSync(options.opt.localefile, "utf-8"));
+    options.opt.locales = json.locales;
+} else if (options.opt.locales) {
+    options.opt.locales = options.opt.locales.split(/,/g);
+}
+// normalize the locale specs
+options.opt.locales = options.opt.locales.map(spec => {
+    let loc = new Locale(spec);
+    if (!loc.getLanguage()) {
+        loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+    }
+    return loc.getSpec();
+});
+
 if (!options.opt.legacyilib) {
     let paths = options.args.slice(1);
     if (paths.length === 0) {
         paths.push(".");
     }
 
-    if (options.opt.localefile) {
-        const json = json5.parse(fs.readFileSync(options.opt.localefile, "utf-8"));
-        options.opt.locales = json.locales;
-    } else if (options.opt.locales) {
-        options.opt.locales = options.opt.locales.split(/,/g);
-    }
-    // normalize the locale specs
-    options.opt.locales = options.opt.locales.map(spec => {
-        let loc = new Locale(spec);
-        if (!loc.getLanguage()) {
-            loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
-        }
-        return loc.getSpec();
-    });
     if (!options.opt.format) {
         options.opt.format = "js";
     }
@@ -271,9 +276,6 @@ if (!options.opt.legacyilib) {
     });
 
     } else {
-    //assemble to legacy version of ilib
-    console.log("here!!!");
         assembleilib(options);
-
     }
     console.log("'DONE");
