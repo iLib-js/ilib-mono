@@ -25,7 +25,6 @@ import Locale from 'ilib-locale';
 import { JSUtils, Utils } from 'ilib-common';
 import fs from 'fs';
 import path from 'path';
-import mkdirp from 'mkdirp';
 import json5 from 'json5';
 
 import walk from './walk.js';
@@ -99,7 +98,7 @@ try {
 
 if (!stat) {
     // file not found, so let's make it
-    mkdirp(outputPath);
+    fs.mkdirSync(outputPath, { recursive: true });
     if (!options.opt.quiet) console.log(`Created output path: ${outputPath}`);
 } else if (stat.errno) {
     console.log(`Could not access ${outputPath}`);
