@@ -116,7 +116,7 @@ function readJSFiles() {
         }
     });
 
-    allJSList = [...new Set([...dependentJS, ...jsFileList])];
+    allJSList = [...new Set([...jsFileList, ...dependentJS])];
 
     assemblejs();
     assemblelocale();
@@ -124,20 +124,18 @@ function readJSFiles() {
 
 function deletePatterns(data) {
     const deletePattern1 = /var\s*[^;]*=[^;]require[^;]*;/g;
-    const deletePattern2 = /module\.exports\s*=\s*[^;]*;/g;
+    const deletePattern2 = /module\.exports\s*=\s*\b(?:(?!ilib)\w)+\b\;/g;
     data = data.replaceAll(deletePattern1, "").replaceAll(deletePattern2, "");
     return data;
 }
 
-function assembleLocaleIndepententData() {
+function assembleLocaleRootData() {
     let readData;
     let allData = "";
     dependentData.forEach(function(data){
-        if (localeIndependent.indexOf(data) != -1) {
-            let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
-            readData = readFile(dataPath);
-            allData += "ilib.data." + data + " = " + readData + ";\n";
-        }
+        let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
+        readData = readFile(dataPath);
+        allData += "ilib.data." + data + " = " + readData + ";\n";
     });
     return allData;
 }
@@ -149,10 +147,10 @@ function assembleZoneinfo() {
     return readData;
 }
 
+let allTimeZoneData = "";
 function zoneinfoWalk(zoneinfoPath) {
     let dirList = fs.readdirSync(zoneinfoPath);
 
-    let allData = "";
     dirList.forEach(function(dir) {
         let filePath = path.join(zoneinfoPath, dir);
         let stat = fs.statSync(filePath);
@@ -161,34 +159,32 @@ function zoneinfoWalk(zoneinfoPath) {
         } else {
             let timezoneID = filePath.replace(path.join(ilibPath, "js/data/locale/zoneinfo/"), "").replace(".json", "");
             let readData = readFile(filePath);
-            allData += 'ilib.data.zoneinfo["' + timezoneID + '"] = ' + readData + ';\n';
+            allTimeZoneData += 'ilib.data.zoneinfo["' + timezoneID + '"] = ' + readData + ';\n';
         }
     });
-    return allData;
+    return allTimeZoneData;
 }
 
 function assemblejs() {
+    let readData = "";
+    let filePath;
     allJSList.forEach(function(file){
-        let filePath;
-        let readData;
-        if (file == 'index.js') {
-            filePath = path.join(ilibPath, "js", file);
-        } else {
+        if (file !== 'index.js') {
             filePath = path.join(ilibPath, "js/lib", file);
         }
-        readData = readFile(filePath, 'utf-8');
+        readData = readFile(filePath, "utf-8");
         assembleJSAll += readData;
     });
 
     assembleJSAll = deletePatterns(assembleJSAll);
-    assembleJSAll += assembleLocaleIndepententData();
+    assembleJSAll += assembleLocaleRootData();
     assembleJSAll += assembleZoneinfo();
 
     if (isCompressed) {
         // uglify-js : JS_Parse_Error
-        //fs.writeFileSync(path.join(outDir, outFileName), uglifyjs.minify(assembleJSAll).code, 'utf-8');
+        //fs.writeFileSync(path.join(outDir, outFileName), uglifyjs.minify(assembleJSAll).code, "utf-8");
     } else {
-        fs.writeFileSync(path.join(outDir, outFileName), assembleJSAll, 'utf-8');
+        fs.writeFileSync(path.join(outDir, outFileName), assembleJSAll, "utf-8");
     }
 }
 
@@ -228,15 +224,15 @@ function assemblelocale() {
                             readData = readFile(jsonPath);
                            if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
                         }
-                    }
-                } else if (region) {
-                    jsonPath = path.join(iliblocalePath, lang, region, jsonName + "json");
-                    readData = readFile(jsonPath);
-                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
+                    } else if (region) {
+                        jsonPath = path.join(iliblocalePath, lang, region, jsonName + "json");
+                        readData = readFile(jsonPath);
+                        if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
 
-                    jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
-                    readData = readFile(jsonPath);
-                    if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                        jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
+                        readData = readFile(jsonPath);
+                        if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                    }
                 } else {
                     console.log("The locale " + lo.getSpec() +  " is missing language code.");
                 }
