@@ -78,7 +78,7 @@ function readFile(filepath) {
         readData = fs.readFileSync(filepath, "utf-8");
         return readData;
     } else {
-        console.log("The file [" + filepath + "] does not exist.");
+        //console.log("The file [" + filepath + "] does not exist.");
     }
 }
 
@@ -125,7 +125,11 @@ function readJSFiles() {
 function deletePatterns(data) {
     const deletePattern1 = /var\s*[^;]*=[^;]require[^;]*;/g;
     const deletePattern2 = /module\.exports\s*=\s*\b(?:(?!ilib)\w)+\b\;/g;
-    data = data.replaceAll(deletePattern1, "").replaceAll(deletePattern2, "");
+    const macroPattern = /\/\/\s*\!macro\s*ilibVersion/g;
+    const readPkg = readFile(path.join(ilibPath, "package.json"));
+    const ilibVersion = JSON.parse(readPkg).version;
+    data = data.replaceAll(deletePattern1, "").replaceAll(deletePattern2, "").replaceAll(macroPattern, '"' +ilibVersion+ '"');
+
     return data;
 }
 
@@ -216,16 +220,20 @@ function assemblelocale() {
                         if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script] = readData;
 
                         if (region) {
+                            jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
+                            readData = readFile(jsonPath);
+                            if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
+
                             jsonPath = path.join(iliblocalePath, lang, script, region, jsonName + ".json");
                             readData = readFile(jsonPath);
                             if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region] = readData;
 
                             jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
                             readData = readFile(jsonPath);
-                           if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                            if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
                         }
                     } else if (region) {
-                        jsonPath = path.join(iliblocalePath, lang, region, jsonName + "json");
+                        jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
                         readData = readFile(jsonPath);
                         if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
 
