@@ -35,20 +35,6 @@ let allJSList = [];
 const reDependentPattern = new RegExp(/require\(\s*(\"|\')\.*\/(.*\.js)(\"|\')\)\;/, "g");
 const reDataPattern = new RegExp(/\/\/\s*!data\s*(([^\\])+)/, "g");
 
-const localeIndependent = [
-    "astro",
-    "zoneinfo",
-    "localematch",
-    "ctype",
-    "ctype_l",
-    "ctype_m",
-    "ctype_n",
-    "ctype_p",
-    "ctype_z",
-    "scriptToRange",
-    "pseudomap"
-];
-
 function assembleilib(options) {
     ilibPath = options.opt.ilibPath;
     ilibincPath = options.opt.ilibincPath;
@@ -204,46 +190,44 @@ function assemblelocale() {
         let jsonPath;
         let readData;
         dependentData.forEach(function(jsonName) {
-            if (localeIndependent.indexOf(jsonName) == -1) {
-                if (outFile[lang] == undefined) {
-                    outFile[lang] = {};
-                }
+            if (outFile[lang] == undefined) {
+                outFile[lang] = {};
+            }
 
-                if (lang) {
-                    jsonPath = path.join(iliblocalePath, lang, jsonName + ".json");
+            if (lang) {
+                jsonPath = path.join(iliblocalePath, lang, jsonName + ".json");
+                readData = readFile(jsonPath);
+                if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang] = readData;
+
+                if (script) {
+                    jsonPath = path.join(iliblocalePath, lang, script, jsonName + ".json");
                     readData = readFile(jsonPath);
-                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang] = readData;
+                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script] = readData;
 
-                    if (script) {
-                        jsonPath = path.join(iliblocalePath, lang, script, jsonName + ".json");
-                        readData = readFile(jsonPath);
-                        if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script] = readData;
-
-                        if (region) {
-                            jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
-                            readData = readFile(jsonPath);
-                            if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
-
-                            jsonPath = path.join(iliblocalePath, lang, script, region, jsonName + ".json");
-                            readData = readFile(jsonPath);
-                            if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region] = readData;
-
-                            jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
-                            readData = readFile(jsonPath);
-                            if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
-                        }
-                    } else if (region) {
+                    if (region) {
                         jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
                         readData = readFile(jsonPath);
                         if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
+
+                        jsonPath = path.join(iliblocalePath, lang, script, region, jsonName + ".json");
+                        readData = readFile(jsonPath);
+                        if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region] = readData;
 
                         jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
                         readData = readFile(jsonPath);
                         if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
                     }
-                } else {
-                    console.log("The locale " + lo.getSpec() +  " is missing language code.");
+                } else if (region) {
+                    jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
+                    readData = readFile(jsonPath);
+                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
+
+                    jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
+                    readData = readFile(jsonPath);
+                    if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
                 }
+            } else {
+                console.log("The locale " + lo.getSpec() +  " is missing language code.");
             }
         });
     });
