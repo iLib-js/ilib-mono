@@ -125,11 +125,12 @@ The ilib-assemble tool takes the following options:
     or other such localization tool which produces a set of translated resource
     files. VAL is the path to the root of a resource file tree. You can specify
     this option multiple times, once for each resources directory.
-* -legacyilib. The flag to indicate assembe the legacy version of ilib
+* -legacyilib. The flag to indicate assembe the legacy version of ilib.
 * --ilibPath or -i. Specify the location where the legacy versin of ilib is installed.
 * --ilibincPath or -f. Specify name of Javascript file to process. If nont given, 
-    the current directory is recursively searched for all Javascript files.
-* --outjsFileName or n. Specify the resulting assembled output file.
+    the default (`./src/ilib-assemble-inc.js`)file will be used.
+* --outjsFileName or n. Specify the resulting assembled output file name.
+    The default is `ilib-assemble.js`
 
 The output-dir is required and specifies the directory where the output is
 written. If it does not exist, it will be created first.
