@@ -278,4 +278,4 @@ if (!options.opt.legacyilib) {
     } else {
         assembleilib(options);
     }
-    console.log("'DONE");
+    console.log("DONE");

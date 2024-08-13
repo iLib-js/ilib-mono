@@ -125,6 +125,11 @@ The ilib-assemble tool takes the following options:
     or other such localization tool which produces a set of translated resource
     files. VAL is the path to the root of a resource file tree. You can specify
     this option multiple times, once for each resources directory.
+* -legacyilib. The flag to indicate assembe the legacy version of ilib
+* --ilibPath or -i. Specify the location where the legacy versin of ilib is installed.
+* --ilibincPath or -f. Specify name of Javascript file to process. If nont given, 
+    the current directory is recursively searched for all Javascript files.
+* --outjsFileName or n. Specify the resulting assembled output file.
 
 The output-dir is required and specifies the directory where the output is
 written. If it does not exist, it will be created first.
@@ -191,6 +196,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.3.0
+- Add the ability to assemble the legacy version of iLib.  
+  When the legacyilib flag is set, it assembles files in the legacy style, which refers to the files from iLib. The generated output includes separate files for JS code and locale data: one JS file containing the JS code and iLib's root locale data, and additional JSON files for locale-specific data. Currently, it generates files in the [language].js format.  
+e.g
+```
+ ilib-assemble output-dir --legacyilib --ilibPath ~/Source/develop/ --ilibincPath src/ilib-assemble-inc.js -l "af-ZA,am-ET,ko-KR"
+```
 
 ### v1.2.2
 - Removed the `mkdirp` package dependency.

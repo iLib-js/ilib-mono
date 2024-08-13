@@ -21,10 +21,10 @@
 import fs from 'fs';
 import path from 'path';
 import Locale from 'ilib-locale';
-//import uglifyjs from 'uglify-js';
+import UglifyJS from 'uglify-js-export';
 
 let ilibPath;
-let ilibincPath;
+let incPath;
 let outDir;
 let locales;
 let outFileName;
@@ -36,24 +36,28 @@ const reDependentPattern = new RegExp(/require\(\s*(\"|\')\.*\/(.*\.js)(\"|\')\)
 const reDataPattern = new RegExp(/\/\/\s*!data\s*(([^\\])+)/, "g");
 
 function assembleilib(options) {
-    ilibPath = options.opt.ilibPath;
-    ilibincPath = options.opt.ilibincPath;
-    locales = options.opt.locales || defaultlocales;
+    ilibPath = options.opt.ilibPath || ".";
+    incPath = options.opt.ilibincPath || "./src/ilib-assemble-inc.js";
+    locales = options.opt.locales;
     outDir = options.args[0];
     outFileName = options.opt.outjsFileName || "ilib-assemble.js";
     isCompressed = options.opt.compressed || false;
-    readIncFile(options.opt.ilibincPath);
+    readIncFile(incPath);
     readJSFiles();
 }
 
 function readIncFile(incpath) {
-    let info = readFile(incpath, 'utf8');
-    let lines = info.split('\n');
-    lines.forEach(line => {
-        if (line.indexOf('js') != -1) {
-            jsFileList.push(line);
-        }
-    });
+    if (incpath) {
+        let info = readFile(incpath, "utf-8");
+        let lines = info.split('\n');
+        lines.forEach(line => {
+            if (line.indexOf('js') != -1) {
+                jsFileList.push(line);
+            }
+        });
+    } else {
+
+    }
 }
 
 function readFile(filepath) {
@@ -68,8 +72,6 @@ function readFile(filepath) {
     }
 }
 
-//node --inspect-brk src/index.js result --legacyilib --ilibPath ~/Source/develop/ --ilibincPath src/ilib-assemble-inc.js 
-
 let dependentJS = [];
 let dependentData = [];
 let assembleJSAll= "";
@@ -81,24 +83,25 @@ function readJSFiles() {
     jsFileList.forEach(function(file){
         let jsPath = path.join(ilibPath, "js/lib", file);
         readData = readFile(jsPath);
+        if (readData) {
+            matchedJS = [...readData.matchAll(reDependentPattern)];
+            if (matchedJS.length > 0){
+                matchedJS.forEach(function(item){
+                    if (!dependentJS.includes(item[2])) {
+                        dependentJS.push(item[2]);
+                    }
+                });
+            }
 
-        matchedJS = [...readData.matchAll(reDependentPattern)];
-        if (matchedJS.length > 0){
-            matchedJS.forEach(function(item){
-                if (!dependentJS.includes(item[2])) {
-                    dependentJS.push(item[2]);
-                }
-            });
-        }
-
-        matchedData = reDataPattern.exec(readData);
-        if (matchedData !== null){
-            let result = matchedData[1].split('\n')[0].split(' ');
-            result.forEach(function(item){
-                if (!dependentData.includes(item)) {
-                    dependentData.push(item);
-                }
-            });
+            matchedData = reDataPattern.exec(readData);
+            if (matchedData !== null){
+                let result = matchedData[1].split('\n')[0].split(' ');
+                result.forEach(function(item){
+                    if (!dependentData.includes(item)) {
+                        dependentData.push(item);
+                    }
+                });
+            }
         }
     });
 
@@ -139,19 +142,21 @@ function assembleZoneinfo() {
 
 let allTimeZoneData = "";
 function zoneinfoWalk(zoneinfoPath) {
-    let dirList = fs.readdirSync(zoneinfoPath);
+    let dirList = readFile(zoneinfoPath);
+    if (dirList && dirList.length > 0)  {
+        dirList.forEach(function(dir) {
+            let filePath = path.join(zoneinfoPath, dir);
+            let stat = fs.statSync(filePath);
+            if (stat && stat.isDirectory()) {
+                zoneinfoWalk(filePath);
+            } else {
+                let timezoneID = filePath.replace(path.join(ilibPath, "js/data/locale/zoneinfo/"), "").replace(".json", "");
+                let readData = readFile(filePath);
+                allTimeZoneData += 'ilib.data.zoneinfo["' + timezoneID + '"] = ' + readData + ';\n';
+            }
+        });
+    }
 
-    dirList.forEach(function(dir) {
-        let filePath = path.join(zoneinfoPath, dir);
-        let stat = fs.statSync(filePath);
-        if (stat && stat.isDirectory()) {
-            zoneinfoWalk(filePath);
-        } else {
-            let timezoneID = filePath.replace(path.join(ilibPath, "js/data/locale/zoneinfo/"), "").replace(".json", "");
-            let readData = readFile(filePath);
-            allTimeZoneData += 'ilib.data.zoneinfo["' + timezoneID + '"] = ' + readData + ';\n';
-        }
-    });
     return allTimeZoneData;
 }
 
@@ -163,16 +168,16 @@ function assemblejs() {
             filePath = path.join(ilibPath, "js/lib", file);
         }
         readData = readFile(filePath, "utf-8");
-        assembleJSAll += readData;
+        if (readData) assembleJSAll += readData;
     });
 
     assembleJSAll = deletePatterns(assembleJSAll);
     assembleJSAll += assembleLocaleRootData();
     assembleJSAll += assembleZoneinfo();
 
+    console.log("writing " + path.join(outDir, outFileName) + " file.");
     if (isCompressed) {
-        // uglify-js : JS_Parse_Error
-        //fs.writeFileSync(path.join(outDir, outFileName), uglifyjs.minify(assembleJSAll).code, "utf-8");
+        fs.writeFileSync(path.join(outDir, outFileName), UglifyJS.minify(assembleJSAll).code, "utf-8");
     } else {
         fs.writeFileSync(path.join(outDir, outFileName), assembleJSAll, "utf-8");
     }
@@ -240,7 +245,7 @@ function assemblelocale() {
         console.log("writing " + outDir + "/"+ loc + ".js file.");
         let resultFilePath = path.join(outDir, loc + ".js");
         if (isCompressed) {
-            //fs.writeFileSync(resultFilePath, uglifyjs.minify(contents).code, "utf-8");
+            fs.writeFileSync(resultFilePath, UglifyJS.minify(contents).code, "utf-8");
         } else {
             fs.writeFileSync(resultFilePath, contents, "utf-8");
         }
