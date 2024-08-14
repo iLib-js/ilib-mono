@@ -55,8 +55,6 @@ function readIncFile(incpath) {
                 jsFileList.push(line);
             }
         });
-    } else {
-
     }
 }
 
