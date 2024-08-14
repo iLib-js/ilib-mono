@@ -102,7 +102,8 @@ packages.
    If not, the default file that the tool (`./src/ilib-ilib-assemble-inc.js`)has will be used.
 2. Read the Javscript files from the inc file list and extract the list of dependent JS and locale data.
 3. After the tool has been executed, the two style files will be placed the `output-dir`.
-   One is for the result of all JS files merged into a single usable file. If the file name is not specified, the default file name is `ilib-assemble.js`. and another file is for the locale data per `[locale].js`. The data is written as follows: `ilib.data_[feature]_locale = {}  
+   One is for the result of all JS files merged into a single usable file. If the file name is not specified, the default file name is `ilib-assemble.js`. and  another file is for the locale data per `[locale].js`.  
+   The data is written as follows: `ilib.data_[feature]_locale = {}`  
    Here is an example of localeinfo for the ko-KR locale.
    ```js
    ilib.data.localeinfo_ko = {}
