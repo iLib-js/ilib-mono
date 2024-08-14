@@ -165,7 +165,7 @@ function assemblejs() {
     let readData = "";
     let filePath;
     allJSList.forEach(function(file){
-        if (file !== 'index.js') {
+        if (file !== "index.js") {
             filePath = path.join(ilibPath, "js/lib", file);
         }
         readData = readFile(filePath, "utf-8");

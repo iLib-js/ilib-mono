@@ -100,7 +100,7 @@ packages.
 ## Basic Operation for legacy version of ilib
 1. Write the `inc` file to specify which files to assemble.
    If not, the default file that the tool (`./src/ilib-ilib-assemble-inc.js`)has will be used.
-2. Read the Javscript files from the inc file list and extract the list of dependent JS and locale data.
+2. Read the javscript files from the inc file list and extract the list of dependent JS and locale data.
 3. After the tool has been executed, the two style files will be placed the `output-dir`.
    One is for the result of all JS files merged into a single usable file. If the file name is not specified, the default file name is `ilib-assemble.js`. and  another file is for the locale data per `[locale].js`.  
    The data is written as follows: `ilib.data_[feature]_locale = {}`  
@@ -143,9 +143,9 @@ The ilib-assemble tool takes the following options:
     or other such localization tool which produces a set of translated resource
     files. VAL is the path to the root of a resource file tree. You can specify
     this option multiple times, once for each resources directory.
-* -legacyilib. The flag to indicate assembe the legacy version of ilib.
-* --ilibPath or -i. Specify the location where the legacy versin of ilib is installed.
-* --ilibincPath or -f. Specify name of Javascript file to process. If nont given, 
+* -legacyilib. The flag to indicate assemble the legacy version of ilib.
+* --ilibPath or -i. Specify the location where the legacy version of ilib is installed.
+* --ilibincPath or -f. Specify name of javascript file to process. If not given,
     the default (`./src/ilib-assemble-inc.js`)file will be used.
 * --outjsFileName or n. Specify the resulting assembled output file name.
     The default is `ilib-assemble.js`
