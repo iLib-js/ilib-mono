@@ -140,7 +140,10 @@ function assembleZoneinfo() {
 
 let allTimeZoneData = "";
 function zoneinfoWalk(zoneinfoPath) {
-    let dirList = readFile(zoneinfoPath);
+    let dirList;
+    if (fs.existsSync(zoneinfoPath)) {
+        dirList = fs.readdirSync(zoneinfoPath);
+    }
     if (dirList && dirList.length > 0)  {
         dirList.forEach(function(dir) {
             let filePath = path.join(zoneinfoPath, dir);

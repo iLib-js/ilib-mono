@@ -46,6 +46,10 @@ the monolithic "ilib" package itself. To include the locale data for the ilib
 package into webpack, you have to use the ilib-webpack-loader and
 ilib-webpack-plugin extensions to webpack.
 
+(Update) Since the version v1.3.0, this tool has a ability to assemble the monolithic "ilib" package.
+We decided to call it as 'legacy' version ilib. It works to use legacyilib flag. 
+Some of additional options are added to support it. Please refer to the option description of usage ("ilibPath", "ilibincPath", "outjsFileName").
+
 ## Basic Operation
 
 The basic operation of the tool is this:
@@ -92,6 +96,19 @@ The basic operation of the tool is this:
 
 The data can then be loaded by the ilib-localedata package for use in the various ilib-*
 packages.
+
+## Basic Operation for legacy version of ilib
+1. Write the `inc` file to specify which files to assemble.
+   If not, the default file that the tool (`./src/ilib-ilib-assemble-inc.js`)has will be used.
+2. Read the Javscript files from the inc file list and extract the list of dependent JS and locale data.
+3. After the tool has been executed, the two style files will be placed the `output-dir`.
+   One is for the result of all JS files merged into a single usable file. If the file name is not specified, the default file name is `ilib-assemble.js`. and another file is for the locale data per `[locale].js`. The data is written as follows: `ilib.data_[feature]_locale = {}  
+   Here is an example of localeinfo for the ko-KR locale.
+   ```js
+   ilib.data.localeinfo_ko = {}
+   ilib.data.localeinfo_ko_KR = {}
+   ilib.data.localeinfo_und_KR = {}
+   ```
 
 ## Usage
 
