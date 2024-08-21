@@ -589,4 +589,101 @@ describe("xliff select translation units", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
+
+    test("Select while avoiding duplicated file names", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff", // should only read this file once
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ]
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1a</source>\n' +
+        '          <target>app1:String 1a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("Select while avoiding duplicated trans units", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/en-US-2.xliff" // has different file name but same contents as the first file
+            ]
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1a</source>\n' +
+        '          <target>app1:String 1a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
 });
