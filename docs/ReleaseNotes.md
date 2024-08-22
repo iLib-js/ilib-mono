@@ -1,6 +1,19 @@
 Release Notes for Version 2
 ============================
 
+Build 045
+-------
+Published as version 2.25.1
+
+New Features:
+
+Bug fixes:
+* fixed a bug in loctool select where it was possible to select the same
+  trans units twice by specifying the input files twice or by having the
+  same trans units located in different input files. Now the files and
+  trans units are filtered for uniqueness before the selection criteria
+  are applied to them.
+
 Build 044
 -------
 Published as version 2.25.0
