@@ -60,6 +60,9 @@ var MrkdwnJsonFileType = function(project) {
 var defaultMappings = {
     "**/*.json": {
         template: "[dir]/[filename]_[locale].json"
+    },
+    "**/*.jsn": {
+        template: "[dir]/[filename]_[locale].jsn"
     }
 };
 
@@ -172,7 +175,7 @@ MrkdwnJsonFileType.prototype.name = function() {
  * are no aggregated strings.
  */
 MrkdwnJsonFileType.prototype.write = function() {
-    // templates are localized individually, so we don't have to
+    // files are localized individually, so we don't have to
     // write out the resources
 };
 

@@ -84,41 +84,50 @@ describe("mrkdwnfiletype", function() {
         expect(mdjft).toBeTruthy();
         expect(mdjft.getMapping("x/y/msg.jsonx")).toBeFalsy();
     });
-    test("MrkdwnJsonFileTypeHandlesMD", function() {
+
+    test("MrkdwnJsonFileTypeHandles json with mrkdwn", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsonFileType(p);
         expect(mdjft).toBeTruthy();
         expect(mdjft.handles("foo.json")).toBeTruthy();
     });
+
+    test("MrkdwnJsonFileTypeHandles json with mrkdwn with Windows file name extension", function() {
+        expect.assertions(2);
+        var mdjft = new MrkdwnJsonFileType(p);
+        expect(mdjft).toBeTruthy();
+        expect(mdjft.handles("foo.jsn")).toBeTruthy();
+    });
+
     test("MrkdwnJsonFileTypeHandlesMrkdwn", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsonFileType(p);
         expect(mdjft).toBeTruthy();
-        expect(mdjft.handles("foo.mrkdwn")).toBeTruthy();
+        expect(mdjft.handles("foo.mrkdwn")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesMdown", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsonFileType(p);
         expect(mdjft).toBeTruthy();
-        expect(mdjft.handles("foo.jsonown")).toBeTruthy();
+        expect(mdjft.handles("foo.jsonown")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesMkd", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsonFileType(p);
         expect(mdjft).toBeTruthy();
-        expect(mdjft.handles("foo.mkd")).toBeTruthy();
+        expect(mdjft.handles("foo.mkd")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesRst", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsonFileType(p);
         expect(mdjft).toBeTruthy();
-        expect(mdjft.handles("foo.rst")).toBeTruthy();
+        expect(mdjft.handles("foo.rst")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesRmd", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsonFileType(p);
         expect(mdjft).toBeTruthy();
-        expect(mdjft.handles("foo.rmd")).toBeTruthy();
+        expect(mdjft.handles("foo.rmd")).toBeFalsy();
     });
     test("MrkdwnJsonFileTypeHandlesFalseClose", function() {
         expect.assertions(2);

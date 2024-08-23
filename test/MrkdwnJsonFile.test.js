@@ -143,6 +143,7 @@ describe("mrkdwn", function() {
 
     test("MrkdwnJsonFileParseSimpleGetByKey", function() {
         expect.assertions(5);
+
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -236,9 +237,9 @@ describe("mrkdwn", function() {
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("id1");
-        r = set.getBySource("This is also a test");
+        r = set.getBySource("This is a test too");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getSource()).toBe("This is a test too");
         expect(r.getKey()).toBe("id2");
     });
 
@@ -352,6 +353,7 @@ describe("mrkdwn", function() {
 
     test("MrkdwnJsonFileParse text with newlines", function() {
         expect.assertions(5);
+debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft

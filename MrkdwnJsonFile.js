@@ -1,5 +1,6 @@
 /*
- * MrkdwnJsonFile.js - plugin to extract resources from an Mrkdwn file
+ * MrkdwnJsonFile.js - plugin to extract resources from a json file containing
+ * Slack mrkdwn format strings
  *
  * Copyright © 2024, Box, Inc.
  *
@@ -24,6 +25,12 @@ var Node = require("ilib-tree-node");
 var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
+var JSON5 = require("json5");
+var SMP = require("slack-message-parser");
+
+var slackParser = SMP.parse;
+var Node = SMP.Node;
+var NodeType = SMP.NodeType;
 
 // load the data for these
 isAlnum._init();
@@ -76,6 +83,12 @@ function escapeQuotes(str) {
     return ret;
 };
 
+function unescape() {
+
+}
+function escape() {
+
+}
 /**
  * Create a new Mrkdwn file with the given path name and within
  * the given project.
@@ -170,13 +183,13 @@ MrkdwnJsonFile.prototype.makeKey = function(source) {
 
 var reWholeTag = /<("(\\"|[^"])*"|'(\\'|[^'])*'|[^>])*>/g;
 
-MrkdwnJsonFile.prototype._addTransUnit = function(text, comment) {
+MrkdwnJsonFile.prototype._addTransUnit = function(key, text, comment) {
     if (text) {
         var source = this.API.utils.escapeInvalidChars(text);
         this.set.add(this.API.newResource({
             resType: "string",
             project: this.project.getProjectId(),
-            key: this.makeKey(source),
+            key: key,
             sourceLocale: this.project.sourceLocale,
             source: source,
             autoKey: true,
@@ -261,7 +274,7 @@ MrkdwnJsonFile.prototype.isTranslatable = function(str) {
  * text to be escaped for attribute values
  * @private
  */
-MrkdwnJsonFile.prototype._emitText = function(escape) {
+MrkdwnJsonFile.prototype._emitText = function(key, escape) {
     if (!this.message.getTextLength()) {
         this.message = new MessageAccumulator();
         return;
@@ -272,7 +285,7 @@ MrkdwnJsonFile.prototype._emitText = function(escape) {
     this.logger.trace('text using message accumulator is: ' + text);
 
     if (this.message.isTranslatable || this.isTranslatable(text)) {
-        this._addTransUnit(text, this.comment);
+        this._addTransUnit(key, text, this.comment);
         var prefixes = this.message.getPrefix();
         var suffixes = this.message.getSuffix();
 
@@ -292,7 +305,7 @@ var reAttrNameAndValue = /\s(\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?/g;
 /**
  * @private
  */
-MrkdwnJsonFile.prototype._findAttributes = function(tagName, tag) {
+MrkdwnJsonFile.prototype._findAttributes = function(key, tagName, tag) {
     var match, name;
 
     // If this is a multiline HTML tag, the parser does not split it for us.
@@ -312,7 +325,7 @@ MrkdwnJsonFile.prototype._findAttributes = function(tagName, tag) {
         var name = match[1],
             value = (match[4] && match[4].trim()) || (match[6] && match[6].trim()) || "";
         if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
-            this._addTransUnit(value);
+            this._addTransUnit(key, value);
         }
     }
 }
@@ -320,7 +333,7 @@ MrkdwnJsonFile.prototype._findAttributes = function(tagName, tag) {
 /**
  * @private
  */
-MrkdwnJsonFile.prototype._localizeAttributes = function(tagName, tag, locale, translations) {
+MrkdwnJsonFile.prototype._localizeAttributes = function(key, tagName, tag, locale, translations) {
     var match, name;
     var ret = "<" + tagName;
     var rest = "";
@@ -345,7 +358,7 @@ MrkdwnJsonFile.prototype._localizeAttributes = function(tagName, tag, locale, tr
             value = (match[4] && match[4].trim()) || (match[6] && match[6].trim()) || "";
         if (value) {
             if (name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
-                var translation = this._localizeString(value, locale, translations);
+                var translation = this._localizeString(key, value, locale, translations);
                 attributes[name] = translation || value;
             } else {
                 attributes[name] = value;
@@ -377,7 +390,7 @@ var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
  * walk.
  * @returns {Array.<Node>} an array of mrkdwn nodes equivalent to
  * the given HTML node.
- */
+ *
 MrkdwnJsonFile.prototype._walkHtml = function(astNode) {
     var nodes, i, trimmed, root;
 
@@ -532,6 +545,7 @@ MrkdwnJsonFile.prototype._walkHtml = function(astNode) {
     }
     return [node];
 }
+*/
 
 /**
  * @private
@@ -539,33 +553,52 @@ MrkdwnJsonFile.prototype._walkHtml = function(astNode) {
  * @param {AST} node the current node of an abstract syntax tree to
  * walk.
  */
-MrkdwnJsonFile.prototype._walk = function(node) {
+MrkdwnJsonFile.prototype._walk = function(key, node) {
     var match, tagName;
 
     switch (node.type) {
-        case 'text':
-            var parts = trim(this.API, node.value);
+        case NodeType.Text:
+            var parts = trim(this.API, node.text);
             // only localizable if there already is some localizable text
             // or if this text contains anything that is not whitespace
             if (this.message.getTextLength() > 0 || parts.text) {
-                this.message.addText(node.value);
+                this.message.addText(node.text);
                 this.message.isTranslatable = this.localizeLinks;
                 node.localizable = true;
             }
             break;
 
+        case NodeType.Italic:
+        case NodeType.Bold:
+        case NodeType.Strike:
+            if (node.children && node.children.length) {
+                this.message.push({
+                    name: node.type,
+                    node: node
+                });
+                node.children.forEach(function(child) {
+                    this._walk(key, child);
+                }.bind(this));
+                this.message.pop();
+
+                node.localizable = node.children.every(function(child) {
+                    return child.localizable;
+                });
+            }
+            break;
+/*
         case 'delete':
         case 'link':
         case 'emphasis':
         case 'strong':
-            node.title && this._addTransUnit(node.title);
+            node.title && this._addTransUnit(key, node.title);
             if (this.localizeLinks && node.url) {
                 var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
                 // or if this text contains anything that is not whitespace
                 if (parts.text) {
-                    this._addTransUnit(node.url);
+                    this._addTransUnit(key, node.url);
                     node.localizedLink = true;
                 }
             }
@@ -587,8 +620,8 @@ MrkdwnJsonFile.prototype._walk = function(node) {
 
         case 'image':
         case 'imageReference':
-            node.title && this._addTransUnit(node.title);
-            node.alt && this._addTransUnit(node.alt);
+            node.title && this._addTransUnit(key, node.title);
+            node.alt && this._addTransUnit(key, node.alt);
             // images are non-breaking, self-closing nodes
             // this.text += '<c' + this.componentIndex++ + '/>';
             if (this.message.getTextLength()) {
@@ -609,23 +642,23 @@ MrkdwnJsonFile.prototype._walk = function(node) {
 
         case 'definition':
             // definitions are breaking nodes
-            this._emitText();
+            this.__emitText(key, ();
             if (node.url && this.localizeLinks) {
                 var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
                 // or if this text contains anything that is not whitespace
                 if (parts.text) {
-                    this._addTransUnit(node.url);
+                    this._addTransUnit(key, node.url);
                     node.localizable = true;
                 }
-                node.title && this._addTransUnit(node.title);
+                node.title && this._addTransUnit(key, node.title);
             }
             break;
 
         case 'footnoteDefinition':
             // definitions are breaking nodes
-            this._emitText();
+            this._emitText(key);
             if (node.children && node.children.length) {
                 node.children.forEach(function(child) {
                     this._walk(child);
@@ -694,7 +727,7 @@ MrkdwnJsonFile.prototype._walk = function(node) {
                 // don't parse style or script tags. Just skip them.
                 // They are, however, breaking tags, so emit any text
                 // we have accumulated so far.
-                this._emitText();
+                this._emitText(key);
                 break;
             }
             reSelfClosingTag.lastIndex = 0;
@@ -711,7 +744,7 @@ MrkdwnJsonFile.prototype._walk = function(node) {
                 } else {
                     // it's a breaking tag, so emit any text
                     // we have accumulated so far
-                    this._emitText();
+                    this._emitText(key);
                 }
             } else {
                 reTagName.lastIndex = 0;
@@ -734,7 +767,7 @@ MrkdwnJsonFile.prototype._walk = function(node) {
                             } else {
                                 // it's a breaking tag, so emit any text
                                 // we have accumulated so far
-                                this._emitText();
+                                this._emitText(key);
                             }
                         }
                         this._findAttributes(tagName, node.value);
@@ -752,7 +785,7 @@ MrkdwnJsonFile.prototype._walk = function(node) {
                                 }
                                 node.localizable = true;
                             } else {
-                                this._emitText();
+                                this._emitText(key);
                             }
                         }
                     }
@@ -794,16 +827,43 @@ MrkdwnJsonFile.prototype._walk = function(node) {
                 }
             }
             break;
+*/
 
         default:
-            this._emitText();
+            this._emitText(key);
             if (node.children && node.children.length) {
                 node.children.forEach(function(child, index, array) {
-                    this._walk(child);
+                    this._walk(key, child);
                 }.bind(this));
             }
             break;
     }
+};
+
+/**
+ * Parse a string written in Slack mrkdwn syntax and return
+ * one or more Resource instances that represent the localizable
+ * bits of that string.
+ * @param {string} key the unique key for the resource. If there
+ * are more than one resource in this string, they will all use
+ * this key as a prefix, followed by an underscore, followed by
+ * a unique id for the substring.
+ * @param {string} str the string to parse
+ * @returns {Array.<Resource>} an array of resources representing
+ * the localizable bits of the string. If none were found, the
+ * array can be empty. 
+ */
+MrkdwnJsonFile.prototype.parseMrkdwnString = function(key, str) {
+    // accumulates characters in text segments
+    // this.text = "";
+    this.message = new MessageAccumulator();
+    
+    var ast = slackParser(str);
+
+    this._walk(key, ast);
+
+    // in case any is left over at the end
+    this._emitText(key);
 };
 
 /**
@@ -813,27 +873,20 @@ MrkdwnJsonFile.prototype._walk = function(node) {
  */
 MrkdwnJsonFile.prototype.parse = function(data) {
     this.logger.debug("Extracting strings from " + this.pathName);
-
-    // massage the broken headers and code blocks a bit first so that the parser
-    // works as expected
-    data = data.
-        replace(/\[block:/g, "```\n[block:").
-        replace(/\[\/block\]/g, "[/block]\n```").
-        replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
-        replace(/(^|\n)\s+```/g, "$1```").
-        replace(/\n```/g, "\n\n```");
-
-    this.ast = mdparser.parse(data);
-
-    // accumulates characters in text segments
-    // this.text = "";
-    this.message = new MessageAccumulator();
     this.resourceIndex = 0;
 
-    this._walk(this.ast);
-
-    // in case any is left over at the end
-    this._emitText();
+    try {
+        // json5 parse is more flexible and allows for things like comments and such
+        var json = JSON5.parse(data);
+        var ids = Object.keys(json);
+        for (var i = 0; i < ids.length; i++) {
+            var key = ids[i];
+            var value = json[key];
+            this.parseMrkdwnString(key, value);
+        }
+    } catch (e) {
+        this.logger.error("Failed to parse file " + this.pathName + "\nException: " + e);
+    }
 };
 
 /**
