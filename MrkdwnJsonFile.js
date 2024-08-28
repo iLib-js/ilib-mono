@@ -1,4 +1,4 @@
-/*
+/**
  * MrkdwnJsonFile.js - plugin to extract resources from a json file containing
  * Slack mrkdwn format strings
  *
@@ -83,12 +83,44 @@ function escapeQuotes(str) {
     return ret;
 };
 
-function unescape() {
-
+/**
+ * Unescape the given string and return it unescaped.
+ * This will turn an escaped string that came from a
+ * value in a json file, into a full string. It will
+ * do the following unescapes:
+ * "\n" -> newline char
+ * "\t" -> tab char
+ * "\"" -> double quote char
+ * "\'" -> single quote char
+ *
+ * @param {string} str the string to unescape
+ * @returns {string} the unescaped string
+ */
+function unescape(str) {
+   return str.
+       replace(/\\n/g, "\n").
+       replace(/\\t/g, "\t").
+       replace(/\\'/g, "'").
+       replace(/\\"/g, '"');
 }
-function escape() {
 
+/**
+ * Escape the given string and return it escaped. This
+ * prepares the string for use as a value in a json
+ * file. This function will escape newlines, tabs,
+ * single quote, and double quote chars.
+ *
+ * @param {string} str the string to escape
+ * @returns {string} the escaped string
+ */
+function escape(str) {
+    return str.
+        replace(/\n/g, "\\n").
+        replace(/\t/g, "\\t").
+        replace(/'/g, "\\'").
+        replace(/"/g, '\\"');
 }
+
 /**
  * Create a new Mrkdwn file with the given path name and within
  * the given project.
@@ -185,11 +217,13 @@ var reWholeTag = /<("(\\"|[^"])*"|'(\\'|[^'])*'|[^>])*>/g;
 
 MrkdwnJsonFile.prototype._addTransUnit = function(key, text, comment) {
     if (text) {
+        var fullkey = (this.subkey > 0) ? key + "_" + this.subkey : key;
+        this.subkey++;
         var source = this.API.utils.escapeInvalidChars(text);
         this.set.add(this.API.newResource({
             resType: "string",
             project: this.project.getProjectId(),
-            key: key,
+            key: fullkey,
             sourceLocale: this.project.sourceLocale,
             source: source,
             autoKey: true,
@@ -554,8 +588,6 @@ MrkdwnJsonFile.prototype._walkHtml = function(astNode) {
  * walk.
  */
 MrkdwnJsonFile.prototype._walk = function(key, node) {
-    var match, tagName;
-
     switch (node.type) {
         case NodeType.Text:
             var parts = trim(this.API, node.text);
@@ -571,6 +603,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
         case NodeType.Italic:
         case NodeType.Bold:
         case NodeType.Strike:
+        case NodeType.Underline:
             if (node.children && node.children.length) {
                 this.message.push({
                     name: node.type,
@@ -586,6 +619,40 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
                 });
             }
             break;
+
+        case NodeType.PreText:
+            // ignore any text inside of preformatted text
+            this._emitText(key);
+            break;
+
+        case NodeType.ChannelLink:
+        case NodeType.Command:
+        case NodeType.URL:
+            this.message.push({
+                name: node.type,
+                node: node
+            });
+            node.label && node.label.forEach(function(child) {
+                this._walk(key, child);
+            }.bind(this));
+            this.message.pop();
+
+            node.localizable = (node.label && node.label.every(function(child) {
+                return child.localizable;
+            })) || true;
+            break;
+
+        case NodeType.Emoji:
+        case NodeType.Code:
+            // we never localize code or emojis
+            this.message.push({
+                name: node.type,
+                node: node
+            });
+            node.localizable = true;
+            this.message.pop();
+            break;
+
 /*
         case 'delete':
         case 'link':
@@ -857,8 +924,9 @@ MrkdwnJsonFile.prototype.parseMrkdwnString = function(key, str) {
     // accumulates characters in text segments
     // this.text = "";
     this.message = new MessageAccumulator();
-    
-    var ast = slackParser(str);
+    this.subkey = 0;
+
+    var ast = slackParser(unescape(str));
 
     this._walk(key, ast);
 
