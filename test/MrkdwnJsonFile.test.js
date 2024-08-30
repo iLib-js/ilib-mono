@@ -664,13 +664,12 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-/*
     test("MrkdwnJsonFileExtractFile", function() {
         expect.assertions(14);
         var base = path.dirname(module.id);
         var mjf = new MrkdwnJsonFile({
             project: p,
-            pathName: "./md/test1.md",
+            pathName: "./json/test1.json",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -681,19 +680,19 @@ describe("mrkdwn", function() {
         var r = set.getBySource("This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        expect(r.getKey()).toBe("r548615397");
+        expect(r.getKey()).toBe("id1");
         r = set.getBySource("This is some text. This is more text. Pretty, pretty text.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is some text. This is more text. Pretty, pretty text.");
-        expect(r.getKey()).toBe("r777006502");
+        expect(r.getKey()).toBe("id2");
         r = set.getBySource("This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        expect(r.getKey()).toBe("r112215756");
+        expect(r.getKey()).toBe("id3");
         r = set.getBySource("This is the last bit of localizable text.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is the last bit of localizable text.");
-        expect(r.getKey()).toBe("r260813817");
+        expect(r.getKey()).toBe("id4");
     });
 
     test("MrkdwnJsonFileExtractFile2", function() {
@@ -701,7 +700,7 @@ describe("mrkdwn", function() {
         var base = path.dirname(module.id);
         var mjf = new MrkdwnJsonFile({
             project: p,
-            pathName: "./md/test2.md",
+            pathName: "./json/test2.json",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -712,15 +711,15 @@ describe("mrkdwn", function() {
         var r = set.getBySource("This is text with a <c0>link</c0> in it.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is text with a <c0>link</c0> in it.");
-        expect(r.getKey()).toBe("r717941707");
+        expect(r.getKey()).toBe("id2");
         r = set.getBySource("This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
-        expect(r.getKey()).toBe("r736057533");
+        expect(r.getKey()).toBe("id3");
         r = set.getBySource("This is a Heading");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a Heading");
-        expect(r.getKey()).toBe("r728092714");
+        expect(r.getKey()).toBe("id1");
     });
 
     test("MrkdwnJsonFileExtractUndefinedFile", function() {
@@ -742,7 +741,7 @@ describe("mrkdwn", function() {
         var base = path.dirname(module.id);
         var mjf = new MrkdwnJsonFile({
             project: p,
-            pathName: "./md/bogus.md",
+            pathName: "./json/bogus.json",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -752,6 +751,7 @@ describe("mrkdwn", function() {
         expect(set.size()).toBe(0);
     });
 
+/*
     test("MrkdwnJsonFileLocalizeText", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
@@ -763,7 +763,7 @@ describe("mrkdwn", function() {
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: "r654479252",
+            key: "id1",
             source: "This is a test",
             sourceLocale: "en-US",
             target: "Ceci est un essai",
@@ -771,7 +771,7 @@ describe("mrkdwn", function() {
             datatype: "mrkdwn"
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
-        var expected = 'Ceci est un essai\n';
+        var expected = 'Ceci est un essai';
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
