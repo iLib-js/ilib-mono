@@ -37,10 +37,10 @@ const reDataPattern = new RegExp(/\/\/\s*!data\s*(([^\\])+)/, "g");
 
 function assembleilib(options) {
     ilibPath = options.opt.ilibPath || ".";
-    incPath = options.opt.ilibincPath || "./src/ilib-assemble-inc.js";
+    incPath = options.opt.ilibincPath || "./src/ilib-all-inc.js";
     locales = options.opt.locales;
     outDir = options.args[0];
-    outFileName = options.opt.outjsFileName || "ilib-assemble.js";
+    outFileName = options.opt.outjsFileName || "ilib-all.js";
     isCompressed = options.opt.compressed || false;
     readIncFile(incPath);
     readJSFiles();

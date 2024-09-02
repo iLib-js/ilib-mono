@@ -79,21 +79,21 @@ const optionConfig = {
     legacyilib: {
         short: "o",
         flag: true,
-        help: "The flag to indicate assembe the legacy version of ilib."
+        help: "Assemble data for the legacy version of ilib"
     },
     ilibPath: {
         short: "i",
-        help: "Specify the location where the legacy versin of ilib is installed."
+        help: "Specify the location where the legacy version of ilib is installed."
     },
     ilibincPath: {
         short: "f",
-        "default": "./src/ilib-assemble-inc.js",
-        help: "Specify name of Javascript file to process."
+        "default": "./src/ilib-all-inc.js",
+        help: "Specify the name of the Javascript inc file to process for legacy ilib assembly."
     },
     outjsFileName: {
         short: "n",
-        "default": "ilib-assemble.js",
-        help: "Specify the resulting assembled output file name."
+        "default": "ilib-all.js",
+        help: "Specify the resulting assembled output file name for legacy ilib assembly."
     }
 };
 
