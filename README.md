@@ -46,6 +46,10 @@ the monolithic "ilib" package itself. To include the locale data for the ilib
 package into webpack, you have to use the ilib-webpack-loader and
 ilib-webpack-plugin extensions to webpack.
 
+(Update) Since the version v1.3.0, this tool has a ability to assemble the monolithic "ilib" package.
+We decided to call it as 'legacy' version ilib. It works to use legacyilib flag. 
+Some of additional options are added to support it. Please refer to the option description of usage ("ilibPath", "ilibincPath", "outjsFileName").
+
 ## Basic Operation
 
 The basic operation of the tool is this:
@@ -93,6 +97,21 @@ The basic operation of the tool is this:
 The data can then be loaded by the ilib-localedata package for use in the various ilib-*
 packages.
 
+## Basic Operation for legacy version of ilib
+1. Write the `inc` file to specify which files to assemble.
+   If not, the default file `./src/ilib-all-inc.js` will be used which assembles all ilib classes and data together.  
+   If you only need a subset of ilib, copy this file and delete the parts you do not need.
+2. Read the javscript files from the inc file list and extract the list of dependent JS and locale data.
+3. After the tool has finished executing, the two types of files (code, data) will be placed the `output-dir`.  
+   One is for the result of all JS files merged into a single usable file. If the file name is not specified, the default file name is `ilib-all.js`. and another file is for the locale data per `[locale].js`.  
+   The data is written as follows: `ilib.data_[feature]_locale = { [data] }`  
+   Here is an example of localeinfo for the ko-KR locale.
+   ```js
+   ilib.data.localeinfo_ko = { [data] }
+   ilib.data.localeinfo_ko_KR = { [data] }
+   ilib.data.localeinfo_und_KR = { [data] }
+   ```
+
 ## Usage
 
 ```
@@ -125,6 +144,12 @@ The ilib-assemble tool takes the following options:
     or other such localization tool which produces a set of translated resource
     files. VAL is the path to the root of a resource file tree. You can specify
     this option multiple times, once for each resources directory.
+* -legacyilib. The flag to indicate assemble the legacy version of ilib.
+* --ilibPath or -i. Specify the location where the legacy version of ilib is installed.
+* --ilibincPath or -f. Specify name of javascript file to process. If not given,
+    the default (`./src/ilib-all-inc.js`)file will be used.
+* --outjsFileName or n. Specify the resulting assembled output file name.
+    The default is `ilib-all.js`
 
 The output-dir is required and specifies the directory where the output is
 written. If it does not exist, it will be created first.
@@ -191,6 +216,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Release Notes
+
+### v1.3.0
+- Add the ability to assemble the legacy version of iLib.  
+  When the legacyilib flag is set, it assembles files in the legacy style, which refers to the files from iLib. The generated output includes separate files for JS code and locale data: one JS file containing the JS code and iLib's root locale data, and additional JSON files for 
+  locale-specific data. Currently, it generates files in the `[language].js` format.   
+  The end result is similar to the result of assembling ilib using webpack or rollup, but it is simpler and produces data files as javascript which can be used in other situations without requiring you to use webpack or rollup.  
+e.g
+```
+ ilib-assemble output-dir --legacyilib --ilibPath ~/Source/develop/ --ilibincPath src/ilib-all-inc.js -l "af-ZA,am-ET,ko-KR"
+```
 
 ### v1.2.2
 - Removed the `mkdirp` package dependency.
