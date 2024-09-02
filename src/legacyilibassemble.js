@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * legacyilibassemble.js - assemble of legacy style of ilib files.
  *
