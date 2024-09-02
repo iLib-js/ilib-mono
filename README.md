@@ -106,7 +106,7 @@ packages.
    One is for the result of all JS files merged into a single usable file. If the file name is not specified, the default file name is `ilib-all.js`. and another file is for the locale data per `[locale].js`.  
    The data is written as follows: `ilib.data_[feature]_locale = { [data] }`  
    Here is an example of localeinfo for the ko-KR locale.
-   ```json
+   ```js
    ilib.data.localeinfo_ko = { [data] }
    ilib.data.localeinfo_ko_KR = { [data] }
    ilib.data.localeinfo_und_KR = { [data] }
@@ -220,7 +220,8 @@ limitations under the License.
 ### v1.3.0
 - Add the ability to assemble the legacy version of iLib.  
   When the legacyilib flag is set, it assembles files in the legacy style, which refers to the files from iLib. The generated output includes separate files for JS code and locale data: one JS file containing the JS code and iLib's root locale data, and additional JSON files for 
-  locale-specific data. Currently, it generates files in the `[language].js` format. The end result is similar to the result of assembling ilib using webpack or rollup, but it is simpler and produces data files as javascript which can be used in other situations without requiring you to use webpack or rollup.  
+  locale-specific data. Currently, it generates files in the `[language].js` format.   
+  The end result is similar to the result of assembling ilib using webpack or rollup, but it is simpler and produces data files as javascript which can be used in other situations without requiring you to use webpack or rollup.  
 e.g
 ```
  ilib-assemble output-dir --legacyilib --ilibPath ~/Source/develop/ --ilibincPath src/ilib-all-inc.js -l "af-ZA,am-ET,ko-KR"
