@@ -150,6 +150,7 @@ The ilib-assemble tool takes the following options:
     the default (`./src/ilib-all-inc.js`)file will be used.
 * --outjsFileName or n. Specify the resulting assembled output file name.
     The default is `ilib-all.js`
+* -- customLocalePath or p. Specify the location where the custom locale data path. If you want to override the value of existing locale data.
 
 The output-dir is required and specifies the directory where the output is
 written. If it does not exist, it will be created first.
@@ -218,6 +219,7 @@ limitations under the License.
 ## Release Notes
 
 ### v1.3.0
+- Removed the `mkdirp` package dependency.
 - Add the ability to assemble the legacy version of iLib.  
   When the legacyilib flag is set, it assembles files in the legacy style, which refers to the files from iLib. The generated output includes separate files for JS code and locale data: one JS file containing the JS code and iLib's root locale data, and additional JSON files for 
   locale-specific data. Currently, it generates files in the `[language].js` format.   
@@ -226,9 +228,9 @@ e.g
 ```
  ilib-assemble output-dir --legacyilib --ilibPath ~/Source/develop/ --ilibincPath src/ilib-all-inc.js -l "af-ZA,am-ET,ko-KR"
 ```
+- Add the option `customLocalePath` to provide a possibility to overwrite the locale data. Basically, the locale data is based on the CLDR.  
+ If you want to have it to return a different value, Prepare the JSON locale data to override the same locale hierarchy and use the option when running the tool.
 
-### v1.2.2
-- Removed the `mkdirp` package dependency.
 
 ### v1.2.1
 - converted all unit tests from nodeunit to jest

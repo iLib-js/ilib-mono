@@ -94,6 +94,11 @@ const optionConfig = {
         short: "n",
         "default": "ilib-all.js",
         help: "Specify the resulting assembled output file name for legacy ilib assembly."
+    },
+    customLocalePath: {
+        short: "p",
+        "default" : undefined,
+        help: "Specify the location where the custom locale data path. If you want to override the value of existing locale data."
     }
 };
 

@@ -21,6 +21,7 @@ import fs from 'fs';
 import path from 'path';
 import Locale from 'ilib-locale';
 import UglifyJS from 'uglify-js-export';
+import { JSUtils } from 'ilib-common';
 
 let ilibPath;
 let incPath;
@@ -28,6 +29,7 @@ let outDir;
 let locales;
 let outFileName;
 let isCompressed;
+let customPath;
 let jsFileList = [];
 let allJSList = [];
 
@@ -41,6 +43,7 @@ function assembleilib(options) {
     outDir = options.args[0];
     outFileName = options.opt.outjsFileName || "ilib-all.js";
     isCompressed = options.opt.compressed || false;
+    customPath = options.opt.customLocalePath;
     readIncFile(incPath);
     readJSFiles();
 }
@@ -105,7 +108,7 @@ function readJSFiles() {
     allJSList = [...new Set([...jsFileList, ...dependentJS])];
 
     assemblejs();
-    assemblelocale();
+    assembleLocale();
 }
 
 function deletePatterns(data) {
@@ -183,8 +186,79 @@ function assemblejs() {
     }
 }
 
+function assembleCustomLocale(data) {
+    let allData = data;
+
+    locales.forEach(function(loc){
+        let lo = new Locale(loc);
+        let lang = lo.language;
+        let script = lo.script;
+        let region = lo.region;
+        let jsonPath;
+        let readData;
+
+        dependentData.forEach(function(jsonName) {
+            let key = '';
+            let orgData;
+            let customData;
+            if (lang) {
+                jsonPath = path.join(customPath, lang, jsonName + ".json");
+                readData = readFile(jsonPath);
+
+                if (readData) {
+                    key = "ilib.data." + jsonName + "_" + lang;
+                    orgData = ((allData[lang][key]) != undefined) ? JSON.parse(allData[lang][key]) : {};
+                    customData = JSON.parse(readData);
+                    orgData = JSUtils.merge(orgData, customData, true);
+                    allData[lang][key] = JSON.stringify(orgData);
+                }
+                if (script) {
+                    jsonPath = path.join(customPath, lang, script, jsonName + ".json");
+                    readData = readFile(jsonPath);
+
+                    if (readData) {
+                        key = "ilib.data." + jsonName + "_" + lang + "_" + script;
+                        orgData = ((allData[lang][key]) != undefined) ? JSON.parse(allData[lang][key]) : {};
+                        customData = JSON.parse(readData);
+                        orgData = JSUtils.merge(orgData, customData, true);
+                        allData[lang][key] = JSON.stringify(orgData);
+                    }
+
+                    if (region) {
+                        jsonPath = path.join(customPath, lang, script, region, jsonName + ".json");
+                        readData = readFile(jsonPath);
+                        if (readData) {
+                            key = "ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region;
+                            orgData = ((allData[lang][key]) != undefined) ? JSON.parse(allData[lang][key]) : {};
+                            customData = JSON.parse(readData);
+                            orgData = JSUtils.merge(orgData, customData, true);
+                            allData[lang][key] = JSON.stringify(orgData);
+                        }
+
+                    }
+                } else if (region) {
+                    jsonPath = path.join(customPath, lang, region, jsonName + ".json");
+                    readData = readFile(jsonPath);
+
+                    if (readData) {
+                        key = "ilib.data." + jsonName + "_" + lang + "_" + region;
+                        orgData = ((allData[lang][key]) != undefined) ? JSON.parse(allData[lang][key]) : {};
+                        customData = JSON.parse(readData);
+                        orgData = JSUtils.merge(orgData, customData, true);
+                        allData[lang][key] = JSON.stringify(orgData);
+                    }
+                }
+            } else {
+                console.log("The locale " + lo.getSpec() +  " is missing language code.");
+            }
+        });
+
+    });
+    return allData;
+}
+
 let outFile = {};
-function assemblelocale() {
+function assembleLocale() {
     let iliblocalePath = path.join(ilibPath, "js/data/locale");
     locales.forEach(function(loc){
         let lo = new Locale(loc);
@@ -236,6 +310,10 @@ function assemblelocale() {
             }
         });
     });
+
+    if (customPath) {
+        outFile = assembleCustomLocale(outFile);
+    }
 
     for (let loc in outFile) {
         let contents = "";
