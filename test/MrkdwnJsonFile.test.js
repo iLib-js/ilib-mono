@@ -751,7 +751,6 @@ describe("mrkdwn", function() {
         expect(set.size()).toBe(0);
     });
 
-/*
     test("MrkdwnJsonFileLocalizeText", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
@@ -776,6 +775,7 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
+    /*
     test("MrkdwnJsonFileLocalizeTextPreserveWhitespace", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
