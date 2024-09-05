@@ -1,0 +1,23 @@
+{
+    "name": "ilib-loctool-pendo-md",
+    "version": "1.0.0",
+    "main": "index.js",
+    "author": "Wadim Wawrzenczak <wwawrzenczak@box.com>",
+    "license": "Apache-2.0",
+    "keywords": [
+        "loctool",
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "Pendo",
+        "markdown",
+        "md"
+    ]
+}
