@@ -1,0 +1,9 @@
+{
+    "extends": "@tsconfig/node18",
+    "compilerOptions": {
+        "allowJs": true,
+        "noEmit": true
+    },
+    "include": ["."],
+    "exclude": ["node_modules", "dist"]
+}

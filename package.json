@@ -1,7 +1,8 @@
 {
     "name": "ilib-loctool-pendo-md",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "author": "Wadim Wawrzenczak <wwawrzenczak@box.com>",
     "license": "Apache-2.0",
     "keywords": [
@@ -19,5 +20,37 @@
         "Pendo",
         "markdown",
         "md"
-    ]
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "clean": "rm -rf dist",
+        "test": "jest",
+        "lint": "eslint .",
+        "prepare": "husky"
+    },
+    "type": "commonjs",
+    "engines": {
+        "node": ">=18.18.0"
+    },
+    "files": [
+        "dist"
+    ],
+    "devDependencies": {
+        "@eslint/js": "^9.9.1",
+        "@tsconfig/node18": "^18.2.4",
+        "@types/eslint-config-prettier": "^6.11.3",
+        "@types/eslint__js": "^8.42.3",
+        "@types/jest": "^29.5.12",
+        "@types/node": "18",
+        "eslint": "^9.9.1",
+        "eslint-config-prettier": "^9.1.0",
+        "globals": "^15.9.0",
+        "husky": "^9.1.5",
+        "jest": "^29.7.0",
+        "lint-staged": "^15.2.10",
+        "prettier": "^3.3.3",
+        "ts-jest": "^29.2.5",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.4.0"
+    }
 }
