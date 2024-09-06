@@ -26,6 +26,7 @@
         "clean": "rm -rf dist",
         "test": "jest",
         "lint": "eslint .",
+        "format": "prettier --check .",
         "prepare": "husky"
     },
     "type": "commonjs",
