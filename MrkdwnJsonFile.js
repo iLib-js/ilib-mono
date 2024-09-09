@@ -306,8 +306,6 @@ function trim(API, text) {
     return ret;
 }
 
-// schemes are registered in the IANA list
-var reUrl = /^(https?|github|ftps?|mailto|file|data|irc):\/\/[\S]+$/;
 
 /**
  * Return true if the given string contains translatable text,
@@ -320,12 +318,6 @@ var reUrl = /^(https?|github|ftps?|mailto|file|data|irc):\/\/[\S]+$/;
  */
 MrkdwnJsonFile.prototype.isTranslatable = function(str) {
     if (!str || !str.length || !str.trim().length) return false;
-
-    if (!this.localizeLinks) {
-        reUrl.startIndex = 0;
-        var match = reUrl.exec(str);
-        if (match && match.length) return false;
-    }
 
     return this.API.utils.containsActualText(str);
 }
@@ -369,11 +361,6 @@ MrkdwnJsonFile.prototype._emitText = function(node, key, escape) {
     this.comment = undefined;
     this.message = new MessageAccumulator();
 };
-
-
-var reTagName = /^<(\/?)\s*(\w+)(\s+((\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?)*)*(\/?)>$/;
-var reSelfClosingTag = /<\s*(\w+)\/>$/;
-var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
 
 /**
  * @private
@@ -472,7 +459,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
  * a unique number for the substring.
  * @param {string} str the string to parse
  * @returns {Node} The root node of the abstract syntax tree that
- * represents the parsed string. 
+ * represents the parsed string.
  */
 MrkdwnJsonFile.prototype.parseMrkdwnString = function(key, str) {
     // accumulates characters in text segments
@@ -593,7 +580,7 @@ MrkdwnJsonFile.prototype.getLocalizedPath = function(locale) {
  * @param {boolean} nopseudo if true, don't use pseudo-localization
  * @returns {string} the localized string
  */
-MrkdwnJsonFile.prototype._localizeString = function(key, source, locale, translations, nopseudo) {
+MrkdwnJsonFile.prototype.localizeString = function(key, source, locale, translations, nopseudo) {
     if (!source) return source;
 
     var tester = this.API.newResource({
@@ -665,229 +652,135 @@ MrkdwnJsonFile.prototype._addComment = function(comment) {
 };
 
 /**
+ * Stringify the given AST node into mrkdwn format.
+ *
  * @private
- * @param {Node} node
- * @param {MessageAccumulator} message
- * @param {String} locale
- * @param {TranslationSet} translations
- * @returns {Node} the localized nodea
+ * @param {Node} node the node to stringify
+ * @returns {string} the stringified node
  */
-MrkdwnJsonFile.prototype._localizeNode = function(node, message, locale, translations) {
-    var match, translation, trimmed;
+MrkdwnJsonFile.prototype.stringifyAstNode = function(node, children, args, label) {
+    var ret = "";
 
     switch (node.type) {
-        case 'text':
-            var parts = trim(this.API, node.value);
-            // only localizable if there already is some localizable text
-            // or if this text contains anything that is not whitespace
-            if (node.localizable || parts.text) {
-                message.addText(node.value);
-            }
+        case NodeType.Italic:
+            ret += "_" + children + "_";
             break;
 
-        case 'delete':
-        case 'link':
-        case 'emphasis':
-        case 'strong':
-            if (node.title) {
-               node.title = this._localizeString(node.title, locale, translations);
-            }
-            if (node.url && node.localizedLink) {
-                // don't pseudo-localize URLs
-                node.url = this._localizeString(node.url, locale, translations, true);
-            }
-            if (node.localizable) {
-                if (node.use === "start") {
-                    message.push(node);
-                } else {
-                    message.pop();
-                }
-            }
+        case NodeType.Bold:
+            ret += "*" + children + "*";
             break;
 
-        case 'image':
-        case 'imageReference':
-            if (node.title) {
-                node.title = this._localizeString(node.title, locale, translations);
-            }
-            if (node.alt) {
-                node.alt = this._localizeString(node.alt, locale, translations);
-            }
-            // images are non-breaking, self-closing nodes
-            if (node.localizable) {
-                message.push(node);
-                message.pop();
-            }
+        case NodeType.Strike:
+            ret += "~" + children + "~";
             break;
 
-        case 'footnoteReference':
-            // footnote references are non-breaking, self-closing nodes
-            if (node.localizable) {
-                message.push(node, true);
-                message.pop();
-            }
+        case NodeType.Quote:
+            ret += ">" + children + "\n";
             break;
 
-        case 'linkReference':
-            if (node.localizable) {
-                if (node.use === "start") {
-                    message.push(node, true);
-                } else if (node.use === "startend") {
-                    message.push(node, true);
-                    message.pop();
-                } else {
-                    message.pop();
-                }
-            }
+        case NodeType.ChannelLink:
+            ret += "<#" +
+                node.channelID +
+                (label ? "|" + label : "") +
+                ">";
             break;
 
-        case 'inlineCode':
-            // inline code is a non-breaking, self-closing node
-            if (node.localizable) {
-                message.push(node, true);
-                message.pop();
-            }
+        case NodeType.UserLink:
+            ret += "<@" +
+                node.userId +
+                (label ? "|" + label : "") +
+                ">";
             break;
 
-        case 'definition':
-            if (node.localizable) {
-                if (node.use === "start") {
-                    message.push(node);
-                } else if (node.use === "startend") {
-                    message.push(node, true);
-                    message.pop();
-                } else {
-                    message.pop();
-                }
-
-                if (node.url) {
-                    // don't pseudo-localize URLs
-                    node.url = this._localizeString(node.url, locale, translations, true);
-                }
-                if (node.title) {
-                    node.title = this._localizeString(node.title, locale, translations);
-                }
-            }
+        case NodeType.Command:
+            ret += "<!" +
+                node.name +
+                (args ? "^" + args : "") +
+                (label ? "|" + label : "") +
+                ">";
             break;
 
-        case 'footnoteDefinition':
-            if (node.localizable) {
-                if (node.use === "start") {
-                    message.push(node);
-                } else {
-                    message.pop();
-                }
-            }
+        case NodeType.URL:
+            ret += "<" +
+                node.url +
+                (label ? "|" + label : "") +
+                ">";
             break;
 
-        case 'html':
-            if (!node.value) {
-                // container node, don't need to do anything for this one
-                break;
-            }
-            trimmed = node.value.trim();
-            if (trimmed.substring(0, 4) === '<!--') {
-                reL10NComment.lastIndex = 0;
-                match = reL10NComment.exec(node.value);
-                if (match) {
-                    this._addComment(match[1].trim());
-                }
-                // ignore HTML comments
-                break;
-            }
-            if (trimmed.startsWith("<script") || trimmed.startsWith("<style")) {
-                // don't parse style or script tags. Just skip them.
-                break;
-            }
-            reSelfClosingTag.lastIndex = 0;
-            match = reSelfClosingTag.exec(trimmed);
-            if (match) {
-                tagName = match[1];
-                if (node.localizable) {
-                    message.push(node);
-                    message.pop();
-                }
-            } else {
-                reTagName.lastIndex = 0;
-                match = reTagName.exec(trimmed);
-
-                if (match) {
-                    var tagName = match[2];
-                    if (match[1] !== '/') {
-                        // opening tag
-                        node.value = this._localizeAttributes(tagName, node.value, locale, translations);
-                        if (node.localizable && this.API.utils.nonBreakingTags[tagName]) {
-                            node.name = tagName;
-                            message.push(node);
-                            if (node.selfclosing || this.API.utils.selfClosingTags[tagName]) {
-                                message.pop();
-                            }
-                        }
-                    } else {
-                        // closing tag
-                        if (node.localizable && this.API.utils.nonBreakingTags[tagName] && message.getCurrentLevel() > 0) {
-                            var tag = message.pop();
-                            while (tag.name !== tagName && message.getCurrentLevel() > 0) {
-                                tag = message.pop();
-                            }
-                            if (tag.name !== tagName) {
-                                throw new Error("Syntax error in mrkdwn file " + this.pathName + " line " +
-                                    node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
-                            }
-                        }
-                    }
-                } else if (node.value) {
-                    var line = (node.position && node.position.start.line) || "?";
-                    var column = (node.position && node.position.start.column) || "?";
-                    throw new Error("Syntax error in mrkdwn file " + this.pathName + " line " +
-                        line + " column " + column + ". Bad HTML tag: " + node.value);
-                } // else empty html is just a container for some children
-            }
-            break;
-
-        case 'yaml':
-            if (this.mapping && this.mapping.frontmatter) {
-                // rely on the yaml plugin to localize the yaml properly
-                node.value = this.yamlfile.localizeText(translations, locale);
-            }
+        case NodeType.PreText:
+        case NodeType.Emoji:
+        case NodeType.Code:
+            ret += node.source;
             break;
 
         default:
+            if (children) {
+                ret += children;
+            }
             break;
     }
+    return ret;
 };
 
-function mapToAst(node) {
-    var children = [];
+/**
+ * Take a tree of nodes from a message accumulator and return a string
+ * that represents the tree in mrkdwn format.
+ *
+ * @private
+ * @param {Array.<Node>} nodes the root of the tree to stringify
+ * @returns {String} the stringified tree
+ */
+MrkdwnJsonFile.prototype.stringify = function(nodes) {
+    var ret = "";
+    if (!Array.isArray(nodes)) {
+        nodes = [nodes];
+    }
+    if (nodes && nodes.length) {
+        nodes.forEach(function(node) {
+            switch (node.type) {
+                case "text":
+                    ret += node.value;
+                    break;
 
-    for (var i = 0; i < node.children.length; i++) {
-        var child = mapToAst(node.children[i]);
-        children.push(child);
+                case "root":
+                    ret += this.stringify(node.children);
+                    break;
+
+                case "component":
+                    if (node.extra && node.extra.node) {
+                        var astNode = node.extra.node;
+                        var children = node.children && this.stringify(node.children);
+                        ret += this.stringifyAstNode(astNode, children, astNode.arguments, children);
+                    }
+                    break;
+            }
+        }.bind(this));
     }
-    if (node.extra) {
-        if (children.length) {
-            node.extra.children = node.extra.children ? node.extra.children.concat(children) : children;
-        }
-        return node.extra;
-    }
-    return u(node.type, node, children);
-}
+    return ret;
+};
 
 /**
+ * Return the translation for the given node in the given locale.
+ * The node must have a resource and a message associated with it.
+ *
+ * @private
  * @param {Node} node the source node to localize
  * @param {string} locale the locale to localize to
  * @param {TranslationSet} translations the set of translations
- * @returns {Array.<Node>} the array of nodes that represent the translation
+ * @returns {string} the translation at the given node
  */
-MrkdwnJsonFile.prototype._getTranslationNodes = function(node, locale, translations) {
+MrkdwnJsonFile.prototype.getTranslation = function(node, locale, translations) {
+    if (!node || !node.resource || !node.message) {
+        return "";
+    }
     var text = node.resource.getSource();
     var ma = node.message;
-    if (!ma || ma.getTextLength() === 0) {
+    if (ma.getTextLength() === 0) {
         // nothing to localize
-        return undefined;
+        return "";
     }
 
-    var translation = this._localizeString(node.resource.getKey(), text, locale, translations);
+    var translation = this.localizeString(node.resource.getKey(), text, locale, translations);
 
     if (translation) {
         var transMa = MessageAccumulator.create(translation, ma);
@@ -907,39 +800,45 @@ MrkdwnJsonFile.prototype._getTranslationNodes = function(node, locale, translati
            }
         }
         if (mismatch) {
-            this.logger.warn("Warning! Translation of\n'" + text + "' (key: " + key + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
+            this.logger.warn("Warning! Translation of\n'" + text + "' (key: " +node.resource.getKey() + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
         }
 
-        return nodes;
+        return this.stringify(transMa.root);
     }
 
-    return undefined;
+    return "";
 };
 
-function mapToNodes(astNode) {
-    var node = new TreeNode(astNode);
-    if (astNode.children) {
-        for (var i = 0; i < astNode.children.length; i++) {
-            node.add(mapToNodes(astNode.children[i]));
-        }
-    }
-    return node;
-}
-
 /**
- * If the given node contains a reference to a resource that is
- * localizable, then localize the node to the given locale.
+ * Return the translation for the given node in the given locale.
  *
- * @param {Node} node the node to localize
- * @param {String} locale the locale
+ * @private
+ * @param {Node} node the source node to localize
+ * @param {string} locale the locale to localize to
  * @param {TranslationSet} translations the set of translations
- * @returns {Node} the localized node
+ * @returns {string} the translation at the given node
  */
-MrkdwnJsonFile.prototype.localizeNode = function(node, locale, translations) {
-    var localizedNode = {};
-    if (node.resource && node.message) {
-        this._getTranslationNodes(locale, translations, node.message);
+MrkdwnJsonFile.prototype.walkAst = function(node, locale, translations) {
+    var ret = "";
+    if (node.message && node.resource) {
+        ret += this.getTranslation(node, locale, translations);
+    } else {
+        var children, label;
+        if (node.children) {
+            children = "";
+            for (var i = 0; i < node.children.length; i++) {
+                children += this.walkAst(node.children[i], locale, translations);
+            }
+        }
+        if (node.label) {
+            label = "";
+            for (var i = 0; i < node.label.length; i++) {
+                label += this.walkAst(node.label[i], locale, translations);
+            }
+        }
+        ret += this.stringifyAstNode(node, children, node.arguments, label);
     }
+    return ret;
 };
 
 /**
@@ -959,72 +858,10 @@ MrkdwnJsonFile.prototype.localizeText = function(translations, locale) {
     for (var key in this.contents) {
         var ast = this.contents[key].ast;
 
-        // First, walk the source ast to find the localizable strings, and then
-        // look up the translations for those strings in the translation set.
-        // A translation is a mini-xml document that may have a different
-        // structure than the source document. To deal with that, we convert
-        // this xml document to a tree of nodes, then we walk that tree to convert
-        // it back to a string in mrkdwn format, making sure to convert subnodes
-        // along the way.
-
-
-        // flatten the tree into an array and then walk the array finding
-        // localizable segments that will get replaced with the translation
-        //var nodeArray = mapToNodes(ast).toArray();
-
-        //var start = -1, end;
-
-        this.translationStatus[locale] = true;
-
-        //for (var i = 0; i < nodeArray.length; i++) {
-            localized[key] = this._getTranslationNodes(ast, locale, translations);
-        //}
+        localized[key] = this.walkAst(ast, locale, translations);
     }
-    /*
-            if (nodeArray[i].localizable) {
-                if (start < 0) {
-                    start = i;
-                }
-                end = i;
-            } else if (start > -1) {
-                if (this.isTranslatable(ma.getMinimalString())) {
-                    var nodes = this._getTranslationNodes(locale, translations, ma);
-                    if (nodes) {
-                        // replace the source nodes with the translation nodes
-                        var prefix = ma.getPrefix();
-                        var suffix = ma.getSuffix();
-                        var oldLength = nodeArray.length;
-                        nodeArray = nodeArray.slice(0, start).concat(prefix).concat(nodes).concat(suffix).concat(nodeArray.slice(end+1));
-    
-                        // adjust for the difference in node length of the source and translation
-                        i += (nodeArray.length - oldLength);
-                    } // else leave the source nodes alone and register this string as new
-                }
-                start = -1;
-                ma = new MessageAccumulator();
-            }
-        }
-    
-        // in case any is left over at the end
-        if (start > -1 && ma.getTextLength()) {
-            var nodes = this._getTranslationNodes(locale, translations, ma);
-            if (nodes) {
-                // replace the last few source nodes with the translation nodes
-                var prefix = ma.getPrefix();
-                var suffix = ma.getSuffix();
-                nodeArray = nodeArray.slice(0, start).concat(prefix).concat(nodes).concat(suffix).concat(nodeArray.slice(end+1));
-            } // else leave the source nodes alone
-        }
-    
-        // convert to a tree again
-        ast = mapToAst(Node.fromArray(nodeArray));
 
-        var str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
-        this.localized[key] = str;
-    }
-*/
-
-    return JSON5.stringify(localized, null, 4);
+    return JSON.stringify(localized, null, 4);
 };
 
 /**

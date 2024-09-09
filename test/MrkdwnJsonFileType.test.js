@@ -53,7 +53,6 @@ var p2 = new CustomProject({
     locales:["en-GB"],
     flavors: ["ASDF"],
     mrkdwn: {
-        fullyTranslated: true
     }
 });
 describe("mrkdwnfiletype", function() {
