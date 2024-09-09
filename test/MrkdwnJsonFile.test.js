@@ -580,6 +580,7 @@ describe("mrkdwn", function() {
 
     test("MrkdwnJsonFileParse non breaking emojis", function() {
         expect.assertions(5);
+
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -753,12 +754,17 @@ describe("mrkdwn", function() {
 
     test("MrkdwnJsonFileLocalizeText", function() {
         expect.assertions(2);
+debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
         });
         expect(mjf).toBeTruthy();
-        mjf.parse('This is a test\n');
+        mjf.parse(
+            '{\n' +
+            '    "id1": "This is a test",\n' +
+            '}\n'
+        );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -771,6 +777,35 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected = 'Ceci est un essai';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsonFileLocalizeText more complicated", function() {
+        expect.assertions(2);
+debugger;
+        var mjf = new MrkdwnJsonFile({
+            project: p,
+            type: mdft
+        });
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            '{\n' +
+            '    "id1": "This *is* a test",\n' +
+            '}\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "This <c0>is</c0> a test",
+            sourceLocale: "en-US",
+            target: "Ceci <c0>est</c0> un essai",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected = 'Ceci *est* un essai';
         diff(actual, expected);
         expect(actual).toBe(expected);
     });

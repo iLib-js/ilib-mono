@@ -416,7 +416,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
 
         case NodeType.PreText:
             // ignore any text inside of preformatted text
-            this._emitText(key);
+            this._emitText(node, key);
             break;
 
         case NodeType.ChannelLink:
@@ -449,7 +449,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
             break;
 
         default:
-            this._emitText(key);
+            this._emitText(node, key);
             var subnodes = node.children || node.label;
             if (subnodes && subnodes.length) {
                 subnodes.forEach(function(child, index, array) {
@@ -484,7 +484,7 @@ MrkdwnJsonFile.prototype.parseMrkdwnString = function(key, str) {
     this._walk(key, ast);
 
     // in case any is left over at the end
-    this._emitText(key);
+    this._emitText(ast, key);
 
     return ast;
 };
@@ -880,15 +880,14 @@ function mapToAst(node) {
  * @returns {Array.<Node>} the array of nodes that represent the translation
  */
 MrkdwnJsonFile.prototype._getTranslationNodes = function(node, locale, translations) {
-    if (ma.getTextLength() === 0) {
+    var text = node.resource.getSource();
+    var ma = node.message;
+    if (!ma || ma.getTextLength() === 0) {
         // nothing to localize
         return undefined;
     }
 
-    var text = node.resource.getSource();
-    var ma = node.message;
-
-    var translation = this._localizeString(node.resource.key, text, locale, translations);
+    var translation = this._localizeString(node.resource.getKey(), text, locale, translations);
 
     if (translation) {
         var transMa = MessageAccumulator.create(translation, ma);
@@ -918,7 +917,7 @@ MrkdwnJsonFile.prototype._getTranslationNodes = function(node, locale, translati
 };
 
 function mapToNodes(astNode) {
-    var node = new Node(astNode);
+    var node = new TreeNode(astNode);
     if (astNode.children) {
         for (var i = 0; i < astNode.children.length; i++) {
             node.add(mapToNodes(astNode.children[i]));
@@ -953,14 +952,12 @@ MrkdwnJsonFile.prototype.localizeNode = function(node, locale, translations) {
  */
 MrkdwnJsonFile.prototype.localizeText = function(translations, locale) {
     this.resourceIndex = 0;
-
     this.logger.debug("Localizing strings for locale " + locale);
 
     var localized = {};
 
     for (var key in this.contents) {
-        // copy the ast for this locale so that we don't modify the original
-        var ast = deepCopy(this.contents[key].ast);
+        var ast = this.contents[key].ast;
 
         // First, walk the source ast to find the localizable strings, and then
         // look up the translations for those strings in the translation set.
@@ -973,15 +970,15 @@ MrkdwnJsonFile.prototype.localizeText = function(translations, locale) {
 
         // flatten the tree into an array and then walk the array finding
         // localizable segments that will get replaced with the translation
-        var nodeArray = mapToNodes(ast).toArray();
+        //var nodeArray = mapToNodes(ast).toArray();
 
-        var start = -1, end;
-    
+        //var start = -1, end;
+
         this.translationStatus[locale] = true;
-    
-        for (var i = 0; i < nodeArray.length; i++) {
-            this._localizeNode(nodeArray[i], locale, translations);
-        }
+
+        //for (var i = 0; i < nodeArray.length; i++) {
+            localized[key] = this._getTranslationNodes(ast, locale, translations);
+        //}
     }
     /*
             if (nodeArray[i].localizable) {
@@ -1027,7 +1024,7 @@ MrkdwnJsonFile.prototype.localizeText = function(translations, locale) {
     }
 */
 
-    return JSON5.stringify(this.localized, null, 4);
+    return JSON5.stringify(localized, null, 4);
 };
 
 /**
