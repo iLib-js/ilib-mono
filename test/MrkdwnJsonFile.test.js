@@ -889,6 +889,102 @@ debugger;
         expect(actual).toBe(expected);
     });
 
+    test("MrkdwnJsonFileLocalizeText with multiple components nested in the same string", function() {
+        expect.assertions(2);
+debugger;
+        var mjf = new MrkdwnJsonFile({
+            project: p,
+            type: mdft
+        });
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            '{\n' +
+            '    "id1": "This *is _a_ test*",\n' +
+            '}\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "This <c0>is <c1>a</c1> test</c0>",
+            sourceLocale: "en-US",
+            target: "Ceci <c0>est <c1>un</c1> essai</c0>",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            '{\n' +
+            '    "id1": "Ceci *est _un_ essai*"\n' +
+            '}';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsonFileLocalizeText with multiple components switched order", function() {
+        expect.assertions(2);
+debugger;
+        var mjf = new MrkdwnJsonFile({
+            project: p,
+            type: mdft
+        });
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            '{\n' +
+            '    "id1": "This *is* _a_ test",\n' +
+            '}\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "This <c0>is <c1>a</c1> test</c0>",
+            sourceLocale: "en-US",
+            target: "Ceci <c1>est</c1> <c0>un</c0> essai",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            '{\n' +
+            '    "id1": "Ceci _est_ *un* essai"\n' +
+            '}';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsonFileLocalizeText with multiple components nested switching the nesting", function() {
+        expect.assertions(2);
+debugger;
+        var mjf = new MrkdwnJsonFile({
+            project: p,
+            type: mdft
+        });
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            '{\n' +
+            '    "id1": "This *is _a_ test*",\n' +
+            '}\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "This <c0>is <c1>a</c1> test</c0>",
+            sourceLocale: "en-US",
+            target: "Ceci <c1>est <c0>un</c0> essai</c1>",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            '{\n' +
+            '    "id1": "Ceci _est *un* essai_"\n' +
+            '}';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
     test("MrkdwnJsonFileLocalizeTextWithInlineCode", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
@@ -919,6 +1015,192 @@ debugger;
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
+
+    test("MrkdwnJsonFileLocalizeText with all the types of syntax", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsonFile({
+            project: p,
+            type: mdft
+        });
+        expect(mjf).toBeTruthy();
+debugger;
+        mjf.parse(
+            '{\n' +
+            '    "id1": "This is a <http://link.com> line",\n' +
+            '    "id2": "This is a <http://link.com|label> line",\n' +
+            '    "id3": "This is a <@user> line",\n' +
+            '    "id4": "This is a <@user|label> line",\n' +
+            '    "id5": "This is a <#channel> line",\n' +
+            '    "id6": "This is a <#channel|label> line",\n' +
+            '    "id7": "This is a <!command> line",\n' +
+            '    "id8": "This is a <!command^arg1^arg2|label> line",\n' +
+            '    "id9": "This is a _italic_ line",\n' +
+            '    "id10": "This is a *bold* line",\n' +
+            '    "id11": "This is a ~strikeout~ line",\n' +
+            '    "id12": "This is a ```\npretext\n```\n line",\n' +
+            '    "id13": "This is a :emoji: line",\n' +
+            '    "id14": "This is a `code` line"\n' +
+            '}\n'
+        );
+        var translations = new TranslationSet();
+        translations.addAll([
+            new ResourceString({
+                project: "foo",
+                key: "id1",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un link <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id2",
+                source: "This is a <c0>label</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un link avec <c0>un nom</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id3",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id4",
+                source: "This is a <c0>label</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>un nom</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id5",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id6",
+                source: "This is a <c0>label</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>un nom</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id7",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id8",
+                source: "This is a <c0>label</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>un nom</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id9",
+                source: "This is a <c0>italic</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>italique</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id9",
+                source: "This is a <c0>italic</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>italique</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id10",
+                source: "This is a <c0>bold</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>gras</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id11",
+                source: "This is a <c0>strikeout</c0> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0>barré</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id12",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id13",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            }),
+            new ResourceString({
+                project: "foo",
+                key: "id14",
+                source: "This is a <c0/> line",
+                sourceLocale: "en-US",
+                target: "Ceci est un ligne avec <c0/>",
+                targetLocale: "fr-FR",
+                datatype: "mrkdwn"
+            })
+        ]);
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            '{\n' +
+            '    "id1": "Ceci est un link <http://link.com>",\n' +
+            '    "id2": "Ceci est un link avec <http://link.com|un nom>",\n' +
+            '    "id3": "Ceci est un ligne <@user>",\n' +
+            '    "id4": "Ceci est un ligne avec <@user|un nom>",\n' +
+            '    "id5": "Ceci est un ligne <#channel>",\n' +
+            '    "id6": "Ceci est un ligne avec <#channel|un nom>",\n' +
+            '    "id7": "Ceci est un ligne <!command>",\n' +
+            '    "id8": "Ceci est un ligne avec <!command^arg1^arg2|un nom>",\n' +
+            '    "id9": "Ceci est un ligne avec _italique_",\n' +
+            '    "id10": "Ceci est un ligne avec *gras*",\n' +
+            '    "id11": "Ceci est un ligne avec ~barré~",\n' +
+            '    "id12": "Ceci est un ligne avec ```\npretext\n```",\n' +
+            '    "id13": "Ceci est un ligne avec :emoji:",\n' +
+            '    "id14": "Ceci est un ligne avec `code`"\n' +
+            '}';
+        expect(actual).toBe(expected);
+    });
+
 
     test("MrkdwnJsonFileLocalizeTextNonBreakingTagsOutside", function() {
         expect.assertions(2);
@@ -1050,810 +1332,46 @@ debugger;
         expect(actual).toBe(expected);
     });
 
-        /*
-
-    test("MrkdwnJsonFileLocalizeTextLocalizableTitle", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('Mrkdwn text <div title="This value is localizable">This is a test</div>\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r922503175',
-            source: 'This value is localizable',
-            target: 'Cette valeur est localisable',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
-    });
-
-    test("MrkdwnJsonFileLocalizeTextLocalizableTitleSingleQuotes", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse("Mrkdwn text <div title='This value is localizable'>This is a test</div>\n");
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            key: 'r922503175',
-            project: "foo",
-            source: 'This value is localizable',
-            target: 'Cette valeur est localisable',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
-    });
-
-    test("MrkdwnJsonFileLocalizeTextLocalizableAttributes", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('![Alternate text](http://www.test.test/foo.png "title here")\n' +
-                'This is a test\n' +
-                '<input type="text" placeholder="localizable placeholder here">\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1051764073',
-            source: 'Alternate text',
-            target: 'Texte alternative',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r625153591',
-            source: 'title here',
-            target: 'titre ici',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r734414247',
-            source: 'localizable placeholder here',
-            target: 'espace réservé localisable ici',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('![Texte alternative](http://www.test.test/foo.png "titre ici")\n' +
-            'Ceci est un essai\n' +
-            '<input type="text" placeholder="espace réservé localisable ici">\n');
-    });
-
-    test("MrkdwnJsonFileLocalizeTextLocalizableAttributesAndNonBreakingTags", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1063253939',
-            source: 'This is <c0>a test</c0> of non-breaking tags.',
-            target: 'Ceci est <c0>un essai</c0> des balises non-ruptures.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r160369622',
-            source: 'localizable title',
-            target: 'titre localisable',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n');
-    });
-
-    test("MrkdwnJsonFileLocalizeTextLocalizableValuelessAttributes", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('This is <a href="foo.html" checked title="localizable title">a test</a> of non-breaking tags.\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1063253939',
-            source: 'This is <c0>a test</c0> of non-breaking tags.',
-            target: 'Ceci est <c0>un essai</c0> des balises non-ruptures.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r160369622',
-            source: 'localizable title',
-            target: 'titre localisable',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n');
-    });
-
-    test("MrkdwnJsonFileLocalizeTextI18NComments", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('<!-- i18n: this describes the text below -->\n' +
-                'This is a test of the emergency parsing system.\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r699762575',
-            source: 'This is a test of the emergency parsing system.',
-            target: 'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('<!-- i18n: this describes the text below -->\n\n' +
-            'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.\n');
-    });
-
-    test("MrkdwnJsonFileLocalizeTextIdentifyResourceIds", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('This is a test\n\n' +
-                'This is also a test\n\n' +
-                'This is a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span x-locid="r654479252">Ceci est un essai</span>\n\n' +
-            '<span x-locid="r999080996">Ceci est aussi un essai</span>\n\n' +
-            '<span x-locid="r654479252">Ceci est un essai</span>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeHTMLWithValuelessAttributes", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('<span class="foo" checked>This is a test of the emergency parsing system.</span>\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span class="foo" checked>Ceci est un test du système d\'analyse d\'urgence.</span>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFlowStyleHTML", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a test of the emergency parsing system.\n' +
-            '</span>\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span class="foo" checked>\n' +
-            'Ceci est un test du système d\'analyse d\'urgence.\n' +
-            '</span>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFlowStyleHTMLMultiple", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a test of the emergency parsing system.\n' +
-            '</span>\n' +
-            '<message>\n' +
-            'This is translatable.\n' +
-            '</message>\n'
-            );
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r299977686",
-            source: "This is translatable.",
-            sourceLocale: "en-US",
-            target: "Ceci est traduitable.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span class="foo" checked>\n' +
-            'Ceci est un test du système d\'analyse d\'urgence.\n' +
-            '</span>\n' +
-            '<message>\n' +
-            'Ceci est traduitable.\n' +
-            '</message>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFlowStyleHTMLMultipleWithTextInBetween", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a test of the emergency parsing system.\n' +
-            '</span>\n' +
-            '\n' +
-            'This is translatable.\n' +
-            '\n' +
-            '<message>\n' +
-            'This is translatable.\n' +
-            '</message>\n'
-            );
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r299977686",
-            source: "This is translatable.",
-            sourceLocale: "en-US",
-            target: "Ceci est traduitable.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span class="foo" checked>\n' +
-            'Ceci est un test du système d\'analyse d\'urgence.\n' +
-            '</span>\n' +
-            '\n' +
-            'Ceci est traduitable.\n' +
-            '\n' +
-            '<message>\n' +
-            'Ceci est traduitable.\n' +
-            '</message>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFlowStyleHTMLWithEmbeddedHTML", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a <b>test</b> of the emergency parsing system.\n' +
-            '</span>\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>test</c0> du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span class="foo" checked>\n' +
-            'Ceci est un <b>test</b> du système d\'analyse d\'urgence.\n' +
-            '</span>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFlowStyleHTMLWithEmbeddedMrkdwn", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a `test` of the _emergency parsing system_.\n' +
-            '</span>\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r456781746",
-            source: "This is a <c0/> of the <c1>emergency parsing system</c1>.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0/> du <c1>système d'analyse d'urgence</c1>.",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        var expected =
-            '<span class="foo" checked>\n' +
-            'Ceci est un `test` du _système d\'analyse d\'urgence_.\n' +
-            '</span>\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTextIgnoreFrontMatter", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '---\n' +
-            'test: This is a test\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n\n' +
-            'This is a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        // should ignore the front matter and leave it unlocalized
-        var expected =
-            '---\n' +
-            'test: This is a test\n' +
-            '---\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n\n' +
-            'Ceci est un essai\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTextProcessFrontMatter", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p3,
-            type: mdft3,
-            pathName: "a/b/x/foo.md"
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r536069958.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r536069958.Description",
-            source: "another front matter description\nwith extended text\n",
-            sourceLocale: "en-US",
-            target: "aussi une description de la question en face\navec texte étendu\n",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        // should localize the front matter because the mapping includes Title and Description
-        var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  aussi une description de la question en face\n' +
-            '  avec texte étendu\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTextProcessFrontMatterProcessNewStrings", function() {
-        expect.assertions(12);
-        var mjf = new MrkdwnJsonFile({
-            project: p3,
-            type: mdft3,
-            pathName: "a/b/x/foo.md"
-        });
-        expect(mjf).toBeTruthy();
-        mdft3.newres.clear();
-        mjf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r536069958.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        // should localize the front matter because the mapping includes Title and Description
-        var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
-            'Ceci est un essai\n\n' +
-            'This is also a test\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-        var newset = mdft3.getNew();
-        expect(newset).toBeTruthy();
-        var resources = newset.getAll();
-        expect(resources.length).toBe(2);
-        expect(resources[0].getKey()).toBe("r536069958.Description");
-        expect(resources[0].getSource()).toBe("another front matter description\nwith extended text\n");
-        expect(resources[0].getSourceLocale()).toBe("en-US");
-        expect(resources[0].getPath()).toBe("a/b/x/foo.md");
-        expect(resources[1].getKey()).toBe("r999080996");
-        expect(resources[1].getSource()).toBe("This is also a test");
-        expect(resources[1].getSourceLocale()).toBe("en-US");
-        expect(resources[1].getPath()).toBe("a/b/x/foo.md");
-    });
-
-    test("MrkdwnJsonFileLocalizeTextProcessFrontMatterSkipUnknownFields", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p3,
-            type: mdft3,
-            pathName: "a/b/x/foo.md"
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Foobar: foo asdf asdf asdf\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r536069958.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r536069958.Description",
-            source: "another front matter description\nwith extended text\n",
-            sourceLocale: "en-US",
-            target: "aussi une description de la question en face\navec texte étendu\n",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        // should ignore the front matter it doesn't recognize and leave it unlocalized
-        var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  aussi une description de la question en face\n' +
-            '  avec texte étendu\n' +
-            'Foobar: foo asdf asdf asdf\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTextProcessFrontMatterLocalizeAll", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p3,
-            type: mdft3,
-            pathName: "a/b/y/foo.md" // localizes all frontmatter fields
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Foobar: asdf asdf asdf\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r77676802.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r77676802.Description",
-            source: "another front matter description\nwith extended text\n",
-            sourceLocale: "en-US",
-            target: "aussi une description de la question en face\navec texte étendu\n",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r77676802.Foobar",
-            source: "asdf asdf asdf",
-            sourceLocale: "en-US",
-            target: "fdsa fdsa fdsa",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        // should localize all the front matter
-        var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  aussi une description de la question en face\n' +
-            '  avec texte étendu\n' +
-            'Foobar: fdsa fdsa fdsa\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n';
-        var actual = mjf.localizeText(translations, "fr-FR");
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
 
     test("MrkdwnJsonFileGetLocalizedPathSimple", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
-            project: p,
-            pathName: "simple.md",
-            type: mdft
+            project: p3,
+            pathName: "simple.json",
+            type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathComplex", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
-            project: p,
-            pathName: "./asdf/bar/simple2.md",
-            type: mdft
+            project: p3,
+            pathName: "./asdf/bar/simple2.json",
+            type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathRegularMrkdwnJsonFileName", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
-            project: p,
-            pathName: "./asdf/bar/simple2.md",
-            type: mdft
+            project: p3,
+            pathName: "./asdf/bar/simple2.json",
+            type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathNotEnoughParts", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
-            project: p,
+            project: p3,
             pathName: "./asdf/bar/simple",
-            type: mdft
+            type: mdft3
         });
         expect(mjf).toBeTruthy();
         expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple");
@@ -1863,57 +1381,57 @@ debugger;
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
             project: p3,
-            pathName: "./en-US/asdf/bar/simple2.md",
+            pathName: "./en-US/asdf/bar/simple2.json",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathSourceLocaleInMidPath", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
             project: p3,
-            pathName: "./asdf/en-US/bar/simple3.md",
+            pathName: "./asdf/en-US/bar/simple3.json",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathSourceLocaleInBeginningPath", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
             project: p3,
-            pathName: "en-US/asdf/bar/simple2.md",
+            pathName: "en-US/asdf/bar/simple2.json",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
             project: p3,
-            pathName: "./asdf/pen-USing/en-US/bar/asdf.md",
+            pathName: "./asdf/pen-USing/en-US/bar/asdf.json",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
         // should leave "pen-USing" alone and only get the "en-US" path component
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.json");
     });
 
     test("MrkdwnJsonFileGetLocalizedPathWithLocaleMap", function() {
         expect.assertions(3);
         var mjf = new MrkdwnJsonFile({
             project: p3,
-            pathName: "simple4.md",
+            pathName: "simple4.json",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.md");
-        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.md");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.json");
+        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.json");
     });
 
     test("MrkdwnJsonFileLocalizeFile", function() {
@@ -1921,7 +1439,7 @@ debugger;
         var base = path.dirname(module.id);
         var mjf = new MrkdwnJsonFile({
             project: p,
-            pathName: "./md/test1.md",
+            pathName: "./json/test1.json",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -1930,7 +1448,7 @@ debugger;
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r548615397',
+            key: 'id1',
             source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
             target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
             targetLocale: "fr-FR",
@@ -1938,7 +1456,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r777006502',
+            key: 'id2',
             source: 'This is some text. This is more text. Pretty, pretty text.',
             target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
             targetLocale: "fr-FR",
@@ -1946,7 +1464,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r112215756',
+            key: 'id3',
             source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
             target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
             targetLocale: "fr-FR",
@@ -1954,7 +1472,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r260813817',
+            key: 'id4',
             source: 'This is the last bit of localizable text.',
             target: 'C\'est le dernier morceau de texte localisable.',
             targetLocale: "fr-FR",
@@ -1962,7 +1480,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r548615397',
+            key: 'id1',
             source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
             target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
             targetLocale: "de-DE",
@@ -1970,7 +1488,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r777006502',
+            key: 'id2',
             source: 'This is some text. This is more text. Pretty, pretty text.',
             target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
             targetLocale: "de-DE",
@@ -1978,7 +1496,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r112215756',
+            key: 'id3',
             source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
             target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
             targetLocale: "de-DE",
@@ -1986,492 +1504,50 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r260813817',
+            key: 'id4',
             source: 'This is the last bit of localizable text.',
             target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
             targetLocale: "de-DE",
             datatype: "mrkdwn"
         }));
         mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p.target, "fr-FR/md/test1.md"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p.target, "de-DE/md/test1.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test1.md"), "utf-8");
+        expect(fs.existsSync(path.join(p.target, "fr-FR/json/test1.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "de-DE/json/test1.json"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p.target, "fr-FR/json/test1.json"), "utf-8");
         var expected =
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+            '{\n' +
+            '    "id1": "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
+            '    "id2": "Ceci est du texte. C\'est plus de texte. Joli, joli texte.",\n' +
+            '    "id2": "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
+            '    "id4": "C\'est le dernier morceau de texte localisable."\n' +
+            '}';
         diff(content, expected);
         expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p.target, "de-DE/md/test1.md"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "de-DE/json/test1.json"), "utf-8");
         var expected =
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileWithFrontMatter", function() {
-        expect.assertions(5);
-        var base = path.dirname(module.id);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            pathName: "./md/test3.md",
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p.target, "fr-FR/md/test3.md"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p.target, "de-DE/md/test3.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test3.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            'status: this front matter should remain unlocalized\n' +
-            '---\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p.target, "de-DE/md/test3.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            'status: this front matter should remain unlocalized\n' +
-            '---\n' +
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileWithFrontMatterNotFullyTranslated", function() {
-        expect.assertions(5);
-        var p2 = ProjectFactory("./test/testfiles/subproject", {
-            mrkdwn: {
-                fullyTranslated: true
-            }
-        });
-        var mdft2 = new MrkdwnJsonFileType(p2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            pathName: "./notrans2.md",
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'frontmatter: true\n' +
-            'other: "asdf"\n' +
-            '---\n' +
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n' +
-            '\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is the last bit of localizable text.\n' +
-            '\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'frontmatter: true\n' +
-            'other: "asdf"\n' +
-            '---\n' +
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n' +
-            '\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is the last bit of localizable text.\n' +
-            '\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileWithFrontMatterFullyTranslated", function() {
-        expect.assertions(5);
-        var p2 = ProjectFactory("./test/testfiles/subproject", {
-            mrkdwn: {
-                fullyTranslated: true
-            }
-        });
-        var mdft2 = new MrkdwnJsonFileType(p2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            pathName: "./notrans2.md",
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.md"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p2.target, "de-DE/notrans2.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'frontmatter: true\n' +
-            'other: "asdf"\n' +
-            'fullyTranslated: true\n' +
-            '---\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'frontmatter: true\n' +
-            'other: "asdf"\n' +
-            'fullyTranslated: true\n' +
-            '---\n' +
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated", function() {
-        expect.assertions(5);
-        var p2 = ProjectFactory("./test/testfiles/subproject", {
-            mrkdwn: {
-                fullyTranslated: true
-            }
-        });
-        var mdft2 = new MrkdwnJsonFileType(p2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            pathName: "./notrans.md",
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p2.target, "de-DE/notrans.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n' +
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+            '{\n' +
+            '    "id1": "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
+            '    "id2": "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",\n' +
+            '    "id2": "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
+            '    "id4": "Dies ist der letzte Teil des lokalisierbaren Textes."\n' +
+            '}';
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
     test("MrkdwnJsonFileLocalizeNoStrings", function() {
-        expect.assertions(3);
+        expect.assertions(5);
         var base = path.dirname(module.id);
+
+        fs.unlinkSync(path.join(p.target, "fr-FR/json/nostrings.json"));
+        fs.unlinkSync(path.join(p.target, "de-DE/json/nostrings.json"));
+        
+        expect(fs.existsSync(path.join(p.target, "fr-FR/json/nostrings.json"))).toBeFalsy();
+        expect(fs.existsSync(path.join(p.target, "de-DE/json/nostrings.json"))).toBeFalsy();
+
         var mjf = new MrkdwnJsonFile({
             project: p,
-            pathName: "./md/nostrings.md",
+            pathName: "./json/nostrings.json",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -2480,7 +1556,7 @@ debugger;
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r308704783',
+            key: 'id1',
             source: 'Get insurance quotes for free!',
             target: 'Obtenez des devis d\'assurance gratuitement!',
             targetLocale: "fr-FR",
@@ -2488,7 +1564,7 @@ debugger;
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: 'r308704783',
+            key: 'id1',
             source: 'Get insurance quotes for free!',
             target: 'Kostenlosen Versicherungs-Angebote erhalten!',
             targetLocale: "de-DE",
@@ -2496,17 +1572,17 @@ debugger;
         }));
         mjf.localize(translations, ["fr-FR", "de-DE"]);
         // should produce the files, even if there is nothing to localize in them
-        expect(fs.existsSync(path.join(p.target, "fr-FR/md/nostrings.md"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p.target, "de-DE/md/nostrings.md"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "fr-FR/json/nostrings.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "de-DE/json/nostrings.json"))).toBeTruthy();
     });
 
-    test("MrkdwnJsonFileExtractFileNewResources", function() {
+    test("MrkdwnJsonFileExtractFile get the right new resources", function() {
         expect.assertions(16);
         var base = path.dirname(module.id);
         var t = new MrkdwnJsonFileType(p);
         var mjf = new MrkdwnJsonFile({
             project: p,
-            pathName: "./md/mode.md",
+            pathName: "./json/mode.json",
             type: t
         });
         expect(mjf).toBeTruthy();
@@ -2514,7 +1590,7 @@ debugger;
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
-            key: "r950833718",
+            key: "id1",
             source: "Choose a meeting method",
             sourceLocale: "en-US",
             target: "Choisissez une méthode de réunion d'affaires",
@@ -2523,13 +1599,11 @@ debugger;
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '## Choisissez une méthode de réunion d\'affaires\n' +
-            '\n' +
-            '<img src="http://foo.com/photo.png" height="86px" width="86px">\n' +
-            '\n' +
-            '\\[Ťëšţ þĥŕàšë543210]\n' +
-            '\n' +
-            '## \\[Ïñ Pëŕšõñ Mõðë6543210]\n';
+            '{\n' +
+            '    "id1": "Choisissez une méthode de réunion d\'affaires",\n' +
+            '    "id2": "[Ťëšţ þĥŕàšë543210]",\n' +
+            '    "id3": "[Ïñ Pëŕšõñ Mõðë6543210]"\n'
+            '}';
         diff(actual, expected);
         expect(actual).toBe(expected);
         var set = t.newres;
@@ -2539,849 +1613,17 @@ debugger;
         expect(!r).toBeTruthy();
         r = set.getBySource("Test phrase");
         expect(r).toBeTruthy();
-        expect(resources[0].getKey()).toBe("r103886803");
+        expect(resources[0].getKey()).toBe("id2");
         expect(resources[0].getSource()).toBe("Test phrase");
         expect(resources[0].getSourceLocale()).toBe("en-US");
         expect(resources[0].getTarget()).toBe("Test phrase");
         expect(resources[0].getTargetLocale()).toBe("fr-FR");
         r = set.getBySource("In Person Mode");
         expect(r).toBeTruthy();
-        expect(resources[1].getKey()).toBe("r251839517");
+        expect(resources[1].getKey()).toBe("id3");
         expect(resources[1].getSource()).toBe("In Person Mode");
         expect(resources[1].getSourceLocale()).toBe("en-US");
         expect(resources[1].getTarget()).toBe("In Person Mode");
         expect(resources[1].getTargetLocale()).toBe("fr-FR");
     });
-
-    test("MrkdwnJsonFileLocalizeTextHeaderWithNoSpace", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '#Bad Header\n' +
-            '##Other Bad Header\n' +
-            '# Bad Header\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r868915655',
-            source: 'Bad Header',
-            target: 'Entête mal',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r836504731',
-            source: 'Other Bad Header',
-            target: 'Autre entête mal',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        expect(mjf.localizeText(translations, "fr-FR")).toBe('# Entête mal\n\n' +
-            '## Autre entête mal\n\n' +
-            '# Entête mal\n');
-    });
-
-    test("MrkdwnJsonFileParseMultipleMDComponents", function() {
-        expect.assertions(9);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'Integration samples include: \n' +
-            '* **[File Workflow with Webhooks](/docs/file-workflow-with-webhooks)**: Creating file task automation with webhooks.\n');
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var r = set.getBySource("Integration samples include:");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Integration samples include:");
-        expect(r.getKey()).toBe("r537538527");
-        r = set.getBySource("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
-        expect(r.getKey()).toBe("r663481768");
-    });
-
-    test("MrkdwnJsonFileParseWithLinkReferenceWithText", function() {
-        expect.assertions(6);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n'
-        );
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(2);
-        var resources = set.getAll();
-        expect(resources.length).toBe(2);
-        expect(resources[0].getSource()).toBe("For developer support, please reach out to us via one of our channels:");
-        expect(resources[1].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
-    });
-
-    test("MrkdwnJsonFileParseWithLinkReferenceToExtractedURL", function() {
-        expect.assertions(8);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '- [Ask on Facebook][facebook]: For general questions and support.\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n' +
-            '[facebook]: http://www.facebook.com/OurPlatform\n' +
-            '<!-- i18n-disable localize-links -->'
-        );
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(4);
-        var resources = set.getAll();
-        expect(resources.length).toBe(4);
-        expect(resources[0].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
-        expect(resources[1].getSource()).toBe("<c0>Ask on Facebook</c0>: For general questions and support.");
-        expect(resources[2].getSource()).toBe("https://twitter.com/OurPlatform");
-        expect(resources[3].getSource()).toBe("http://www.facebook.com/OurPlatform");
-    });
-
-    test("MrkdwnJsonFileParseWithLinkReferenceWithLinkTitle", function() {
-        expect.assertions(7);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'Regular service will be [available][exception].\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n' +
-            '[exception]: http://a.com/ "link title"\n' +
-            '<!-- i18n-disable localize-links -->'
-        );
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(3);
-        var resources = set.getAll();
-        expect(resources.length).toBe(3);
-        expect(resources[0].getSource()).toBe("Regular service will be <c0>available</c0>.");
-        expect(resources[1].getSource()).toBe("http://a.com/");
-        expect(resources[2].getSource()).toBe("link title");
-    });
-
-    test("MrkdwnJsonFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff", function() {
-        expect.assertions(7);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '- [Ask on Facebook][facebook]: For general questions and support.\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n' +
-            '<!-- i18n-disable localize-links -->' +
-            '[facebook]: http://www.facebook.com/OurPlatform\n'
-        );
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(3);
-        var resources = set.getAll();
-        expect(resources.length).toBe(3);
-        expect(resources[0].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
-        expect(resources[1].getSource()).toBe("<c0>Ask on Facebook</c0>: For general questions and support.");
-        expect(resources[2].getSource()).toBe("https://twitter.com/OurPlatform");
-    });
-
-    test("MrkdwnJsonFileParseWithMultipleLinkReferenceWithText", function() {
-        expect.assertions(8);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '- [Ask in email][email]: For specific questions and support.\n' +
-            '- [Ask on stack overflow][so]: For community answers and support.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n' +
-            '[email]: mailto:support@ourplatform\n' +
-            '[so]: http://ourplatform.stackoverflow.com/'
-        );
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        expect(set.size()).toBe(4);
-        var resources = set.getAll();
-        expect(resources.length).toBe(4);
-        expect(resources[0].getSource()).toBe("For developer support, please reach out to us via one of our channels:");
-        expect(resources[1].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
-        expect(resources[2].getSource()).toBe("<c0>Ask in email</c0>: For specific questions and support.");
-        expect(resources[3].getSource()).toBe("<c0>Ask on stack overflow</c0>: For community answers and support.");
-    });
-
-    test("MrkdwnJsonFileLocalizeReferenceLinksWithLinkId", function() {
-        expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n'
-        );
-        expect(mjf).toBeTruthy();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r293599939',
-            source: '<c0>Ask on Twitter</c0>: For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0>: Für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '* [Auf Twitter stellen][twitter]: Für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n';
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeReferenceLinksWithoutLinkId", function() {
-        expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter] For general questions and support.\n' +
-            '\n' +
-            '[Ask on Twitter]: https://twitter.com/OurPlatform\n'
-        );
-        expect(mjf).toBeTruthy();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1030328207',
-            source: '<c0>Ask on Twitter</c0> For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        // DON'T localize the label. Instead, add a title that is translated
-        var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '* [Auf Twitter stellen][Ask on Twitter] für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '[Ask on Twitter]: https://twitter.com/OurPlatform\n';
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeReferenceLinksWithLinkTitle", function() {
-        expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter] For general questions and support.\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n' +
-            '[twitter]: https://twitter.com/OurPlatform "Our Platform"\n' +
-            '<!-- i18n-disable localize-links -->\n'
-        );
-        expect(mjf).toBeTruthy();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1030328207',
-            source: '<c0>Ask on Twitter</c0> For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r85880207',
-            source: 'https://twitter.com/OurPlatform',
-            target: 'https://de.twitter.com/OurPlatform',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r504251007',
-            source: 'Our Platform',
-            target: 'Unsere Platformen',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '* [Auf Twitter stellen][twitter] für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n\n' +
-            '[twitter]: https://de.twitter.com/OurPlatform "Unsere Platformen"\n\n' +
-            '<!-- i18n-disable localize-links -->\n';
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeDirectLinksTurnedOff", function() {
-        expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '<!-- i18n-disable localize-links -->\n' +
-            '\n' +
-            '- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n'
-        );
-        expect(mjf).toBeTruthy();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r629827996',
-            source: '<c0>Ask on Twitter</c0> for general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r85880207',
-            source: 'https://twitter.com/OurPlatform',
-            target: 'https://de.twitter.com/OurPlatform',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '<!-- i18n-disable localize-links -->\n' +
-            '\n' +
-            '* [Auf Twitter stellen](https://twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n';
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeDirectLinksTurnedOn", function() {
-        expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n' +
-            '\n' +
-            '- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n' +
-            '\n' +
-            '<!-- i18n-disable localize-links -->\n'
-        );
-        expect(mjf).toBeTruthy();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r629827996',
-            source: '<c0>Ask on Twitter</c0> for general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r85880207',
-            source: 'https://twitter.com/OurPlatform',
-            target: 'https://de.twitter.com/OurPlatform',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '<!-- i18n-enable localize-links -->\n' +
-            '\n' +
-            '* [Auf Twitter stellen](https://de.twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '<!-- i18n-disable localize-links -->\n';
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileParseHTMLComments", function() {
-        expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('This is a <!-- comment -->test of the emergency parsing system.\n');
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        var r = set.getBySource("This is a test of the emergency parsing system.");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
-        expect(r.getKey()).toBe("r699762575");
-    });
-
-    test("MrkdwnJsonFileParseHTMLCommentsWithIndent", function() {
-        expect.assertions(8);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('This is a test of the emergency parsing system.\n  <!-- comment -->\nA second string\n');
-        var set = mjf.getTranslationSet();
-        expect(set).toBeTruthy();
-        var r = set.getBySource("This is a test of the emergency parsing system.");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
-        expect(r.getKey()).toBe("r699762575");
-        var r = set.getBySource("A second string");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("A second string");
-        expect(r.getKey()).toBe("r772298159");
-    });
-
-    test("MrkdwnJsonFileLocalizeHTMLCommentsWithIndent", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse('This is a test of the emergency parsing system.\n  <!-- comment -->\nA second string\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r699762575',
-            source: 'This is a test of the emergency parsing system.',
-            target: 'This is a test of the emergency parsing system... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r772298159',
-            source: 'A second string',
-            target: 'A second string... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            'This is a test of the emergency parsing system... in GERMAN!\n\n  <!-- comment -->\n\nA second string... in GERMAN!\n';
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTable", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| foo               | bar             |\n");
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r744039504',
-            source: 'Query description',
-            target: 'Query description... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r595024848',
-            source: 'Returns column',
-            target: 'Returns column... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r941132140',
-            source: 'foo',
-            target: 'foo... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r755240053',
-            source: 'bar',
-            target: 'bar... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            "|                                 |                              |\n" +
-            "| ------------------------------- | ---------------------------- |\n" +
-            "| Query description... in GERMAN! | Returns column... in GERMAN! |\n" +
-            "| foo... in GERMAN!               | bar... in GERMAN!            |\n";
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTableWithInlineCode", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| `code`            | `more code`     |\n" +
-            "| foo               | bar             |\n");
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r744039504',
-            source: 'Query description',
-            target: 'Query description... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r595024848',
-            source: 'Returns column',
-            target: 'Returns column... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r941132140',
-            source: 'foo',
-            target: 'foo... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r755240053',
-            source: 'bar',
-            target: 'bar... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            "|                                 |                              |\n" +
-            "| ------------------------------- | ---------------------------- |\n" +
-            "| Query description... in GERMAN! | Returns column... in GERMAN! |\n" +
-            "| `code`                          | `more code`                  |\n" +
-            "| foo... in GERMAN!               | bar... in GERMAN!            |\n";
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeTableWithInlineCodeAndTextAfter", function() {
-        expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
-            project: p,
-            type: mdft
-        });
-        expect(mjf).toBeTruthy();
-        mjf.parse(
-            "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| `code`            | `more code`     |\n" +
-            "\n" +
-            "## Header Title\n" +
-            "\n" +
-            "Body text.\n");
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r744039504',
-            source: 'Query description',
-            target: 'Query description... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r595024848',
-            source: 'Returns column',
-            target: 'Returns column... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1037333769',
-            source: 'Header Title',
-            target: 'Header Title... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r521829558',
-            source: 'Body text.',
-            target: 'Body text... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mrkdwn"
-        }));
-        var actual = mjf.localizeText(translations, "de-DE");
-        var expected =
-            "|                                 |                              |\n" +
-            "| ------------------------------- | ---------------------------- |\n" +
-            "| Query description... in GERMAN! | Returns column... in GERMAN! |\n" +
-            "| `code`                          | `more code`                  |\n" +
-            "\n" +
-            "## Header Title... in GERMAN!\n" +
-            "\n" +
-            "Body text... in GERMAN!\n";
-        diff(actual, expected);
-        expect(actual).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileFullyTranslatedFlag", function() {
-        expect.assertions(3);
-        // this subproject has the "fullyTranslated" flag set to true
-        var p2 = ProjectFactory("./test/testfiles/subproject", {
-            mrkdwn: {
-                fullyTranslated: true
-            }
-        });
-        var mdft2 = new MrkdwnJsonFileType(p2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            pathName: "./notrans.md",
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        mjf.localize(translations, ["fr-FR"]);
-        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-        var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileFullyTranslatedFlagNoTranslations", function() {
-        expect.assertions(3);
-        // this subproject has the "fullyTranslated" flag set to true
-        var p2 = ProjectFactory("./test/testfiles/subproject", {
-            mrkdwn: {
-                fullyTranslated: true
-            }
-        });
-        var mdft2 = new MrkdwnJsonFileType(p2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            pathName: "./notrans.md",
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        mjf.localize(translations, ["fr-FR"]);
-        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-        // should not be translated because we didn't have translations for any strings
-        var expected =
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is the last bit of localizable text.\n\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-
-    test("MrkdwnJsonFileLocalizeFileFullyTranslatedFlagNotFullyTranslated", function() {
-        expect.assertions(3);
-        // this subproject has the "fullyTranslated" flag set to true
-        var p2 = ProjectFactory("./test/testfiles/subproject", {
-            mrkdwn: {
-                fullyTranslated: true
-            }
-        });
-        var mdft2 = new MrkdwnJsonFileType(p2);
-        var mjf = new MrkdwnJsonFile({
-            project: p2,
-            pathName: "./notrans.md",
-            type: mdft2
-        });
-        expect(mjf).toBeTruthy();
-        // should read the file
-        mjf.extract();
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mrkdwn"
-        }));
-        mjf.localize(translations, ["fr-FR"]);
-        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.md"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.md"), "utf-8");
-        // should not be translated because we didn't have translations for all strings
-        var expected =
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is the last bit of localizable text.\n\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
-    });
-    */
 });
