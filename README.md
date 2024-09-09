@@ -150,7 +150,8 @@ The ilib-assemble tool takes the following options:
     the default (`./src/ilib-all-inc.js`)file will be used.
 * --outjsFileName or n. Specify the resulting assembled output file name.
     The default is `ilib-all.js`
-* -- customLocalePath or p. Specify the location where the custom locale data path. If you want to override the value of existing locale data.
+* --customLocalePath or p. Specify the path to customized locale data that
+    overrides existing open-source locale data.
 
 The output-dir is required and specifies the directory where the output is
 written. If it does not exist, it will be created first.
@@ -228,8 +229,8 @@ e.g
 ```
  ilib-assemble output-dir --legacyilib --ilibPath ~/Source/develop/ --ilibincPath src/ilib-all-inc.js -l "af-ZA,am-ET,ko-KR"
 ```
-- Add the option `customLocalePath` to provide a possibility to overwrite the locale data. Basically, the locale data is based on the CLDR.  
- If you want to have it to return a different value, Prepare the JSON locale data to override the same locale hierarchy and use the option when running the tool.
+- Add the option `customLocalePath` to override the locale data with custom data.  
+  The open-source locale data is based only on the CLDR. If your company wants override certain settings, it can create custom JSON locale data in the same format and the same locale hierarchy as the ilib files, and any data in the custom files will override the parallel data from CLDR.
 
 
 ### v1.2.1

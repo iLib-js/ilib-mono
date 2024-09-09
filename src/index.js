@@ -79,7 +79,7 @@ const optionConfig = {
     legacyilib: {
         short: "o",
         flag: true,
-        help: "Assemble data for the legacy version of ilib"
+        help: "Assemble data for the legacy version of ilib."
     },
     ilibPath: {
         short: "i",
@@ -98,7 +98,7 @@ const optionConfig = {
     customLocalePath: {
         short: "p",
         "default" : undefined,
-        help: "Specify the location where the custom locale data path. If you want to override the value of existing locale data."
+        help: "Specify the path to customized locale data that overrides existing open-source locale data."
     }
 };
 
