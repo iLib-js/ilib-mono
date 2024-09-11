@@ -888,12 +888,6 @@ MrkdwnJsonFile.prototype.localize = function(translations, locales) {
 
                 fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
             }
-
-            this.type.addTranslationStatus({
-                path: pathName,
-                locale: locales[i],
-                fullyTranslated: this.translationStatus[locales[i]]
-            });
         }
     }
 };

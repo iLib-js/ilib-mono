@@ -253,19 +253,7 @@ MrkdwnJsonFileType.prototype.getPseudo = function() {
     return set;
 };
 
-MrkdwnJsonFileType.prototype.addTranslationStatus = function(fileInfo) {
-    if (fileInfo.fullyTranslated) {
-        this.fileInfo.translated.push(fileInfo.path);
-    } else {
-        this.fileInfo.untranslated.push(fileInfo.path);
-    }
-};
-
 MrkdwnJsonFileType.prototype.projectClose = function() {
-    if (this.project.settings && this.project.settings.mrkdwn && this.project.settings.mrkdwn.fullyTranslated) {
-        var fileName = path.join(this.project.root, "translation-status.json");
-        fs.writeFileSync(fileName, JSON.stringify(this.fileInfo, undefined, 4), "utf-8");
-    }
 };
 
 module.exports = MrkdwnJsonFileType;
