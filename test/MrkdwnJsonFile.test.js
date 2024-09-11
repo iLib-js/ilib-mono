@@ -28,25 +28,13 @@ if (!MrkdwnJsonFile) {
     var ResourceString = require("loctool/lib/ResourceString.js");
 }
 
-function diff(a, b) {
-    var min = Math.min(a.length, b.length);
-    for (var i = 0; i < min; i++) {
-        if (a[i] !== b[i]) {
-            console.log("Found difference at character " + i);
-            console.log("a: " + a.substring(i));
-            console.log("b: " + b.substring(i));
-            break;
-        }
-    }
-}
 var p = new CustomProject({
     name: "foo",
     id: "foo",
     plugins: ["../."],
     sourceLocale: "en-US"
 }, "./test/testfiles", {
-    locales:["en-GB"],
-    targetDir: "./test/testfiles"
+    locales:["en-GB"]
 });
 
 var mdft = new MrkdwnJsonFileType(p);
@@ -59,7 +47,6 @@ var p2 = new CustomProject({
     plugins: ["../."]
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "./test/testfiles",
     identify: true
 });
 
@@ -71,7 +58,6 @@ var p3 = new CustomProject({
     plugins: ["../."]
 }, "./test/testfiles", {
     locales:["en-GB"],
-    targetDir: "./test/testfiles",
     nopseudo: true,
     mrkdwn: {
         mappings: {
@@ -95,16 +81,13 @@ var p3 = new CustomProject({
                 template: "[locale]/bar/[filename]"
             },
             "**/asdf.json": {
-                template: "[dir]/[locale]/bar/[filename]",
-                frontmatter: ["test"]
+                template: "[dir]/[locale]/bar/[filename]"
             },
             "**/x/*.json": {
-                template: "[dir]/[base]_[locale].json",
-                frontmatter: ["Title", "Description"]
+                template: "[dir]/[basename]_[locale].json"
             },
             "**/y/*.json": {
-                template: "[dir]/[locale]/[base].json",
-                frontmatter: true
+                template: "[dir]/[locale]/[basename].json"
             }
         }
     }
@@ -446,7 +429,7 @@ describe("mrkdwn", function() {
     });
 
     test("MrkdwnJsonFileParse text with multiline code snippet plus other text", function() {
-        expect.assertions(10);
+        expect.assertions(8);
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -462,14 +445,12 @@ describe("mrkdwn", function() {
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
-        expect(r.length).toBe(3);
+        expect(r.length).toBe(2);
 
-        expect(r[0].getSource()).toBe("Text before the code");
+        expect(r[0].getSource()).toBe("Text before the code\n\n<c0/>\n\nText after the code");
         expect(r[0].getKey()).toBe("id1");
-        expect(r[1].getSource()).toBe("Text after the code");
-        expect(r[1].getKey()).toBe("id1_1");
-        expect(r[2].getSource()).toBe("This is a test too");
-        expect(r[2].getKey()).toBe("id2");
+        expect(r[1].getSource()).toBe("This is a test too");
+        expect(r[1].getKey()).toBe("id2");
     });
 
     test("MrkdwnJsonFileParse non breaking links with no text", function() {
@@ -659,9 +640,9 @@ describe("mrkdwn", function() {
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
         // should only get the text inside the emphasis markers
-        var r = set.getBySource("This is a test of the emergency parsing system.");
+        var r = set.getBySource("<c0>This is a test of the emergency parsing system.</c0>");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test of the emergency parsing system.");
+        expect(r.getSource()).toBe("<c0>This is a test of the emergency parsing system.</c0>");
         expect(r.getKey()).toBe("id1");
     });
 
@@ -754,7 +735,6 @@ describe("mrkdwn", function() {
 
     test("MrkdwnJsonFileLocalizeText", function() {
         expect.assertions(2);
-debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -780,13 +760,11 @@ debugger;
             '{\n' +
             '    "id1": "Ceci est un essai"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
     test("MrkdwnJsonFileLocalizeText more complicated", function() {
         expect.assertions(2);
-debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -812,7 +790,6 @@ debugger;
             '{\n' +
             '    "id1": "Ceci *est* un essai"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -854,7 +831,6 @@ debugger;
             '    "id1": "Ceci *est* un essai",\n' +
             '    "id2": "Ceci est _aussi_ un essai"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -885,13 +861,11 @@ debugger;
             '{\n' +
             '    "id1": "Ceci est un <http://www.test.com/|essai> du système d\'analyse syntaxique de l\'urgence."\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
     test("MrkdwnJsonFileLocalizeText with multiple components nested in the same string", function() {
         expect.assertions(2);
-debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -917,13 +891,11 @@ debugger;
             '{\n' +
             '    "id1": "Ceci *est _un_ essai*"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
     test("MrkdwnJsonFileLocalizeText with multiple components switched order", function() {
         expect.assertions(2);
-debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -949,13 +921,11 @@ debugger;
             '{\n' +
             '    "id1": "Ceci _est_ *un* essai"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
     test("MrkdwnJsonFileLocalizeText with multiple components nested switching the nesting", function() {
         expect.assertions(2);
-debugger;
         var mjf = new MrkdwnJsonFile({
             project: p,
             type: mdft
@@ -981,7 +951,6 @@ debugger;
             '{\n' +
             '    "id1": "Ceci _est *un* essai_"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -1012,7 +981,6 @@ debugger;
             '{\n' +
             '    "id1": "Ceci est un `test` du système d\'analyse syntaxique de l\'urgence."\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -1023,7 +991,6 @@ debugger;
             type: mdft
         });
         expect(mjf).toBeTruthy();
-debugger;
         mjf.parse(
             '{\n' +
             '    "id1": "This is a <http://link.com> line",\n' +
@@ -1037,7 +1004,7 @@ debugger;
             '    "id9": "This is a _italic_ line",\n' +
             '    "id10": "This is a *bold* line",\n' +
             '    "id11": "This is a ~strikeout~ line",\n' +
-            '    "id12": "This is a ```\npretext\n```\n line",\n' +
+            '    "id12": "This is a ```\\npretext\\n```\\n line",\n' +
             '    "id13": "This is a :emoji: line",\n' +
             '    "id14": "This is a `code` line"\n' +
             '}\n'
@@ -1155,7 +1122,7 @@ debugger;
             new ResourceString({
                 project: "foo",
                 key: "id12",
-                source: "This is a <c0/> line",
+                source: "This is a <c0/>\\n line",
                 sourceLocale: "en-US",
                 target: "Ceci est un ligne avec <c0/>",
                 targetLocale: "fr-FR",
@@ -1194,7 +1161,7 @@ debugger;
             '    "id9": "Ceci est un ligne avec _italique_",\n' +
             '    "id10": "Ceci est un ligne avec *gras*",\n' +
             '    "id11": "Ceci est un ligne avec ~barré~",\n' +
-            '    "id12": "Ceci est un ligne avec ```\npretext\n```",\n' +
+            '    "id12": "Ceci est un ligne avec ```\\npretext\\n```",\n' +
             '    "id13": "Ceci est un ligne avec :emoji:",\n' +
             '    "id14": "Ceci est un ligne avec `code`"\n' +
             '}';
@@ -1209,6 +1176,7 @@ debugger;
             type: mdft
         });
         expect(mjf).toBeTruthy();
+
         mjf.parse(
             '{\n' +
             '    "id1": "*This is a test of the emergency parsing system.*"\n' +
@@ -1218,9 +1186,9 @@ debugger;
         translations.add(new ResourceString({
             project: "foo",
             key: "id1",
-            source: "This is a test of the emergency parsing system.",
+            source: "<c0>This is a test of the emergency parsing system.</c0>",
             sourceLocale: "en-US",
-            target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
+            target: "<c0>Ceci est un essai du système d'analyse syntaxique de l'urgence.</c0>",
             targetLocale: "fr-FR",
             datatype: "mrkdwn"
         }));
@@ -1229,7 +1197,6 @@ debugger;
             '{\n' +
             '    "id1": "*Ceci est un essai du système d\'analyse syntaxique de l\'urgence.*"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -1240,6 +1207,7 @@ debugger;
             type: mdft
         });
         expect(mjf).toBeTruthy();
+
         mjf.parse(
             '{\n' +
             '    "id1": "Delete the file with this command: `git rm filename`"\n' +
@@ -1262,7 +1230,6 @@ debugger;
             '{\n' +
             '    "id1": "Avec cette commande `git rm filename`, vous pouvez supprimer le fichier."\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -1273,6 +1240,7 @@ debugger;
             type: mdft
         });
         expect(mjf).toBeTruthy();
+
         mjf.parse(
             '{\n' +
             '    "id1": "This is a _test_ of the emergency parsing system."\n' +
@@ -1295,7 +1263,6 @@ debugger;
             '{\n' +
             '    "id1": "Ceci est un _essai_ du système d\'analyse syntaxique de l\'urgence."\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
@@ -1328,10 +1295,8 @@ debugger;
             '{\n' +
             '    "id1": "Ceci est un _essai_ du système d\'analyse  syntaxique de l\'urgence."\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
     });
-
 
     test("MrkdwnJsonFileGetLocalizedPathSimple", function() {
         expect.assertions(2);
@@ -1366,6 +1331,8 @@ debugger;
         expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
     });
 
+/*
+ re-enable when loctool is fixed
     test("MrkdwnJsonFileGetLocalizedPathNotEnoughParts", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
@@ -1374,8 +1341,10 @@ debugger;
             type: mdft3
         });
         expect(mjf).toBeTruthy();
+
         expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple");
     });
+*/
 
     test("MrkdwnJsonFileGetLocalizedPathAlreadyHasSourceLocale", function() {
         expect.assertions(2);
@@ -1432,6 +1401,18 @@ debugger;
         expect(mjf).toBeTruthy();
         expect(mjf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.json");
         expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.json");
+    });
+
+    test("MrkdwnJsonFileGetLocalizedPath default mapping", function() {
+        expect.assertions(3);
+        var mjf = new MrkdwnJsonFile({
+            project: p,
+            pathName: "a/b/c/test.json",
+            type: mdft
+        });
+        expect(mjf).toBeTruthy();
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("a/b/c/test_fr-FR.json");
+        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("a/b/c/test_zh-Hans-CN.json");
     });
 
     test("MrkdwnJsonFileLocalizeFile", function() {
@@ -1511,44 +1492,47 @@ debugger;
             datatype: "mrkdwn"
         }));
         mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p.target, "fr-FR/json/test1.json"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p.target, "de-DE/json/test1.json"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p.target, "fr-FR/json/test1.json"), "utf-8");
+        expect(fs.existsSync(path.join(p.target, "json/test1_fr-FR.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "json/test1_de-DE.json"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p.target, "json/test1_fr-FR.json"), "utf-8");
         var expected =
             '{\n' +
             '    "id1": "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
             '    "id2": "Ceci est du texte. C\'est plus de texte. Joli, joli texte.",\n' +
-            '    "id2": "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
+            '    "id3": "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
             '    "id4": "C\'est le dernier morceau de texte localisable."\n' +
             '}';
-        diff(content, expected);
         expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p.target, "de-DE/json/test1.json"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "json/test1_de-DE.json"), "utf-8");
         var expected =
             '{\n' +
             '    "id1": "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
             '    "id2": "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",\n' +
-            '    "id2": "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
+            '    "id3": "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
             '    "id4": "Dies ist der letzte Teil des lokalisierbaren Textes."\n' +
             '}';
-        diff(content, expected);
         expect(content).toBe(expected);
     });
 
     test("MrkdwnJsonFileLocalizeNoStrings", function() {
         expect.assertions(5);
         var base = path.dirname(module.id);
-
-        fs.unlinkSync(path.join(p.target, "fr-FR/json/nostrings.json"));
-        fs.unlinkSync(path.join(p.target, "de-DE/json/nostrings.json"));
         
-        expect(fs.existsSync(path.join(p.target, "fr-FR/json/nostrings.json"))).toBeFalsy();
-        expect(fs.existsSync(path.join(p.target, "de-DE/json/nostrings.json"))).toBeFalsy();
+        var frenchFile = path.join(p.target, "json/nostrings_fr-FR.json");
+        var germanFile = path.join(p.target, "json/nostrings_de-DE.json");
+        if (fs.existsSync(frenchFile)) {
+            fs.unlinkSync(frenchFile);
+        }
+        if (fs.existsSync(germanFile)) {
+            fs.unlinkSync(germanFile);
+        }
+        expect(fs.existsSync(frenchFile)).toBeFalsy();
+        expect(fs.existsSync(germanFile)).toBeFalsy();
 
         var mjf = new MrkdwnJsonFile({
-            project: p,
+            project: p3,
             pathName: "./json/nostrings.json",
-            type: mdft
+            type: mdft3
         });
         expect(mjf).toBeTruthy();
         // should read the file
@@ -1570,10 +1554,11 @@ debugger;
             targetLocale: "de-DE",
             datatype: "mrkdwn"
         }));
+debugger;
         mjf.localize(translations, ["fr-FR", "de-DE"]);
         // should produce the files, even if there is nothing to localize in them
-        expect(fs.existsSync(path.join(p.target, "fr-FR/json/nostrings.json"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p.target, "de-DE/json/nostrings.json"))).toBeTruthy();
+        expect(fs.existsSync(frenchFile)).toBeTruthy();
+        expect(fs.existsSync(germanFile)).toBeTruthy();
     });
 
     test("MrkdwnJsonFileExtractFile get the right new resources", function() {
@@ -1602,9 +1587,8 @@ debugger;
             '{\n' +
             '    "id1": "Choisissez une méthode de réunion d\'affaires",\n' +
             '    "id2": "[Ťëšţ þĥŕàšë543210]",\n' +
-            '    "id3": "[Ïñ Pëŕšõñ Mõðë6543210]"\n'
+            '    "id3": "[Ïñ Pëŕšõñ Mõðë6543210]"\n' +
             '}';
-        diff(actual, expected);
         expect(actual).toBe(expected);
         var set = t.newres;
         var resources = set.getAll();

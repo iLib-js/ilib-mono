@@ -389,7 +389,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
                 this.message.push({
                     name: node.type,
                     node: node
-                });
+                }, true);
                 node.children.forEach(function(child) {
                     this._walk(key, child);
                 }.bind(this));
@@ -401,11 +401,6 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
             }
             break;
 
-        case NodeType.PreText:
-            // ignore any text inside of preformatted text
-            this._emitText(node, key);
-            break;
-
         case NodeType.ChannelLink:
         case NodeType.UserLink:
         case NodeType.Command:
@@ -413,7 +408,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
             this.message.push({
                 name: node.type,
                 node: node
-            });
+            }, true);
             node.label && node.label.forEach(function(child) {
                 this._walk(key, child);
             }.bind(this));
@@ -424,13 +419,14 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
             })) || true;
             break;
 
+        case NodeType.PreText:
         case NodeType.Emoji:
         case NodeType.Code:
             // we never localize code or emojis but we need to hold its place in the string
             this.message.push({
                 name: node.type,
                 node: node
-            });
+            }, true);
             node.localizable = true;
             this.message.pop();
             break;
@@ -687,7 +683,7 @@ MrkdwnJsonFile.prototype.stringifyAstNode = function(node, children, args, label
 
         case NodeType.UserLink:
             ret += "<@" +
-                node.userId +
+                node.userID +
                 (label ? "|" + label : "") +
                 ">";
             break;
@@ -750,7 +746,11 @@ MrkdwnJsonFile.prototype.stringify = function(nodes) {
                     if (node.extra && node.extra.node) {
                         var astNode = node.extra.node;
                         var children = node.children && this.stringify(node.children);
-                        ret += this.stringifyAstNode(astNode, children, astNode.arguments, children);
+                        ret += this.stringifyAstNode(astNode, children, astNode.arguments && astNode.arguments.join("^"), children);
+                    } else {
+                        // a component that does not exist in the source?
+                        // just render its children
+                        ret += this.stringify(node.children);
                     }
                     break;
             }

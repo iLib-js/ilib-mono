@@ -59,10 +59,10 @@ var MrkdwnJsonFileType = function(project) {
 
 var defaultMappings = {
     "**/*.json": {
-        template: "[dir]/[filename]_[locale].json"
+        template: "[dir]/[basename]_[locale].json"
     },
     "**/*.jsn": {
-        template: "[dir]/[filename]_[locale].jsn"
+        template: "[dir]/[basename]_[locale].jsn"
     }
 };
 
