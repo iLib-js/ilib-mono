@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
+var Locale = require("ilib/lib/Locale.js");
 var path = require("path");
 var mm = require("micromatch");
 var MrkdwnJsonFile = require("./MrkdwnJsonFile.js");
@@ -49,11 +49,6 @@ var MrkdwnJsonFileType = function(project) {
     // for use with missing strings
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
-    }
-
-    this.fileInfo = {
-        translated: [],
-        untranslated: []
     }
 };
 
@@ -148,7 +143,8 @@ MrkdwnJsonFileType.prototype.handles = function(pathName) {
                 if (ret) {
                     for (var i = 0; i < patterns.length; i++) {
                         var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
-                        if (locale && locale !== this.project.sourceLocale) {
+                        var loc = new Locale(locale);
+                        if (locale && loc.isValid() && locale !== this.project.sourceLocale) {
                             ret = false;
                             break;
                         }

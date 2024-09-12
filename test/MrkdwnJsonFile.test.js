@@ -357,7 +357,7 @@ describe("mrkdwn", function() {
     });
 
     /*
-    slack parser library does not support blockquotes
+    slack parser library does not support blockquotes yet
     test("MrkdwnJsonFileParse text with a blockquote in the middle of it", function() {
         expect.assertions(10);
 
@@ -1517,7 +1517,7 @@ describe("mrkdwn", function() {
     test("MrkdwnJsonFileLocalizeNoStrings", function() {
         expect.assertions(5);
         var base = path.dirname(module.id);
-        
+
         var frenchFile = path.join(p.target, "json/nostrings_fr-FR.json");
         var germanFile = path.join(p.target, "json/nostrings_de-DE.json");
         if (fs.existsSync(frenchFile)) {
