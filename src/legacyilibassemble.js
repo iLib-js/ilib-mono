@@ -302,7 +302,7 @@ function assembleLocale() {
     for (let loc in result) {
         let contents = "";
         for(let keys in result[loc]){
-            contents += keys + " = " + JSON.stringify(result[loc][keys]) + "\n";
+            contents += keys + " = " + JSON.stringify(result[loc][keys]) + ";\n";
         }
         console.log("writing " + outDir + "/"+ loc + ".js file.");
         let resultFilePath = path.join(outDir, loc + ".js");
