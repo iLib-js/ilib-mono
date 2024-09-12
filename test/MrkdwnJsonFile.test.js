@@ -1331,8 +1331,6 @@ describe("mrkdwn", function() {
         expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
     });
 
-/*
- re-enable when loctool is fixed
     test("MrkdwnJsonFileGetLocalizedPathNotEnoughParts", function() {
         expect.assertions(2);
         var mjf = new MrkdwnJsonFile({
@@ -1342,9 +1340,8 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
 
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple_fr-FR.json");
     });
-*/
 
     test("MrkdwnJsonFileGetLocalizedPathAlreadyHasSourceLocale", function() {
         expect.assertions(2);
