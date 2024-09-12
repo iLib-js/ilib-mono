@@ -79,7 +79,7 @@ const optionConfig = {
     legacyilib: {
         short: "o",
         flag: true,
-        help: "Assemble data for the legacy version of ilib"
+        help: "Assemble data for the legacy version of ilib."
     },
     ilibPath: {
         short: "i",
@@ -94,6 +94,11 @@ const optionConfig = {
         short: "n",
         "default": "ilib-all.js",
         help: "Specify the resulting assembled output file name for legacy ilib assembly."
+    },
+    customLocalePath: {
+        short: "p",
+        "default" : undefined,
+        help: "Specify the path to customized locale data that overrides existing open-source locale data."
     }
 };
 

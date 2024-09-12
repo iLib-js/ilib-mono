@@ -21,6 +21,7 @@ import fs from 'fs';
 import path from 'path';
 import Locale from 'ilib-locale';
 import UglifyJS from 'uglify-js-export';
+import { JSUtils } from 'ilib-common';
 
 let ilibPath;
 let incPath;
@@ -28,6 +29,7 @@ let outDir;
 let locales;
 let outFileName;
 let isCompressed;
+let customPath;
 let jsFileList = [];
 let allJSList = [];
 
@@ -41,6 +43,7 @@ function assembleilib(options) {
     outDir = options.args[0];
     outFileName = options.opt.outjsFileName || "ilib-all.js";
     isCompressed = options.opt.compressed || false;
+    customPath = options.opt.customLocalePath;
     readIncFile(incPath);
     readJSFiles();
 }
@@ -105,7 +108,7 @@ function readJSFiles() {
     allJSList = [...new Set([...jsFileList, ...dependentJS])];
 
     assemblejs();
-    assemblelocale();
+    assembleLocale();
 }
 
 function deletePatterns(data) {
@@ -183,53 +186,100 @@ function assemblejs() {
     }
 }
 
-let outFile = {};
-function assemblelocale() {
-    let iliblocalePath = path.join(ilibPath, "js/data/locale");
+function assembleData(dataPath, allData){
+    let outFile  = allData;
+    let jsonPath;
+    let key = '';
+    let orgData;
+    let parseData;
+    let readData;
+    let mergeData;
     locales.forEach(function(loc){
         let lo = new Locale(loc);
-        let lang = lo.language;
-        let script = lo.script;
-        let region = lo.region;
+        let lang = lo.getLanguage();
+        let script = lo.getScript();
+        let region = lo.getRegion();
 
-        let jsonPath;
-        let readData;
         dependentData.forEach(function(jsonName) {
             if (outFile[lang] == undefined) {
                 outFile[lang] = {};
             }
 
             if (lang) {
-                jsonPath = path.join(iliblocalePath, lang, jsonName + ".json");
+                jsonPath = path.join(dataPath, lang, jsonName + ".json");
                 readData = readFile(jsonPath);
-                if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang] = readData;
+
+                if (readData) {
+                    key = "ilib.data." + jsonName + "_" + lang;
+                    orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                    parseData = JSON.parse(readData);
+                    mergeData = JSUtils.merge(orgData, parseData, true);
+                    outFile[lang][key] = mergeData;
+                }
 
                 if (script) {
-                    jsonPath = path.join(iliblocalePath, lang, script, jsonName + ".json");
+                    jsonPath = path.join(dataPath, lang, script, jsonName + ".json");
                     readData = readFile(jsonPath);
-                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script] = readData;
+                    if (readData) {
+                        key = "ilib.data." + jsonName + "_" + lang + "_" + script;
+                        orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                        parseData = JSON.parse(readData);
+                        mergeData = JSUtils.merge(orgData, parseData, true);
+                        outFile[lang][key] = mergeData;
+                    }
 
                     if (region) {
-                        jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
+                        jsonPath = path.join(dataPath, lang, region, jsonName + ".json");
                         readData = readFile(jsonPath);
-                        if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
 
-                        jsonPath = path.join(iliblocalePath, lang, script, region, jsonName + ".json");
-                        readData = readFile(jsonPath);
-                        if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region] = readData;
+                        if (readData) {
+                            key = "ilib.data." + jsonName + "_" + lang + "_" + region;
+                            orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                            parseData = JSON.parse(readData);
+                            mergeData = JSUtils.merge(orgData, parseData, true);
+                            outFile[lang][key] = mergeData;
+                        }
 
-                        jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
+                        jsonPath = path.join(dataPath, lang, script, region, jsonName + ".json");
                         readData = readFile(jsonPath);
-                        if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                        if (readData) {
+                            key = "ilib.data." + jsonName + "_" + lang + "_" + script + "_" + region;
+                            orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                            parseData = JSON.parse(readData);
+                            mergeData = JSUtils.merge(orgData, parseData, true);
+                            outFile[lang][key] = mergeData;
+                        }
+
+                        jsonPath = path.join(dataPath, "und", region, jsonName + ".json");
+                        readData = readFile(jsonPath);
+                        if (readData) {
+                            key = "ilib.data." + jsonName + "_und_" + region;
+                            orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                            parseData = JSON.parse(readData);
+                            mergeData = JSUtils.merge(orgData, parseData, true);
+                            outFile[lang][key] = mergeData;
+                        }
                     }
                 } else if (region) {
-                    jsonPath = path.join(iliblocalePath, lang, region, jsonName + ".json");
+                    jsonPath = path.join(dataPath, lang, region, jsonName + ".json");
                     readData = readFile(jsonPath);
-                    if (readData) outFile[lang]["ilib.data." + jsonName + "_" + lang + "_" + region] = readData;
+                    if (readData) {
+                        key = "ilib.data." + jsonName + "_" + lang + "_" + region;
+                        orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                        parseData = JSON.parse(readData);
+                        mergeData = JSUtils.merge(orgData, parseData, true);
+                        outFile[lang][key] = mergeData;
+                    }
 
-                    jsonPath = path.join(iliblocalePath, "und", region, jsonName + ".json");
+                    jsonPath = path.join(dataPath, "und", region, jsonName + ".json");
                     readData = readFile(jsonPath);
-                    if (readData) outFile[lang]["ilib.data." + jsonName + "_und_" + region] = readData;
+                    if (readData) {
+                        key = "ilib.data." + jsonName + "_und_" + region;
+                        orgData = ((outFile[lang][key]) != undefined) ? outFile[lang][key] : {};
+                        parseData = JSON.parse(readData);
+                        mergeData = JSUtils.merge(orgData, parseData, true);
+                        outFile[lang][key] = mergeData;
+                    }
                 }
             } else {
                 console.log("The locale " + lo.getSpec() +  " is missing language code.");
@@ -237,10 +287,22 @@ function assemblelocale() {
         });
     });
 
-    for (let loc in outFile) {
+    return outFile;
+}
+
+
+function assembleLocale() {
+    let result = {};
+    result = assembleData(path.join(ilibPath, "js/data/locale"), result);
+
+    if (customPath) {
+        result = assembleData(customPath, result);
+    }
+
+    for (let loc in result) {
         let contents = "";
-        for(let keys in outFile[loc]){
-            contents += keys + " = " + outFile[loc][keys] + "\n";
+        for(let keys in result[loc]){
+            contents += keys + " = " + JSON.stringify(result[loc][keys]) + ";\n";
         }
         console.log("writing " + outDir + "/"+ loc + ".js file.");
         let resultFilePath = path.join(outDir, loc + ".js");
