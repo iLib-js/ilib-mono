@@ -192,11 +192,11 @@ MrkdwnJsFile.prototype.isTranslatable = function(str) {
  * attach it to the given node.
  *
  * @param {Node} node the node to localize
- * @param {boolean} escape true if you want the translated
- * text to be escaped for attribute values
+ * @param {string} key the key for the resource
+ * @param {string} comment a comment to associate with the resource
  * @private
  */
-MrkdwnJsFile.prototype._emitText = function(node, key, escape) {
+MrkdwnJsFile.prototype._emitText = function(node, key, comment) {
     if (!this.message.getTextLength()) {
         this.message = new MessageAccumulator();
         return;
@@ -207,7 +207,7 @@ MrkdwnJsFile.prototype._emitText = function(node, key, escape) {
     this.logger.trace('text using message accumulator is: ' + text);
 
     if (this.isTranslatable(text)) {
-        var res = this._addTransUnit(key, text, this.comment);
+        var res = this._addTransUnit(key, text, comment);
         // store the resource and the message accumulator on the node
         // for later use when localizing
         if (res) {
@@ -215,7 +215,7 @@ MrkdwnJsFile.prototype._emitText = function(node, key, escape) {
             node.message = this.message;
         }
     }
-    this.comment = undefined;
+
     this.message = new MessageAccumulator();
 };
 
@@ -300,10 +300,11 @@ MrkdwnJsFile.prototype._walk = function(key, node) {
  * this key as a prefix, followed by an underscore, followed by
  * a unique number for the substring.
  * @param {string} str the string to parse
+ * @param {string} comment a comment to associate with the resource
  * @returns {Node} The root node of the abstract syntax tree that
  * represents the parsed string.
  */
-MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str) {
+MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str, comment) {
     // accumulates characters in text segments
     this.message = new MessageAccumulator();
     this.subkey = 0;
@@ -313,10 +314,13 @@ MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str) {
     this._walk(key, ast);
 
     // in case any is left over at the end
-    this._emitText(ast, key);
+    this._emitText(ast, key, comment);
 
     return ast;
 };
+
+var commentRe = /^\s*\/\/(.*)$/g;
+var lineRe = /^\s*"([^"]*)"\s*:\s*"([^"]*)"\s*,?$/g;
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -328,18 +332,28 @@ MrkdwnJsFile.prototype.parse = function(data) {
     this.resourceIndex = 0;
 
     try {
-        // use json5 parse because is more flexible and allows for things like comments and such
-        var json = JSON5.parse(data);
-        var ids = Object.keys(json);
+        var lines = data.split("\n");
         this.contents = {};
-        ids.forEach(function(key) {
-            var value = json[key];
-            // value is the original string
-            // also remember the ast for when we localize the file later
-            this.contents[key] = {
-                value: value,
-                ast: this.parseMrkdwnString(key, value)
-            };
+        var lastComment;
+        lines.forEach(function(line) {
+            var match = commentRe.exec(line);
+            if (match) {
+                lastComment = match[1];
+                return;
+            }
+
+            match = lineRe.exec(line);
+            if (match) {
+                var key = match[1];
+                var value = match[2];
+                contents[key] = {
+                    value: value,
+                    comment: lastComment,
+                    ast: this.parseMrkdwnString(key, value, lastComment)
+                };
+            }
+
+            // else ignore the line
         }.bind(this));
     } catch (e) {
         this.logger.error("Failed to parse file " + this.pathName + "\nException: " + e);
@@ -480,17 +494,6 @@ MrkdwnJsFile.prototype.localizeString = function(key, source, locale, translatio
     }
 
     return translation;
-};
-
-/**
- * @private
- */
-MrkdwnJsFile.prototype._addComment = function(comment) {
-    if (!this.comment) {
-        this.comment = comment;
-    } else {
-        this.comment += " " + comment;
-    }
 };
 
 /**
@@ -707,7 +710,14 @@ MrkdwnJsFile.prototype.localizeText = function(translations, locale) {
         localized[key] = this.walkAst(ast, locale, translations);
     }
 
-    return JSON.stringify(localized, null, 4);
+    var output;
+    if (!this.project.settings || this.project.settings.outputStyle === "commonjs") {
+        output = "module.exports = ";
+    } else {
+        output = "export default messages = ";
+    }
+    output += JSON.stringify(localized, null, 4) + ";\n";
+    return output;
 };
 
 /**

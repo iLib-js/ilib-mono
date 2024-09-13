@@ -118,6 +118,28 @@ The localeMap setting specifies the mapping between locales that are used
 internally in the plugin, and the output locale that should be used for constructing
 the file name of output files.
 
+## Output Style
+
+The output style of js file can be controlled via the `outputStyle` setting. This setting
+allows you to output the localized strings in commonjs format or as an ESM module.
+
+Example configuration in your loctool config file:
+
+```json
+{
+    [...]
+    "settings": {
+        "mrkdwn": {
+            "outputStyle": "esm"
+        }
+    }
+}
+```
+
+Valid values for the `outputStyle` setting are:
+- `commonjs`
+- `esm` (default)
+
 ## License
 
 This plugin is licensed under Apache2. See the [LICENSE](./LICENSE)

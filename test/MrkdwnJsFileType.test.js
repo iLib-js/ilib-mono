@@ -95,7 +95,7 @@ describe("mrkdwnfiletype", function() {
         expect.assertions(2);
         var mdjft = new MrkdwnJsFileType(p);
         expect(mdjft).toBeTruthy();
-        expect(mdjft.handles("foo.jsn")).toBeTruthy();
+        expect(mdjft.handles("foo.jsn")).toBeFalsy();
     });
 
     test("MrkdwnJsFileTypeHandlesMrkdwn", function() {

@@ -133,10 +133,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -154,10 +154,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -175,8 +175,8 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
-            '}\n'
+            'export default messages = {\n' +
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -193,9 +193,9 @@ describe("mrkdwn", function() {
         var set = mjf.getTranslationSet();
         expect(set.size()).toBe(0);
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test"\n' +
-            '}\n'
+            '};\n'
         );
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -209,10 +209,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -234,10 +234,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a *test* of the emergency parsing system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         mjf.parse('This is a *test* of the emergency parsing system.\n');
         var set = mjf.getTranslationSet();
@@ -256,10 +256,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a _test_ of the emergency parsing system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         mjf.parse('This is a *test* of the emergency parsing system.\n');
         var set = mjf.getTranslationSet();
@@ -278,10 +278,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a ~test~ of the emergency parsing system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         mjf.parse('This is a *test* of the emergency parsing system.\n');
         var set = mjf.getTranslationSet();
@@ -300,10 +300,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This _is a *test* of the emergency parsing_ system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -321,10 +321,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This _is a *test* of the_ *emergency parsing* system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -343,10 +343,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the\\nemergency parsing system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -367,10 +367,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is text\\n> This is quoted text\\n>This is still quoted\\nThis is unquoted.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -395,10 +395,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "The expression `E = mc^2` was Einstein\\\'s greatest achievement",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -416,10 +416,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "```\n  const x = obj.getX();\n  console.log(x);\n```\n",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -436,10 +436,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Text before the code\\n\\n```\\n  const x = obj.getX();\\n  console.log(x);\\n```\\n\\nText after the code",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -461,10 +461,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <http://foo.com/bar/asdf.html> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -482,10 +482,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <http://foo.com/bar/asdf.html|emergency parsing> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -503,10 +503,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <#parsing_channel> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -524,10 +524,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <#C234AF56> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -545,10 +545,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <!here> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -568,10 +568,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the :emergency: system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -589,10 +589,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <!date^1392734382^Posted {date_num} {time_secs}> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -610,10 +610,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test of the <!date^1392734382^Posted {date_num} {time_secs}|emergency> system.",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         var set = mjf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -631,10 +631,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "*This is a test of the emergency parsing system.*",\n' +
             '    "id2": "This is a test too"\n' +
-            '}\n'
+            '};\n'
         );
         mjf.parse('*This is a test of the emergency parsing system.*\n');
         var set = mjf.getTranslationSet();
@@ -741,9 +741,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a test",\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -757,9 +757,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est un essai"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -771,9 +771,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This *is* a test",\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -787,9 +787,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci *est* un essai"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -801,10 +801,10 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This *is* a test",\n' +
             '    "id2": "This is _also_ a test"\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -827,10 +827,10 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci *est* un essai",\n' +
             '    "id2": "Ceci est _aussi_ un essai"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -842,9 +842,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a <http://www.test.com/|test> of the emergency parsing system."\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -858,9 +858,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est un <http://www.test.com/|essai> du système d\'analyse syntaxique de l\'urgence."\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -872,9 +872,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This *is _a_ test*",\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -888,9 +888,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci *est _un_ essai*"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -902,9 +902,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This *is* _a_ test",\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -918,9 +918,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci _est_ *un* essai"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -932,9 +932,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This *is _a_ test*",\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -948,9 +948,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci _est *un* essai_"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -962,9 +962,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a `test` of the emergency parsing system."\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -978,9 +978,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est un `test` du système d\'analyse syntaxique de l\'urgence."\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -992,7 +992,7 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a <http://link.com> line",\n' +
             '    "id2": "This is a <http://link.com|label> line",\n' +
             '    "id3": "This is a <@user> line",\n' +
@@ -1007,7 +1007,7 @@ describe("mrkdwn", function() {
             '    "id12": "This is a ```\\npretext\\n```\\n line",\n' +
             '    "id13": "This is a :emoji: line",\n' +
             '    "id14": "This is a `code` line"\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.addAll([
@@ -1149,7 +1149,7 @@ describe("mrkdwn", function() {
         ]);
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est un link <http://link.com>",\n' +
             '    "id2": "Ceci est un link avec <http://link.com|un nom>",\n' +
             '    "id3": "Ceci est un ligne <@user>",\n' +
@@ -1164,7 +1164,7 @@ describe("mrkdwn", function() {
             '    "id12": "Ceci est un ligne avec ```\\npretext\\n```",\n' +
             '    "id13": "Ceci est un ligne avec :emoji:",\n' +
             '    "id14": "Ceci est un ligne avec `code`"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -1178,9 +1178,9 @@ describe("mrkdwn", function() {
         expect(mjf).toBeTruthy();
 
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "*This is a test of the emergency parsing system.*"\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         translations.add(new ResourceString({
@@ -1194,9 +1194,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "*Ceci est un essai du système d\'analyse syntaxique de l\'urgence.*"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -1209,9 +1209,9 @@ describe("mrkdwn", function() {
         expect(mjf).toBeTruthy();
 
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Delete the file with this command: `git rm filename`"\n' +
-            '}\n'
+            '};\n'
         );
         // should not optimize out inline code at the end of strings so that it can be
         // part of the text that is translated
@@ -1227,9 +1227,9 @@ describe("mrkdwn", function() {
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Avec cette commande `git rm filename`, vous pouvez supprimer le fichier."\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -1242,9 +1242,9 @@ describe("mrkdwn", function() {
         expect(mjf).toBeTruthy();
 
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a _test_ of the emergency parsing system."\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         // there is no c1 in the source, so this better not throw an exception
@@ -1260,9 +1260,9 @@ describe("mrkdwn", function() {
         // Should ignore the c1 as if it weren't there
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est un _essai_ du système d\'analyse syntaxique de l\'urgence."\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -1274,9 +1274,9 @@ describe("mrkdwn", function() {
         });
         expect(mjf).toBeTruthy();
         mjf.parse(
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "This is a _test_ of the emergency parsing system."\n' +
-            '}\n'
+            '};\n'
         );
         var translations = new TranslationSet();
         // there is no c1 in the source, so this better not throw an exception
@@ -1292,9 +1292,9 @@ describe("mrkdwn", function() {
         // Should ignore the c1 as if it weren't there
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est un _essai_ du système d\'analyse  syntaxique de l\'urgence."\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
     });
 
@@ -1493,21 +1493,21 @@ describe("mrkdwn", function() {
         expect(fs.existsSync(path.join(p.target, "js/test1_de-DE.js"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p.target, "js/test1_fr-FR.js"), "utf-8");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
             '    "id2": "Ceci est du texte. C\'est plus de texte. Joli, joli texte.",\n' +
             '    "id3": "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
             '    "id4": "C\'est le dernier morceau de texte localisable."\n' +
-            '}';
+            '};\n';
         expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p.target, "js/test1_de-DE.js"), "utf-8");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
             '    "id2": "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",\n' +
             '    "id3": "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
             '    "id4": "Dies ist der letzte Teil des lokalisierbaren Textes."\n' +
-            '}';
+            '};\n';
         expect(content).toBe(expected);
     });
 
@@ -1581,11 +1581,11 @@ debugger;
         }));
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
-            '{\n' +
+            'export default messages = {\n' +
             '    "id1": "Choisissez une méthode de réunion d\'affaires",\n' +
             '    "id2": "[Ťëšţ þĥŕàšë543210]",\n' +
             '    "id3": "[Ïñ Pëŕšõñ Mõðë6543210]"\n' +
-            '}';
+            '};\n';
         expect(actual).toBe(expected);
         var set = t.newres;
         var resources = set.getAll();
