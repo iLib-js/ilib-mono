@@ -57,12 +57,13 @@
     },
     "dependencies": {
         "ilib-tree-node": "^2.0.0",
+        "json5": "^2.2.3",
         "message-accumulator": "^3.0.0",
-        "micromatch": "^4.0.7",
+        "micromatch": "^4.0.8",
         "slack-message-parser": "^3.0.2"
     },
     "devDependencies": {
         "jest": "^26.0.0",
-        "loctool": "^2.25.0"
+        "loctool": "^2.25.2"
     }
 }

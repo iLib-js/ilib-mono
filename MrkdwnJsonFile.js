@@ -21,7 +21,6 @@
 var fs = require("fs");
 var path = require("path");
 var MessageAccumulator = require("message-accumulator");
-var TreeNode = require("ilib-tree-node");
 var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
@@ -29,59 +28,11 @@ var JSON5 = require("json5");
 var SMP = require("slack-message-parser");
 
 var slackParser = SMP.parse;
-var Node = SMP.Node;
 var NodeType = SMP.NodeType;
 
 // load the data for these
 isAlnum._init();
 isIdeo._init();
-
-function escapeQuotes(str) {
-    var ret = "";
-    if (str.length < 1) {
-        return '';
-    }
-    var inQuote = false;
-
-    for (var i = 0; i < str.length; i++) {
-        switch (str[i]) {
-        case '"':
-            if (inQuote) {
-                if (i+1 < str.length-1 && str[i+1] !== '\n') {
-                    ret += '\\';
-                }
-            } else {
-                inQuote = true;
-            }
-            ret += '"';
-            break;
-        case '\n':
-            inQuote = false;
-            ret += '\n';
-            break;
-        case '\\':
-            if (i+1 < str.length-1) {
-                i++;
-                if (str[i] === '[') {
-                    ret += str[i];
-                } else {
-                    ret += '\\';
-                    if (str[i] !== '\\') {
-                        ret += str[i];
-                    }
-                }
-            } else {
-                ret += '\\';
-            }
-            break;
-        default:
-            ret += str[i];
-            break;
-        }
-    }
-
-    return ret;
-};
 
 /**
  * Unescape the given string and return it unescaped.
@@ -102,36 +53,6 @@ function unescape(str) {
        replace(/\\t/g, "\t").
        replace(/\\'/g, "'").
        replace(/\\"/g, '"');
-}
-
-/**
- * Escape the given string and return it escaped. This
- * prepares the string for use as a value in a json
- * file. This function will escape newlines, tabs,
- * single quote, and double quote chars.
- *
- * @param {string} str the string to escape
- * @returns {string} the escaped string
- */
-function escape(str) {
-    return str.
-        replace(/\n/g, "\\n").
-        replace(/\t/g, "\\t").
-        replace(/'/g, "\\'").
-        replace(/"/g, '\\"');
-}
-
-/**
- * Deep copy the given object. This is a simple deep copy
- * that works only with objects that can be serialized to
- * JSON. This is used to make a deep copy of the options
- * object so that the original is not modified.
- *
- * @param {Object} obj the object to copy
- * @returns {Object} a deep copy of the given object
- */
-function deepCopy(obj) {
-    return JSON5.parse(JSON5.stringify(obj));
 }
 
 /**
@@ -171,62 +92,6 @@ var MrkdwnJsonFile = function(options) {
         });
     }
 };
-
-/**
- * Unescape the string to make the same string that would be
- * in memory in the target programming language. This includes
- * unescaping both special and Unicode characters.
- *
- * @static
- * @param {String} string the string to unescape
- * @returns {String} the unescaped string
- */
-MrkdwnJsonFile.unescapeString = function(string) {
-    var unescaped = string;
-
-    unescaped = unescaped.
-        replace(/^\\\\/g, "\\").
-        replace(/([^\\])\\\\/g, "$1\\").
-        replace(/\\(.)/g, "$1");
-
-    return unescaped;
-};
-
-/**
- * Clean the string to make a source string. This means
- * removing leading and trailing white space, compressing
- * whitespaces, and unescaping characters. This changes
- * the string from what it looks like in the source
- * code, but it increases the matching between strings
- * that only differ in ways that don't matter.
- *
- * @static
- * @param {String} string the string to clean
- * @returns {String} the cleaned string
- */
-MrkdwnJsonFile.cleanString = function(string) {
-    var unescaped = MrkdwnJsonFile.unescapeString(string);
-
-    unescaped = unescaped.
-        replace(/[ \n\t\r\f]+/g, " ").
-        trim();
-
-    return unescaped;
-};
-
-/**
- * Make a new key for the given string.
- *
- * @private
- * @param {String} source the source string to make a resource
- * key for
- * @returns {String} a unique key for this string
- */
-MrkdwnJsonFile.prototype.makeKey = function(source) {
-    return this.API.utils.hashKey(MrkdwnJsonFile.cleanString(source));
-};
-
-var reWholeTag = /<("(\\"|[^"])*"|'(\\'|[^'])*'|[^>])*>/g;
 
 /**
  * If there is text in the given string, create a new resource
@@ -341,7 +206,7 @@ MrkdwnJsonFile.prototype._emitText = function(node, key, escape) {
 
     this.logger.trace('text using message accumulator is: ' + text);
 
-    if (this.message.isTranslatable || this.isTranslatable(text)) {
+    if (this.isTranslatable(text)) {
         var res = this._addTransUnit(key, text, this.comment);
         // store the resource and the message accumulator on the node
         // for later use when localizing
@@ -349,14 +214,6 @@ MrkdwnJsonFile.prototype._emitText = function(node, key, escape) {
             node.resource = res;
             node.message = this.message;
         }
-        var prefixes = this.message.getPrefix();
-        var suffixes = this.message.getSuffix();
-
-        prefixes.concat(suffixes).forEach(function(end) {
-            if (typeof(end) === "object") {
-                end.localizable = false;
-            }
-        });
     }
     this.comment = undefined;
     this.message = new MessageAccumulator();
@@ -364,7 +221,7 @@ MrkdwnJsonFile.prototype._emitText = function(node, key, escape) {
 
 /**
  * @private
- * Walk the tree looking for localizable text.
+ * Walk the tree collecting localizable text.
  * @param {AST} node the current node of an abstract syntax tree to
  * walk.
  */
@@ -376,8 +233,6 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
             // or if this text contains anything that is not whitespace
             if (this.message.getTextLength() > 0 || parts.text) {
                 this.message.addText(node.text);
-                this.message.isTranslatable = this.localizeLinks;
-                node.localizable = true;
             }
             break;
 
@@ -389,21 +244,12 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
                 this.message.push({
                     name: node.type,
                     node: node
-                });
+                }, true);
                 node.children.forEach(function(child) {
                     this._walk(key, child);
                 }.bind(this));
                 this.message.pop();
-
-                node.localizable = node.children.every(function(child) {
-                    return child.localizable;
-                });
             }
-            break;
-
-        case NodeType.PreText:
-            // ignore any text inside of preformatted text
-            this._emitText(node, key);
             break;
 
         case NodeType.ChannelLink:
@@ -413,25 +259,21 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
             this.message.push({
                 name: node.type,
                 node: node
-            });
+            }, true);
             node.label && node.label.forEach(function(child) {
                 this._walk(key, child);
             }.bind(this));
             this.message.pop();
-
-            node.localizable = (node.label && node.label.every(function(child) {
-                return child.localizable;
-            })) || true;
             break;
 
+        case NodeType.PreText:
         case NodeType.Emoji:
         case NodeType.Code:
             // we never localize code or emojis but we need to hold its place in the string
             this.message.push({
                 name: node.type,
                 node: node
-            });
-            node.localizable = true;
+            }, true);
             this.message.pop();
             break;
 
@@ -687,7 +529,7 @@ MrkdwnJsonFile.prototype.stringifyAstNode = function(node, children, args, label
 
         case NodeType.UserLink:
             ret += "<@" +
-                node.userId +
+                node.userID +
                 (label ? "|" + label : "") +
                 ">";
             break;
@@ -750,7 +592,11 @@ MrkdwnJsonFile.prototype.stringify = function(nodes) {
                     if (node.extra && node.extra.node) {
                         var astNode = node.extra.node;
                         var children = node.children && this.stringify(node.children);
-                        ret += this.stringifyAstNode(astNode, children, astNode.arguments, children);
+                        ret += this.stringifyAstNode(astNode, children, astNode.arguments && astNode.arguments.join("^"), children);
+                    } else {
+                        // a component that does not exist in the source?
+                        // just render its children
+                        ret += this.stringify(node.children);
                     }
                     break;
             }
@@ -888,12 +734,6 @@ MrkdwnJsonFile.prototype.localize = function(translations, locales) {
 
                 fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
             }
-
-            this.type.addTranslationStatus({
-                path: pathName,
-                locale: locales[i],
-                fullyTranslated: this.translationStatus[locales[i]]
-            });
         }
     }
 };

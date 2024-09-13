@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
+var Locale = require("ilib/lib/Locale.js");
 var path = require("path");
 var mm = require("micromatch");
 var MrkdwnJsonFile = require("./MrkdwnJsonFile.js");
@@ -50,19 +50,14 @@ var MrkdwnJsonFileType = function(project) {
     if (!project.settings.nopseudo) {
         this.missingPseudo = this.API.getPseudoBundle(project.pseudoLocale, this, project);
     }
-
-    this.fileInfo = {
-        translated: [],
-        untranslated: []
-    }
 };
 
 var defaultMappings = {
     "**/*.json": {
-        template: "[dir]/[filename]_[locale].json"
+        template: "[dir]/[basename]_[locale].json"
     },
     "**/*.jsn": {
-        template: "[dir]/[filename]_[locale].jsn"
+        template: "[dir]/[basename]_[locale].jsn"
     }
 };
 
@@ -148,7 +143,8 @@ MrkdwnJsonFileType.prototype.handles = function(pathName) {
                 if (ret) {
                     for (var i = 0; i < patterns.length; i++) {
                         var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
-                        if (locale && locale !== this.project.sourceLocale) {
+                        var loc = new Locale(locale);
+                        if (locale && loc.isValid() && locale !== this.project.sourceLocale) {
                             ret = false;
                             break;
                         }
@@ -253,19 +249,7 @@ MrkdwnJsonFileType.prototype.getPseudo = function() {
     return set;
 };
 
-MrkdwnJsonFileType.prototype.addTranslationStatus = function(fileInfo) {
-    if (fileInfo.fullyTranslated) {
-        this.fileInfo.translated.push(fileInfo.path);
-    } else {
-        this.fileInfo.untranslated.push(fileInfo.path);
-    }
-};
-
 MrkdwnJsonFileType.prototype.projectClose = function() {
-    if (this.project.settings && this.project.settings.mrkdwn && this.project.settings.mrkdwn.fullyTranslated) {
-        var fileName = path.join(this.project.root, "translation-status.json");
-        fs.writeFileSync(fileName, JSON.stringify(this.fileInfo, undefined, 4), "utf-8");
-    }
 };
 
 module.exports = MrkdwnJsonFileType;
