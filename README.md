@@ -1,21 +1,21 @@
 # ilib-loctool-mrkdwn
 
 Ilib loctool plugin to parse and localize the slack-flavored markdown
-known as "mrkdwn" encoded in json files.
+known as "mrkdwn" encoded in js files.
 
 ## File Format
 
-A slack application can encode its strings as a simple json file with
+A slack application can encode its strings as a simple js file with
 the properties being the unique ids of the strings, and the values
 being strings in mrkdwn format.
 
 Example file:
 
-```json
-{
+```javascript
+export default messages = {
     "unique id 1": "This is a *mrkdwn* string!",
     "unique id 2": "This _is_ also a <http://example.com|mrkdwn string>."
-}
+};
 ```
 
 ## Escapes
@@ -93,7 +93,7 @@ This plugin supports mappings:
   "settings": {
     "mrkdwn": {
       "mappings": {
-        "**/foobar.json": {
+        "**/foobar.js": {
           "template": "[dir]/[basename]_[locale].[extension]",
           "localeMap": {
             "fr-FR": "fr",
