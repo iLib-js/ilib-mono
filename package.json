@@ -1,7 +1,7 @@
 {
     "name": "ilib-loctool-mrkdwn",
     "version": "1.0.0",
-    "main": "./MrkdwnJsonFileType.js",
+    "main": "./MrkdwnJsFileType.js",
     "description": "A loctool plugin that knows how to process Slack markdown files encoded in js files",
     "license": "Apache-2.0",
     "keywords": [
@@ -38,8 +38,8 @@
     "files": [
         "README.md",
         "LICENSE",
-        "MrkdwnJsonFile.js",
-        "MrkdwnJsonFileType.js"
+        "MrkdwnJsFile.js",
+        "MrkdwnJsFileType.js"
     ],
     "repository": {
         "type": "git",

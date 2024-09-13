@@ -1,5 +1,5 @@
 /**
- * MrkdwnJsonFile.js - plugin to extract resources from a json file containing
+ * MrkdwnJsFile.js - plugin to extract resources from a json file containing
  * Slack mrkdwn format strings
  *
  * Copyright © 2024, Box, Inc.
@@ -64,7 +64,7 @@ function unescape(str) {
  * of the project file
  * @param {FileType} type the file type instance of this file
  */
-var MrkdwnJsonFile = function(options) {
+var MrkdwnJsFile = function(options) {
     options = options || {};
 
     this.project = options.project;
@@ -72,7 +72,7 @@ var MrkdwnJsonFile = function(options) {
 
     this.API = this.project.getAPI();
     this.type = options.type;
-    this.logger = this.API.getLogger("loctool.lib.MrkdwnJsonFile");
+    this.logger = this.API.getLogger("loctool.lib.MrkdwnJsFile");
 
     this.mapping = this.type.getMapping(this.pathName);
 
@@ -104,7 +104,7 @@ var MrkdwnJsonFile = function(options) {
  * @param {String} comment a comment to add to the resource
  * @returns {Resource} the resource that was added
  */
-MrkdwnJsonFile.prototype._addTransUnit = function(key, text, comment) {
+MrkdwnJsFile.prototype._addTransUnit = function(key, text, comment) {
     var res;
     if (text) {
         var fullkey = (this.subkey > 0) ? key + "_" + this.subkey : key;
@@ -181,7 +181,7 @@ function trim(API, text) {
  * @returns {boolean} true if the given string contains translatable text,
  * and false otherwise.
  */
-MrkdwnJsonFile.prototype.isTranslatable = function(str) {
+MrkdwnJsFile.prototype.isTranslatable = function(str) {
     if (!str || !str.length || !str.trim().length) return false;
 
     return this.API.utils.containsActualText(str);
@@ -196,7 +196,7 @@ MrkdwnJsonFile.prototype.isTranslatable = function(str) {
  * text to be escaped for attribute values
  * @private
  */
-MrkdwnJsonFile.prototype._emitText = function(node, key, escape) {
+MrkdwnJsFile.prototype._emitText = function(node, key, escape) {
     if (!this.message.getTextLength()) {
         this.message = new MessageAccumulator();
         return;
@@ -225,7 +225,7 @@ MrkdwnJsonFile.prototype._emitText = function(node, key, escape) {
  * @param {AST} node the current node of an abstract syntax tree to
  * walk.
  */
-MrkdwnJsonFile.prototype._walk = function(key, node) {
+MrkdwnJsFile.prototype._walk = function(key, node) {
     switch (node.type) {
         case NodeType.Text:
             var parts = trim(this.API, node.text);
@@ -303,7 +303,7 @@ MrkdwnJsonFile.prototype._walk = function(key, node) {
  * @returns {Node} The root node of the abstract syntax tree that
  * represents the parsed string.
  */
-MrkdwnJsonFile.prototype.parseMrkdwnString = function(key, str) {
+MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str) {
     // accumulates characters in text segments
     this.message = new MessageAccumulator();
     this.subkey = 0;
@@ -323,7 +323,7 @@ MrkdwnJsonFile.prototype.parseMrkdwnString = function(key, str) {
  * project's translation set.
  * @param {String} data the string to parse
  */
-MrkdwnJsonFile.prototype.parse = function(data) {
+MrkdwnJsFile.prototype.parse = function(data) {
     this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
@@ -350,7 +350,7 @@ MrkdwnJsonFile.prototype.parse = function(data) {
  * Extract all the localizable strings from the md file and add them to the
  * project's translation set.
  */
-MrkdwnJsonFile.prototype.extract = function() {
+MrkdwnJsFile.prototype.extract = function() {
     this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
@@ -372,12 +372,12 @@ MrkdwnJsonFile.prototype.extract = function() {
  * @returns {TranslationSet} The set of resources found in the
  * current Java file.
  */
-MrkdwnJsonFile.prototype.getTranslationSet = function() {
+MrkdwnJsFile.prototype.getTranslationSet = function() {
     return this.set;
 };
 
 //we don't write Mrkdwn source files
-MrkdwnJsonFile.prototype.write = function() {};
+MrkdwnJsFile.prototype.write = function() {};
 
 /**
  * Return the alternate output locale or the shared output locale for the given
@@ -387,7 +387,7 @@ MrkdwnJsonFile.prototype.write = function() {};
  * @param {String} locale the locale spec for the target locale
  * @returns {Locale} the output locale
  */
-MrkdwnJsonFile.prototype.getOutputLocale = function(mapping, locale) {
+MrkdwnJsFile.prototype.getOutputLocale = function(mapping, locale) {
     // we can remove the replace() call after upgrading to
     // ilib 14.10.0 or later because it can parse locale specs
     // with underscores in them
@@ -403,7 +403,7 @@ MrkdwnJsonFile.prototype.getOutputLocale = function(mapping, locale) {
  * @param {String] locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-MrkdwnJsonFile.prototype.getLocalizedPath = function(locale) {
+MrkdwnJsFile.prototype.getLocalizedPath = function(locale) {
     var mapping = this.mapping || this.type.getMapping(path.normalize(this.pathName)) || this.type.getDefaultMapping();
     var l = this.getOutputLocale(mapping, locale);
 
@@ -422,7 +422,7 @@ MrkdwnJsonFile.prototype.getLocalizedPath = function(locale) {
  * @param {boolean} nopseudo if true, don't use pseudo-localization
  * @returns {string} the localized string
  */
-MrkdwnJsonFile.prototype.localizeString = function(key, source, locale, translations, nopseudo) {
+MrkdwnJsFile.prototype.localizeString = function(key, source, locale, translations, nopseudo) {
     if (!source) return source;
 
     var tester = this.API.newResource({
@@ -485,7 +485,7 @@ MrkdwnJsonFile.prototype.localizeString = function(key, source, locale, translat
 /**
  * @private
  */
-MrkdwnJsonFile.prototype._addComment = function(comment) {
+MrkdwnJsFile.prototype._addComment = function(comment) {
     if (!this.comment) {
         this.comment = comment;
     } else {
@@ -500,7 +500,7 @@ MrkdwnJsonFile.prototype._addComment = function(comment) {
  * @param {Node} node the node to stringify
  * @returns {string} the stringified node
  */
-MrkdwnJsonFile.prototype.stringifyAstNode = function(node, children, args, label) {
+MrkdwnJsFile.prototype.stringifyAstNode = function(node, children, args, label) {
     var ret = "";
 
     switch (node.type) {
@@ -572,7 +572,7 @@ MrkdwnJsonFile.prototype.stringifyAstNode = function(node, children, args, label
  * @param {Array.<Node>} nodes the root of the tree to stringify
  * @returns {String} the stringified tree
  */
-MrkdwnJsonFile.prototype.stringify = function(nodes) {
+MrkdwnJsFile.prototype.stringify = function(nodes) {
     var ret = "";
     if (!Array.isArray(nodes)) {
         nodes = [nodes];
@@ -615,7 +615,7 @@ MrkdwnJsonFile.prototype.stringify = function(nodes) {
  * @param {TranslationSet} translations the set of translations
  * @returns {string} the translation at the given node
  */
-MrkdwnJsonFile.prototype.getTranslation = function(node, locale, translations) {
+MrkdwnJsFile.prototype.getTranslation = function(node, locale, translations) {
     if (!node || !node.resource || !node.message) {
         return "";
     }
@@ -664,7 +664,7 @@ MrkdwnJsonFile.prototype.getTranslation = function(node, locale, translations) {
  * @param {TranslationSet} translations the set of translations
  * @returns {string} the translation at the given node
  */
-MrkdwnJsonFile.prototype.walkAst = function(node, locale, translations) {
+MrkdwnJsFile.prototype.walkAst = function(node, locale, translations) {
     var ret = "";
     if (node.message && node.resource) {
         ret += this.getTranslation(node, locale, translations);
@@ -695,7 +695,7 @@ MrkdwnJsonFile.prototype.walkAst = function(node, locale, translations) {
  * @param {String} locale the locale to translate to
  * @returns {String} the localized text of this file
  */
-MrkdwnJsonFile.prototype.localizeText = function(translations, locale) {
+MrkdwnJsFile.prototype.localizeText = function(translations, locale) {
     this.resourceIndex = 0;
     this.logger.debug("Localizing strings for locale " + locale);
 
@@ -718,7 +718,7 @@ MrkdwnJsonFile.prototype.localizeText = function(translations, locale) {
  * translations
  * @param {Array.<String>} locales array of locales to translate to
  */
-MrkdwnJsonFile.prototype.localize = function(translations, locales) {
+MrkdwnJsFile.prototype.localize = function(translations, locales) {
     var pathName;
     for (var i = 0; i < locales.length; i++) {
         if (!this.project.isSourceLocale(locales[i])) {
@@ -738,4 +738,4 @@ MrkdwnJsonFile.prototype.localize = function(translations, locales) {
     }
 };
 
-module.exports = MrkdwnJsonFile;
+module.exports = MrkdwnJsFile;

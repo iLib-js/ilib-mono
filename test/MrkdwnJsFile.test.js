@@ -1,5 +1,5 @@
 /*
- * MrkdwnJsonFile.test.js - test the Mrkdwn file handler object.
+ * MrkdwnJsFile.test.js - test the Mrkdwn file handler object.
  *
  * Copyright © 2024 Box, Inc.
  *
@@ -19,9 +19,9 @@
 var path = require("path");
 var fs = require("fs");
 
-if (!MrkdwnJsonFile) {
-    var MrkdwnJsonFile = require("../MrkdwnJsonFile.js");
-    var MrkdwnJsonFileType = require("../MrkdwnJsonFileType.js");
+if (!MrkdwnJsFile) {
+    var MrkdwnJsFile = require("../MrkdwnJsFile.js");
+    var MrkdwnJsFileType = require("../MrkdwnJsFileType.js");
     var CustomProject = require("loctool/lib/CustomProject.js");
     var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
     var TranslationSet = require("loctool/lib/TranslationSet.js");
@@ -37,7 +37,7 @@ var p = new CustomProject({
     locales:["en-GB"]
 });
 
-var mdft = new MrkdwnJsonFileType(p);
+var mdft = new MrkdwnJsFileType(p);
 var base = path.dirname(module.id);
 
 var p2 = new CustomProject({
@@ -50,7 +50,7 @@ var p2 = new CustomProject({
     identify: true
 });
 
-var mdft2 = new MrkdwnJsonFileType(p2);
+var mdft2 = new MrkdwnJsFileType(p2);
 var p3 = new CustomProject({
     sourceLocale: "en-US",
     id: "foo",
@@ -61,73 +61,73 @@ var p3 = new CustomProject({
     nopseudo: true,
     mrkdwn: {
         mappings: {
-            "**/simple.json": {
+            "**/simple.js": {
                 template: "[locale]/[dir]/[filename]"
             },
-            "**/asdf/bar/simple2.json": {
+            "**/asdf/bar/simple2.js": {
                 template: "[locale]/asdf/bar/[filename]"
             },
-            "**/bar/simple3.json": {
+            "**/bar/simple3.js": {
                 template: "asdf/[locale]/bar/[filename]"
             },
-            "**/simple4.json": {
+            "**/simple4.js": {
                 template: "[locale]/asdf/bar/[filename]",
                 localeMap: {
                     "fr-FR": "fr",
                     "zh-Hans-CN": "zh-CN"
                 }
             },
-            "asdf/pen-USing/en-US/bar/asdf.json": {
+            "asdf/pen-USing/en-US/bar/asdf.js": {
                 template: "[locale]/bar/[filename]"
             },
-            "**/asdf.json": {
+            "**/asdf.js": {
                 template: "[dir]/[locale]/bar/[filename]"
             },
-            "**/x/*.json": {
-                template: "[dir]/[basename]_[locale].json"
+            "**/x/*.js": {
+                template: "[dir]/[basename]_[locale].js"
             },
-            "**/y/*.json": {
-                template: "[dir]/[locale]/[basename].json"
+            "**/y/*.js": {
+                template: "[dir]/[locale]/[basename].js"
             }
         }
     }
 });
 
-var mdft3 = new MrkdwnJsonFileType(p3);
+var mdft3 = new MrkdwnJsFileType(p3);
 
 describe("mrkdwn", function() {
-    test("MrkdwnJsonFileConstructor", function() {
+    test("MrkdwnJsFileConstructor", function() {
         expect.assertions(1);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
         expect(mjf).toBeTruthy();
     });
 
-    test("MrkdwnJsonFileConstructorParams", function() {
+    test("MrkdwnJsFileConstructorParams", function() {
         expect.assertions(1);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "./testfiles/md/test1.json",
+            pathName: "./testfiles/md/test1.js",
             type: mdft
         });
         expect(mjf).toBeTruthy();
     });
 
-    test("MrkdwnJsonFileConstructorNoFile", function() {
+    test("MrkdwnJsFileConstructorNoFile", function() {
         expect.assertions(1);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
         expect(mjf).toBeTruthy();
     });
 
-    test("MrkdwnJsonFileParseSimpleGetByKey", function() {
+    test("MrkdwnJsFileParseSimpleGetByKey", function() {
         expect.assertions(5);
 
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -146,9 +146,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseSimpleGetBySource", function() {
+    test("MrkdwnJsFileParseSimpleGetBySource", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -167,9 +167,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseEmpty", function() {
+    test("MrkdwnJsFileParseEmpty", function() {
         expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -183,9 +183,9 @@ describe("mrkdwn", function() {
         expect(set.size()).toBe(0);
     });
 
-    test("MrkdwnJsonFileParseSimpleRightSize", function() {
+    test("MrkdwnJsFileParseSimpleRightSize", function() {
         expect.assertions(4);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -201,9 +201,9 @@ describe("mrkdwn", function() {
         expect(set.size()).toBe(1);
     });
 
-    test("MrkdwnJsonFileParseMultiple", function() {
+    test("MrkdwnJsFileParseMultiple", function() {
         expect.assertions(8);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -226,9 +226,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id2");
     });
 
-    test("MrkdwnJsonFileParseNonBreakingEmphasis", function() {
+    test("MrkdwnJsFileParseNonBreakingEmphasis", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -248,9 +248,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseNonBreaking Italic", function() {
+    test("MrkdwnJsFileParseNonBreaking Italic", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -270,9 +270,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseNonBreaking StrikeThrough", function() {
+    test("MrkdwnJsFileParseNonBreaking StrikeThrough", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -292,9 +292,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseNestedNonBreakingEmphasis", function() {
+    test("MrkdwnJsFileParseNestedNonBreakingEmphasis", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -313,9 +313,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseNestedAndSequentialNonBreakingEmphasis", function() {
+    test("MrkdwnJsFileParseNestedAndSequentialNonBreakingEmphasis", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -334,10 +334,10 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse text with newlines", function() {
+    test("MrkdwnJsFileParse text with newlines", function() {
         expect.assertions(5);
 
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -358,10 +358,10 @@ describe("mrkdwn", function() {
 
     /*
     slack parser library does not support blockquotes yet
-    test("MrkdwnJsonFileParse text with a blockquote in the middle of it", function() {
+    test("MrkdwnJsFileParse text with a blockquote in the middle of it", function() {
         expect.assertions(10);
 
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -387,9 +387,9 @@ describe("mrkdwn", function() {
     });
     */
 
-    test("MrkdwnJsonFileParse text with inline code", function() {
+    test("MrkdwnJsFileParse text with inline code", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -408,9 +408,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse text with multiline code", function() {
+    test("MrkdwnJsFileParse text with multiline code", function() {
         expect.assertions(4);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -428,9 +428,9 @@ describe("mrkdwn", function() {
         expect(r.length).toBe(0);
     });
 
-    test("MrkdwnJsonFileParse text with multiline code snippet plus other text", function() {
+    test("MrkdwnJsFileParse text with multiline code snippet plus other text", function() {
         expect.assertions(8);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -453,9 +453,9 @@ describe("mrkdwn", function() {
         expect(r[1].getKey()).toBe("id2");
     });
 
-    test("MrkdwnJsonFileParse non breaking links with no text", function() {
+    test("MrkdwnJsFileParse non breaking links with no text", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -474,9 +474,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse non breaking links with text", function() {
+    test("MrkdwnJsFileParse non breaking links with text", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -495,9 +495,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse non breaking links to channels with no text", function() {
+    test("MrkdwnJsFileParse non breaking links to channels with no text", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -516,9 +516,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse non breaking links to channels using channel id in hex and with no text", function() {
+    test("MrkdwnJsFileParse non breaking links to channels using channel id in hex and with no text", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -537,9 +537,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse non breaking links to special mentions", function() {
+    test("MrkdwnJsFileParse non breaking links to special mentions", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -559,10 +559,10 @@ describe("mrkdwn", function() {
     });
 
 
-    test("MrkdwnJsonFileParse non breaking emojis", function() {
+    test("MrkdwnJsFileParse non breaking emojis", function() {
         expect.assertions(5);
 
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -581,9 +581,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse non breaking links to date formats without fallback text", function() {
+    test("MrkdwnJsFileParse non breaking links to date formats without fallback text", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -602,9 +602,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParse non breaking links to date formats with fallback text", function() {
+    test("MrkdwnJsFileParse non breaking links to date formats with fallback text", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -623,9 +623,9 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileParseNonBreakingEmphasisOutside", function() {
+    test("MrkdwnJsFileParseNonBreakingEmphasisOutside", function() {
         expect.assertions(5);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -646,12 +646,12 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileExtractFile", function() {
+    test("MrkdwnJsFileExtractFile", function() {
         expect.assertions(14);
         var base = path.dirname(module.id);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "./json/test1.json",
+            pathName: "./js/test1.js",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -677,12 +677,12 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id4");
     });
 
-    test("MrkdwnJsonFileExtractFile2", function() {
+    test("MrkdwnJsFileExtractFile2", function() {
         expect.assertions(11);
         var base = path.dirname(module.id);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "./json/test2.json",
+            pathName: "./js/test2.js",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -704,10 +704,10 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id1");
     });
 
-    test("MrkdwnJsonFileExtractUndefinedFile", function() {
+    test("MrkdwnJsFileExtractUndefinedFile", function() {
         expect.assertions(2);
         var base = path.dirname(module.id);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -718,12 +718,12 @@ describe("mrkdwn", function() {
         expect(set.size()).toBe(0);
     });
 
-    test("MrkdwnJsonFileExtractBogusFile", function() {
+    test("MrkdwnJsFileExtractBogusFile", function() {
         expect.assertions(2);
         var base = path.dirname(module.id);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "./json/bogus.json",
+            pathName: "./js/bogus.js",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -733,9 +733,9 @@ describe("mrkdwn", function() {
         expect(set.size()).toBe(0);
     });
 
-    test("MrkdwnJsonFileLocalizeText", function() {
+    test("MrkdwnJsFileLocalizeText", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -763,9 +763,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeText more complicated", function() {
+    test("MrkdwnJsFileLocalizeText more complicated", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -793,9 +793,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeTextMultiple", function() {
+    test("MrkdwnJsFileLocalizeTextMultiple", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -834,9 +834,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeTextWithLinks", function() {
+    test("MrkdwnJsFileLocalizeTextWithLinks", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -864,9 +864,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeText with multiple components nested in the same string", function() {
+    test("MrkdwnJsFileLocalizeText with multiple components nested in the same string", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -894,9 +894,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeText with multiple components switched order", function() {
+    test("MrkdwnJsFileLocalizeText with multiple components switched order", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -924,9 +924,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeText with multiple components nested switching the nesting", function() {
+    test("MrkdwnJsFileLocalizeText with multiple components nested switching the nesting", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -954,9 +954,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeTextWithInlineCode", function() {
+    test("MrkdwnJsFileLocalizeTextWithInlineCode", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -984,9 +984,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeText with all the types of syntax", function() {
+    test("MrkdwnJsFileLocalizeText with all the types of syntax", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -1169,9 +1169,9 @@ describe("mrkdwn", function() {
     });
 
 
-    test("MrkdwnJsonFileLocalizeTextNonBreakingTagsOutside", function() {
+    test("MrkdwnJsFileLocalizeTextNonBreakingTagsOutside", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -1200,9 +1200,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeTextWithInlineCodeAtTheEnd", function() {
+    test("MrkdwnJsFileLocalizeTextWithInlineCodeAtTheEnd", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -1233,9 +1233,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeTextMismatchedNumberOfComponents", function() {
+    test("MrkdwnJsFileLocalizeTextMismatchedNumberOfComponents", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -1266,9 +1266,9 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeTextMismatchedNumberOfComponentsSelfClosing", function() {
+    test("MrkdwnJsFileLocalizeTextMismatchedNumberOfComponentsSelfClosing", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
         });
@@ -1298,126 +1298,126 @@ describe("mrkdwn", function() {
         expect(actual).toBe(expected);
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathSimple", function() {
+    test("MrkdwnJsFileGetLocalizedPathSimple", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "simple.json",
+            pathName: "simple.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathComplex", function() {
+    test("MrkdwnJsFileGetLocalizedPathComplex", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "./asdf/bar/simple2.json",
+            pathName: "./asdf/bar/simple2.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathRegularMrkdwnJsonFileName", function() {
+    test("MrkdwnJsFileGetLocalizedPathRegularMrkdwnJsFileName", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "./asdf/bar/simple2.json",
+            pathName: "./asdf/bar/simple2.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathNotEnoughParts", function() {
+    test("MrkdwnJsFileGetLocalizedPathNotEnoughParts", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
             pathName: "./asdf/bar/simple",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
 
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple_fr-FR.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/bar/simple_fr-FR.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathAlreadyHasSourceLocale", function() {
+    test("MrkdwnJsFileGetLocalizedPathAlreadyHasSourceLocale", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "./en-US/asdf/bar/simple2.json",
+            pathName: "./en-US/asdf/bar/simple2.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathSourceLocaleInMidPath", function() {
+    test("MrkdwnJsFileGetLocalizedPathSourceLocaleInMidPath", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "./asdf/en-US/bar/simple3.json",
+            pathName: "./asdf/en-US/bar/simple3.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathSourceLocaleInBeginningPath", function() {
+    test("MrkdwnJsFileGetLocalizedPathSourceLocaleInBeginningPath", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "en-US/asdf/bar/simple2.json",
+            pathName: "en-US/asdf/bar/simple2.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function() {
+    test("MrkdwnJsFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function() {
         expect.assertions(2);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "./asdf/pen-USing/en-US/bar/asdf.json",
+            pathName: "./asdf/pen-USing/en-US/bar/asdf.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
         // should leave "pen-USing" alone and only get the "en-US" path component
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPathWithLocaleMap", function() {
+    test("MrkdwnJsFileGetLocalizedPathWithLocaleMap", function() {
         expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "simple4.json",
+            pathName: "simple4.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.json");
-        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.js");
+        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.js");
     });
 
-    test("MrkdwnJsonFileGetLocalizedPath default mapping", function() {
+    test("MrkdwnJsFileGetLocalizedPath default mapping", function() {
         expect.assertions(3);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "a/b/c/test.json",
+            pathName: "a/b/c/test.js",
             type: mdft
         });
         expect(mjf).toBeTruthy();
-        expect(mjf.getLocalizedPath("fr-FR")).toBe("a/b/c/test_fr-FR.json");
-        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("a/b/c/test_zh-Hans-CN.json");
+        expect(mjf.getLocalizedPath("fr-FR")).toBe("a/b/c/test_fr-FR.js");
+        expect(mjf.getLocalizedPath("zh-Hans-CN")).toBe("a/b/c/test_zh-Hans-CN.js");
     });
 
-    test("MrkdwnJsonFileLocalizeFile", function() {
+    test("MrkdwnJsFileLocalizeFile", function() {
         expect.assertions(5);
         var base = path.dirname(module.id);
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "./json/test1.json",
+            pathName: "./js/test1.js",
             type: mdft
         });
         expect(mjf).toBeTruthy();
@@ -1489,9 +1489,9 @@ describe("mrkdwn", function() {
             datatype: "mrkdwn"
         }));
         mjf.localize(translations, ["fr-FR", "de-DE"]);
-        expect(fs.existsSync(path.join(p.target, "json/test1_fr-FR.json"))).toBeTruthy();
-        expect(fs.existsSync(path.join(p.target, "json/test1_de-DE.json"))).toBeTruthy();
-        var content = fs.readFileSync(path.join(p.target, "json/test1_fr-FR.json"), "utf-8");
+        expect(fs.existsSync(path.join(p.target, "js/test1_fr-FR.js"))).toBeTruthy();
+        expect(fs.existsSync(path.join(p.target, "js/test1_de-DE.js"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p.target, "js/test1_fr-FR.js"), "utf-8");
         var expected =
             '{\n' +
             '    "id1": "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",\n' +
@@ -1500,7 +1500,7 @@ describe("mrkdwn", function() {
             '    "id4": "C\'est le dernier morceau de texte localisable."\n' +
             '}';
         expect(content).toBe(expected);
-        var content = fs.readFileSync(path.join(p.target, "json/test1_de-DE.json"), "utf-8");
+        var content = fs.readFileSync(path.join(p.target, "js/test1_de-DE.js"), "utf-8");
         var expected =
             '{\n' +
             '    "id1": "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",\n' +
@@ -1511,12 +1511,12 @@ describe("mrkdwn", function() {
         expect(content).toBe(expected);
     });
 
-    test("MrkdwnJsonFileLocalizeNoStrings", function() {
+    test("MrkdwnJsFileLocalizeNoStrings", function() {
         expect.assertions(5);
         var base = path.dirname(module.id);
 
-        var frenchFile = path.join(p.target, "json/nostrings_fr-FR.json");
-        var germanFile = path.join(p.target, "json/nostrings_de-DE.json");
+        var frenchFile = path.join(p.target, "js/nostrings_fr-FR.js");
+        var germanFile = path.join(p.target, "js/nostrings_de-DE.js");
         if (fs.existsSync(frenchFile)) {
             fs.unlinkSync(frenchFile);
         }
@@ -1526,9 +1526,9 @@ describe("mrkdwn", function() {
         expect(fs.existsSync(frenchFile)).toBeFalsy();
         expect(fs.existsSync(germanFile)).toBeFalsy();
 
-        var mjf = new MrkdwnJsonFile({
+        var mjf = new MrkdwnJsFile({
             project: p3,
-            pathName: "./json/nostrings.json",
+            pathName: "./js/nostrings.js",
             type: mdft3
         });
         expect(mjf).toBeTruthy();
@@ -1558,13 +1558,13 @@ debugger;
         expect(fs.existsSync(germanFile)).toBeTruthy();
     });
 
-    test("MrkdwnJsonFileExtractFile get the right new resources", function() {
+    test("MrkdwnJsFileExtractFile get the right new resources", function() {
         expect.assertions(16);
         var base = path.dirname(module.id);
-        var t = new MrkdwnJsonFileType(p);
-        var mjf = new MrkdwnJsonFile({
+        var t = new MrkdwnJsFileType(p);
+        var mjf = new MrkdwnJsFile({
             project: p,
-            pathName: "./json/mode.json",
+            pathName: "./js/mode.js",
             type: t
         });
         expect(mjf).toBeTruthy();

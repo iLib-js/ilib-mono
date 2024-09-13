@@ -1,5 +1,5 @@
 /*
- * MrkdwnJsonFileType.js - Represents a collection of Mrkdwn files
+ * MrkdwnJsFileType.js - Represents a collection of Mrkdwn files
  *
  * Copyright © 2024, Box, Inc.
  *
@@ -20,17 +20,17 @@
 var Locale = require("ilib/lib/Locale.js");
 var path = require("path");
 var mm = require("micromatch");
-var MrkdwnJsonFile = require("./MrkdwnJsonFile.js");
+var MrkdwnJsFile = require("./MrkdwnJsFile.js");
 
-var MrkdwnJsonFileType = function(project) {
+var MrkdwnJsFileType = function(project) {
     this.type = "mrkdwn";
     this.datatype = "mrkdwn";
     this.project = project;
     this.API = project.getAPI();
 
-    this.logger = this.API.getLogger("loctool.lib.MrkdwnJsonFileType");
+    this.logger = this.API.getLogger("loctool.lib.MrkdwnJsFileType");
 
-    this.extensions = [ ".json", ".jsn" ];
+    this.extensions = [ ".js" ];
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
@@ -53,11 +53,8 @@ var MrkdwnJsonFileType = function(project) {
 };
 
 var defaultMappings = {
-    "**/*.json": {
-        template: "[dir]/[basename]_[locale].json"
-    },
-    "**/*.jsn": {
-        template: "[dir]/[basename]_[locale].jsn"
+    "**/*.js": {
+        template: "[dir]/[basename]_[locale].js"
     }
 };
 
@@ -67,7 +64,7 @@ var defaultMappings = {
  * @returns {Object} the mapping object corresponding to the
  * path or undefined if none of the mappings match
  */
-MrkdwnJsonFileType.prototype.getMapping = function(pathName) {
+MrkdwnJsFileType.prototype.getMapping = function(pathName) {
     if (typeof(pathName) === "undefined") {
         return undefined;
     }
@@ -86,8 +83,8 @@ MrkdwnJsonFileType.prototype.getMapping = function(pathName) {
     return match && mappings[match];
 }
 
-MrkdwnJsonFileType.prototype.getDefaultMapping = function() {
-    return defaultMappings["**/*.json"];
+MrkdwnJsFileType.prototype.getDefaultMapping = function() {
+    return defaultMappings["**/*.js"];
 }
 
 var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-([A-Z][A-Z])(-[A-Z]+)?)?)\//);
@@ -100,8 +97,8 @@ var alreadyLoc = new RegExp(/(^|\/)(([a-z][a-z])(-[A-Z][a-z][a-z][a-z])?(-([A-Z]
  * @returns {boolean} true if the path is a java file, or false
  * otherwise
  */
-MrkdwnJsonFileType.prototype.handles = function(pathName) {
-    this.logger.debug("MrkdwnJsonFileType handles " + pathName + "?");
+MrkdwnJsFileType.prototype.handles = function(pathName) {
+    this.logger.debug("MrkdwnJsFileType handles " + pathName + "?");
     var extension = path.extname(pathName).toLowerCase();
     var ret = (this.extensions.indexOf(extension) > -1);
     var normalized = pathName;
@@ -123,7 +120,7 @@ MrkdwnJsonFileType.prototype.handles = function(pathName) {
 
     if (ret) {
         // normalize the extension so the matching below can work
-        normalized = pathName.substring(0, pathName.lastIndexOf('.')) + ".json";
+        normalized = pathName.substring(0, pathName.lastIndexOf('.')) + ".js";
     }
 
     // If it has the right filename extension, then match at least one of the mapping
@@ -158,7 +155,7 @@ MrkdwnJsonFileType.prototype.handles = function(pathName) {
     return ret;
 };
 
-MrkdwnJsonFileType.prototype.name = function() {
+MrkdwnJsFileType.prototype.name = function() {
     return "Mrkdwn File Type";
 };
 
@@ -170,13 +167,13 @@ MrkdwnJsonFileType.prototype.name = function() {
  * the files themselves are localized individually, so there
  * are no aggregated strings.
  */
-MrkdwnJsonFileType.prototype.write = function() {
+MrkdwnJsFileType.prototype.write = function() {
     // files are localized individually, so we don't have to
     // write out the resources
 };
 
-MrkdwnJsonFileType.prototype.newFile = function(path, options) {
-    return new MrkdwnJsonFile({
+MrkdwnJsFileType.prototype.newFile = function(path, options) {
+    return new MrkdwnJsFile({
         project: this.project,
         pathName: path,
         type: this,
@@ -184,15 +181,15 @@ MrkdwnJsonFileType.prototype.newFile = function(path, options) {
     });
 };
 
-MrkdwnJsonFileType.prototype.getDataType = function() {
+MrkdwnJsFileType.prototype.getDataType = function() {
     return this.datatype;
 };
 
-MrkdwnJsonFileType.prototype.getResourceTypes = function() {
+MrkdwnJsFileType.prototype.getResourceTypes = function() {
     return {};
 };
 
-MrkdwnJsonFileType.prototype.getExtensions = function() {
+MrkdwnJsFileType.prototype.getExtensions = function() {
     return this.extensions;
 };
 
@@ -205,7 +202,7 @@ MrkdwnJsonFileType.prototype.getExtensions = function() {
  * @returns {TranslationSet} the set containing all of the
  * extracted resources
  */
-MrkdwnJsonFileType.prototype.getExtracted = function() {
+MrkdwnJsFileType.prototype.getExtracted = function() {
     return this.extracted;
 };
 
@@ -215,7 +212,7 @@ MrkdwnJsonFileType.prototype.getExtracted = function() {
  *
  * @param {TranslationSet} set set of resources to add to the current set
  */
-MrkdwnJsonFileType.prototype.addSet = function(set) {
+MrkdwnJsFileType.prototype.addSet = function(set) {
     this.extracted.addSet(set);
 };
 
@@ -226,7 +223,7 @@ MrkdwnJsonFileType.prototype.addSet = function(set) {
  * @returns {TranslationSet} the set containing all of the
  * new resources
  */
-MrkdwnJsonFileType.prototype.getNew = function() {
+MrkdwnJsFileType.prototype.getNew = function() {
     // get the new strings from the front matter and the file itself and
     // put them together
     var set = this.API.newTranslationSet(this.project.getSourceLocale());
@@ -241,7 +238,7 @@ MrkdwnJsonFileType.prototype.getNew = function() {
  * @returns {TranslationSet} the set containing all of the
  * pseudo localized resources
  */
-MrkdwnJsonFileType.prototype.getPseudo = function() {
+MrkdwnJsFileType.prototype.getPseudo = function() {
     // get the pseudo strings from the front matter and the file itself and
     // put them together
     var set = this.API.newTranslationSet(this.project.getSourceLocale());
@@ -249,7 +246,7 @@ MrkdwnJsonFileType.prototype.getPseudo = function() {
     return set;
 };
 
-MrkdwnJsonFileType.prototype.projectClose = function() {
+MrkdwnJsFileType.prototype.projectClose = function() {
 };
 
-module.exports = MrkdwnJsonFileType;
+module.exports = MrkdwnJsFileType;
