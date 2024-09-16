@@ -320,7 +320,7 @@ MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str, comment) {
 };
 
 var commentRe = /^\s*\/\/(.*)$/g;
-var lineRe = /^\s*"([^"]*)"\s*:\s*"([^"]*)"\s*,?$/g;
+var lineRe = /^\s*('([^']*)'|"([^"]*)")\s*:\s*('([^']*)'|"([^"]*)")\s*,?$/g;
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -336,17 +336,19 @@ MrkdwnJsFile.prototype.parse = function(data) {
         this.contents = {};
         var lastComment;
         lines.forEach(function(line) {
+            commentRe.lastIndex = 0;
             var match = commentRe.exec(line);
             if (match) {
                 lastComment = match[1];
                 return;
             }
 
+            lineRe.lastIndex = 0;
             match = lineRe.exec(line);
             if (match) {
-                var key = match[1];
-                var value = match[2];
-                contents[key] = {
+                var key = match[2] || match[3];
+                var value = match[5] || match[6];
+                this.contents[key] = {
                     value: value,
                     comment: lastComment,
                     ast: this.parseMrkdwnString(key, value, lastComment)

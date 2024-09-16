@@ -207,11 +207,38 @@ describe("mrkdwn", function() {
             project: p,
             type: mdft
         });
+debugger;
         expect(mjf).toBeTruthy();
         mjf.parse(
             'export default messages = {\n' +
             '    "id1": "This is a test",\n' +
             '    "id2": "This is a test too"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("id1");
+        r = set.getBySource("This is a test too");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test too");
+        expect(r.getKey()).toBe("id2");
+    });
+
+    test("MrkdwnJsFileParseMultiple with single quotes", function() {
+        expect.assertions(8);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+debugger;
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            "    'id1': 'This is a test',\n" +
+            "    'id2': 'This is a test too'\n" +
             '};\n'
         );
         var set = mjf.getTranslationSet();
@@ -417,7 +444,7 @@ describe("mrkdwn", function() {
         expect(mjf).toBeTruthy();
         mjf.parse(
             'export default messages = {\n' +
-            '    "id1": "```\n  const x = obj.getX();\n  console.log(x);\n```\n",\n' +
+            '    "id1": "```\n  const x = obj.getX();\n  console.log(x);\n```",\n' +
             '    "id2": "This is a test too"\n' +
             '};\n'
         );
@@ -425,7 +452,7 @@ describe("mrkdwn", function() {
         expect(set).toBeTruthy();
         var r = set.getAll();
         expect(r).toBeTruthy();
-        expect(r.length).toBe(0);
+        expect(r.length).toBe(1);
     });
 
     test("MrkdwnJsFileParse text with multiline code snippet plus other text", function() {
