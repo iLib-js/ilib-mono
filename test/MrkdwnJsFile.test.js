@@ -766,6 +766,7 @@ debugger;
             project: p,
             type: mdft
         });
+debugger;
         expect(mjf).toBeTruthy();
         mjf.parse(
             'export default messages = {\n' +

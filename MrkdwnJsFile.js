@@ -59,9 +59,9 @@ function unescape(str) {
 function cloneAst(node) {
     var ret = {};
     for (var prop in node) {
-        if (prop === "children") {
+        if (prop === "children" && Array.isArray(node.children)) {
             ret.children = node.children.map(cloneAst);
-        } else if (prop === "label") {
+        } else if (prop === "label"  && Array.isArray(node.label)) {
             ret.label = node.label.map(cloneAst);
         } else {
             ret[prop] = node[prop];
@@ -520,52 +520,56 @@ MrkdwnJsFile.prototype.localizeString = function(key, source, locale, translatio
  * @param {Node} node the node to stringify
  * @returns {string} the stringified node
  */
-MrkdwnJsFile.prototype.stringify = function(node) {
+function stringify(node) {
     var ret = "";
 
     switch (node.type) {
+        case NodeType.Text:
+            ret += node.text;
+            break;
+
         case NodeType.Italic:
-            ret += "_" + node.children.map(this.stringify).join("") + "_";
+            ret += "_" + node.children.map(stringify).join("") + "_";
             break;
 
         case NodeType.Bold:
-            ret += "*" + node.children.map(this.stringify).join("") + "*";
+            ret += "*" + node.children.map(stringify).join("") + "*";
             break;
 
         case NodeType.Strike:
-            ret += "~" + node.children.map(this.stringify).join("") + "~";
+            ret += "~" + node.children.map(stringify).join("") + "~";
             break;
 
         case NodeType.Quote:
-            ret += ">" + node.children.map(this.stringify).join("") + "\n";
+            ret += ">" + node.children.map(stringify).join("") + "\n";
             break;
 
         case NodeType.ChannelLink:
             ret += "<#" +
                 node.channelID +
-                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
+                (Array.isArray(node.label) && node.label.length ? "|" + node.label.map(stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.UserLink:
             ret += "<@" +
                 node.userID +
-                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
+                (Array.isArray(node.label) && node.label.length ? "|" + node.label.map(stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.Command:
             ret += "<!" +
                 node.name +
-                (node.arguments ? "^" + node.arguments.map(this.stringify).join("^") : "") +
-                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
+                (Array.isArray(node.arguments) && node.arguments.length ? "^" + node.arguments.join("^") : "") +
+                (Array.isArray(node.label) && node.label.length ? "|" + node.label.map(stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.URL:
             ret += "<" +
                 node.url +
-                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
+                (Array.isArray(node.label) && node.label.length ? "|" + node.label.map(stringify).join("") : "") +
                 ">";
             break;
 
@@ -583,7 +587,7 @@ MrkdwnJsFile.prototype.stringify = function(node) {
 
         default:
             if (node.children) {
-                ret += node.children.map(this.stringify).join("");
+                ret += node.children.map(stringify).join("");
             }
             break;
     }
@@ -597,7 +601,7 @@ MrkdwnJsFile.prototype.stringify = function(node) {
  * @param {Node} node the node to convert
  * @returns {Node} the converted node
  */
-MrkdwnJsFile.prototype.convertMAToASTNode = function(node) {
+function convertMAToASTNode(node) {
     if (!node) {
         return;
     }
@@ -610,7 +614,7 @@ MrkdwnJsFile.prototype.convertMAToASTNode = function(node) {
 
         case "root":
             ret.type = NodeType.Root;
-            ret.children = node.children.map(this.convertMAToASTNode);
+            ret.children = node.children && node.children.map(convertMAToASTNode);
             break;
 
         case "param":
@@ -632,28 +636,28 @@ MrkdwnJsFile.prototype.convertMAToASTNode = function(node) {
                     case NodeType.Bold:
                     case NodeType.Strike:
                     case NodeType.Quote:
-                        ret.children = node.children && node.children.map(this.convertMAToASTNode);
+                        ret.children = node.children && node.children.map(convertMAToASTNode);
                         break;
 
                     case NodeType.ChannelLink:
                         ret.channelID = astNode.channelID;
-                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        ret.label = node.children && node.children.map(convertMAToASTNode);
                         break;
 
                     case NodeType.UserLink:
                         ret.userID = astNode.userID;
-                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        ret.label = node.children && node.children.map(convertMAToASTNode);
                         break;
 
                     case NodeType.Command:
                         ret.name = astNode.name;
                         ret.arguments = astNode.arguments;
-                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        ret.label = node.children && node.children.map(convertMAToASTNode);
                         break;
 
                     case NodeType.URL:
                         ret.url = astNode.url;
-                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        ret.label = node.children && node.children.map(convertMAToASTNode);
                         break;
 
                     case NodeType.PreText:
@@ -670,14 +674,15 @@ MrkdwnJsFile.prototype.convertMAToASTNode = function(node) {
                         break;
 
                     default:
-                        // don't need to do anything for the root node
+                        ret.type = NodeType.Root;
+                        ret.children = node.children && node.children.map(convertMAToASTNode);
                         break;
                 }
             } else {
                 // a component that does not exist in the source?
                 // just convert its children
                 ret.type = NodeType.Root;
-                ret.children = node.children && node.children.map(this.convertMAToASTNode);
+                ret.children = node.children && node.children.map(convertMAToASTNode);
             }
             break;
     }
@@ -739,7 +744,7 @@ MrkdwnJsFile.prototype.getTranslation = function(node, locale, translations) {
             this.logger.warn("Warning! Translation of\n'" + text + "' (key: " +node.resource.getKey() + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
         }
 
-        var translationNode = this.convertMAToASTNode(transMa.root);
+        var translationNode = convertMAToASTNode(transMa.root);
         node.type = translationNode.type;
         // this can re-arrange the tree structure if the translation has components in a different
         // order or nested differently than the source
@@ -800,7 +805,7 @@ MrkdwnJsFile.prototype.localizeText = function(translations, locale) {
         this.walkAst(ast, locale, translations);
 
         // stringify the modified AST to get the final localized string
-        localized[key] = this.stringify(ast);
+        localized[key] = stringify(ast);
     }
 
     var output;
