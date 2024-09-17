@@ -22,17 +22,10 @@ var fs = require("fs");
 var path = require("path");
 var MessageAccumulator = require("message-accumulator");
 var Locale = require("ilib/lib/Locale.js");
-var isAlnum = require("ilib/lib/isAlnum.js");
-var isIdeo = require("ilib/lib/isIdeo.js");
-var JSON5 = require("json5");
 var SMP = require("slack-message-parser");
 
 var slackParser = SMP.parse;
 var NodeType = SMP.NodeType;
-
-// load the data for these
-isAlnum._init();
-isIdeo._init();
 
 /**
  * Unescape the given string and return it unescaped.
@@ -53,6 +46,28 @@ function unescape(str) {
        replace(/\\t/g, "\t").
        replace(/\\'/g, "'").
        replace(/\\"/g, '"');
+}
+
+/**
+ * Clone the given AST node and return a new node that is a deep
+ * copy of the original node.
+ *
+ * @param {Node} node the node to clone
+ * @returns {Node} a new node that is a deep copy of the
+ * original node
+ */
+function cloneAst(node) {
+    var ret = {};
+    for (var prop in node) {
+        if (prop === "children") {
+            ret.children = node.children.map(cloneAst);
+        } else if (prop === "label") {
+            ret.label = node.label.map(cloneAst);
+        } else {
+            ret[prop] = node[prop];
+        }
+    }
+    return ret;
 }
 
 /**
@@ -505,64 +520,70 @@ MrkdwnJsFile.prototype.localizeString = function(key, source, locale, translatio
  * @param {Node} node the node to stringify
  * @returns {string} the stringified node
  */
-MrkdwnJsFile.prototype.stringifyAstNode = function(node, children, args, label) {
+MrkdwnJsFile.prototype.stringify = function(node) {
     var ret = "";
 
     switch (node.type) {
         case NodeType.Italic:
-            ret += "_" + children + "_";
+            ret += "_" + node.children.map(this.stringify).join("") + "_";
             break;
 
         case NodeType.Bold:
-            ret += "*" + children + "*";
+            ret += "*" + node.children.map(this.stringify).join("") + "*";
             break;
 
         case NodeType.Strike:
-            ret += "~" + children + "~";
+            ret += "~" + node.children.map(this.stringify).join("") + "~";
             break;
 
         case NodeType.Quote:
-            ret += ">" + children + "\n";
+            ret += ">" + node.children.map(this.stringify).join("") + "\n";
             break;
 
         case NodeType.ChannelLink:
             ret += "<#" +
                 node.channelID +
-                (label ? "|" + label : "") +
+                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.UserLink:
             ret += "<@" +
                 node.userID +
-                (label ? "|" + label : "") +
+                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.Command:
             ret += "<!" +
                 node.name +
-                (args ? "^" + args : "") +
-                (label ? "|" + label : "") +
+                (node.arguments ? "^" + node.arguments.map(this.stringify).join("^") : "") +
+                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.URL:
             ret += "<" +
                 node.url +
-                (label ? "|" + label : "") +
+                (node.label ? "|" + node.label.map(this.stringify).join("") : "") +
                 ">";
             break;
 
         case NodeType.PreText:
+            ret = "```" + node.text + "```";
+            break;
+
         case NodeType.Emoji:
+            ret = ":" + node.name + (node.variation ? "::" + node.variation : "") + ":";
+            break;
+
         case NodeType.Code:
-            ret += node.source;
+            ret = "`" + node.text + "`";
             break;
 
         default:
-            if (children) {
-                ret += children;
+            if (node.children) {
+                ret += node.children.map(this.stringify).join("");
             }
             break;
     }
@@ -570,72 +591,136 @@ MrkdwnJsFile.prototype.stringifyAstNode = function(node, children, args, label) 
 };
 
 /**
- * Take a tree of nodes from a message accumulator and return a string
- * that represents the tree in mrkdwn format.
+ * Convert a message accumulator node into an AST node.
  *
  * @private
- * @param {Array.<Node>} nodes the root of the tree to stringify
- * @returns {String} the stringified tree
+ * @param {Node} node the node to convert
+ * @returns {Node} the converted node
  */
-MrkdwnJsFile.prototype.stringify = function(nodes) {
-    var ret = "";
-    if (!Array.isArray(nodes)) {
-        nodes = [nodes];
+MrkdwnJsFile.prototype.convertMAToASTNode = function(node) {
+    if (!node) {
+        return;
     }
-    if (nodes && nodes.length) {
-        nodes.forEach(function(node) {
-            switch (node.type) {
-                case "text":
-                    ret += node.value;
-                    break;
+    var ret = {};
+    switch (node.type) {
+        case "text":
+            ret.type = NodeType.Text;
+            ret.text = node.value;
+            break;
 
-                case "root":
-                    ret += this.stringify(node.children);
-                    break;
+        case "root":
+            ret.type = NodeType.Root;
+            ret.children = node.children.map(this.convertMAToASTNode);
+            break;
 
-                case "component":
-                    if (node.extra && node.extra.node) {
-                        var astNode = node.extra.node;
-                        var children = node.children && this.stringify(node.children);
-                        ret += this.stringifyAstNode(astNode, children, astNode.arguments && astNode.arguments.join("^"), children);
-                    } else {
-                        // a component that does not exist in the source?
-                        // just render its children
-                        ret += this.stringify(node.children);
-                    }
-                    break;
+        case "param":
+            ret.type = NodeType.Text;
+            ret.text = node.value;
+            break;
+
+        case "component":
+            // message-accumulator nodes have an extra field that
+            // points to the AST node that this node originally
+            // represented in the source string.
+            // Convert the current node to be like that AST node.
+            if (node.extra && node.extra.node) {
+                var astNode = node.extra.node;
+
+                ret.type = astNode.type;
+                switch (astNode.type) {
+                    case NodeType.Italic:
+                    case NodeType.Bold:
+                    case NodeType.Strike:
+                    case NodeType.Quote:
+                        ret.children = node.children && node.children.map(this.convertMAToASTNode);
+                        break;
+
+                    case NodeType.ChannelLink:
+                        ret.channelID = astNode.channelID;
+                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        break;
+
+                    case NodeType.UserLink:
+                        ret.userID = astNode.userID;
+                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        break;
+
+                    case NodeType.Command:
+                        ret.name = astNode.name;
+                        ret.arguments = astNode.arguments;
+                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        break;
+
+                    case NodeType.URL:
+                        ret.url = astNode.url;
+                        ret.label = node.children && node.children.map(this.convertMAToASTNode);
+                        break;
+
+                    case NodeType.PreText:
+                        ret.text = astNode.text;
+                        break;
+
+                    case NodeType.Emoji:
+                        ret.name = astNode.name;
+                        ret.variation = astNode.variation;
+                        break;
+
+                    case NodeType.Code:
+                        ret.text = astNode.text;
+                        break;
+
+                    default:
+                        // don't need to do anything for the root node
+                        break;
+                }
+            } else {
+                // a component that does not exist in the source?
+                // just convert its children
+                ret.type = NodeType.Root;
+                ret.children = node.children && node.children.map(this.convertMAToASTNode);
             }
-        }.bind(this));
+            break;
     }
     return ret;
-};
+}
+
 
 /**
- * Return the translation for the given node in the given locale.
- * The node must have a resource and a message associated with it.
+ * Mute the current AST node into a new one that represents the
+ * localized version of the string at this point in the tree. If a
+ * node has a resource and a message accumulator associated with it, then the
+ * resource is used to look up the translation in the given set of
+ * translations. If a translation is found, then the node
+ * is replaced with a new tree that represents the localized
+ * version of the string. Note that the new tree may have a different
+ * structure than the original tree, as some components
+ * may be moved around or nested differently in the localized version
+ * of the string.
  *
  * @private
  * @param {Node} node the source node to localize
  * @param {string} locale the locale to localize to
  * @param {TranslationSet} translations the set of translations
- * @returns {string} the translation at the given node
  */
 MrkdwnJsFile.prototype.getTranslation = function(node, locale, translations) {
     if (!node || !node.resource || !node.message) {
-        return "";
+        return;
     }
     var text = node.resource.getSource();
     var ma = node.message;
     if (ma.getTextLength() === 0) {
-        // nothing to localize
-        return "";
+        // nothing to localize, so don't mute the node
+        return;
     }
 
     var translation = this.localizeString(node.resource.getKey(), text, locale, translations);
 
     if (translation) {
         var transMa = MessageAccumulator.create(translation, ma);
+
+        // check for components in the target that don't exist in the source and give a warning
         var nodes = transMa.root.toArray();
+
         // don't return the "root" start and end nodes
         nodes = nodes.slice(1, -1);
 
@@ -654,42 +739,41 @@ MrkdwnJsFile.prototype.getTranslation = function(node, locale, translations) {
             this.logger.warn("Warning! Translation of\n'" + text + "' (key: " +node.resource.getKey() + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
         }
 
-        return this.stringify(transMa.root);
+        var translationNode = this.convertMAToASTNode(transMa.root);
+        node.type = translationNode.type;
+        // this can re-arrange the tree structure if the translation has components in a different
+        // order or nested differently than the source
+        node.children = translationNode.children;
+        node.label = translationNode.label;
     }
-
-    return "";
 };
 
 /**
- * Return the translation for the given node in the given locale.
+ * Walk the AST to find the nodes that contain localizable strings and
+ * replace them with new AST nodes that represent the localized strings.
  *
  * @private
  * @param {Node} node the source node to localize
  * @param {string} locale the locale to localize to
  * @param {TranslationSet} translations the set of translations
- * @returns {string} the translation at the given node
  */
 MrkdwnJsFile.prototype.walkAst = function(node, locale, translations) {
-    var ret = "";
     if (node.message && node.resource) {
-        ret += this.getTranslation(node, locale, translations);
+        this.getTranslation(node, locale, translations);
     } else {
-        var children, label;
         if (node.children) {
             children = "";
             for (var i = 0; i < node.children.length; i++) {
-                children += this.walkAst(node.children[i], locale, translations);
+                this.walkAst(node.children[i], locale, translations);
             }
         }
         if (node.label) {
             label = "";
             for (var i = 0; i < node.label.length; i++) {
-                label += this.walkAst(node.label[i], locale, translations);
+                this.walkAst(node.label[i], locale, translations);
             }
         }
-        ret += this.stringifyAstNode(node, children, node.arguments, label);
     }
-    return ret;
 };
 
 /**
@@ -707,14 +791,21 @@ MrkdwnJsFile.prototype.localizeText = function(translations, locale) {
     var localized = {};
 
     for (var key in this.contents) {
-        var ast = this.contents[key].ast;
+        // don't mess with the original AST because we still need it
+        // for the other locales
+        var ast = cloneAst(this.contents[key].ast);
 
-        localized[key] = this.walkAst(ast, locale, translations);
+        // walk the AST to find the nodes that contain localizable strings and
+        // replace them with nodes that represent the localized strings.
+        this.walkAst(ast, locale, translations);
+
+        // stringify the modified AST to get the final localized string
+        localized[key] = this.stringify(ast);
     }
 
     var output;
     if (!this.project.settings || this.project.settings.outputStyle === "commonjs") {
-        output = "module.exports = ";
+        output = "module.exports.messages = ";
     } else {
         output = "export default messages = ";
     }
