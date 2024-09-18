@@ -104,16 +104,24 @@ MrkdwnJsFileType.prototype.handles = function(pathName) {
     var normalized = pathName;
 
     if (ret) {
+        // see if this file contains a locale spec, which means it is an already
+        // localized file that we don't need to re-localize
         var match = alreadyLoc.exec(pathName);
-        if (match && match.length > 2) {
-            if (this.API.utils.iso639[match[3]]) {
-                if (match.length < 6 || !match[6] || !this.API.utils.iso3166[match[6]]) {
-                    ret = true;
+        if (match) {
+            var wholeRegexMatches = match.length > 2;
+            var wholeLocaleSpec = match[2];
+            var languageMatch = match[3];
+            var regionMatch = match[6];
+            if (wholeRegexMatches) {
+                if (this.API.utils.iso639[languageMatch]) {
+                    if (match.length < 6 || !regionMatch || !this.API.utils.iso3166[regionMatch]) {
+                        ret = true;
+                    } else {
+                        ret = (wholeLocaleSpec === this.project.sourceLocale);
+                    }
                 } else {
-                    ret = (match[2] === this.project.sourceLocale);
+                    ret = true;
                 }
-            } else {
-                ret = true;
             }
         }
     }
