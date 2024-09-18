@@ -691,7 +691,7 @@ function convertMAToASTNode(node) {
 
 
 /**
- * Mute the current AST node into a new one that represents the
+ * Mutate the current AST node into a new one that represents the
  * localized version of the string at this point in the tree. If a
  * node has a resource and a message accumulator associated with it, then the
  * resource is used to look up the translation in the given set of
@@ -714,7 +714,7 @@ MrkdwnJsFile.prototype.getTranslation = function(node, locale, translations) {
     var text = node.resource.getSource();
     var ma = node.message;
     if (ma.getTextLength() === 0) {
-        // nothing to localize, so don't mute the node
+        // nothing to localize, so don't mutate the node
         return;
     }
 
