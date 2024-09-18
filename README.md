@@ -13,7 +13,10 @@ Example file:
 
 ```javascript
 export default messages = {
+    // this is a translator's comment that explains the first string
     "unique id 1": "This is a *mrkdwn* string!",
+
+    // this is a translator's comment that explains the second string
     "unique id 2": "This _is_ also a <http://example.com|mrkdwn string>."
 };
 ```
@@ -24,7 +27,7 @@ Whenever there is syntax in the mrkdwn that translators should
 not touch, this plugin converts them into xml-like components.
 
 ```
-This is _bold_ and *italic* text.
+This is *bold* and _italic_ text.
 ```
 
 Becomes the string:
