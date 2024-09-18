@@ -207,7 +207,7 @@ describe("mrkdwn", function() {
             project: p,
             type: mdft
         });
-debugger;
+
         expect(mjf).toBeTruthy();
         mjf.parse(
             'export default messages = {\n' +
@@ -233,7 +233,7 @@ debugger;
             project: p,
             type: mdft
         });
-debugger;
+
         expect(mjf).toBeTruthy();
         mjf.parse(
             'export default messages = {\n' +
@@ -766,7 +766,7 @@ debugger;
             project: p,
             type: mdft
         });
-debugger;
+
         expect(mjf).toBeTruthy();
         mjf.parse(
             'export default messages = {\n' +
@@ -1579,7 +1579,7 @@ debugger;
             targetLocale: "de-DE",
             datatype: "mrkdwn"
         }));
-debugger;
+
         mjf.localize(translations, ["fr-FR", "de-DE"]);
         // should produce the files, even if there is nothing to localize in them
         expect(fs.existsSync(frenchFile)).toBeTruthy();
