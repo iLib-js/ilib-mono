@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-import type { Plugin } from "loctool";
-import PendoXliffFileType from "./loctool/PendoXliffFileType";
+import { fromHtmlTags, toHtmlTags } from "./color";
 
-// loctool plugin entrypoint
-const plugin: Plugin = PendoXliffFileType;
+export { htmlRegex, tagRegex } from "./color";
 
-export = plugin;
+export default { fromHtmlTags, toHtmlTags };

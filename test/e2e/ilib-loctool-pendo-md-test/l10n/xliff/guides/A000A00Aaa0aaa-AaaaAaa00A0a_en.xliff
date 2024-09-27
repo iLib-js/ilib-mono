@@ -1,0 +1,46 @@
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en-US" target-language="">
+        <body>
+            <group id="Aaaaaaaa0aAaaAAA0AAA0A0aAaa">
+                <note></note>
+                <trans-unit id="73e6c197-f1c0-4bb1-9b31-a40ce2270870|ariaLabel">
+                    <source><![CDATA[Close]]></source>
+                    <target></target>
+                    <note>CloseButton</note>
+                </trans-unit>
+                <trans-unit id="8de49842-c1fd-4536-905e-8817673b4c24|md">
+                    <source><![CDATA[**Callout!**]]></source>
+                    <target></target>
+                    <note>TextView</note>
+                </trans-unit>
+                <trans-unit id="a165c0e2-11de-40b4-9209-55bcdff6d67b|md">
+                    <source><![CDATA[First paragraph of a multi-paragraph string.
+
+Second paragraph of a multi-paragraph string.]]></source>
+                    <target></target>
+                    <note>TextView</note>
+                </trans-unit>
+                <trans-unit id="5f8bec10-d663-43d7-a185-49824564060c|md">
+                    <source><![CDATA[String with [a link in it](https://example.com)]]></source>
+                    <target></target>
+                    <note>TextView</note>
+                </trans-unit>
+                <trans-unit id="cff9a58d-39e6-4562-8b39-96a137d0bfd1|url">
+                    <source><![CDATA[https://example.com/linkOnly]]></source>
+                    <target></target>
+                    <note>ButtonLink</note>
+                </trans-unit>
+                <trans-unit id="7542337f-62c3-44c3-9a4a-d0f7944dd5b4|md">
+                    <source><![CDATA[First paragraph of a multi-paragraph string with list.
+
+This is a list:
+* first item
+* second item
+* third item]]></source>
+                    <target></target>
+                    <note>TextView</note>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>

@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-import type { Plugin } from "loctool";
-import PendoXliffFileType from "./loctool/PendoXliffFileType";
+import syntax from "./syntax";
 
-// loctool plugin entrypoint
-const plugin: Plugin = PendoXliffFileType;
-
-export = plugin;
+export default {
+    syntax,
+};

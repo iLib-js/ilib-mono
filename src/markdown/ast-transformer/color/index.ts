@@ -15,10 +15,16 @@
  * limitations under the License.
  */
 
-import type { Plugin } from "loctool";
-import PendoXliffFileType from "./loctool/PendoXliffFileType";
+import type { Color } from "./color";
+import { fromColorNodes, toColorNodes } from "./color";
 
-// loctool plugin entrypoint
-const plugin: Plugin = PendoXliffFileType;
+// extend available nodes in mdast
+// as described in JSDoc of @types/mdast@3.0.15
+declare module "mdast" {
+    interface PhrasingContentMap {
+        Color: Color;
+    }
+}
 
-export = plugin;
+export { Color };
+export default { fromColorNodes, toColorNodes };
