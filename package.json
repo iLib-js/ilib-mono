@@ -49,6 +49,7 @@
         "eslint-config-prettier": "^9.1.0",
         "globals": "^15.9.0",
         "husky": "^9.1.5",
+        "ilib-loctool-pendo-md": "file:.",
         "jest": "^29.7.0",
         "lint-staged": "^15.2.10",
         "loctool": "^2.25.2",
@@ -56,9 +57,7 @@
         "ts-jest": "^29.2.5",
         "typescript": "^5.5.4",
         "typescript-eslint": "^8.4.0",
-        "unist-builder": "2",
-        "unist-util-visit": "^2",
-        "ilib-loctool-pendo-md": "file:."
+        "unist-builder": "2"
     },
     "dependencies": {
         "@ungap/structured-clone": "^1.2.0",
@@ -69,7 +68,8 @@
         "micromark": "~2.11.0",
         "micromark-extension-gfm-strikethrough": "^0",
         "micromatch": "^4.0.8",
-        "unist-util-remove-position": "3"
+        "unist-util-remove-position": "3",
+        "unist-util-visit": "^2"
     },
     "peerDependencies": {
         "loctool": "^2.25.2"
