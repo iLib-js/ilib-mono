@@ -66,7 +66,9 @@ const toMarkdown = (ast: Root) =>
  * @returns Tuple of escaped string and the list of components
  */
 export const convert = (markdown: string): readonly [string, ComponentList] => {
-    // step 1:
+    // [step 0]: {color: #FFFFFF}*pizza* spaghetti{/color}
+
+    // [step 1]: <color value="#FFFFFF">*pizza* spaghetti</color>
     // pre-transform Pendo markdown string
     // to convert their custom Color tags {color: #000000}{/color}
     // into HTML tags <color value="#000000"></color>
@@ -74,7 +76,8 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     // @TODO this and related steps should be removed after implementing proper micromark extension for parsing color tags
     const markdownWithColorAsHtml = colorString.toHtmlTags(markdown);
 
-    // step 2:
+    // [step 2]:
+    //     [root: [paragraph: [html(<color value="#FFFFFF">), emphasis: [text(pizza)], text(spaghetti), html(</color>)]]]
     // parse the pre-transformed markdown into mdast;
     // use parser plugins to support syntax extensions
     // for GFM strikethrough (~~ ~~) and Pendo underline (++ ++)
@@ -85,17 +88,46 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     // and also it does not reflect the original markdown string anyway
     const astNoPosition = unistUtilRemovePosition(ast) as Root;
 
-    // step 3:
+    // [step 3]:
+    // [root: [
+    //     paragraph: [
+    //         color(#FFFFFF): [
+    //             emphasis: [text(pizza)],
+    //             text(spaghetti),
+    //         ],
+    //     ],
+    // ]]
     // transform the given mdast tree to find HTML nodes corresponding to <color ...> tags
     // and replace them with custom Color ast nodes
     const astWithColorNodes = colorAst.toColorNodes(astNoPosition);
 
-    // step 4:
+    // [step 4]:
+    // [step 4.1 - internal conversion]:
+    //     [root: [
+    //         paragraph: [
+    //             component(0, color): [
+    //                 component(1, emphasis): [text(pizza)],
+    //                 text(spaghetti),
+    //             ],
+    //         ],
+    //     ]]
+
+    // [step 4.2 - actual output]:
+    //     [root: [
+    //         paragraph: [
+    //             html(<c0>),
+    //             html(<c1>),
+    //             text(pizza),
+    //             html(</c1>),
+    //             text(spaghetti),
+    //             html(</c0>),
+    //         ],
+    //     ]]
     // transform the AST to replace supported markdown syntax using numbered components;
     // also collect data about those components
     const [astWithComponents, components] = component.toComponents(astWithColorNodes);
 
-    // step 5:
+    // [step 5]: <c0><c1>pizza<c1> spaghetti</c0>
     // reassemble the escaped string from the AST with components
     const escapedString = toMarkdown(astWithComponents);
 
