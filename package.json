@@ -2,6 +2,7 @@
     "name": "ilib-loctool-pendo-md",
     "version": "1.0.0",
     "main": "dist/index.js",
+    "description": "A loctool plugin that knows how to process markdown inside of Pendo xliff files",
     "types": "dist/index.d.ts",
     "author": "Wadim Wawrzenczak <wwawrzenczak@box.com>",
     "license": "Apache-2.0",
@@ -21,10 +22,19 @@
         "markdown",
         "md"
     ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "dist"
+    ],
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "clean": "rm -rf dist",
+        "clean": "rm -rf dist ; git clean -f -d *",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
+        "dist": "npm-run-all build test pkg",
+        "pkg": "npm pack",
         "test": "jest",
+        "test:watch": "jest --watch",
         "lint": "eslint .",
         "format": "prettier --check .",
         "prepare": "husky"
@@ -33,14 +43,11 @@
     "engines": {
         "node": ">=18.18.0"
     },
-    "files": [
-        "dist"
-    ],
     "devDependencies": {
         "@eslint/js": "^9.9.1",
         "@tsconfig/node18": "^18.2.4",
-        "@types/eslint-config-prettier": "^6.11.3",
         "@types/eslint__js": "^8.42.3",
+        "@types/eslint-config-prettier": "^6.11.3",
         "@types/jest": "^29.5.12",
         "@types/micromatch": "^4.0.9",
         "@types/node": "18",
@@ -68,6 +75,7 @@
         "micromark": "~2.11.0",
         "micromark-extension-gfm-strikethrough": "^0",
         "micromatch": "^4.0.8",
+        "npm-run-all": "^4.1.5",
         "unist-util-remove-position": "3",
         "unist-util-visit": "^2"
     },
