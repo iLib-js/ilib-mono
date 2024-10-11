@@ -18,6 +18,42 @@
  */
 
 import Parser from '../src/Parser.js';
+import IntermediateRepresentation from '../src/IntermediateRepresentation.js';
+import SourceFile from '../src/SourceFile.js';
+
+class MockSourceFile extends SourceFile {
+    constructor(path, options) {
+        super(path, options ?? { getLogger: () => { } });
+        this.content = "This is a test";
+        this.dirty = false;
+    }
+
+    getContent() {
+        return this.content;
+    }
+
+    setContent(content) {
+        this.content = content;
+        this.dirty = true;
+    }
+
+    getPath() {
+        return this.filePath;
+    }
+
+    getRaw() {
+        return Buffer.from(this.content);
+    }
+
+    isDirty() {
+        return this.dirty;
+    }
+
+    write() {
+        this.dirty = false;
+        return;
+    }
+}
 
 class MockParser extends Parser {
     constructor() {
@@ -27,8 +63,32 @@ class MockParser extends Parser {
         this.description = "A mock parser that doesn't really do a whole heck of a lot of anything.";
     }
 
+    // @override
     getType() {
         return "ast";
+    }
+
+    // @override
+    parse(sourceFile) {
+        // does not actually parse anything
+        const content = sourceFile.getContent();
+        return new IntermediateRepresentation({
+            type: "resource",
+            ir: content,
+            sourceFile
+        });
+    }
+
+    // @override
+    get canWrite() {
+        return true;
+    }
+
+    // @override
+    write(ir) {
+        const newSource = new MockSourceFile(ir.sourceFile.getPath(), { getLogger: () => { } });
+        newSource.setContent(ir.getRepresentation());
+        return newSource;
     }
 }
 
@@ -97,6 +157,50 @@ describe("testParser", () => {
         expect(parser).toBeTruthy();
 
         expect(parser.canWrite).toBe(false);
+    });
+
+    test("Parsing a file", () => {
+        expect.assertions(2);
+
+        const parser = new MockParser();
+        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
+
+        const ir = parser.parse(sourceFile);
+        expect(ir).toBeTruthy();
+        expect(ir.getRepresentation()).toBe("This is a test");
+    });
+
+    test("Writing a file", () => {
+        expect.assertions(2);
+
+        const parser = new MockParser();
+        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
+
+        const ir = parser.parse(sourceFile);
+        expect(ir).toBeTruthy();
+
+        const newFile = parser.write(ir);
+        expect(newFile.isDirty()).toBeTruthy();
+    });
+
+    test("Update the representation and convert back to a source file", () => {
+        expect.assertions(3);
+
+        const parser = new MockParser();
+        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
+
+        const ir = parser.parse(sourceFile);
+        expect(ir).toBeTruthy();
+        expect(ir.getRepresentation()).toBe("This is a test");
+
+        const newIR = new IntermediateRepresentation({
+            type: "string",
+            ir: "This is a different test",
+            sourceFile
+        });
+
+        const newSourceFile = parser.write(newIR);
+        expect(newSourceFile.getContent()).toBe("This is a different test");
     });
 });
 

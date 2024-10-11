@@ -52,7 +52,7 @@ class Parser {
     init() {}
 
     /** name of this type of parser
-     * 
+     *
      * Subclass must define this property.
      * @readonly
      * @abstract
@@ -73,7 +73,7 @@ class Parser {
 
     /** description of what this parser does and what kinds of files it
      * handles for users who are trying to discover whether or not to use it
-     * 
+     *
      * Subclass must define this property.
      * @readonly
      * @abstract
@@ -85,7 +85,7 @@ class Parser {
     /**
      * Return a description of what this parser does and what kinds of files it
      * handles for users who are trying to discover whether or not to use it.
-     * 
+     *
      * Subclass must define {@link Parser.description}.
      *
      * @returns {String} a description of this parser.
@@ -96,7 +96,7 @@ class Parser {
 
     /** list of extensions of the files that this parser handles.
      * The extensions are listed without the dot. eg. ["json", "jsn"]
-     * 
+     *
      * Subclass must define this property.
      * @readonly
      * @abstract
@@ -108,7 +108,7 @@ class Parser {
     /**
      * Return the list of extensions of the files that this parser handles.
      * The extensions are listed without the dot. eg. ["json", "jsn"].
-     * 
+     *
      * Subclass must define {@link Parser.extensions}.
      *
      * @returns {Array.<String>} a list of file name extensions
@@ -203,7 +203,7 @@ class Parser {
      *
      * @param {IntermediateRepresentation} ir A modified representation which
      * should be written back to the file.
-     * @returns {void}
+     * @returns {SourceFile} the source file containing the modified content
      */
     write(ir) {
         throw new NotImplementedError();

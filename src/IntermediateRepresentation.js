@@ -36,9 +36,12 @@ class IntermediateRepresentation {
      */
     constructor(params) {
         const requiredFields = ["type", "ir", "sourceFile"];
+        if (!params) {
+            throw new Error(`Missing required parameters in the IntermediateRepresentation constructor: ${requiredFields.join(", ")}`);
+        }
         const missing = requiredFields.filter(field => undefined === params[field]);
         if (missing.length) {
-            throw new Error("Missing required parameters in the IntermediateRepresentation constructor: " + missing.join(", "));
+            throw new Error(`Missing required parameters in the IntermediateRepresentation constructor: ${missing.join(", ")}`);
         }
 
         this.type = params.type;
@@ -47,7 +50,7 @@ class IntermediateRepresentation {
         this.stats = params.stats;
     }
 
-    /** 
+    /**
      * A unique name for this type of representation
      * @type {string}
      * @readonly
@@ -63,7 +66,7 @@ class IntermediateRepresentation {
         return this.type;
     }
 
-    /** 
+    /**
      * Representation that was parsed from the file
      * @type {any}
      */
@@ -76,6 +79,19 @@ class IntermediateRepresentation {
      */
     getRepresentation() {
         return this.ir;
+    }
+
+    /**
+     * Update the representation in this instance.
+     * @param {any} ir the new representation. This can be any type of object
+     * that the parser uses to represent the contents of the file, but it cannot
+     * be falsy.
+     */
+    setRepresentation(ir) {
+        if (!ir) {
+            throw new Error("IntermediateRepresentation.setRepresentation: ir is required");
+        }
+        this.ir = ir;
     }
 
     /**
@@ -95,7 +111,7 @@ class IntermediateRepresentation {
         return this.sourceFile;
     }
 
-    /** 
+    /**
      * Statistics about the file that was parsed
      * @type {FileStats | undefined}
      * @readonly

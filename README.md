@@ -41,7 +41,26 @@ limitations under the License.
 ## Release Notes
 
 ### v3.1.0
+
 - added formatOutput() method to the Formatter class
+- added support for updating source files
+    - added the setContent() method to the SourceFile class to allow changing the
+      content of the file after it has been fixed or filtered. This sets the dirty
+      flag on the SourceFile instance so that the write() method of the Parser will
+      write the updated content to disk.
+    - modified the return value of the write() method of the Parser class to return
+      a modified SourceFile instance that is ready to write to disk. The idea is
+      that the Parser turns a source file into an IntermediateRepresentation in the
+      parse() method, and then the IntermediateRepresentation is turned back into a
+      SourceFile in the write() method. This allows the Parser to be stateless and
+      to be reused for multiple files. The IntermediateRepresentation is the state
+      that is passed from the Parser to the Rules and to then the Fixer, which modifies
+      the IntermediateRepresentation to fix the issues found by the Rules. If the Fixer
+      introduces any changes to the IntermediateRepresentation, the source file can be
+      updated with the fixed content and then written back to disk.
+    - added the setRepresentation() method to the IntermediateRepresentation class to
+      allow a Fixer or Filter to update the representation of the file.
+
 
 ### v3.0.0
 

@@ -18,6 +18,7 @@
  */
 
 import fs from 'fs';
+import { Buffer } from 'buffer';
 import NotImplementedError from "./NotImplementedError.js";
 
 /**
@@ -36,7 +37,7 @@ import NotImplementedError from "./NotImplementedError.js";
  */
 class SourceFile {
     /**
-     * Construct a new source file instance. 
+     * Construct a new source file instance.
      *
      * @param {String} uri URI or path to the source file
      * @param {Object} [options] options to the constructor
@@ -73,7 +74,7 @@ class SourceFile {
         this.dirty = false;
     }
 
-    /** 
+    /**
      * A callback function provided by the linter to retrieve the log4js logger
      * @type {Function | undefined}
      * @protected
@@ -81,7 +82,7 @@ class SourceFile {
     logger;
 
     /**
-     * URI or path to the source file. 
+     * URI or path to the source file.
      * @type {String}
      * @protected
      */
@@ -89,7 +90,7 @@ class SourceFile {
 
     /**
      * Get the URI or path to this source file.
-     * 
+     *
      * @returns {String} URI or path to this source file
      */
     getPath() {
@@ -102,7 +103,7 @@ class SourceFile {
      * @protected
      */
     raw;
-    
+
     /**
      * Return the raw contents of the file as a Buffer of bytes.
      * This has not been converted into a Unicode string yet.
@@ -123,7 +124,7 @@ class SourceFile {
      * @protected
      */
     content;
-    
+
     /**
      * Get the content of this file encoded as a regular Javascript
      * string.
@@ -135,7 +136,22 @@ class SourceFile {
         }
         return this.content;
     }
-    
+
+    /**
+     * Set the content of this file as a string. The file remains modified
+     * in-memory only and is not written out to disk until the
+     * {@link "SourceFile#write"} method is called.
+     *
+     * @param {String} content the content to set
+     */
+    setContent(content) {
+        if (typeof (content) === 'string') {
+            this.content = content;
+            this.raw = Buffer.from(this.content, "utf8");
+            this.dirty = true;
+        }
+    }
+
     /**
      * Get the content of this file, encoded as an array of lines. Each
      * line has its trailing newline character removed.
@@ -181,7 +197,7 @@ class SourceFile {
      * @protected
      */
     type;
-    
+
     /**
      * Return the name of the filetype assigned to this file. This can
      * be used to find settings that govern the parsing and processing
@@ -202,7 +218,7 @@ class SourceFile {
     /**
      * Return whether or not this instance has been modifed
      * from the original source.
-     * 
+     *
      * @returns {Boolean} true if the file has been modified
      */
     isDirty() {

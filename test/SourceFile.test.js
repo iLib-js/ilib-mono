@@ -50,7 +50,7 @@ describe('SourceFile', () => {
         expect(sourceFile.getPath()).toBe(filePath1);
         expect(sourceFile.getType()).toBe("");
     });
-    
+
     test('should create a SourceFile instance with provided options', () => {
         expect.assertions(2);
 
@@ -184,7 +184,7 @@ describe('SourceFile', () => {
         expect.assertions(1);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        
+
         expect(sourceFile.getLength()).toBe(20);
     });
 
@@ -192,7 +192,7 @@ describe('SourceFile', () => {
         expect.assertions(2);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        
+
         expect(sourceFile.getLength()).toBe(20);
         const newLines = ['New Line 1', 'New Line 2', 'New Line 3'];
         sourceFile.setLines(newLines);
@@ -203,7 +203,7 @@ describe('SourceFile', () => {
         expect.assertions(2);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        
+
         expect(sourceFile.isDirty()).toBeFalsy();
         const newLines = ['New Line 1', 'New Line 2', 'New Line 3'];
         sourceFile.setLines(newLines);
@@ -234,7 +234,23 @@ describe('SourceFile', () => {
         const newLines = ['Come, they told me', 'Pah rumppah pum pum'];
         sourceFile.setLines(newLines);
         sourceFile.write();
-        
+
+        const content = fs.readFileSync(filePath, "utf-8");
+        expect(content).toBe("Come, they told me\nPah rumppah pum pum");
+    });
+
+    test('write to the same file after calling setContent', () => {
+        expect.assertions(2);
+
+        const filePath = "./test/testfiles/x.txt";
+        fs.writeFileSync(filePath, "This is a test.\nThis is only a test.\n", "utf-8");
+
+        const sourceFile = new SourceFile(filePath, { getLogger });
+        expect(sourceFile.getContent()).toBe("This is a test.\nThis is only a test.\n");
+
+        sourceFile.setContent("Come, they told me\nPah rumppah pum pum");
+        sourceFile.write();
+
         const content = fs.readFileSync(filePath, "utf-8");
         expect(content).toBe("Come, they told me\nPah rumppah pum pum");
     });
