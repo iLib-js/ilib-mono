@@ -35,7 +35,7 @@ class Parser {
      */
     constructor(options) {
         if (this.constructor === Parser) {
-            throw new Error("Cannot instantiate abstract class Plugin directly!");
+            throw new Error("Cannot instantiate abstract class Parser directly!");
         }
         this.getLogger = options?.getLogger;
     }
