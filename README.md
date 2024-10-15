@@ -60,7 +60,14 @@ limitations under the License.
       updated with the fixed content and then written back to disk.
     - added the setRepresentation() method to the IntermediateRepresentation class to
       allow a Fixer or Filter to update the representation of the file.
-
+    - added the Transformer class to allow transforming the IntermediateRepresentation
+      into a new IntermediateRepresentation. This allows multiple transformations to
+      be applied to the file in sequence, such as filtering out any unwanted content,
+      or adding a comment at the beginning of the file that tells the user that
+      this is a generated file.
+    - added Plugin.getTransformers() method to allow plugins to define transformers
+      that can be applied to the IntermediateRepresentation after the Rules are run
+      on it
 
 ### v3.0.0
 

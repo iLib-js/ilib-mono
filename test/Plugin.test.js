@@ -89,5 +89,17 @@ describe("testPlugin", () => {
         expect(parsers).toBeTruthy();
         expect(parsers.length).toBe(0);
     });
+
+    test("Plugin GetTransformers default", () => {
+        expect.assertions(3);
+
+        const plugin = new MockPlugin();
+
+        expect(plugin).toBeTruthy();
+
+        const transformers = plugin.getTransformers();
+        expect(transformers).toBeTruthy();
+        expect(transformers.length).toBe(0);
+    });
 });
 

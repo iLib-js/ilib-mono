@@ -128,6 +128,19 @@ class Plugin {
     getFixers() {
         return [];
     }
+
+    /**
+     * For a "transformer" type of plugin, this returns a list of Transformer
+     * classes that this plugin implements. Note this is the class, not an
+     * instance of the class. The linter may need to instantiate this transformer
+     * multiple times.
+     *
+     * @returns {Array.<Class>} list of Transformer classes implemented
+     * by this plugin
+     */
+    getTransformers() {
+        return [];
+    }
 };
 
 export default Plugin;
