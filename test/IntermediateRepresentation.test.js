@@ -21,6 +21,12 @@ import IntermediateRepresentation from '../src/IntermediateRepresentation.js';
 import SourceFile from '../src/SourceFile.js';
 import FileStats from '../src/FileStats.js';
 
+import {describe, expect, test} from '@jest/globals';
+
+/**
+ * @jest-environment node
+ */
+
 describe('IntermediateRepresentation', () => {
     test('should throw an error if created without required parameters', () => {
         expect.assertions(1);
@@ -45,27 +51,5 @@ describe('IntermediateRepresentation', () => {
         expect(irInstance.ir).toBe(ir);
         expect(irInstance.sourceFile).toBe(sourceFile);
         expect(irInstance.stats).toBe(stats);
-    });
-
-    test('should update the representation with the correct properties', () => {
-        expect.assertions(2);
-
-        const type = 'test';
-        const ir = { test: 'test' };
-        const sourceFile = new SourceFile('test', { getLogger: () => { } });
-        const stats = new FileStats();
-        const irInstance = new IntermediateRepresentation({
-            type,
-            ir,
-            sourceFile,
-            stats
-        });
-
-        expect(irInstance.getRepresentation()).toBe(ir);
-
-        const newIr = { test: 'newTest' };
-        irInstance.setRepresentation(newIr);
-
-        expect(irInstance.getRepresentation()).toBe(newIr);
     });
 });

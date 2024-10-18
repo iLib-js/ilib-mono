@@ -21,7 +21,13 @@ import Transformer from '../src/Transformer.js';
 import IntermediateRepresentation from '../src/IntermediateRepresentation.js';
 import SourceFile from '../src/SourceFile.js';
 
-class MockSourceFile extends SourceFile {
+import {describe, expect, test} from '@jest/globals';
+
+/**
+ * @jest-environment node
+ */
+
+class TestSourceFile extends SourceFile {
     constructor(path, options) {
         super(path, options ?? { getLogger: () => { } });
         this.content = "This is a test";
@@ -30,11 +36,6 @@ class MockSourceFile extends SourceFile {
 
     getContent() {
         return this.content;
-    }
-
-    setContent(content) {
-        this.content = content;
-        this.dirty = true;
     }
 
     getPath() {
@@ -51,13 +52,13 @@ class MockSourceFile extends SourceFile {
 
     write() {
         this.dirty = false;
-        return;
+        return true;
     }
 }
 
-class MockTransformer extends Transformer {
-    name = "mock";
-    description = "A mock transformer that doesn't really do a whole heck of a lot of anything.";
+class TestTransformer extends Transformer {
+    name = "test";
+    description = "A test transformer that doesn't really do a whole heck of a lot of anything.";
     type = "lines";
 
     constructor(options) {
@@ -77,15 +78,15 @@ class MockTransformer extends Transformer {
 }
 
 describe("testTransformer", () => {
-    test("TransformerNormal", () => {
+    test("Transformer normal constructor", () => {
         expect.assertions(1);
 
-        const transformer = new MockTransformer();
+        const transformer = new TestTransformer();
 
         expect(transformer).toBeTruthy();
     });
 
-    test("TransformerCannotInstantiateAbstractClass", () => {
+    test("Transformer cannot instantiate an abstract class directly", () => {
         expect.assertions(1);
 
         expect(() => {
@@ -93,30 +94,30 @@ describe("testTransformer", () => {
         }).toThrow();
     });
 
-    test("TransformerGetName", () => {
+    test("GetName returns the right name", () => {
         expect.assertions(2);
 
-        const transformer = new MockTransformer();
+        const transformer = new TestTransformer();
 
         expect(transformer).toBeTruthy();
 
-        expect(transformer.getName()).toBe("mock");
+        expect(transformer.getName()).toBe("test");
     });
 
-    test("TransformerGetDescription", () => {
+    test("GetDescription returns the right description", () => {
         expect.assertions(2);
 
-        const transformer = new MockTransformer();
+        const transformer = new TestTransformer();
 
         expect(transformer).toBeTruthy();
 
-        expect(transformer.getDescription()).toBe("A mock transformer that doesn't really do a whole heck of a lot of anything.");
+        expect(transformer.getDescription()).toBe("A test transformer that doesn't really do a whole heck of a lot of anything.");
     });
 
-    test("TransformerGetType", () => {
+    test("GetType return the right type", () => {
         expect.assertions(2);
 
-        const transformer = new MockTransformer();
+        const transformer = new TestTransformer();
 
         expect(transformer).toBeTruthy();
 
@@ -126,8 +127,8 @@ describe("testTransformer", () => {
     test("Transforming a file", () => {
         expect.assertions(2);
 
-        const transformer = new MockTransformer();
-        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
+        const transformer = new TestTransformer();
+        const sourceFile = new TestSourceFile("test/testfiles/xliff/test.xliff");
         const representation = new IntermediateRepresentation({
             type: transformer.getType(),
             ir: ["This is a test", "this is only a test"],
@@ -138,6 +139,23 @@ describe("testTransformer", () => {
         expect(ir).toBeTruthy();
         // deletes the last entry in the array
         expect(ir.getRepresentation()).toStrictEqual(["This is a test"]);
+    });
+
+    test("Make sure the representation is immutable", () => {
+        expect.assertions(2);
+    
+        const transformer = new TestTransformer();
+        const sourceFile = new TestSourceFile("test/testfiles/xliff/test.xliff");
+        const representation = new IntermediateRepresentation({
+            type: transformer.getType(),
+            ir: ["This is a test", "this is only a test"],
+            sourceFile
+        });
+    
+        const ir = transformer.transform(representation);
+        expect(ir).toBeTruthy();
+        // should return a new object, not the same one
+        expect(ir).not.toBe(representation);
     });
 });
 

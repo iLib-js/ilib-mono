@@ -21,6 +21,13 @@ import Parser from '../src/Parser.js';
 import IntermediateRepresentation from '../src/IntermediateRepresentation.js';
 import SourceFile from '../src/SourceFile.js';
 
+import {describe, expect, test} from '@jest/globals';
+
+/**
+ * @jest-environment node
+ */
+
+/** A mock parser that doesn't actually read anything from disk or parse anything. */
 class MockSourceFile extends SourceFile {
     constructor(path, options) {
         super(path, options ?? { getLogger: () => { } });
@@ -30,11 +37,6 @@ class MockSourceFile extends SourceFile {
 
     getContent() {
         return this.content;
-    }
-
-    setContent(content) {
-        this.content = content;
-        this.dirty = true;
     }
 
     getPath() {
@@ -51,16 +53,16 @@ class MockSourceFile extends SourceFile {
 
     write() {
         this.dirty = false;
-        return;
+        return true;
     }
 }
 
-class MockParser extends Parser {
+class TestParser extends Parser {
     constructor() {
         super();
-        this.name = "mock";
+        this.name = "test";
         this.extensions = [ "x", "y", "z" ];
-        this.description = "A mock parser that doesn't really do a whole heck of a lot of anything.";
+        this.description = "A test parser that doesn't really do a whole heck of a lot of anything.";
     }
 
     // @override
@@ -68,27 +70,18 @@ class MockParser extends Parser {
         return "ast";
     }
 
-    // @override
+    /**
+     * @param {SourceFile} sourceFile
+     * @returns {IntermediateRepresentation[]}
+     */
     parse(sourceFile) {
         // does not actually parse anything
         const content = sourceFile.getContent();
-        return new IntermediateRepresentation({
+        return [new IntermediateRepresentation({
             type: "resource",
             ir: content,
             sourceFile
-        });
-    }
-
-    // @override
-    get canWrite() {
-        return true;
-    }
-
-    // @override
-    write(ir) {
-        const newSource = new MockSourceFile(ir.sourceFile.getPath(), { getLogger: () => { } });
-        newSource.setContent(ir.getRepresentation());
-        return newSource;
+        })];
     }
 }
 
@@ -96,7 +89,7 @@ describe("testParser", () => {
     test("ParserNormal", () => {
         expect.assertions(1);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
     });
@@ -112,27 +105,27 @@ describe("testParser", () => {
     test("ParserGetName", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("mock");
+        expect(parser.getName()).toBe("test");
     });
 
     test("ParserGetDescription", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
-        expect(parser.getDescription()).toBe("A mock parser that doesn't really do a whole heck of a lot of anything.");
+        expect(parser.getDescription()).toBe("A test parser that doesn't really do a whole heck of a lot of anything.");
     });
 
     test("ParserGetExtensions", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
@@ -142,65 +135,25 @@ describe("testParser", () => {
     test("ParserGetType", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
         expect(parser.getType()).toBe("ast");
     });
 
-    test("ParserGetCanWrite", () => {
-        expect.assertions(2);
-
-        const parser = new MockParser();
-
-        expect(parser).toBeTruthy();
-
-        expect(parser.canWrite).toBe(false);
-    });
-
     test("Parsing a file", () => {
-        expect.assertions(2);
+        expect.assertions(4);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
         const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
 
-        const ir = parser.parse(sourceFile);
+        const irArray = parser.parse(sourceFile);
+        expect(irArray).toBeTruthy();
+        expect(irArray.length).toBe(1);
+        const ir = irArray[0];
         expect(ir).toBeTruthy();
         expect(ir.getRepresentation()).toBe("This is a test");
-    });
-
-    test("Writing a file", () => {
-        expect.assertions(2);
-
-        const parser = new MockParser();
-        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
-
-        const ir = parser.parse(sourceFile);
-        expect(ir).toBeTruthy();
-
-        const newFile = parser.write(ir);
-        expect(newFile.isDirty()).toBeTruthy();
-    });
-
-    test("Update the representation and convert back to a source file", () => {
-        expect.assertions(3);
-
-        const parser = new MockParser();
-        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
-
-        const ir = parser.parse(sourceFile);
-        expect(ir).toBeTruthy();
-        expect(ir.getRepresentation()).toBe("This is a test");
-
-        const newIR = new IntermediateRepresentation({
-            type: "string",
-            ir: "This is a different test",
-            sourceFile
-        });
-
-        const newSourceFile = parser.write(newIR);
-        expect(newSourceFile.getContent()).toBe("This is a different test");
     });
 });
 

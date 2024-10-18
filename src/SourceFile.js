@@ -41,11 +41,14 @@ class SourceFile {
      *
      * @param {String} uri URI or path to the source file
      * @param {Object} [options] options to the constructor
+     * @param {SourceFile} [options.file] the source file to copy from. Other options
+     * will override the fields in this file
      * @param {String} [options.sourceLocale] the source locale of the files
      * being linted
      * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
-     * @param [String] [options.type] the type of this file
+     * @param {String} [options.type] the type of this file
+     * @param {String} [options.content] the content of the file
      * @constructor
      */
     constructor(uri, options) {
@@ -53,15 +56,40 @@ class SourceFile {
             throw new Error("Attempt to create a SourceFile without a file path");
         }
         this.filePath = uri;
-        this.logger = (typeof(options.getLogger) === "function") ? options.getLogger("ilib-lint-common.SourceFile") : undefined;
-        this.sourceLocale = options?.sourceLocale || "en-US";
-        this.type = options?.type || "";
+        if (options?.file) {
+            this.logger = options.file.logger;
+            this.sourceLocale = options.file.sourceLocale;
+            this.raw = options.file.raw;
+            this.content = options.file.content;
+            this.dirty = options.file.dirty;
+        }
+        // other options can override the file options
+        if (typeof(options?.getLogger) === "function") {
+            this.logger = options.getLogger("ilib-lint-common.SourceFile");
+        }
+        if (options?.sourceLocale) {
+            this.sourceLocale = options.sourceLocale;
+        }
+        if (!this.sourceLocale) {
+            this.sourceLocale = "en-US";
+        }
+        if (options?.type) {
+            this.type = options.type;
+        }
+        if (typeof(options?.content) === 'string') {
+            this.content = options.content;
+            if (this.content) {
+                this.dirty = true;
+                this.raw = Buffer.from(this.content, "utf8");
+            }
+        }
     }
 
     /**
      * Read the contents of the file into memory.
      * @throws Error if the file could not be read, or if it is not encoded in UTF-8
      * @protected
+     * @throws {Error} if the file could not be read
      */
     read() {
         // do not convert to a string for the raw property
@@ -99,7 +127,7 @@ class SourceFile {
 
     /**
      * The raw bytes of the file stored in a Buffer.
-     * @type {Buffer}
+     * @type {Buffer|undefined}
      * @protected
      */
     raw;
@@ -107,7 +135,7 @@ class SourceFile {
     /**
      * Return the raw contents of the file as a Buffer of bytes.
      * This has not been converted into a Unicode string yet.
-     * @returns {Buffer} a buffer containing the bytes of this file
+     * @returns {Buffer|undefined} a buffer containing the bytes of this file
      */
     getRaw() {
         if (this.raw === undefined) {
@@ -120,7 +148,7 @@ class SourceFile {
      * The content of the file, stored as regular Javascript string
      * encoded in UTF-8.
      *
-     * @type {String}
+     * @type {String|undefined}
      * @protected
      */
     content;
@@ -128,7 +156,7 @@ class SourceFile {
     /**
      * Get the content of this file encoded as a regular Javascript
      * string.
-     * @returns {String} the content of the file, encoded as a JS string
+     * @returns {String|undefined} the content of the file, encoded as a JS string
      */
     getContent() {
         if (this.content === undefined) {
@@ -138,71 +166,45 @@ class SourceFile {
     }
 
     /**
-     * Set the content of this file as a string. The file remains modified
-     * in-memory only and is not written out to disk until the
-     * {@link "SourceFile#write"} method is called.
-     *
-     * @param {String} content the content to set
-     */
-    setContent(content) {
-        if (typeof (content) === 'string') {
-            this.content = content;
-            this.raw = Buffer.from(this.content, "utf8");
-            this.dirty = true;
-        }
-    }
-
-    /**
      * Get the content of this file, encoded as an array of lines. Each
      * line has its trailing newline character removed.
-     * @returns {Array.<String>} the content as an array of lines
+     * @returns {Array.<String>|undefined} the content as an array of lines
      */
     getLines() {
-        if (this.content === undefined) {
+        if (typeof(this.content) === 'undefined') {
             this.read();
         }
-        return this.content.split(/[\r\n]+/g);
+        return this.content?.split(/[\r\n]+/g);
     }
 
     /**
-     * Set the content of this file to the given array of lines. Each
-     * line should not have a trailing newline character. The file
-     * remains modified in-memory only and is not written out to disk
-     * until the {@link "SourceFile#write"} method is called. The newlines
-     * (LF only) are re-added before the contents are written back to disk.
-     * @param {Array.<String>} lines the lines to set as the content
-     */
-    setLines(lines) {
-        if (Array.isArray(lines)) {
-            this.content = lines.join('\n');
-            this.raw = Buffer.from(this.content, "utf8");
-            this.dirty = true;
-        }
-    }
-
-    /**
-     * The current length of the file, including any modifications.
+     * The current length of the file content, including any modifications.
+     * Note that this is the length of the content in Unicode characters,
+     * not the length of the raw bytes.
+     *
      * @returns {Number} the length in Unicode characters of this file
      */
     getLength() {
         if (this.content === undefined) {
             this.read();
         }
-        return this.content.length;
+        return this.content?.length || 0;
     }
 
     /**
-     * The type of this file.
+     * The type of this file. This should match the type of
+     * pipeline elements that process this same type of file.
+     *
      * @type {String}
      * @protected
      */
-    type;
+    type = "";
 
     /**
-     * Return the name of the filetype assigned to this file. This can
-     * be used to find settings that govern the parsing and processing
-     * of this file.
-     * @returns {String} the filetype of this file
+     * Return the type of this file. This should match the type of
+     * pipeline elements that process this same type of file.
+     *
+     * @returns {String} the type of this file
      */
     getType() {
         return this.type;
@@ -210,16 +212,18 @@ class SourceFile {
 
     /**
      * Whether or not the file has been modified.
+     *
      * @type {Boolean}
      * @protected
      */
     dirty = false;
 
     /**
-     * Return whether or not this instance has been modifed
-     * from the original source.
+     * Return whether or not the content of this instance is
+     * different than the content of the file on disk.
      *
-     * @returns {Boolean} true if the file has been modified
+     * @returns {Boolean} true if the file is different than
+     * the content of this instance, false otherwise
      */
     isDirty() {
         return this.dirty;
@@ -231,14 +235,13 @@ class SourceFile {
      * Otherwise, this file will overwrite the source file. The path to
      * the file must exist first.
      *
-     * @param {String} [filePath] optional path to write the file to
      * @returns {Boolean} true if the file was successfully written, false
      * if there was some error or if the file was not modified from the original
      */
-    write(filePath) {
-        if (filePath || this.isDirty()) {
-            fs.writeFileSync(filePath || this.filePath, this.getContent(), "utf-8");
-            this.isDirty = false;
+    write() {
+        if (this.filePath && this.isDirty()) {
+            fs.writeFileSync(this.filePath, this.getContent() || "", "utf-8");
+            this.dirty = false;
             return true;
         }
         return false;

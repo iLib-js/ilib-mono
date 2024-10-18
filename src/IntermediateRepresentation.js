@@ -82,19 +82,6 @@ class IntermediateRepresentation {
     }
 
     /**
-     * Update the representation in this instance.
-     * @param {any} ir the new representation. This can be any type of object
-     * that the parser uses to represent the contents of the file, but it cannot
-     * be falsy.
-     */
-    setRepresentation(ir) {
-        if (!ir) {
-            throw new Error("IntermediateRepresentation.setRepresentation: ir is required");
-        }
-        this.ir = ir;
-    }
-
-    /**
      * Instance of a source file class of the file that was parsed
      * @type {SourceFile}
      * @readonly

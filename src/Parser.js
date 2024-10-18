@@ -17,14 +17,21 @@
  * limitations under the License.
  */
 
-import IntermediateRepresentation from "./IntermediateRepresentation.js";
 import NotImplementedError from "./NotImplementedError.js";
+import PipelineElement from "./PipelineElement.js";
+
+/* @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
+/* @typedef {import("SourceFile")} SourceFile */
 
 /**
  * @class common SPI for parser plugins
+ *
+ * A parser converts source files into intermediate representations that can be
+ * checked for problems by the rules.
+ *
  * @abstract
  */
-class Parser {
+class Parser extends PipelineElement {
     /**
      * Construct a new parser instance.
      *
@@ -34,67 +41,15 @@ class Parser {
      * the linter to retrieve the log4js logger
      */
     constructor(options) {
+        super(options);
         if (this.constructor === Parser) {
             throw new Error("Cannot instantiate abstract class Parser directly!");
         }
         this.getLogger = options?.getLogger;
     }
 
-    /** a callback function provided by
-     * the linter to retrieve the log4js logger
-     * @type {Function | undefined}
-     */
-    getLogger;
-
     /**
-     * Initialize the current plugin.
-     */
-    init() {}
-
-    /** name of this type of parser
-     *
-     * Subclass must define this property.
-     * @readonly
-     * @abstract
-     * @type {string}
-     */
-    // @ts-expect-error: subclass must define this property
-    name;
-
-    /**
-     * Return the name of this type of parser.
-     * Subclass must define {@link Parser.name}.
-     *
-     * @returns {String} return the name of this type of parser
-     */
-    getName() {
-        return this.name;
-    }
-
-    /** description of what this parser does and what kinds of files it
-     * handles for users who are trying to discover whether or not to use it
-     *
-     * Subclass must define this property.
-     * @readonly
-     * @abstract
-     * @type {string}
-     */
-    // @ts-expect-error: subclass must define this property
-    description;
-
-    /**
-     * Return a description of what this parser does and what kinds of files it
-     * handles for users who are trying to discover whether or not to use it.
-     *
-     * Subclass must define {@link Parser.description}.
-     *
-     * @returns {String} a description of this parser.
-     */
-    getDescription() {
-        return this.description;
-    }
-
-    /** list of extensions of the files that this parser handles.
+     * List of extensions of the files that this parser handles.
      * The extensions are listed without the dot. eg. ["json", "jsn"]
      *
      * Subclass must define this property.
@@ -149,77 +104,6 @@ class Parser {
     parse(sourceFile) {
         throw new NotImplementedError();
     }
-
-    /** type of intermediate representation that this parser
-     * produces. The type should be a unique name that matches with
-     * the rule type for rules that process this intermediate representation
-     *
-     * There are three types that are reserved, however:
-     *
-     * - resource - the parser returns an array of Resource instances as
-     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
-     * - line - the parser produces a set of lines as an array of strings
-     * - string - the parser doesn't parse. Instead, it just treats the
-     *   the file as one long string.
-     *
-     * Subclass must define this property.
-     * @readonly
-     * @abstract
-     * @type {string}
-     */
-    // @ts-expect-error: subclass must define this property
-    type;
-
-    /**
-     * Return the type of intermediate representation that this parser
-     * produces. The type should be a unique name that matches with
-     * the rule type for rules that process this intermediate representation.
-     *
-     * Subclass must define {@link Parser.type}.
-     *
-     * @abstract
-     * @returns {String} the name of the type of intermediate representation
-     * that this parser produces
-     */
-    getType() {
-        return this.type;
-    }
-
-    /**
-     * Write out the intermediate representation back into the file.
-     *
-     * Override this method and {@link Parser.canWrite} if You want to
-     * allow `Rule`s to auto-fix errors.
-     *
-     * After obtaining the representation from {@link Parser.parse},
-     * Rules are able to apply fixes by modifying the `ir` object.
-     * Subsequently, in order to commit these fixes to the actual file
-     * `Parser` needs to write out the transformed `IntermediateRepresentation`
-     * instance back to a file from which it was originally parsed
-     * (overwriting it in process).
-     *
-     * Ideally, when provided with an unchanged `ir`, this method
-     * should produce an unchanged file (or an equivalent of it).
-     *
-     * @param {IntermediateRepresentation} ir A modified representation which
-     * should be written back to the file.
-     * @returns {SourceFile} the source file containing the modified content
-     */
-    write(ir) {
-        throw new NotImplementedError();
-    }
-
-    /**
-     * Defines whether this parser is able to write out
-     * an intermediate representation back to the file.
-     *
-     * Override this flag as `true` and implement {@link Parser.write}
-     * to allow `Rule`s to auto-fix errors.
-     *
-     * @readonly
-     * @type {boolean}
-     */
-    canWrite = false;
 };
 
 export default Parser;

@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import IntermediateRepresentation from "./IntermediateRepresentation.js";
 import NotImplementedError from "./NotImplementedError.js";
+import PipelineElement from "./PipelineElement.js";
 
 /**
  * @class common SPI for transformer plugins
  *
  * A transformer is a plugin that takes an intermediate representation of a
- * file and transforms it in some way, returning a new intermediate
+ * file and transforms it in some way, and returns a new intermediate
  * representation that is a modified version of the original. For example,
  * a filter transformer might remove some of the entries in the intermediate
- * representation that match a certain pattern, or a transformer might
+ * representation that match a certain pattern, or it might
  * add new entries to the intermediate representation.
  *
  * @abstract
  */
-class Transformer {
+class Transformer extends PipelineElement {
     /**
      * Construct a new transformer instance.
      *
@@ -42,99 +42,11 @@ class Transformer {
      * the linter to retrieve the log4js logger
      */
     constructor(options) {
+        super(options);
         if (this.constructor === Transformer) {
             throw new Error("Cannot instantiate abstract class Transformer directly!");
         }
         this.getLogger = options?.getLogger;
-    }
-
-    /**
-     * Initialize the current plugin.
-     */
-    init() {}
-
-    /** 
-     * Name of this type of transformer
-     *
-     * Subclass must define this property.
-     * @readonly
-     * @abstract
-     * @type {string}
-     */
-    // @ts-expect-error: subclass must define this property
-    name;
-
-    /**
-     * Return the name of this type of transformer.
-     * Subclass must define {@link Transformer.name}.
-     *
-     * @returns {String} return the name of this type of transformer
-     */
-    getName() {
-        return this.name;
-    }
-
-    /**
-     * Description of what this transformer does and what kinds of files it
-     * handles for users who are trying to discover whether or not to use it.
-     *
-     * Subclass must define this property.
-     * @readonly
-     * @abstract
-     * @type {string}
-     */
-    // @ts-expect-error: subclass must define this property
-    description;
-
-    /**
-     * Return a description of what this transformer does and what kinds of files it
-     * handles for users who are trying to discover whether or not to use it.
-     *
-     * Subclass must define {@link Transformer.description}.
-     *
-     * @returns {String} a description of this transformer.
-     */
-    getDescription() {
-        return this.description;
-    }
-
-    /**
-     * Type of intermediate representation that this transformer operates
-     * upon. The type should be a unique name that matches with
-     * the type in the intermediate representation. Typically, a transformer
-     * goes along with a particular parser that produces that type of
-     * intermediate representation and a set of rules that operate on
-     * that same type of representation.
-     *
-     * The type can be any unique string except that there are three types
-     * that are reserved:
-     *
-     * - resource - the transformer operates on an array of Resource instances as
-     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
-     * - line - the transformer operates on a set of lines as an array of strings
-     * - string - the operator works upon the entire contents of
-     *   the file as one long string.
-     *
-     * Subclass must define this property.
-     * @readonly
-     * @abstract
-     * @type {string}
-     */
-    // @ts-expect-error: subclass must define this property
-    type;
-
-    /**
-     * Return the type of intermediate representation that this transformer
-     * operates upon. The type should be a unique name that matches with
-     * the type in the intermediate representation.
-     *
-     * Subclass must define {@link Transformer.type}.
-     *
-     * @returns {String} the name of the type of intermediate representation
-     * that this transformer operates upon
-     */
-    getType() {
-        return this.type;
     }
 
     /**
@@ -143,9 +55,9 @@ class Transformer {
      *
      * @abstract
      * @param {IntermediateRepresentation} representation the intermediate
-     *   representation to transformer
+     *   representation to transform
      * @returns {IntermediateRepresentation} the new intermediate representation
-     *   that is a subset of the original
+     *   that is the transformed version of the original
      */
     transform(representation) {
         throw new NotImplementedError();
