@@ -141,6 +141,18 @@ class Plugin {
     getTransformers() {
         return [];
     }
+
+    /**
+     * For a "serializer" type of plugin, this returns a list of Serializer
+     * classes that this plugin implements. Note this is the class, not an
+     * instance of the class. The linter may need to instantiate this serializer
+     * multiple times.
+     * @returns {Array.<Class>} list of Serializer classes implemented
+     * by this plugin
+     */
+    getSerializers() {
+        return [];
+    }
 };
 
 export default Plugin;

@@ -19,6 +19,12 @@
 
 import Plugin from '../src/Plugin.js';
 
+import {describe, expect, test} from '@jest/globals';
+
+/**
+ * @jest-environment node
+ */
+
 class MockPlugin extends Plugin {
     constructor() {
         super();
@@ -100,6 +106,18 @@ describe("testPlugin", () => {
         const transformers = plugin.getTransformers();
         expect(transformers).toBeTruthy();
         expect(transformers.length).toBe(0);
+    });
+
+    test("Plugin GetSerializers default", () => {
+        expect.assertions(3);
+
+        const plugin = new MockPlugin();
+
+        expect(plugin).toBeTruthy();
+
+        const serializers = plugin.getSerializers();
+        expect(serializers).toBeTruthy();
+        expect(serializers.length).toBe(0);
     });
 });
 
