@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Result.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileStats.html">FileStats</a><ul class='methods'><li data-type='method'><a href="FileStats.html#addBytes">addBytes</a></li><li data-type='method'><a href="FileStats.html#addFiles">addFiles</a></li><li data-type='method'><a href="FileStats.html#addLines">addLines</a></li><li data-type='method'><a href="FileStats.html#addModules">addModules</a></li><li data-type='method'><a href="FileStats.html#addStats">addStats</a></li><li data-type='method'><a href="FileStats.html#getBytes">getBytes</a></li><li data-type='method'><a href="FileStats.html#getFiles">getFiles</a></li><li data-type='method'><a href="FileStats.html#getLines">getLines</a></li><li data-type='method'><a href="FileStats.html#getModules">getModules</a></li></ul></li><li><a href="Fix.html">Fix</a></li><li><a href="Fixer.html">Fixer</a><ul class='methods'><li data-type='method'><a href="Fixer.html#applyFixes">applyFixes</a></li></ul></li><li><a href="Formatter.html">Formatter</a><ul class='methods'><li data-type='method'><a href="Formatter.html#format">format</a></li><li data-type='method'><a href="Formatter.html#formatOutput">formatOutput</a></li><li data-type='method'><a href="Formatter.html#getDescription">getDescription</a></li><li data-type='method'><a href="Formatter.html#getName">getName</a></li></ul></li><li><a href="IntermediateRepresentation.html">IntermediateRepresentation</a><ul class='methods'><li data-type='method'><a href="IntermediateRepresentation.html#getRepresentation">getRepresentation</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getSourceFile">getSourceFile</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getType">getType</a></li></ul></li><li><a href="NotImplementedError.html">NotImplementedError</a></li><li><a href="Parser.html">Parser</a><ul class='methods'><li data-type='method'><a href="Parser.html#getExtensions">getExtensions</a></li><li data-type='method'><a href="Parser.html#parse">parse</a></li></ul></li><li><a href="PipelineElement.html">PipelineElement</a><ul class='methods'><li data-type='method'><a href="PipelineElement.html#getDescription">getDescription</a></li><li data-type='method'><a href="PipelineElement.html#getName">getName</a></li><li data-type='method'><a href="PipelineElement.html#getType">getType</a></li><li data-type='method'><a href="PipelineElement.html#init">init</a></li></ul></li><li><a href="Plugin.html">Plugin</a><ul class='methods'><li data-type='method'><a href="Plugin.html#getFixers">getFixers</a></li><li data-type='method'><a href="Plugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="Plugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="Plugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="Plugin.html#getRules">getRules</a></li><li data-type='method'><a href="Plugin.html#getTransformers">getTransformers</a></li><li data-type='method'><a href="Plugin.html#init">init</a></li></ul></li><li><a href="Result.html">Result</a></li><li><a href="Rule.html">Rule</a><ul class='methods'><li data-type='method'><a href="Rule.html#getDescription">getDescription</a></li><li data-type='method'><a href="Rule.html#getLink">getLink</a></li><li data-type='method'><a href="Rule.html#getName">getName</a></li><li data-type='method'><a href="Rule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="Rule.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Rule.html#match">match</a></li></ul></li><li><a href="Serializer.html">Serializer</a><ul class='methods'><li data-type='method'><a href="Serializer.html#serialize">serialize</a></li></ul></li><li><a href="SourceFile.html">SourceFile</a><ul class='methods'><li data-type='method'><a href="SourceFile.html#getContent">getContent</a></li><li data-type='method'><a href="SourceFile.html#getLength">getLength</a></li><li data-type='method'><a href="SourceFile.html#getLines">getLines</a></li><li data-type='method'><a href="SourceFile.html#getPath">getPath</a></li><li data-type='method'><a href="SourceFile.html#getRaw">getRaw</a></li><li data-type='method'><a href="SourceFile.html#getType">getType</a></li><li data-type='method'><a href="SourceFile.html#isDirty">isDirty</a></li><li data-type='method'><a href="SourceFile.html#read">read</a></li><li data-type='method'><a href="SourceFile.html#write">write</a></li></ul></li><li><a href="Transformer.html">Transformer</a><ul class='methods'><li data-type='method'><a href="Transformer.html#transform">transform</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#isCamelCase">isCamelCase</a></li><li><a href="global.html#isKebabCase">isKebabCase</a></li><li><a href="global.html#isSnakeCase">isSnakeCase</a></li><li><a href="global.html#withVisibleWhitespace">withVisibleWhitespace</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Result.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * Result.js - Represent an ilib-lint rule check result
+ *
+ * Copyright © 2022-2024 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Rule from "./Rule.js";
+import Fixer from "./Fixer.js";
+import Fix from "./Fix.js";
+
+/**
+ * @class Represent an ilib-lint rule check result
+ */
+class Result {
+    /**
+     * Construct an ilib-lint rule check result. Rules should return this
+     * type when reporting issues in the source files.
+     *
+     * Some extra notes about the properties in the fields parameter:
+     *
+     * - severity: Should have one of the following values:
+     *     - suggestion - a suggestion of a better way to do things. The current way is
+     *       not incorrect, but probably not optimal
+     *     - warning - a problem that should be fixed, but which does not prevent
+     *       your app from operating internationally. This is more severe than a suggestion.
+     *     - error - a problem that must be fixed. This type of problem will prevent
+     *       your app from operating properly internationally and could possibly even
+     *       crash your app in some cases.
+     * - description: In order to make the ilib-lint output useful, this description should
+     *   attempt to make the following things clear:
+     *     - What part is wrong
+     *     - Why it is wrong
+     *     - Suggestions on how to fix it
+     *
+     * For the `highlight` property, a snippet of the input that has a problem is reproduced
+     * with XML tags around the problem part, if it is known. The tags are of the form
+     * &amp;lt;eX&amp;gt; where X is a digit starting with 0 and progressing to 9 for each
+     * subsequent problem. If the file type is XML already, the rest of the line will
+     * be XML-escaped first.
+     *
+     * Example:
+     *
+     * "const str = rb.getString(&amp;lt;e0>id&amp;lt;/e0>);"
+     *
+     * In this example rule, `getString()` must be called with a static string in order for
+     * the loctool to be able to extract that string. The line above calls `getString()`
+     * with a variable named "id" as a parameter instead of a static string, so it fails this
+     * check. The variable is then highlighted with the e0 tag and put into the `highlight`
+     * field of the Result instance. Callers can then translate the open and close tags
+     * appropriately for the output device, such as ASCII escapes for a regular terminal, or
+     * HTML tags for a web-based device.
+     *
+     * Only the severity, description, pathName, and rule are required. All other
+     * properties are optional. All fields are stored in this result and are public.
+     *
+     * @param {Object} fields result fields
+     * @param {("error"|"warning"|"suggestion")} fields.severity one of "error", "warning", or "suggestion"
+     * @param {String} fields.description description of the problem in the source file
+     * @param {String} fields.pathName name of the file that the issue was found in
+     * @param {Rule} fields.rule the rule that generated this result
+     * @param {String} fields.highlight highlighted text from the source file indicating
+     * where the issue was optionally including some context. For resources, this is
+     * either the source or target string, where-ever the problem occurred.
+     * @param {String} [fields.id] for rule that check resources, this is the id of
+     * of the resource that generated this result
+     * @param {String} [fields.source] for rule that check resources, this is the source
+     * string of the resource that generated this result
+     * @param {Number} [fields.lineNumber] if the parser included location information
+     * in the intermediate representation, this gives the line number in the source file
+     * where the problem occurred
+     * @param {Number} [fields.charNumber] if the parser included location information
+     * in the intermediate representation, this gives the character number within the line
+     * in the source file where the problem occurred
+     * @param {Number} [fields.endLineNumber] if the parser included location information
+     * in the intermediate representation, this gives the last line number in the source file
+     * where the problem occurred
+     * @param {Number} [fields.endCharNumber] if the parser included location information
+     * in the intermediate representation, this gives the last character number within the line
+     * in the source file where the problem occurred
+     * @param {String} [fields.locale] for locale-sensitive rules, this gives an indication
+     * of which locale generated this result
+     * @param {Fix} [fields.fix] object which contains info needed by the {@link Fixer} to perform the fix for this result
+     * @constructor
+     */
+    constructor(fields) {
+        if (!fields || !fields.severity || !fields.description || !fields.pathName || !fields.rule) {
+            throw "Missing fields in Result constructor";
+        }
+        this.severity = (fields.severity === "error" || fields.severity === "warning" || fields.severity === "suggestion") ?
+            fields.severity :
+            "warning";
+        this.description = fields.description;
+        this.pathName = fields.pathName;
+        this.rule = fields.rule;
+        this.id = fields.id;
+        this.highlight = fields.highlight;
+        this.lineNumber = fields.lineNumber;
+        this.charNumber = fields.charNumber;
+        this.endLineNumber = fields.endLineNumber;
+        this.endCharNumber = fields.endCharNumber;
+        this.locale = fields.locale;
+        this.source = fields.source;
+        this.fix = fields.fix;
+    }
+
+    /**
+     * One of the following:
+     * - suggestion - a suggestion of a better way to do things. The current way is
+     *   not incorrect, but probably not optimal
+     * - warning - a problem that should be fixed, but which does not prevent
+     *   your app from operating internationally. This is more severe than a suggestion.
+     * - error - a problem that must be fixed. This type of problem will prevent
+     *   your app from operating properly internationally and could possibly even
+     *   crash your app in some cases.
+     *
+     * @type {("error"|"warning"|"suggestion")}
+     */
+    severity;
+
+    /**
+     * description of the problem in the source file
+     * @type {String}
+     */
+    description;
+
+    /**
+     * name of the file that the issue was found in
+     * @type {String}
+     */
+    pathName;
+
+    /**
+     * the rule that generated this result
+     * @type {Rule}
+     */
+    rule;
+
+    /**
+     * highlighted text from the source file indicating where the issue was optionally including some context. For resources, this is either the source or target string, where-ever the problem occurred.
+     * @type {String}
+     */
+    highlight;
+
+    /**
+     * for rule that check resources, this is the id of of the resource that generated this result
+     * @type {String | undefined}
+     */
+    id;
+
+    /**
+     * for rule that check resources, this is the source string of the resource that generated this result
+     * @type {String | undefined}
+     */
+    source;
+
+    /**
+     * if the parser included location information in the intermediate representation, this gives the line number in the source file where the problem occurred
+     * @type {Number | undefined}
+     */
+    lineNumber;
+
+    /**
+     * if the parser included location information in the intermediate representation, this gives the character number within the line in the source file where the problem occurred
+     * @type {Number | undefined}
+     */
+    charNumber;
+
+    /**
+     * if the parser included location information in the intermediate representation, this gives the last line number in the source file where the problem occurred
+     * @type {Number | undefined}
+     */
+    endLineNumber;
+
+    /**
+     * if the parser included location information in the intermediate representation, this gives the last character number within the line in the source file where the problem occurred
+     * @type {Number | undefined}
+     */
+    endCharNumber;
+
+    /**
+     * for locale-sensitive rules, this gives an indication of which locale generated this result
+     * @type {String | undefined}
+     */
+    locale;
+
+    /**
+     * An object which contains info needed for the {@link Fixer} to perform the fix for this result
+     * @type {Fix | undefined}
+     */
+    fix;
+}
+
+export default Result;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Mon Oct 21 2024 19:50:38 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

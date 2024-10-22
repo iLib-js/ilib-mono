@@ -17,13 +17,47 @@ to remediate the issue.</p></dd>
 <dt><a href="#NotImplementedError">NotImplementedError</a></dt>
 <dd><p>Error thrown when an abstract method is called but not implemented</p></dd>
 <dt><a href="#Parser">Parser</a></dt>
-<dd><p>common SPI for parser plugins</p></dd>
+<dd><p>common SPI for parser plugins</p>
+<p>A parser converts source files into intermediate representations that can be
+checked for problems by the rules.</p></dd>
+<dt><a href="#PipelineElement">PipelineElement</a></dt>
+<dd><p>superclass for pipeline elements</p>
+<p>A pipeline element is the superclass for all classes that can be used
+in a pipeline. A pipeline element can be used along with a number of
+other pipeline elements of the same type to process a particular type
+of file. Each pipeline element should define a type, a name, and
+a description.</p></dd>
 <dt><a href="#Plugin">Plugin</a></dt>
 <dd><p>common SPI that all plugins must implement</p></dd>
 <dt><a href="#Result">Result</a></dt>
 <dd><p>Represent an ilib-lint rule check result</p></dd>
 <dt><a href="#Rule">Rule</a></dt>
 <dd><p>Represent an ilib-lint rule.</p></dd>
+<dt><a href="#Serializer">Serializer</a></dt>
+<dd><p>common SPI for serializer plugins</p>
+<p>A serializer converts an IntermediateRepresentation into a SourceFile instance
+that can be written back to disk.</p></dd>
+<dt><a href="#SourceFile">SourceFile</a></dt>
+<dd><p>Represent a source file. Source files are text files that are
+candidates for applying lint rules. Source files could mean any type of
+text file. Examples may include source code files written in some programming
+language, CSS files, HTML files, config files, resource files used to represent
+translations for a product, or XLIFF files that contain all the translations
+for a product. The source file may have subclasses that could represent data
+that is more ephemeral, such as the rows of a database table. The URI passed
+to the constructor should contain sufficient information for this class
+or a subclass to be able to load the data from where it is stored.
+The intention is that parsers classes should produce these
+as a by-product of loading and parsing the text file on disk as a way of
+representing the data that is being linted.</p></dd>
+<dt><a href="#Transformer">Transformer</a></dt>
+<dd><p>common SPI for transformer plugins</p>
+<p>A transformer is a plugin that takes an intermediate representation of a
+file and transforms it in some way, and returns a new intermediate
+representation that is a modified version of the original. For example,
+a filter transformer might remove some of the entries in the intermediate
+representation that match a certain pattern, or it might
+add new entries to the intermediate representation.</p></dd>
 </dl>
 
 ## Constants
@@ -442,6 +476,7 @@ needs to be skipped.</p>
     * *[.getName()](#Formatter+getName) ⇒ <code>String</code>*
     * *[.getDescription()](#Formatter+getDescription) ⇒ <code>String</code>*
     * **[.format(result)](#Formatter+format) ⇒ <code>String</code>**
+    * **[.formatOutput([options])](#Formatter+formatOutput) ⇒ <code>String</code>**
 
 
 * * *
@@ -497,6 +532,36 @@ formatted string.</p>
 
 * * *
 
+<a name="Formatter+formatOutput"></a>
+
+### **formatter.formatOutput([options]) ⇒ <code>String</code>**
+<p>Provide the information for the formatter as an object and
+return the formatted string that contains a lot of information
+according to the formatter's needs.</p>
+<p>The method supposed to format the entire output, including headers,
+footers and summaries and formatted Result instances.
+If the formatOutput is defined, the linter does not call format()
+directly and it is up to formatOutput to do so. If formatOutput
+is not defined in a Formatter plugin, then ilib-lint will use its
+own default headers and footers and will call format to format each Result.</p>
+
+**Kind**: instance abstract method of [<code>Formatter</code>](#Formatter)  
+**Returns**: <code>String</code> - <p>the formatted result</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [options] | <code>Object</code> | <p>Information that the method can use to format the output</p> |
+| [options.name] | <code>string</code> | <p>name of the this project</p> |
+| [options.fileStats] | [<code>FileStats</code>](#FileStats) | <p>The stats information of the file</p> |
+| [options.resultStats] | <code>Object</code> | <p>Information about the lint result of the  file</p> |
+| [options.results] | <code>Object</code> | <p>list containing all issues in this project</p> |
+| [options.score] | <code>Number</code> | <p>I18N score for this project</p> |
+| [options.totalTime] | <code>Number</code> | <p>Total elapsed time by the tool for this project</p> |
+| [options.errorOnly] | <code>Boolean</code> | <p>true, if only errors are displayed</p> |
+
+
+* * *
+
 <a name="IntermediateRepresentation"></a>
 
 ## IntermediateRepresentation
@@ -508,11 +573,11 @@ formatted string.</p>
     * [new IntermediateRepresentation(params)](#new_IntermediateRepresentation_new)
     * [.type](#IntermediateRepresentation+type) : <code>string</code>
     * [.ir](#IntermediateRepresentation+ir) : <code>any</code>
-    * [.filePath](#IntermediateRepresentation+filePath) : <code>string</code>
+    * [.sourceFile](#IntermediateRepresentation+sourceFile) : [<code>SourceFile</code>](#SourceFile)
     * [.stats](#IntermediateRepresentation+stats) : [<code>FileStats</code>](#FileStats) \| <code>undefined</code>
     * [.getType()](#IntermediateRepresentation+getType) ⇒ <code>String</code>
     * [.getRepresentation()](#IntermediateRepresentation+getRepresentation) ⇒ <code>any</code>
-    * [.getPath()](#IntermediateRepresentation+getPath) ⇒ <code>String</code>
+    * [.getSourceFile()](#IntermediateRepresentation+getSourceFile) ⇒ [<code>SourceFile</code>](#SourceFile)
 
 
 * * *
@@ -528,7 +593,7 @@ formatted string.</p>
 | params | <code>Object</code> | <p>parameters for this representation</p> |
 | params.type | <code>String</code> | <p>a unique name for this type of representation</p> |
 | params.ir | <code>any</code> | <p>the intermediate representation of this file</p> |
-| params.filePath | <code>String</code> | <p>the path to the current file</p> |
+| params.sourceFile | [<code>SourceFile</code>](#SourceFile) | <p>the file that is being represented</p> |
 | [params.stats] | [<code>FileStats</code>](#FileStats) | <p>statistics about the file that was parsed</p> |
 
 
@@ -553,10 +618,10 @@ formatted string.</p>
 
 * * *
 
-<a name="IntermediateRepresentation+filePath"></a>
+<a name="IntermediateRepresentation+sourceFile"></a>
 
-### intermediateRepresentation.filePath : <code>string</code>
-<p>Path to the file that was parsed</p>
+### intermediateRepresentation.sourceFile : [<code>SourceFile</code>](#SourceFile)
+<p>Instance of a source file class of the file that was parsed</p>
 
 **Kind**: instance property of [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)  
 **Read only**: true  
@@ -593,13 +658,14 @@ formatted string.</p>
 
 * * *
 
-<a name="IntermediateRepresentation+getPath"></a>
+<a name="IntermediateRepresentation+getSourceFile"></a>
 
-### intermediateRepresentation.getPath() ⇒ <code>String</code>
-<p>Return the file path to the file that was parsed.</p>
+### intermediateRepresentation.getSourceFile() ⇒ [<code>SourceFile</code>](#SourceFile)
+<p>Return the source file that was parsed.</p>
 
 **Kind**: instance method of [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)  
-**Returns**: <code>String</code> - <p>the path to the file that was parsed</p>  
+**Returns**: [<code>SourceFile</code>](#SourceFile) - <p>the instance of a source file class for
+the source file that was parsed</p>  
 
 * * *
 
@@ -616,24 +682,16 @@ formatted string.</p>
 
 ## *Parser*
 <p>common SPI for parser plugins</p>
+<p>A parser converts source files into intermediate representations that can be
+checked for problems by the rules.</p>
 
 **Kind**: global abstract class  
 
 * *[Parser](#Parser)*
     * *[new Parser([options])](#new_Parser_new)*
-    * *[.getLogger](#Parser+getLogger) : <code>function</code> \| <code>undefined</code>*
-    * **[.name](#Parser+name) : <code>string</code>**
-    * **[.description](#Parser+description) : <code>string</code>**
     * **[.extensions](#Parser+extensions) : <code>Array.&lt;string&gt;</code>**
-    * **[.type](#Parser+type) : <code>string</code>**
-    * *[.canWrite](#Parser+canWrite) : <code>boolean</code>*
-    * *[.init()](#Parser+init)*
-    * *[.getName()](#Parser+getName) ⇒ <code>String</code>*
-    * *[.getDescription()](#Parser+getDescription) ⇒ <code>String</code>*
     * *[.getExtensions()](#Parser+getExtensions) ⇒ <code>Array.&lt;String&gt;</code>*
-    * **[.parse()](#Parser+parse) ⇒ [<code>Array.&lt;IntermediateRepresentation&gt;</code>](#IntermediateRepresentation)**
-    * **[.getType()](#Parser+getType) ⇒ <code>String</code>**
-    * *[.write(ir)](#Parser+write) ⇒ <code>void</code>*
+    * **[.parse(sourceFile)](#Parser+parse) ⇒ [<code>Array.&lt;IntermediateRepresentation&gt;</code>](#IntermediateRepresentation)**
 
 
 * * *
@@ -641,127 +699,27 @@ formatted string.</p>
 <a name="new_Parser_new"></a>
 
 ### *new Parser([options])*
-<p>Construct a new plugin.</p>
+<p>Construct a new parser instance.</p>
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | [options] | <code>Object</code> | <p>options to the constructor</p> |
-| [options.filePath] | <code>string</code> | <p>path to the file that should be parsed</p> |
 | [options.getLogger] | <code>function</code> | <p>a callback function provided by</p> |
 | [options.settings] | <code>object</code> | <p>additional settings that can be passed to the parser the linter to retrieve the log4js logger</p> |
 
 
 * * *
 
-<a name="Parser+getLogger"></a>
-
-### *parser.getLogger : <code>function</code> \| <code>undefined</code>*
-<p>a callback function provided by
-the linter to retrieve the log4js logger</p>
-
-**Kind**: instance property of [<code>Parser</code>](#Parser)  
-
-* * *
-
-<a name="Parser+name"></a>
-
-### **parser.name : <code>string</code>**
-<p>name of this type of parser</p>
-<p>Subclass must define this property.</p>
-
-**Kind**: instance abstract property of [<code>Parser</code>](#Parser)  
-**Read only**: true  
-
-* * *
-
-<a name="Parser+description"></a>
-
-### **parser.description : <code>string</code>**
-<p>description of what this parser does and what kinds of files it
-handles for users who are trying to discover whether or not to use it</p>
-<p>Subclass must define this property.</p>
-
-**Kind**: instance abstract property of [<code>Parser</code>](#Parser)  
-**Read only**: true  
-
-* * *
-
 <a name="Parser+extensions"></a>
 
 ### **parser.extensions : <code>Array.&lt;string&gt;</code>**
-<p>list of extensions of the files that this parser handles.
+<p>List of extensions of the files that this parser handles.
 The extensions are listed without the dot. eg. [&quot;json&quot;, &quot;jsn&quot;]</p>
 <p>Subclass must define this property.</p>
 
 **Kind**: instance abstract property of [<code>Parser</code>](#Parser)  
 **Read only**: true  
-
-* * *
-
-<a name="Parser+type"></a>
-
-### **parser.type : <code>string</code>**
-<p>type of intermediate representation that this parser
-produces. The type should be a unique name that matches with
-the rule type for rules that process this intermediate representation</p>
-<p>There are three types that are reserved, however:</p>
-<ul>
-<li>resource - the parser returns an array of Resource instances as
-defined in [https://github.com/ilib-js/ilib-tools-common](https://github.com/ilib-js/ilib-tools-common).</li>
-<li>line - the parser produces a set of lines as an array of strings</li>
-<li>string - the parser doesn't parse. Instead, it just treats the
-the file as one long string.</li>
-</ul>
-<p>Subclass must define this property.</p>
-
-**Kind**: instance abstract property of [<code>Parser</code>](#Parser)  
-**Read only**: true  
-
-* * *
-
-<a name="Parser+canWrite"></a>
-
-### *parser.canWrite : <code>boolean</code>*
-<p>Defines whether this parser is able to write out
-an intermediate representation back to the file.</p>
-<p>Override this flag as <code>true</code> and implement [Parser.write](Parser.write)
-to allow <code>Rule</code>s to auto-fix errors.</p>
-
-**Kind**: instance property of [<code>Parser</code>](#Parser)  
-**Read only**: true  
-
-* * *
-
-<a name="Parser+init"></a>
-
-### *parser.init()*
-<p>Initialize the current plugin.</p>
-
-**Kind**: instance method of [<code>Parser</code>](#Parser)  
-
-* * *
-
-<a name="Parser+getName"></a>
-
-### *parser.getName() ⇒ <code>String</code>*
-<p>Return the name of this type of parser.
-Subclass must define [Parser.name](Parser.name).</p>
-
-**Kind**: instance method of [<code>Parser</code>](#Parser)  
-**Returns**: <code>String</code> - <p>return the name of this type of parser</p>  
-
-* * *
-
-<a name="Parser+getDescription"></a>
-
-### *parser.getDescription() ⇒ <code>String</code>*
-<p>Return a description of what this parser does and what kinds of files it
-handles for users who are trying to discover whether or not to use it.</p>
-<p>Subclass must define [Parser.description](Parser.description).</p>
-
-**Kind**: instance method of [<code>Parser</code>](#Parser)  
-**Returns**: <code>String</code> - <p>a description of this parser.</p>  
 
 * * *
 
@@ -779,7 +737,7 @@ The extensions are listed without the dot. eg. [&quot;json&quot;, &quot;jsn&quot
 
 <a name="Parser+parse"></a>
 
-### **parser.parse() ⇒ [<code>Array.&lt;IntermediateRepresentation&gt;</code>](#IntermediateRepresentation)**
+### **parser.parse(sourceFile) ⇒ [<code>Array.&lt;IntermediateRepresentation&gt;</code>](#IntermediateRepresentation)**
 <p>Parse the current file into intermediate representations. This
 representation may be anything you like, as long as the rules you
 implement also can use this same format to check for problems.</p>
@@ -806,43 +764,149 @@ rules that already know how to process Resource instances.</li>
 **Kind**: instance abstract method of [<code>Parser</code>](#Parser)  
 **Returns**: [<code>Array.&lt;IntermediateRepresentation&gt;</code>](#IntermediateRepresentation) - <p>the intermediate representations</p>  
 
-* * *
+| Param | Type | Description |
+| --- | --- | --- |
+| sourceFile | [<code>SourceFile</code>](#SourceFile) | <p>the source file to parse</p> |
 
-<a name="Parser+getType"></a>
-
-### **parser.getType() ⇒ <code>String</code>**
-<p>Return the type of intermediate representation that this parser
-produces. The type should be a unique name that matches with
-the rule type for rules that process this intermediate representation.</p>
-<p>Subclass must define [Parser.type](Parser.type).</p>
-
-**Kind**: instance abstract method of [<code>Parser</code>](#Parser)  
-**Returns**: <code>String</code> - <p>the name of the current type of intermediate
-representation.</p>  
 
 * * *
 
-<a name="Parser+write"></a>
+<a name="PipelineElement"></a>
 
-### *parser.write(ir) ⇒ <code>void</code>*
-<p>Write out the intermediate representation back into the file.</p>
-<p>Override this method and [Parser.canWrite](Parser.canWrite) if You want to
-allow <code>Rule</code>s to auto-fix errors.</p>
-<p>After obtaining the representation from [Parser.parse](Parser.parse),
-Rules are able to apply fixes by modifying the <code>ir</code> object.
-Subsequently, in order to commit these fixes to the actual file
-<code>Parser</code> needs to write out the transformed <code>IntermediateRepresentation</code>
-instance back to a file from which it was originally parsed
-(overwriting it in process).</p>
-<p>Ideally, when provided with an unchanged <code>ir</code>, this method
-should produce an unchanged file (or an equivalent of it).</p>
+## *PipelineElement*
+<p>superclass for pipeline elements</p>
+<p>A pipeline element is the superclass for all classes that can be used
+in a pipeline. A pipeline element can be used along with a number of
+other pipeline elements of the same type to process a particular type
+of file. Each pipeline element should define a type, a name, and
+a description.</p>
 
-**Kind**: instance method of [<code>Parser</code>](#Parser)  
+**Kind**: global abstract class  
+
+* *[PipelineElement](#PipelineElement)*
+    * *[new PipelineElement([options])](#new_PipelineElement_new)*
+    * *[.getLogger](#PipelineElement+getLogger) : <code>function</code> \| <code>undefined</code>*
+    * **[.name](#PipelineElement+name) : <code>string</code>**
+    * **[.description](#PipelineElement+description) : <code>string</code>**
+    * **[.type](#PipelineElement+type) : <code>string</code>**
+    * *[.init()](#PipelineElement+init)*
+    * *[.getName()](#PipelineElement+getName) ⇒ <code>String</code>*
+    * *[.getDescription()](#PipelineElement+getDescription) ⇒ <code>String</code>*
+    * **[.getType()](#PipelineElement+getType) ⇒ <code>String</code>**
+
+
+* * *
+
+<a name="new_PipelineElement_new"></a>
+
+### *new PipelineElement([options])*
+<p>Construct a new pipeline element instance.</p>
+
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ir | [<code>IntermediateRepresentation</code>](#IntermediateRepresentation) | <p>A modified representation which should be written back to the file.</p> |
+| [options] | <code>Object</code> | <p>options to the constructor</p> |
+| [options.getLogger] | <code>function</code> | <p>a callback function provided by</p> |
+| [options.settings] | <code>object</code> | <p>additional settings that can be passed from the pipeline element to the linter to retrieve the log4js logger</p> |
 
+
+* * *
+
+<a name="PipelineElement+getLogger"></a>
+
+### *pipelineElement.getLogger : <code>function</code> \| <code>undefined</code>*
+<p>A callback function provided by the linter to retrieve the log4js logger</p>
+
+**Kind**: instance property of [<code>PipelineElement</code>](#PipelineElement)  
+
+* * *
+
+<a name="PipelineElement+name"></a>
+
+### **pipelineElement.name : <code>string</code>**
+<p>Name of this type of pipeline element</p>
+<p>Concrete subclasses must define this property.</p>
+
+**Kind**: instance abstract property of [<code>PipelineElement</code>](#PipelineElement)  
+**Read only**: true  
+
+* * *
+
+<a name="PipelineElement+description"></a>
+
+### **pipelineElement.description : <code>string</code>**
+<p>Description of what this pipeline element does and what kinds of files it
+handles for users who are trying to discover whether or not to use it.</p>
+<p>Concrete subclasses must define this property.</p>
+
+**Kind**: instance abstract property of [<code>PipelineElement</code>](#PipelineElement)  
+**Read only**: true  
+
+* * *
+
+<a name="PipelineElement+type"></a>
+
+### **pipelineElement.type : <code>string</code>**
+<p>Type of file that this pipeline element processes. The type should be
+a unique name that matches with the type of other pipeline elements that
+process this same type of file.</p>
+<p>There are three types that are reserved, however:</p>
+<ul>
+<li>resource - the pipeline element returns an array of Resource instances as
+defined in [https://github.com/ilib-js/ilib-tools-common](https://github.com/ilib-js/ilib-tools-common).</li>
+<li>line - the pipeline element produces a set of lines as an array of strings</li>
+<li>string - the pipeline element doesn't parse. Instead, it just treats the
+the file as one long string.</li>
+</ul>
+<p>Concrete subclasses must define this property.</p>
+
+**Kind**: instance abstract property of [<code>PipelineElement</code>](#PipelineElement)  
+**Read only**: true  
+
+* * *
+
+<a name="PipelineElement+init"></a>
+
+### *pipelineElement.init()*
+<p>Initialize the current plugin.</p>
+
+**Kind**: instance method of [<code>PipelineElement</code>](#PipelineElement)  
+
+* * *
+
+<a name="PipelineElement+getName"></a>
+
+### *pipelineElement.getName() ⇒ <code>String</code>*
+<p>Return the name of this type of pipeline element.
+Concrete subclasses must define [PipelineElement.name](PipelineElement.name).</p>
+
+**Kind**: instance method of [<code>PipelineElement</code>](#PipelineElement)  
+**Returns**: <code>String</code> - <p>return the name of this type of pipeline element</p>  
+
+* * *
+
+<a name="PipelineElement+getDescription"></a>
+
+### *pipelineElement.getDescription() ⇒ <code>String</code>*
+<p>Return a description of what this pipeline element does and what kinds of files it
+handles for users who are trying to discover whether or not to use it.</p>
+<p>Subclass must define [PipelineElement.description](PipelineElement.description).</p>
+
+**Kind**: instance method of [<code>PipelineElement</code>](#PipelineElement)  
+**Returns**: <code>String</code> - <p>a description of this pipeline element.</p>  
+
+* * *
+
+<a name="PipelineElement+getType"></a>
+
+### **pipelineElement.getType() ⇒ <code>String</code>**
+<p>Return the type of file that this pipeline element processes. The type should be
+a unique name that matches with the type of other pipeline elements that
+process this same type of file.</p>
+<p>Concrete subclasses must define [PipelineElement.type](PipelineElement.type).</p>
+
+**Kind**: instance abstract method of [<code>PipelineElement</code>](#PipelineElement)  
+**Returns**: <code>String</code> - <p>the name of the type of file that this pipeline element processes</p>  
 
 * * *
 
@@ -856,11 +920,12 @@ should produce an unchanged file (or an equivalent of it).</p>
 * *[Plugin](#Plugin)*
     * *[new Plugin([options])](#new_Plugin_new)*
     * **[.init()](#Plugin+init) ⇒ <code>Promise.&lt;void&gt;</code> \| <code>void</code>**
-    * *[.getRules()](#Plugin+getRules) ⇒ <code>Array.&lt;Class&gt;</code>*
+    * *[.getRules()](#Plugin+getRules) ⇒ <code>Array.&lt;(Class\|Object)&gt;</code>*
     * *[.getRuleSets()](#Plugin+getRuleSets) ⇒ <code>Object</code>*
     * *[.getParsers()](#Plugin+getParsers) ⇒ <code>Array.&lt;Class&gt;</code>*
-    * *[.getFormatters()](#Plugin+getFormatters) ⇒ <code>Array.&lt;Class&gt;</code>*
+    * *[.getFormatters()](#Plugin+getFormatters) ⇒ <code>Array.&lt;(Class\|Object)&gt;</code>*
     * *[.getFixers()](#Plugin+getFixers) ⇒ <code>Array.&lt;Class&gt;</code>*
+    * *[.getTransformers()](#Plugin+getTransformers) ⇒ <code>Array.&lt;Class&gt;</code>*
 
 
 * * *
@@ -893,15 +958,15 @@ initialization is synchronous or if no initialization is necessary</p>
 
 <a name="Plugin+getRules"></a>
 
-### *plugin.getRules() ⇒ <code>Array.&lt;Class&gt;</code>*
+### *plugin.getRules() ⇒ <code>Array.&lt;(Class\|Object)&gt;</code>*
 <p>For a plugin that implements rules, this returns a list of Rule
 classes that this plugin implements. Note this is the class itself,
 not an instance of the class. The linter may need to instantiate
 this rule multiple times with different optional parameters.</p>
 
 **Kind**: instance method of [<code>Plugin</code>](#Plugin)  
-**Returns**: <code>Array.&lt;Class&gt;</code> - <p>list of Rule classes implemented by this
-plugin</p>  
+**Returns**: <code>Array.&lt;(Class\|Object)&gt;</code> - <p>list of Rule classes implemented
+by this plugin or objects that are definitions of declarative rules</p>  
 
 * * *
 
@@ -951,15 +1016,15 @@ plugin</p>
 
 <a name="Plugin+getFormatters"></a>
 
-### *plugin.getFormatters() ⇒ <code>Array.&lt;Class&gt;</code>*
+### *plugin.getFormatters() ⇒ <code>Array.&lt;(Class\|Object)&gt;</code>*
 <p>For a &quot;formatter&quot; type of plugin, this returns a list of Formatter
 classes that this plugin implements. Note this is the class, not an
 instance of the class. The linter may need to instantiate this
 formatter multiple times.</p>
 
 **Kind**: instance method of [<code>Plugin</code>](#Plugin)  
-**Returns**: <code>Array.&lt;Class&gt;</code> - <p>list of Formatter classes implemented by this
-plugin</p>  
+**Returns**: <code>Array.&lt;(Class\|Object)&gt;</code> - <p>list of Formatter classes implemented
+by this plugin or objects that are definitions of declarative formatters</p>  
 
 * * *
 
@@ -973,6 +1038,20 @@ formatter multiple times.</p>
 
 **Kind**: instance method of [<code>Plugin</code>](#Plugin)  
 **Returns**: <code>Array.&lt;Class&gt;</code> - <p>array of Fixer classes implemented
+by this plugin</p>  
+
+* * *
+
+<a name="Plugin+getTransformers"></a>
+
+### *plugin.getTransformers() ⇒ <code>Array.&lt;Class&gt;</code>*
+<p>For a &quot;transformer&quot; type of plugin, this returns a list of Transformer
+classes that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this transformer
+multiple times.</p>
+
+**Kind**: instance method of [<code>Plugin</code>](#Plugin)  
+**Returns**: <code>Array.&lt;Class&gt;</code> - <p>list of Transformer classes implemented
 by this plugin</p>  
 
 * * *
@@ -1407,6 +1486,335 @@ problem found (ie. the rule does not match).</p>
 | options.locale | <code>String</code> | <p>the locale against which this rule should be checked. Some rules are locale-sensitive, others not.</p> |
 | options.file | <code>string</code> | <p>the file where the resource came from</p> |
 | [options.parameters] | <code>object</code> | <p>optional additional parameters for this rule from the configuration file</p> |
+
+
+* * *
+
+<a name="Serializer"></a>
+
+## *Serializer*
+<p>common SPI for serializer plugins</p>
+<p>A serializer converts an IntermediateRepresentation into a SourceFile instance
+that can be written back to disk.</p>
+
+**Kind**: global abstract class  
+
+* *[Serializer](#Serializer)*
+    * *[new Serializer([options])](#new_Serializer_new)*
+    * **[.serialize(representation)](#Serializer+serialize) ⇒ [<code>SourceFile</code>](#SourceFile)**
+
+
+* * *
+
+<a name="new_Serializer_new"></a>
+
+### *new Serializer([options])*
+<p>Construct a new serializer instance.</p>
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [options] | <code>Object</code> | <p>options to the constructor</p> |
+| [options.getLogger] | <code>function</code> | <p>a callback function provided by</p> |
+| [options.settings] | <code>object</code> | <p>additional settings that can be passed to the serializer the linter to retrieve the log4js logger</p> |
+
+
+* * *
+
+<a name="Serializer+serialize"></a>
+
+### **serializer.serialize(representation) ⇒ [<code>SourceFile</code>](#SourceFile)**
+<p>Serialize the given intermediate representation into a SourceFile instance. The
+intermediate representation is an object that represents the parsed
+form of the file. The serializer converts this object into a SourceFile
+that can be written back to disk.</p>
+
+**Kind**: instance abstract method of [<code>Serializer</code>](#Serializer)  
+**Returns**: [<code>SourceFile</code>](#SourceFile) - <p>the source file that contains the serialized form of the
+given intermediate representation</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| representation | [<code>IntermediateRepresentation</code>](#IntermediateRepresentation) | <p>the representation to serialize</p> |
+
+
+* * *
+
+<a name="SourceFile"></a>
+
+## SourceFile
+<p>Represent a source file. Source files are text files that are
+candidates for applying lint rules. Source files could mean any type of
+text file. Examples may include source code files written in some programming
+language, CSS files, HTML files, config files, resource files used to represent
+translations for a product, or XLIFF files that contain all the translations
+for a product. The source file may have subclasses that could represent data
+that is more ephemeral, such as the rows of a database table. The URI passed
+to the constructor should contain sufficient information for this class
+or a subclass to be able to load the data from where it is stored.
+The intention is that parsers classes should produce these
+as a by-product of loading and parsing the text file on disk as a way of
+representing the data that is being linted.</p>
+
+**Kind**: global class  
+
+* [SourceFile](#SourceFile)
+    * [new SourceFile(uri, [options])](#new_SourceFile_new)
+    * [.logger](#SourceFile+logger) : <code>function</code> \| <code>undefined</code>
+    * [.filePath](#SourceFile+filePath) : <code>String</code>
+    * [.raw](#SourceFile+raw) : <code>Buffer</code> \| <code>undefined</code>
+    * [.content](#SourceFile+content) : <code>String</code> \| <code>undefined</code>
+    * [.type](#SourceFile+type) : <code>String</code>
+    * [.dirty](#SourceFile+dirty) : <code>Boolean</code>
+    * [.read()](#SourceFile+read)
+    * [.getPath()](#SourceFile+getPath) ⇒ <code>String</code>
+    * [.getRaw()](#SourceFile+getRaw) ⇒ <code>Buffer</code> \| <code>undefined</code>
+    * [.getContent()](#SourceFile+getContent) ⇒ <code>String</code> \| <code>undefined</code>
+    * [.getLines()](#SourceFile+getLines) ⇒ <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+    * [.getLength()](#SourceFile+getLength) ⇒ <code>Number</code>
+    * [.getType()](#SourceFile+getType) ⇒ <code>String</code>
+    * [.isDirty()](#SourceFile+isDirty) ⇒ <code>Boolean</code>
+    * [.write()](#SourceFile+write) ⇒ <code>Boolean</code>
+
+
+* * *
+
+<a name="new_SourceFile_new"></a>
+
+### new SourceFile(uri, [options])
+<p>Construct a new source file instance.</p>
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| uri | <code>String</code> | <p>URI or path to the source file</p> |
+| [options] | <code>Object</code> | <p>options to the constructor</p> |
+| [options.file] | [<code>SourceFile</code>](#SourceFile) | <p>the source file to copy from. Other options will override the fields in this file</p> |
+| [options.sourceLocale] | <code>String</code> | <p>the source locale of the files being linted</p> |
+| [options.getLogger] | <code>function</code> | <p>a callback function provided by the linter to retrieve the log4js logger</p> |
+| [options.type] | <code>String</code> | <p>the type of this file</p> |
+| [options.content] | <code>String</code> | <p>the content of the file</p> |
+
+
+* * *
+
+<a name="SourceFile+logger"></a>
+
+### sourceFile.logger : <code>function</code> \| <code>undefined</code>
+<p>A callback function provided by the linter to retrieve the log4js logger</p>
+
+**Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+filePath"></a>
+
+### sourceFile.filePath : <code>String</code>
+<p>URI or path to the source file.</p>
+
+**Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+raw"></a>
+
+### sourceFile.raw : <code>Buffer</code> \| <code>undefined</code>
+<p>The raw bytes of the file stored in a Buffer.</p>
+
+**Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+content"></a>
+
+### sourceFile.content : <code>String</code> \| <code>undefined</code>
+<p>The content of the file, stored as regular Javascript string
+encoded in UTF-8.</p>
+
+**Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+type"></a>
+
+### sourceFile.type : <code>String</code>
+<p>The type of this file. This should match the type of
+pipeline elements that process this same type of file.</p>
+
+**Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+dirty"></a>
+
+### sourceFile.dirty : <code>Boolean</code>
+<p>Whether or not the file has been modified.</p>
+
+**Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+read"></a>
+
+### sourceFile.read()
+<p>Read the contents of the file into memory.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Throws**:
+
+- <p>Error if the file could not be read, or if it is not encoded in UTF-8</p>
+- <code>Error</code> <p>if the file could not be read</p>
+
+**Access**: protected  
+
+* * *
+
+<a name="SourceFile+getPath"></a>
+
+### sourceFile.getPath() ⇒ <code>String</code>
+<p>Get the URI or path to this source file.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>String</code> - <p>URI or path to this source file</p>  
+
+* * *
+
+<a name="SourceFile+getRaw"></a>
+
+### sourceFile.getRaw() ⇒ <code>Buffer</code> \| <code>undefined</code>
+<p>Return the raw contents of the file as a Buffer of bytes.
+This has not been converted into a Unicode string yet.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>Buffer</code> \| <code>undefined</code> - <p>a buffer containing the bytes of this file</p>  
+
+* * *
+
+<a name="SourceFile+getContent"></a>
+
+### sourceFile.getContent() ⇒ <code>String</code> \| <code>undefined</code>
+<p>Get the content of this file encoded as a regular Javascript
+string.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>String</code> \| <code>undefined</code> - <p>the content of the file, encoded as a JS string</p>  
+
+* * *
+
+<a name="SourceFile+getLines"></a>
+
+### sourceFile.getLines() ⇒ <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+<p>Get the content of this file, encoded as an array of lines. Each
+line has its trailing newline character removed.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>Array.&lt;String&gt;</code> \| <code>undefined</code> - <p>the content as an array of lines</p>  
+
+* * *
+
+<a name="SourceFile+getLength"></a>
+
+### sourceFile.getLength() ⇒ <code>Number</code>
+<p>The current length of the file content, including any modifications.
+Note that this is the length of the content in Unicode characters,
+not the length of the raw bytes.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>Number</code> - <p>the length in Unicode characters of this file</p>  
+
+* * *
+
+<a name="SourceFile+getType"></a>
+
+### sourceFile.getType() ⇒ <code>String</code>
+<p>Return the type of this file. This should match the type of
+pipeline elements that process this same type of file.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>String</code> - <p>the type of this file</p>  
+
+* * *
+
+<a name="SourceFile+isDirty"></a>
+
+### sourceFile.isDirty() ⇒ <code>Boolean</code>
+<p>Return whether or not the content of this instance is
+different than the content of the file on disk.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>Boolean</code> - <p>true if the file is different than
+the content of this instance, false otherwise</p>  
+
+* * *
+
+<a name="SourceFile+write"></a>
+
+### sourceFile.write() ⇒ <code>Boolean</code>
+<p>Write the file. If the path is given and it is different from the
+path of the current file, then it is written to the other path.
+Otherwise, this file will overwrite the source file. The path to
+the file must exist first.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+**Returns**: <code>Boolean</code> - <p>true if the file was successfully written, false
+if there was some error or if the file was not modified from the original</p>  
+
+* * *
+
+<a name="Transformer"></a>
+
+## *Transformer*
+<p>common SPI for transformer plugins</p>
+<p>A transformer is a plugin that takes an intermediate representation of a
+file and transforms it in some way, and returns a new intermediate
+representation that is a modified version of the original. For example,
+a filter transformer might remove some of the entries in the intermediate
+representation that match a certain pattern, or it might
+add new entries to the intermediate representation.</p>
+
+**Kind**: global abstract class  
+
+* *[Transformer](#Transformer)*
+    * *[new Transformer([options])](#new_Transformer_new)*
+    * **[.transform(representation)](#Transformer+transform) ⇒ [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)**
+
+
+* * *
+
+<a name="new_Transformer_new"></a>
+
+### *new Transformer([options])*
+<p>Construct a new transformer instance.</p>
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [options] | <code>Object</code> | <p>options to the constructor</p> |
+| [options.getLogger] | <code>function</code> | <p>a callback function provided by</p> |
+| [options.settings] | <code>object</code> | <p>additional settings that can be passed to the linter to retrieve the log4js logger</p> |
+
+
+* * *
+
+<a name="Transformer+transform"></a>
+
+### **transformer.transform(representation) ⇒ [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)**
+<p>Transform the given intermediate representation and return a new
+intermediate representation that is a modified version of the original.</p>
+
+**Kind**: instance abstract method of [<code>Transformer</code>](#Transformer)  
+**Returns**: [<code>IntermediateRepresentation</code>](#IntermediateRepresentation) - <p>the new intermediate representation
+that is the transformed version of the original</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| representation | [<code>IntermediateRepresentation</code>](#IntermediateRepresentation) | <p>the intermediate representation to transform</p> |
 
 
 * * *

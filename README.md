@@ -19,7 +19,7 @@ the ilib-lint tool.
 
 ## Full API Docs
 
-See the [full API docs](./docs/ilib-lint-common.md) for more information.
+See the [full API docs](https://github.com/ilib-js/ilib-lint-common/docs/ilib-lint-common.md) for more information.
 
 ## License
 
@@ -44,30 +44,22 @@ limitations under the License.
 
 - added formatOutput() method to the Formatter class
 - added support for updating source files
-    - added the setContent() method to the SourceFile class to allow changing the
-      content of the file after it has been fixed or filtered. This sets the dirty
-      flag on the SourceFile instance so that the write() method of the Parser will
-      write the updated content to disk.
-    - modified the return value of the write() method of the Parser class to return
-      a modified SourceFile instance that is ready to write to disk. The idea is
-      that the Parser turns a source file into an IntermediateRepresentation in the
-      parse() method, and then the IntermediateRepresentation is turned back into a
-      SourceFile in the write() method. This allows the Parser to be stateless and
-      to be reused for multiple files. The IntermediateRepresentation is the state
-      that is passed from the Parser to the Rules and to then the Fixer, which modifies
-      the IntermediateRepresentation to fix the issues found by the Rules. If the Fixer
-      introduces any changes to the IntermediateRepresentation, the source file can be
-      updated with the fixed content and then written back to disk.
-    - added the setRepresentation() method to the IntermediateRepresentation class to
-      allow a Fixer or Filter to update the representation of the file.
-    - added the Transformer class to allow transforming the IntermediateRepresentation
-      into a new IntermediateRepresentation. This allows multiple transformations to
+    - made sure that SourceFile and IntermediateRepresentation instances are immutable
+    - added the Transformer class to allow transforming the IntermediateRepresentation into a
+      new IntermediateRepresentation. This allows multiple transformations to
       be applied to the file in sequence, such as filtering out any unwanted content,
       or adding a comment at the beginning of the file that tells the user that
       this is a generated file.
+    - added the Serializer class to serialize the IntermediateRepresentation back into a SourceFile
     - added Plugin.getTransformers() method to allow plugins to define transformers
       that can be applied to the IntermediateRepresentation after the Rules are run
       on it
+    - added Plugin.getSerializers() method to allow plugins to define serializers
+      that can be applied to the IntermediateRepresentation after the Transformers
+      are run on it
+    - added PipelineElement class to ensure that Parser, Transformer, and Serializer
+      classes all have the same interface in terms of names, descriptions, and
+      types.
 
 ### v3.0.0
 
