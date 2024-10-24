@@ -926,6 +926,7 @@ process this same type of file.</p>
     * *[.getFormatters()](#Plugin+getFormatters) ⇒ <code>Array.&lt;(Class\|Object)&gt;</code>*
     * *[.getFixers()](#Plugin+getFixers) ⇒ <code>Array.&lt;Class&gt;</code>*
     * *[.getTransformers()](#Plugin+getTransformers) ⇒ <code>Array.&lt;Class&gt;</code>*
+    * *[.getSerializers()](#Plugin+getSerializers) ⇒ <code>Array.&lt;Class&gt;</code>*
 
 
 * * *
@@ -1052,6 +1053,20 @@ multiple times.</p>
 
 **Kind**: instance method of [<code>Plugin</code>](#Plugin)  
 **Returns**: <code>Array.&lt;Class&gt;</code> - <p>list of Transformer classes implemented
+by this plugin</p>  
+
+* * *
+
+<a name="Plugin+getSerializers"></a>
+
+### *plugin.getSerializers() ⇒ <code>Array.&lt;Class&gt;</code>*
+<p>For a &quot;serializer&quot; type of plugin, this returns a list of Serializer
+classes that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this serializer
+multiple times.</p>
+
+**Kind**: instance method of [<code>Plugin</code>](#Plugin)  
+**Returns**: <code>Array.&lt;Class&gt;</code> - <p>list of Serializer classes implemented
 by this plugin</p>  
 
 * * *
@@ -1563,14 +1578,15 @@ representing the data that is being linted.</p>
     * [.logger](#SourceFile+logger) : <code>function</code> \| <code>undefined</code>
     * [.filePath](#SourceFile+filePath) : <code>String</code>
     * [.raw](#SourceFile+raw) : <code>Buffer</code> \| <code>undefined</code>
-    * [.content](#SourceFile+content) : <code>String</code> \| <code>undefined</code>
+    * [.content](#SourceFile+content) : <code>String</code>
     * [.type](#SourceFile+type) : <code>String</code>
     * [.dirty](#SourceFile+dirty) : <code>Boolean</code>
     * [.read()](#SourceFile+read)
     * [.getPath()](#SourceFile+getPath) ⇒ <code>String</code>
     * [.getRaw()](#SourceFile+getRaw) ⇒ <code>Buffer</code> \| <code>undefined</code>
-    * [.getContent()](#SourceFile+getContent) ⇒ <code>String</code> \| <code>undefined</code>
+    * [.getContent()](#SourceFile+getContent) ⇒ <code>String</code>
     * [.getLines()](#SourceFile+getLines) ⇒ <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+    * ~~[.setLines(lines)](#SourceFile+setLines)~~
     * [.getLength()](#SourceFile+getLength) ⇒ <code>Number</code>
     * [.getType()](#SourceFile+getType) ⇒ <code>String</code>
     * [.isDirty()](#SourceFile+isDirty) ⇒ <code>Boolean</code>
@@ -1630,7 +1646,7 @@ representing the data that is being linted.</p>
 
 <a name="SourceFile+content"></a>
 
-### sourceFile.content : <code>String</code> \| <code>undefined</code>
+### sourceFile.content : <code>String</code>
 <p>The content of the file, stored as regular Javascript string
 encoded in UTF-8.</p>
 
@@ -1653,7 +1669,7 @@ pipeline elements that process this same type of file.</p>
 <a name="SourceFile+dirty"></a>
 
 ### sourceFile.dirty : <code>Boolean</code>
-<p>Whether or not the file has been modified.</p>
+<p>Whether or not the file has been written to disk.</p>
 
 **Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
 **Access**: protected  
@@ -1698,12 +1714,12 @@ This has not been converted into a Unicode string yet.</p>
 
 <a name="SourceFile+getContent"></a>
 
-### sourceFile.getContent() ⇒ <code>String</code> \| <code>undefined</code>
+### sourceFile.getContent() ⇒ <code>String</code>
 <p>Get the content of this file encoded as a regular Javascript
 string.</p>
 
 **Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
-**Returns**: <code>String</code> \| <code>undefined</code> - <p>the content of the file, encoded as a JS string</p>  
+**Returns**: <code>String</code> - <p>the content of the file, encoded as a JS string</p>  
 
 * * *
 
@@ -1715,6 +1731,23 @@ line has its trailing newline character removed.</p>
 
 **Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
 **Returns**: <code>Array.&lt;String&gt;</code> \| <code>undefined</code> - <p>the content as an array of lines</p>  
+
+* * *
+
+<a name="SourceFile+setLines"></a>
+
+### ~~sourceFile.setLines(lines)~~
+***Deprecated***
+
+<p>Set the content of this file to the given array of lines. Do not call
+this method any more. It is deprecated and will be removed soon.</p>
+
+**Kind**: instance method of [<code>SourceFile</code>](#SourceFile)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lines | <code>Array.&lt;String&gt;</code> | <p>the lines to set as the content</p> |
+
 
 * * *
 
