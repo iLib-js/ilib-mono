@@ -36,10 +36,7 @@ class IntermediateRepresentation {
      */
     constructor(params) {
         const requiredFields = ["type", "ir", "sourceFile"];
-        if (!params) {
-            throw new Error(`Missing required parameters in the IntermediateRepresentation constructor: ${requiredFields.join(", ")}`);
-        }
-        const missing = requiredFields.filter(field => undefined === params[field]);
+        const missing = requiredFields.filter(field => undefined === params?.[field]);
         if (missing.length) {
             throw new Error(`Missing required parameters in the IntermediateRepresentation constructor: ${missing.join(", ")}`);
         }
