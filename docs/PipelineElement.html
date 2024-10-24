@@ -55,10 +55,12 @@
         
             <div class="class-description usertext"><p>superclass for pipeline elements</p>
 <p>A pipeline element is the superclass for all classes that can be used
-in a pipeline. A pipeline element can be used along with a number of
-other pipeline elements of the same type to process a particular type
-of file. Each pipeline element should define a type, a name, and
-a description.</p></div>
+in a pipeline. A pipeline is used to process a particular type
+of file. Pipeline elements are used in sequence to parse, then transform,
+and then serialize the content of the file. Each element can be used along
+with a number of other pipeline elements of the same type which all
+process the same type of file. Each pipeline element should define a type,
+a name, and a description.</p></div>
         
     
 </header>
@@ -89,7 +91,7 @@ a description.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line31">line 31</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -350,7 +352,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line89">line 89</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line91">line 91</a>
     </li></ul></dd>
     
 
@@ -430,7 +432,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line51">line 51</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line53">line 53</a>
     </li></ul></dd>
     
 
@@ -512,7 +514,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line67">line 67</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line69">line 69</a>
     </li></ul></dd>
     
 
@@ -587,7 +589,9 @@ handles for users who are trying to discover whether or not to use it.</p>
     <dt class="tag-description">Description:</dt>
     <dd class="tag-description"><ul class="dummy"><li><p>Type of file that this pipeline element processes. The type should be
 a unique name that matches with the type of other pipeline elements that
-process this same type of file.</p>
+process this same type of file. The linter will ensure that when a
+pipeline element is of a particular type, only IntermediateRepresentation
+instances with the same type are sent in to that element for processing.</p>
 <p>There are three types that are reserved, however:</p>
 <ul>
 <li>resource - the pipeline element returns an array of Resource instances as
@@ -602,7 +606,7 @@ the file as one long string.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line122">line 122</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line126">line 126</a>
     </li></ul></dd>
     
 
@@ -644,7 +648,9 @@ the file as one long string.</li>
 <div class="description usertext">
     <p>Type of file that this pipeline element processes. The type should be
 a unique name that matches with the type of other pipeline elements that
-process this same type of file.</p>
+process this same type of file. The linter will ensure that when a
+pipeline element is of a particular type, only IntermediateRepresentation
+instances with the same type are sent in to that element for processing.</p>
 <p>There are three types that are reserved, however:</p>
 <ul>
 <li>resource - the pipeline element returns an array of Resource instances as
@@ -703,7 +709,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line99">line 99</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -812,7 +818,7 @@ Concrete subclasses must define PipelineElement.name.</p></li></ul></dd>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line75">line 75</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -923,7 +929,7 @@ process this same type of file.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line134">line 134</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line138">line 138</a>
     </li></ul></dd>
     
 
@@ -1031,7 +1037,7 @@ process this same type of file.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line56">line 56</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -1115,7 +1121,7 @@ process this same type of file.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Wed Oct 23 2024 20:55:45 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

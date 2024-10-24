@@ -23,10 +23,12 @@ checked for problems by the rules.</p></dd>
 <dt><a href="#PipelineElement">PipelineElement</a></dt>
 <dd><p>superclass for pipeline elements</p>
 <p>A pipeline element is the superclass for all classes that can be used
-in a pipeline. A pipeline element can be used along with a number of
-other pipeline elements of the same type to process a particular type
-of file. Each pipeline element should define a type, a name, and
-a description.</p></dd>
+in a pipeline. A pipeline is used to process a particular type
+of file. Pipeline elements are used in sequence to parse, then transform,
+and then serialize the content of the file. Each element can be used along
+with a number of other pipeline elements of the same type which all
+process the same type of file. Each pipeline element should define a type,
+a name, and a description.</p></dd>
 <dt><a href="#Plugin">Plugin</a></dt>
 <dd><p>common SPI that all plugins must implement</p></dd>
 <dt><a href="#Result">Result</a></dt>
@@ -36,7 +38,9 @@ a description.</p></dd>
 <dt><a href="#Serializer">Serializer</a></dt>
 <dd><p>common SPI for serializer plugins</p>
 <p>A serializer converts an IntermediateRepresentation into a SourceFile instance
-that can be written back to disk.</p></dd>
+that can be written back to disk. For example, an xliff serializer can take
+an array of Resource instances and convert it into xliff file format and set
+that as the content of the SourceFile it produces.</p></dd>
 <dt><a href="#SourceFile">SourceFile</a></dt>
 <dd><p>Represent a source file. Source files are text files that are
 candidates for applying lint rules. Source files could mean any type of
@@ -776,10 +780,12 @@ rules that already know how to process Resource instances.</li>
 ## *PipelineElement*
 <p>superclass for pipeline elements</p>
 <p>A pipeline element is the superclass for all classes that can be used
-in a pipeline. A pipeline element can be used along with a number of
-other pipeline elements of the same type to process a particular type
-of file. Each pipeline element should define a type, a name, and
-a description.</p>
+in a pipeline. A pipeline is used to process a particular type
+of file. Pipeline elements are used in sequence to parse, then transform,
+and then serialize the content of the file. Each element can be used along
+with a number of other pipeline elements of the same type which all
+process the same type of file. Each pipeline element should define a type,
+a name, and a description.</p>
 
 **Kind**: global abstract class  
 
@@ -849,7 +855,9 @@ handles for users who are trying to discover whether or not to use it.</p>
 ### **pipelineElement.type : <code>string</code>**
 <p>Type of file that this pipeline element processes. The type should be
 a unique name that matches with the type of other pipeline elements that
-process this same type of file.</p>
+process this same type of file. The linter will ensure that when a
+pipeline element is of a particular type, only IntermediateRepresentation
+instances with the same type are sent in to that element for processing.</p>
 <p>There are three types that are reserved, however:</p>
 <ul>
 <li>resource - the pipeline element returns an array of Resource instances as
@@ -1510,7 +1518,9 @@ problem found (ie. the rule does not match).</p>
 ## *Serializer*
 <p>common SPI for serializer plugins</p>
 <p>A serializer converts an IntermediateRepresentation into a SourceFile instance
-that can be written back to disk.</p>
+that can be written back to disk. For example, an xliff serializer can take
+an array of Resource instances and convert it into xliff file format and set
+that as the content of the SourceFile it produces.</p>
 
 **Kind**: global abstract class  
 
@@ -1542,7 +1552,10 @@ that can be written back to disk.</p>
 <p>Serialize the given intermediate representation into a SourceFile instance. The
 intermediate representation is an object that represents the parsed
 form of the file. The serializer converts this object into a SourceFile
-that can be written back to disk.</p>
+that can be written back to disk. For example, an xliff serializer can take
+an intermediate representation that is an array of Resource instances and
+convert it into xliff file format and set that as the content of the SourceFile
+it produces.</p>
 
 **Kind**: instance abstract method of [<code>Serializer</code>](#Serializer)  
 **Returns**: [<code>SourceFile</code>](#SourceFile) - <p>the source file that contains the serialized form of the
