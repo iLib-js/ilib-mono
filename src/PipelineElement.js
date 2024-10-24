@@ -21,10 +21,12 @@
  * @class superclass for pipeline elements
  *
  * A pipeline element is the superclass for all classes that can be used
- * in a pipeline. A pipeline element can be used along with a number of
- * other pipeline elements of the same type to process a particular type
- * of file. Each pipeline element should define a type, a name, and
- * a description.
+ * in a pipeline. A pipeline is used to process a particular type
+ * of file. Pipeline elements are used in sequence to parse, then transform,
+ * and then serialize the content of the file. Each element can be used along
+ * with a number of other pipeline elements of the same type which all
+ * process the same type of file. Each pipeline element should define a type,
+ * a name, and a description.
  *
  * @abstract
  */
@@ -103,7 +105,9 @@ class PipelineElement {
     /**
      * Type of file that this pipeline element processes. The type should be
      * a unique name that matches with the type of other pipeline elements that
-     * process this same type of file.
+     * process this same type of file. The linter will ensure that when a
+     * pipeline element is of a particular type, only IntermediateRepresentation
+     * instances with the same type are sent in to that element for processing.
      *
      * There are three types that are reserved, however:
      *

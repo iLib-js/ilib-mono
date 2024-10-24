@@ -27,7 +27,9 @@ import PipelineElement from "./PipelineElement.js";
  * @class common SPI for serializer plugins
  *
  * A serializer converts an IntermediateRepresentation into a SourceFile instance
- * that can be written back to disk.
+ * that can be written back to disk. For example, an xliff serializer can take
+ * an array of Resource instances and convert it into xliff file format and set
+ * that as the content of the SourceFile it produces.
  *
  * @abstract
  */
@@ -52,7 +54,10 @@ class Serializer extends PipelineElement {
      * Serialize the given intermediate representation into a SourceFile instance. The
      * intermediate representation is an object that represents the parsed
      * form of the file. The serializer converts this object into a SourceFile
-     * that can be written back to disk.
+     * that can be written back to disk. For example, an xliff serializer can take
+     * an intermediate representation that is an array of Resource instances and
+     * convert it into xliff file format and set that as the content of the SourceFile
+     * it produces.
      *
      * @param {IntermediateRepresentation} representation the representation
      * to serialize
