@@ -143,7 +143,7 @@ describe("testTransformer", () => {
 
     test("Make sure the representation is immutable", () => {
         expect.assertions(2);
-    
+
         const transformer = new TestTransformer();
         const sourceFile = new TestSourceFile("test/testfiles/xliff/test.xliff");
         const representation = new IntermediateRepresentation({
@@ -151,7 +151,7 @@ describe("testTransformer", () => {
             ir: ["This is a test", "this is only a test"],
             sourceFile
         });
-    
+
         const ir = transformer.transform(representation);
         expect(ir).toBeTruthy();
         // should return a new object, not the same one

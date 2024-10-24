@@ -148,7 +148,7 @@ class SourceFile {
      * The content of the file, stored as regular Javascript string
      * encoded in UTF-8.
      *
-     * @type {String|undefined}
+     * @type {String}
      * @protected
      */
     content;
@@ -156,10 +156,10 @@ class SourceFile {
     /**
      * Get the content of this file encoded as a regular Javascript
      * string.
-     * @returns {String|undefined} the content of the file, encoded as a JS string
+     * @returns {String} the content of the file, encoded as a JS string
      */
     getContent() {
-        if (this.content === undefined) {
+        if (typeof(this.content) === 'undefined') {
             this.read();
         }
         return this.content;
@@ -175,6 +175,18 @@ class SourceFile {
             this.read();
         }
         return this.content?.split(/[\r\n]+/g);
+    }
+
+    /**
+     * Set the content of this file to the given array of lines. Do not call
+     * this method any more. It is deprecated and will be removed soon.
+     *
+     * @deprecated
+     * @param {Array.<String>} lines the lines to set as the content
+     */
+    setLines(lines) {
+        // Should not call setLines in the SourceFile class
+        throw new NotImplementedError();
     }
 
     /**
@@ -211,7 +223,7 @@ class SourceFile {
     }
 
     /**
-     * Whether or not the file has been modified.
+     * Whether or not the file has been written to disk.
      *
      * @type {Boolean}
      * @protected
