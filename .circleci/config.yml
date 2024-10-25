@@ -53,7 +53,7 @@ workflows:
           # If A is modified, the job for A will run
           # Similarly if B is modified, the job for B will run
           # If C is modified, then the jobs for both C and B (as a dependency) will run
-	  # to do this, add:
+          # to do this, add:
           #  module-c module-b
           modules: |
             packages/loctool
