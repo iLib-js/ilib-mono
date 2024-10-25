@@ -273,3 +273,4 @@ describe("testWalk", () => {
         expect(files.map(file => file.getFilePath())).toEqual(expected);
     });
 });
+
