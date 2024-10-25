@@ -1,4 +1,4 @@
-
+version: 2.1
 jobs:
   test:
     parameters:
@@ -21,3 +21,16 @@ jobs:
             npm -v
             npm run test
 
+workflows:
+  version: 2
+  test-all-node-versions:
+    jobs:
+      - test:
+          docker_image: cimg/node:14.21
+      - test:
+          docker_image: cimg/node:16.19
+      - test:
+          docker_image: cimg/node:18.9
+      - test:
+          docker_image: cimg/node:20.9
+      - test
