@@ -1,0 +1,8 @@
+{
+    "This is a {named} param.": "This is a {nameless} param that doesn't match",
+    "This {named} param should match.": "This {named} param does indeed match!",
+    "This source string contains the word test.": "This target string does not.",
+    "This source string does not contain that word.": "Which word? Well, the word 'test' of course!",
+    "{count, plural, one {There is # file.} other {There are # files.}}": "{count, plural, one {There is # file.} few {There are # files.} other {There are # files.}}",
+    "{count, plural, one {There is # item.} other {There are # items.}}": "{count, plural, one {There is # item.} other {There are # items.}}"
+}

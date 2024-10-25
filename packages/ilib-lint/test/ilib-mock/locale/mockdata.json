@@ -1,0 +1,9 @@
+{
+    "clock": "24",
+    "measurementSystem": "metric",
+    "decimalSeparator": ".",
+    "thousandsSeparator": ",",
+    "percentFormat": "{n}%",
+    "negativeFormat": "- {n}",
+    "timezone": "Etc/UTC"
+}

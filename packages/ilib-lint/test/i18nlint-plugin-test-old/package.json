@@ -1,0 +1,25 @@
+{
+    "name": "i18nlint-plugin-test-old",
+    "version": "1.0.0",
+    "main": "./src/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.js"
+        }
+    },
+    "description": "mock i18nlint plugin package used for testing the plugin functionality",
+    "files": [
+        "src",
+        "package.json"
+    ],
+    "scripts": {
+        "test": "echo Success!"
+    },
+    "dependencies": {
+        "i18nlint-common": "^2.0.0",
+        "ilib-locale": "^1.2.2",
+        "ilib-tools-common": "^1.6.0",
+        "json5": "^2.2.3"
+    }
+}

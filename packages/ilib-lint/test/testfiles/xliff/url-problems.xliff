@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">
+    <body>
+      <trans-unit id="1" resname="foobar1" restype="string" datatype="plaintext">
+        <source>This string has an url in it: http://www.box.com </source>
+        <target>This string also has http://www.box.com in it</target>
+      </trans-unit>
+      <trans-unit id="2" resname="foobar2" restype="string" datatype="plaintext">
+        <source>This string has no URL in it</source>
+        <target>This string too.</target>
+      </trans-unit>
+      <trans-unit id="3" resname="foobar3" restype="string" datatype="plaintext">
+        <source>This string has multiple URLs in it: http://www.box.com and http://www.google.com</source>
+        <target>This string also has multiple URLs in it: http://www.box.com and http://www.google.com</target>
+      </trans-unit>
+      <trans-unit id="4" resname="foobar4" restype="string" datatype="plaintext">
+        <source>This string has multiple URLs in it: http://www.box.com and http://www.google.com</source>
+        <target>This string is missing one URL: http://www.google.com</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

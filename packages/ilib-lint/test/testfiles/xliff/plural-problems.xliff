@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">
+    <body>
+      <trans-unit id="1" resname="foobar1" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} other {This is plural.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.} other {Dies is Plural.}}</target>
+      </trans-unit>
+      <trans-unit id="2" resname="foobar2" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} other {This is plural.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.}} other {Dies is Plural.}}</target>
+      </trans-unit>
+      <trans-unit id="3" resname="foobar3" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} other {This is plural.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.} other {Dies is Plural.}</target>
+      </trans-unit>
+      <trans-unit id="4" resname="foobar4" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} other {This is plural.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.} few {This is few} other {Dies is Plural.}}</target>
+      </trans-unit>
+      <trans-unit id="5" resname="foobar5" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} few {Extra category} other {This is plural.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.} other {Dies is Plural.}}</target>
+      </trans-unit>
+      <trans-unit id="6" resname="foobar6" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} other {There are {count} plurals.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.} other {Er seit {count} Plurale.}}</target>
+      </trans-unit>
+      <trans-unit id="7" resname="foobar7" restype="string" datatype="plaintext">
+        <source>{count, plural, one {This is singular.} other {There are # plurals.}}</source>
+        <target>{count, plural, one {Dies ist einzigartig.} other {Er seit # Plurale.}}</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
