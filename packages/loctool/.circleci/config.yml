@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  test:
+  test-loctool:
     parameters:
         docker_image:
           type: string
@@ -30,14 +30,16 @@ workflows:
   version: 2
   test-loctool-with-all-node-versions:
     jobs:
-      - test:
+      - test-loctool:
           docker_image: circleci/node:10-browsers
-      - test:
+      - test-loctool:
           docker_image: circleci/node:12-browsers
-      - test:
-          docker_image: circleci/node:13-browsers
-      - test:
-          docker_image: circleci/node:14-browsers
-      - test:
-          docker_image: circleci/node:16-browsers
-      - test
+      - test-loctool:
+          docker_image: cimg/node:14.21
+      - test-loctool:
+          docker_image: cimg/node:16.19
+      - test-loctool:
+          docker_image: cimg/node:18.9
+      - test-loctool:
+          docker_image: cimg/node:20.9
+      - test-loctool

@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  test:
+  test-ilib-lint:
     parameters:
         docker_image:
           type: string
@@ -27,12 +27,12 @@ workflows:
   version: 2
   test-ilib-lint-with-all-node-versions:
     jobs:
-      - test:
+      - test-ilib-lint:
           docker_image: cimg/node:14.21
-      - test:
+      - test-ilib-lint:
           docker_image: cimg/node:16.19
-      - test:
+      - test-ilib-lint:
           docker_image: cimg/node:18.9
-      - test:
+      - test-ilib-lint:
           docker_image: cimg/node:20.9
-      - test
+      - test-ilib-lint
