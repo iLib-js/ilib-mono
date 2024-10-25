@@ -12,6 +12,7 @@ jobs:
       - run:
           name: Setup
           command: |
+	    cd packages/loctool
             ls -la
             rm -rf node_modules package-lock.json
             npm install
@@ -20,6 +21,7 @@ jobs:
       - run:
           name: Running all unit tests
           command: |
+	    cd packages/loctool
             node -v
             npm -v
             npm run test --detectOpenHandles

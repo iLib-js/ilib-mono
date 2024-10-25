@@ -1,3 +1,4 @@
+# copied from https://github.com/circle-makotom/circle-advanced-setup-workflow/blob/main/.circleci/config.yml
 # Config for the setup workflow and common resources (jobs, commands) for main workflows
 # `common-` prefix is added for common resources (to avoid conflicts with module resources)
 
