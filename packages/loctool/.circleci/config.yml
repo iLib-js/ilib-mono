@@ -1,0 +1,27 @@
+version: 2.1
+
+jobs:
+  test:
+    parameters:
+        docker_image:
+          type: string
+          default: cimg/node:current-browsers
+    docker:
+      - image: << parameters.docker_image >>
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            ls -la
+            rm -rf node_modules package-lock.json
+            npm install
+            NODE=$(dirname $(dirname $(which node)))
+            sed "s@XXXX@$NODE@" build.properties.travis > build.properties
+      - run:
+          name: Running all unit tests
+          command: |
+            node -v
+            npm -v
+            npm run test --detectOpenHandles
+

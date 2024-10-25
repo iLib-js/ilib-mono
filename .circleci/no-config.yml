@@ -1,0 +1,8 @@
+version: 2.1
+
+jobs:
+  no-updates:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run: echo "No updates have been made to any of the subpackages"

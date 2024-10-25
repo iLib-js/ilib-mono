@@ -1,0 +1,32 @@
+version: 2.1
+
+parameters:
+  always-continue:
+    type: boolean
+    default: false
+  build-code:
+    type: boolean
+    default: false
+  build-docs:
+    type: boolean
+    default: false
+
+jobs:
+  lint:
+    docker:
+      - image cimg/base:stable
+    steps:
+      - run: echo "Running lint"
+
+workflows:
+  version: 2
+  test-all-node-version:
+    jobs:
+      - test:
+        docker_image: cimg/node:14.21-browsers
+      - test:
+        docker_image: cimg/node:16.20-browsers
+      - test:
+        docker_image: cimg/node:18.9-browsers
+      - test:
+        docker_image: cimg/node:20.9-browsers

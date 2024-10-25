@@ -1,0 +1,17 @@
+version: 2.1
+
+setup: true
+
+orbs:
+  path-filtering: circleci/path-filtering@1.0.0
+
+workflows:
+  setup-workflow:
+    jobs:
+      - path-filtering/filter:
+        base-revision: gneerate-config-file-main
+        config-path: .circleci/no-updates.yml
+        mapping: |
+          .* always-continue true .circleci/shared-config.yml
+          packages/loctool/.* build-code true packages/loctool/.circleci/config.yml
+          packages/ilib-lint/.* build-code true packages/loctool/.circleci/config.yml
