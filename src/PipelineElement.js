@@ -35,9 +35,10 @@ class PipelineElement {
      * Construct a new pipeline element instance.
      *
      * @param {Object} [options] options to the constructor
-     * @param {Function} [options.getLogger] a callback function provided by
+     * @param {Function} [options.getLogger] a callback function provided by the
+     * linter to retrieve the log4js logger
      * @param {object} [options.settings] additional settings that can be passed from the
-     * pipeline element to the linter to retrieve the log4js logger
+     * linter to pipeline element from the configuration file
      */
     constructor(options) {
         if (this.constructor === PipelineElement) {
@@ -116,6 +117,11 @@ class PipelineElement {
      * - line - the pipeline element produces a set of lines as an array of strings
      * - string - the pipeline element doesn't parse. Instead, it just treats the
      *   the file as one long string.
+     * - * - the star is a special type that means that the pipeline element
+     *   can handle any type of file. Typically, this is used for pipeline elements
+     *   that are used to check the content of the file for problems that are
+     *   not related to the structure of the file itself, such as checking for
+     *   character encoding problems or other issues.
      *
      * Concrete subclasses must define this property.
      * @readonly

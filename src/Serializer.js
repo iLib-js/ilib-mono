@@ -20,8 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
-/* @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
-/* @typedef {import("SourceFile")} SourceFile */
+/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
+/* @ignore @typedef {import("SourceFile")} SourceFile */
 
 /**
  * @class common SPI for serializer plugins
@@ -47,7 +47,6 @@ class Serializer extends PipelineElement {
         if (this.constructor === Serializer) {
             throw new Error("Cannot instantiate abstract class Plugin directly!");
         }
-        this.getLogger = options?.getLogger;
     }
 
     /**

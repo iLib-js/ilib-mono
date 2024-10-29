@@ -20,8 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
-/* @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
-/* @typedef {import("SourceFile")} SourceFile */
+/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
+/* @ignore @typedef {import("SourceFile")} SourceFile */
 
 /**
  * @class common SPI for parser plugins
@@ -45,7 +45,6 @@ class Parser extends PipelineElement {
         if (this.constructor === Parser) {
             throw new Error("Cannot instantiate abstract class Parser directly!");
         }
-        this.getLogger = options?.getLogger;
     }
 
     /**
@@ -96,6 +95,11 @@ class Parser extends PipelineElement {
      *   This is the preference intermediate representation for
      *   resource files like Java properties or xliff. There are many
      *   rules that already know how to process Resource instances.
+     * - * - the star is a special type that means that the pipeline element
+     *   can handle any type of file. Typically, this is used for pipeline elements
+     *   that are used to check the content of the file for problems that are
+     *   not related to the structure of the file itself, such as checking for
+     *   character encoding problems or other issues.
      *
      * @param {SourceFile} sourceFile the source file to parse
      * @abstract

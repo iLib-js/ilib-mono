@@ -20,6 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
+/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
+
 /**
  * @class common SPI for transformer plugins
  *
@@ -46,7 +48,6 @@ class Transformer extends PipelineElement {
         if (this.constructor === Transformer) {
             throw new Error("Cannot instantiate abstract class Transformer directly!");
         }
-        this.getLogger = options?.getLogger;
     }
 
     /**

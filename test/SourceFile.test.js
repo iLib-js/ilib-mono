@@ -54,7 +54,7 @@ describe('SourceFile', () => {
 
         const sourceFile = new SourceFile(filePath1, { getLogger });
         expect(sourceFile.getPath()).toBe(filePath1);
-        expect(sourceFile.getType()).toBe("");
+        expect(sourceFile.getType()).toBe("string");
     });
 
     test('should create a SourceFile instance with provided options', () => {

@@ -205,12 +205,14 @@ class SourceFile {
 
     /**
      * The type of this file. This should match the type of
-     * pipeline elements that process this same type of file.
+     * pipeline elements that process this same type of file. If the type
+     * of a file is not known, then the type should be "string" which means
+     * that the file is treated as a plain string of text.
      *
      * @type {String}
      * @protected
      */
-    type = "";
+    type = "string";
 
     /**
      * Return the type of this file. This should match the type of
