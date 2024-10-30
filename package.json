@@ -8,7 +8,7 @@
             "import": "./src/index.js",
             "require": "./lib/index.js"
         },
-        "assemble.mjs": "./assemble.mjs"
+        "./assemble.mjs": "./assemble.mjs"
     },
     "description": "Classes to parse and format mailing addresses",
     "keywords": [
