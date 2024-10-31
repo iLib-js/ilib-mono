@@ -8,3 +8,4 @@ This project is developed using the following tools:
 -   `NodeJS v22 LTS` runtime (recommended installation through `nvm install` and later usage through `nvm use`: [installation guide](https://nodejs.org/en/download/package-manager))
 -   `pnpm v9` package manager (recommended installation through Corepack: [installation guide](https://pnpm.io/installation#using-corepack))
     -   pro tip: `pnpm` might be annoying to type; you can alias it to `pn` instead ([guide here](https://pnpm.io/installation#adding-a-permanent-alias-on-posix-systems))
+-   `turborepo` for monorepo management (installation guide: [installation guide](https://turbo.build/repo/docs/getting-started/installation))
