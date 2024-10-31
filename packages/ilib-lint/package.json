@@ -1,0 +1,89 @@
+{
+    "name": "ilib-lint",
+    "version": "2.5.0",
+    "module": "./src/index.js",
+    "type": "module",
+    "bin": "./src/index.js",
+    "description": "A linter for i18n issues for any type of project",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "lint",
+        "locale"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-lint",
+    "bugs": "https://github.com/iLib-js/ilib-lint/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "docs",
+        "log4js.json",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-lint.git"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest",
+        "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules ./node_modules/.bin/jest --watch",
+        "debug": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules --inspect-brk node_modules/.bin/jest -i",
+        "lint": "node src/index.js",
+        "clean": "git clean -f -d src test",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md ; npm run doc:html",
+        "doc:html": "jsdoc -c jsdoc.json",
+        "types": "tsc -p ./jsconfig.json"
+    },
+    "devDependencies": {
+        "@tsconfig/node14": "^14.1.2",
+        "@types/node": "^14.0.0",
+        "docdash": "^2.0.2",
+        "i18nlint-plugin-test-old": "file:test/i18nlint-plugin-test-old",
+        "ilib-lint-plugin-obsolete": "file:test/ilib-lint-plugin-obsolete",
+        "ilib-lint-plugin-test": "file:test/ilib-lint-plugin-test",
+        "jest": "^29.7.0",
+        "jsdoc": "^4.0.3",
+        "jsdoc-to-markdown": "^8.0.3",
+        "npm-run-all": "^4.1.5",
+        "typescript": "^5.5.4"
+    },
+    "dependencies": {
+        "@formatjs/intl": "^2.10.4",
+        "ilib-common": "^1.1.3",
+        "ilib-lint-common": "^3.0.0",
+        "ilib-locale": "^1.2.2",
+        "ilib-localeinfo": "^1.1.0",
+        "ilib-tools-common": "^1.11.0",
+        "intl-messageformat": "^10.5",
+        "json5": "^2.2.3",
+        "log4js": "^6.9.1",
+        "micromatch": "^4.0.7",
+        "options-parser": "^0.4.0",
+        "xml-js": "^1.6.11"
+    }
+}

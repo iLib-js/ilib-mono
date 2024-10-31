@@ -1,0 +1,13 @@
+{
+    "extends": "@tsconfig/node14/tsconfig.json", /* https://www.npmjs.com/package/@tsconfig/node14 */
+    "compilerOptions": {
+        "noEmit": true,
+        "allowJs": true,
+        "checkJs": true,
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "strict": true,
+        "noImplicitAny": false
+    },
+    "exclude": ["node_modules"]
+}

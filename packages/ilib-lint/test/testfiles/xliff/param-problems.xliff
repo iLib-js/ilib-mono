@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">
+    <body>
+      <trans-unit id="1" resname="foobar1" restype="string" datatype="plaintext">
+        <source>This string has an {url} in it</source>
+        <target>This string also has {url} in it</target>
+      </trans-unit>
+      <trans-unit id="2" resname="foobar2" restype="string" datatype="plaintext">
+        <source>This string has no param in it</source>
+        <target>This string too.</target>
+      </trans-unit>
+      <trans-unit id="3" resname="foobar3" restype="string" datatype="plaintext">
+        <source>This string has multiple {params} in it: {sub}</source>
+        <target>This string also has multiple {params} in it: {sub}</target>
+      </trans-unit>
+      <trans-unit id="4" resname="foobar4" restype="string" datatype="plaintext">
+        <source>This string has multiple {params} in it: {sub}</source>
+        <target>This string is missing one URL: {sub}</target>
+      </trans-unit>
+      <trans-unit id="5" resname="foobar5" restype="string" datatype="plaintext">
+        <source>This string has multiple {params} in it: {sub}</source>
+        <target>This string is {params} one URL: {different}</target>
+      </trans-unit>
+      <trans-unit id="6" resname="foobar6" restype="string" datatype="plaintext">
+        <source>This string has no params in it</source>
+        <target>This string is does have {params} in it</target>
+      </trans-unit>
+      <trans-unit id="7" resname="foobar7" restype="string" datatype="plaintext">
+        <source>This string has one {param} in it</source>
+        <target>This string has multiple {param} in it: {different}</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
