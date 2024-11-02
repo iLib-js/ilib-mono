@@ -1,0 +1,91 @@
+{
+    "name": "ilib-po",
+    "version": "1.0.0",
+    "main": "./lib/index.js",
+    "module": "./src/index.ts",
+    "exports": {
+        ".": {
+            "import": "./src/index.ts",
+            "require": "./lib/index.js"
+        }
+    },
+    "description": "Library of code to parse and generate PO files.",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "xliff",
+        "po",
+        "gettext",
+        "translation"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-po",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "lib",
+        "docs",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "build": "npm run build:prod",
+        "build:test": "npm-run-all build:dev build:web",
+        "build:data": "cd scripts ; node generate.js",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:prod": "grunt babel --mode=prod",
+        "build:dev": "grunt babel --mode=dev",
+        "build:web": "webpack-cli --env dev --config webpack-test.config.js",
+        "dist": "npm run build:prod ; npm pack",
+        "test:cli": "LANG=en_US.UTF8 npm-run-all build:pkg build:dev ; bash test/testSuite.sh",
+        "test:web": "LANG=en_US.UTF8 npm-run-all build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test": "npm-run-all test:cli",
+        "test:all": "npm-run-all test:cli test:web",
+        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d src test; rm -rf lib *.tgz",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibXliff.md ; npm run doc:html",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "docdash": "^1.2.0",
+        "grunt": "^1.5.3",
+        "grunt-babel": "^8.0.0",
+        "grunt-cli": "^1.4.3",
+        "grunt-contrib-clean": "^2.0.1",
+        "grunt-contrib-jshint": "^3.2.0",
+        "grunt-contrib-nodeunit": "^4.0.0",
+        "grunt-contrib-uglify": "^5.2.2",
+        "jsdoc": "^3.6.11",
+        "jsdoc-to-markdown": "^7.1.1",
+        "load-grunt-tasks": "^5.1.0",
+        "npm-run-all": "^4.1.5"
+    },
+    "dependencies": {
+        "ilib-ctype": "^1.2.1",
+        "ilib-tools-common": "^1.11.0"
+    }
+}
