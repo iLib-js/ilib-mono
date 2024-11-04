@@ -5,7 +5,6 @@
         "moduleResolution": "node",
         "checkJs": false,
         "esModuleInterop": true,
-        "isolatedModules": true,
         "jsx": "react",
         "module": "ES2020",
         "noFallthroughCasesInSwitch": true,
@@ -14,9 +13,9 @@
             "*": ["node_modules/*", "src/*"]
         },
         "resolveJsonModule": true,
-        "target": "ES6",
+        "target": "ES5",
         "allowSyntheticDefaultImports": true,
-        "allowImportingTsExtensions": true
+        "skipLibCheck": true,
     },
-    "include": ["src/**/*", "node_modules"]
+    "include": ["src/**/*"]
 }
