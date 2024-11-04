@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "allowJs": false, // https://github.com/microsoft/TypeScript/issues/35470,
+        "baseUrl": "./",
+        "moduleResolution": "node",
+        "checkJs": false,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "jsx": "react",
+        "module": "ES2020",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "paths": {
+            "*": ["node_modules/*", "src/*"]
+        },
+        "resolveJsonModule": true,
+        "target": "ES6",
+        "allowSyntheticDefaultImports": true,
+        "allowImportingTsExtensions": true
+    },
+    "include": ["src/**/*", "node_modules"]
+}
