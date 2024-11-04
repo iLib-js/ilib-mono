@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Plugin - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileStats.html">FileStats</a><ul class='methods'><li data-type='method'><a href="FileStats.html#addBytes">addBytes</a></li><li data-type='method'><a href="FileStats.html#addFiles">addFiles</a></li><li data-type='method'><a href="FileStats.html#addLines">addLines</a></li><li data-type='method'><a href="FileStats.html#addModules">addModules</a></li><li data-type='method'><a href="FileStats.html#addStats">addStats</a></li><li data-type='method'><a href="FileStats.html#getBytes">getBytes</a></li><li data-type='method'><a href="FileStats.html#getFiles">getFiles</a></li><li data-type='method'><a href="FileStats.html#getLines">getLines</a></li><li data-type='method'><a href="FileStats.html#getModules">getModules</a></li></ul></li><li><a href="Fix.html">Fix</a></li><li><a href="Fixer.html">Fixer</a><ul class='methods'><li data-type='method'><a href="Fixer.html#applyFixes">applyFixes</a></li></ul></li><li><a href="Formatter.html">Formatter</a><ul class='methods'><li data-type='method'><a href="Formatter.html#format">format</a></li><li data-type='method'><a href="Formatter.html#formatOutput">formatOutput</a></li><li data-type='method'><a href="Formatter.html#getDescription">getDescription</a></li><li data-type='method'><a href="Formatter.html#getName">getName</a></li></ul></li><li><a href="IntermediateRepresentation.html">IntermediateRepresentation</a><ul class='methods'><li data-type='method'><a href="IntermediateRepresentation.html#getRepresentation">getRepresentation</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getSourceFile">getSourceFile</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getType">getType</a></li></ul></li><li><a href="NotImplementedError.html">NotImplementedError</a></li><li><a href="Parser.html">Parser</a><ul class='methods'><li data-type='method'><a href="Parser.html#getExtensions">getExtensions</a></li><li data-type='method'><a href="Parser.html#parse">parse</a></li></ul></li><li><a href="PipelineElement.html">PipelineElement</a><ul class='methods'><li data-type='method'><a href="PipelineElement.html#getDescription">getDescription</a></li><li data-type='method'><a href="PipelineElement.html#getName">getName</a></li><li data-type='method'><a href="PipelineElement.html#getType">getType</a></li><li data-type='method'><a href="PipelineElement.html#init">init</a></li></ul></li><li><a href="Plugin.html">Plugin</a><ul class='methods'><li data-type='method'><a href="Plugin.html#getFixers">getFixers</a></li><li data-type='method'><a href="Plugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="Plugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="Plugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="Plugin.html#getRules">getRules</a></li><li data-type='method'><a href="Plugin.html#getSerializers">getSerializers</a></li><li data-type='method'><a href="Plugin.html#getTransformers">getTransformers</a></li><li data-type='method'><a href="Plugin.html#init">init</a></li></ul></li><li><a href="Result.html">Result</a></li><li><a href="Rule.html">Rule</a><ul class='methods'><li data-type='method'><a href="Rule.html#getDescription">getDescription</a></li><li data-type='method'><a href="Rule.html#getLink">getLink</a></li><li data-type='method'><a href="Rule.html#getName">getName</a></li><li data-type='method'><a href="Rule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="Rule.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Rule.html#match">match</a></li></ul></li><li><a href="Serializer.html">Serializer</a><ul class='methods'><li data-type='method'><a href="Serializer.html#serialize">serialize</a></li></ul></li><li><a href="SourceFile.html">SourceFile</a><ul class='methods'><li data-type='method'><a href="SourceFile.html#getContent">getContent</a></li><li data-type='method'><a href="SourceFile.html#getLength">getLength</a></li><li data-type='method'><a href="SourceFile.html#getLines">getLines</a></li><li data-type='method'><a href="SourceFile.html#getPath">getPath</a></li><li data-type='method'><a href="SourceFile.html#getRaw">getRaw</a></li><li data-type='method'><a href="SourceFile.html#getType">getType</a></li><li data-type='method'><a href="SourceFile.html#isDirty">isDirty</a></li><li data-type='method'><a href="SourceFile.html#read">read</a></li><li data-type='method'><a href="SourceFile.html#setLines">setLines</a></li><li data-type='method'><a href="SourceFile.html#write">write</a></li></ul></li><li><a href="Transformer.html">Transformer</a><ul class='methods'><li data-type='method'><a href="Transformer.html#transform">transform</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#isCamelCase">isCamelCase</a></li><li><a href="global.html#isKebabCase">isKebabCase</a></li><li><a href="global.html#isSnakeCase">isSnakeCase</a></li><li><a href="global.html#withVisibleWhitespace">withVisibleWhitespace</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Plugin</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            Plugin
+        
+        </h2>
+        
+            <div class="class-description usertext"><p>common SPI that all plugins must implement</p></div>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="Plugin"><span class="type-signature type-signature-abstract">(abstract) </span>new Plugin<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Construct a new plugin. The options can vary depending on the
+the plugin.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>options to the constructor</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>getLogger</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>a callback function provided by
+the linter to retrieve the log4js logger</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="getFixers"><span class="type-signature"></span>getFixers<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Class>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>For a &quot;fixer&quot; type of plugin, this returns a list of Fixer
+classes that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this
+formatter multiple times.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line128">line 128</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>array of Fixer classes implemented
+by this plugin</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Class></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getFormatters"><span class="type-signature"></span>getFormatters<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;(Class|Object)>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>For a &quot;formatter&quot; type of plugin, this returns a list of Formatter
+classes that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this
+formatter multiple times.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line115">line 115</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>list of Formatter classes implemented
+by this plugin or objects that are definitions of declarative formatters</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;(Class|Object)></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getParsers"><span class="type-signature"></span>getParsers<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Class>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>For a &quot;parser&quot; type of plugin, this returns a list of Parser classes
+that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this
+parser multiple times.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line102">line 102</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>list of Parser classes implemented by this
+plugin</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Class></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getRuleSets"><span class="type-signature"></span>getRuleSets<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Return a number of pre-defined rule sets. The idea behind this
+method is that the plugin can define sets of rules that users of
+the plugin can rely on. As the plugin
+developer adds new rules in their plugin, they can also update
+the rule set to include those new rules and users of this plugin
+will get enhanced functionality automatically without changing
+their own configuration.<p></p>
+<p>For example, if there is a plugin named
+&quot;android&quot;, the plugin writer can add support for Java, Kotlin,
+and properties files in the same plugin by adding parsers and rules
+for each file type. They can then also add rulesets called &quot;java&quot;,
+&quot;kotlin&quot; and &quot;properties&quot; which will apply all the rules from this
+plugin that are appropriate for the file types.<p></p>
+<p>By convention, these rulesets are named the same as the file type
+that they support, but this is not a strict requirement. Plugin
+writers should document the rulesets that the plugin supports in
+the README.md for that plugin so that users know that it is available.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line89">line 89</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>an object where the properties are the names of
+rulesets and the values are objects that configure a ruleset. The
+properties of this subobject are the names of the rules and the
+values are the optional parameters for the rule, or &quot;true&quot; to indicate
+that the rule should be turned on for this set.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getRules"><span class="type-signature"></span>getRules<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;(Class|Object)>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>For a plugin that implements rules, this returns a list of Rule
+classes that this plugin implements. Note this is the class itself,
+not an instance of the class. The linter may need to instantiate
+this rule multiple times with different optional parameters.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>list of Rule classes implemented
+by this plugin or objects that are definitions of declarative rules</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;(Class|Object)></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getSerializers"><span class="type-signature"></span>getSerializers<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Class>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>For a &quot;serializer&quot; type of plugin, this returns a list of Serializer
+classes that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this serializer
+multiple times.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line153">line 153</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>list of Serializer classes implemented
+by this plugin</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Class></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getTransformers"><span class="type-signature"></span>getTransformers<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Class>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>For a &quot;transformer&quot; type of plugin, this returns a list of Transformer
+classes that this plugin implements. Note this is the class, not an
+instance of the class. The linter may need to instantiate this transformer
+multiple times.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line141">line 141</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>list of Transformer classes implemented
+by this plugin</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Class></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="init"><span class="type-signature type-signature-abstract">(abstract) </span>init<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;void>|void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Initialize the current plugin, if necessary.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Plugin.js.html">Plugin.js</a>, <a href="Plugin.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a promise to initialize or undefined if the
+initialization is synchronous or if no initialization is necessary</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;void></span>
+|
+
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

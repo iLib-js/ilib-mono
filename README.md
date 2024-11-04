@@ -19,7 +19,7 @@ the ilib-lint tool.
 
 ## Full API Docs
 
-See the [full API docs](./docs/ilib-lint-common.md) for more information.
+See the [full API docs](https://github.com/ilib-js/ilib-lint-common/docs/ilib-lint-common.md) for more information.
 
 ## License
 
@@ -41,7 +41,25 @@ limitations under the License.
 ## Release Notes
 
 ### v3.1.0
+
 - added formatOutput() method to the Formatter class
+- added support for updating source files
+    - made sure that SourceFile and IntermediateRepresentation instances are immutable
+    - added the Transformer class to allow transforming the IntermediateRepresentation into a
+      new IntermediateRepresentation. This allows multiple transformations to
+      be applied to the file in sequence, such as filtering out any unwanted content,
+      or adding a comment at the beginning of the file that tells the user that
+      this is a generated file.
+    - added the Serializer class to serialize the IntermediateRepresentation back into a SourceFile
+    - added Plugin.getTransformers() method to allow plugins to define transformers
+      that can be applied to the IntermediateRepresentation after the Rules are run
+      on it
+    - added Plugin.getSerializers() method to allow plugins to define serializers
+      that can be applied to the IntermediateRepresentation after the Transformers
+      are run on it
+    - added PipelineElement class to ensure that Parser, Transformer, and Serializer
+      classes all have the same interface in terms of names, descriptions, and
+      types.
 
 ### v3.0.0
 

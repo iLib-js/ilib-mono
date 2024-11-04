@@ -21,6 +21,12 @@ import fs from 'fs';
 import SourceFile from '../src/SourceFile.js';
 import jest from 'jest-mock';
 
+import {describe, expect, test} from '@jest/globals';
+
+/**
+ * @jest-environment node
+ */
+
 // Mock the getLogger function
 const getLogger = (loggerName) => {
     return {
@@ -40,7 +46,7 @@ describe('SourceFile', () => {
     test('should throw an error if created without a file path', () => {
         expect.assertions(1);
 
-        expect(() => new SourceFile()).toThrowError('Attempt to create a SourceFile without a file path');
+        expect(() => new SourceFile(undefined)).toThrowError('Attempt to create a SourceFile without a file path');
     });
 
     test('should create a SourceFile instance with the correct properties', () => {
@@ -48,9 +54,9 @@ describe('SourceFile', () => {
 
         const sourceFile = new SourceFile(filePath1, { getLogger });
         expect(sourceFile.getPath()).toBe(filePath1);
-        expect(sourceFile.getType()).toBe("");
+        expect(sourceFile.getType()).toBe("string");
     });
-    
+
     test('should create a SourceFile instance with provided options', () => {
         expect.assertions(2);
 
@@ -95,7 +101,7 @@ describe('SourceFile', () => {
         const rawBuffer = sourceFile.getRaw();
 
         expect(Buffer.isBuffer(rawBuffer)).toBe(true);
-        expect(rawBuffer.toString('utf-8')).toBe('Mock file content');
+        expect(rawBuffer?.toString('utf-8')).toBe('Mock file content');
     });
 
     test('should get the content of the file as a string', () => {
@@ -121,36 +127,38 @@ describe('SourceFile', () => {
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
         const newLines = ['New Line 1', 'New Line 2', 'New Line 3'];
-        sourceFile.setLines(newLines);
+        const newSourceFile = new SourceFile(filePath2, {
+            file: sourceFile,
+            content: newLines.join('\n')
+        });
 
-        expect(sourceFile.getLines()).toEqual(newLines);
+        expect(newSourceFile.getLines()).toEqual(newLines);
     });
 
     test('should not set lines to an empty array if null is provided', () => {
         expect.assertions(1);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        sourceFile.setLines(null);
+        const newSourceFile = new SourceFile(filePath2, {
+            file: sourceFile,
+            content: null
+        });
 
-        expect(sourceFile.getLines()).toEqual(['Line 1', 'Line 2', 'Line 3']);
+        // The content of the file is still the same
+        expect(newSourceFile.getLines()).toEqual(['Line 1', 'Line 2', 'Line 3']);
     });
 
     test('should not set lines to an empty array if undefined is provided', () => {
         expect.assertions(1);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        sourceFile.setLines(undefined);
+        const newSourceFile = new SourceFile(filePath2, {
+            file: sourceFile,
+            content: undefined
+        });
 
-        expect(sourceFile.getLines()).toEqual(['Line 1', 'Line 2', 'Line 3']);
-    });
-
-    test('should not set lines to an empty array if lines are not provided', () => {
-        expect.assertions(1);
-
-        const sourceFile = new SourceFile(filePath2, { getLogger });
-        sourceFile.setLines();
-
-        expect(sourceFile.getLines()).toEqual(['Line 1', 'Line 2', 'Line 3']);
+        // The content of the file is still the same
+        expect(newSourceFile.getLines()).toEqual(['Line 1', 'Line 2', 'Line 3']);
     });
 
     test('should handle empty lines in the file content', () => {
@@ -173,18 +181,20 @@ describe('SourceFile', () => {
         expect.assertions(2);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        const emptyLines = [];
 
         expect(sourceFile.getLines()).toEqual(['Line 1', 'Line 2', 'Line 3']);
-        sourceFile.setLines(emptyLines);
-        expect(sourceFile.getLines()).toEqual(['']);
+        const newSourceFile = new SourceFile(filePath2, {
+            file: sourceFile,
+            content: ''
+        });
+        expect(newSourceFile.getLines()).toEqual(['']);
     });
 
     test('length is set correctly', () => {
         expect.assertions(1);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        
+
         expect(sourceFile.getLength()).toBe(20);
     });
 
@@ -192,50 +202,27 @@ describe('SourceFile', () => {
         expect.assertions(2);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        
+
         expect(sourceFile.getLength()).toBe(20);
         const newLines = ['New Line 1', 'New Line 2', 'New Line 3'];
-        sourceFile.setLines(newLines);
-        expect(sourceFile.getLength()).toBe(32);
+        const newSourceFile = new SourceFile(filePath2, {
+            file: sourceFile,
+            content: newLines.join('\n')
+        });
+        expect(newSourceFile.getLength()).toBe(32);
     });
 
     test('dirty flag is updated after setLines', () => {
         expect.assertions(2);
 
         const sourceFile = new SourceFile(filePath2, { getLogger });
-        
+
         expect(sourceFile.isDirty()).toBeFalsy();
         const newLines = ['New Line 1', 'New Line 2', 'New Line 3'];
-        sourceFile.setLines(newLines);
-        expect(sourceFile.isDirty()).toBeTruthy();
-    });
-
-    test('write to another file', () => {
-        expect.assertions(2);
-
-        const outputFile = "./test/testfiles/x.txt";
-        if (fs.existsSync(outputFile)) {
-            fs.unlinkSync(outputFile);
-        }
-
-        const sourceFile = new SourceFile(filePath2, { getLogger });
-        expect(fs.existsSync(outputFile)).toBeFalsy();
-        sourceFile.write(outputFile);
-        expect(fs.existsSync(outputFile)).toBeTruthy();
-    });
-
-    test('write to same file', () => {
-        expect.assertions(1);
-
-        const filePath = "./test/testfiles/x.txt";
-        fs.writeFileSync(filePath, "This is a test.\nThis is only a test.\n", "utf-8");
-
-        const sourceFile = new SourceFile(filePath, { getLogger });
-        const newLines = ['Come, they told me', 'Pah rumppah pum pum'];
-        sourceFile.setLines(newLines);
-        sourceFile.write();
-        
-        const content = fs.readFileSync(filePath, "utf-8");
-        expect(content).toBe("Come, they told me\nPah rumppah pum pum");
+        const newSourceFile = new SourceFile(filePath2, {
+            file: sourceFile,
+            content: newLines.join('\n')
+        });
+        expect(newSourceFile.isDirty()).toBeTruthy();
     });
 });

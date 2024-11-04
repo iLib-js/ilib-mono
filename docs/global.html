@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Global - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileStats.html">FileStats</a><ul class='methods'><li data-type='method'><a href="FileStats.html#addBytes">addBytes</a></li><li data-type='method'><a href="FileStats.html#addFiles">addFiles</a></li><li data-type='method'><a href="FileStats.html#addLines">addLines</a></li><li data-type='method'><a href="FileStats.html#addModules">addModules</a></li><li data-type='method'><a href="FileStats.html#addStats">addStats</a></li><li data-type='method'><a href="FileStats.html#getBytes">getBytes</a></li><li data-type='method'><a href="FileStats.html#getFiles">getFiles</a></li><li data-type='method'><a href="FileStats.html#getLines">getLines</a></li><li data-type='method'><a href="FileStats.html#getModules">getModules</a></li></ul></li><li><a href="Fix.html">Fix</a></li><li><a href="Fixer.html">Fixer</a><ul class='methods'><li data-type='method'><a href="Fixer.html#applyFixes">applyFixes</a></li></ul></li><li><a href="Formatter.html">Formatter</a><ul class='methods'><li data-type='method'><a href="Formatter.html#format">format</a></li><li data-type='method'><a href="Formatter.html#formatOutput">formatOutput</a></li><li data-type='method'><a href="Formatter.html#getDescription">getDescription</a></li><li data-type='method'><a href="Formatter.html#getName">getName</a></li></ul></li><li><a href="IntermediateRepresentation.html">IntermediateRepresentation</a><ul class='methods'><li data-type='method'><a href="IntermediateRepresentation.html#getRepresentation">getRepresentation</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getSourceFile">getSourceFile</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getType">getType</a></li></ul></li><li><a href="NotImplementedError.html">NotImplementedError</a></li><li><a href="Parser.html">Parser</a><ul class='methods'><li data-type='method'><a href="Parser.html#getExtensions">getExtensions</a></li><li data-type='method'><a href="Parser.html#parse">parse</a></li></ul></li><li><a href="PipelineElement.html">PipelineElement</a><ul class='methods'><li data-type='method'><a href="PipelineElement.html#getDescription">getDescription</a></li><li data-type='method'><a href="PipelineElement.html#getName">getName</a></li><li data-type='method'><a href="PipelineElement.html#getType">getType</a></li><li data-type='method'><a href="PipelineElement.html#init">init</a></li></ul></li><li><a href="Plugin.html">Plugin</a><ul class='methods'><li data-type='method'><a href="Plugin.html#getFixers">getFixers</a></li><li data-type='method'><a href="Plugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="Plugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="Plugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="Plugin.html#getRules">getRules</a></li><li data-type='method'><a href="Plugin.html#getSerializers">getSerializers</a></li><li data-type='method'><a href="Plugin.html#getTransformers">getTransformers</a></li><li data-type='method'><a href="Plugin.html#init">init</a></li></ul></li><li><a href="Result.html">Result</a></li><li><a href="Rule.html">Rule</a><ul class='methods'><li data-type='method'><a href="Rule.html#getDescription">getDescription</a></li><li data-type='method'><a href="Rule.html#getLink">getLink</a></li><li data-type='method'><a href="Rule.html#getName">getName</a></li><li data-type='method'><a href="Rule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="Rule.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Rule.html#match">match</a></li></ul></li><li><a href="Serializer.html">Serializer</a><ul class='methods'><li data-type='method'><a href="Serializer.html#serialize">serialize</a></li></ul></li><li><a href="SourceFile.html">SourceFile</a><ul class='methods'><li data-type='method'><a href="SourceFile.html#getContent">getContent</a></li><li data-type='method'><a href="SourceFile.html#getLength">getLength</a></li><li data-type='method'><a href="SourceFile.html#getLines">getLines</a></li><li data-type='method'><a href="SourceFile.html#getPath">getPath</a></li><li data-type='method'><a href="SourceFile.html#getRaw">getRaw</a></li><li data-type='method'><a href="SourceFile.html#getType">getType</a></li><li data-type='method'><a href="SourceFile.html#isDirty">isDirty</a></li><li data-type='method'><a href="SourceFile.html#read">read</a></li><li data-type='method'><a href="SourceFile.html#setLines">setLines</a></li><li data-type='method'><a href="SourceFile.html#write">write</a></li></ul></li><li><a href="Transformer.html">Transformer</a><ul class='methods'><li data-type='method'><a href="Transformer.html#transform">transform</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#isCamelCase">isCamelCase</a></li><li><a href="global.html#isKebabCase">isKebabCase</a></li><li><a href="global.html#isSnakeCase">isSnakeCase</a></li><li><a href="global.html#withVisibleWhitespace">withVisibleWhitespace</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Global</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="withVisibleWhitespace"><span class="type-signature type-signature-constant">(constant) </span>withVisibleWhitespace<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Replace whitespace in input string with visible representations<p></p>
+<p>The following explicit mapping is used:<p></p>
+<table>
+<thead>
+  <tr><th>Whitespace</th><th>Description</th><th>Representation</th><th>Description</th></tr>
+</thead>
+<tbody>
+  <tr><td> \u0020 </td><td> regular space      </td><td> ⎵ </td><td> open box            </td></tr>
+  <tr><td> \u00a0 </td><td> non-breaking space </td><td> ⍽ </td><td> shouldered open box </td></tr>
+  <tr><td> \t     </td><td> tabulator          </td><td> → </td><td> tab symbol          </td></tr>
+  <tr><td> \r     </td><td> carriage return    </td><td> ␍ </td><td> CR symbol           </td></tr>
+  <tr><td> \n     </td><td> line feed          </td><td> ␊ </td><td> LF symbol           </td></tr>
+  <tr><td> \v     </td><td> vertical tab       </td><td> ␋ </td><td> VT symbol           </td></tr>
+</tbody>
+</table>
+<p>Additionally, whitespaces not included in explicit mapping are represented
+as their Unicode codepoint value, e.g. <code>\u3000</code> becomes <code>[U+3000]</code>.<p></p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Replace whitespace in input string with visible representations<p></p>
+<p>The following explicit mapping is used:<p></p>
+<table>
+<thead>
+  <tr><th>Whitespace</th><th>Description</th><th>Representation</th><th>Description</th></tr>
+</thead>
+<tbody>
+  <tr><td> \u0020 </td><td> regular space      </td><td> ⎵ </td><td> open box            </td></tr>
+  <tr><td> \u00a0 </td><td> non-breaking space </td><td> ⍽ </td><td> shouldered open box </td></tr>
+  <tr><td> \t     </td><td> tabulator          </td><td> → </td><td> tab symbol          </td></tr>
+  <tr><td> \r     </td><td> carriage return    </td><td> ␍ </td><td> CR symbol           </td></tr>
+  <tr><td> \n     </td><td> line feed          </td><td> ␊ </td><td> LF symbol           </td></tr>
+  <tr><td> \v     </td><td> vertical tab       </td><td> ␋ </td><td> VT symbol           </td></tr>
+</tbody>
+</table>
+<p>Additionally, whitespaces not included in explicit mapping are represented
+as their Unicode codepoint value, e.g. <code>\u3000</code> becomes <code>[U+3000]</code>.<p></p>
+</div>
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="isCamelCase"><span class="type-signature"></span>isCamelCase<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Return true if the given string is written with camel case. Camel
+case is where words are not separated by spaces but the first letter
+of each word is capitalized, looking like the humps of a camel.</p>
+<p>Example: thisIsCamelCaseText</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line103">line 103</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the string to test</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if the entire string is kebab case, and
+false otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="isKebabCase"><span class="type-signature"></span>isKebabCase<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Return true if the given string is written with kebab case. Kebab
+case is where words are separated with dashes, looking like they
+have been strung out on a kebab stick.</p>
+<p>Example: this-is-kebab-case-text</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line86">line 86</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the string to test</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if the entire string is kebab case, and
+false otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="isSnakeCase"><span class="type-signature"></span>isSnakeCase<span class="signature">(str)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Return true if the given string is written with snake case. Snake
+case is where words are separated with underscores, looking like they
+have been strung out horizontally like a snake.</p>
+<p>Example: this_is_snake_case_text</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line120">line 120</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the string to test</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>true if the entire string is snake case, and
+false otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

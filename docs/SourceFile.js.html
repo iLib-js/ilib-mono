@@ -1,4 +1,51 @@
-/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>SourceFile.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileStats.html">FileStats</a><ul class='methods'><li data-type='method'><a href="FileStats.html#addBytes">addBytes</a></li><li data-type='method'><a href="FileStats.html#addFiles">addFiles</a></li><li data-type='method'><a href="FileStats.html#addLines">addLines</a></li><li data-type='method'><a href="FileStats.html#addModules">addModules</a></li><li data-type='method'><a href="FileStats.html#addStats">addStats</a></li><li data-type='method'><a href="FileStats.html#getBytes">getBytes</a></li><li data-type='method'><a href="FileStats.html#getFiles">getFiles</a></li><li data-type='method'><a href="FileStats.html#getLines">getLines</a></li><li data-type='method'><a href="FileStats.html#getModules">getModules</a></li></ul></li><li><a href="Fix.html">Fix</a></li><li><a href="Fixer.html">Fixer</a><ul class='methods'><li data-type='method'><a href="Fixer.html#applyFixes">applyFixes</a></li></ul></li><li><a href="Formatter.html">Formatter</a><ul class='methods'><li data-type='method'><a href="Formatter.html#format">format</a></li><li data-type='method'><a href="Formatter.html#formatOutput">formatOutput</a></li><li data-type='method'><a href="Formatter.html#getDescription">getDescription</a></li><li data-type='method'><a href="Formatter.html#getName">getName</a></li></ul></li><li><a href="IntermediateRepresentation.html">IntermediateRepresentation</a><ul class='methods'><li data-type='method'><a href="IntermediateRepresentation.html#getRepresentation">getRepresentation</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getSourceFile">getSourceFile</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getType">getType</a></li></ul></li><li><a href="NotImplementedError.html">NotImplementedError</a></li><li><a href="Parser.html">Parser</a><ul class='methods'><li data-type='method'><a href="Parser.html#getExtensions">getExtensions</a></li><li data-type='method'><a href="Parser.html#parse">parse</a></li></ul></li><li><a href="PipelineElement.html">PipelineElement</a><ul class='methods'><li data-type='method'><a href="PipelineElement.html#getDescription">getDescription</a></li><li data-type='method'><a href="PipelineElement.html#getName">getName</a></li><li data-type='method'><a href="PipelineElement.html#getType">getType</a></li><li data-type='method'><a href="PipelineElement.html#init">init</a></li></ul></li><li><a href="Plugin.html">Plugin</a><ul class='methods'><li data-type='method'><a href="Plugin.html#getFixers">getFixers</a></li><li data-type='method'><a href="Plugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="Plugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="Plugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="Plugin.html#getRules">getRules</a></li><li data-type='method'><a href="Plugin.html#getSerializers">getSerializers</a></li><li data-type='method'><a href="Plugin.html#getTransformers">getTransformers</a></li><li data-type='method'><a href="Plugin.html#init">init</a></li></ul></li><li><a href="Result.html">Result</a></li><li><a href="Rule.html">Rule</a><ul class='methods'><li data-type='method'><a href="Rule.html#getDescription">getDescription</a></li><li data-type='method'><a href="Rule.html#getLink">getLink</a></li><li data-type='method'><a href="Rule.html#getName">getName</a></li><li data-type='method'><a href="Rule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="Rule.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Rule.html#match">match</a></li></ul></li><li><a href="Serializer.html">Serializer</a><ul class='methods'><li data-type='method'><a href="Serializer.html#serialize">serialize</a></li></ul></li><li><a href="SourceFile.html">SourceFile</a><ul class='methods'><li data-type='method'><a href="SourceFile.html#getContent">getContent</a></li><li data-type='method'><a href="SourceFile.html#getLength">getLength</a></li><li data-type='method'><a href="SourceFile.html#getLines">getLines</a></li><li data-type='method'><a href="SourceFile.html#getPath">getPath</a></li><li data-type='method'><a href="SourceFile.html#getRaw">getRaw</a></li><li data-type='method'><a href="SourceFile.html#getType">getType</a></li><li data-type='method'><a href="SourceFile.html#isDirty">isDirty</a></li><li data-type='method'><a href="SourceFile.html#read">read</a></li><li data-type='method'><a href="SourceFile.html#setLines">setLines</a></li><li data-type='method'><a href="SourceFile.html#write">write</a></li></ul></li><li><a href="Transformer.html">Transformer</a><ul class='methods'><li data-type='method'><a href="Transformer.html#transform">transform</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#isCamelCase">isCamelCase</a></li><li><a href="global.html#isKebabCase">isKebabCase</a></li><li><a href="global.html#isSnakeCase">isSnakeCase</a></li><li><a href="global.html#withVisibleWhitespace">withVisibleWhitespace</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">SourceFile.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
  * SourceFile.js - Represent a file that will be linted
  *
  * Copyright © 2024 JEDLSoft
@@ -168,7 +215,7 @@ class SourceFile {
     /**
      * Get the content of this file, encoded as an array of lines. Each
      * line has its trailing newline character removed.
-     * @returns {Array.<String>|undefined} the content as an array of lines
+     * @returns {Array.&lt;String>|undefined} the content as an array of lines
      */
     getLines() {
         if (typeof(this.content) === 'undefined') {
@@ -182,7 +229,7 @@ class SourceFile {
      * this method any more. It is deprecated and will be removed soon.
      *
      * @deprecated
-     * @param {Array.<String>} lines the lines to set as the content
+     * @param {Array.&lt;String>} lines the lines to set as the content
      */
     setLines(lines) {
         // Should not call setLines in the SourceFile class
@@ -205,14 +252,12 @@ class SourceFile {
 
     /**
      * The type of this file. This should match the type of
-     * pipeline elements that process this same type of file. If the type
-     * of a file is not known, then the type should be "string" which means
-     * that the file is treated as a plain string of text.
+     * pipeline elements that process this same type of file.
      *
      * @type {String}
      * @protected
      */
-    type = "string";
+    type = "";
 
     /**
      * Return the type of this file. This should match the type of
@@ -253,7 +298,7 @@ class SourceFile {
      * if there was some error or if the file was not modified from the original
      */
     write() {
-        if (this.filePath && this.isDirty()) {
+        if (this.filePath &amp;&amp; this.isDirty()) {
             fs.writeFileSync(this.filePath, this.getContent() || "", "utf-8");
             this.dirty = false;
             return true;
@@ -263,3 +308,28 @@ class SourceFile {
 }
 
 export default SourceFile;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

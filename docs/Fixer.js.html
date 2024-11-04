@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Fixer.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileStats.html">FileStats</a><ul class='methods'><li data-type='method'><a href="FileStats.html#addBytes">addBytes</a></li><li data-type='method'><a href="FileStats.html#addFiles">addFiles</a></li><li data-type='method'><a href="FileStats.html#addLines">addLines</a></li><li data-type='method'><a href="FileStats.html#addModules">addModules</a></li><li data-type='method'><a href="FileStats.html#addStats">addStats</a></li><li data-type='method'><a href="FileStats.html#getBytes">getBytes</a></li><li data-type='method'><a href="FileStats.html#getFiles">getFiles</a></li><li data-type='method'><a href="FileStats.html#getLines">getLines</a></li><li data-type='method'><a href="FileStats.html#getModules">getModules</a></li></ul></li><li><a href="Fix.html">Fix</a></li><li><a href="Fixer.html">Fixer</a><ul class='methods'><li data-type='method'><a href="Fixer.html#applyFixes">applyFixes</a></li></ul></li><li><a href="Formatter.html">Formatter</a><ul class='methods'><li data-type='method'><a href="Formatter.html#format">format</a></li><li data-type='method'><a href="Formatter.html#formatOutput">formatOutput</a></li><li data-type='method'><a href="Formatter.html#getDescription">getDescription</a></li><li data-type='method'><a href="Formatter.html#getName">getName</a></li></ul></li><li><a href="IntermediateRepresentation.html">IntermediateRepresentation</a><ul class='methods'><li data-type='method'><a href="IntermediateRepresentation.html#getRepresentation">getRepresentation</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getSourceFile">getSourceFile</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getType">getType</a></li></ul></li><li><a href="NotImplementedError.html">NotImplementedError</a></li><li><a href="Parser.html">Parser</a><ul class='methods'><li data-type='method'><a href="Parser.html#getExtensions">getExtensions</a></li><li data-type='method'><a href="Parser.html#parse">parse</a></li></ul></li><li><a href="PipelineElement.html">PipelineElement</a><ul class='methods'><li data-type='method'><a href="PipelineElement.html#getDescription">getDescription</a></li><li data-type='method'><a href="PipelineElement.html#getName">getName</a></li><li data-type='method'><a href="PipelineElement.html#getType">getType</a></li><li data-type='method'><a href="PipelineElement.html#init">init</a></li></ul></li><li><a href="Plugin.html">Plugin</a><ul class='methods'><li data-type='method'><a href="Plugin.html#getFixers">getFixers</a></li><li data-type='method'><a href="Plugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="Plugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="Plugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="Plugin.html#getRules">getRules</a></li><li data-type='method'><a href="Plugin.html#getSerializers">getSerializers</a></li><li data-type='method'><a href="Plugin.html#getTransformers">getTransformers</a></li><li data-type='method'><a href="Plugin.html#init">init</a></li></ul></li><li><a href="Result.html">Result</a></li><li><a href="Rule.html">Rule</a><ul class='methods'><li data-type='method'><a href="Rule.html#getDescription">getDescription</a></li><li data-type='method'><a href="Rule.html#getLink">getLink</a></li><li data-type='method'><a href="Rule.html#getName">getName</a></li><li data-type='method'><a href="Rule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="Rule.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Rule.html#match">match</a></li></ul></li><li><a href="Serializer.html">Serializer</a><ul class='methods'><li data-type='method'><a href="Serializer.html#serialize">serialize</a></li></ul></li><li><a href="SourceFile.html">SourceFile</a><ul class='methods'><li data-type='method'><a href="SourceFile.html#getContent">getContent</a></li><li data-type='method'><a href="SourceFile.html#getLength">getLength</a></li><li data-type='method'><a href="SourceFile.html#getLines">getLines</a></li><li data-type='method'><a href="SourceFile.html#getPath">getPath</a></li><li data-type='method'><a href="SourceFile.html#getRaw">getRaw</a></li><li data-type='method'><a href="SourceFile.html#getType">getType</a></li><li data-type='method'><a href="SourceFile.html#isDirty">isDirty</a></li><li data-type='method'><a href="SourceFile.html#read">read</a></li><li data-type='method'><a href="SourceFile.html#setLines">setLines</a></li><li data-type='method'><a href="SourceFile.html#write">write</a></li></ul></li><li><a href="Transformer.html">Transformer</a><ul class='methods'><li data-type='method'><a href="Transformer.html#transform">transform</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#isCamelCase">isCamelCase</a></li><li><a href="global.html#isKebabCase">isKebabCase</a></li><li><a href="global.html#isSnakeCase">isSnakeCase</a></li><li><a href="global.html#withVisibleWhitespace">withVisibleWhitespace</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Fixer.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * Fixer.js
+ *
+ * Copyright © 2023-2024 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Fix from "./Fix.js";
+import NotImplementedError from "./NotImplementedError.js";
+import IntermediateRepresentation from "./IntermediateRepresentation.js";
+
+/**
+ * @class
+ *
+ * Class that applies fixes produced by rules onto the intermediate representation
+ *
+ * @abstract
+ */
+class Fixer {
+    /**
+     * @param {Object} [options] Placeholder for options that should be provided upon the Fixer subclass instantiation
+     * @constructor
+     */
+    constructor(options = undefined) {}
+
+    /**
+     * Modify the Intermediate Representation instance by applying provided fixes.
+     * Fix can be anything as long as the Fixer knows how to apply it onto the IR,
+     * as described in {@link Fix}.
+     * 
+     * Fixer should know to avoid applying conflicting fixes
+     * (i.e. those that would modify the same part of the underlying representation)
+     * or to offset subsequent fixes after applying one of them.
+     * 
+     * For those fixes that have been applied, Fixer is expected to set the flag {@link Fix.applied}.
+     * 
+     * Example scenario:
+     * 
+     * Take an IntermediateRepresentation with type `string`
+     * which stores content of a file verbatim:
+     * ```text
+     * birds are not real birds are not real birds are not real
+     * ```
+     * and a Rule (type `string`) which ensures that the word `birds`
+     * should always be surrounded by quotes.
+     * 
+     * The following fixes have been produced:
+     * 1. insert `"` at 0 and 5
+     * 2. insert `"` at 19 and 24
+     * 3. insert `"` at 38 and 43
+     * 
+     * Expected fixed string is:
+     * ```text
+     * "birds" are not real "birds" are not real "birds" are not real
+     * ```
+     * Which contains quotes at 0, 6, 21, 27, 42, 48. In this scenario, fixer needs to know
+     * that after every time it inserted some string into the IR, it needs to offset indices
+     * of the remaining insertion points appropriately.
+     * 
+     * Take another Rule which ensures that the file should always begin with an exclamation mark.
+     * It would produce the following fix:
+     * 1. insert `!` at 0
+     * 
+     * This fix overlaps with fix from the other rule (insert `"` at 0 and 5) because the fixer
+     * can't tell which symbol goes first (`"!birds"` or `!"birds"`). One of those fixes
+     * needs to be skipped.
+     *
+     * @param {IntermediateRepresentation} ir Intermediate Representaion instance which will be
+     * modified by the fixer when the fixes are applied
+     * @param {Fix[]} fixes Array of fixes which Fixer should attempt to apply
+     * @returns {void}
+     * @abstract
+     */
+    applyFixes(ir, fixes) {
+        throw new NotImplementedError();
+    }
+
+    /**
+     * Unique identifier which allows to dynamically match 
+     * the Fixer to its corresponding IntermediateRepresentation
+     * onto which it should apply the supplied Fixes.
+     * 
+     * Subclass must define this property.
+     * @readonly
+     * @abstract
+     * @type {string}
+     */
+    // @ts-expect-error: subclass must define this property
+    type;
+}
+
+export default Fixer;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
