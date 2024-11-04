@@ -1,21 +1,19 @@
 version: 2.1
 orbs:
-    node: circleci/node@5.0.2
+    node: circleci/node@6.3.0
 workflows:
     test:
         jobs:
             - test
 jobs:
     test:
-        docker:
-            - image: cimg/node:lts
+        executor:
+            name: node/default
+            tag: lts
         steps:
             - checkout
-            - node/install-packages
-            - run:
-                  command: npm i -g pnpm
-                  environment:
-                      TURBO_UI: "false"
+            - node/install-packages:
+                  pkg-manager: pnpm
             - run:
                   command: pnpm build
                   environment:
