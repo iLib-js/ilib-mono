@@ -51,10 +51,6 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "build": "npm run build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
-        "build:test": "webpack-cli --config webpack-test.config.js",
         "dist": "npm-run-all doc build:prod build:pkg; npm pack",
         "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
         "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --watch",
