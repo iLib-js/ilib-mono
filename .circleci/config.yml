@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
     node: circleci/node@6.3.0
+    browser-tools: circleci/browser-tools@1.4.8
 workflows:
     test:
         jobs:
@@ -14,6 +15,7 @@ jobs:
             TURBO_UI: "false"
             CHROME_BIN: /usr/bin/google-chrome
         steps:
+            - browser-tools/install-browser-tools
             - checkout
             - node/install-packages:
                   pkg-manager: pnpm
