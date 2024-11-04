@@ -1,5 +1,5 @@
 /*
- * index.ts - export everything from all of the files
+ * SyntaxError.js
  *
  * Copyright © 2024 JEDLSoft
  *
@@ -17,17 +17,18 @@
  * limitations under the License.
  */
 
-import POFile from './POFile.js';
-import SyntaxError from './SyntaxError.js';
-import Parser from './Parser.js';
-import Generator from './Generator.js';
+/**
+ * @class Error thrown when there was a syntax error in the input file
+ */
+class SyntaxError extends Error {
+    /**
+     * Create a new instance of the error
+     * @param {string} filename the name of the file where the syntax error occurred
+     * @param {string} message a description of the syntax error
+     */
+    constructor(filename: string, message: string) {
+        super(`Syntax error in the input file ${filename}: ${message}`);
+    }
+}
 
-import type { POFileOptions } from './POFile.js';
-
-export {
-    POFile,
-    POFileOptions,
-    SyntaxError,
-    Parser,
-    Generator
-};
+export default SyntaxError;
