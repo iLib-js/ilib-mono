@@ -24,7 +24,7 @@ import fs from "node:fs";
 import { Resource, ResourceString, ResourcePlural, ResourceArray } from "ilib-tools-common";
 import { describe, test, expect } from "@jest/globals";
 
-import POFile from "../src/POFile.ts";
+import POFile from "../src/POFile";
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);

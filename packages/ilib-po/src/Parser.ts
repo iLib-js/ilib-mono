@@ -21,10 +21,10 @@
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
 import Locale from 'ilib-locale';
 
-import SyntaxError from './SyntaxError.ts';
-import Tokenizer, { Token, TokenType } from './Tokenizer.ts';
-import { PluralCategory, Plural, makeKey } from './utils.ts';
-import { pluralForms } from "./pluralforms.ts";
+import SyntaxError from './SyntaxError';
+import Tokenizer, { Token, TokenType } from './Tokenizer';
+import { PluralCategory, Plural, makeKey } from './utils';
+import { pluralForms } from "./pluralforms";
 
 /**
  * Options for the PO file parser

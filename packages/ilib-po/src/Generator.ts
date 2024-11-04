@@ -21,8 +21,8 @@
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
 import Locale from 'ilib-locale';
 
-import { PluralCategory, Plural, escapeQuotes, makeKey } from './utils.ts';
-import { pluralForms, PluralForm } from "./pluralforms.ts";
+import { PluralCategory, Plural, escapeQuotes, makeKey } from './utils';
+import { pluralForms, PluralForm } from "./pluralforms";
 
 export type GeneratorOptions = {
     pathName: string,

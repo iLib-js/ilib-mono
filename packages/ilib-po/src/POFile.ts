@@ -24,11 +24,11 @@ import path from 'node:path';
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
 import Locale from 'ilib-locale';
 
-import SyntaxError from './SyntaxError.ts';
-import Parser from './Parser.ts';
-import Generator from './Generator.ts';
+import SyntaxError from './SyntaxError';
+import Parser from './Parser';
+import Generator from './Generator';
 
-import type { Token, TokenType } from './Tokenizer.ts';
+import type { Token, TokenType } from './Tokenizer';
 
 export type POFileOptions = {
     pathName: string,

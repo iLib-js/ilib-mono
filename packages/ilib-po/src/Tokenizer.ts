@@ -19,7 +19,7 @@
 
 import { isSpace, isAlpha, isAlnum } from 'ilib-ctype';
 
-import { unescapeQuotes } from './utils.ts';
+import { unescapeQuotes } from './utils';
 
 /**
  * Defines the types of tokens that the tokenizer can return.
