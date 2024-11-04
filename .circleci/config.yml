@@ -1,0 +1,27 @@
+# per https://turbo.build/repo/docs/guides/ci-vendors/circleci
+version: 2.1
+orbs:
+    node: circleci/node@5.0.2
+workflows:
+    test:
+        jobs:
+            - test
+jobs:
+    test:
+        docker:
+            - image: cimg/node:lts
+        steps:
+            - checkout
+            - node/install-packages
+            - run:
+              command: npm i -g pnpm
+              environment:
+                  TURBO_UI: "false"
+            - run:
+              command: pnpm build
+              environment:
+                  TURBO_UI: "false"
+            - run:
+              command: pnpm test
+              environment:
+                  TURBO_UI: "false"
