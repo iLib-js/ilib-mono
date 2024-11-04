@@ -22,3 +22,4 @@ jobs:
                   command: pnpm test
                   environment:
                       TURBO_UI: "false"
+                      CHROME_BIN: "/usr/bin/google-chrome"
