@@ -24,7 +24,7 @@ import fs from "node:fs";
 import { Resource, ResourceString, ResourcePlural, ResourceArray } from "ilib-tools-common";
 import { describe, test, expect } from "@jest/globals";
 
-import Parser from "../src/Parser.ts";
+import Parser from "../src/Parser";
 
 describe("parser", function() {
     test("Parser Constructor no args", function() {

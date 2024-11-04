@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { PluralCategory } from './utils.ts';
+import { PluralCategory } from './utils';
 
 export type PluralForm = {
     rules: string;

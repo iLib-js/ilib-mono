@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import POFile from './POFile.js';
-import SyntaxError from './SyntaxError.js';
-import Parser from './Parser.js';
-import Generator from './Generator.js';
+import POFile from './POFile';
+import SyntaxError from './SyntaxError';
+import Parser from './Parser';
+import Generator from './Generator';
 
-import type { POFileOptions } from './POFile.js';
+import type { POFileOptions } from './POFile';
 
 export {
     POFile,
