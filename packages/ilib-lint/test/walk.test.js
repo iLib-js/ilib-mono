@@ -70,7 +70,6 @@ describe("testWalk", () => {
         const files = (await project.walk("test/ilib-mock")).sort(cmp);
         expect(files.length).toBe(11);
         const expected = [
-            ".gitignore",
             "test/ilib-mock/assemble.mjs",
             "test/ilib-mock/ilib-mock-1.0.0.tgz",
             "test/ilib-mock/index.js",
@@ -191,7 +190,6 @@ describe("testWalk", () => {
         const files = (await proj.walk("test/ilib-mock")).sort(cmp);
         expect(files.length).toBe(3);
         const expected = [
-            ".gitignore",
             "test/ilib-mock/assemble.mjs",
             "test/ilib-mock/ilib-mock-1.0.0.tgz",
             "test/ilib-mock/index.js"
@@ -216,7 +214,6 @@ describe("testWalk", () => {
         const files = (await proj.walk("test/ilib-mock")).sort(cmp);
         expect(files.length).toBe(4);
         const expected = [
-            ".gitignore",
             "test/ilib-mock/assemble.mjs",
             "test/ilib-mock/ilib-mock-1.0.0.tgz",
             "test/ilib-mock/index.js",
@@ -242,7 +239,6 @@ describe("testWalk", () => {
         const files = (await proj.walk("test/ilib-mock")).sort(cmp);
         expect(files.length).toBe(2);
         const expected = [
-            ".gitignore",
             "test/ilib-mock/ilib-mock-1.0.0.tgz",
             "test/ilib-mock/index.js"
         ];
@@ -269,7 +265,6 @@ describe("testWalk", () => {
         const files = (await proj.walk("test/ilib-mock")).sort(cmp);
         expect(files.length).toBe(4);
         const expected = [
-            ".gitignore",
             "test/ilib-mock/assemble.mjs",
             "test/ilib-mock/ilib-mock-1.0.0.tgz",
             "test/ilib-mock/index.js",
