@@ -23,7 +23,7 @@ import Locale from 'ilib-locale';
 
 import SyntaxError from './SyntaxError';
 import Tokenizer, { Token, TokenType } from './Tokenizer';
-import { PluralCategory, Plural, makeKey } from './utils';
+import { PluralCategory, Plural, CommentType, Comments, makeKey } from './utils';
 import { pluralForms } from "./pluralforms";
 
 /**
@@ -37,9 +37,6 @@ export type ParserOptions = {
     datatype?: string,
     contextInKey?: boolean
 };
-
-/** @private */
-type CommentType = "translator" | "extracted" | "flags" | "previous" | "paths";
 
 /**
  * Represents the state of the parser.
@@ -55,11 +52,7 @@ enum State {
     END
 };
 
-type Comments = {
-    [key in CommentType]?: string[]
-};
-
-const commentTypeMap = {
+const commentTypeMap : { [key: string]: CommentType } = {
     ' ': "translator",
     '.': "extracted",
     ',': "flags",
@@ -195,7 +188,7 @@ class Parser {
                                 let key: string,
                                     res: ResourceString | ResourcePlural;
                                 if (sourcePlurals) {
-                                    key = makeKey(sourcePlurals.one ?? sourcePlurals.other, this.contextInKey ? context : undefined);
+                                    key = makeKey("plural", sourcePlurals, this.contextInKey && context);
                                     res = new ResourcePlural({
                                         project: this.projectName,
                                         key: key,
@@ -211,7 +204,7 @@ class Parser {
                                         targetStrings: translationPlurals
                                     });
                                 } else if (source) {
-                                    key = makeKey(source, this.contextInKey ? context : undefined);
+                                    key = makeKey("string", source, this.contextInKey && context);
                                     res = new ResourceString({
                                         project: this.projectName,
                                         key: key,

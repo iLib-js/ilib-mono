@@ -17,8 +17,18 @@
  * limitations under the License.
  */
 
+// @ts-ignore
+import { Resource } from 'ilib-tools-common';
+
+/**
+ * Plural categories according to Unicode's CLDR.
+ */
 export type PluralCategory = "zero" | "one" | "two" | "few" | "many" | "other";
 
+/**
+ * Plural forms of a particular string. Only the "other" form is required in all
+ * languages. In English, the "one" form (singular) is also required.
+ */
 export type Plural = {
     other: string,
     zero?: string,
@@ -26,6 +36,18 @@ export type Plural = {
     two?: string,
     few?: string,
     many?: string
+};
+
+/**
+ * The types of comments that can be in a PO file.
+ */
+export type CommentType = "translator" | "extracted" | "flags" | "previous" | "paths";
+
+/**
+ * The values of various types of comments in a PO file.
+ */
+export type Comments = {
+    [key in CommentType]?: string[]
 };
 
 /**
@@ -50,11 +72,21 @@ export function unescapeQuotes(str: string): string {
 
 /**
  * Get the key to use for the given source and context.
- * @param source the source string
- * @param context the context string
+ * @param type the type of resource
+ * @param source the source string, array, or plurals object
+ * @param [context] the context to make part of the key
  * @returns the key to use
  */
-export function makeKey(source: string, context?: string): string {
-    return context ? source + " --- " + context : source;
+export function makeKey(type: string, source: any, context?: string): string {
+    switch (type) {
+        case "plural":
+            const key = source.one ?? source.other;
+            return context ? key + " --- " + context : key;
+        case "array":
+            return context ? source[0] + " --- " + context : source[0];
+        case "string":
+        default:
+            return context ? source + " --- " + context : source;
+    }
 }
 
