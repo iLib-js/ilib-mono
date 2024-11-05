@@ -13,9 +13,8 @@ jobs:
             tag: 22.11-browsers
         environment:
             TURBO_UI: "false"
-            CHROME_BIN: /usr/bin/google-chrome
         steps:
-            - browser-tools/install-browser-tools
+            - browser-tools/install-chrome
             - checkout
             - node/install-packages:
                   pkg-manager: pnpm
