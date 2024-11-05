@@ -1,0 +1,73 @@
+{
+    "name": "ilib-lint-common",
+    "version": "3.1.0",
+    "module": "./src/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.js"
+        }
+    },
+    "description": "Shared code for the i18n linter",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "lint",
+        "locale"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-lint-common",
+    "bugs": "https://github.com/iLib-js/ilib-lint-common/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "docs",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-lint-common.git"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "scripts": {
+        "dist": "pnpm doc; pnpm build:prod; pnpm build:pkg; pnpm pack",
+        "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+        "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --watch",
+        "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i",
+        "clean": "git clean -f -d src test",
+        "doc": "mkdir -p docs; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-lint-common.md; pnpm run doc:html",
+        "doc:html": "jsdoc -c jsdoc.json",
+        "types": "tsc -p ./jsconfig.json"
+    },
+    "devDependencies": {
+        "@tsconfig/node14": "^14.1.0",
+        "@types/node": "^20.11.5",
+        "docdash": "^2.0.2",
+        "jest": "^29.7.0",
+        "jsdoc": "^4.0.2",
+        "jsdoc-to-markdown": "^8.0.0",
+        "typescript": "^5.3.3"
+    }
+}

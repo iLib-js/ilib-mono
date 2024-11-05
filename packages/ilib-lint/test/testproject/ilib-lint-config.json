@@ -1,0 +1,32 @@
+{
+    "name": "testproject",
+    "plugins": [
+        "i18nlint-plugin-test"
+    ],
+    "locales": [
+        "en-US",
+        "de-DE",
+        "ja-JP",
+        "ko-KR"
+    ],
+    "paths": {
+        "**/*.xyz": {
+            "template": "[dir]/test_[localeUnder].xyz",
+            "rules": {
+                "resource-icu-plurals": true,
+                "resource-quote-style": false,
+                "resource-named-params": true,
+                "resource-url-match": false,
+                "resource-test": true
+            }
+        },
+        "**/*.xliff": {
+            "rules": {
+                "resource-icu-plurals": true,
+                "resource-quote-style": "localeOnly",
+                "resource-url-match": true,
+                "resource-named-params": true
+            }
+        }
+    }
+}

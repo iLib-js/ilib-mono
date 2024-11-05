@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">
+    <body>
+      <trans-unit id="1" resname="foobar1" restype="string" datatype="plaintext">
+        <source>This is "quoted" text.</source>
+        <target>This is ASCII "quoted" text.</target>
+      </trans-unit>
+      <trans-unit id="2" resname="foobar2" restype="string" datatype="plaintext">
+        <source>This is "quoted" text.</source>
+        <target>This is properly „quoted” German text.</target>
+      </trans-unit>
+      <trans-unit id="3" resname="foobar3" restype="string" datatype="plaintext">
+        <source>This is "quoted" text.</source>
+        <target>This is unquoted German text.</target>
+      </trans-unit>
+      <trans-unit id="4" resname="foobar4" restype="string" datatype="plaintext">
+        <source>This is "quoted" text.</source>
+        <target>This is improperly «quoted» German text.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

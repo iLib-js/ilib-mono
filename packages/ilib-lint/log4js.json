@@ -1,0 +1,29 @@
+{
+    "appenders": {
+        "default": { 
+            "type": "stdout",
+            "layout": {
+                "type": "pattern",
+                "pattern": "%[%p%]: %m"
+            }
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": [ "default" ],
+            "level": "info"
+        },
+        "ilib-lint.root": {
+            "appenders": [ "default" ],
+            "level": "info"
+        },
+        "ilib-lint.root.Project": {
+            "appenders": [ "default" ],
+            "level": "info"
+        },
+        "ilib-lint.root.SourceFile": {
+            "appenders": [ "default" ],
+            "level": "info"
+        }
+    }
+}

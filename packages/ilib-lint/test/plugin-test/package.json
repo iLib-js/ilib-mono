@@ -1,0 +1,25 @@
+{
+    "name": "plugin-test",
+    "version": "1.0.0",
+    "main": "./src/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.js"
+        }
+    },
+    "description": "mock ilib-lint plugin package used for testing the plugin functionality",
+    "files": [
+        "src",
+        "package.json"
+    ],
+    "scripts": {
+        "test": "echo Success!"
+    },
+    "dependencies": {
+        "ilib-lint-common": "^3.0.0",
+        "ilib-locale": "^1.2.2",
+        "ilib-tools-common": "^1.9.1",
+        "json5": "^2.2.3"
+    }
+}
