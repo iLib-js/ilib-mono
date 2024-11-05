@@ -1,0 +1,54 @@
+{
+    "name": "ilib-scanner",
+    "version": "1.4.0",
+    "main": "./ilib-scanner.js",
+    "bin": {
+        "ilib-scanner": "./ilib-scanner.js",
+        "ilib-scanner.bat": "./ilib-scanner.bat"
+    },
+    "description": "A utility which scans your source code and creates a webpack meta file that includes only those ilib classes that your code is actually using.",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "ilib-scanner.js",
+        "ilib-scanner.bat"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-scanner.git"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "ilib-locale": "^1.1.0",
+        "options-parser": "^0.4.0"
+    }
+}
