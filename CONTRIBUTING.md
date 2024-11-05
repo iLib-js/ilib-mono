@@ -11,10 +11,10 @@ This project is developed using the following tools:
     ```
     or see [guide](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
     -   optional, recommended: add automated `nvm use` to shell profile - see [guide](https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh)
--   [`NodeJS v22 LTS`](https://nodejs.org/en) runtime
+-   [`NodeJS v20 LTS`](https://nodejs.org/en) runtime
     -   installation:
     ```bash
-        nvm install 22
+        nvm install 20
         nvm use # run in repo root to use version specified in .nvmrc
     ```
     or see [guide](https://nodejs.org/en/download/package-manager)

@@ -10,7 +10,7 @@ jobs:
     test:
         executor:
             name: node/default
-            tag: 22.11-browsers
+            tag: 20.18-browsers
         environment:
             TURBO_UI: "false"
         steps:
