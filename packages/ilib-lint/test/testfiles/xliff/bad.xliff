@@ -5,8 +5,7 @@
       <trans-unit id="1" resname="foobar" restype="string" datatype="plaintext">
         <source>Asdf asdf</source>
         <target>foobarfoo</target>
-        <note>foobar is where it's at!</note>
+        <note annotates="source">foobar is where it&apos;s at!</note>
       </trans-unit>
-    </body>
   </file>
 </xliff>

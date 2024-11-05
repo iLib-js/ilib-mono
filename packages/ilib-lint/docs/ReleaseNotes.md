@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+### v2.6.0
+
+- added XliffSerializer, LineSerializer, and StringSerializer classes generate the
+  text of modified files
+    - not used yet -- this is in preparation for the implementation of autofixing
+
 ### v2.5.0
 
 - added the camel case match rule. If source strings contain only camel case and no whitespace, then the targets must be
