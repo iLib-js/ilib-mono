@@ -18,10 +18,10 @@
  */
 
 // @ts-ignore
-import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
+import { TranslationSet } from 'ilib-tools-common';
 import Locale from 'ilib-locale';
 
-import { PluralCategory, Plural, escapeQuotes, makeKey } from './utils';
+import { CommentType, Comments, escapeQuotes, makeKey } from './utils';
 import { pluralForms, PluralForm } from "./pluralforms";
 
 export type GeneratorOptions = {
@@ -77,7 +77,7 @@ class Generator {
      * @returns the generated PO file as a string
      */
     generate(set: TranslationSet): string {
-        let output = "";
+        let output =
             'msgid ""\n' +
             'msgstr ""\n' +
             `"#-#-#-#-#  ${this.pathName}  #-#-#-#-#\\n"\n` +
@@ -91,32 +91,32 @@ class Generator {
 
         for (let i = 0; i < resources.length; i++) {
             const r = resources[i];
-            const key = makeKey(r.getSource(), this.contextInKey ? r.getContext() : undefined);
+            const key: string = r.getKey() ?? makeKey(r.getType(), r.getSource(), this.contextInKey && r.getContext());
             output += '\n';
-            let c = r.getComment() ? JSON.parse(r.getComment()) : {};
+            let c : Comments = r.getComment() ? JSON.parse(r.getComment()) : {};
 
             if (c.translator && c.translator.length) {
-                c.translator.forEach(function(str) {
+                c.translator.forEach((str: string) => {
                     output += '# ' + str + '\n';
                 });
             }
             if (c.extracted) {
-                c.extracted.forEach(function(str) {
+                c.extracted.forEach((str: string) => {
                     output += '#. ' + str + '\n';
                 });
             }
             if (c.paths) {
-                c.paths.forEach(function(str) {
+                c.paths.forEach((str: string) => {
                     output += '#: ' + str + '\n';
                 });
             }
             if (c.flags) {
-                c.flags.forEach(function(str) {
+                c.flags.forEach((str: string) => {
                     output += '#, ' + str + '\n';
                 });
             }
             if (c.previous) {
-                c.previous.forEach(function(str) {
+                c.previous.forEach((str: string) => {
                     output += '#| ' + str + '\n';
                 });
             }
@@ -140,7 +140,7 @@ class Generator {
 
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {
-                    this.plurals.categories.forEach(function(category, index) {
+                    this.plurals.categories.forEach((category, index) => {
                         const translation = translatedPlurals[category] !== sourcePlurals[category] ?
                             translatedPlurals[category] : "";
                         output += `msgstr[${index}] "${escapeQuotes(translation)}"\n`;

@@ -17,18 +17,15 @@
  * limitations under the License.
  */
 
-import fs from 'node:fs';
 import path from 'node:path';
 
 // @ts-ignore
-import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
+import { TranslationSet } from 'ilib-tools-common';
 import Locale from 'ilib-locale';
 
 import SyntaxError from './SyntaxError';
 import Parser from './Parser';
 import Generator from './Generator';
-
-import type { Token, TokenType } from './Tokenizer';
 
 export type POFileOptions = {
     pathName: string,
@@ -39,73 +36,20 @@ export type POFileOptions = {
     contextInKey?: boolean
 };
 
-/** @private */
-type CommentType = "translator" | "extracted" | "flags" | "previous" | "paths";
-
-type Comments = {
-    [key in CommentType]?: string[]
-};
-
-type PluralCategory = "zero" | "one" | "two" | "few" | "many" | "other";
-
-type Plural = {
-    other: string,
-    zero?: string,
-    one?: string,
-    two?: string,
-    few?: string,
-    many?: string
-};
-
-const commentTypeMap = {
-    ' ': "translator",
-    '.': "extracted",
-    ',': "flags",
-    '|': "previous",
-    ':': "paths"
-};
-
-const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
-
-/**
- * Escape quotes in a string.
- * @private
- * @param str the string to escape
- * @returns the escaped string
- */
-function escapeQuotes(str: string): string {
-    if (!str) return "";
-    return str ? str.replace(/"/g, '\\"') : str;
-}
-
-/**
- * Unescape quotes in a string.
- * @private
- * @param str the string to unescape
- * @returns the unescaped string
- */
-function unescapeQuotes(str: string): string {
-    if (!str) return "";
-    return str ? str.replace(/\\"/g, '"') : str;
-}
-
-
 /**
  * @class POFile
  * Represents a GNU PO resource file.
  */
 class POFile {
     private pathName: string;
-    private data?: string;
-    private index: number = 0;
     private sourceLocale: Locale;
     private targetLocale?: Locale;
-    private resourceIndex: number = 0;
     private projectName: string;
     private contextInKey: boolean;
-
-    private commentsToIgnore: Set<string> = new Set();
     private datatype?: string;
+
+    private parser: Parser;
+    private generator: Generator;
 
     /**
      * Create a new PO file with the given path name.
@@ -128,6 +72,23 @@ class POFile {
         this.projectName = options?.projectName ?? path.basename(this.pathName, ".po");
         this.datatype = options?.datatype ?? "po";
         this.contextInKey = options?.contextInKey ?? false;
+
+        this.parser = new Parser({
+            pathName: this.pathName,
+            sourceLocale: this.sourceLocale,
+            targetLocale: this.targetLocale,
+            projectName: this.projectName,
+            datatype: this.datatype,
+            contextInKey: this.contextInKey,
+        });
+
+        this.generator = new Generator({
+            pathName: this.pathName,
+            targetLocale: this.targetLocale,
+            projectName: this.projectName,
+            datatype: this.datatype,
+            contextInKey: this.contextInKey
+        });
     }
 
     /**
@@ -140,16 +101,7 @@ class POFile {
      * @returns the set of resources extracted from the file
      */
     parse(data: string): TranslationSet {
-        const parser = new Parser({
-            pathName: this.pathName,
-            sourceLocale: this.sourceLocale,
-            targetLocale: this.targetLocale,
-            projectName: this.projectName,
-            datatype: this.datatype,
-            contextInKey: this.contextInKey,
-        });
-
-        return parser.parse(data);
+        return this.parser.parse(data);
     }
 
     /**
@@ -201,12 +153,6 @@ class POFile {
     }
 
     /**
-     * Read the PO file from disk and extract all the resources from it.
-     */
-    read() {
-    }
-
-    /**
      * Generate the PO file again from the resources. Each resource in the set
      * should have the same target locale. If a resource has a target locale
      * that is different from the target locale of this PO file, it will be
@@ -216,23 +162,7 @@ class POFile {
      * @returns the generated PO file
      */
     generate(set: TranslationSet): string {
-        const generator = new Generator({
-            pathName: this.pathName,
-            targetLocale: this.targetLocale,
-            projectName: this.projectName,
-            datatype: this.datatype,
-            contextInKey: this.contextInKey
-        });
-
-        return generator.generate(set);
-    }
-
-    /**
-     * Write the resource file out to disk again.
-     * @param set the set of resources to write
-     */
-    write(set: TranslationSet) {
-        fs.writeFileSync(this.pathName, this.generate(set), "utf-8");
+        return this.generator.generate(set);
     }
 }
 
