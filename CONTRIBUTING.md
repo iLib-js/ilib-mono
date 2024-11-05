@@ -37,3 +37,31 @@ This project is developed using the following tools:
     ```
     -   common commands are aliased in [root `package.json`](./package.json) scripts
     -   optional, not recommended: [global installation docs](https://turbo.build/repo/docs/getting-started/installation#global-installation)
+
+## Adding a package
+
+Currently there is no common package template, as we're moving existing ilib packages into the monorepo without unification (this will be addressed in future).
+
+A new package can be added simply by creating a new directory in the `packages` directory, and adding a `package.json` file there. To plug in to monorepo tasks (as defined in `turbo.json`), package should define the following scripts:
+
+-   `build`
+-   `test`
+-   `doc`
+
+All of them are optional though.
+
+If the new package depends on another package in the monorepo, this dependency in `packages/<packageName>/package.json` should be defined using the `workspace:` protocol, e.g.:
+
+```json
+{
+    "dependencies": {
+        "ilib-common": "workspace:*"
+    }
+}
+```
+
+PNPM will automatically substitute this protocol wih a proper semver version upon `pnpm publish`. Read more about PNPM workspaces [here](https://pnpm.io/workspaces).
+
+## Versioning and publishing
+
+TODO
