@@ -1,0 +1,30 @@
+{
+    "name": "tester",
+    "plugins": [
+        "javascript",
+        "react-intl"
+    ],
+    "locales": [
+        "en-US",
+        "de-DE",
+        "ja-JP",
+        "ko-KR"
+    ],
+    "paths": {
+        "src/**/*.json": {
+            "locales": [
+                "en-US",
+                "de-DE",
+                "ja-JP"
+            ]
+        },
+        "**/*.xliff": {
+            "rules": {
+                "resource-icu-plurals": true,
+                "resource-quote-style": true,
+                "formatjs-match-substitution-params": true,
+                "formatjs-match-quote-style": "localeOnly"
+            }
+        }
+    }
+}

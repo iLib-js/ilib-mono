@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ResourceEdgeWhitespace - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnsiConsoleFormatter.html">AnsiConsoleFormatter</a><ul class='methods'><li data-type='method'><a href="AnsiConsoleFormatter.html#format">format</a></li></ul></li><li><a href="BuiltinPlugin.html">BuiltinPlugin</a><ul class='methods'><li data-type='method'><a href="BuiltinPlugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="BuiltinPlugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRules">getRules</a></li><li data-type='method'><a href="BuiltinPlugin.html#getSerializers">getSerializers</a></li></ul></li><li><a href="ConfigBasedFormatter.html">ConfigBasedFormatter</a><ul class='methods'><li data-type='method'><a href="ConfigBasedFormatter.html#format">format</a></li></ul></li><li><a href="DeclarativeResourceRule.html">DeclarativeResourceRule</a><ul class='methods'><li data-type='method'><a href="DeclarativeResourceRule.html#checkString">checkString</a></li><li data-type='method'><a href="DeclarativeResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="DirItem.html">DirItem</a><ul class='methods'><li data-type='method'><a href="DirItem.html#findIssues">findIssues</a></li><li data-type='method'><a href="DirItem.html#getFilePath">getFilePath</a></li><li data-type='method'><a href="DirItem.html#parse">parse</a></li></ul></li><li><a href="FileConfigurationProvider.html">FileConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FileConfigurationProvider.html#loadJsConfiguration">loadJsConfiguration</a></li><li data-type='method'><a href="FileConfigurationProvider.html#loadJsonConfiguration">loadJsonConfiguration</a></li></ul></li><li><a href="FileType.html">FileType</a><ul class='methods'><li data-type='method'><a href="FileType.html#getParserClasses">getParserClasses</a></li><li data-type='method'><a href="FileType.html#getRuleSetNames">getRuleSetNames</a></li><li data-type='method'><a href="FileType.html#getRules">getRules</a></li></ul></li><li><a href="FixerManager.html">FixerManager</a><ul class='methods'><li data-type='method'><a href="FixerManager.html#add">add</a></li><li data-type='method'><a href="FixerManager.html#get">get</a></li><li data-type='method'><a href="FixerManager.html#size">size</a></li></ul></li><li><a href="FolderConfigurationProvider.html">FolderConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FolderConfigurationProvider.html#hasConfigurationFile">hasConfigurationFile</a></li></ul></li><li><a href="FormatterManager.html">FormatterManager</a><ul class='methods'><li data-type='method'><a href="FormatterManager.html#add">add</a></li><li data-type='method'><a href="FormatterManager.html#get">get</a></li><li data-type='method'><a href="FormatterManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="FormatterManager.html#size">size</a></li></ul></li><li><a href="LineParser.html">LineParser</a><ul class='methods'><li data-type='method'><a href="LineParser.html#parse">parse</a></li></ul></li><li><a href="LineRegexpChecker.html">LineRegexpChecker</a><ul class='methods'><li data-type='method'><a href="LineRegexpChecker.html#match">match</a></li></ul></li><li><a href="LineSerializer.html">LineSerializer</a><ul class='methods'><li data-type='method'><a href="LineSerializer.html#serialize">serialize</a></li></ul></li><li><a href="LintableFile.html">LintableFile</a><ul class='methods'><li data-type='method'><a href="LintableFile.html#findIssues">findIssues</a></li><li data-type='method'><a href="LintableFile.html#getIRs">getIRs</a></li><li data-type='method'><a href="LintableFile.html#getLocaleFromPath">getLocaleFromPath</a></li><li data-type='method'><a href="LintableFile.html#getStats">getStats</a></li><li data-type='method'><a href="LintableFile.html#parse">parse</a></li></ul></li><li><a href="ParserManager.html">ParserManager</a><ul class='methods'><li data-type='method'><a href="ParserManager.html#add">add</a></li><li data-type='method'><a href="ParserManager.html#get">get</a></li><li data-type='method'><a href="ParserManager.html#getByName">getByName</a></li><li data-type='method'><a href="ParserManager.html#getDescriptions">getDescriptions</a></li></ul></li><li><a href="PluginManager.html">PluginManager</a><ul class='methods'><li data-type='method'><a href="PluginManager.html#add">add</a></li><li data-type='method'><a href="PluginManager.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="PluginManager.html#getFormatterManager">getFormatterManager</a></li><li data-type='method'><a href="PluginManager.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleSet">getRuleSet</a></li><li data-type='method'><a href="PluginManager.html#load">load</a></li></ul></li><li><a href="Project.html">Project</a><ul class='methods'><li data-type='method'><a href="Project.html#add">add</a></li><li data-type='method'><a href="Project.html#findIssues">findIssues</a></li><li data-type='method'><a href="Project.html#get">get</a></li><li data-type='method'><a href="Project.html#getExcludes">getExcludes</a></li><li data-type='method'><a href="Project.html#getFileType">getFileType</a></li><li data-type='method'><a href="Project.html#getFileTypeForPath">getFileTypeForPath</a></li><li data-type='method'><a href="Project.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="Project.html#getIncludes">getIncludes</a></li><li data-type='method'><a href="Project.html#getLocales">getLocales</a></li><li data-type='method'><a href="Project.html#getName">getName</a></li><li data-type='method'><a href="Project.html#getOptions">getOptions</a></li><li data-type='method'><a href="Project.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="Project.html#getPluginManager">getPluginManager</a></li><li data-type='method'><a href="Project.html#getRoot">getRoot</a></li><li data-type='method'><a href="Project.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="Project.html#getScore">getScore</a></li><li data-type='method'><a href="Project.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Project.html#init">init</a></li><li data-type='method'><a href="Project.html#run">run</a></li><li data-type='method'><a href="Project.html#scan">scan</a></li></ul></li><li><a href="ResourceCompleteness.html">ResourceCompleteness</a><ul class='methods'><li data-type='method'><a href="ResourceCompleteness.html#matchString">matchString</a></li></ul></li><li><a href="ResourceDNTTerms.html">ResourceDNTTerms</a><ul class='methods'><li data-type='method'><a href="ResourceDNTTerms.html#matchString">matchString</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromJsonFile">parseTermsFromJsonFile</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromTxtFile">parseTermsFromTxtFile</a></li></ul></li><li><a href="ResourceEdgeWhitespace.html">ResourceEdgeWhitespace</a><ul class='methods'><li data-type='method'><a href="ResourceEdgeWhitespace.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPluralTranslation.html">ResourceICUPluralTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceICUPluralTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPlurals.html">ResourceICUPlurals</a></li><li><a href="ResourceMatcher.html">ResourceMatcher</a><ul class='methods'><li data-type='method'><a href="ResourceMatcher.html#checkString">checkString</a></li></ul></li><li><a href="ResourceNoTranslation.html">ResourceNoTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceNoTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceQuoteStyle.html">ResourceQuoteStyle</a><ul class='methods'><li data-type='method'><a href="ResourceQuoteStyle.html#matchString">matchString</a></li></ul></li><li><a href="ResourceRule.html">ResourceRule</a><ul class='methods'><li data-type='method'><a href="ResourceRule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="ResourceRule.html#match">match</a></li><li data-type='method'><a href="ResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceChecker.html">ResourceSourceChecker</a><ul class='methods'><li data-type='method'><a href="ResourceSourceChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceSourceICUPluralCategories.html">ResourceSourceICUPluralCategories</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralCategories.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralParams.html">ResourceSourceICUPluralParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralSyntax.html">ResourceSourceICUPluralSyntax</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralSyntax.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUUnexplainedParams.html">ResourceSourceICUUnexplainedParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUUnexplainedParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceStateChecker.html">ResourceStateChecker</a><ul class='methods'><li data-type='method'><a href="ResourceStateChecker.html#match">match</a></li></ul></li><li><a href="ResourceTargetChecker.html">ResourceTargetChecker</a><ul class='methods'><li data-type='method'><a href="ResourceTargetChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceUniqueKeys.html">ResourceUniqueKeys</a><ul class='methods'><li data-type='method'><a href="ResourceUniqueKeys.html#match">match</a></li></ul></li><li><a href="ResourceXML.html">ResourceXML</a><ul class='methods'><li data-type='method'><a href="ResourceXML.html#matchString">matchString</a></li></ul></li><li><a href="RuleManager.html">RuleManager</a><ul class='methods'><li data-type='method'><a href="RuleManager.html#add">add</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinition">addRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinitions">addRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#get">get</a></li><li data-type='method'><a href="RuleManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinition">getRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinitions">getRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#getRules">getRules</a></li><li data-type='method'><a href="RuleManager.html#size">size</a></li><li data-type='method'><a href="RuleManager.html#sizeRuleSetDefinitions">sizeRuleSetDefinitions</a></li></ul></li><li><a href="RuleSet.html">RuleSet</a><ul class='methods'><li data-type='method'><a href="RuleSet.html#add">add</a></li><li data-type='method'><a href="RuleSet.html#addRule">addRule</a></li><li data-type='method'><a href="RuleSet.html#getRule">getRule</a></li><li data-type='method'><a href="RuleSet.html#getRules">getRules</a></li><li data-type='method'><a href="RuleSet.html#getSize">getSize</a></li><li data-type='method'><a href="RuleSet.html#removeRule">removeRule</a></li></ul></li><li><a href="SourceRegexpChecker.html">SourceRegexpChecker</a><ul class='methods'><li data-type='method'><a href="SourceRegexpChecker.html#match">match</a></li></ul></li><li><a href="StringFixCommand_StringFixCommand.html">StringFixCommand</a></li><li><a href="StringParser.html">StringParser</a><ul class='methods'><li data-type='method'><a href="StringParser.html#parse">parse</a></li><li data-type='method'><a href="StringParser.html#write">write</a></li></ul></li><li><a href="StringSerializer.html">StringSerializer</a><ul class='methods'><li data-type='method'><a href="StringSerializer.html#serialize">serialize</a></li></ul></li><li><a href="XliffParser.html">XliffParser</a><ul class='methods'><li data-type='method'><a href="XliffParser.html#parse">parse</a></li></ul></li><li><a href="XliffSerializer.html">XliffSerializer</a><ul class='methods'><li data-type='method'><a href="XliffSerializer.html#serialize">serialize</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="ConfigurationProvider.html">ConfigurationProvider</a></li><li><a href="ConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FileConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FolderConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DeclarativeRuleTypes">DeclarativeRuleTypes</a></li><li><a href="global.html#ResultComparator">ResultComparator</a></li><li><a href="global.html#concatIntlAstText">concatIntlAstText</a></li><li><a href="global.html#defaultConfiguration">defaultConfiguration</a></li><li><a href="global.html#severity">severity</a></li><li><a href="global.html#typeMap">typeMap</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ResourceEdgeWhitespace</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            ResourceEdgeWhitespace
+        
+        </h2>
+        
+            <div class="class-description usertext">Rule to check that whitespaces on edges of target match those on edges of source</div>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="ResourceEdgeWhitespace"><span class="type-signature"></span>new ResourceEdgeWhitespace<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceEdgeWhitespace.js.html">rules/ResourceEdgeWhitespace.js</a>, <a href="rules_ResourceEdgeWhitespace.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="description"><span class="type-signature type-signature-readonly">(readonly) </span>description<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceEdgeWhitespace.js.html">rules/ResourceEdgeWhitespace.js</a>, <a href="rules_ResourceEdgeWhitespace.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="link"><span class="type-signature type-signature-readonly">(readonly) </span>link<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceEdgeWhitespace.js.html">rules/ResourceEdgeWhitespace.js</a>, <a href="rules_ResourceEdgeWhitespace.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="name"><span class="type-signature type-signature-readonly">(readonly) </span>name<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceEdgeWhitespace.js.html">rules/ResourceEdgeWhitespace.js</a>, <a href="rules_ResourceEdgeWhitespace.js.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="matchString"><span class="type-signature"></span>matchString<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceEdgeWhitespace.js.html">rules/ResourceEdgeWhitespace.js</a>, <a href="rules_ResourceEdgeWhitespace.js.html#line37">line 37</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Mon Nov 04 2024 13:25:20 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

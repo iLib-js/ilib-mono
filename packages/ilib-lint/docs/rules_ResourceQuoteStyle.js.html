@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>rules/ResourceQuoteStyle.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnsiConsoleFormatter.html">AnsiConsoleFormatter</a><ul class='methods'><li data-type='method'><a href="AnsiConsoleFormatter.html#format">format</a></li></ul></li><li><a href="BuiltinPlugin.html">BuiltinPlugin</a><ul class='methods'><li data-type='method'><a href="BuiltinPlugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="BuiltinPlugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRules">getRules</a></li><li data-type='method'><a href="BuiltinPlugin.html#getSerializers">getSerializers</a></li></ul></li><li><a href="ConfigBasedFormatter.html">ConfigBasedFormatter</a><ul class='methods'><li data-type='method'><a href="ConfigBasedFormatter.html#format">format</a></li></ul></li><li><a href="DeclarativeResourceRule.html">DeclarativeResourceRule</a><ul class='methods'><li data-type='method'><a href="DeclarativeResourceRule.html#checkString">checkString</a></li><li data-type='method'><a href="DeclarativeResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="DirItem.html">DirItem</a><ul class='methods'><li data-type='method'><a href="DirItem.html#findIssues">findIssues</a></li><li data-type='method'><a href="DirItem.html#getFilePath">getFilePath</a></li><li data-type='method'><a href="DirItem.html#parse">parse</a></li></ul></li><li><a href="FileConfigurationProvider.html">FileConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FileConfigurationProvider.html#loadJsConfiguration">loadJsConfiguration</a></li><li data-type='method'><a href="FileConfigurationProvider.html#loadJsonConfiguration">loadJsonConfiguration</a></li></ul></li><li><a href="FileType.html">FileType</a><ul class='methods'><li data-type='method'><a href="FileType.html#getParserClasses">getParserClasses</a></li><li data-type='method'><a href="FileType.html#getRuleSetNames">getRuleSetNames</a></li><li data-type='method'><a href="FileType.html#getRules">getRules</a></li></ul></li><li><a href="FixerManager.html">FixerManager</a><ul class='methods'><li data-type='method'><a href="FixerManager.html#add">add</a></li><li data-type='method'><a href="FixerManager.html#get">get</a></li><li data-type='method'><a href="FixerManager.html#size">size</a></li></ul></li><li><a href="FolderConfigurationProvider.html">FolderConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FolderConfigurationProvider.html#hasConfigurationFile">hasConfigurationFile</a></li></ul></li><li><a href="FormatterManager.html">FormatterManager</a><ul class='methods'><li data-type='method'><a href="FormatterManager.html#add">add</a></li><li data-type='method'><a href="FormatterManager.html#get">get</a></li><li data-type='method'><a href="FormatterManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="FormatterManager.html#size">size</a></li></ul></li><li><a href="LineParser.html">LineParser</a><ul class='methods'><li data-type='method'><a href="LineParser.html#parse">parse</a></li></ul></li><li><a href="LineRegexpChecker.html">LineRegexpChecker</a><ul class='methods'><li data-type='method'><a href="LineRegexpChecker.html#match">match</a></li></ul></li><li><a href="LineSerializer.html">LineSerializer</a><ul class='methods'><li data-type='method'><a href="LineSerializer.html#serialize">serialize</a></li></ul></li><li><a href="LintableFile.html">LintableFile</a><ul class='methods'><li data-type='method'><a href="LintableFile.html#findIssues">findIssues</a></li><li data-type='method'><a href="LintableFile.html#getIRs">getIRs</a></li><li data-type='method'><a href="LintableFile.html#getLocaleFromPath">getLocaleFromPath</a></li><li data-type='method'><a href="LintableFile.html#getStats">getStats</a></li><li data-type='method'><a href="LintableFile.html#parse">parse</a></li></ul></li><li><a href="ParserManager.html">ParserManager</a><ul class='methods'><li data-type='method'><a href="ParserManager.html#add">add</a></li><li data-type='method'><a href="ParserManager.html#get">get</a></li><li data-type='method'><a href="ParserManager.html#getByName">getByName</a></li><li data-type='method'><a href="ParserManager.html#getDescriptions">getDescriptions</a></li></ul></li><li><a href="PluginManager.html">PluginManager</a><ul class='methods'><li data-type='method'><a href="PluginManager.html#add">add</a></li><li data-type='method'><a href="PluginManager.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="PluginManager.html#getFormatterManager">getFormatterManager</a></li><li data-type='method'><a href="PluginManager.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleSet">getRuleSet</a></li><li data-type='method'><a href="PluginManager.html#load">load</a></li></ul></li><li><a href="Project.html">Project</a><ul class='methods'><li data-type='method'><a href="Project.html#add">add</a></li><li data-type='method'><a href="Project.html#findIssues">findIssues</a></li><li data-type='method'><a href="Project.html#get">get</a></li><li data-type='method'><a href="Project.html#getExcludes">getExcludes</a></li><li data-type='method'><a href="Project.html#getFileType">getFileType</a></li><li data-type='method'><a href="Project.html#getFileTypeForPath">getFileTypeForPath</a></li><li data-type='method'><a href="Project.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="Project.html#getIncludes">getIncludes</a></li><li data-type='method'><a href="Project.html#getLocales">getLocales</a></li><li data-type='method'><a href="Project.html#getName">getName</a></li><li data-type='method'><a href="Project.html#getOptions">getOptions</a></li><li data-type='method'><a href="Project.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="Project.html#getPluginManager">getPluginManager</a></li><li data-type='method'><a href="Project.html#getRoot">getRoot</a></li><li data-type='method'><a href="Project.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="Project.html#getScore">getScore</a></li><li data-type='method'><a href="Project.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Project.html#init">init</a></li><li data-type='method'><a href="Project.html#run">run</a></li><li data-type='method'><a href="Project.html#scan">scan</a></li></ul></li><li><a href="ResourceCompleteness.html">ResourceCompleteness</a><ul class='methods'><li data-type='method'><a href="ResourceCompleteness.html#matchString">matchString</a></li></ul></li><li><a href="ResourceDNTTerms.html">ResourceDNTTerms</a><ul class='methods'><li data-type='method'><a href="ResourceDNTTerms.html#matchString">matchString</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromJsonFile">parseTermsFromJsonFile</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromTxtFile">parseTermsFromTxtFile</a></li></ul></li><li><a href="ResourceEdgeWhitespace.html">ResourceEdgeWhitespace</a><ul class='methods'><li data-type='method'><a href="ResourceEdgeWhitespace.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPluralTranslation.html">ResourceICUPluralTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceICUPluralTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPlurals.html">ResourceICUPlurals</a></li><li><a href="ResourceMatcher.html">ResourceMatcher</a><ul class='methods'><li data-type='method'><a href="ResourceMatcher.html#checkString">checkString</a></li></ul></li><li><a href="ResourceNoTranslation.html">ResourceNoTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceNoTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceQuoteStyle.html">ResourceQuoteStyle</a><ul class='methods'><li data-type='method'><a href="ResourceQuoteStyle.html#matchString">matchString</a></li></ul></li><li><a href="ResourceRule.html">ResourceRule</a><ul class='methods'><li data-type='method'><a href="ResourceRule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="ResourceRule.html#match">match</a></li><li data-type='method'><a href="ResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceChecker.html">ResourceSourceChecker</a><ul class='methods'><li data-type='method'><a href="ResourceSourceChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceSourceICUPluralCategories.html">ResourceSourceICUPluralCategories</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralCategories.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralParams.html">ResourceSourceICUPluralParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralSyntax.html">ResourceSourceICUPluralSyntax</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralSyntax.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUUnexplainedParams.html">ResourceSourceICUUnexplainedParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUUnexplainedParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceStateChecker.html">ResourceStateChecker</a><ul class='methods'><li data-type='method'><a href="ResourceStateChecker.html#match">match</a></li></ul></li><li><a href="ResourceTargetChecker.html">ResourceTargetChecker</a><ul class='methods'><li data-type='method'><a href="ResourceTargetChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceUniqueKeys.html">ResourceUniqueKeys</a><ul class='methods'><li data-type='method'><a href="ResourceUniqueKeys.html#match">match</a></li></ul></li><li><a href="ResourceXML.html">ResourceXML</a><ul class='methods'><li data-type='method'><a href="ResourceXML.html#matchString">matchString</a></li></ul></li><li><a href="RuleManager.html">RuleManager</a><ul class='methods'><li data-type='method'><a href="RuleManager.html#add">add</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinition">addRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinitions">addRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#get">get</a></li><li data-type='method'><a href="RuleManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinition">getRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinitions">getRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#getRules">getRules</a></li><li data-type='method'><a href="RuleManager.html#size">size</a></li><li data-type='method'><a href="RuleManager.html#sizeRuleSetDefinitions">sizeRuleSetDefinitions</a></li></ul></li><li><a href="RuleSet.html">RuleSet</a><ul class='methods'><li data-type='method'><a href="RuleSet.html#add">add</a></li><li data-type='method'><a href="RuleSet.html#addRule">addRule</a></li><li data-type='method'><a href="RuleSet.html#getRule">getRule</a></li><li data-type='method'><a href="RuleSet.html#getRules">getRules</a></li><li data-type='method'><a href="RuleSet.html#getSize">getSize</a></li><li data-type='method'><a href="RuleSet.html#removeRule">removeRule</a></li></ul></li><li><a href="SourceRegexpChecker.html">SourceRegexpChecker</a><ul class='methods'><li data-type='method'><a href="SourceRegexpChecker.html#match">match</a></li></ul></li><li><a href="StringFixCommand_StringFixCommand.html">StringFixCommand</a></li><li><a href="StringParser.html">StringParser</a><ul class='methods'><li data-type='method'><a href="StringParser.html#parse">parse</a></li><li data-type='method'><a href="StringParser.html#write">write</a></li></ul></li><li><a href="StringSerializer.html">StringSerializer</a><ul class='methods'><li data-type='method'><a href="StringSerializer.html#serialize">serialize</a></li></ul></li><li><a href="XliffParser.html">XliffParser</a><ul class='methods'><li data-type='method'><a href="XliffParser.html#parse">parse</a></li></ul></li><li><a href="XliffSerializer.html">XliffSerializer</a><ul class='methods'><li data-type='method'><a href="XliffSerializer.html#serialize">serialize</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="ConfigurationProvider.html">ConfigurationProvider</a></li><li><a href="ConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FileConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FolderConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DeclarativeRuleTypes">DeclarativeRuleTypes</a></li><li><a href="global.html#ResultComparator">ResultComparator</a></li><li><a href="global.html#concatIntlAstText">concatIntlAstText</a></li><li><a href="global.html#defaultConfiguration">defaultConfiguration</a></li><li><a href="global.html#severity">severity</a></li><li><a href="global.html#typeMap">typeMap</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">rules/ResourceQuoteStyle.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * ResourceQuoteStyle.js - rule to check quotes in the target string
+ *
+ * Copyright © 2022-2023 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import LocaleInfo from 'ilib-localeinfo';
+import { Result } from 'ilib-lint-common';
+
+import ResourceRule from './ResourceRule.js';
+
+/** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
+
+/**
+ * @typedef BaseRegExpCollection
+ * @type {object}
+ * @prop {string} quoteStart
+ * @prop {string} quoteStartAlt
+ * @prop {string} quoteEnd
+ * @prop {string} quoteEndAlt
+ * @prop {RegExp} quotesNative
+ * @prop {RegExp} quotesNativeAlt
+ *
+ * @typedef {BaseRegExpCollection} SourceRegExpCollection
+ */
+
+/**
+ * @typedef ExtendedRegExpCollection
+ * @type {object}
+ * @prop {RegExp} quotesAll
+ * @prop {RegExp} quotesAllAlt
+ * @prop {string} nonQuoteChars
+ * @prop {string} nonQuoteCharsAlt
+ *
+ * @typedef {BaseRegExpCollection &amp; ExtendedRegExpCollection} TargetRegExpCollection
+ */
+
+/**
+ * @typedef RegExpCollectionForLocale
+ * @type {object}
+ * @prop {RegExp} quotesAscii
+ * @prop {RegExp} quotesAsciiAlt
+ * @prop {SourceRegExpCollection} source
+ * @prop {TargetRegExpCollection} target
+ */
+
+let /** @type {{[locale: string]: LocaleInfo}} */ LICache = {};
+
+/**
+ * @typedef ModeLocaleOnly
+ * @type {"localeOnly"}
+ * Allow only localized quotes in the target string. This also sets default result severity to "error".
+ */
+
+/**
+ * @typedef Severity
+ * @type {("error"|"warning"|"suggestion")}
+ * Result severity.
+ */
+
+/**
+ * @typedef Modes
+ * @type {ModeLocaleOnly}
+ * One-param rule configuration.
+ */
+
+/**
+ * @typedef Configuration
+ * @type {Modes}
+ * Parameters that can be set through rule configuration file.
+ */
+
+/**
+ * @class Represent an ilib-lint rule.
+ */
+class ResourceQuoteStyle extends ResourceRule {
+    /**
+     * Make a new rule instance.
+     *
+     * @param {object} [options]
+     * @param {string} [options.sourceLocale]
+     * @param {Configuration} [options.param]
+     */
+    constructor(options) {
+        super(options ?? {});
+        this.name = "resource-quote-style";
+        this.description = "Ensure that the proper quote characters are used in translated resources";
+        this.sourceLocale = (options &amp;&amp; options.sourceLocale) || "en-US";
+        this.link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-quote-style.md";
+
+        if (options?.param === "localeOnly") {
+            // only localized quotes are allowed in the target string
+            this.localeOnly = true;
+        }
+
+        if (!this.skipLocales) {
+            this.skipLocales = new Set();
+        }
+
+        [
+            "sv", // According to the MS Style guidelines, quotes are usually not required in Swedish when the source English text contains quotes
+            "it", // Based on feedback from linguists quotes in Italian are not required to be the guillemets, even though CLDR says so
+        ].forEach(locale => this.skipLocales.add(locale));
+    }
+
+    /**
+     * @private
+     * @param {string} src
+     * @param {string} tar
+     * @param {Resource} resource
+     * @param {string} file
+     * @param {string} locale
+     */
+    checkString(src, tar, resource, file, locale) {
+        const regExps = this.getRegExps(locale);
+
+        const sourceStyle = {
+            ascii: regExps.quotesAscii.test(src),
+            asciiAlt: regExps.quotesAsciiAlt.test(src),
+            native: regExps.source.quotesNative.test(src),
+            nativeAlt: regExps.source.quotesNativeAlt.test(src)
+        }
+
+        // used in results to show what the expected quote style is
+        const targetQuoteStyleExample = (sourceStyle.ascii || sourceStyle.native) ?
+            `${regExps.target.quoteStart[0]}text${regExps.target.quoteEnd[0]}` :
+            `${regExps.target.quoteStartAlt[0]}text${regExps.target.quoteEndAlt[0]}`;
+
+        // verify that corresponding quote style is present in target
+        // otherwise, construct regexps to pinpoint violation positions
+        // (for highlighting purposes)
+        let startQuote, endQuote;
+        if (sourceStyle.ascii) {
+            if (regExps.target.quotesAll.test(tar)) return;
+            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteChars}'])([\\p{Letter}\\{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteChars}'])(\\W|$)`, "gu");
+        } else if (sourceStyle.asciiAlt) {
+            if (regExps.target.quotesAllAlt.test(tar)) return;
+            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteCharsAlt}"])([\\p{Letter}\\{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteCharsAlt}"])(\\W|$)`, "gu");
+        } else if (sourceStyle.native) {
+            if (regExps.target.quotesNative.test(tar)) return;
+            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteChars}'"])([\\p{Letter}\\{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteChars}'"])(\\W|$)`, "gu");
+        } else if (sourceStyle.nativeAlt) {
+            if (regExps.target.quotesNativeAlt.test(tar)) return;
+            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteCharsAlt}'"])([\\p{Letter}\\{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteCharsAlt}'"])(\\W|$)`, "gu");
+        } else {
+            // no quotes detected in source string
+            return;
+        }
+
+        let highlight, description, lineNumber;
+        if (startQuote.test(tar) || endQuote.test(tar)) {
+            highlight = tar;
+            if (startQuote) { highlight = highlight.replace(startQuote, "$1&lt;e0>$2&lt;/e0>$3"); }
+            if (endQuote) { highlight = highlight.replace(endQuote, "$1&lt;e1>$2&lt;/e1>$3"); }
+            highlight = `Target: ${highlight}`;
+            description = `Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
+        } else {
+            highlight = `Target: ${tar}&lt;e0>&lt;/e0>`;
+            description = `Quotes are missing in the target. Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
+        }
+        // @ts-ignore: Property 'lineNumber' does not exist on type 'Resource'
+        // there is no lineNumber property on a Resource type
+        // (preserved for compatibility)
+        if (typeof(resource.lineNumber) !== 'undefined') {lineNumber = /** @type {number} */ (resource.lineNumber); }
+
+        return new Result({
+            /** @type {Severity} */ severity: this.localeOnly ? "error" : "warning",
+            id: resource.getKey(),
+            source: src,
+            rule: this,
+            locale,
+            pathName: file,
+            highlight,
+            description,
+            lineNumber,
+        });
+    }
+
+    /**
+     * Calculate all the regular expressions we need.
+     * @private
+     * @param {string} locale
+     * @returns {RegExpCollectionForLocale}
+     */
+    getRegExps(locale) {
+        // superset of all the non-ASCII start and end chars used in CLDR
+        const quoteChars = "«»‘“”„「」’‚‹›『』";
+
+        // shared between all locales since there is nothing locale-specific in here
+        const quotesAscii = new RegExp(`((^|\\W)"\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?"(\\W|$))`, "gu");
+        // leave out the "s" before the final quote to take care of plural possessives (eg. my colleagues' files.)
+        const quotesAsciiAlt = new RegExp(`((^|\\W)'\\s?[\\p{Letter}\\{]|[a-rt-zA-RT-Z\\}]\\s?'(\\W|$))`, "gu");
+
+        // locale info object will tell us the quote chars for the locale
+        let li = LICache[locale];
+        if (!li) {
+            // @ts-ignore: An argument for 'options' was not provided
+            // LocaleInfo constructor type annotation does not reflect that options are in fact optional
+            li = new LocaleInfo(locale);
+            LICache[locale] = li;
+        }
+
+        let sourceLI = LICache[this.sourceLocale];
+        if (!sourceLI) {
+            // @ts-ignore: An argument for 'options' was not provided
+            // LocaleInfo constructor type annotation does not reflect that options are in fact optional
+            sourceLI = new LocaleInfo(this.sourceLocale);
+            LICache[this.sourceLocale] = sourceLI;
+        }
+
+        // what are all the quote chars that this locale uses?
+        const sourceQuoteStart = sourceLI.getDelimiterQuotationStart();
+        const sourceQuoteStartAlt = /** @type {string} */ (sourceLI.info.delimiter.alternateQuotationStart);
+
+        const sourceQuoteEnd = sourceLI.getDelimiterQuotationEnd();
+        const sourceQuoteEndAlt = /** @type {string} */ (sourceLI.info.delimiter.alternateQuotationEnd);
+
+        /** special case for Japanese: accept the main quote style only and also square brackets */
+        const targetQuoteStartChars = (locale === "ja-JP") ? ["「", "\\["] : [li.getDelimiterQuotationStart()];
+        // used in regular expressions:
+        const targetQuoteStart = targetQuoteStartChars.join("");
+        const targetQuoteStartAltChars = (locale === "ja-JP") ? ["「", "\\["] : [li.info.delimiter.alternateQuotationStart];
+        // used in regular expressions:
+        const targetQuoteStartAlt = /** @type {string} */ targetQuoteStartAltChars.join("");
+
+        /** special case for Japanese: accept the main quote style only and also square brackets */
+        const targetQuoteEndChars = (locale === "ja-JP") ? ["」", "\\]"] : [li.getDelimiterQuotationEnd()];
+        // used in regular expressions:
+        const targetQuoteEnd = targetQuoteEndChars.join("");
+        const targetQuoteEndAltChars = (locale === "ja-JP") ? ["」", "\\]"] : [li.info.delimiter.alternateQuotationEnd];
+        // used in regular expressions:
+        const targetQuoteEndAlt = /** @type {string} */ targetQuoteEndAltChars.join("");
+
+        // now calculate regular expressions for the source string that use those quotes
+        // if the source uses ASCII quotes, then the target could have ASCII or native quotes
+        const sourceQuotesNative = new RegExp(`((^|\\W)${sourceQuoteStart}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${sourceQuoteEnd}(\\W|$))`, "gu");
+        const sourceQuotesNativeAlt = new RegExp(`((^|\\W)${sourceQuoteStartAlt}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${sourceQuoteEndAlt}(\\W|$))`, "gu");
+
+        // now calculate the regular expressions for the target string that use quotes
+        // if the source contains native quotes, then the target should also have native quotes
+        const targetQuotesNative = new RegExp(`((^|\\W)${targetQuoteStart}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${targetQuoteEnd}(\\W|$))`, "gu");
+        const targetQuotesNativeAlt = new RegExp(`((^|\\W)${targetQuoteStartAlt}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${targetQuoteEndAlt}(\\W|$))`, "gu");
+        const targetQuotesAll = this.localeOnly ?
+            targetQuotesNative :
+            new RegExp(`((^|\\W)[${targetQuoteStart}${targetQuoteStartAlt}"]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEnd}${targetQuoteEndAlt}"](\\W|$))`, "gu");
+        const targetQuotesAllAlt = this.localeOnly ?
+            targetQuotesNativeAlt :
+            new RegExp(`((^|\\W)[${targetQuoteStartAlt}']\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEndAlt}'](\\W|$))`, "gu");
+
+        // the non quote chars are used to highlight errors in the target string where they are using quotes, but
+        // they are the wrong type. Start with the superset of all quotes and then remove the valid ones so that
+        // you are left with the wrong ones for this locale.
+        const targetNonQuoteChars = quoteChars.
+                replace(sourceQuoteStart, "").
+                replace(targetQuoteStart, "").
+                replace(sourceQuoteEnd, "").
+                replace(targetQuoteEnd, "");
+        const targetNonQuoteCharsAlt = quoteChars.
+                replace(new RegExp(`[${sourceQuoteStartAlt}]`, "gu"), "").
+                replace(new RegExp(`[${targetQuoteStartAlt}]`, "gu"), "").
+                replace(new RegExp(`[${sourceQuoteEndAlt}]`, "gu"), "").
+                replace(new RegExp(`[${targetQuoteEndAlt}]`, "gu"), "");
+
+        return {
+            quotesAscii,
+            quotesAsciiAlt,
+            source: {
+                quoteStart: sourceQuoteStart,
+                quoteStartAlt: sourceQuoteStartAlt,
+                quoteEnd: sourceQuoteEnd,
+                quoteEndAlt: sourceQuoteEndAlt,
+                quotesNative: sourceQuotesNative,
+                quotesNativeAlt: sourceQuotesNativeAlt,
+            },
+            target: {
+                quoteStart: targetQuoteStart,
+                quoteStartAlt: targetQuoteStartAlt,
+                quoteEnd: targetQuoteEnd,
+                quoteEndAlt: targetQuoteEndAlt,
+                quotesNative: targetQuotesNative,
+                quotesNativeAlt: targetQuotesNativeAlt,
+                quotesAll: targetQuotesAll,
+                quotesAllAlt: targetQuotesAllAlt,
+                nonQuoteChars: targetNonQuoteChars,
+                nonQuoteCharsAlt: targetNonQuoteCharsAlt,
+            }
+        };
+    }
+
+    /**
+     * @override
+     * @param {Object} params
+     * @param {string | undefined} params.source
+     * @param {string | undefined} params.target
+     * @param {Resource} params.resource
+     * @param {string} params.file
+     */
+    matchString({source, target, resource, file}) {
+        if (!source || !target) return; // cannot match in strings that don't exist!
+        const locale = resource.getTargetLocale();
+        if (!locale) return; // nothing to do if there is no target locale specified
+        return this.checkString(source, target, resource, file, locale);
+    }
+}
+
+export default ResourceQuoteStyle;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Mon Nov 04 2024 13:25:19 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

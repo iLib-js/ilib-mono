@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>plugins/BuiltinPlugin.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnsiConsoleFormatter.html">AnsiConsoleFormatter</a><ul class='methods'><li data-type='method'><a href="AnsiConsoleFormatter.html#format">format</a></li></ul></li><li><a href="BuiltinPlugin.html">BuiltinPlugin</a><ul class='methods'><li data-type='method'><a href="BuiltinPlugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="BuiltinPlugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRules">getRules</a></li><li data-type='method'><a href="BuiltinPlugin.html#getSerializers">getSerializers</a></li></ul></li><li><a href="ConfigBasedFormatter.html">ConfigBasedFormatter</a><ul class='methods'><li data-type='method'><a href="ConfigBasedFormatter.html#format">format</a></li></ul></li><li><a href="DeclarativeResourceRule.html">DeclarativeResourceRule</a><ul class='methods'><li data-type='method'><a href="DeclarativeResourceRule.html#checkString">checkString</a></li><li data-type='method'><a href="DeclarativeResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="DirItem.html">DirItem</a><ul class='methods'><li data-type='method'><a href="DirItem.html#findIssues">findIssues</a></li><li data-type='method'><a href="DirItem.html#getFilePath">getFilePath</a></li><li data-type='method'><a href="DirItem.html#parse">parse</a></li></ul></li><li><a href="FileConfigurationProvider.html">FileConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FileConfigurationProvider.html#loadJsConfiguration">loadJsConfiguration</a></li><li data-type='method'><a href="FileConfigurationProvider.html#loadJsonConfiguration">loadJsonConfiguration</a></li></ul></li><li><a href="FileType.html">FileType</a><ul class='methods'><li data-type='method'><a href="FileType.html#getParserClasses">getParserClasses</a></li><li data-type='method'><a href="FileType.html#getRuleSetNames">getRuleSetNames</a></li><li data-type='method'><a href="FileType.html#getRules">getRules</a></li></ul></li><li><a href="FixerManager.html">FixerManager</a><ul class='methods'><li data-type='method'><a href="FixerManager.html#add">add</a></li><li data-type='method'><a href="FixerManager.html#get">get</a></li><li data-type='method'><a href="FixerManager.html#size">size</a></li></ul></li><li><a href="FolderConfigurationProvider.html">FolderConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FolderConfigurationProvider.html#hasConfigurationFile">hasConfigurationFile</a></li></ul></li><li><a href="FormatterManager.html">FormatterManager</a><ul class='methods'><li data-type='method'><a href="FormatterManager.html#add">add</a></li><li data-type='method'><a href="FormatterManager.html#get">get</a></li><li data-type='method'><a href="FormatterManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="FormatterManager.html#size">size</a></li></ul></li><li><a href="LineParser.html">LineParser</a><ul class='methods'><li data-type='method'><a href="LineParser.html#parse">parse</a></li></ul></li><li><a href="LineRegexpChecker.html">LineRegexpChecker</a><ul class='methods'><li data-type='method'><a href="LineRegexpChecker.html#match">match</a></li></ul></li><li><a href="LineSerializer.html">LineSerializer</a><ul class='methods'><li data-type='method'><a href="LineSerializer.html#serialize">serialize</a></li></ul></li><li><a href="LintableFile.html">LintableFile</a><ul class='methods'><li data-type='method'><a href="LintableFile.html#findIssues">findIssues</a></li><li data-type='method'><a href="LintableFile.html#getIRs">getIRs</a></li><li data-type='method'><a href="LintableFile.html#getLocaleFromPath">getLocaleFromPath</a></li><li data-type='method'><a href="LintableFile.html#getStats">getStats</a></li><li data-type='method'><a href="LintableFile.html#parse">parse</a></li></ul></li><li><a href="ParserManager.html">ParserManager</a><ul class='methods'><li data-type='method'><a href="ParserManager.html#add">add</a></li><li data-type='method'><a href="ParserManager.html#get">get</a></li><li data-type='method'><a href="ParserManager.html#getByName">getByName</a></li><li data-type='method'><a href="ParserManager.html#getDescriptions">getDescriptions</a></li></ul></li><li><a href="PluginManager.html">PluginManager</a><ul class='methods'><li data-type='method'><a href="PluginManager.html#add">add</a></li><li data-type='method'><a href="PluginManager.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="PluginManager.html#getFormatterManager">getFormatterManager</a></li><li data-type='method'><a href="PluginManager.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleSet">getRuleSet</a></li><li data-type='method'><a href="PluginManager.html#load">load</a></li></ul></li><li><a href="Project.html">Project</a><ul class='methods'><li data-type='method'><a href="Project.html#add">add</a></li><li data-type='method'><a href="Project.html#findIssues">findIssues</a></li><li data-type='method'><a href="Project.html#get">get</a></li><li data-type='method'><a href="Project.html#getExcludes">getExcludes</a></li><li data-type='method'><a href="Project.html#getFileType">getFileType</a></li><li data-type='method'><a href="Project.html#getFileTypeForPath">getFileTypeForPath</a></li><li data-type='method'><a href="Project.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="Project.html#getIncludes">getIncludes</a></li><li data-type='method'><a href="Project.html#getLocales">getLocales</a></li><li data-type='method'><a href="Project.html#getName">getName</a></li><li data-type='method'><a href="Project.html#getOptions">getOptions</a></li><li data-type='method'><a href="Project.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="Project.html#getPluginManager">getPluginManager</a></li><li data-type='method'><a href="Project.html#getRoot">getRoot</a></li><li data-type='method'><a href="Project.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="Project.html#getScore">getScore</a></li><li data-type='method'><a href="Project.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Project.html#init">init</a></li><li data-type='method'><a href="Project.html#run">run</a></li><li data-type='method'><a href="Project.html#scan">scan</a></li></ul></li><li><a href="ResourceCompleteness.html">ResourceCompleteness</a><ul class='methods'><li data-type='method'><a href="ResourceCompleteness.html#matchString">matchString</a></li></ul></li><li><a href="ResourceDNTTerms.html">ResourceDNTTerms</a><ul class='methods'><li data-type='method'><a href="ResourceDNTTerms.html#matchString">matchString</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromJsonFile">parseTermsFromJsonFile</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromTxtFile">parseTermsFromTxtFile</a></li></ul></li><li><a href="ResourceEdgeWhitespace.html">ResourceEdgeWhitespace</a><ul class='methods'><li data-type='method'><a href="ResourceEdgeWhitespace.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPluralTranslation.html">ResourceICUPluralTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceICUPluralTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPlurals.html">ResourceICUPlurals</a></li><li><a href="ResourceMatcher.html">ResourceMatcher</a><ul class='methods'><li data-type='method'><a href="ResourceMatcher.html#checkString">checkString</a></li></ul></li><li><a href="ResourceNoTranslation.html">ResourceNoTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceNoTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceQuoteStyle.html">ResourceQuoteStyle</a><ul class='methods'><li data-type='method'><a href="ResourceQuoteStyle.html#matchString">matchString</a></li></ul></li><li><a href="ResourceRule.html">ResourceRule</a><ul class='methods'><li data-type='method'><a href="ResourceRule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="ResourceRule.html#match">match</a></li><li data-type='method'><a href="ResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceChecker.html">ResourceSourceChecker</a><ul class='methods'><li data-type='method'><a href="ResourceSourceChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceSourceICUPluralCategories.html">ResourceSourceICUPluralCategories</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralCategories.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralParams.html">ResourceSourceICUPluralParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralSyntax.html">ResourceSourceICUPluralSyntax</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralSyntax.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUUnexplainedParams.html">ResourceSourceICUUnexplainedParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUUnexplainedParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceStateChecker.html">ResourceStateChecker</a><ul class='methods'><li data-type='method'><a href="ResourceStateChecker.html#match">match</a></li></ul></li><li><a href="ResourceTargetChecker.html">ResourceTargetChecker</a><ul class='methods'><li data-type='method'><a href="ResourceTargetChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceUniqueKeys.html">ResourceUniqueKeys</a><ul class='methods'><li data-type='method'><a href="ResourceUniqueKeys.html#match">match</a></li></ul></li><li><a href="ResourceXML.html">ResourceXML</a><ul class='methods'><li data-type='method'><a href="ResourceXML.html#matchString">matchString</a></li></ul></li><li><a href="RuleManager.html">RuleManager</a><ul class='methods'><li data-type='method'><a href="RuleManager.html#add">add</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinition">addRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinitions">addRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#get">get</a></li><li data-type='method'><a href="RuleManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinition">getRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinitions">getRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#getRules">getRules</a></li><li data-type='method'><a href="RuleManager.html#size">size</a></li><li data-type='method'><a href="RuleManager.html#sizeRuleSetDefinitions">sizeRuleSetDefinitions</a></li></ul></li><li><a href="RuleSet.html">RuleSet</a><ul class='methods'><li data-type='method'><a href="RuleSet.html#add">add</a></li><li data-type='method'><a href="RuleSet.html#addRule">addRule</a></li><li data-type='method'><a href="RuleSet.html#getRule">getRule</a></li><li data-type='method'><a href="RuleSet.html#getRules">getRules</a></li><li data-type='method'><a href="RuleSet.html#getSize">getSize</a></li><li data-type='method'><a href="RuleSet.html#removeRule">removeRule</a></li></ul></li><li><a href="SourceRegexpChecker.html">SourceRegexpChecker</a><ul class='methods'><li data-type='method'><a href="SourceRegexpChecker.html#match">match</a></li></ul></li><li><a href="StringFixCommand_StringFixCommand.html">StringFixCommand</a></li><li><a href="StringParser.html">StringParser</a><ul class='methods'><li data-type='method'><a href="StringParser.html#parse">parse</a></li><li data-type='method'><a href="StringParser.html#write">write</a></li></ul></li><li><a href="StringSerializer.html">StringSerializer</a><ul class='methods'><li data-type='method'><a href="StringSerializer.html#serialize">serialize</a></li></ul></li><li><a href="XliffParser.html">XliffParser</a><ul class='methods'><li data-type='method'><a href="XliffParser.html#parse">parse</a></li></ul></li><li><a href="XliffSerializer.html">XliffSerializer</a><ul class='methods'><li data-type='method'><a href="XliffSerializer.html#serialize">serialize</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="ConfigurationProvider.html">ConfigurationProvider</a></li><li><a href="ConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FileConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FolderConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DeclarativeRuleTypes">DeclarativeRuleTypes</a></li><li><a href="global.html#ResultComparator">ResultComparator</a></li><li><a href="global.html#concatIntlAstText">concatIntlAstText</a></li><li><a href="global.html#defaultConfiguration">defaultConfiguration</a></li><li><a href="global.html#severity">severity</a></li><li><a href="global.html#typeMap">typeMap</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">plugins/BuiltinPlugin.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * BuiltinPlugin.js - plugin that houses all of the built-in
+ * rules and parsers
+ *
+ * Copyright © 2022-2024 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Plugin } from 'ilib-lint-common';
+import XliffParser from './XliffParser.js';
+import XliffSerializer from './XliffSerializer.js';
+import LineParser from './LineParser.js';
+import LineSerializer from './LineSerializer.js';
+import StringParser from './string/StringParser.js';
+import StringSerializer from './string/StringSerializer.js';
+import AnsiConsoleFormatter from '../formatters/AnsiConsoleFormatter.js';
+import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
+import ResourceICUPluralTranslation from '../rules/ResourceICUPluralTranslation.js';
+import ResourceQuoteStyle from '../rules/ResourceQuoteStyle.js';
+import ResourceUniqueKeys from '../rules/ResourceUniqueKeys.js';
+import ResourceEdgeWhitespace from '../rules/ResourceEdgeWhitespace.js';
+import ResourceCompleteness from '../rules/ResourceCompleteness.js';
+import ResourceDNTTerms from '../rules/ResourceDNTTerms.js';
+import ResourceNoTranslation from '../rules/ResourceNoTranslation.js';
+import ResourceStateChecker from '../rules/ResourceStateChecker.js';
+import ResourceSourceICUPluralSyntax from '../rules/ResourceSourceICUPluralSyntax.js';
+import ResourceSourceICUPluralParams from '../rules/ResourceSourceICUPluralParams.js';
+import ResourceSourceICUPluralCategories from '../rules/ResourceSourceICUPluralCategories.js';
+import ResourceSourceICUUnexplainedParams from '../rules/ResourceSourceICUUnexplainedParams.js';
+import ResourceXML from '../rules/ResourceXML.js';
+
+// built-in declarative rules
+export const regexRules = [
+    {
+        type: "resource-matcher",
+        name: "resource-url-match",
+        description: "Ensure that URLs that appear in the source string are also used in the translated string",
+        note: "URL '{matchString}' from the source string does not appear in the target string",
+        regexps: [ "((https?|github|ftps?|mailto|file|data|irc):\\/\\/)([\\da-zA-Z\\.-]+)\\.([a-zA-Z\\.]{2,6})([\\/\w\\.-]*)*\\/?" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-url-match.md"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-named-params",
+        description: "Ensure that named parameters that appear in the source string are also used in the translated string",
+        note: "The named parameter '{matchString}' from the source string does not appear in the target string",
+        regexps: [ "\\{\\w+\\}" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-named-params.md"
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-fullwidth-latin",
+        description: "Ensure that the target does not contain any full-width Latin characters.",
+        note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII letters instead.",
+        regexps: [ "[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-fullwidth-latin.md"
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-fullwidth-digits",
+        description: "Ensure that the target does not contain any full-width digits.",
+        note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII digits instead.",
+        regexps: [ "[\\uFF10-\\uFF19]+" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-fullwidth-digits.md"
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-fullwidth-punctuation-subset",
+        description: "Ensure that the target does not contain specific full-width punctuation: percent sign, question mark, or exclamation mark.",
+        note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII symbols instead.",
+        regexps: [ "[\\uFF01\\uFF05\\uFF1F]+" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-fullwidth-punctuation-subset.md",
+        locales: "ja"
+    },
+        {
+        type: "resource-target",
+        name: "resource-no-space-between-double-and-single-byte-character",
+        description: "Ensure that the target does not contain a space character between a double-byte and single-byte character.",
+        note: "The space character is not allowed in the target string between a double- and single-byte character. Remove the space character.",
+        regexps: [ "[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF]\\s+[\\x00-\\x20\\x30-\\x39\\x41-\\x5A\\x61-\\x7A\\x8A\\x8C\\x8E\\x9A\\x9C\\x9E\\x9F\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\xFF]|[\\x00-\\x20\\x30-\\x39\\x41-\\x5A\\x61-\\x7A\\x8A\\x8C\\x8E\\x9A\\x9C\\x9E\\x9F\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\xFF]\\s+[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF]" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-space-between-double-and-single-byte-character.md",
+        severity: "warning",
+        locales: "ja"
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-halfwidth-kana-characters",
+        description: "Ensure that the target does not contain half-width kana characters.",
+        note: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
+        regexps: [ "[ｧ-ﾝﾞﾟ]+" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-halfwidth-kana-characters.md",
+        severity: "warning"
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-double-byte-space",
+        description: "Ensure that the target does not contain double-byte space characters.",
+        note: "Double-byte space characters should not be used in the target string. Use ASCII symbols instead.",
+        // per https://en.wikipedia.org/wiki/Whitespace_character
+        regexps: [ "[\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000]+" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-double-byte-space.md",
+        severity: "warning",
+        locales: "ja"
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-space-with-fullwidth-punctuation",
+        description: "Ensure that there is no whitespace adjacent to the fullwidth punctuation characters.",
+        note: "There should be no space adjacent to fullwidth punctuation characters '{matchString}'. Remove it.",
+        regexps: [ "(\\s+[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]|[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]\\s+)" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-space-with-fullwidth-punctuation.md",
+        severity: "warning",
+        locales: "ja"
+    },
+    {
+        type: "resource-source",
+        name: "source-no-escaped-curly-braces",
+        description: "Ensure that there are no replacement variables surrounded by single quotes which escape them in the source strings.",
+        note: "There should be no escaped replacement parameters. Use Unicode quotes ‘like this’ (U+2018 and U+2019) or double quotes instead.",
+        regexps: [ "(?:^|[^'])(?&lt;match>''?\\{.*?\\}''?)" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-escaped-curly-braces.md",
+        severity: "error",
+        useStripped: false
+    },
+    {
+        type: "resource-target",
+        name: "resource-no-escaped-curly-braces",
+        description: "Ensure that there are no replacement variables surrounded by single quotes which escape them in the target strings.",
+        note: "There should be no escaped replacement parameters in the translation. Use quotes that are native for the target language or use tripled single-quotes instead.",
+        regexps: [ "(?:^|[^'])(?&lt;match>''?\\{.*?\\}''?)" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-escaped-curly-braces.md",
+        severity: "error",
+        useStripped: false
+    },
+    {
+        type: "resource-source",
+        name: "source-no-dashes-in-replacement-params",
+        description: "Ensure that source strings do not contain dashes in the replacement parameters.",
+        note: "Dashes are not allowed in replacement parameters. Use a different character such as underscore.",
+        regexps: [ "(?:^|[^'])(?&lt;match>\\{[^}]*?-[^}]*\\})" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-dashes-in-replacement-params.md",
+        severity: "error"
+    },
+    {
+        type: "resource-source",
+        name: "source-no-lazy-plurals",
+        description: "Ensure that source strings do not contain the (s) construct to indicate a possible plural. That is not translatable to many languages.",
+        note: "The (s) construct is not allowed in source strings. Use real plural syntax instead.",
+        regexps: [ "(?&lt;match>\\w+\\(s\\))(?:\\s|\\p{P}|$)" ],  // \p{P} means punctuation
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-lazy-plurals.md",
+        severity: "warning"
+    },
+    {
+        type: "resource-source",
+        name: "source-no-manual-percentage-formatting",
+        description: "Ensure that source strings do not contain percentage formatting. Percentages should be formatted using a locale-sensitive number formatter instead.",
+        note: "Do not format percentages in English strings. Use a locale-sensitive number formatter and substitute the result of that into this string.",
+        regexps: [ "(?&lt;match>\\{[\\w_.$0-9]+\\}\\s*%)(\\s|$)" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-percentage-formatting.md",
+        severity: "warning"
+    },
+    {
+        type: "resource-source",
+        name: "source-no-noun-replacement-params",
+        description: "Ensure that source strings do not contain replacement parameters that are nouns or adjectives.",
+        note: "Do not substitute nouns into UI strings. Use separate strings for each noun instead.",
+        regexps: [ "\\b(?&lt;match>([Aa][Nn]?|[Tt][Hh][Ee])\\s+\\{.*?\\})" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-noun-replacement-params.md",
+        severity: "error",
+        useStripped: false
+    },
+    {
+        type: "resource-source",
+        name: "source-no-manual-currency-formatting",
+        description: "Ensure that source strings do not contain currency formatting. Currencies should be formatted using a locale-sensitive number formatter instead.",
+        note: "Do not format currencies in English strings. Use a locale-sensitive number formatter and substitute the result of that into this string.",
+        regexps: [ "(?&lt;match>\\$\\s*\\{[\\w_.$0-9]+\\})" ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-currency-formatting.md",
+        severity: "error"
+    },
+    {
+        type: "resource-source",
+        name: "source-no-manual-date-formatting",
+        description: "Ensure that source strings do not contain manually formatted dates or times. Dates and times should be formatted using a locale-sensitive date formatter instead.",
+        note: "Do not format dates or times in English strings. Use a locale-sensitive date formatter and substitute the result of that into this string.",
+        regexps: [
+            "\\{years?\\}[/\\-\\. ]\\{months?\\}[/\\-\\. ]\\{days?\\}",
+            "\\{[Yy][Yy]([Yy][Yy])?\\}[/\\-\\. ]\\{[Mm]{2,4}\\}[/\\-\\. ]\\{[Dd][Dd]?\\}",
+
+            "\\{months?\\}[/\\-\\. ]\\{days?\\}[/\\-\\. ]\\{years?\\}",
+            "\\{months?\\} \\{days?\\}, \\{years?\\}",
+            "\\{[Mm]{2,4}\\}[/\\-\\.]\\{[Dd][Dd]?\\}[/\\-\\.]\\{[Yy][Yy]([Yy][Yy])?\\}",
+            "\\{[Mm]{2,4}\\} \\{[Dd][Dd]?\\}, \\{[Yy][Yy]([Yy][Yy])?\\}",
+
+            "\\{days?\\}[/\\-\\. ]\\{months?\\}[/\\-\\. ]\\{years?\\}",
+            "\\{days?\\} \\{months?\\}, \\{years?\\}",
+            "\\{[Dd][Dd]?\\}[/\\-\\.]\\{[Mm]{2,4}\\}[/\\-\\.]\\{[Yy][Yy]([Yy][Yy])?\\}",
+            "\\{[Dd][Dd]?\\} \\{[Mm]{2,4}\\}, \\{[Yy][Yy]([Yy][Yy])?\\}",
+
+            "\\{years?\\}[/\\-\\. ]\\{months?\\}",
+            "\\{[Yy][Yy]([Yy][Yy])?\\}[/\\-\\. ]\\{[Mm]{2,4}\\}",
+
+            "\\{months?\\}[/\\-\\. ]\\{years?\\}",
+            "\\{months?\\}, \\{years?\\}",
+            "\\{[Mm]{2,4}\\}[/\\-\\. ]\\{[Yy][Yy]([Yy][Yy])?\\}",
+            "\\{[Mm]{2,4}\\}, \\{[Yy][Yy]([Yy][Yy])?\\}",
+
+            "\\{months?\\}[/\\-\\. ]\\{days?\\}",
+            "\\{[Mm]{2,4}\\}[/\\-\\. ]\\{[Dd][Dd]?\\}",
+
+            "\\{days?\\}[/\\-\\. ]\\{months?\\}",
+            "\\{[Dd][Dd]?\\}[/\\-\\. ]\\{[Mm]{2,4}\\}",
+
+            "\\{hours?\\}:\\{min(utes?)?\\}:\\{sec(onds?)?\\}",
+            "\\{hours?\\}:\\{min(utes?)?\\}",
+            "\\{[Hh][Hh]?\\}:\\{[Mm][Mm]?\\}:\\{[Ss][Ss]?\\}",
+            "\\{[Hh][Hh]?\\}:\\{[Mm][Mm]?\\}"
+        ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-date-formatting.md",
+        severity: "error"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-snake-case",
+        description: "Ensure that when source strings contain only snake case (words and/or numbers separeated by underscores) and no whitespace, then the targets are the same",
+        note: "Do not translate the source string if it consists solely of snake-cased strings and/or digits. Please update the target string so it matches the source string.",
+        regexps: [
+            "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
+            "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
+        ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-snake-case.md",
+        severity: "error"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-camel-case",
+        description: "Ensure that when source strings contain only camel case and no whitespace, then the targets are the same",
+        note: "Do not translate the source string if it consists solely of camel-cased strings and/or digits. Please update the target string so it matches the source string.",
+        regexps: [
+            "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$", // camelCase and 6amelCaseWithD1g1t3
+            "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$", // PascalCase and 4ascalCaseWithD1g1t3
+        ],
+        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-camel-case.md",
+        severity: "error"
+    },
+];
+
+// built-in ruleset that contains all the built-in rules
+export const builtInRulesets = {
+    generic: {
+        // programmatic rules
+        "resource-icu-plurals": true,
+        "resource-quote-style": true,
+        "resource-state-checker": true,
+        "resource-unique-keys": true,
+        "resource-edge-whitespace": true,
+        "resource-completeness": true,
+        "resource-no-translation": true,
+        "resource-icu-plurals-translated": true,
+        "resource-xml": true,
+
+        // declarative rules from above
+        "resource-url-match": true,
+        "resource-named-params": true,
+        "resource-no-escaped-curly-braces": true,
+        "resource-no-fullwidth-latin": true,
+        "resource-no-fullwidth-digits": true,
+        "resource-no-fullwidth-punctuation-subset": true,
+        "resource-no-space-between-double-and-single-byte-character": true,
+        "resource-no-halfwidth-kana-characters": true,
+        "resource-no-double-byte-space": true,
+        "resource-no-space-with-fullwidth-punctuation": true,
+        "resource-snake-case": true,
+        "resource-camel-case": true,
+    },
+
+    source: {
+        "resource-source-icu-plural-syntax": true,
+        "resource-source-icu-plural-categories": true,
+        "source-no-escaped-curly-braces": true,
+        "source-no-dashes-in-replacement-params": true,
+        "source-no-lazy-plurals": true,
+        "source-no-manual-percentage-formatting": true,
+        "source-no-noun-replacement-params": true,
+        "source-no-manual-currency-formatting": true,
+        "source-icu-plural-params": true,
+        "source-icu-unexplained-params": true
+    },
+};
+
+/**
+ * @class ilib-lint plugin that can parse XLIFF files
+ */
+class BuiltinPlugin extends Plugin {
+    /**
+     * Create a new xliff plugin instance.
+     * @constructor
+     */
+    constructor(options) {
+        super(options);
+    }
+
+    /**
+     * For a "parser" type of plugin, this returns a list of Parser classes
+     * that this plugin implements.
+     *
+     * @returns {Array.&lt;Parser>} list of Parser classes implemented by this
+     * plugin
+     */
+    getParsers() {
+        return [XliffParser, LineParser, StringParser];
+    }
+
+    /**
+     * For a "serializer" type of plugin, this returns a list of Serializer classes
+     * that this plugin implements.
+     *
+     * @returns {Array.&lt;Parser>} list of Serializer classes implemented by this
+     * plugin
+     */
+    getSerializers() {
+        return [XliffSerializer, LineSerializer, StringSerializer];
+    }
+
+    /**
+     * @override
+     */
+    getRules() {
+        return [
+            ResourceICUPlurals,
+            ResourceICUPluralTranslation,
+            ResourceQuoteStyle,
+            ResourceUniqueKeys,
+            ResourceEdgeWhitespace,
+            ResourceCompleteness,
+            ResourceDNTTerms,
+            ResourceNoTranslation,
+            ResourceStateChecker,
+            ResourceSourceICUPluralSyntax,
+            ResourceSourceICUPluralParams,
+            ResourceSourceICUPluralCategories,
+            ResourceSourceICUUnexplainedParams,
+            ResourceXML,
+            ...regexRules
+        ];
+    }
+
+    /**
+     * @override
+     */
+    getRuleSets() {
+        return builtInRulesets;
+    }
+
+    /**
+     * @override
+     */
+    getFormatters() {
+        return [AnsiConsoleFormatter];
+    }
+
+    getFixers() {
+        return [];
+    }
+};
+
+export default BuiltinPlugin;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Mon Nov 04 2024 13:25:19 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
