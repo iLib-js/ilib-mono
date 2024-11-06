@@ -59,9 +59,9 @@
         "clean": "ant clean",
         "dist": "npm run generate ; npm pack",
         "generate": "node generate/genPluralCategories.js",
-        "test": "LANG=en-US node --trace-warnings node_modules/.bin/jest --testEnvironment node --detectOpenHandles",
-        "test:watch": "LANG=en-US jest --watch",
-        "debug": "LANG=en-US node --inspect-brk node_modules/.bin/jest -i"
+        "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node --detectOpenHandles",
+        "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node --detectOpenHandles --watch",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS  --experimental-vm-modules --inspect-brk\" jest --testEnvironment node --detectOpenHandles -i"
     },
     "dependencies": {
         "@formatjs/intl": "^2.10.4",
