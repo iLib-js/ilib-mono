@@ -14,6 +14,12 @@ if [ "$(git branch --show-current)" == "main" ]; then
     exit 1
 fi
 
+# exit if there are uncommitted changes
+if [ -n "$(git status --porcelain)" ]; then
+    echo "There are uncommitted changes. Commit or stash them before running this script"
+    exit 1
+fi
+
 # for each repository name in arguments
 for REPO in "$@"
 do
