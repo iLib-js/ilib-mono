@@ -1,0 +1,78 @@
+{
+    "name": "ilib-loctool-ghfm",
+    "version": "1.11.5",
+    "main": "./MarkdownFileType.js",
+    "description": "A loctool plugin that knows how to process github-flavored markdown files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "github",
+        "flavor",
+        "markdown"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "MarkdownFile.js",
+        "MarkdownFileType.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-loctool-ghfm.git"
+    },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
+        "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE"
+    },
+    "engines": {
+        "node": ">=10.0"
+    },
+    "dependencies": {
+        "he": "^1.2.0",
+        "ilib": "^14.19.0",
+        "ilib-loctool-yaml": "^1.5.1",
+        "ilib-tree-node": "^2.0.0",
+        "message-accumulator": "^3.0.0",
+        "micromatch": "^4.0.5",
+        "rehype-parse": "^7.0.0",
+        "rehype-raw": "^5.0.0",
+        "remark-footnotes": "^2.0.0",
+        "remark-frontmatter": "^2.0.0",
+        "remark-highlight.js": "^6.0.0",
+        "remark-parse": "^8.0.0",
+        "remark-stringify": "^8.0.0",
+        "unified": "^9.2.2",
+        "unist-builder": "^2.0.0",
+        "unist-util-filter": "^2.0.0"
+    },
+    "devDependencies": {
+        "jest": "^26.0.0",
+        "loctool": "^2.24.0"
+    }
+}
