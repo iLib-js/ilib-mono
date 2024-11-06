@@ -1,0 +1,17 @@
+{
+    "name": "Loctool Test",
+    "id": "loctest",
+    "projectType": "custom",
+    "pseudoLocale": "ps-DO",
+    "resourceDirs": {
+        "mock": "."
+    },
+    "excludes": [
+    ],
+    "includes": [
+    ],
+    "settings": {
+        "locales": ["es-US", "ja-JP", "zh-Hans-CN"]
+    },
+    "plugins": ["ilib-loctool-mock-json"]
+}

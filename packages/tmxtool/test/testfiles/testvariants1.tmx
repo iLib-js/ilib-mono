@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tmx version="1.4">
+  <header
+    segtype="paragraph"
+    creationtool="loctool"
+    creationtoolversion="v2.20.2"
+    adminlang="en-US"
+    srclang="en-US"
+    datatype="unknown"/>
+  <body>
+    <tu srclang="en-US">
+      <prop type="x-project">webapp</prop>
+      <tuv xml:lang="en-US">
+        <seg>Asdf asdf</seg>
+      </tuv>
+      <tuv xml:lang="de-DE">
+        <seg>eins zwei drei</seg>
+      </tuv>
+    </tu>
+    <tu srclang="en-US">
+      <prop type="x-project">webapp</prop>
+      <tuv xml:lang="en-US">
+        <seg>baby baby</seg>
+      </tuv>
+      <tuv xml:lang="de-DE">
+        <seg>vier fumpf sechs</seg>
+      </tuv>
+    </tu>
+  </body>
+</tmx>
