@@ -15,10 +15,10 @@ if [ "$(git branch --show-current)" == "main" ]; then
 fi
 
 # exit if there are uncommitted changes
-if [ -n "$(git status --porcelain)" ]; then
-    echo "There are uncommitted changes. Commit or stash them before running this script"
-    exit 1
-fi
+#if [ -n "$(git status --porcelain)" ]; then
+#    echo "There are uncommitted changes. Commit or stash them before running this script"
+#    exit 1
+#fi
 
 # for each repository name in arguments
 for REPO in "$@"
@@ -36,13 +36,13 @@ do
 
     # discover default branch name
     BRANCH=$(git remote show "$REMOTE" | grep 'HEAD branch' | cut -d' ' -f5)
-    echo "Discovered default branch $BRANCH"
-    git fetch "$REMOTE" "$BRANCH"
+    #echo "Discovered default branch $BRANCH"
+    #git fetch "$REMOTE" "$BRANCH"
 
     # add subtree for the remote
-    PREFIX="${SUBTREE_PREFIX_TEMPLATE//<repo>/$REPO}"
-    echo "Adding subtree $PREFIX"
-    git subtree add --prefix "$PREFIX" "$REMOTE/$BRANCH"
+    #PREFIX="${SUBTREE_PREFIX_TEMPLATE//<repo>/$REPO}"
+    #echo "Adding subtree $PREFIX"
+    #git subtree add --prefix "$PREFIX" "$REMOTE/$BRANCH"
 
     # carry over tags to the new repository
     git ls-remote --tags $REMOTE | grep '{}' | sed 's|refs/tags/||' | sed 's|\^{}||' > tags.txt
@@ -51,8 +51,8 @@ do
         echo "Creating tag $REMOTE-$tag" on commit $COMMIT
         # Create a new tag in the monorepo using the original tag's commit
         git tag -a "$REMOTE-$tag" -m "$REMOTE-$tag" "$COMMIT"
+        git push origin "$REMOTE-$tag"
     done
-    git push origin --tags
 
     # cleanup: remove remote
     git remote remove "$REMOTE"
