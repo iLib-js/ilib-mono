@@ -19,8 +19,8 @@
         "locale",
         "tmx"
     ],
-    "homepage": "https://github.com/iLib-js/tmxtool",
-    "bugs": "https://github.com/iLib-js/tmxtool/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/tmxtool",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "ehoogerbeets@gmail.com",
     "license": "Apache-2.0",
     "author": {
@@ -46,7 +46,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/tmxtool.git"
+        "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "engines": {
         "node": ">= 14.0.0"

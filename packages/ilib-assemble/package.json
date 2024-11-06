@@ -18,8 +18,8 @@
         "data",
         "locale"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-assemble",
-    "bugs": "https://github.com/iLib-js/ilib-assemble/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-assemble",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "ehoogerbeets@gmail.com",
     "license": "Apache-2.0",
     "author": {
@@ -45,7 +45,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-assemble.git"
+        "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "scripts": {
         "dist": "npm pack",
