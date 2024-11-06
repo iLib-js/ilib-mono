@@ -3,6 +3,7 @@ Release Notes
 
 ### v2.6.0
 
+- fixed a bug where the results were not formatted properly when using the ansi-console-formatter
 - added XliffSerializer, LineSerializer, and StringSerializer classes generate the
   text of modified files
     - not used yet -- this is in preparation for the implementation of autofixing
