@@ -1,0 +1,168 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://github.com/ilib-js/arrays.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "$defs": {
+        "array-item-type": {
+            "type": "object",
+            "required": ["_text"],
+            "properties": {
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "strings-array-type" : {
+            "type": "object",
+            "title": "Array of strings schema",
+            "localizable": true,
+            "localizableType": "array",
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        }
+                    }
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-item-type"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "properties": {
+        "resources": {
+            "type": "object",
+            "properties": {
+                "strings": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/strings-array-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/strings-array-type"
+                        }
+                    ]
+                },
+                "numbers": {
+                    "type": "object",
+                    "title": "Array of numbers schema",
+                    "localizable": true,
+                    "localizableType": "array",
+                    "properties": {
+                        "_attributes": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "key": "_value"
+                                    }
+                                }
+                            }
+                        },
+                         "item": {
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/array-item-type"
+                                    }
+                                },
+                                {
+                                    "$ref": "#/$defs/array-item-type"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "booleans": {
+                    "type": "object",
+                    "title": "Array of booleans schema",
+                    "localizable": true,
+                    "localizableType": "array",
+                    "properties": {
+                        "_attributes": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "key": "_value"
+                                    }
+                                }
+                            }
+                        },
+                        "item": {
+                            "anyOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/array-item-type"
+                                    }
+                                },
+                                {
+                                    "$ref": "#/$defs/array-item-type"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "objects": {
+                    "type": "array",
+                    "title": "Array of objects schema",
+                    "localizableType": "array",
+                    "properties": {
+                        "_attributes": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "key": "_value"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "localizable": true
+                            },
+                            "description": {
+                                "type": "string",
+                                "localizable": true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
