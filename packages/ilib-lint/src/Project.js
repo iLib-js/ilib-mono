@@ -56,6 +56,20 @@ const unknownFileTypeDefinition = {
 };
 
 /**
+ * Return true if the given method name is a method that is
+ * defined in the class itself and not inherited from a parent
+ * class.
+ *
+ * @private
+ * @param {Object} instance the instance to check
+ * @param {String} methodName the name of the method to check
+ * @returns {boolean} true if the method is defined in the class itself
+ */
+function isOwnMethod(instance, methodName) {
+    return typeof(instance[methodName]) === 'function' && instance[methodName].prototype === instance;
+}
+
+/**
  * @class Represent an ilin-lint project.
  *
  * A project is defined as a root directory and a configuration that
@@ -596,7 +610,7 @@ class Project extends DirItem {
             maxFractionDigits: 2
         });
         const score = this.getScore();
-        if (typeof (this.formatter.formatOutput) === "function") {
+        if (isOwnMethod(this.formatter, "formatOutput")) {
             resultAll = this.formatter.formatOutput({
                 name: this.options.opt.name || this.project.name,
                 fileStats: this.fileStats,
