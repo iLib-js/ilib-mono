@@ -29,14 +29,14 @@ do
     URL="${URL_TEMPLATE//<repo>/$REPO}"
     echo "Git URL $URL"
 
-    # discover default branch name
-    BRANCH=$(git ls-remote --heads "$URL" | grep -oP 'refs/heads/\K.*' | head -n 1)
-    echo "Discovered default branch $BRANCH"
-
     # add remote to the monorepo
     REMOTE="$REPO"
     echo "Adding remote $REMOTE"
     git remote add "$REMOTE" "$URL"
+
+    # discover default branch name
+    BRANCH=$(git remote show "$REMOTE" | grep 'HEAD branch' | cut -d' ' -f5)
+    echo "Discovered default branch $BRANCH"
     git fetch "$REMOTE" "$BRANCH"
 
     # add subtree for the remote
