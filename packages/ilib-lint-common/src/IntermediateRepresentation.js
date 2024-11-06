@@ -36,9 +36,9 @@ class IntermediateRepresentation {
      */
     constructor(params) {
         const requiredFields = ["type", "ir", "sourceFile"];
-        const missing = requiredFields.filter(field => undefined === params[field]);
+        const missing = requiredFields.filter(field => undefined === params?.[field]);
         if (missing.length) {
-            throw new Error("Missing required parameters in the IntermediateRepresentation constructor: " + missing.join(", "));
+            throw new Error(`Missing required parameters in the IntermediateRepresentation constructor: ${missing.join(", ")}`);
         }
 
         this.type = params.type;
@@ -47,7 +47,7 @@ class IntermediateRepresentation {
         this.stats = params.stats;
     }
 
-    /** 
+    /**
      * A unique name for this type of representation
      * @type {string}
      * @readonly
@@ -63,7 +63,7 @@ class IntermediateRepresentation {
         return this.type;
     }
 
-    /** 
+    /**
      * Representation that was parsed from the file
      * @type {any}
      */
@@ -95,7 +95,7 @@ class IntermediateRepresentation {
         return this.sourceFile;
     }
 
-    /** 
+    /**
      * Statistics about the file that was parsed
      * @type {FileStats | undefined}
      * @readonly

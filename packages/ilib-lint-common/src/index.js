@@ -20,6 +20,8 @@
 import FileStats from './FileStats.js';
 import Formatter from './Formatter.js';
 import Parser from './Parser.js';
+import Transformer from './Transformer.js';
+import Serializer from './Serializer.js';
 import Plugin from './Plugin.js';
 import Result from './Result.js';
 import Rule from './Rule.js';
@@ -34,6 +36,8 @@ export {
     FileStats,
     Formatter,
     Parser,
+    Transformer,
+    Serializer,
     Plugin,
     Result,
     Rule,

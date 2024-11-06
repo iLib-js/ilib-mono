@@ -1,0 +1,3530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Global - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnsiConsoleFormatter.html">AnsiConsoleFormatter</a><ul class='methods'><li data-type='method'><a href="AnsiConsoleFormatter.html#format">format</a></li></ul></li><li><a href="BuiltinPlugin.html">BuiltinPlugin</a><ul class='methods'><li data-type='method'><a href="BuiltinPlugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="BuiltinPlugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRules">getRules</a></li><li data-type='method'><a href="BuiltinPlugin.html#getSerializers">getSerializers</a></li></ul></li><li><a href="ConfigBasedFormatter.html">ConfigBasedFormatter</a><ul class='methods'><li data-type='method'><a href="ConfigBasedFormatter.html#format">format</a></li></ul></li><li><a href="DeclarativeResourceRule.html">DeclarativeResourceRule</a><ul class='methods'><li data-type='method'><a href="DeclarativeResourceRule.html#checkString">checkString</a></li><li data-type='method'><a href="DeclarativeResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="DirItem.html">DirItem</a><ul class='methods'><li data-type='method'><a href="DirItem.html#findIssues">findIssues</a></li><li data-type='method'><a href="DirItem.html#getFilePath">getFilePath</a></li><li data-type='method'><a href="DirItem.html#parse">parse</a></li></ul></li><li><a href="FileConfigurationProvider.html">FileConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FileConfigurationProvider.html#loadJsConfiguration">loadJsConfiguration</a></li><li data-type='method'><a href="FileConfigurationProvider.html#loadJsonConfiguration">loadJsonConfiguration</a></li></ul></li><li><a href="FileType.html">FileType</a><ul class='methods'><li data-type='method'><a href="FileType.html#getParserClasses">getParserClasses</a></li><li data-type='method'><a href="FileType.html#getRuleSetNames">getRuleSetNames</a></li><li data-type='method'><a href="FileType.html#getRules">getRules</a></li></ul></li><li><a href="FixerManager.html">FixerManager</a><ul class='methods'><li data-type='method'><a href="FixerManager.html#add">add</a></li><li data-type='method'><a href="FixerManager.html#get">get</a></li><li data-type='method'><a href="FixerManager.html#size">size</a></li></ul></li><li><a href="FolderConfigurationProvider.html">FolderConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FolderConfigurationProvider.html#hasConfigurationFile">hasConfigurationFile</a></li></ul></li><li><a href="FormatterManager.html">FormatterManager</a><ul class='methods'><li data-type='method'><a href="FormatterManager.html#add">add</a></li><li data-type='method'><a href="FormatterManager.html#get">get</a></li><li data-type='method'><a href="FormatterManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="FormatterManager.html#size">size</a></li></ul></li><li><a href="LineParser.html">LineParser</a><ul class='methods'><li data-type='method'><a href="LineParser.html#parse">parse</a></li></ul></li><li><a href="LineRegexpChecker.html">LineRegexpChecker</a><ul class='methods'><li data-type='method'><a href="LineRegexpChecker.html#match">match</a></li></ul></li><li><a href="LineSerializer.html">LineSerializer</a><ul class='methods'><li data-type='method'><a href="LineSerializer.html#serialize">serialize</a></li></ul></li><li><a href="LintableFile.html">LintableFile</a><ul class='methods'><li data-type='method'><a href="LintableFile.html#findIssues">findIssues</a></li><li data-type='method'><a href="LintableFile.html#getIRs">getIRs</a></li><li data-type='method'><a href="LintableFile.html#getLocaleFromPath">getLocaleFromPath</a></li><li data-type='method'><a href="LintableFile.html#getStats">getStats</a></li><li data-type='method'><a href="LintableFile.html#parse">parse</a></li></ul></li><li><a href="ParserManager.html">ParserManager</a><ul class='methods'><li data-type='method'><a href="ParserManager.html#add">add</a></li><li data-type='method'><a href="ParserManager.html#get">get</a></li><li data-type='method'><a href="ParserManager.html#getByName">getByName</a></li><li data-type='method'><a href="ParserManager.html#getDescriptions">getDescriptions</a></li></ul></li><li><a href="PluginManager.html">PluginManager</a><ul class='methods'><li data-type='method'><a href="PluginManager.html#add">add</a></li><li data-type='method'><a href="PluginManager.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="PluginManager.html#getFormatterManager">getFormatterManager</a></li><li data-type='method'><a href="PluginManager.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleSet">getRuleSet</a></li><li data-type='method'><a href="PluginManager.html#load">load</a></li></ul></li><li><a href="Project.html">Project</a><ul class='methods'><li data-type='method'><a href="Project.html#add">add</a></li><li data-type='method'><a href="Project.html#findIssues">findIssues</a></li><li data-type='method'><a href="Project.html#get">get</a></li><li data-type='method'><a href="Project.html#getExcludes">getExcludes</a></li><li data-type='method'><a href="Project.html#getFileType">getFileType</a></li><li data-type='method'><a href="Project.html#getFileTypeForPath">getFileTypeForPath</a></li><li data-type='method'><a href="Project.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="Project.html#getIncludes">getIncludes</a></li><li data-type='method'><a href="Project.html#getLocales">getLocales</a></li><li data-type='method'><a href="Project.html#getName">getName</a></li><li data-type='method'><a href="Project.html#getOptions">getOptions</a></li><li data-type='method'><a href="Project.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="Project.html#getPluginManager">getPluginManager</a></li><li data-type='method'><a href="Project.html#getRoot">getRoot</a></li><li data-type='method'><a href="Project.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="Project.html#getScore">getScore</a></li><li data-type='method'><a href="Project.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Project.html#init">init</a></li><li data-type='method'><a href="Project.html#run">run</a></li><li data-type='method'><a href="Project.html#scan">scan</a></li></ul></li><li><a href="ResourceCompleteness.html">ResourceCompleteness</a><ul class='methods'><li data-type='method'><a href="ResourceCompleteness.html#matchString">matchString</a></li></ul></li><li><a href="ResourceDNTTerms.html">ResourceDNTTerms</a><ul class='methods'><li data-type='method'><a href="ResourceDNTTerms.html#matchString">matchString</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromJsonFile">parseTermsFromJsonFile</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromTxtFile">parseTermsFromTxtFile</a></li></ul></li><li><a href="ResourceEdgeWhitespace.html">ResourceEdgeWhitespace</a><ul class='methods'><li data-type='method'><a href="ResourceEdgeWhitespace.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPluralTranslation.html">ResourceICUPluralTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceICUPluralTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPlurals.html">ResourceICUPlurals</a></li><li><a href="ResourceMatcher.html">ResourceMatcher</a><ul class='methods'><li data-type='method'><a href="ResourceMatcher.html#checkString">checkString</a></li></ul></li><li><a href="ResourceNoTranslation.html">ResourceNoTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceNoTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceQuoteStyle.html">ResourceQuoteStyle</a><ul class='methods'><li data-type='method'><a href="ResourceQuoteStyle.html#matchString">matchString</a></li></ul></li><li><a href="ResourceRule.html">ResourceRule</a><ul class='methods'><li data-type='method'><a href="ResourceRule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="ResourceRule.html#match">match</a></li><li data-type='method'><a href="ResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceChecker.html">ResourceSourceChecker</a><ul class='methods'><li data-type='method'><a href="ResourceSourceChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceSourceICUPluralCategories.html">ResourceSourceICUPluralCategories</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralCategories.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralParams.html">ResourceSourceICUPluralParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralSyntax.html">ResourceSourceICUPluralSyntax</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralSyntax.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUUnexplainedParams.html">ResourceSourceICUUnexplainedParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUUnexplainedParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceStateChecker.html">ResourceStateChecker</a><ul class='methods'><li data-type='method'><a href="ResourceStateChecker.html#match">match</a></li></ul></li><li><a href="ResourceTargetChecker.html">ResourceTargetChecker</a><ul class='methods'><li data-type='method'><a href="ResourceTargetChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceUniqueKeys.html">ResourceUniqueKeys</a><ul class='methods'><li data-type='method'><a href="ResourceUniqueKeys.html#match">match</a></li></ul></li><li><a href="ResourceXML.html">ResourceXML</a><ul class='methods'><li data-type='method'><a href="ResourceXML.html#matchString">matchString</a></li></ul></li><li><a href="RuleManager.html">RuleManager</a><ul class='methods'><li data-type='method'><a href="RuleManager.html#add">add</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinition">addRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinitions">addRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#get">get</a></li><li data-type='method'><a href="RuleManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinition">getRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinitions">getRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#getRules">getRules</a></li><li data-type='method'><a href="RuleManager.html#size">size</a></li><li data-type='method'><a href="RuleManager.html#sizeRuleSetDefinitions">sizeRuleSetDefinitions</a></li></ul></li><li><a href="RuleSet.html">RuleSet</a><ul class='methods'><li data-type='method'><a href="RuleSet.html#add">add</a></li><li data-type='method'><a href="RuleSet.html#addRule">addRule</a></li><li data-type='method'><a href="RuleSet.html#getRule">getRule</a></li><li data-type='method'><a href="RuleSet.html#getRules">getRules</a></li><li data-type='method'><a href="RuleSet.html#getSize">getSize</a></li><li data-type='method'><a href="RuleSet.html#removeRule">removeRule</a></li></ul></li><li><a href="SourceRegexpChecker.html">SourceRegexpChecker</a><ul class='methods'><li data-type='method'><a href="SourceRegexpChecker.html#match">match</a></li></ul></li><li><a href="StringFixCommand_StringFixCommand.html">StringFixCommand</a></li><li><a href="StringParser.html">StringParser</a><ul class='methods'><li data-type='method'><a href="StringParser.html#parse">parse</a></li><li data-type='method'><a href="StringParser.html#write">write</a></li></ul></li><li><a href="StringSerializer.html">StringSerializer</a><ul class='methods'><li data-type='method'><a href="StringSerializer.html#serialize">serialize</a></li></ul></li><li><a href="XliffParser.html">XliffParser</a><ul class='methods'><li data-type='method'><a href="XliffParser.html#parse">parse</a></li></ul></li><li><a href="XliffSerializer.html">XliffSerializer</a><ul class='methods'><li data-type='method'><a href="XliffSerializer.html#serialize">serialize</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="ConfigurationProvider.html">ConfigurationProvider</a></li><li><a href="ConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FileConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FolderConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DeclarativeRuleTypes">DeclarativeRuleTypes</a></li><li><a href="global.html#ResultComparator">ResultComparator</a></li><li><a href="global.html#concatIntlAstText">concatIntlAstText</a></li><li><a href="global.html#defaultConfiguration">defaultConfiguration</a></li><li><a href="global.html#severity">severity</a></li><li><a href="global.html#typeMap">typeMap</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Global</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="DeclarativeRuleTypes"><span class="type-signature type-signature-constant">(constant) </span>DeclarativeRuleTypes<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Allowed types of a declarative rule</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_Configuration.js.html">config/Configuration.js</a>, <a href="config_Configuration.js.html#line122">line 122</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Allowed types of a declarative rule
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="defaultConfiguration"><span class="type-signature type-signature-constant">(constant) </span>defaultConfiguration<span class="type-signature"> :<a href="global.html#Configuration">Configuration</a></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_default.js.html">config/default.js</a>, <a href="config_default.js.html#line21">line 21</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Configuration">Configuration</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="severity"><span class="type-signature"></span>severity<span class="type-signature"> :<a href="global.html#Severity">Severity</a></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line184">line 184</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Severity">Severity</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="typeMap"><span class="type-signature type-signature-constant">(constant) </span>typeMap<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Map the types in the declarative rules to a Rule subclass that handles
+that type.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="RuleManager.js.html">RuleManager.js</a>, <a href="RuleManager.js.html#line38">line 38</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Map the types in the declarative rules to a Rule subclass that handles
+that type.
+</div>
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="ResultComparator"><span class="type-signature"></span>ResultComparator<span class="signature">(-1)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Compare two Result instances:
+
+1. alphabetically by source file path
+2. numerically by line number within the source file</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ResultComparator.js.html">ResultComparator.js</a>, <a href="ResultComparator.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>-1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if left comes first, 1 if right comes first,
+and 0 if they are equal</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="concatIntlAstText"><span class="type-signature"></span>concatIntlAstText<span class="signature">(astElements)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_utils.js.html">rules/utils.js</a>, <a href="rules_utils.js.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>astElements</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id="Configuration">Configuration</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Configuration for a project</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_Configuration.js.html">config/Configuration.js</a>, <a href="config_Configuration.js.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Name of this project</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>locales</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">That name the default set of locales for the
+  whole project if they are not configured by each path</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sourceLocale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>"en-US"</code>
+                
+                </td>
+            
+
+            <td class="description last">Name the locale for source strings
+  in this app. Default if not specified is "en-US". Default is `"en-US"`</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>excludes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">An array of micromatch expressions for files
+  or folders in the project to exclude from the recursive search.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rules</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#DeclarativeRuleDefinition">DeclarativeRuleDefinition</a>></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">An array of declarative
+  regular-expression-based rules to use with this project</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>formatters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#DeclarativeFormatterDefinition">DeclarativeFormatterDefinition</a>></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">An array of
+  declarative output formatters</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rulesets</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Record.&lt;string, <a href="global.html#Ruleset">Ruleset</a>></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Named sets of rules. Some
+  rules can be shared between file types and others are more specific to the
+  file type. As such, it is sometimes convenient to to name a set of rules
+  and refer to the whole set by its name instead of listing them all out.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filetypes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Record.&lt;string, <a href="global.html#Filetype">Filetype</a>></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">A set of configurations for
+  various file types. The file types are given dash-separated names such as
+  "python-source-files" so that they can be referred to in the paths object
+  below. Properties in the filetypes object are the name of the file type,
+  and the values are an object that gives the settings for that file type</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>paths</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Record.&lt;string, (string|<a href="global.html#Filetype">Filetype</a>)></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">This maps sets of files
+  to file types. The properties in this object are
+  [micromatch](https://github.com/micromatch/micromatch) glob expressions
+  that select a subset of files within the current project. The glob
+  expressions can only be relative to the root of the project. The value of
+  each glob expression property should be either a string that names a file
+  type for files that match the glob expression, or an on-the-fly unnamed
+  definition of the file type. If you specify the file type directly, it
+  cannot be shared with other mappings, so it is usually a good idea to
+  define a named file type in the "filetypes" property first.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autofix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<div class="description usertext">
+    Configuration for a project
+</div>
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Configuration">Configuration</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Parameters that can be set through rule configuration file.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line80">line 80</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Parameters that can be set through rule configuration file.
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Modes">Modes</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="DeclarativeFormatterDefinition">DeclarativeFormatterDefinition</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_Configuration.js.html">config/Configuration.js</a>, <a href="config_Configuration.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A unique name for this formatter</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>description</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A description of this formatter to show to
+  users</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>template</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A template string that shows how the various
+  fields of a Result instance should be formatted, plus two extras that come
+  from the rule: ruleName and ruleDescription</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>highlightStart</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String to use as the highlight starting
+  marker in the highlight string</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>highlightEnd</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String to use as the highlight ending marker
+  in the highlight string</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="DeclarativeRuleDefinition">DeclarativeRuleDefinition</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_Configuration.js.html">config/Configuration.js</a>, <a href="config_Configuration.js.html#line95">line 95</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">DeclarativeRuleType</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The type of this rule</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A unique dash-separated name of this rule. eg.
+  "resource-url-match"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>description</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A description of what this rule is trying to
+  do. eg. "Ensure that URLs that appear in the source string are also used in
+  the translated string"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>note</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">String to use when the regular expression check
+  fails. eg. "URL '{matchString}' from the source string does not appear in
+  the target string". Note that you can use `{matchString}` to show the user
+  the string that the regular expression matched in the source but not in the
+  target.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>regexps</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An array of regular expressions to match in the
+  source and target strings. If any one of those expressions matches in the
+  source, but not the target, the rule will create a Result that will be
+  formatted for the user.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>link</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The URL to a web page that explains this rule in
+  more detail</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="ExplicitTerms">ExplicitTerms</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceDNTTerms.js.html">rules/ResourceDNTTerms.js</a>, <a href="rules_ResourceDNTTerms.js.html#line40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>terms</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Explicit list of DNT terms to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="ExtendedRegExpCollection">ExtendedRegExpCollection</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>quotesAll</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RegExp</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quotesAllAlt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RegExp</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>nonQuoteChars</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>nonQuoteCharsAlt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="FileTerms">FileTerms</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceDNTTerms.js.html">rules/ResourceDNTTerms.js</a>, <a href="rules_ResourceDNTTerms.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>termsFilePath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Path to DNT terms file (either absolute or relative to current working directory)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>termsFileType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">"json"</span>
+|
+
+<span class="param-type">"txt"</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Determines how DNT file should be parsed - either as JSON or as TXT with one term per line</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Filetype">Filetype</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_Configuration.js.html">config/Configuration.js</a>, <a href="config_Configuration.js.html#line80">line 80</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>template</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A template that can be used to parse the file
+  name for the locale of that file.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>locales</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A set of locales that override the global
+  locales list. If not specified, the file type uses the global set of
+  locales.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ruleset</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type"><a href="global.html#Ruleset">Ruleset</a></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name the rule set or list of
+  rule sets to use with files of this type if the value is a string or an
+  array of strings. When the value is a list of strings, the rules are a
+  superset of all of the rules in the named rule sets. If the value is an
+  object, then it is considered to be an on-the-fly unnamed rule set defined
+  directly.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="FixerClass">FixerClass</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Constructor of Fixer or its subclass</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="FixerManager.js.html">FixerManager.js</a>, <a href="FixerManager.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Constructor of Fixer or its subclass
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Class</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="FixerRegistry">FixerRegistry</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="FixerManager.js.html">FixerManager.js</a>, <a href="FixerManager.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object.&lt;string, <a href="global.html#RegisteredFixerEntry">RegisteredFixerEntry</a>></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="ModeLocaleOnly">ModeLocaleOnly</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Allow only localized quotes in the target string. This also sets default result severity to "error".</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Allow only localized quotes in the target string. This also sets default result severity to "error".
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">"localeOnly"</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Modes">Modes</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>One-param rule configuration.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line74">line 74</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    One-param rule configuration.
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#ModeLocaleOnly">ModeLocaleOnly</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="RegExpCollectionForLocale">RegExpCollectionForLocale</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line51">line 51</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>quotesAscii</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RegExp</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quotesAsciiAlt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RegExp</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#SourceRegExpCollection">SourceRegExpCollection</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">TargetRegExpCollection</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="RegisteredFixerEntry">RegisteredFixerEntry</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="FixerManager.js.html">FixerManager.js</a>, <a href="FixerManager.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>class</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#FixerClass">FixerClass</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Subclass of the Fixer (class, not an instance)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Ruleset">Ruleset</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Some rules can be shared between file
+  types and others are more specific to the file type. As such, it is
+  sometimes convenient to to name a set of rules and refer to the whole set
+  by its name instead of listing them all out. Ruleset is an object that
+  configures each rule that should be included in that set. The rules are
+  turned on with a value "true" or with a rule-specific option. They are
+  turned off with a falsy value.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_Configuration.js.html">config/Configuration.js</a>, <a href="config_Configuration.js.html#line70">line 70</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Some rules can be shared between file
+  types and others are more specific to the file type. As such, it is
+  sometimes convenient to to name a set of rules and refer to the whole set
+  by its name instead of listing them all out. Ruleset is an object that
+  configures each rule that should be included in that set. The rules are
+  turned on with a value "true" or with a rule-specific option. They are
+  turned off with a falsy value.
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Record.&lt;string, any></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Severity">Severity</h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Result severity.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Result severity.
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">"error"</span>
+|
+
+<span class="param-type">"warning"</span>
+|
+
+<span class="param-type">"suggestion"</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="SourceRegExpCollection">SourceRegExpCollection</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rules_ResourceQuoteStyle.js.html">rules/ResourceQuoteStyle.js</a>, <a href="rules_ResourceQuoteStyle.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>quoteStart</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quoteStartAlt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quoteEnd</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quoteEndAlt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quotesNative</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RegExp</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>quotesNativeAlt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RegExp</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Mon Nov 04 2024 13:25:20 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

@@ -18,7 +18,7 @@
  */
 
 import { ResourceXliff } from 'ilib-tools-common';
-import { FileStats, Parser, IntermediateRepresentation } from 'ilib-lint-common';
+import { FileStats, Parser, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
 /**
  * @class Parser for XLIFF files based on the ilib-xliff library.
@@ -32,11 +32,16 @@ class XliffParser extends Parser {
         super(options);
         this.extensions = [ "xliff", "xlif", "xlf" ];
         this.name = "xliff";
-        this.description = "A parser for xliff files. This can handle xliff v1.2 and v2.0 format files."
+        this.description = "A parser for xliff files. This can handle xliff v1.2 and v2.0 format files.";
+
+        // indicate that this parser can write out the intermediate representation if it has been modified
+        // by the linter through a Fixer or by a transformer
+        this.canWrite = true;
     }
 
     /**
      * Parse the current file into an intermediate representation.
+     * @override
      * @param {SourceFile} sourceFile the file to be parsed
      * @returns {Array.<IntermediateRepresentation>} the intermediate representations of
      * the source file
@@ -68,6 +73,6 @@ class XliffParser extends Parser {
     getExtensions() {
         return this.extensions;
     }
-};
+}
 
 export default XliffParser;

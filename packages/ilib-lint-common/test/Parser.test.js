@@ -18,17 +18,70 @@
  */
 
 import Parser from '../src/Parser.js';
+import IntermediateRepresentation from '../src/IntermediateRepresentation.js';
+import SourceFile from '../src/SourceFile.js';
 
-class MockParser extends Parser {
-    constructor() {
-        super();
-        this.name = "mock";
-        this.extensions = [ "x", "y", "z" ];
-        this.description = "A mock parser that doesn't really do a whole heck of a lot of anything.";
+import {describe, expect, test} from '@jest/globals';
+
+/**
+ * @jest-environment node
+ */
+
+/** A mock parser that doesn't actually read anything from disk or parse anything. */
+class MockSourceFile extends SourceFile {
+    constructor(path, options) {
+        super(path, options ?? { getLogger: () => { } });
+        this.content = "This is a test";
+        this.dirty = false;
     }
 
+    getContent() {
+        return this.content;
+    }
+
+    getPath() {
+        return this.filePath;
+    }
+
+    getRaw() {
+        return Buffer.from(this.content);
+    }
+
+    isDirty() {
+        return this.dirty;
+    }
+
+    write() {
+        this.dirty = false;
+        return true;
+    }
+}
+
+class TestParser extends Parser {
+    constructor() {
+        super();
+        this.name = "test";
+        this.extensions = [ "x", "y", "z" ];
+        this.description = "A test parser that doesn't really do a whole heck of a lot of anything.";
+    }
+
+    // @override
     getType() {
         return "ast";
+    }
+
+    /**
+     * @param {SourceFile} sourceFile
+     * @returns {IntermediateRepresentation[]}
+     */
+    parse(sourceFile) {
+        // does not actually parse anything
+        const content = sourceFile.getContent();
+        return [new IntermediateRepresentation({
+            type: "resource",
+            ir: content,
+            sourceFile
+        })];
     }
 }
 
@@ -36,7 +89,7 @@ describe("testParser", () => {
     test("ParserNormal", () => {
         expect.assertions(1);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
     });
@@ -52,27 +105,27 @@ describe("testParser", () => {
     test("ParserGetName", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
-        expect(parser.getName()).toBe("mock");
+        expect(parser.getName()).toBe("test");
     });
 
     test("ParserGetDescription", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
-        expect(parser.getDescription()).toBe("A mock parser that doesn't really do a whole heck of a lot of anything.");
+        expect(parser.getDescription()).toBe("A test parser that doesn't really do a whole heck of a lot of anything.");
     });
 
     test("ParserGetExtensions", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
@@ -82,21 +135,25 @@ describe("testParser", () => {
     test("ParserGetType", () => {
         expect.assertions(2);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
 
         expect(parser).toBeTruthy();
 
         expect(parser.getType()).toBe("ast");
     });
 
-    test("ParserGetCanWrite", () => {
-        expect.assertions(2);
+    test("Parsing a file", () => {
+        expect.assertions(4);
 
-        const parser = new MockParser();
+        const parser = new TestParser();
+        const sourceFile = new MockSourceFile("test/testfiles/xliff/test.xliff");
 
-        expect(parser).toBeTruthy();
-
-        expect(parser.canWrite).toBe(false);
+        const irArray = parser.parse(sourceFile);
+        expect(irArray).toBeTruthy();
+        expect(irArray.length).toBe(1);
+        const ir = irArray[0];
+        expect(ir).toBeTruthy();
+        expect(ir.getRepresentation()).toBe("This is a test");
     });
 });
 

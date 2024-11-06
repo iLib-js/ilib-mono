@@ -20,8 +20,11 @@
 
 import { Plugin } from 'ilib-lint-common';
 import XliffParser from './XliffParser.js';
+import XliffSerializer from './XliffSerializer.js';
 import LineParser from './LineParser.js';
+import LineSerializer from './LineSerializer.js';
 import StringParser from './string/StringParser.js';
+import StringSerializer from './string/StringSerializer.js';
 import AnsiConsoleFormatter from '../formatters/AnsiConsoleFormatter.js';
 import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
 import ResourceICUPluralTranslation from '../rules/ResourceICUPluralTranslation.js';
@@ -318,6 +321,17 @@ class BuiltinPlugin extends Plugin {
      */
     getParsers() {
         return [XliffParser, LineParser, StringParser];
+    }
+
+    /**
+     * For a "serializer" type of plugin, this returns a list of Serializer classes
+     * that this plugin implements.
+     *
+     * @returns {Array.<Parser>} list of Serializer classes implemented by this
+     * plugin
+     */
+    getSerializers() {
+        return [XliffSerializer, LineSerializer, StringSerializer];
     }
 
     /**

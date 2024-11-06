@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>rules/ResourceICUPlurals.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnsiConsoleFormatter.html">AnsiConsoleFormatter</a><ul class='methods'><li data-type='method'><a href="AnsiConsoleFormatter.html#format">format</a></li></ul></li><li><a href="BuiltinPlugin.html">BuiltinPlugin</a><ul class='methods'><li data-type='method'><a href="BuiltinPlugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="BuiltinPlugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="BuiltinPlugin.html#getRules">getRules</a></li><li data-type='method'><a href="BuiltinPlugin.html#getSerializers">getSerializers</a></li></ul></li><li><a href="ConfigBasedFormatter.html">ConfigBasedFormatter</a><ul class='methods'><li data-type='method'><a href="ConfigBasedFormatter.html#format">format</a></li></ul></li><li><a href="DeclarativeResourceRule.html">DeclarativeResourceRule</a><ul class='methods'><li data-type='method'><a href="DeclarativeResourceRule.html#checkString">checkString</a></li><li data-type='method'><a href="DeclarativeResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="DirItem.html">DirItem</a><ul class='methods'><li data-type='method'><a href="DirItem.html#findIssues">findIssues</a></li><li data-type='method'><a href="DirItem.html#getFilePath">getFilePath</a></li><li data-type='method'><a href="DirItem.html#parse">parse</a></li></ul></li><li><a href="FileConfigurationProvider.html">FileConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FileConfigurationProvider.html#loadJsConfiguration">loadJsConfiguration</a></li><li data-type='method'><a href="FileConfigurationProvider.html#loadJsonConfiguration">loadJsonConfiguration</a></li></ul></li><li><a href="FileType.html">FileType</a><ul class='methods'><li data-type='method'><a href="FileType.html#getParserClasses">getParserClasses</a></li><li data-type='method'><a href="FileType.html#getRuleSetNames">getRuleSetNames</a></li><li data-type='method'><a href="FileType.html#getRules">getRules</a></li></ul></li><li><a href="FixerManager.html">FixerManager</a><ul class='methods'><li data-type='method'><a href="FixerManager.html#add">add</a></li><li data-type='method'><a href="FixerManager.html#get">get</a></li><li data-type='method'><a href="FixerManager.html#size">size</a></li></ul></li><li><a href="FolderConfigurationProvider.html">FolderConfigurationProvider</a><ul class='methods'><li data-type='method'><a href="FolderConfigurationProvider.html#hasConfigurationFile">hasConfigurationFile</a></li></ul></li><li><a href="FormatterManager.html">FormatterManager</a><ul class='methods'><li data-type='method'><a href="FormatterManager.html#add">add</a></li><li data-type='method'><a href="FormatterManager.html#get">get</a></li><li data-type='method'><a href="FormatterManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="FormatterManager.html#size">size</a></li></ul></li><li><a href="LineParser.html">LineParser</a><ul class='methods'><li data-type='method'><a href="LineParser.html#parse">parse</a></li></ul></li><li><a href="LineRegexpChecker.html">LineRegexpChecker</a><ul class='methods'><li data-type='method'><a href="LineRegexpChecker.html#match">match</a></li></ul></li><li><a href="LineSerializer.html">LineSerializer</a><ul class='methods'><li data-type='method'><a href="LineSerializer.html#serialize">serialize</a></li></ul></li><li><a href="LintableFile.html">LintableFile</a><ul class='methods'><li data-type='method'><a href="LintableFile.html#findIssues">findIssues</a></li><li data-type='method'><a href="LintableFile.html#getIRs">getIRs</a></li><li data-type='method'><a href="LintableFile.html#getLocaleFromPath">getLocaleFromPath</a></li><li data-type='method'><a href="LintableFile.html#getStats">getStats</a></li><li data-type='method'><a href="LintableFile.html#parse">parse</a></li></ul></li><li><a href="ParserManager.html">ParserManager</a><ul class='methods'><li data-type='method'><a href="ParserManager.html#add">add</a></li><li data-type='method'><a href="ParserManager.html#get">get</a></li><li data-type='method'><a href="ParserManager.html#getByName">getByName</a></li><li data-type='method'><a href="ParserManager.html#getDescriptions">getDescriptions</a></li></ul></li><li><a href="PluginManager.html">PluginManager</a><ul class='methods'><li data-type='method'><a href="PluginManager.html#add">add</a></li><li data-type='method'><a href="PluginManager.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="PluginManager.html#getFormatterManager">getFormatterManager</a></li><li data-type='method'><a href="PluginManager.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="PluginManager.html#getRuleSet">getRuleSet</a></li><li data-type='method'><a href="PluginManager.html#load">load</a></li></ul></li><li><a href="Project.html">Project</a><ul class='methods'><li data-type='method'><a href="Project.html#add">add</a></li><li data-type='method'><a href="Project.html#findIssues">findIssues</a></li><li data-type='method'><a href="Project.html#get">get</a></li><li data-type='method'><a href="Project.html#getExcludes">getExcludes</a></li><li data-type='method'><a href="Project.html#getFileType">getFileType</a></li><li data-type='method'><a href="Project.html#getFileTypeForPath">getFileTypeForPath</a></li><li data-type='method'><a href="Project.html#getFixerManager">getFixerManager</a></li><li data-type='method'><a href="Project.html#getIncludes">getIncludes</a></li><li data-type='method'><a href="Project.html#getLocales">getLocales</a></li><li data-type='method'><a href="Project.html#getName">getName</a></li><li data-type='method'><a href="Project.html#getOptions">getOptions</a></li><li data-type='method'><a href="Project.html#getParserManager">getParserManager</a></li><li data-type='method'><a href="Project.html#getPluginManager">getPluginManager</a></li><li data-type='method'><a href="Project.html#getRoot">getRoot</a></li><li data-type='method'><a href="Project.html#getRuleManager">getRuleManager</a></li><li data-type='method'><a href="Project.html#getScore">getScore</a></li><li data-type='method'><a href="Project.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Project.html#init">init</a></li><li data-type='method'><a href="Project.html#run">run</a></li><li data-type='method'><a href="Project.html#scan">scan</a></li></ul></li><li><a href="ResourceCompleteness.html">ResourceCompleteness</a><ul class='methods'><li data-type='method'><a href="ResourceCompleteness.html#matchString">matchString</a></li></ul></li><li><a href="ResourceDNTTerms.html">ResourceDNTTerms</a><ul class='methods'><li data-type='method'><a href="ResourceDNTTerms.html#matchString">matchString</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromJsonFile">parseTermsFromJsonFile</a></li><li data-type='method'><a href="ResourceDNTTerms.html#.parseTermsFromTxtFile">parseTermsFromTxtFile</a></li></ul></li><li><a href="ResourceEdgeWhitespace.html">ResourceEdgeWhitespace</a><ul class='methods'><li data-type='method'><a href="ResourceEdgeWhitespace.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPluralTranslation.html">ResourceICUPluralTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceICUPluralTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceICUPlurals.html">ResourceICUPlurals</a></li><li><a href="ResourceMatcher.html">ResourceMatcher</a><ul class='methods'><li data-type='method'><a href="ResourceMatcher.html#checkString">checkString</a></li></ul></li><li><a href="ResourceNoTranslation.html">ResourceNoTranslation</a><ul class='methods'><li data-type='method'><a href="ResourceNoTranslation.html#matchString">matchString</a></li></ul></li><li><a href="ResourceQuoteStyle.html">ResourceQuoteStyle</a><ul class='methods'><li data-type='method'><a href="ResourceQuoteStyle.html#matchString">matchString</a></li></ul></li><li><a href="ResourceRule.html">ResourceRule</a><ul class='methods'><li data-type='method'><a href="ResourceRule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="ResourceRule.html#match">match</a></li><li data-type='method'><a href="ResourceRule.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceChecker.html">ResourceSourceChecker</a><ul class='methods'><li data-type='method'><a href="ResourceSourceChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceSourceICUPluralCategories.html">ResourceSourceICUPluralCategories</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralCategories.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralParams.html">ResourceSourceICUPluralParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUPluralSyntax.html">ResourceSourceICUPluralSyntax</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUPluralSyntax.html#matchString">matchString</a></li></ul></li><li><a href="ResourceSourceICUUnexplainedParams.html">ResourceSourceICUUnexplainedParams</a><ul class='methods'><li data-type='method'><a href="ResourceSourceICUUnexplainedParams.html#matchString">matchString</a></li></ul></li><li><a href="ResourceStateChecker.html">ResourceStateChecker</a><ul class='methods'><li data-type='method'><a href="ResourceStateChecker.html#match">match</a></li></ul></li><li><a href="ResourceTargetChecker.html">ResourceTargetChecker</a><ul class='methods'><li data-type='method'><a href="ResourceTargetChecker.html#checkString">checkString</a></li></ul></li><li><a href="ResourceUniqueKeys.html">ResourceUniqueKeys</a><ul class='methods'><li data-type='method'><a href="ResourceUniqueKeys.html#match">match</a></li></ul></li><li><a href="ResourceXML.html">ResourceXML</a><ul class='methods'><li data-type='method'><a href="ResourceXML.html#matchString">matchString</a></li></ul></li><li><a href="RuleManager.html">RuleManager</a><ul class='methods'><li data-type='method'><a href="RuleManager.html#add">add</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinition">addRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#addRuleSetDefinitions">addRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#get">get</a></li><li data-type='method'><a href="RuleManager.html#getDescriptions">getDescriptions</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinition">getRuleSetDefinition</a></li><li data-type='method'><a href="RuleManager.html#getRuleSetDefinitions">getRuleSetDefinitions</a></li><li data-type='method'><a href="RuleManager.html#getRules">getRules</a></li><li data-type='method'><a href="RuleManager.html#size">size</a></li><li data-type='method'><a href="RuleManager.html#sizeRuleSetDefinitions">sizeRuleSetDefinitions</a></li></ul></li><li><a href="RuleSet.html">RuleSet</a><ul class='methods'><li data-type='method'><a href="RuleSet.html#add">add</a></li><li data-type='method'><a href="RuleSet.html#addRule">addRule</a></li><li data-type='method'><a href="RuleSet.html#getRule">getRule</a></li><li data-type='method'><a href="RuleSet.html#getRules">getRules</a></li><li data-type='method'><a href="RuleSet.html#getSize">getSize</a></li><li data-type='method'><a href="RuleSet.html#removeRule">removeRule</a></li></ul></li><li><a href="SourceRegexpChecker.html">SourceRegexpChecker</a><ul class='methods'><li data-type='method'><a href="SourceRegexpChecker.html#match">match</a></li></ul></li><li><a href="StringFixCommand_StringFixCommand.html">StringFixCommand</a></li><li><a href="StringParser.html">StringParser</a><ul class='methods'><li data-type='method'><a href="StringParser.html#parse">parse</a></li><li data-type='method'><a href="StringParser.html#write">write</a></li></ul></li><li><a href="StringSerializer.html">StringSerializer</a><ul class='methods'><li data-type='method'><a href="StringSerializer.html#serialize">serialize</a></li></ul></li><li><a href="XliffParser.html">XliffParser</a><ul class='methods'><li data-type='method'><a href="XliffParser.html#parse">parse</a></li></ul></li><li><a href="XliffSerializer.html">XliffSerializer</a><ul class='methods'><li data-type='method'><a href="XliffSerializer.html#serialize">serialize</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="ConfigurationProvider.html">ConfigurationProvider</a></li><li><a href="ConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FileConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li><li><a href="FolderConfigurationProvider_loadConfiguration.html">loadConfiguration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DeclarativeRuleTypes">DeclarativeRuleTypes</a></li><li><a href="global.html#ResultComparator">ResultComparator</a></li><li><a href="global.html#concatIntlAstText">concatIntlAstText</a></li><li><a href="global.html#defaultConfiguration">defaultConfiguration</a></li><li><a href="global.html#severity">severity</a></li><li><a href="global.html#typeMap">typeMap</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">rules/ResourceICUPlurals.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * ResourceICUPlurals.js - rule to check formatjs/ICU style plurals in the target string
+ *
+ * Copyright © 2022-2023 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { IntlMessageFormat } from 'intl-messageformat';
+import Locale from 'ilib-locale';
+import { Result } from 'ilib-lint-common';
+
+import ResourceRule from './ResourceRule.js';
+
+// all the plural categories from CLDR
+const allCategories = ["zero", "one", "two", "few", "many", "other"];
+
+// Map the language to the set of plural categories that the language
+// uses. If the language is not listed below, it uses the default
+// list of plurals: "one" and "other"
+const categoriesForLang = {
+    "ja": [ "other" ],
+    "zh": [ "other" ],
+    "ko": [ "other" ],
+    "th": [ "other" ],
+    "lv": [ "zero", "one", "other" ],
+    "ga": [ "one", "two", "other" ],
+    "ro": [ "one", "few", "other" ],
+    "lt": [ "one", "few", "other" ],
+    "ru": [ "one", "few", "other" ],
+    "uk": [ "one", "few", "other" ],
+    "be": [ "one", "few", "other" ],
+    "sr": [ "one", "few", "other" ],
+    "hr": [ "one", "few", "other" ],
+    "cs": [ "one", "few", "other" ],
+    "sk": [ "one", "few", "other" ],
+    "pl": [ "one", "few", "other" ],
+    "sl": [ "one", "two", "few", "other" ],
+    "ar": [ "zero", "one", "two", "few", "many", "other" ]
+}
+
+/**
+ * @class Represent an ilib-lint rule.
+ */
+class ResourceICUPlurals extends ResourceRule {
+    /**
+     * Make a new rule instance.
+     * @constructor
+     */
+    constructor(options) {
+        super(options);
+        this.name = "resource-icu-plurals";
+        this.description = "Ensure that plurals in translated resources have the correct syntax";
+        this.sourceLocale = (options &amp;&amp; options.sourceLocale) || "en-US";
+        this.link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-icu-plurals.md";
+    }
+
+    matchCategories(sourceSelect, targetSelect, locale, resource) {
+        let problems = [];
+        const srcLocale = new Locale(resource.getSourceLocale());
+
+        // categories that are required according to the language rules
+        let requiredSourceCategories, requiredTargetCategories;
+
+        // categories that actually exist in the select which are required by the language rules
+        let actualRequiredSourceCategories = [], actualRequiredTargetCategories = [];
+
+        // categories that actually exist in the select which are not required by the language rules
+        let actualNonrequiredSourceCategories = [], actualNonrequiredTargetCategories = [];
+
+        if (sourceSelect.node.pluralType === "cardinal") {
+            requiredSourceCategories = categoriesForLang[srcLocale.getLanguage()] || [ "one", "other" ]
+            requiredTargetCategories = categoriesForLang[locale.getLanguage()] || [ "one", "other" ];
+        } else {
+            // for select or selectordinal, only the "other" category is required
+            requiredSourceCategories = [ "other" ];
+            requiredTargetCategories = [ "other" ];
+        }
+
+        const allSourceCategories = Object.keys(sourceSelect.node.options);
+        actualRequiredSourceCategories = allSourceCategories.filter(category => requiredSourceCategories.includes(category));
+        actualNonrequiredSourceCategories = allSourceCategories.filter(category => !requiredSourceCategories.includes(category));
+
+        const allTargetCategories = Object.keys(targetSelect.node.options);
+        actualRequiredTargetCategories = allTargetCategories.filter(category => requiredTargetCategories.includes(category));
+        actualNonrequiredTargetCategories = allTargetCategories.filter(category => !requiredTargetCategories.includes(category));
+
+        // first check the required plural categories
+        let missing = requiredTargetCategories.filter(category => {
+            if (!targetSelect.node.options[category]) {
+                // if the required category doesn't exist in the target, check if it is required
+                // in the source. If it is required in the source and does not exist there, then
+                // there is an error in the source and we don't need to register a result for the
+                // target -- the source needs to be fixed first. If it is required in the source
+                // and exists in the source, then produce a result because it should also be there
+                // in the target. If it is not required in the source, then produce a result because
+                // it is required in the target language and it doesn't matter about the source
+                // language.
+                if (!requiredSourceCategories.includes(category) || sourceSelect.node.options[category]) {
+                    return true;
+                }
+            } else if (sourceSelect.node.options[category]) {
+                // if both the target and source category exists, we can check the
+                // whether the nodes match
+                problems = problems.concat(this.checkNodes(
+                    sourceSelect.node.options[category].value,
+                    targetSelect.node.options[category].value,
+                    locale,
+                    resource
+                ));
+            } else if (category === "few" || category === "many" || category === "two") {
+                // target exists, but source does not -> if it is a plural category,
+                // we can check it against the source "other" category
+                problems = problems.concat(this.checkNodes(
+                    sourceSelect.node.options.other.value,
+                    targetSelect.node.options[category].value,
+                    locale,
+                    resource
+                ));
+            }
+            return false;
+        });
+        if (missing.length) {
+            let opts = {
+                severity: "error",
+                rule: this,
+                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                id: resource.getKey(),
+                highlight: `Target: ${resource.getTarget()}&lt;e0>&lt;/e0>`,
+                pathName: resource.getPath(),
+                source: resource.getSource(),
+                locale: resource.getTargetLocale()
+            };
+            problems.push(new Result(opts));
+        }
+
+        // now deal with the missing non-required categories
+        missing = actualNonrequiredSourceCategories.filter(category => {
+            // if it is in the source, but it is not required, it should also be in the target
+            return !allTargetCategories.includes(category);
+        });
+        if (missing.length) {
+            let opts = {
+                severity: "warning", // non-required categories get a warning
+                rule: this,
+                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                id: resource.getKey(),
+                highlight: `Target: ${resource.getTarget()}&lt;e0>&lt;/e0>`,
+                pathName: resource.getPath(),
+                source: resource.getSource(),
+                locale: resource.getTargetLocale()
+            };
+            problems.push(new Result(opts));
+        }
+
+        // now deal with non-required categories that are in the target but not the source
+        const extra = actualNonrequiredTargetCategories.filter(category => {
+            return !allSourceCategories.includes(category);
+        });
+        if (extra.length) {
+            const highlight = resource.getTarget().replace(new RegExp(`(${extra.join("|")})\\s*\\{`, "g"), "&lt;e0>$1&lt;/e0> {");
+            let opts = {
+                severity: "warning",
+                rule: this,
+                description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                id: resource.getKey(),
+                highlight: `Target: ${highlight}`,
+                pathName: resource.getPath(),
+                source: resource.getSource(),
+                locale: resource.getTargetLocale()
+            };
+            problems.push(new Result(opts));
+        }
+
+        return problems;
+    }
+
+    findSelects(ast) {
+        let selects = {};
+
+        ast.forEach(node => {
+            // selectordinal || plural/select
+            if (node.type === 5 || node.type === 6) {
+                // make sure the name is unique
+                let name = node.value;
+                let index = 0;
+                while (selects[name]) {
+                    name = node.value + index++;
+                }
+                selects[name] = {
+                    node,
+                    categories: Object.keys(node.options)
+                };
+            }
+        });
+
+        return selects;
+    }
+
+    checkNodes(sourceAst, targetAst, locale, resource) {
+        const sourceSelects = this.findSelects(sourceAst);
+        const targetSelects = this.findSelects(targetAst);
+        let problems = [];
+
+        Object.keys(targetSelects).forEach(select => {
+            const targetSelect = targetSelects[select];
+            if (sourceSelects[select]) {
+                problems = problems.concat(this.matchCategories(sourceSelects[select], targetSelect, locale, resource));
+            } else {
+                const targetSnippet = resource.getTarget().replace(new RegExp(`(\\{\\s*${select})`, "g"), "&lt;e0>$1&lt;/e0>");
+                let opts = {
+                    severity: "error",
+                    rule: this,
+                    description: `Select or plural with pivot variable ${targetSelects[select].node.value} does not exist in the source string. Possible translated variable name.`,
+                    id: resource.getKey(),
+                    highlight: `Target: ${targetSnippet}`,
+                    pathName: resource.getPath(),
+                    source: resource.getSource(),
+                    locale: resource.getTargetLocale()
+                };
+                problems.push(new Result(opts));
+            }
+        });
+
+        return problems;
+    }
+
+    matchString({source, target, file, resource}) {
+        if (!target) return; // can't check "nothing" !
+
+        const sLoc = new Locale(resource.getSourceLocale());
+        const tLoc = new Locale(resource.getTargetLocale());
+        let sourceAst;
+        let targetAst;
+        let problems = [];
+
+        try {
+            const imf = new IntlMessageFormat(source, sLoc.getSpec(), undefined, {captureLocation: true});
+            // look in the abstract syntax tree for the categories that were parsed out and make
+            // sure the required ones are there
+            sourceAst = imf.getAst();
+        } catch (e) {
+            // if there are problems in the source string, do not check the target string because we
+            // do not have anything good to match against
+            return undefined;
+        }
+        try {
+            const imf = new IntlMessageFormat(target, tLoc.getSpec(), undefined, {captureLocation: true});
+            targetAst = imf.getAst();
+
+            problems = this.checkNodes(sourceAst, targetAst, tLoc, resource);
+        } catch (e) {
+            let value = {
+                severity: "error",
+                description: `Incorrect plural or select syntax in target string: ${e}`,
+                rule: this,
+                id: resource.getKey(),
+                source,
+                highlight: `Target: ${target.substring(0, e?.location?.end?.offset)}&lt;e0>${target.substring(e?.location?.end?.offset)}&lt;/e0>`,
+                pathName: file,
+                locale: tLoc.getSpec()
+            };
+            if (typeof(resource.lineNumber) !== 'undefined') {
+                value.lineNumber = resource.lineNumber + e.location.end.line - 1;
+            }
+            problems.push(new Result(value));
+        }
+        return problems.length &lt; 2 ? problems[0] : problems;
+    }
+}
+
+export default ResourceICUPlurals;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Mon Nov 04 2024 13:25:19 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

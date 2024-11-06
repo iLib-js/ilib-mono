@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>PipelineElement.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileStats.html">FileStats</a><ul class='methods'><li data-type='method'><a href="FileStats.html#addBytes">addBytes</a></li><li data-type='method'><a href="FileStats.html#addFiles">addFiles</a></li><li data-type='method'><a href="FileStats.html#addLines">addLines</a></li><li data-type='method'><a href="FileStats.html#addModules">addModules</a></li><li data-type='method'><a href="FileStats.html#addStats">addStats</a></li><li data-type='method'><a href="FileStats.html#getBytes">getBytes</a></li><li data-type='method'><a href="FileStats.html#getFiles">getFiles</a></li><li data-type='method'><a href="FileStats.html#getLines">getLines</a></li><li data-type='method'><a href="FileStats.html#getModules">getModules</a></li></ul></li><li><a href="Fix.html">Fix</a></li><li><a href="Fixer.html">Fixer</a><ul class='methods'><li data-type='method'><a href="Fixer.html#applyFixes">applyFixes</a></li></ul></li><li><a href="Formatter.html">Formatter</a><ul class='methods'><li data-type='method'><a href="Formatter.html#format">format</a></li><li data-type='method'><a href="Formatter.html#formatOutput">formatOutput</a></li><li data-type='method'><a href="Formatter.html#getDescription">getDescription</a></li><li data-type='method'><a href="Formatter.html#getName">getName</a></li></ul></li><li><a href="IntermediateRepresentation.html">IntermediateRepresentation</a><ul class='methods'><li data-type='method'><a href="IntermediateRepresentation.html#getRepresentation">getRepresentation</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getSourceFile">getSourceFile</a></li><li data-type='method'><a href="IntermediateRepresentation.html#getType">getType</a></li></ul></li><li><a href="NotImplementedError.html">NotImplementedError</a></li><li><a href="Parser.html">Parser</a><ul class='methods'><li data-type='method'><a href="Parser.html#getExtensions">getExtensions</a></li><li data-type='method'><a href="Parser.html#parse">parse</a></li></ul></li><li><a href="PipelineElement.html">PipelineElement</a><ul class='methods'><li data-type='method'><a href="PipelineElement.html#getDescription">getDescription</a></li><li data-type='method'><a href="PipelineElement.html#getName">getName</a></li><li data-type='method'><a href="PipelineElement.html#getType">getType</a></li><li data-type='method'><a href="PipelineElement.html#init">init</a></li></ul></li><li><a href="Plugin.html">Plugin</a><ul class='methods'><li data-type='method'><a href="Plugin.html#getFixers">getFixers</a></li><li data-type='method'><a href="Plugin.html#getFormatters">getFormatters</a></li><li data-type='method'><a href="Plugin.html#getParsers">getParsers</a></li><li data-type='method'><a href="Plugin.html#getRuleSets">getRuleSets</a></li><li data-type='method'><a href="Plugin.html#getRules">getRules</a></li><li data-type='method'><a href="Plugin.html#getSerializers">getSerializers</a></li><li data-type='method'><a href="Plugin.html#getTransformers">getTransformers</a></li><li data-type='method'><a href="Plugin.html#init">init</a></li></ul></li><li><a href="Result.html">Result</a></li><li><a href="Rule.html">Rule</a><ul class='methods'><li data-type='method'><a href="Rule.html#getDescription">getDescription</a></li><li data-type='method'><a href="Rule.html#getLink">getLink</a></li><li data-type='method'><a href="Rule.html#getName">getName</a></li><li data-type='method'><a href="Rule.html#getRuleType">getRuleType</a></li><li data-type='method'><a href="Rule.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Rule.html#match">match</a></li></ul></li><li><a href="Serializer.html">Serializer</a><ul class='methods'><li data-type='method'><a href="Serializer.html#serialize">serialize</a></li></ul></li><li><a href="SourceFile.html">SourceFile</a><ul class='methods'><li data-type='method'><a href="SourceFile.html#getContent">getContent</a></li><li data-type='method'><a href="SourceFile.html#getLength">getLength</a></li><li data-type='method'><a href="SourceFile.html#getLines">getLines</a></li><li data-type='method'><a href="SourceFile.html#getPath">getPath</a></li><li data-type='method'><a href="SourceFile.html#getRaw">getRaw</a></li><li data-type='method'><a href="SourceFile.html#getType">getType</a></li><li data-type='method'><a href="SourceFile.html#isDirty">isDirty</a></li><li data-type='method'><a href="SourceFile.html#read">read</a></li><li data-type='method'><a href="SourceFile.html#setLines">setLines</a></li><li data-type='method'><a href="SourceFile.html#write">write</a></li></ul></li><li><a href="Transformer.html">Transformer</a><ul class='methods'><li data-type='method'><a href="Transformer.html#transform">transform</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#isCamelCase">isCamelCase</a></li><li><a href="global.html#isKebabCase">isKebabCase</a></li><li><a href="global.html#isSnakeCase">isSnakeCase</a></li><li><a href="global.html#withVisibleWhitespace">withVisibleWhitespace</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">PipelineElement.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * PipelineElement.js - superclass for pipeline elements
+ *
+ * Copyright © 2024 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @class superclass for pipeline elements
+ *
+ * A pipeline element is the superclass for all classes that can be used
+ * in a pipeline. A pipeline is used to process a particular type
+ * of file. Pipeline elements are used in sequence to parse, then transform,
+ * and then serialize the content of the file. Each element can be used along
+ * with a number of other pipeline elements of the same type which all
+ * process the same type of file. Each pipeline element should define a type,
+ * a name, and a description.
+ *
+ * @abstract
+ */
+class PipelineElement {
+    /**
+     * Construct a new pipeline element instance.
+     *
+     * @param {Object} [options] options to the constructor
+     * @param {Function} [options.getLogger] a callback function provided by
+     * @param {object} [options.settings] additional settings that can be passed from the
+     * pipeline element to the linter to retrieve the log4js logger
+     */
+    constructor(options) {
+        if (this.constructor === PipelineElement) {
+            throw new Error("Cannot instantiate abstract class PipelineElement directly!");
+        }
+        this.getLogger = options?.getLogger;
+    }
+
+    /**
+     * A callback function provided by the linter to retrieve the log4js logger
+     * @type {Function | undefined}
+     */
+    getLogger;
+
+    /**
+     * Initialize the current plugin.
+     */
+    init() {}
+
+    /**
+     * Name of this type of pipeline element
+     *
+     * Concrete subclasses must define this property.
+     * @readonly
+     * @abstract
+     * @type {string}
+     */
+    // @ts-expect-error: concrete subclasses must define this property
+    name;
+
+    /**
+     * Return the name of this type of pipeline element.
+     * Concrete subclasses must define {@link PipelineElement.name}.
+     *
+     * @returns {String} return the name of this type of pipeline element
+     */
+    getName() {
+        return this.name;
+    }
+
+    /**
+     * Description of what this pipeline element does and what kinds of files it
+     * handles for users who are trying to discover whether or not to use it.
+     *
+     * Concrete subclasses must define this property.
+     * @readonly
+     * @abstract
+     * @type {string}
+     */
+    // @ts-expect-error: concrete subclasses must define this property
+    description;
+
+    /**
+     * Return a description of what this pipeline element does and what kinds of files it
+     * handles for users who are trying to discover whether or not to use it.
+     *
+     * Subclass must define {@link PipelineElement.description}.
+     *
+     * @returns {String} a description of this pipeline element.
+     */
+    getDescription() {
+        return this.description;
+    }
+
+    /**
+     * Type of file that this pipeline element processes. The type should be
+     * a unique name that matches with the type of other pipeline elements that
+     * process this same type of file. The linter will ensure that when a
+     * pipeline element is of a particular type, only IntermediateRepresentation
+     * instances with the same type are sent in to that element for processing.
+     *
+     * There are three types that are reserved, however:
+     *
+     * - resource - the pipeline element returns an array of Resource instances as
+     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     * - line - the pipeline element produces a set of lines as an array of strings
+     * - string - the pipeline element doesn't parse. Instead, it just treats the
+     *   the file as one long string.
+     *
+     * Concrete subclasses must define this property.
+     * @readonly
+     * @abstract
+     * @type {string}
+     */
+    // @ts-expect-error: concrete subclasses must define this property
+    type;
+
+    /**
+     * Return the type of file that this pipeline element processes. The type should be
+     * a unique name that matches with the type of other pipeline elements that
+     * process this same type of file.
+     *
+     * Concrete subclasses must define {@link PipelineElement.type}.
+     *
+     * @abstract
+     * @returns {String} the name of the type of file that this pipeline element processes
+     */
+    getType() {
+        return this.type;
+    }
+};
+
+export default PipelineElement;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
