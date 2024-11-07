@@ -42,10 +42,10 @@
         "url": "https://github.com/iLib-js/ilib-loctool-properties.git"
     },
     "scripts": {
-        "dist": "npm pack",
+        "dist": "pnpm pack",
         "test": "jest",
         "test:watch": "jest --watch",
-        "debug": "node --inspect-brk jest",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest",
         "clean": "git clean -f -d *"
     },
     "engines": {

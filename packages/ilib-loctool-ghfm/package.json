@@ -44,10 +44,10 @@
         "url": "https://github.com/iLib-js/ilib-loctool-ghfm.git"
     },
     "scripts": {
-        "dist": "npm pack",
+        "dist": "pnpm pack",
         "test": "jest",
         "test:watch": "jest --watch",
-        "debug": "node --inspect-brk node_modules/.bin/jest -i",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
         "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE"
     },
     "engines": {
