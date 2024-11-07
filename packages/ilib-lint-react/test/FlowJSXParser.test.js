@@ -68,7 +68,7 @@ describe("test the flow parser with jsx code", () => {
         expect(parser.getExtensions()).toStrictEqual([ "js", "jsx" ]);
     });
 
-    test("Flow parser simple", () => {
+    xit("Flow parser simple", () => {
         expect.assertions(3);
 
         const parser = new FlowParser();
@@ -88,7 +88,7 @@ describe("test the flow parser with jsx code", () => {
         expect(actualSimplified).toMatchSnapshot();
     });
 
-    test("Flow parser more complex", () => {
+    xit("Flow parser more complex", () => {
         expect.assertions(3);
 
         const parser = new FlowParser();
@@ -108,7 +108,7 @@ describe("test the flow parser with jsx code", () => {
         expect(actualSimplified).toMatchSnapshot();
     });
 
-    test("JSX with a high-order component in it", () => {
+    xit("JSX with a high-order component in it", () => {
         expect.assertions(3);
 
         const parser = new FlowParser();

@@ -289,6 +289,123 @@ importers:
         specifier: ^5.3.3
         version: 5.6.3
 
+  packages/ilib-lint-python:
+    dependencies:
+      ilib-lint-common:
+        specifier: ^3.0.0
+        version: 3.1.0
+      ilib-locale:
+        specifier: ^1.2.2
+        version: 1.2.2
+      ilib-tools-common:
+        specifier: ^1.9.1
+        version: 1.11.0
+    devDependencies:
+      docdash:
+        specifier: ^2.0.2
+        version: 2.0.2
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+      jsdoc:
+        specifier: ^4.0.2
+        version: 4.0.4
+      jsdoc-to-markdown:
+        specifier: ^8.0.1
+        version: 8.0.3
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+
+  packages/ilib-lint-python-gnu:
+    dependencies:
+      ilib-lint-common:
+        specifier: ^3.0.0
+        version: 3.1.0
+      ilib-locale:
+        specifier: ^1.2.2
+        version: 1.2.2
+      ilib-loctool-po:
+        specifier: ^1.6.3
+        version: 1.6.3
+      ilib-tools-common:
+        specifier: ^1.9.1
+        version: 1.11.0
+    devDependencies:
+      docdash:
+        specifier: ^2.0.2
+        version: 2.0.2
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+      jsdoc:
+        specifier: ^4.0.2
+        version: 4.0.4
+      jsdoc-to-markdown:
+        specifier: ^8.0.1
+        version: 8.0.3
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+
+  packages/ilib-lint-react:
+    dependencies:
+      '@babel/parser':
+        specifier: ^7.24.0
+        version: 7.26.2
+      '@babel/traverse':
+        specifier: ^7.24.0
+        version: 7.25.9
+      '@formatjs/intl':
+        specifier: ^2.10.0
+        version: 2.10.11(typescript@5.6.3)
+      ilib-istring:
+        specifier: ^1.1.0
+        version: 1.1.0
+      ilib-lint-common:
+        specifier: ^3.0.0
+        version: 3.1.0
+      ilib-locale:
+        specifier: ^1.2.2
+        version: 1.2.2
+      ilib-tools-common:
+        specifier: ^1.9.1
+        version: 1.11.0
+      jsonpath:
+        specifier: ^1.1.1
+        version: 1.1.1
+      regenerator-runtime:
+        specifier: ^0.14.1
+        version: 0.14.1
+    devDependencies:
+      '@babel/generator':
+        specifier: ^7.24.0
+        version: 7.26.2
+      '@babel/types':
+        specifier: ^7.24.0
+        version: 7.26.0
+      docdash:
+        specifier: ^2.0.2
+        version: 2.0.2
+      ilib-common:
+        specifier: ^1.1.3
+        version: 1.1.3
+      intl-messageformat:
+        specifier: ^10.7.6
+        version: 10.7.6
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+      jsdoc:
+        specifier: ^4.0.2
+        version: 4.0.4
+      jsdoc-to-markdown:
+        specifier: ^8.0.1
+        version: 8.0.3
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+
   packages/ilib-loctool-csv:
     dependencies:
       ilib:
@@ -1177,14 +1294,26 @@ packages:
   '@formatjs/ecma402-abstract@2.2.1':
     resolution: {integrity: sha512-O4ywpkdJybrjFc9zyL8qK5aklleIAi5O4nYhBVJaOFtCkNrnU+lKFeJOFC48zpsZQmR8Aok2V79hGpHnzbmFpg==}
 
+  '@formatjs/ecma402-abstract@2.2.3':
+    resolution: {integrity: sha512-aElGmleuReGnk2wtYOzYFmNWYoiWWmf1pPPCYg0oiIQSJj0mjc4eUfzUXaSOJ4S8WzI/cLqnCTWjqz904FT2OQ==}
+
   '@formatjs/fast-memoize@2.2.2':
     resolution: {integrity: sha512-mzxZcS0g1pOzwZTslJOBTmLzDXseMLLvnh25ymRilCm8QLMObsQ7x/rj9GNrH0iUhZMlFisVOD6J1n6WQqpKPQ==}
+
+  '@formatjs/fast-memoize@2.2.3':
+    resolution: {integrity: sha512-3jeJ+HyOfu8osl3GNSL4vVHUuWFXR03Iz9jjgI7RwjG6ysu/Ymdr0JRCPHfF5yGbTE6JCrd63EpvX1/WybYRbA==}
 
   '@formatjs/icu-messageformat-parser@2.9.1':
     resolution: {integrity: sha512-7AYk4tjnLi5wBkxst2w7qFj38JLMJoqzj7BhdEl7oTlsWMlqwgx4p9oMmmvpXWTSDGNwOKBRc1SfwMh5MOHeNg==}
 
+  '@formatjs/icu-messageformat-parser@2.9.3':
+    resolution: {integrity: sha512-9L99QsH14XjOCIp4TmbT8wxuffJxGK8uLNO1zNhLtcZaVXvv626N0s4A2qgRCKG3dfYWx9psvGlFmvyVBa6u/w==}
+
   '@formatjs/icu-skeleton-parser@1.8.5':
     resolution: {integrity: sha512-zRZ/e3B5qY2+JCLs7puTzWS1Jb+t/K+8Jur/gEZpA2EjWeLDE17nsx8thyo9P48Mno7UmafnPupV2NCJXX17Dg==}
+
+  '@formatjs/icu-skeleton-parser@1.8.7':
+    resolution: {integrity: sha512-fI+6SmS2g7h3srfAKSWa5dwreU5zNEfon2uFo99OToiLF6yxGE+WikvFSbsvMAYkscucvVmTYNlWlaDPp0n5HA==}
 
   '@formatjs/intl-displaynames@6.8.1':
     resolution: {integrity: sha512-nyWfJk4BZ1+GzLq9a40BgVPSRpBkRAVzrSpql+92i0i+lX11m9eS1trSRf/h3j/XcQ+h1h+ntA4Ra4jETK7nNg==}
@@ -1194,6 +1323,9 @@ packages:
 
   '@formatjs/intl-localematcher@0.5.6':
     resolution: {integrity: sha512-roz1+Ba5e23AHX6KUAWmLEyTRZegM5YDuxuvkHCyK3RJddf/UXB2f+s7pOMm9ktfPGla0g+mQXOn5vsuYirnaA==}
+
+  '@formatjs/intl-localematcher@0.5.7':
+    resolution: {integrity: sha512-GGFtfHGQVFe/niOZp24Kal5b2i36eE2bNL0xi9Sg/yd0TR8aLjcteApZdHmismP5QQax1cMnZM9yWySUUjJteA==}
 
   '@formatjs/intl@2.10.11':
     resolution: {integrity: sha512-FNLZjzE1QRlv1Wf0oinnM97AbvZU1zQnQMHI0Oza2F7PxzrPf6bYFRs0ugapq/O4FrvNwDt9F9nyRNwsMM118g==}
@@ -2228,6 +2360,9 @@ packages:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
     engines: {node: '>=4.0.0'}
 
+  deep-is@0.1.4:
+    resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
+
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
@@ -2438,6 +2573,11 @@ packages:
     resolution: {integrity: sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==}
     engines: {node: '>=8'}
 
+  escodegen@1.14.3:
+    resolution: {integrity: sha512-qFcX0XJkdg+PB3xjZZG/wKSuT1PnQWx57+TVSjIMmILd2yC/6ByYElPwJnslDsuWuSAp4AwJGumarAAmJch5Kw==}
+    engines: {node: '>=4.0'}
+    hasBin: true
+
   escodegen@2.1.0:
     resolution: {integrity: sha512-2NlIDTwUWJN0mRPQOdtQBzbUHvdGY2P1VXSyU83Q3xKxM7WHX2Ql8dKq782Q9TgQUNOLEzEYu9bzLNj1q88I5w==}
     engines: {node: '>=6.0'}
@@ -2446,6 +2586,11 @@ packages:
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
     engines: {node: '>=8.0.0'}
+
+  esprima@1.2.2:
+    resolution: {integrity: sha512-+JpPZam9w5DuJ3Q67SqsMGtiHKENSMRVoxvArfJZK01/BfLEObtZ6orJa/MtoGNR/rfMgp5837T41PAmTwAv/A==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
 
   esprima@4.0.1:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
@@ -2544,6 +2689,9 @@ packages:
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
+
+  fast-levenshtein@2.0.6:
+    resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
   fast-uri@3.0.3:
     resolution: {integrity: sha512-aLrHthzCjH5He4Z2H9YZ+v6Ujb9ocRuW6ZzkJQOrTxleEijANq4v1TsaPaVG1PZcuurEzrLcWRyYBYXD5cEiaw==}
@@ -3007,6 +3155,9 @@ packages:
   ilib-env@1.4.0:
     resolution: {integrity: sha512-zDpTmrGMvg9P40TtelR3k+eIFPd1VZA9TmB/5dXKEona6TQBObe6/D9zgmoLf17mI0kBg8ho+q1T42EJGvB5mg==}
 
+  ilib-istring@1.1.0:
+    resolution: {integrity: sha512-L1k59U+R8BTPMZqdHGhRGLH1PPyDgaDGPMbQFmT1kk0grGHfT7Rcmt9/EgdRQ1G0q9dnr4ZqkvknNJY5711ang==}
+
   ilib-lint-common@3.1.0:
     resolution: {integrity: sha512-e02KHTG/MPi+4Qp/VHali0oH7kTVk0kT1q+busjBVKRUNG/fep1b1Fu6otUodgMK+aJfDTX8MYPe5iI8cpbF4Q==}
     engines: {node: '>=14.0.0'}
@@ -3051,6 +3202,10 @@ packages:
   ilib-loctool-mock@file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz:
     resolution: {integrity: sha512-qP6wJwUn6YFhdKSP0MQMXsTkwaBSDxgv1cwGfLzrs1mT/nmz/blHGP7JT55+XAakbdd6SO4aZeOCF0lB4bhCxg==, tarball: file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz}
     version: 1.0.0
+
+  ilib-loctool-po@1.6.3:
+    resolution: {integrity: sha512-IaJXAWnumykTWjaU8XAWKudrOLuVFdfuvjzcc0UT+OzeiHYcWEt2R5ZulTPcmiF+j8W/X8fO1pkvgPDXkuXpPQ==}
+    engines: {node: '>=6.0'}
 
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     resolution: {integrity: sha512-jKrfpzwShklRzKlRCJ9Pzt2p6V3AM7YfvtuapWZNwc/jYOfBd/2WuprkWmm++zgdzh8wfveeBSn1CElCHCbv0w==, tarball: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz}
@@ -3111,6 +3266,9 @@ packages:
 
   intl-messageformat@10.7.3:
     resolution: {integrity: sha512-AAo/3oyh7ROfPhDuh7DxTTydh97OC+lv7h1Eq5LuHWuLsUMKOhtzTYuyXlUReuwZ9vANDHo4CS1bGRrn7TZRtg==}
+
+  intl-messageformat@10.7.6:
+    resolution: {integrity: sha512-IsMU/hqyy3FJwNJ0hxDfY2heJ7MteSuFvcnCebxRp67di4Fhx1gKKE+qS0bBwUF8yXkX9SsPUhLeX/B6h5SKUA==}
 
   is-absolute@1.0.0:
     resolution: {integrity: sha512-dOWoqflvcydARa360Gvv18DZ/gRuHKi2NU/wU5X1ZFzdYfH29nkiNZsF3mp4OJ3H4yo9Mx8A/uAGNzpzPN3yBA==}
@@ -3708,6 +3866,9 @@ packages:
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
 
+  jsonpath@1.1.1:
+    resolution: {integrity: sha512-l6Cg7jRpixfbgoWgkrl77dgEj8RPvND0wMH6TwQmi9Qs4TFfS9u5cUFnbeKTwj5ga5Y3BTGGNI28k117LJ009w==}
+
   karma-assert@1.0.1:
     resolution: {integrity: sha512-at+dUdn5TY87UKdCgw3pnwv3FKODrTVJSKQ8+gzH30Rvip9i+mHoOsXPU805UnFJ3yLl/GhVPY1SSwED59Pzeg==}
 
@@ -3753,6 +3914,10 @@ packages:
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
+
+  levn@0.3.0:
+    resolution: {integrity: sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==}
+    engines: {node: '>= 0.8.0'}
 
   liftup@3.0.1:
     resolution: {integrity: sha512-yRHaiQDizWSzoXk3APcA71eOI/UuhEkNN9DiW2Tt44mhYzX4joFoCZlxsSOF7RyeLlfqzFLQI1ngFq3ggMPhOw==}
@@ -4132,6 +4297,10 @@ packages:
   opencc-js@1.0.5:
     resolution: {integrity: sha512-LD+1SoNnZdlRwtYTjnQdFrSVCAaYpuDqL5CkmOaHOkKoKh7mFxUicLTRVNLU5C+Jmi1vXQ3QL4jWdgSaa4sKjg==}
 
+  optionator@0.8.3:
+    resolution: {integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==}
+    engines: {node: '>= 0.8.0'}
+
   options-parser@0.4.0:
     resolution: {integrity: sha512-KZTzRU3jlv9DVWakQGacYJN3GBP6KY6bb5Gh+QWy88ayADNCj5ql8a4604jBnorQ/bsVja4zjy8q0W8v+71gyg==}
 
@@ -4321,6 +4490,10 @@ packages:
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
     engines: {node: '>= 0.4'}
+
+  prelude-ls@1.1.2:
+    resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
+    engines: {node: '>= 0.8.0'}
 
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
@@ -4801,6 +4974,9 @@ packages:
   state-toggle@1.0.3:
     resolution: {integrity: sha512-d/5Z4/2iiCnHw6Xzghyhb+GcmF89bxwgXG60wjIiZaxnymbyOmI8Hk4VqHXiVVp6u2ysaskFfXg3ekCj4WNftQ==}
 
+  static-eval@2.0.2:
+    resolution: {integrity: sha512-N/D219Hcr2bPjLxPiV+TQE++Tsmrady7TqAJugLy7Xk1EumfDWS/f5dtBbkRCGE7wKKXuYockQoj8Rm2/pVKyg==}
+
   static-extend@0.1.2:
     resolution: {integrity: sha512-72E9+uLc27Mt718pMHt9VMNiAL4LMsmDbBva8mxWUCkT07fSzEGMYUCk0XWY6lp0j6RBAG4cJ3mWuZv2OE3s0g==}
     engines: {node: '>=0.10.0'}
@@ -5055,6 +5231,10 @@ packages:
     resolution: {integrity: sha512-5lDvSqIxCYJ/BAd6rQGK/AzFRhBkbu4JHVMLmGh/hCb7U3CqSnr5Tjwfy9vc+/5wG2DJ6wttgAaA7MoCgvBKZQ==}
     hasBin: true
 
+  type-check@0.3.2:
+    resolution: {integrity: sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==}
+    engines: {node: '>= 0.8.0'}
+
   type-detect@4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
     engines: {node: '>=4'}
@@ -5134,6 +5314,9 @@ packages:
 
   underscore.string@3.3.6:
     resolution: {integrity: sha512-VoC83HWXmCrF6rgkyxS9GHv8W9Q5nhMKho+OadDJGzL2oDYbYEppBaCMH6pFlwLeqj2QS+hhkw2kpXkSdD1JxQ==}
+
+  underscore@1.12.1:
+    resolution: {integrity: sha512-hEQt0+ZLDVUMhebKxL4x1BTtDY7bavVofhZ9KZ4aI26X9SRaE+Y3m83XUL1UP2jn8ynjndwCCpEHdUG+9pP1Tw==}
 
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
@@ -5390,6 +5573,10 @@ packages:
 
   wildcard@2.0.1:
     resolution: {integrity: sha512-CC1bOL87PIWSBhDcTrdeLo6eGT7mCFtrg0uIJtqJUFyK+eJnzl8A1niH56uu7KMa5XFrtiV+AQuHO3n7DsHnLQ==}
+
+  word-wrap@1.2.5:
+    resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
+    engines: {node: '>=0.10.0'}
 
   wordwrap@1.0.0:
     resolution: {integrity: sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==}
@@ -6417,7 +6604,17 @@ snapshots:
       '@formatjs/intl-localematcher': 0.5.6
       tslib: 2.8.0
 
+  '@formatjs/ecma402-abstract@2.2.3':
+    dependencies:
+      '@formatjs/fast-memoize': 2.2.3
+      '@formatjs/intl-localematcher': 0.5.7
+      tslib: 2.8.0
+
   '@formatjs/fast-memoize@2.2.2':
+    dependencies:
+      tslib: 2.8.0
+
+  '@formatjs/fast-memoize@2.2.3':
     dependencies:
       tslib: 2.8.0
 
@@ -6427,9 +6624,20 @@ snapshots:
       '@formatjs/icu-skeleton-parser': 1.8.5
       tslib: 2.8.0
 
+  '@formatjs/icu-messageformat-parser@2.9.3':
+    dependencies:
+      '@formatjs/ecma402-abstract': 2.2.3
+      '@formatjs/icu-skeleton-parser': 1.8.7
+      tslib: 2.8.0
+
   '@formatjs/icu-skeleton-parser@1.8.5':
     dependencies:
       '@formatjs/ecma402-abstract': 2.2.1
+      tslib: 2.8.0
+
+  '@formatjs/icu-skeleton-parser@1.8.7':
+    dependencies:
+      '@formatjs/ecma402-abstract': 2.2.3
       tslib: 2.8.0
 
   '@formatjs/intl-displaynames@6.8.1':
@@ -6445,6 +6653,10 @@ snapshots:
       tslib: 2.8.0
 
   '@formatjs/intl-localematcher@0.5.6':
+    dependencies:
+      tslib: 2.8.0
+
+  '@formatjs/intl-localematcher@0.5.7':
     dependencies:
       tslib: 2.8.0
 
@@ -7814,6 +8026,8 @@ snapshots:
 
   deep-extend@0.6.0: {}
 
+  deep-is@0.1.4: {}
+
   deepmerge@4.3.1: {}
 
   define-data-property@1.1.4:
@@ -8071,6 +8285,15 @@ snapshots:
 
   escape-string-regexp@2.0.0: {}
 
+  escodegen@1.14.3:
+    dependencies:
+      esprima: 4.0.1
+      estraverse: 4.3.0
+      esutils: 2.0.3
+      optionator: 0.8.3
+    optionalDependencies:
+      source-map: 0.6.1
+
   escodegen@2.1.0:
     dependencies:
       esprima: 4.0.1
@@ -8083,6 +8306,8 @@ snapshots:
     dependencies:
       esrecurse: 4.3.0
       estraverse: 4.3.0
+
+  esprima@1.2.2: {}
 
   esprima@4.0.1: {}
 
@@ -8216,6 +8441,8 @@ snapshots:
       micromatch: 4.0.8
 
   fast-json-stable-stringify@2.1.0: {}
+
+  fast-levenshtein@2.0.6: {}
 
   fast-uri@3.0.3: {}
 
@@ -8776,6 +9003,14 @@ snapshots:
 
   ilib-env@1.4.0: {}
 
+  ilib-istring@1.1.0:
+    dependencies:
+      '@log4js-node/log4js-api': 1.0.2
+      ilib-common: 1.1.3
+      ilib-env: 1.4.0
+      ilib-locale: 1.2.2
+      ilib-localedata: 1.5.0
+
   ilib-lint-common@3.1.0: {}
 
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
@@ -8849,6 +9084,11 @@ snapshots:
     dependencies:
       ilib: 14.20.0
 
+  ilib-loctool-po@1.6.3:
+    dependencies:
+      ilib: 14.20.0
+      micromatch: 4.0.8
+
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:
       ilib-common: 1.1.3
@@ -8918,6 +9158,13 @@ snapshots:
       '@formatjs/ecma402-abstract': 2.2.1
       '@formatjs/fast-memoize': 2.2.2
       '@formatjs/icu-messageformat-parser': 2.9.1
+      tslib: 2.8.0
+
+  intl-messageformat@10.7.6:
+    dependencies:
+      '@formatjs/ecma402-abstract': 2.2.3
+      '@formatjs/fast-memoize': 2.2.3
+      '@formatjs/icu-messageformat-parser': 2.9.3
       tslib: 2.8.0
 
   is-absolute@1.0.0:
@@ -10025,6 +10272,12 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
+  jsonpath@1.1.1:
+    dependencies:
+      esprima: 1.2.2
+      static-eval: 2.0.2
+      underscore: 1.12.1
+
   karma-assert@1.0.1: {}
 
   karma-chrome-launcher@3.2.0:
@@ -10093,6 +10346,11 @@ snapshots:
 
   leven@3.1.0: {}
 
+  levn@0.3.0:
+    dependencies:
+      prelude-ls: 1.1.2
+      type-check: 0.3.2
+
   liftup@3.0.1:
     dependencies:
       extend: 3.0.2
@@ -10155,7 +10413,7 @@ snapshots:
       html-parser: 0.11.0
       ilib: 14.20.0
       ilib-tree-node: 1.3.2
-      intl-messageformat: 10.7.3
+      intl-messageformat: 10.7.6
       js-stl: 0.0.6
       js-yaml: 4.1.0
       log4js: 6.9.1
@@ -10548,6 +10806,15 @@ snapshots:
 
   opencc-js@1.0.5: {}
 
+  optionator@0.8.3:
+    dependencies:
+      deep-is: 0.1.4
+      fast-levenshtein: 2.0.6
+      levn: 0.3.0
+      prelude-ls: 1.1.2
+      type-check: 0.3.2
+      word-wrap: 1.2.5
+
   options-parser@0.4.0: {}
 
   os-homedir@1.0.2: {}
@@ -10696,6 +10963,8 @@ snapshots:
   posix-character-classes@0.1.1: {}
 
   possible-typed-array-names@1.0.0: {}
+
+  prelude-ls@1.1.2: {}
 
   prettier@2.8.8: {}
 
@@ -11240,6 +11509,10 @@ snapshots:
 
   state-toggle@1.0.3: {}
 
+  static-eval@2.0.2:
+    dependencies:
+      escodegen: 1.14.3
+
   static-extend@0.1.2:
     dependencies:
       define-property: 0.2.5
@@ -11482,6 +11755,10 @@ snapshots:
       turbo-windows-64: 2.2.3
       turbo-windows-arm64: 2.2.3
 
+  type-check@0.3.2:
+    dependencies:
+      prelude-ls: 1.1.2
+
   type-detect@4.0.8: {}
 
   type-fest@0.21.3: {}
@@ -11560,6 +11837,8 @@ snapshots:
     dependencies:
       sprintf-js: 1.1.3
       util-deprecate: 1.0.2
+
+  underscore@1.12.1: {}
 
   underscore@1.13.7: {}
 
@@ -11848,6 +12127,8 @@ snapshots:
       isexe: 2.0.0
 
   wildcard@2.0.1: {}
+
+  word-wrap@1.2.5: {}
 
   wordwrap@1.0.0: {}
 
