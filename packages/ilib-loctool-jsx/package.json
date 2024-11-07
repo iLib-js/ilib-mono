@@ -1,0 +1,62 @@
+{
+    "name": "ilib-loctool-jsx",
+    "version": "1.2.2",
+    "main": "./JsxFileType.js",
+    "description": "A loctool plugin that knows how to process JSX files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "jsx",
+        "react"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "JsxFileType.js",
+        "JsxFile.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-loctool-jsx.git"
+    },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "ilib-loctool-javascript-resource": "^1.0.6"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "loctool": "^2.23.1"
+    }
+}
