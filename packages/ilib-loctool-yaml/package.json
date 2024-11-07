@@ -37,12 +37,12 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-loctool-yaml.git"
+        "url": "https://github.com/iLib-js/ilib-mono/packages/ilib-loctool-yaml.git"
     },
     "scripts": {
-        "dist": "npm pack",
-        "test": "jest",
-        "test:watch": "jest --watch",
+        "dist": "pnpm pack",
+        "test": "pnpm jest",
+        "test:watch": "pnpm jest --watch",
         "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },

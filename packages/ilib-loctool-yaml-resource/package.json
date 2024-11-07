@@ -41,9 +41,9 @@
         "url": "https://github.com/iLib-js/ilib-loctool-yaml-resource.git"
     },
     "scripts": {
-        "dist": "npm pack",
-        "test": "jest",
-        "test:watch": "jest --watch",
+        "dist": "pnpm pack",
+        "test": "pnpm jest",
+        "test:watch": "pnpm jest --watch",
         "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d *"
     },
