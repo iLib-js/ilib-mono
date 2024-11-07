@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label>[Mÿ Ãþþľíçàţíõñ6543210]</label>
+        <name>MyApp</name>
+    </customApplications>
+    <customField>
+        <label>[Ãççëšš ţõķëñ ëxþíŕëð9876543210]</label>
+        <name>AccessToken_Expr__c</name>
+    </customField>
+    <customField>
+        <label>[Ãľľõçàţíõñ šţàţüš876543210]</label>
+        <name>Allocation_status__c</name>
+    </customField>
+    <customField>
+        <label>Zusammenarbeit</label>
+        <name>Collaboration__c</name>
+    </customField>
+    <customField>
+        <label>Anzahl der Wiederholungen</label>
+        <name>Retry_Count__c</name>
+    </customField>
+    <customLabels>
+        <label>Den Absender in der Empfängerliste anzeigen</label>
+        <name>Show_Sender_in_Recipient_List</name>
+    </customLabels>
+    <customLabels>
+        <label>Test des Notzugangssystems</label>
+        <name>Test_of_emergency_warning_system</name>
+    </customLabels>
+    <customLabels>
+        <label>String, der nur in den Übersetzungen vorkommt</label>
+        <name>String_only_in_translations_meta_xml</name>
+    </customLabels>
+    <customTabs>
+        <label>Registerkarte Dateien</label>
+        <name>MyApp_Files2</name>
+    </customTabs>
+    <quickActions>
+        <label>Anruf protokollieren</label>
+        <name>LogACall</name>
+    </quickActions>
+    <reportTypes>
+        <label>Bildschirmsflussen</label>
+        <name>screen_flows_prebuilt_crt</name>
+        <sections>
+            <label>Protokolleinträge von Flussinterviews</label>
+            <name>Flow Interview Log Entries</name>
+        </sections>
+        <sections>
+            <label>Protokollen von Flussinterviews</label>
+            <name>Flow Interview Logs</name>
+        </sections>
+    </reportTypes>
+</Translations>

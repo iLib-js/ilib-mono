@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label>[Mÿ Ãþþľíçàţíõñ6543210]</label>
+        <name>MyApp</name>
+    </customApplications>
+    <customField>
+        <label>[Ãççëšš ţõķëñ ëxþíŕëð9876543210]</label>
+        <name>AccessToken_Expr__c</name>
+    </customField>
+    <customField>
+        <label>[Ãľľõçàţíõñ šţàţüš876543210]</label>
+        <name>Allocation_status__c</name>
+    </customField>
+    <customField>
+        <label>Collaborations</label>
+        <name>Collaboration__c</name>
+    </customField>
+    <customField>
+        <label>Nombre de tentatives</label>
+        <name>Retry_Count__c</name>
+    </customField>
+    <customLabels>
+        <label>Afficher l'expéditeur dans la liste des destinataires</label>
+        <name>Show_Sender_in_Recipient_List</name>
+    </customLabels>
+    <customLabels>
+        <label>Test du système d'accès d'urgence</label>
+        <name>Test_of_emergency_warning_system</name>
+    </customLabels>
+    <customLabels>
+        <label>Chaîne qui se trouve uniquement dans les traductions</label>
+        <name>String_only_in_translations_meta_xml</name>
+    </customLabels>
+    <customTabs>
+        <label>Onglet Fichiers</label>
+        <name>MyApp_Files2</name>
+    </customTabs>
+    <quickActions>
+        <label>EnregistrerUnAppel</label>
+        <name>LogACall</name>
+    </quickActions>
+    <reportTypes>
+        <label>Coule d'écran</label>
+        <name>screen_flows_prebuilt_crt</name>
+        <sections>
+            <label>Entrées de journal pour coule de entretien</label>
+            <name>Flow Interview Log Entries</name>
+        </sections>
+        <sections>
+            <label>Journals pour coule de entretien</label>
+            <name>Flow Interview Logs</name>
+        </sections>
+    </reportTypes>
+</Translations>
