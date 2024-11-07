@@ -1,0 +1,55 @@
+{
+    "$id": "strings-schema",
+    "type": "object",
+    "$defs": {
+        "string-type": {
+            "type": "object",
+            "localizable": true,
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        },
+                        "i18n": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+        "resources": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/string-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/string-type"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

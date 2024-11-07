@@ -1,0 +1,21 @@
+{
+    "x": {
+        "y": {
+            "plurals": {
+                "bar": {
+                    "one": "singular",
+                    "many": "many",
+                    "other": "plural"
+                }
+            }
+        }
+    },
+    "a": {
+        "b": {
+            "strings": {
+                "a": "b",
+                "c": "d"
+            }
+        }
+    }
+}

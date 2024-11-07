@@ -1,0 +1,64 @@
+{
+    "name": "ilib-loctool-html",
+    "version": "1.0.6",
+    "main": "./HTMLFileType.js",
+    "description": "A loctool plugin that knows how to localize static html files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "loctool",
+        "html"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "HTMLFile.js",
+        "HTMLFileType.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "dist": "pnpm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=10.0"
+    },
+    "dependencies": {
+        "he": "^1.2.0",
+        "html-parser": "^0.11.0",
+        "ilib": "^14.19.0",
+        "js-stl": ">=0.0.6",
+        "message-accumulator": "^3.0.0"
+    },
+    "devDependencies": {
+        "jest": "^26.0.0",
+        "loctool": "^2.24.0"
+    }
+}

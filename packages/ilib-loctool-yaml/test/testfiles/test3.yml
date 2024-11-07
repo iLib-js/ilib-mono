@@ -1,0 +1,9 @@
+---
+title:
+  read_me:
+    #L10N: Comment with prefix
+    a: good
+  do_not_read_me:
+    # Comment without prefix
+    b: good too
+    c: bad

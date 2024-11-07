@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://github.com/ilib-js/array-refs.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "$defs": {
+    "itemArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "item": {
+      "type": "object",
+      "properties": {
+        "itemField": {
+          "type": "string",
+          "localizable": true
+        },
+        "itemFieldIgnore": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "properties": {
+    "itemsArray": {
+      "$ref": "#/$defs/itemArray"
+    }
+  }
+}

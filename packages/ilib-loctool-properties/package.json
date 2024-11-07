@@ -1,0 +1,61 @@
+{
+    "name": "ilib-loctool-properties",
+    "version": "1.0.4",
+    "main": "./PropertiesFileType.js",
+    "description": "A loctool plugin that knows how to process properties files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "properties"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "PropertiesFile.js",
+        "PropertiesFileType.js",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "dist": "pnpm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "ilib": "^14.18.0"
+    },
+    "devDependencies": {
+        "jest": "^26.3.0",
+        "loctool": "^2.23.1"
+    }
+}

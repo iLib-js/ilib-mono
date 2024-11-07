@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label><!-- The best way to do X on the Internet! --></label>
+        <name>MyApp</name>
+    </customApplications>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>AccessToken_Expr__c</name>
+    </customField>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>Allocation_status__c</name>
+    </customField>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>Collaboration__c</name>
+    </customField>
+    <customField>
+        <label><!-- This is a test. --></label>
+        <name>Retry_Count__c</name>
+    </customField>
+    <customLabels>
+        <label><!-- Whether or not the sender should be shown in the recipient list of the email. --></label>
+        <name>Show_Sender_in_Recipient_List</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Had this been a real test, you would have been instructed to calmly leave the building. --></label>
+        <name>Test_of_emergency_warning_system</name>
+    </customLabels>
+    <customLabels>
+        <label>Translations Only String</label>
+        <name>String_only_in_translations_meta_xml</name>
+    </customLabels>
+    <customTabs>
+        <label><!-- My Application Files --></label>
+        <name>MyApp_Files2</name>
+    </customTabs>
+    <quickActions>
+        <label><!-- LogACall --></label>
+        <name>LogACall</name>
+    </quickActions>
+    <reportTypes>
+        <description><!-- Screen Flows Description --></description>
+        <label><!-- Screen Flows --></label>
+        <name>screen_flows_prebuilt_crt</name>
+        <sections>
+            <label><!-- Flow Interview Log Entries --></label>
+            <name>Flow Interview Log Entries</name>
+        </sections>
+        <sections>
+            <label><!-- Flow Interview Logs --></label>
+            <name>Flow Interview Logs</name>
+        </sections>
+    </reportTypes>
+</Translations>

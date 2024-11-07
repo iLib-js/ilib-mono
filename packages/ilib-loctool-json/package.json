@@ -1,0 +1,63 @@
+{
+    "name": "ilib-loctool-json",
+    "version": "1.5.4",
+    "main": "./JsonFileType.js",
+    "description": "A loctool plugin that knows how to localize json files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "json"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "JsonFile.js",
+        "JsonFileType.js",
+        "log4js.json"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "dist": "pnpm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "clean": "git clean -f -d test"
+    },
+    "engines": {
+        "node": ">=10.0"
+    },
+    "dependencies": {
+        "ilib": "^14.19.0",
+        "json5": "^2.2.3"
+    },
+    "devDependencies": {
+        "jest": "^29.0.0",
+        "loctool": "^2.23.1"
+    }
+}
