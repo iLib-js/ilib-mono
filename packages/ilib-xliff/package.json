@@ -19,8 +19,8 @@
         "g11n",
         "xliff"
     ],
-    "homepage": "https://github.com/iLib-js/xliff",
-    "bugs": "https://github.com/iLib-js/xliff/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-xliff",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -47,13 +47,13 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/xliff.git"
+        "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "scripts": {
         "build": "npm run build:prod",
         "build:test": "npm-run-all build:dev build:web",
         "build:data": "cd scripts ; node generate.js",
-        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:pkg": "mkdir -p lib ; echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:web": "webpack-cli --env dev --config webpack-test.config.js",
