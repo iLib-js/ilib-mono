@@ -1,0 +1,378 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testJSParser JSParserMoreComplex 1`] = `
+{
+  "ir": {
+    "comments": [
+      {
+        "end": 10,
+        "loc": {
+          "end": {
+            "column": 10,
+            "index": 10,
+            "line": 1,
+          },
+          "start": {
+            "column": 0,
+            "index": 0,
+            "line": 1,
+          },
+        },
+        "start": 0,
+        "type": "CommentLine",
+        "value": " comment",
+      },
+    ],
+    "end": 105,
+    "errors": [],
+    "loc": {
+      "end": {
+        "column": 12,
+        "index": 105,
+        "line": 5,
+      },
+      "start": {
+        "column": 0,
+        "index": 0,
+        "line": 1,
+      },
+    },
+    "program": {
+      "body": [
+        {
+          "end": 57,
+          "leadingComments": [
+            {
+              "end": 10,
+              "loc": {
+                "end": {
+                  "column": 10,
+                  "index": 10,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 0,
+                  "index": 0,
+                  "line": 1,
+                },
+              },
+              "start": 0,
+              "type": "CommentLine",
+              "value": " comment",
+            },
+          ],
+          "loc": {
+            "end": {
+              "column": 46,
+              "index": 57,
+              "line": 2,
+            },
+            "start": {
+              "column": 12,
+              "index": 23,
+              "line": 2,
+            },
+          },
+          "source": {
+            "end": 56,
+            "extra": {
+              "raw": "'../src/index.js'",
+              "rawValue": "../src/index.js",
+            },
+            "loc": {
+              "end": {
+                "column": 45,
+                "index": 56,
+                "line": 2,
+              },
+              "start": {
+                "column": 28,
+                "index": 39,
+                "line": 2,
+              },
+            },
+            "start": 39,
+            "type": "StringLiteral",
+            "value": "../src/index.js",
+          },
+          "specifiers": [
+            {
+              "end": 33,
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "index": 33,
+                  "line": 2,
+                },
+                "start": {
+                  "column": 19,
+                  "index": 30,
+                  "line": 2,
+                },
+              },
+              "local": {
+                "end": 33,
+                "loc": {
+                  "end": {
+                    "column": 22,
+                    "index": 33,
+                    "line": 2,
+                  },
+                  "identifierName": "foo",
+                  "start": {
+                    "column": 19,
+                    "index": 30,
+                    "line": 2,
+                  },
+                },
+                "name": "foo",
+                "start": 30,
+                "type": "Identifier",
+              },
+              "start": 30,
+              "type": "ImportDefaultSpecifier",
+            },
+          ],
+          "start": 23,
+          "type": "ImportDeclaration",
+        },
+        {
+          "declarations": [
+            {
+              "end": 91,
+              "id": {
+                "end": 80,
+                "loc": {
+                  "end": {
+                    "column": 21,
+                    "index": 80,
+                    "line": 4,
+                  },
+                  "identifierName": "str",
+                  "start": {
+                    "column": 18,
+                    "index": 77,
+                    "line": 4,
+                  },
+                },
+                "name": "str",
+                "start": 77,
+                "type": "Identifier",
+              },
+              "init": {
+                "end": 91,
+                "extra": {
+                  "raw": ""String"",
+                  "rawValue": "String",
+                },
+                "loc": {
+                  "end": {
+                    "column": 32,
+                    "index": 91,
+                    "line": 4,
+                  },
+                  "start": {
+                    "column": 24,
+                    "index": 83,
+                    "line": 4,
+                  },
+                },
+                "start": 83,
+                "type": "StringLiteral",
+                "value": "String",
+              },
+              "loc": {
+                "end": {
+                  "column": 32,
+                  "index": 91,
+                  "line": 4,
+                },
+                "start": {
+                  "column": 18,
+                  "index": 77,
+                  "line": 4,
+                },
+              },
+              "start": 77,
+              "type": "VariableDeclarator",
+            },
+          ],
+          "end": 92,
+          "kind": "const",
+          "loc": {
+            "end": {
+              "column": 33,
+              "index": 92,
+              "line": 4,
+            },
+            "start": {
+              "column": 12,
+              "index": 71,
+              "line": 4,
+            },
+          },
+          "start": 71,
+          "type": "VariableDeclaration",
+        },
+      ],
+      "directives": [],
+      "end": 105,
+      "interpreter": null,
+      "loc": {
+        "end": {
+          "column": 12,
+          "index": 105,
+          "line": 5,
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 1,
+        },
+      },
+      "sourceType": "module",
+      "start": 0,
+      "type": "Program",
+    },
+    "start": 0,
+    "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
+  "type": "babel-ast",
+}
+`;
+
+exports[`testJSParser JSParserSimple 1`] = `
+{
+  "ir": {
+    "comments": [],
+    "end": 34,
+    "errors": [],
+    "loc": {
+      "end": {
+        "column": 34,
+        "index": 34,
+        "line": 1,
+      },
+      "start": {
+        "column": 0,
+        "index": 0,
+        "line": 1,
+      },
+    },
+    "program": {
+      "body": [
+        {
+          "end": 34,
+          "loc": {
+            "end": {
+              "column": 34,
+              "index": 34,
+              "line": 1,
+            },
+            "start": {
+              "column": 0,
+              "index": 0,
+              "line": 1,
+            },
+          },
+          "source": {
+            "end": 33,
+            "extra": {
+              "raw": "'../src/index.js'",
+              "rawValue": "../src/index.js",
+            },
+            "loc": {
+              "end": {
+                "column": 33,
+                "index": 33,
+                "line": 1,
+              },
+              "start": {
+                "column": 16,
+                "index": 16,
+                "line": 1,
+              },
+            },
+            "start": 16,
+            "type": "StringLiteral",
+            "value": "../src/index.js",
+          },
+          "specifiers": [
+            {
+              "end": 10,
+              "loc": {
+                "end": {
+                  "column": 10,
+                  "index": 10,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 7,
+                  "index": 7,
+                  "line": 1,
+                },
+              },
+              "local": {
+                "end": 10,
+                "loc": {
+                  "end": {
+                    "column": 10,
+                    "index": 10,
+                    "line": 1,
+                  },
+                  "identifierName": "foo",
+                  "start": {
+                    "column": 7,
+                    "index": 7,
+                    "line": 1,
+                  },
+                },
+                "name": "foo",
+                "start": 7,
+                "type": "Identifier",
+              },
+              "start": 7,
+              "type": "ImportDefaultSpecifier",
+            },
+          ],
+          "start": 0,
+          "type": "ImportDeclaration",
+        },
+      ],
+      "directives": [],
+      "end": 34,
+      "interpreter": null,
+      "loc": {
+        "end": {
+          "column": 34,
+          "index": 34,
+          "line": 1,
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 1,
+        },
+      },
+      "sourceType": "module",
+      "start": 0,
+      "type": "Program",
+    },
+    "start": 0,
+    "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
+  "type": "babel-ast",
+}
+`;

@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"#-#-#-#-#  ./po/template.po  #-#-#-#-#\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: loctool\n"
+"Project-Id-Version: 1\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: a/b/c.js:32
+msgid "string 1"
+msgstr "строка 1"
+
+# a plural string
+msgid "one string"
+msgid_plural "{$count} strings"
+msgstr[0] "{$count} струна"
+msgstr[1] "{$count} струны"
+msgstr[2] "{$count} струн"
+
+# another string
+msgid "string 2"
+msgstr "строка 2"
+
+# string with continuation
+msgid "string 3 and 4"
+msgstr "строка 3 и 4"
+

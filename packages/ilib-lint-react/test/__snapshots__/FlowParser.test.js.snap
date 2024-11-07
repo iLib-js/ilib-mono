@@ -1,0 +1,677 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testFlowParser Flow parser more complex example 1`] = `
+{
+  "ir": {
+    "comments": [
+      {
+        "end": 10,
+        "loc": {
+          "end": {
+            "column": 10,
+            "index": 10,
+            "line": 1,
+          },
+          "start": {
+            "column": 0,
+            "index": 0,
+            "line": 1,
+          },
+        },
+        "start": 0,
+        "type": "CommentLine",
+        "value": " comment",
+      },
+    ],
+    "end": 146,
+    "errors": [],
+    "loc": {
+      "end": {
+        "column": 12,
+        "index": 146,
+        "line": 7,
+      },
+      "start": {
+        "column": 0,
+        "index": 0,
+        "line": 1,
+      },
+    },
+    "program": {
+      "body": [
+        {
+          "end": 57,
+          "importKind": "value",
+          "leadingComments": [
+            {
+              "end": 10,
+              "loc": {
+                "end": {
+                  "column": 10,
+                  "index": 10,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 0,
+                  "index": 0,
+                  "line": 1,
+                },
+              },
+              "start": 0,
+              "type": "CommentLine",
+              "value": " comment",
+            },
+          ],
+          "loc": {
+            "end": {
+              "column": 46,
+              "index": 57,
+              "line": 2,
+            },
+            "start": {
+              "column": 12,
+              "index": 23,
+              "line": 2,
+            },
+          },
+          "source": {
+            "end": 56,
+            "extra": {
+              "raw": "'../src/index.js'",
+              "rawValue": "../src/index.js",
+            },
+            "loc": {
+              "end": {
+                "column": 45,
+                "index": 56,
+                "line": 2,
+              },
+              "start": {
+                "column": 28,
+                "index": 39,
+                "line": 2,
+              },
+            },
+            "start": 39,
+            "type": "StringLiteral",
+            "value": "../src/index.js",
+          },
+          "specifiers": [
+            {
+              "end": 33,
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "index": 33,
+                  "line": 2,
+                },
+                "start": {
+                  "column": 19,
+                  "index": 30,
+                  "line": 2,
+                },
+              },
+              "local": {
+                "end": 33,
+                "loc": {
+                  "end": {
+                    "column": 22,
+                    "index": 33,
+                    "line": 2,
+                  },
+                  "identifierName": "foo",
+                  "start": {
+                    "column": 19,
+                    "index": 30,
+                    "line": 2,
+                  },
+                },
+                "name": "foo",
+                "start": 30,
+                "type": "Identifier",
+              },
+              "start": 30,
+              "type": "ImportDefaultSpecifier",
+            },
+          ],
+          "start": 23,
+          "type": "ImportDeclaration",
+        },
+        {
+          "declarations": [
+            {
+              "end": 99,
+              "id": {
+                "end": 88,
+                "loc": {
+                  "end": {
+                    "column": 29,
+                    "index": 88,
+                    "line": 4,
+                  },
+                  "identifierName": "str",
+                  "start": {
+                    "column": 18,
+                    "index": 77,
+                    "line": 4,
+                  },
+                },
+                "name": "str",
+                "start": 77,
+                "type": "Identifier",
+                "typeAnnotation": {
+                  "end": 88,
+                  "loc": {
+                    "end": {
+                      "column": 29,
+                      "index": 88,
+                      "line": 4,
+                    },
+                    "start": {
+                      "column": 21,
+                      "index": 80,
+                      "line": 4,
+                    },
+                  },
+                  "start": 80,
+                  "type": "TypeAnnotation",
+                  "typeAnnotation": {
+                    "end": 88,
+                    "loc": {
+                      "end": {
+                        "column": 29,
+                        "index": 88,
+                        "line": 4,
+                      },
+                      "start": {
+                        "column": 23,
+                        "index": 82,
+                        "line": 4,
+                      },
+                    },
+                    "start": 82,
+                    "type": "StringTypeAnnotation",
+                  },
+                },
+              },
+              "init": {
+                "end": 99,
+                "extra": {
+                  "raw": ""String"",
+                  "rawValue": "String",
+                },
+                "loc": {
+                  "end": {
+                    "column": 40,
+                    "index": 99,
+                    "line": 4,
+                  },
+                  "start": {
+                    "column": 32,
+                    "index": 91,
+                    "line": 4,
+                  },
+                },
+                "start": 91,
+                "type": "StringLiteral",
+                "value": "String",
+              },
+              "loc": {
+                "end": {
+                  "column": 40,
+                  "index": 99,
+                  "line": 4,
+                },
+                "start": {
+                  "column": 18,
+                  "index": 77,
+                  "line": 4,
+                },
+              },
+              "start": 77,
+              "type": "VariableDeclarator",
+            },
+          ],
+          "end": 100,
+          "kind": "const",
+          "loc": {
+            "end": {
+              "column": 41,
+              "index": 100,
+              "line": 4,
+            },
+            "start": {
+              "column": 12,
+              "index": 71,
+              "line": 4,
+            },
+          },
+          "start": 71,
+          "type": "VariableDeclaration",
+        },
+        {
+          "declaration": {
+            "end": 132,
+            "loc": {
+              "end": {
+                "column": 30,
+                "index": 132,
+                "line": 6,
+              },
+              "identifierName": "str",
+              "start": {
+                "column": 27,
+                "index": 129,
+                "line": 6,
+              },
+            },
+            "name": "str",
+            "start": 129,
+            "type": "Identifier",
+          },
+          "end": 133,
+          "loc": {
+            "end": {
+              "column": 31,
+              "index": 133,
+              "line": 6,
+            },
+            "start": {
+              "column": 12,
+              "index": 114,
+              "line": 6,
+            },
+          },
+          "start": 114,
+          "type": "ExportDefaultDeclaration",
+        },
+      ],
+      "directives": [],
+      "end": 146,
+      "interpreter": null,
+      "loc": {
+        "end": {
+          "column": 12,
+          "index": 146,
+          "line": 7,
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 1,
+        },
+      },
+      "sourceType": "module",
+      "start": 0,
+      "type": "Program",
+    },
+    "start": 0,
+    "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
+  "type": "babel-ast",
+}
+`;
+
+exports[`testFlowParser Flow parser simple 1`] = `
+{
+  "ir": {
+    "comments": [
+      {
+        "end": 8,
+        "loc": {
+          "end": {
+            "column": 8,
+            "index": 8,
+            "line": 1,
+          },
+          "start": {
+            "column": 0,
+            "index": 0,
+            "line": 1,
+          },
+        },
+        "start": 0,
+        "type": "CommentLine",
+        "value": " @flow",
+      },
+    ],
+    "end": 176,
+    "errors": [],
+    "loc": {
+      "end": {
+        "column": 12,
+        "index": 176,
+        "line": 6,
+      },
+      "start": {
+        "column": 0,
+        "index": 0,
+        "line": 1,
+      },
+    },
+    "program": {
+      "body": [
+        {
+          "end": 55,
+          "importKind": "value",
+          "leadingComments": [
+            {
+              "end": 8,
+              "loc": {
+                "end": {
+                  "column": 8,
+                  "index": 8,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 0,
+                  "index": 0,
+                  "line": 1,
+                },
+              },
+              "start": 0,
+              "type": "CommentLine",
+              "value": " @flow",
+            },
+          ],
+          "loc": {
+            "end": {
+              "column": 46,
+              "index": 55,
+              "line": 2,
+            },
+            "start": {
+              "column": 12,
+              "index": 21,
+              "line": 2,
+            },
+          },
+          "source": {
+            "end": 54,
+            "extra": {
+              "raw": "'../src/index.js'",
+              "rawValue": "../src/index.js",
+            },
+            "loc": {
+              "end": {
+                "column": 45,
+                "index": 54,
+                "line": 2,
+              },
+              "start": {
+                "column": 28,
+                "index": 37,
+                "line": 2,
+              },
+            },
+            "start": 37,
+            "type": "StringLiteral",
+            "value": "../src/index.js",
+          },
+          "specifiers": [
+            {
+              "end": 31,
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "index": 31,
+                  "line": 2,
+                },
+                "start": {
+                  "column": 19,
+                  "index": 28,
+                  "line": 2,
+                },
+              },
+              "local": {
+                "end": 31,
+                "loc": {
+                  "end": {
+                    "column": 22,
+                    "index": 31,
+                    "line": 2,
+                  },
+                  "identifierName": "foo",
+                  "start": {
+                    "column": 19,
+                    "index": 28,
+                    "line": 2,
+                  },
+                },
+                "name": "foo",
+                "start": 28,
+                "type": "Identifier",
+              },
+              "start": 28,
+              "type": "ImportDefaultSpecifier",
+            },
+          ],
+          "start": 21,
+          "type": "ImportDeclaration",
+        },
+        {
+          "declaration": {
+            "async": false,
+            "body": {
+              "body": [
+                {
+                  "argument": {
+                    "arguments": [
+                      {
+                        "end": 147,
+                        "extra": {
+                          "raw": "'x/y'",
+                          "rawValue": "x/y",
+                        },
+                        "loc": {
+                          "end": {
+                            "column": 32,
+                            "index": 147,
+                            "line": 4,
+                          },
+                          "start": {
+                            "column": 27,
+                            "index": 142,
+                            "line": 4,
+                          },
+                        },
+                        "start": 142,
+                        "type": "StringLiteral",
+                        "value": "x/y",
+                      },
+                    ],
+                    "callee": {
+                      "end": 141,
+                      "loc": {
+                        "end": {
+                          "column": 26,
+                          "index": 141,
+                          "line": 4,
+                        },
+                        "identifierName": "foo",
+                        "start": {
+                          "column": 23,
+                          "index": 138,
+                          "line": 4,
+                        },
+                      },
+                      "name": "foo",
+                      "start": 138,
+                      "type": "Identifier",
+                    },
+                    "end": 148,
+                    "loc": {
+                      "end": {
+                        "column": 33,
+                        "index": 148,
+                        "line": 4,
+                      },
+                      "start": {
+                        "column": 23,
+                        "index": 138,
+                        "line": 4,
+                      },
+                    },
+                    "start": 138,
+                    "type": "CallExpression",
+                  },
+                  "end": 149,
+                  "loc": {
+                    "end": {
+                      "column": 34,
+                      "index": 149,
+                      "line": 4,
+                    },
+                    "start": {
+                      "column": 16,
+                      "index": 131,
+                      "line": 4,
+                    },
+                  },
+                  "start": 131,
+                  "type": "ReturnStatement",
+                },
+              ],
+              "directives": [],
+              "end": 163,
+              "loc": {
+                "end": {
+                  "column": 13,
+                  "index": 163,
+                  "line": 5,
+                },
+                "start": {
+                  "column": 57,
+                  "index": 113,
+                  "line": 3,
+                },
+              },
+              "start": 113,
+              "type": "BlockStatement",
+            },
+            "end": 163,
+            "generator": false,
+            "id": {
+              "end": 102,
+              "loc": {
+                "end": {
+                  "column": 46,
+                  "index": 102,
+                  "line": 3,
+                },
+                "identifierName": "pathToFile",
+                "start": {
+                  "column": 36,
+                  "index": 92,
+                  "line": 3,
+                },
+              },
+              "name": "pathToFile",
+              "start": 92,
+              "type": "Identifier",
+            },
+            "loc": {
+              "end": {
+                "column": 13,
+                "index": 163,
+                "line": 5,
+              },
+              "start": {
+                "column": 27,
+                "index": 83,
+                "line": 3,
+              },
+            },
+            "params": [],
+            "predicate": null,
+            "returnType": {
+              "end": 112,
+              "loc": {
+                "end": {
+                  "column": 56,
+                  "index": 112,
+                  "line": 3,
+                },
+                "start": {
+                  "column": 48,
+                  "index": 104,
+                  "line": 3,
+                },
+              },
+              "start": 104,
+              "type": "TypeAnnotation",
+              "typeAnnotation": {
+                "end": 112,
+                "loc": {
+                  "end": {
+                    "column": 56,
+                    "index": 112,
+                    "line": 3,
+                  },
+                  "start": {
+                    "column": 50,
+                    "index": 106,
+                    "line": 3,
+                  },
+                },
+                "start": 106,
+                "type": "StringTypeAnnotation",
+              },
+            },
+            "start": 83,
+            "type": "FunctionDeclaration",
+          },
+          "end": 163,
+          "loc": {
+            "end": {
+              "column": 13,
+              "index": 163,
+              "line": 5,
+            },
+            "start": {
+              "column": 12,
+              "index": 68,
+              "line": 3,
+            },
+          },
+          "start": 68,
+          "type": "ExportDefaultDeclaration",
+        },
+      ],
+      "directives": [],
+      "end": 176,
+      "interpreter": null,
+      "loc": {
+        "end": {
+          "column": 12,
+          "index": 176,
+          "line": 6,
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 1,
+        },
+      },
+      "sourceType": "module",
+      "start": 0,
+      "type": "Program",
+    },
+    "start": 0,
+    "type": "File",
+  },
+  "sourceFile": {
+    "dirty": false,
+    "filePath": "x/y",
+    "sourceLocale": "en-US",
+    "type": "",
+  },
+  "type": "babel-ast",
+}
+`;
