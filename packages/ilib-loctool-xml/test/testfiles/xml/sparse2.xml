@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<messages>
+    <plurals>
+        <foo>asdf</foo>
+        <bar>
+            <one>one</one>
+            <other>other</other>
+        </bar>
+    </plurals>
+    <arrays>
+        <asdf>
+            <item>value 1</item>
+            <item>value 2</item>
+            <item>value 3</item>
+        </asdf>
+        <asdfasdf>
+            <item>1</item>
+            <item>2</item>
+            <item>3</item>
+        </asdfasdf>
+    </arrays>
+    <strings>
+        <a>b</a>
+        <c>d</c>
+    </strings>
+</messages>

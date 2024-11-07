@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<properties>
+    <entry key="key1" i18n="translator note 1">source string 1</entry>
+    <entry key="key2" i18n="translator note 2key" locale="en-US">source string 2</entry>
+    <entry key="key3">source string 3</entry>
+    <entry>source string 4</entry>
+</properties>
