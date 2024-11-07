@@ -1,0 +1,45 @@
+{
+    "$id": "permissionset-meta-xml-schema",
+    "type": "object",
+    "properties": {
+        "PermissionSet": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "required": ["label"],
+            "properties": {
+                "label": {
+                    "type": "object",
+                    "required": ["_text"],
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value",
+                                "key": "_basename"
+                            }
+                        }
+                    }
+                },
+                "objectPermissions": {
+                    "type": "object",
+                    "required": ["object"],
+                    "properties": {
+                        "object": {
+                            "type": "object",
+                            "required": ["_text"],
+                            "properties": {
+                                "_text": {
+                                    "type": "string",
+                                    "localizableType": {
+                                        "context": "_value"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
