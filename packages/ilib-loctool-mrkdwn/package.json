@@ -1,0 +1,68 @@
+{
+    "name": "ilib-loctool-mrkdwn",
+    "version": "1.0.0",
+    "main": "./MrkdwnJsFileType.js",
+    "description": "A loctool plugin that knows how to process Slack markdown files encoded in js files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "github",
+        "flavor",
+        "markdown",
+        "slack",
+        "mrkdwn"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "MrkdwnJsFile.js",
+        "MrkdwnJsFileType.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-loctool-mrkdwn.git"
+    },
+    "scripts": {
+        "dist": "npm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "node --inspect-brk node_modules/.bin/jest -i",
+        "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE"
+    },
+    "engines": {
+        "node": ">=10.0"
+    },
+    "dependencies": {
+        "ilib-tree-node": "^2.0.0",
+        "message-accumulator": "^3.0.0",
+        "micromatch": "^4.0.8",
+        "slack-message-parser": "^3.0.2"
+    },
+    "devDependencies": {
+        "jest": "^26.0.0",
+        "loctool": "^2.25.2"
+    }
+}
