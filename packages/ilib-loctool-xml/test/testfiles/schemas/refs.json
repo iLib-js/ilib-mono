@@ -1,0 +1,125 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://github.com/ilib-js/refs.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "An example of a deeply nested schema.",
+    "$defs": {
+        "phonenumber": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "object"
+                },
+                "type": {
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": {
+                        "type": "string",
+                        "key": "_path"
+                    },
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "address": {
+            "$anchor": "address",
+            "title": "Address",
+            "type": "object",
+            "properties": {
+                "streetAddress": {
+                    "title": "Street Address",
+                    "type": "string"
+                },
+                "region": {
+                    "title": "Region/State/Province",
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": {
+                        "type": "string",
+                        "key": "_path"
+                    },
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                },
+                "city": {
+                    "title": "Street Address",
+                    "type": "object"
+                },
+                "postalCode": {
+                    "title": "Street Address",
+                    "type": "object"
+                },
+                "country": {
+                    "title": "Street Address",
+                    "type": "object",
+                    "localizable": true,
+                    "localizableType": {
+                        "type": "string",
+                        "key": "_path"
+                    },
+                    "properties": {
+                        "_text": {
+                            "type": "string",
+                            "localizableType": {
+                                "source": "_value"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+        "root": {
+            "type": "object",
+            "properties": {
+                "owner": {
+                    "title": "Owner of the asset",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "title": "Name of the owner",
+                            "type": "object"
+                        },
+                        "phone": {
+                            "$ref": "#/$defs/phonenumber"
+                        },
+                        "address": {
+                            "$ref": "#/$defs/address"
+                        }
+                    }
+                }
+            },
+            "additionalProperties": {
+                "title": "customers of the asset",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "title": "Name of the customer",
+                        "type": "object"
+                    },
+                    "phone": {
+                        "$ref": "#/$defs/phonenumber"
+                    },
+                    "address": {
+                        "$ref": "#/$defs/address"
+                    }
+                }
+            }
+        }
+    }
+}
