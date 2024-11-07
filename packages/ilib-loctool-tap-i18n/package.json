@@ -1,0 +1,64 @@
+{
+    "name": "ilib-loctool-tap-i18n",
+    "version": "1.1.1",
+    "main": "./YamlFileType.js",
+    "description": "A loctool plugin that knows how to process tap-i18n style yaml files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "yaml"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "YamlFile.js",
+        "YamlFileType.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "dist": "pnpm pack",
+        "test": "pnpm test:jest",
+        "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:jestfix": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:watch": "pnpm test:jest --watch",
+        "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=10.0"
+    },
+    "dependencies": {
+        "ilib": "^14.20.0",
+        "ilib-tools-common": "^1.0.1",
+        "ilib-yaml": "^1.0.1",
+        "micromatch": "^4.0.5"
+    },
+    "devDependencies": {
+        "jest": "^29.0.0",
+        "loctool": "^2.24.1"
+    }
+}

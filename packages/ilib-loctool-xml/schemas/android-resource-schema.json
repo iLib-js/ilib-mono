@@ -1,0 +1,206 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "android-resource-schema",
+    "type": "object",
+    "description": "An Android resource file",
+    "$defs": {
+        "resource-attribute-type": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "localizableType": {
+                        "key": "_value"
+                    }
+                },
+                "i18n": {
+                    "type": "string",
+                    "localizableType": {
+                        "comment": "_value"
+                    }
+                },
+                "locale": {
+                    "type": "string",
+                    "localizableType": {
+                        "locale": "_value"
+                    }
+                },
+                "context": {
+                    "type": "string",
+                    "localizableType": {
+                        "context": "_value"
+                    }
+                },
+                "formatted": {
+                    "type": "boolean",
+                    "localizableType": {
+                        "formatted": "_value"
+                    }
+                }
+            }
+        },
+        "plural-item-type": {
+            "type": "object",
+            "required": ["_text"],
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "quantity": {
+                            "type": "string",
+                            "localizableType": {
+                                "category": "_value"
+                            }
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "plural-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "plural",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/plural-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/plural-item-type"
+                        }
+                    ]
+                }
+            }
+        },
+        "string-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "string",
+            "required": ["_text"],
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "array-item-type": {
+            "type": "object",
+            "required": ["_text"],
+            "properties": {
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        },
+        "array-type": {
+            "type": "object",
+            "localizable": true,
+            "localizableType": "array",
+            "properties": {
+                "_attributes": {
+                    "$ref": "#/$defs/resource-attribute-type"
+                },
+                "item": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-item-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-item-type"
+                        }
+                    ]
+                }
+            }
+        },
+        "templates": {
+            "plurals": {
+                "default": {
+                    "_attributes": {
+                        "name": "[_key]",
+                        "i18n": "[_comment]"
+                    },
+                    "[_forEachCategory]": {
+                        "item": {
+                            "_attributes": {
+                                "quantity": "[_category]"
+                            },
+                            "_text": "[_target]"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+        "resources": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/string-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/string-type"
+                        }
+                    ]
+                },
+                "plurals": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/plural-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/plural-type"
+                        }
+                    ]
+                },
+                "string-array": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/array-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/array-type"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

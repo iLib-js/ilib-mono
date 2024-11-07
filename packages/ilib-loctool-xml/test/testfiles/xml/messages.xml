@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<messages>
+    <plurals>
+        <foo>asdf</foo>
+        <bar comment="translator comment">
+            <one>one</one>
+            <many>many</many>
+            <other>other</other>
+        </bar>
+        <attribute one="one" few="few" many="many" other="other"/>
+        <hybrid one="one" few="few" many="many">other</hybrid>
+    </plurals>
+    <arrays>
+        <asdf i18n="comment">
+            <item>value 1</item>
+            <item>value 2</item>
+            <item>value 3</item>
+        </asdf>
+        <asdfasdf key="key">
+            <item>1</item>
+            <item>2</item>
+            <item>3</item>
+        </asdfasdf>
+    </arrays>
+    <strings>
+        <a>b</a>
+        <c>d</c>
+        <e key="key1">f</e>
+        <e key="key2" value="g"/>
+    </strings>
+</messages>

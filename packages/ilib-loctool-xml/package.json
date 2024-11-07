@@ -1,0 +1,65 @@
+{
+    "name": "ilib-loctool-xml",
+    "version": "1.1.3",
+    "main": "./XmlFileType.js",
+    "description": "A loctool plugin that knows how to localize xml files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "xml"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "schemas",
+        "README.md",
+        "LICENSE",
+        "XmlFile.js",
+        "XmlFileType.js",
+        "convertToJson.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "dist": "pnpm pack",
+        "test": "pnpm test:jest",
+        "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+        "test:watch": "pnpm test:jest --watch",
+        "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i",
+        "clean": "git clean -f -d test"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "ilib": "^14.18.0",
+        "xml-js": "^1.6.11"
+    },
+    "devDependencies": {
+        "jest": "^26.3.0",
+        "loctool": "^2.20.2"
+    }
+}
