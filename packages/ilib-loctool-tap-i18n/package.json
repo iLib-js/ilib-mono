@@ -42,15 +42,18 @@
     "scripts": {
         "dist": "pnpm pack",
         "test": "pnpm test:jest",
-        "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
+        "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:jestfix": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
-        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest --testEnvironment node -i",
+        "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
         "node": ">=10.0"
     },
     "dependencies": {
+        "ilib": "^14.20.0",
+        "ilib-tools-common": "^1.0.1",
         "ilib-yaml": "^1.0.1",
         "micromatch": "^4.0.5"
     },
