@@ -1,0 +1,64 @@
+{
+    "name": "ilib-loctool-jst",
+    "version": "1.1.3",
+    "main": "./JavaScriptFileType.js",
+    "description": "A loctool plugin that knows how to process Javascript Template (JST) files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "html",
+        "javascript",
+        "template"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "HTMLTemplateFileType.js",
+        "HTMLTemplateFile.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "dist": "pnpm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=6.0"
+    },
+    "dependencies": {
+        "he": "^1.2.0",
+        "html-parser": "^0.11.0",
+        "ilib": "^14.18.0",
+        "js-stl": ">=0.0.6"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "loctool": "^2.23.1"
+    }
+}

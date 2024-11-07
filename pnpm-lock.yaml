@@ -558,6 +558,28 @@ importers:
         specifier: ^2.23.1
         version: 2.25.2(typescript@5.6.3)
 
+  packages/ilib-loctool-jst:
+    dependencies:
+      he:
+        specifier: ^1.2.0
+        version: 1.2.0
+      html-parser:
+        specifier: ^0.11.0
+        version: 0.11.0
+      ilib:
+        specifier: ^14.18.0
+        version: 14.20.0
+      js-stl:
+        specifier: '>=0.0.6'
+        version: 0.0.6
+    devDependencies:
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      loctool:
+        specifier: ^2.23.1
+        version: 2.25.2(typescript@5.6.3)
+
   packages/ilib-loctool-jsx:
     dependencies:
       ilib-loctool-javascript-resource:
@@ -635,6 +657,41 @@ importers:
         specifier: ^2.23.1
         version: 2.25.2(typescript@5.6.3)
 
+  packages/ilib-loctool-ruby-ilib:
+    dependencies:
+      ilib:
+        specifier: ^14.18.0
+        version: 14.20.0
+    devDependencies:
+      jest:
+        specifier: ^26.3.0
+        version: 26.6.3
+      loctool:
+        specifier: ^2.23.1
+        version: 2.25.2(typescript@5.6.3)
+
+  packages/ilib-loctool-salesforce-metaxml:
+    dependencies:
+      ilib:
+        specifier: ^14.18.0
+        version: 14.20.0
+      ilib-loctool-xml:
+        specifier: ^1.1.2
+        version: 1.1.3
+      micromatch:
+        specifier: ^4.0.5
+        version: 4.0.8
+      xml-js:
+        specifier: ^1.6.11
+        version: 1.6.11
+    devDependencies:
+      jest:
+        specifier: ^26.3.0
+        version: 26.6.3
+      loctool:
+        specifier: ^2.23.1
+        version: 2.25.2(typescript@5.6.3)
+
   packages/ilib-loctool-strings:
     dependencies:
       ilib:
@@ -697,6 +754,41 @@ importers:
         version: 26.6.3
       loctool:
         specifier: ^2.20.2
+        version: 2.25.2(typescript@5.6.3)
+
+  packages/ilib-loctool-yaml:
+    dependencies:
+      ilib:
+        specifier: ^14.18.0
+        version: 14.20.0
+      micromatch:
+        specifier: ^4.0.5
+        version: 4.0.8
+      yaml:
+        specifier: 2.0.0
+        version: 2.0.0
+    devDependencies:
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      loctool:
+        specifier: ^2.23.1
+        version: 2.25.2(typescript@5.6.3)
+
+  packages/ilib-loctool-yaml-resource:
+    dependencies:
+      ilib:
+        specifier: ^14.18.0
+        version: 14.20.0
+      yaml:
+        specifier: 2.2.1
+        version: 2.2.1
+    devDependencies:
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+      loctool:
+        specifier: ^2.23.1
         version: 2.25.2(typescript@5.6.3)
 
   packages/ilib-scanner:
@@ -3781,6 +3873,10 @@ packages:
     resolution: {integrity: sha512-qP6wJwUn6YFhdKSP0MQMXsTkwaBSDxgv1cwGfLzrs1mT/nmz/blHGP7JT55+XAakbdd6SO4aZeOCF0lB4bhCxg==, tarball: file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz}
     version: 1.0.0
 
+  ilib-loctool-xml@1.1.3:
+    resolution: {integrity: sha512-qvt9OdDY0lNknRtmnPLUNBDDuTawt7F3fCdomdVYIpgShj8Yt4GgjZC96+LB2SbcFD2JahjBhfqz//0L8JiVzA==}
+    engines: {node: '>=6.0'}
+
   ilib-loctool-yaml@1.5.1:
     resolution: {integrity: sha512-Jvqo7Dfndu5hpii4ihCa+w2Oey697ti7o02mKtOxZouRxJJCB33JMCYFUCl4GXH+apVErsk3j5KK8dmY8PNt/g==}
     engines: {node: '>=10.0'}
@@ -6818,6 +6914,10 @@ packages:
 
   yaml@2.0.0:
     resolution: {integrity: sha512-JbfdlHKGP2Ik9IHylzWlGd4pPK++EU46/IxMykphS2ZKw7a7h+dHNmcXObLgpRDriBY+rpWslldikckX8oruWQ==}
+    engines: {node: '>= 14'}
+
+  yaml@2.2.1:
+    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
     engines: {node: '>= 14'}
 
   yaml@2.6.0:
@@ -10730,6 +10830,11 @@ snapshots:
   ilib-loctool-mock@file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz:
     dependencies:
       ilib: 14.20.0
+
+  ilib-loctool-xml@1.1.3:
+    dependencies:
+      ilib: 14.20.0
+      xml-js: 1.6.11
 
   ilib-loctool-yaml@1.5.1:
     dependencies:
@@ -14772,6 +14877,8 @@ snapshots:
   yallist@3.1.1: {}
 
   yaml@2.0.0: {}
+
+  yaml@2.2.1: {}
 
   yaml@2.6.0: {}
 

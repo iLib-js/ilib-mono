@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Retry_Count__c</fullName>
+    <externalId>false</externalId>
+    <label x-i18n="comment">Retry Count</label>
+    <description>This is a test.</description>
+    <inlineHelpText>This is inline help text</inlineHelpText>
+    <precision>1</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
