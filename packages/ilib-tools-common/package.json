@@ -1,0 +1,96 @@
+{
+    "name": "ilib-tools-common",
+    "version": "1.12.0",
+    "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        }
+    },
+    "description": "Library of common classes and functions for the ilib command-line tools",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "lint",
+        "locale"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-tools-common",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "lib",
+        "docs",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "scripts": {
+        "build": "pnpm build:prod",
+        "build:prod": "grunt babel --mode=prod",
+        "build:dev": "grunt babel --mode=dev",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
+        "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
+        "test:watch": "pnpm test:jest --watch",
+        "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i --testEnvironment node",
+        "clean": "git clean -f -d src test; rm -rf lib",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibToolsCommon.md ; pnpm doc:html",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.24.5",
+        "@babel/preset-env": "^7.24.5",
+        "@babel/register": "^7.23.7",
+        "@babel/runtime": "^7.24.5",
+        "babel-loader": "^9.1.3",
+        "babel-plugin-add-module-exports": "^1.0.4",
+        "conditional-install": "^1.0.1",
+        "docdash": "^2.0.2",
+        "grunt": "^1.6.1",
+        "grunt-babel": "^8.0.0",
+        "grunt-cli": "^1.4.3",
+        "grunt-contrib-clean": "^2.0.1",
+        "grunt-contrib-jshint": "^3.2.0",
+        "grunt-contrib-uglify": "^5.2.2",
+        "jest": "^29.0.0",
+        "jsdoc": "^4.0.3",
+        "jsdoc-to-markdown": "^8.0.1",
+        "load-grunt-tasks": "^5.1.0",
+        "npm-run-all": "^4.1.5",
+        "semver": "^7.6.2"
+    },
+    "dependencies": {
+        "@log4js-node/log4js-api": "^1.0.2",
+        "ilib-ctype": "^1.2.1",
+        "ilib-locale": "^1.2.2",
+        "ilib-xliff": "^1.2.0"
+    }
+}
