@@ -55,7 +55,7 @@
         "build:dev": "grunt babel --mode=dev",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "mkdir -p lib ; echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; npm pack",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
         "test": "echo success TODO fix this pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 pnpm build:dev ; bash test/testSuite.sh",
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web",

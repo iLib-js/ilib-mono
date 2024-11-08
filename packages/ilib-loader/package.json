@@ -56,7 +56,7 @@
         "build:dev": "grunt babel --mode=dev",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; npm pack",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
         "test": "echo Success: TODO fix this to pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
         "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" karma start --reporters dots",

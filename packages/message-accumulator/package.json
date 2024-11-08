@@ -52,8 +52,8 @@
     },
     "scripts": {
         "build": "grunt babel",
-        "dist": "npm-run-all build doc ; npm pack",
-        "test": "npm-run-all build test:cli",
+        "dist": "npm-run-all --npm-path pnpm build doc ; pnpm pack",
+        "test": "npm-run-all --npm-path pnpm build test:cli",
         "test:cli": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
         "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i --testEnvironment node",

@@ -53,12 +53,12 @@
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
         "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest  --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
         "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i  --testEnvironment node",
         "clean": "git clean -f -d src test; rm -rf lib *.tgz",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibTmx.md ; npm run doc:html",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibTmx.md ; pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
