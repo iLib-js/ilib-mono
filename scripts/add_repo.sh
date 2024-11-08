@@ -44,16 +44,6 @@ do
     echo "Adding subtree $PREFIX"
     git subtree add --prefix "$PREFIX" "$REMOTE/$BRANCH"
 
-    # carry over tags to the new repository
-    git ls-remote --tags $REMOTE | grep '{}' | sed 's|refs/tags/||' | sed 's|\^{}||' > tags.txt
-    for tag in $(awk '{print $2}' tags.txt); do
-        COMMIT=$(grep $tag tags.txt | awk '{print $1}')
-        echo "Creating tag $REMOTE-$tag" on commit $COMMIT
-        # Create a new tag in the monorepo using the original tag's commit
-        git tag -a "$REMOTE-$tag" -m "$REMOTE-$tag" "$COMMIT"
-    done
-    git push origin --tags
-
     # cleanup: remove remote
     git remote remove "$REMOTE"
 done
