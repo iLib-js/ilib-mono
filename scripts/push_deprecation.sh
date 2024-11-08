@@ -54,6 +54,7 @@ for PACKAGE in packages/*; do
 
     # create a new branch for deprecation notice PR
     HEAD_BRANCH="deprecation-notice"
+    git checkout -b "$HEAD_BRANCH"
 
     # prepend the deprecation notice to the README.md file
     NOTICE="""
