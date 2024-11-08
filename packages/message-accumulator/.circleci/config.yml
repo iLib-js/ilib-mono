@@ -1,0 +1,42 @@
+version: 2.1
+orbs:
+  browser-tools: circleci/browser-tools@1.4.6
+jobs:
+  test:
+    parameters:
+        docker_image:
+          type: string
+          default: cimg/node:current-browsers
+    docker:
+      - image: << parameters.docker_image >>
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            rm -rf node_modules package-lock.json
+            npm install
+      - run:
+          name: Running all unit tests
+          command: |
+            node -v
+            npm -v
+            npm run test
+
+workflows:
+  version: 2
+  test-all-node-versions:
+    jobs:
+      - test:
+          docker_image: circleci/node:10
+      - test:
+          docker_image: circleci/node:12
+      - test:
+          docker_image: cimg/node:14.21
+      - test:
+          docker_image: cimg/node:16.20
+      - test:
+          docker_image: cimg/node:18.9
+      - test:
+          docker_image: cimg/node:20.9
+      - test
