@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eu pipefail
 
 ## Script to add an existing iLib-js repository into the monorepo
 ## in a way that keeps the commit history.
