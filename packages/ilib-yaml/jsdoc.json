@@ -1,0 +1,19 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc", "closure"]
+    },
+    "copyright": "Copyright (c) 2024 JEDLSoft",
+    "linenums": true,
+    "sort": true,
+    "search": true,
+    "opts": {
+        "template": "node_modules/docdash",
+        "encoding": "utf8",
+        "destination": "docs",
+        "recurse": true
+    },
+    "source": {
+        "include": ["src"]
+    }
+}
