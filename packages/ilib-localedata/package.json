@@ -24,8 +24,8 @@
         "translation",
         "localedata"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-localedata",
-    "bugs": "https://github.com/iLib-js/ilib-localedata/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-localedata",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -42,26 +42,25 @@
     "files": [
         "src",
         "lib",
-        "docs",
         "README.md",
         "LICENSE"
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-localedata.git"
+        "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm run build:prod",
+        "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:test": "webpack-cli --config webpack-test.config.js",
-        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
-        "test": "npm run test:cli",
-        "test:cli": "LANG=en_US.UTF8 npm run build:dev ; bash test/testSuite.sh",
-        "test:all": "npm-run-all test:cli test:web",
-        "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
-        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "build:pkg": "mkdir -p lib ; echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; npm pack",
+        "test": "pnpm test:cli",
+        "test:cli": "LANG=en_US.UTF8 pnpm build:dev ; bash test/testSuite.sh",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
+        "test:web": "LANG=en_US.UTF8 pnpm build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "debug": "pnpm build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test ; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-localedata.md",
         "doc:html": "jsdoc -c jsdoc.json"
