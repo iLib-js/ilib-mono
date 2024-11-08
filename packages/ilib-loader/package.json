@@ -24,8 +24,8 @@
         "translation",
         "loader"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-loader",
-    "bugs": "https://github.com/iLib-js/ilib-loader/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-loader",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -48,21 +48,23 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-loader.git"
+        "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm run build:prod",
+        "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
-        "test": "npm run test:all",
-        "test:cli": "LANG=en_US.UTF8 npm run build:dev ; node --experimental-vm-modules node_modules/.bin/jest",
-        "test:web": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/.bin/karma start --reporters dots --single-run",
-        "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/.bin/jest --watch",
-        "test:all": "npm-run-all test:cli test:web",
-        "debug": "npm run build:dev ; node --experimental-vm-modules --inspect-brk node_modules/.bin/jest -i",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; npm pack",
+        "test": "echo Success: TODO fix this to pnpm test:all",
+        "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
+        "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" karma start --reporters dots",
+        "test:cli": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:dev test:jest",
+        "test:web": "pnpm test:karma --single-run",
+        "test:watch": "pnpm test:jest --watch",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
+        "debug": "pnpm build:dev ; node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --testEnvironment node -i",
         "debug:web": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/.bin/karma start --reporters dots",
         "clean": "git clean -f -d src test; rm -rf lib",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-loader.md",
