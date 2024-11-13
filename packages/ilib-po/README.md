@@ -5,6 +5,7 @@ A parser and generator for GNU po format files
 ## API Documentation
 
 Full API documentation can be found [here](./docs/index.md).
+HTML version can be found [here](./docs/index.html).
 
 ## License
 
