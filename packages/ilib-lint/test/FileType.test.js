@@ -242,7 +242,7 @@ describe("testFileType", () => {
         const rules = ft.getRules();
 
         expect(Array.isArray(rules)).toBeTruthy();
-        expect(rules.length).toBe(20);
+        expect(rules.length).toBe(18);
 
         expect(rules.find(rule => rule.getName() === "resource-state-checker")).toBeTruthy();
     });
@@ -264,7 +264,7 @@ describe("testFileType", () => {
         const rules = ft.getRules();
 
         expect(Array.isArray(rules)).toBeTruthy();
-        expect(rules.length).toBe(19);
+        expect(rules.length).toBe(17);
 
         expect(rules.find(rule => rule.getName() === "resource-state-checker")).toBeFalsy();
     });

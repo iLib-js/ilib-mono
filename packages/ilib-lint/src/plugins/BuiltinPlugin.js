@@ -231,30 +231,6 @@ export const regexRules = [
         link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-date-formatting.md",
         severity: "error"
     },
-    {
-        type: "resource-matcher",
-        name: "resource-snake-case",
-        description: "Ensure that when source strings contain only snake case (words and/or numbers separeated by underscores) and no whitespace, then the targets are the same",
-        note: "Do not translate the source string if it consists solely of snake-cased strings and/or digits. Please update the target string so it matches the source string.",
-        regexps: [
-            "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
-            "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
-        ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-snake-case.md",
-        severity: "error"
-    },
-    {
-        type: "resource-matcher",
-        name: "resource-camel-case",
-        description: "Ensure that when source strings contain only camel case and no whitespace, then the targets are the same",
-        note: "Do not translate the source string if it consists solely of camel-cased strings and/or digits. Please update the target string so it matches the source string.",
-        regexps: [
-            "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$", // camelCase and 6amelCaseWithD1g1t3
-            "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$", // PascalCase and 4ascalCaseWithD1g1t3
-        ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-camel-case.md",
-        severity: "error"
-    },
 ];
 
 // built-in ruleset that contains all the built-in rules
@@ -270,6 +246,8 @@ export const builtInRulesets = {
         "resource-no-translation": true,
         "resource-icu-plurals-translated": true,
         "resource-xml": true,
+        "resource-snake-case": true,
+        "resource-camel-case": true,
 
         // declarative rules from above
         "resource-url-match": true,
@@ -282,8 +260,6 @@ export const builtInRulesets = {
         "resource-no-halfwidth-kana-characters": true,
         "resource-no-double-byte-space": true,
         "resource-no-space-with-fullwidth-punctuation": true,
-        "resource-snake-case": true,
-        "resource-camel-case": true,
     },
 
     source: {

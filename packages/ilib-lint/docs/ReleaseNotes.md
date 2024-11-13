@@ -1,6 +1,9 @@
 Release Notes
 =============
 
+### v.2.6.1
+- changed the resource snake case rule and resource camel case rule from declarative to programmatic rules. This allows for configuration with exception strings on a project basis. Functionality remains the same.
+
 ### v2.6.0
 
 - fixed a bug where the results were not formatted properly when using the ansi-console-formatter
