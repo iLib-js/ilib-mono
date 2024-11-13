@@ -54,19 +54,20 @@
         "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm run build:prod",
+        "build": "pnpm run build:prod",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "build:data": "cd scripts ; node generate.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:prod": "tsc --project tsconfig.json --outDir lib --module commonjs",
         "build:dev": "tsc --project tsconfig.json --outDir lib --module commonjs --pretty --sourceMap",
-        "dist": "npm-run-all doc types build:prod build:pkg; npm pack",
+        "dist": "npm-run-all --npm-path pnpm doc types build:prod build:pkg; pnpm pack",
         "test": "LANG=en_US.UTF8 node --experimental-vm-modules ./node_modules/.bin/jest",
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules ./node_modules/.bin/jest --watch",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-po.md ; npm run doc:html",
-        "doc:html": "jsdoc -c jsdoc.json",
+        "doc": "mkdir -p docs ; npm-run-all --npm-path pnpm doc:html doc:md",
+        "doc:md": "mkdir -p docs ; typedoc --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
+        "doc:html": "mkdir -p docs ; typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts",
         "types": "tsc --declaration --emitDeclarationOnly -p ./tsconfig.json --outFile ./ilib-po.d.ts"
     },
     "devDependencies": {
@@ -88,6 +89,8 @@
         "load-grunt-tasks": "^5.1.0",
         "npm-run-all": "^4.1.5",
         "ts-jest": "^29.2.5",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.3.3"
     },
     "dependencies": {

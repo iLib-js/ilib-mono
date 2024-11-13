@@ -27,12 +27,25 @@ import SyntaxError from './SyntaxError';
 import Parser from './Parser';
 import Generator from './Generator';
 
+/** Options for the POFile constructor */
 export type POFileOptions = {
-    pathName: string,
+    /** the path to the po file */
+    pathName?: string,
+
+    /** the source locale of the file */
     sourceLocale?: string,
+
+    /** the target locale of the file */
     targetLocale?: string,
+
+    /** the name of the project that this po file is a part of */
     projectName?: string,
+
+    /** the type of the data in the po file. This might be something like "python" or "javascript" to
+     * indicate the type of the code that the strings are used in. */
     datatype?: string,
+
+    /** whether the context should be included as part of the key or not */
     contextInKey?: boolean
 };
 
@@ -53,7 +66,7 @@ class POFile {
 
     /**
      * Create a new PO file with the given path name.
-     * @constructor
+     *
      * @param options the options to use to create this PO file
      * @param options.pathName path to the file relative to the root
      * @param [options.sourceLocale] the locale of the file
