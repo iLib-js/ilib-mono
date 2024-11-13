@@ -1,8 +1,8 @@
-[**ilib-po**](../README.md) • **Docs**
+[**ilib-po**](../index.md) • **Docs**
 
 ***
 
-[ilib-po](../README.md) / POFileOptions
+[ilib-po](../index.md) / POFileOptions
 
 # Type Alias: POFileOptions
 
@@ -51,4 +51,4 @@ the target locale of the file
 
 ## Defined in
 
-[packages/ilib-po/src/POFile.ts:31](https://github.com/iLib-js/ilib-mono/blob/73e0590a5ef6f85f96f5564bad73e893068e1681/packages/ilib-po/src/POFile.ts#L31)
+[packages/ilib-po/src/POFile.ts:31](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/POFile.ts#L31)
