@@ -24,12 +24,23 @@ import Locale from 'ilib-locale';
 import { CommentType, Comments, escapeQuotes, makeKey } from './utils';
 import { pluralForms, PluralForm } from "./pluralforms";
 
+/** Options for the generator constructor */
 export type GeneratorOptions = {
-    pathName: string,
-    targetLocale: string,
-    projectName: string,
-    datatype: string,
-    contextInKey: boolean
+    /** the path to the po file */
+    pathName?: string,
+
+    /** the target locale of the file */
+    targetLocale?: string,
+
+    /** the name of the project that this po file is a part of */
+    projectName?: string,
+
+    /** the type of the data in the po file. This might be something like "python" or "javascript" to
+     * indicate the type of the code that the strings are used in. */
+    datatype?: string,
+
+    /** whether the context should be included as part of the key or not */
+    contextInKey?: boolean
 };
 
 
@@ -47,7 +58,6 @@ class Generator {
 
     /**
      * Create a new PO file generator
-     * @constructor
      * @param options the options to use to create this PO file
      * @param options.pathName path to the file relative to the root
      * @param options.targetLocale the locale of the file
