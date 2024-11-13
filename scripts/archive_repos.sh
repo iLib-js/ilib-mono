@@ -8,8 +8,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 MONOREPO_ROOT_DIR="$SCRIPT_DIR/.."
 cd "$MONOREPO_ROOT_DIR"
 
-URL_TEMPLATE='git@github.com:iLib-js/<repo>.git'
-
 # list of original repositories which did not have the ilib- prefix
 REPO_NAMES_NO_PREFIX='xliff;tmx'
 
@@ -25,25 +23,7 @@ for PACKAGE in packages/*; do
         REPO=$PACKAGE_NAME
     fi
 
-    # construct git url
-    URL="${URL_TEMPLATE//<repo>/$REPO}"
-    echo "Git URL $URL"
-
-    # check if the repository exists
-    if ! git ls-remote --exit-code "$URL" &> /dev/null; then
-        echo "Repository $REPO does not exist"
-        continue
-    fi
-
-    # clone the repository
-    REPO_DIR=$(mktemp -d)
-    git clone "$URL" "$REPO_DIR" --depth 1
-    pushd "$REPO_DIR"
-
-    # mark repository as archived
-    gh repo archive --yes
-
-    # cleanup
-    popd
-    rm -rf "$REPO_DIR"
+    # mark repository as archived (will wait for confirmation)
+    gh repo archive "iLib-js/$REPO"
+    # add flag --yes to skip confirmation prompt: gh repo archive "iLib-js/$REPO" --yes
 done
