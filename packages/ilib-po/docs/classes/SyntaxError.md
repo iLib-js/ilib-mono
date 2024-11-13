@@ -1,8 +1,8 @@
-[**ilib-po**](../README.md) • **Docs**
+[**ilib-po**](../index.md) • **Docs**
 
 ***
 
-[ilib-po](../README.md) / SyntaxError
+[ilib-po](../index.md) / SyntaxError
 
 # Class: SyntaxError
 
@@ -40,7 +40,7 @@ a description of the syntax error
 
 #### Defined in
 
-[packages/ilib-po/src/SyntaxError.ts:29](https://github.com/iLib-js/ilib-mono/blob/73e0590a5ef6f85f96f5564bad73e893068e1681/packages/ilib-po/src/SyntaxError.ts#L29)
+[packages/ilib-po/src/SyntaxError.ts:29](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/SyntaxError.ts#L29)
 
 ## Properties
 

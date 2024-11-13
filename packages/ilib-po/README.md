@@ -4,7 +4,7 @@ A parser and generator for GNU po format files
 
 ## API Documentation
 
-Full API documentation can be found [here](./docs/README.md).
+Full API documentation can be found [here](./docs/index.md).
 
 ## License
 

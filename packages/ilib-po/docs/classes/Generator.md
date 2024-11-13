@@ -1,8 +1,8 @@
-[**ilib-po**](../README.md) • **Docs**
+[**ilib-po**](../index.md) • **Docs**
 
 ***
 
-[ilib-po](../README.md) / Generator
+[ilib-po](../index.md) / Generator
 
 # Class: Generator
 
@@ -28,7 +28,7 @@ the options to use to create this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:68](https://github.com/iLib-js/ilib-mono/blob/73e0590a5ef6f85f96f5564bad73e893068e1681/packages/ilib-po/src/Generator.ts#L68)
+[packages/ilib-po/src/Generator.ts:68](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/Generator.ts#L68)
 
 ## Methods
 
@@ -55,4 +55,4 @@ the generated PO file as a string
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:89](https://github.com/iLib-js/ilib-mono/blob/73e0590a5ef6f85f96f5564bad73e893068e1681/packages/ilib-po/src/Generator.ts#L89)
+[packages/ilib-po/src/Generator.ts:89](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/Generator.ts#L89)
