@@ -93,6 +93,7 @@
     },
     "dependencies": {
         "ilib-ctype": "^1.2.1",
+        "ilib-locale": "^1.2.2",
         "ilib-tools-common": "^1.11.0"
     }
 }
