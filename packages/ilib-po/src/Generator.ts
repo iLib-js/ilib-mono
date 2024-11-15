@@ -21,7 +21,7 @@
 import { TranslationSet } from 'ilib-tools-common';
 import Locale from 'ilib-locale';
 
-import { CommentType, Comments, escapeQuotes, makeKey } from './utils';
+import { Comments, escapeQuotes, makeKey } from './utils';
 import { pluralForms, PluralForm } from "./pluralforms";
 
 /** Options for the generator constructor */

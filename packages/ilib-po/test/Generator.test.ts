@@ -23,8 +23,8 @@ import { describe, test, expect } from "@jest/globals";
 
 import Generator from "../src/Generator";
 
-describe("generator", function() {
-    test("Generator constructor no args", function() {
+describe("generator", () => {
+    test("Generator constructor no args", () => {
         expect.assertions(1);
 
         expect(() => {
@@ -33,7 +33,7 @@ describe("generator", function() {
         }).toThrow();
     });
 
-    test("Generator generate simple text", function() {
+    test("Generator generate simple text", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -45,7 +45,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
@@ -56,8 +56,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -74,7 +74,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text multiple", function() {
+    test("Generator generate text multiple", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -86,7 +86,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
@@ -106,8 +106,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -127,7 +127,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text with plural resources", function() {
+    test("Generator generate text with plural resources", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -139,7 +139,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
             key: "string 1",
@@ -155,9 +155,9 @@ describe("generator", function() {
             targetLocale: "fr-FR",
             datatype: "po"
         }));
-        
-        var actual = generator.generate(translations);
-        
+
+        const actual = generator.generate(translations);
+
         const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -176,7 +176,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text while preserving comments", function() {
+    test("Generator generate text while preserving comments", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -188,7 +188,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
@@ -214,8 +214,8 @@ describe("generator", function() {
             })
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -239,7 +239,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text while preserving multiple comments", function() {
+    test("Generator generate text while preserving multiple comments", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -251,7 +251,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
@@ -278,8 +278,8 @@ describe("generator", function() {
             })
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -309,7 +309,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text with escaped quotes", function() {
+    test("Generator generate text with escaped quotes", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -321,7 +321,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: 'string "quoted" 1',
@@ -332,8 +332,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -350,7 +350,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text with context", function() {
+    test("Generator generate text with context", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -362,7 +362,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
@@ -384,8 +384,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -407,7 +407,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text with context in key", function() {
+    test("Generator generate text with context in key", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -419,7 +419,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1 --- context 1",
@@ -441,8 +441,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/context.po  #-#-#-#-#\\n"\n' +
@@ -464,7 +464,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text with no actual translation", function() {
+    test("Generator generate text with no actual translation", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -476,7 +476,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
@@ -496,8 +496,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -517,7 +517,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text plurals with no actual translation", function() {
+    test("Generator generate text plurals with no actual translation", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -529,7 +529,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
             key: "{$count} object",
@@ -561,8 +561,8 @@ describe("generator", function() {
             datatype: "po"
         }));
 
-        var actual = generator.generate(translations);
-        var expected =
+        const actual = generator.generate(translations);
+        const expected =
             'msgid ""\n' +
             'msgstr ""\n' +
             '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
@@ -586,7 +586,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate text plurals with translations", function() {
+    test("Generator generate text plurals with translations", () => {
         expect.assertions(2);
 
         const generator = new Generator({
@@ -598,7 +598,7 @@ describe("generator", function() {
         });
         expect(generator).toBeTruthy();
 
-        var translations = new TranslationSet();
+        const translations = new TranslationSet();
         translations.add(new ResourcePlural({
             project: "foo",
             key: "{$count} object",
@@ -655,7 +655,7 @@ describe("generator", function() {
         expect(actual).toBe(expected);
     });
 
-    test("Generator generate a file for a language that has extra plural categories", function() {
+    test("Generator generate a file for a language that has extra plural categories", () => {
         expect.assertions(2);
 
         const generator = new Generator({

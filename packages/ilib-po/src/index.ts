@@ -23,11 +23,13 @@ import Parser from './Parser';
 import Generator from './Generator';
 
 import type { POFileOptions } from './POFile';
+import type { GeneratorOptions } from './Generator';
 
 export {
     POFile,
     POFileOptions,
     SyntaxError,
     Parser,
-    Generator
+    Generator,
+    GeneratorOptions
 };
