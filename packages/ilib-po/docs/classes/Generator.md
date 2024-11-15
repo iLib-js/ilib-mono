@@ -18,7 +18,7 @@ Create a new PO file generator
 
 #### Parameters
 
-• **options**: `GeneratorOptions`
+• **options**: [`GeneratorOptions`](../type-aliases/GeneratorOptions.md)
 
 the options to use to create this PO file
 
@@ -28,7 +28,7 @@ the options to use to create this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:68](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/Generator.ts#L68)
+[packages/ilib-po/src/Generator.ts:68](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/Generator.ts#L68)
 
 ## Methods
 
@@ -55,4 +55,4 @@ the generated PO file as a string
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:89](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/Generator.ts#L89)
+[packages/ilib-po/src/Generator.ts:89](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/Generator.ts#L89)
