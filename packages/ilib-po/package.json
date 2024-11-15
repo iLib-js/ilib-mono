@@ -55,8 +55,6 @@
     },
     "scripts": {
         "build": "pnpm run build:prod",
-        "build:test": "webpack-cli --config webpack-test.config.js",
-        "build:data": "cd scripts ; node generate.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:prod": "tsc --project tsconfig.json --outDir lib --module commonjs",
         "build:dev": "tsc --project tsconfig.json --outDir lib --module commonjs --pretty --sourceMap",
@@ -68,7 +66,7 @@
         "doc": "mkdir -p docs ; npm-run-all --npm-path pnpm doc:html doc:md",
         "doc:md": "mkdir -p docs ; typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
         "doc:html": "mkdir -p docs ; typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts",
-        "types": "tsc --declaration --emitDeclarationOnly -p ./tsconfig.json --outFile ./ilib-po.d.ts"
+        "types": "tsc --declaration --emitDeclarationOnly -p ./tsconfig.json --outDir lib --module commonjs --outFile ./ilib-po.d.ts"
     },
     "devDependencies": {
         "@jest/globals": "^29.7.0",
