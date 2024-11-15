@@ -41,7 +41,13 @@ export type Plural = {
 /**
  * The types of comments that can be in a PO file.
  */
-export type CommentType = "translator" | "extracted" | "flags" | "previous" | "paths";
+export enum CommentType {
+    TRANSLATOR = "translator",
+    EXTRACTED = "extracted",
+    FLAGS = "flags",
+    PREVIOUS = "previous",
+    PATHS = "paths"
+};
 
 /**
  * The values of various types of comments in a PO file.

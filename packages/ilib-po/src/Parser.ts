@@ -47,7 +47,10 @@ export type ParserOptions = {
     datatype?: string,
 
     /** whether the context should be included as part of the key or not */
-    contextInKey?: boolean
+    contextInKey?: boolean,
+    
+    /** whether to ignore the comments, or the set of comments to ignore */
+    ignoreComments?: boolean | Set<CommentType>
 };
 
 /**
@@ -65,11 +68,11 @@ enum State {
 };
 
 const commentTypeMap : { [key: string]: CommentType } = {
-    ' ': "translator",
-    '.': "extracted",
-    ',': "flags",
-    '|': "previous",
-    ':': "paths"
+    ' ': CommentType.TRANSLATOR,
+    '.': CommentType.EXTRACTED,
+    ',': CommentType.FLAGS,
+    '|': CommentType.PREVIOUS,
+    ':': CommentType.PATHS
 };
 
 const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
@@ -87,7 +90,7 @@ class Parser {
     private contextInKey: boolean;
 
     private pluralCategories?: PluralCategory[];
-    private commentsToIgnore: Set<string> = new Set();
+    private commentsToIgnore: Set<CommentType> = new Set(); // default is to include all comments
     private resourceIndex: number = 0;
 
     /**
@@ -98,6 +101,8 @@ class Parser {
      * @param options.datatype the type of the file
      * @param options.contextInKey whether the context is part of the key
      * @param options.targetLocale the locale of the file
+     * @param options.commentsToIgnore whether to ignore the comments, or the
+     * set of comment types to ignore.
      */
     constructor(options: ParserOptions) {
         if (!options) throw new Error("Parser: Missing required options in Parser constructor");
@@ -110,6 +115,16 @@ class Parser {
         this.contextInKey = options.contextInKey;
 
         this.pluralCategories = pluralForms[this.targetLocale.getLanguage() ?? "en"]?.categories || pluralForms.en.categories;
+        if (options.ignoreComments) {
+            if (typeof(options.ignoreComments) === 'boolean') {
+                // boolean true means ignore all comments and false means include all comments
+                if (options.ignoreComments) {
+                    this.commentsToIgnore = new Set(Object.values(commentTypeMap));
+                }
+            } else {
+                this.commentsToIgnore = options.ignoreComments;
+            }
+        }
     }
 
     /**
@@ -181,7 +196,7 @@ class Parser {
                             }
                             break;
                         case TokenType.PLURAL:
-                            if (token.category) {
+                            if (typeof(token.category) !== 'undefined') {
                                 const language = this.targetLocale?.getLanguage() ?? "en";
                                 const forms = pluralForms[language].categories || pluralForms.en.categories;
                                 if (token.category >= forms.length) {
@@ -190,6 +205,8 @@ class Parser {
                                     category = forms[token.category];
                                     state = State.PLURALSTR;
                                 }
+                            } else {
+                                restart();
                             }
                             break;
                         case TokenType.END:
@@ -211,7 +228,7 @@ class Parser {
                                         datatype: this.datatype,
                                         context: context,
                                         index: this.resourceIndex++,
-                                        targetLocale: this.targetLocale?.getSpec(),
+                                        targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
                                         targetStrings: translationPlurals
                                     });
                                 } else if (source) {
@@ -227,7 +244,7 @@ class Parser {
                                         datatype: this.datatype,
                                         context: context,
                                         index: this.resourceIndex++,
-                                        targetLocale: this.targetLocale?.getSpec(),
+                                        targetLocale: translation && this.targetLocale?.getSpec(),
                                         target: translation
                                     });
                                 }
@@ -241,7 +258,6 @@ class Parser {
                             break;
                         case TokenType.UNKNOWN:
                             throw new SyntaxError(this.pathName, tokenizer.getContext());
-                            break;
                     }
                     break;
                 case State.MSGIDSTR:
@@ -254,12 +270,11 @@ class Parser {
                                 if (token.value.length) {
                                     source = token.value;
                                 }
-                                state = State.START;
                             }
+                            state = State.START;
                             break;
                         default:
-                            restart();
-                            break;
+                            throw new SyntaxError(this.pathName, tokenizer.getContext());
                     }
                     break;
                 case State.MSGIDPLSTR:
@@ -275,12 +290,11 @@ class Parser {
                                         other: token.value
                                     };
                                 }
-                                state = State.START;
                             }
+                            state = State.START;
                             break;
                         default:
-                            restart();
-                            break;
+                            throw new SyntaxError(this.pathName, tokenizer.getContext());
                     }
                     break;
                 case State.MSGCTXTSTR:
@@ -293,12 +307,11 @@ class Parser {
                                 if (token.value.length) {
                                     context = token.value;
                                 }
-                                state = State.START;
                             }
+                            state = State.START;
                             break;
                         default:
-                            restart();
-                            break;
+                            throw new SyntaxError(this.pathName, tokenizer.getContext());
                     }
                     break;
                 case State.MSGSTR:
@@ -311,12 +324,11 @@ class Parser {
                                 if (token.value.length) {
                                     translation = token.value;
                                 }
-                                state = State.START;
                             }
+                            state = State.START;
                             break;
                         default:
-                            restart();
-                            break;
+                            throw new SyntaxError(this.pathName, tokenizer.getContext());
                     }
                     break;
                 case State.PLURALSTR:
@@ -334,13 +346,12 @@ class Parser {
                                     }
                                     translationPlurals[category] = token.value;
                                 }
-                                state = State.START;
-                                category = undefined;
                             }
+                            state = State.START;
+                            category = undefined;
                             break;
                         default:
-                            restart();
-                            break;
+                            throw new SyntaxError(this.pathName, tokenizer.getContext());
                     }
                     break;
             }
