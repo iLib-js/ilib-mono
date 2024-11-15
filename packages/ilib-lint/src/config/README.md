@@ -155,6 +155,16 @@ Here is an example of a configuration file:
             // so this both includes the rule in the rule set and instantiates
             // it with the "localeOnly" option
             "resource-quote-matcher": "localeOnly"
+        },
+        "overrides": {
+            "resource-camel-case": {
+                // adds a list of exceptions for ResourceCamelCase rule
+                "except": ["SomeException"]
+            },
+            "resource-snake-case": {
+                // adds a list of exceptions for ResourceSnakeCase rule
+                "except": ["some_exception"]
+            }
         }
     },
     // defines common settings for a particular types of file
@@ -169,6 +179,9 @@ Here is an example of a configuration file:
         },
         "jsx": {
             "ruleset": ["react-rules"]
+        },
+        "xliff": {
+            "ruleset": ["overrides"]
         },
         "sdl-xliff": {
             // these are actually special xliff files in our project,
