@@ -29,7 +29,7 @@ the options to use to create this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/Parser.ts:102](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/Parser.ts#L102)
+[packages/ilib-po/src/Parser.ts:107](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/Parser.ts#L107)
 
 ## Methods
 
@@ -59,4 +59,4 @@ SyntaxError if there is a syntax error in the file
 
 #### Defined in
 
-[packages/ilib-po/src/Parser.ts:124](https://github.com/iLib-js/ilib-mono/blob/260275b25bcc6bce9b244e4270a501d1b8cd6fc8/packages/ilib-po/src/Parser.ts#L124)
+[packages/ilib-po/src/Parser.ts:139](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/Parser.ts#L139)
