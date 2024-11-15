@@ -1,7 +1,6 @@
 import {ResourceString} from 'ilib-tools-common';
 import {Result} from 'ilib-lint-common';
 import ResourceSnakeCase from "../ResourceSnakeCase.js";
-import {expect} from "@jest/globals";
 
 describe("ResourceSnakeCase", () => {
     test("creates ResourceSnakeCase rule instance", () => {
@@ -9,6 +8,30 @@ describe("ResourceSnakeCase", () => {
 
         expect(rule).toBeInstanceOf(ResourceSnakeCase);
         expect(rule.getName()).toEqual("resource-snake-case");
+    });
+
+    test.each([
+        undefined,
+        null,
+        true,
+        100,
+        'string',
+        {},
+        () => {},
+    ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
+        const rule = new ResourceSnakeCase({param: {except: invalidExcept}});
+        
+        const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        expect(result.rule).toBeInstanceOf(ResourceSnakeCase);
+        expect(result.severity).toEqual("error");
     });
 
     test.each([

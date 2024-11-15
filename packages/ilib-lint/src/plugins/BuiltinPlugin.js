@@ -40,6 +40,8 @@ import ResourceSourceICUPluralParams from '../rules/ResourceSourceICUPluralParam
 import ResourceSourceICUPluralCategories from '../rules/ResourceSourceICUPluralCategories.js';
 import ResourceSourceICUUnexplainedParams from '../rules/ResourceSourceICUUnexplainedParams.js';
 import ResourceXML from '../rules/ResourceXML.js';
+import ResourceCamelCase from '../rules/ResourceCamelCase.js';
+import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 
 // built-in declarative rules
 export const regexRules = [
@@ -329,6 +331,8 @@ class BuiltinPlugin extends Plugin {
             ResourceSourceICUPluralCategories,
             ResourceSourceICUUnexplainedParams,
             ResourceXML,
+            ResourceCamelCase,
+            ResourceSnakeCase,
             ...regexRules
         ];
     }

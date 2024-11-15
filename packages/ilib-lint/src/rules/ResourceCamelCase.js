@@ -1,6 +1,8 @@
 import ResourceRule from './ResourceRule.js';
 import {Result} from 'ilib-lint-common';
 
+/** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
+
 /**
  * @classdesc Class representing an ilib-lint programmatic rule for linting camel cased strings.
  * @class
@@ -10,7 +12,7 @@ class ResourceCamelCase extends ResourceRule {
     /**
      * Create a ResourceCamelCase rule instance.
      * @param {object} options
-     * @param {Configuration} [options.param]
+     * @param {object} [options.param]
      * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
@@ -23,14 +25,14 @@ class ResourceCamelCase extends ResourceRule {
             "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
             "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
         ];
-        this.exceptions = options?.param?.except ?? [];
+        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
     }
 
     /**
      * Check if a source string is in camel case and if the target string is the same as the source.
      * @public
      * @override ResourceRule.matchString
-     * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}}
+     * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in camel case and target string is not the same as the source string, otherwise undefined.
      */
     matchString({source, target, file, resource}) {
@@ -56,7 +58,8 @@ class ResourceCamelCase extends ResourceRule {
                 description: "Do not translate the source string if it consists solely of camel cased strings and/or digits. Please update the target string so it matches the source string.",
                 rule: this,
                 locale: resource.sourceLocale,
-                pathName: file
+                pathName: file,
+                highlight: `<e0>${target}</e0>`
             })
         }
     }

@@ -1,6 +1,8 @@
 import ResourceRule from './ResourceRule.js';
 import {Result} from 'ilib-lint-common';
 
+/** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
+
 /**
  * @classdesc Class representing an ilib-lint programmatic rule for linting snake cased strings.
  * @class
@@ -10,7 +12,7 @@ class ResourceSnakeCase extends ResourceRule {
     /**
      * Create a ResourceSnakeCase rule instance.
      * @param {object} options
-     * @param {Configuration} [options.param]
+     * @param {object} [options.param]
      * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
@@ -19,18 +21,18 @@ class ResourceSnakeCase extends ResourceRule {
         this.name = "resource-snake-case";
         this.description = "Ensure that when source strings contain only snake case and no whitespace, then the targets are the same";
         this.link = "https://gihub.com/ilib-js/ilib-lint/blob/main/docs/resource-snake-case.md",
-            this.regexps = [
-                "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
-                "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
-            ]
-        this.exceptions = options?.param?.except ?? [];
+        this.regexps = [
+            "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
+            "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
+        ]
+        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
     }
 
     /**
      * Check if a source string is in snake case and if the target string is the same as the source.
      * @public
      * @override ResourceRule.matchString
-     * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}}
+     * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in snake case and target string is not the same as the source string, otherwise undefined.
      */
     matchString({source, target, file, resource}) {
@@ -56,7 +58,8 @@ class ResourceSnakeCase extends ResourceRule {
                 description: "Do not translate the source string if it consists solely of snake cased strings and/or digits. Please update the target string so it matches the source string.",
                 rule: this,
                 locale: resource.sourceLocale,
-                pathName: file
+                pathName: file,
+                highlight: `<e0>${target}</e0>`
             })
         }
     }

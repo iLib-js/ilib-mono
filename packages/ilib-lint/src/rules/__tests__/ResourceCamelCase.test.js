@@ -11,6 +11,30 @@ describe("ResourceCamelCase", () => {
     });
 
     test.each([
+        undefined,
+        null,
+        true,
+        100,
+        'string',
+        {},
+        () => {},
+    ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
+        const rule = new ResourceCamelCase({param: {except: invalidExcept}});
+        
+        const resource = createTestResourceString({source: "camelCaseException", target: "someCamelCaseTarget"});
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        expect(result.rule).toBeInstanceOf(ResourceCamelCase);
+        expect(result.severity).toEqual("error");
+    });
+
+    test.each([
         {source: ""},
         {source: undefined},
         {source: null},
