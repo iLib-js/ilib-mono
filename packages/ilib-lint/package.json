@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint",
-    "version": "2.6.1",
+    "version": "2.7.0",
     "module": "./src/index.js",
     "type": "module",
     "bin": "./src/index.js",
