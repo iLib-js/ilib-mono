@@ -17,39 +17,23 @@
  * limitations under the License.
  */
 
-import path from "node:path";
-import fs from "node:fs";
-
 // @ts-ignore
-import { Resource, ResourceString, ResourcePlural, ResourceArray } from "ilib-tools-common";
+import { ResourceString } from "ilib-tools-common";
 import { describe, test, expect } from "@jest/globals";
 
 import POFile from "../src/POFile";
 
-function diff(a, b) {
-    var min = Math.min(a.length, b.length);
-
-    for (var i = 0; i < min; i++) {
-        if (a[i] !== b[i]) {
-            console.log("Found difference at character " + i);
-            console.log("a: " + a.substring(i));
-            console.log("b: " + b.substring(i));
-            break;
-        }
-    }
-}
-
-
-describe("pofile", function() {
-    test("POFile Constructor no args", function() {
+describe("pofile", () => {
+    test("POFile Constructor no args", () => {
         expect.assertions(1);
 
         expect(() => {
+            // @ts-ignore
             const pof = new POFile(undefined);
         }).toThrow();
     });
 
-    test("POFile Constructor missing args", function() {
+    test("POFile Constructor missing args", () => {
         expect.assertions(1);
 
         expect(() => {
@@ -59,7 +43,7 @@ describe("pofile", function() {
         }).toThrow();
     });
 
-    test("POFile constructor with basic options", function() {
+    test("POFile constructor with basic options", () => {
         expect.assertions(2);
 
         const pof = new POFile({
@@ -70,7 +54,7 @@ describe("pofile", function() {
         expect(pof.getPathName()).toBe("./testfiles/po/messages.po");
     });
 
-    test("POFile constructor test defaults", function() {
+    test("POFile constructor test defaults", () => {
         expect.assertions(6);
 
         const pof = new POFile({
@@ -85,7 +69,7 @@ describe("pofile", function() {
         expect(pof.getContextInKey()).toBeFalsy();
     });
 
-    test("POFile constructor with all the options", function() {
+    test("POFile constructor with all the options", () => {
         expect.assertions(7);
 
         const pof = new POFile({
@@ -106,7 +90,7 @@ describe("pofile", function() {
     });
 
 
-    test("POFile parse simple", function() {
+    test("POFile parse simple", () => {
         expect.assertions(7);
 
         const pof = new POFile({

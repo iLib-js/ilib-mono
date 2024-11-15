@@ -25,8 +25,8 @@ import { describe, test, expect } from "@jest/globals";
 import Parser from "../src/Parser";
 import { CommentType } from "../src/utils";
 
-describe("parser", function() {
-    test("Parser Constructor no args", function() {
+describe("parser", () => {
+    test("Parser Constructor no args", () => {
         expect.assertions(1);
 
         expect(() => {
@@ -35,7 +35,7 @@ describe("parser", function() {
         }).toThrow();
     });
 
-    test("Parser parse simple", function() {
+    test("Parser parse simple", () => {
         expect.assertions(7);
 
         const parser = new Parser({
@@ -61,7 +61,7 @@ describe("parser", function() {
         expect(r.getType()).toBe("string");
     });
 
-    test("Parser parse with context", function() {
+    test("Parser parse with context", () => {
         expect.assertions(7);
 
         const parser = new Parser({
@@ -89,7 +89,7 @@ describe("parser", function() {
         expect(r.getContext()).toBe("context 1");
     });
 
-    test("Parser parse simple with translation", function() {
+    test("Parser parse simple with translation", () => {
         expect.assertions(9);
 
         const parser = new Parser({
@@ -118,7 +118,7 @@ describe("parser", function() {
         expect(r.getType()).toBe("string");
     });
 
-    test("Parser parse simple right strings", function() {
+    test("Parser parse simple right strings", () => {
         expect.assertions(12);
 
         const parser = new Parser({
@@ -155,7 +155,7 @@ describe("parser", function() {
         expect(resources[1].getTargetLocale()).toBe("de-DE");
     });
 
-    test("ParserParsePluralString", function() {
+    test("ParserParsePluralString", () => {
         expect.assertions(9);
 
         const parser = new Parser({
@@ -186,7 +186,7 @@ describe("parser", function() {
         expect(resources[0].getTarget()).toBeFalsy();
     });
 
-    test("ParserParsePluralStringWithTranslations", function() {
+    test("ParserParsePluralStringWithTranslations", () => {
         expect.assertions(12);
 
         const parser = new Parser({
@@ -222,7 +222,7 @@ describe("parser", function() {
         expect(resources[0].getTargetLocale()).toBe("de-DE");
     });
 
-    test("ParserParsePluralStringWithEmptyTranslations", function() {
+    test("ParserParsePluralStringWithEmptyTranslations", () => {
         expect.assertions(11);
 
         const parser = new Parser({
@@ -256,7 +256,7 @@ describe("parser", function() {
         expect(resources[0].getTargetLocale()).toBeFalsy();
     });
 
-    test("ParserParsePluralStringWithTranslationsRussian", function() {
+    test("ParserParsePluralStringWithTranslationsRussian", () => {
         expect.assertions(13);
 
         const parser = new Parser({
@@ -294,7 +294,7 @@ describe("parser", function() {
         expect(resources[0].getTargetLocale()).toBe("ru-RU");
     });
 
-    test("ParserParseSimpleLineContinuations", function() {
+    test("ParserParseSimpleLineContinuations", () => {
         expect.assertions(7);
 
         const parser = new Parser({
@@ -324,7 +324,7 @@ describe("parser", function() {
         expect(resources[0].getTarget()).toBe("this is string one or the translation thereof. Next line.");
     });
 
-    test("ParserParseSimpleLineContinuationsWithEmptyString", function() {
+    test("ParserParseSimpleLineContinuationsWithEmptyString", () => {
         expect.assertions(7);
 
         const parser = new Parser({
@@ -356,7 +356,7 @@ describe("parser", function() {
         expect(resources[0].getTarget()).toBe("this is string one or the translation thereof. Next line.");
     });
 
-    test("ParserParseEscapedQuotes", function() {
+    test("ParserParseEscapedQuotes", () => {
         expect.assertions(6);
 
         const parser = new Parser({
@@ -380,7 +380,7 @@ describe("parser", function() {
         expect(r.getType()).toBe('string');
     });
 
-    test("ParserParseEmptyTranslation", function() {
+    test("ParserParseEmptyTranslation", () => {
         expect.assertions(12);
 
         const parser = new Parser({
@@ -417,7 +417,7 @@ describe("parser", function() {
         expect(resources[1].getTargetLocale()).toBeFalsy();
     });
 
-    test("ParserParseEmptySource", function() {
+    test("ParserParseEmptySource", () => {
         expect.assertions(3);
 
         const parser = new Parser({
@@ -442,7 +442,7 @@ describe("parser", function() {
         expect(set.size()).toBe(0);
     });
 
-    test("ParserParseFileHeader", function() {
+    test("ParserParseFileHeader", () => {
         expect.assertions(3);
 
         const parser = new Parser({
@@ -470,7 +470,7 @@ describe("parser", function() {
         expect(set.size()).toBe(0);
     });
 
-    test("ParserParseDupString", function() {
+    test("ParserParseDupString", () => {
         expect.assertions(8);
 
         const parser = new Parser({
@@ -502,7 +502,7 @@ describe("parser", function() {
         expect(resources[0].getTargetLocale()).toBeFalsy();
     });
 
-    test("ParserParseSameStringDifferentContext", function() {
+    test("ParserParseSameStringDifferentContext", () => {
         expect.assertions(14);
 
         const parser = new Parser({
@@ -543,7 +543,7 @@ describe("parser", function() {
         expect(resources[1].getTargetLocale()).toBeFalsy();
     });
 
-    test("ParserParseSameStringContextInKey", function() {
+    test("ParserParseSameStringContextInKey", () => {
         expect.assertions(14);
 
         const parser = new Parser({
@@ -584,7 +584,7 @@ describe("parser", function() {
         expect(resources[1].getTargetLocale()).toBeFalsy();
     });
 
-    test("ParserParseTestInvalidPO", function() {
+    test("ParserParseTestInvalidPO", () => {
         expect.assertions(2);
 
         // when it's named messages.po, it should apply the messages-schema schema
@@ -624,7 +624,7 @@ describe("parser", function() {
         }).toThrow();
     });
 
-    test("ParserParseExtractComments", function() {
+    test("ParserParseExtractComments", () => {
         expect.assertions(12);
 
         const parser = new Parser({
@@ -678,7 +678,7 @@ describe("parser", function() {
         expect(resources[1].getPath()).toBe("src/bar.html");
     });
 
-    test("ParserParseExtractFileNameNoLineNumbers", function() {
+    test("ParserParseExtractFileNameNoLineNumbers", () => {
         expect.assertions(12);
 
         const parser = new Parser({
@@ -716,7 +716,7 @@ describe("parser", function() {
         expect(resources[1].getPath()).toBe("src/bar.html");
     });
 
-    test("ParserParseClearComments", function() {
+    test("ParserParseClearComments", () => {
         expect.assertions(12);
 
         const parser = new Parser({
@@ -762,7 +762,7 @@ describe("parser", function() {
         expect(resources[1].getPath()).toBeFalsy();
     });
 
-    test("ParserParseExtractMultiplePaths", function() {
+    test("ParserParseExtractMultiplePaths", () => {
         expect.assertions(8);
 
         const parser = new Parser({
@@ -796,7 +796,7 @@ describe("parser", function() {
         expect(resources[0].getPath()).toBe("src/foo.html");
     });
 
-    test("ParserParseExtractMultipleComments", function() {
+    test("ParserParseExtractMultipleComments", () => {
         expect.assertions(7);
 
         const parser = new Parser({
@@ -836,7 +836,7 @@ describe("parser", function() {
              '"previous":["str 1","str 2"]}');
     });
 
-    test("ParserParseIgnoreComments", function() {
+    test("ParserParseIgnoreComments", () => {
         expect.assertions(7);
 
         const parser = new Parser({
@@ -878,7 +878,7 @@ describe("parser", function() {
              '"previous":["str 1","str 2"]}');
     });
 
-    test("ParserParseIgnoreAllComments", function() {
+    test("ParserParseIgnoreAllComments", () => {
         expect.assertions(7);
 
         const parser = new Parser({

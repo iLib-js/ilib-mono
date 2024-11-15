@@ -48,7 +48,7 @@ export type ParserOptions = {
 
     /** whether the context should be included as part of the key or not */
     contextInKey?: boolean,
-    
+
     /** whether to ignore the comments, or the set of comments to ignore */
     ignoreComments?: boolean | Set<CommentType>
 };
