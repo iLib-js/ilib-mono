@@ -95,6 +95,19 @@ var p3 = new CustomProject({
 
 var mdft3 = new MrkdwnJsFileType(p3);
 
+var p4 = new CustomProject({
+    name: "foo",
+    id: "foo",
+    plugins: ["../."],
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    locales:["en-GB"],
+    mrkdwn: {
+        "outputStyle": "commonjs"
+    }
+});
+var mdft4 = new MrkdwnJsFileType(p4);
+
 describe("mrkdwn", function() {
     test("MrkdwnJsFileConstructor", function() {
         expect.assertions(1);
@@ -786,6 +799,37 @@ describe("mrkdwn", function() {
         var actual = mjf.localizeText(translations, "fr-FR");
         var expected =
             'export default messages = {\n' +
+            '    "id1": "Ceci est un essai"\n' +
+            '};\n';
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsFile output commonjs format file", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p4,
+            type: mdft4
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "This is a test",\n' +
+            '};\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            'module.exports.messages = {\n' +
             '    "id1": "Ceci est un essai"\n' +
             '};\n';
         expect(actual).toBe(expected);
