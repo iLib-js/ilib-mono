@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-// @ts-ignore
+// @ts-expect-error -- untyped package
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
+// @ts-expect-error -- untyped package
 import Locale from 'ilib-locale';
 
 import SyntaxError from './SyntaxError';
@@ -29,34 +30,46 @@ import { pluralForms } from "./pluralforms";
 /**
  * Options for the PO file parser constructor.
  */
-export type ParserOptions = {
+export interface BaseParserOptions {
     /** the path to the po file */
-    pathName?: string,
+    pathName: string,
 
     /** the source locale of the file */
-    sourceLocale?: string,
+    sourceLocale: string,
 
     /** the target locale of the file */
-    targetLocale?: string,
+    targetLocale: string,
 
     /** the name of the project that this po file is a part of */
-    projectName?: string,
+    projectName: string,
 
     /** the type of the data in the po file. This might be something like "python" or "javascript" to
      * indicate the type of the code that the strings are used in. */
-    datatype?: string,
+    datatype: string,
 
-    /** whether the context should be included as part of the key or not */
-    contextInKey?: boolean,
-
-    /** whether to ignore the comments, or the set of comments to ignore */
-    ignoreComments?: boolean | Set<CommentType>
+    /**
+     * whether the context should be included as part of the key or not
+     * 
+     * @default false
+     */
+    contextInKey?: boolean
 };
 
-/**
- * Represents the state of the parser.
- * @private
- */
+export interface ParserOptionsWithIgnoreCommentTypes {
+    /** the set of comments to ignore */
+    ignoreComments: Iterable<CommentType>
+};
+
+export interface ParserOptionsWithIgnoreAllCommentsFlag {
+    /**
+     * whether to ignore all comments
+     * 
+     * @default false
+     */
+    ignoreComments?: boolean
+};
+
+/** Represents the state of the parser. */
 enum State {
     START,
     MSGIDSTR,
@@ -67,13 +80,16 @@ enum State {
     END
 };
 
-const commentTypeMap : { [key: string]: CommentType } = {
-    ' ': CommentType.TRANSLATOR,
-    '.': CommentType.EXTRACTED,
-    ',': CommentType.FLAGS,
-    '|': CommentType.PREVIOUS,
-    ':': CommentType.PATHS
-};
+export type ParserOptions = BaseParserOptions & (ParserOptionsWithIgnoreCommentTypes | ParserOptionsWithIgnoreAllCommentsFlag);
+
+/** Mapping from PO comment type identifier char to enum {@link CommentType} value */
+const commentTypeMap = new Map([
+    [' ', CommentType.TRANSLATOR],
+    ['.', CommentType.EXTRACTED],
+    [',', CommentType.FLAGS],
+    ['|', CommentType.PREVIOUS],
+    [':', CommentType.PATHS]
+]);
 
 const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
 
@@ -82,48 +98,47 @@ const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
  * Represents a GNU PO resource file.
  */
 class Parser {
+    /** the path to the po file */
     private pathName: string;
+    /** the source locale of the file */
     private sourceLocale: Locale;
+    /** the target locale of the file */
     private targetLocale: Locale;
+    /** the type of the data in the po file. This might be something like "python" or "javascript" to
+     * indicate the type of the code that the strings are used in. */
     private datatype: string;
+    /** the name of the project that this po file is a part of */
     private projectName: string;
+    /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
+    /** set of comment types that should be ignored */
+    private commentsToIgnore: Set<CommentType>;
 
-    private pluralCategories?: PluralCategory[];
-    private commentsToIgnore: Set<CommentType> = new Set(); // default is to include all comments
-    private resourceIndex: number = 0;
-
-    /**
-     * Create a new PO file with the given path name.
-     * @param options the options to use to create this PO file
-     * @param options.sourceLocale the locale of the file
-     * @param options.projectName the name of the project
-     * @param options.datatype the type of the file
-     * @param options.contextInKey whether the context is part of the key
-     * @param options.targetLocale the locale of the file
-     * @param options.commentsToIgnore whether to ignore the comments, or the
-     * set of comment types to ignore.
-     */
+    /** Create a new PO file with the given path name. */
     constructor(options: ParserOptions) {
         if (!options) throw new Error("Parser: Missing required options in Parser constructor");
 
-        this.pathName = options.pathName;
-        this.sourceLocale = new Locale(options.sourceLocale);
-        this.targetLocale = new Locale(options.targetLocale);
-        this.projectName = options.projectName;
-        this.datatype = options.datatype;
-        this.contextInKey = options.contextInKey;
+        const optionsWithDefaults = {
+            ignoreComments: false,
+            ...options
+        }
 
-        this.pluralCategories = pluralForms[this.targetLocale.getLanguage() ?? "en"]?.categories || pluralForms.en.categories;
-        if (options.ignoreComments) {
-            if (typeof(options.ignoreComments) === 'boolean') {
-                // boolean true means ignore all comments and false means include all comments
-                if (options.ignoreComments) {
-                    this.commentsToIgnore = new Set(Object.values(commentTypeMap));
-                }
-            } else {
-                this.commentsToIgnore = options.ignoreComments;
-            }
+        this.pathName = optionsWithDefaults.pathName;
+        this.sourceLocale = new Locale(optionsWithDefaults.sourceLocale);
+        this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
+        this.projectName = optionsWithDefaults.projectName;
+        this.datatype = optionsWithDefaults.datatype;
+        this.contextInKey = optionsWithDefaults.contextInKey ?? false;
+
+        if (optionsWithDefaults.ignoreComments === true) {
+            // boolean true means ignore all comments
+            this.commentsToIgnore = new Set(commentTypeMap.values());
+        } else if (optionsWithDefaults.ignoreComments === false) {
+            // boolean false means include all comments
+            this.commentsToIgnore = new Set();
+        } else {
+            // otherwise, it is a collection of comments to ignore
+            this.commentsToIgnore = new Set(optionsWithDefaults.ignoreComments);
         }
     }
 
@@ -150,7 +165,7 @@ class Parser {
             translationPlurals: Plural | undefined,
             category : PluralCategory | undefined;
 
-        this.resourceIndex = 0;
+        let resourceIndex = 0;
 
         function restart() {
             comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
@@ -183,7 +198,7 @@ class Parser {
                                     const match = rePathStrip.exec(token.value);
                                     original = (match && match.length > 1) ? match[1] : token.value;
                                 }
-                                const commentType = commentTypeMap[type];
+                                const commentType = commentTypeMap.get(type);
                                 if (commentType && !this.commentsToIgnore.has(commentType)) {
                                     if (!comment) {
                                         comment = {};
@@ -216,7 +231,7 @@ class Parser {
                                 let key: string,
                                     res: ResourceString | ResourcePlural;
                                 if (sourcePlurals) {
-                                    key = makeKey("plural", sourcePlurals, this.contextInKey && context);
+                                    key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
                                     res = new ResourcePlural({
                                         project: this.projectName,
                                         key: key,
@@ -227,12 +242,12 @@ class Parser {
                                         comment: comment && JSON.stringify(comment),
                                         datatype: this.datatype,
                                         context: context,
-                                        index: this.resourceIndex++,
+                                        index: resourceIndex++,
                                         targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
                                         targetStrings: translationPlurals
                                     });
                                 } else if (source) {
-                                    key = makeKey("string", source, this.contextInKey && context);
+                                    key = makeKey("string", source, this.contextInKey ? context : undefined);
                                     res = new ResourceString({
                                         project: this.projectName,
                                         key: key,
@@ -243,7 +258,7 @@ class Parser {
                                         comment: comment && JSON.stringify(comment),
                                         datatype: this.datatype,
                                         context: context,
-                                        index: this.resourceIndex++,
+                                        index: resourceIndex++,
                                         targetLocale: translation && this.targetLocale?.getSpec(),
                                         target: translation
                                     });

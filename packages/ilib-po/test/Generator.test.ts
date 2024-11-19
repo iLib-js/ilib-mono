@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-// @ts-ignore
-import { Resource, ResourceString, ResourcePlural, TranslationSet } from "ilib-tools-common";
+// @ts-expect-error -- untyped package
+import { ResourceString, ResourcePlural, TranslationSet } from "ilib-tools-common";
 
 import Generator from "../src/Generator";
 
@@ -27,7 +27,7 @@ describe("generator", () => {
         expect.assertions(1);
 
         expect(() => {
-            // @ts-ignore
+            // @ts-expect-error -- testing invalid args
             const generator = new Generator(undefined);
         }).toThrow();
     });
@@ -38,8 +38,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -79,8 +77,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -132,8 +128,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -181,8 +175,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -244,8 +236,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -314,8 +304,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -355,8 +343,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -412,8 +398,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/context.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: true
         });
         expect(generator).toBeTruthy();
@@ -469,8 +453,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -522,8 +504,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -591,8 +571,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();
@@ -660,8 +638,6 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "ru-RU",
-            projectName: "foo",
-            datatype: "po",
             contextInKey: false
         });
         expect(generator).toBeTruthy();

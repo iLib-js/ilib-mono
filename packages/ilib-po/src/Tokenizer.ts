@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+// @ts-expect-error -- untyped package
 import { isSpace, isAlpha, isAlnum } from 'ilib-ctype';
 
 import { unescapeQuotes } from './utils';
@@ -79,7 +80,7 @@ class Tokenizer {
      *
      * @returns the next token
      */
-    getToken(): Token | undefined {
+    getToken(): Token {
         let start: number,
             value: string,
             category: number;

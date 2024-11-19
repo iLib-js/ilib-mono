@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-// @ts-ignore
+// @ts-expect-error -- untyped package
 import { ResourceString } from "ilib-tools-common";
 
 import POFile from "../src/POFile";
@@ -27,7 +27,7 @@ describe("pofile", () => {
         expect.assertions(1);
 
         expect(() => {
-            // @ts-ignore
+            // @ts-expect-error -- testing invalid args
             const pof = new POFile(undefined);
         }).toThrow();
     });
@@ -36,9 +36,10 @@ describe("pofile", () => {
         expect.assertions(1);
 
         expect(() => {
-            const pof = new POFile({
-                pathName: undefined
-            });
+            const pof = new POFile(
+                // @ts-expect-error -- testing invalid args
+                { pathName: undefined }
+            );
         }).toThrow();
     });
 
@@ -46,7 +47,7 @@ describe("pofile", () => {
         expect.assertions(2);
 
         const pof = new POFile({
-            pathName: "./testfiles/po/messages.po"
+            pathName: "./testfiles/po/messages.po",
         });
 
         expect(pof).toBeTruthy();
@@ -57,7 +58,7 @@ describe("pofile", () => {
         expect.assertions(6);
 
         const pof = new POFile({
-            pathName: "./testfiles/po/messages.po"
+            pathName: "./testfiles/po/messages.po",
         });
 
         expect(pof).toBeTruthy();
@@ -77,7 +78,7 @@ describe("pofile", () => {
             targetLocale: "de-DE",
             projectName: "foo",
             datatype: "javascript",
-            contextInKey: true
+            contextInKey: true,
         });
         expect(pof).toBeTruthy();
         expect(pof.getPathName()).toBe("./testfiles/po/messages.po");
@@ -88,17 +89,15 @@ describe("pofile", () => {
         expect(pof.getContextInKey()).toBeTruthy();
     });
 
-
     test("POFile parse simple", () => {
         expect.assertions(7);
 
         const pof = new POFile({
-            pathName: "./testfiles/po/messages.po"
+            pathName: "./testfiles/po/messages.po",
         });
         expect(pof).toBeTruthy();
 
-        const set = pof.parse(
-            'msgid "string 1"\n');
+        const set = pof.parse('msgid "string 1"\n');
 
         expect(set).toBeTruthy();
 

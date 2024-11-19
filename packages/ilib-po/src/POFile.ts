@@ -19,46 +19,78 @@
 
 import path from "path";
 
-// @ts-ignore
-import { TranslationSet } from 'ilib-tools-common';
-import Locale from 'ilib-locale';
+// @ts-expect-error -- untyped package
+import { TranslationSet } from "ilib-tools-common";
+// @ts-expect-error -- untyped package
+import Locale from "ilib-locale";
 
-import SyntaxError from './SyntaxError';
-import Parser from './Parser';
-import Generator from './Generator';
+import Parser from "./Parser";
+import Generator from "./Generator";
 
 /** Options for the POFile constructor */
-export type POFileOptions = {
+export interface POFileOptions {
     /** the path to the po file */
-    pathName?: string,
+    pathName: string;
 
-    /** the source locale of the file */
-    sourceLocale?: string,
+    /**
+     * the name of the project that this po file is a part of
+     *
+     * By default, this will be set to the base name of {@link pathName} without the `.po` extension
+     */
+    projectName?: string;
 
-    /** the target locale of the file */
-    targetLocale?: string,
+    /**
+     * the source locale of the file
+     *
+     * @default "en-US"
+     */
+    sourceLocale?: string;
 
-    /** the name of the project that this po file is a part of */
-    projectName?: string,
+    /**
+     * the target locale of the file
+     *
+     * @default undefined
+     */
+    targetLocale?: string;
 
-    /** the type of the data in the po file. This might be something like "python" or "javascript" to
-     * indicate the type of the code that the strings are used in. */
-    datatype?: string,
+    /**
+     * the type of the data in the po file
+     *
+     * This might be something like "python" or "javascript" to
+     * indicate the type of the code that the strings are used in.
+     *
+     * @default "po"
+     */
+    datatype?: string;
 
-    /** whether the context should be included as part of the key or not */
-    contextInKey?: boolean
-};
+    /**
+     * whether the context should be included as part of the key or not
+     *
+     * @default false
+     */
+    contextInKey?: boolean;
+}
 
 /**
- * @class POFile
  * Represents a GNU PO resource file.
  */
 class POFile {
+    /** the path to the po file */
     private pathName: string;
+    /** the source locale of the file */
     private sourceLocale: Locale;
+    /** the target locale of the file */
     private targetLocale?: Locale;
+    /** the name of the project that this po file is a part of */
     private projectName: string;
+    /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
+    /**
+     * the type of the data in the po file
+     *
+     * This might be something like "python" or "javascript" to
+     * indicate the type of the code that the strings are used in.
+     */
     private datatype?: string;
 
     private parser: Parser;
@@ -66,25 +98,25 @@ class POFile {
 
     /**
      * Create a new PO file with the given path name.
-     *
-     * @param options the options to use to create this PO file
-     * @param options.pathName path to the file relative to the root
-     * @param [options.sourceLocale] the locale of the file
-     * @param [options.targetLocale] the locale of the file
-     * @param [options.projectName] the name of the project
-     * @param [options.datatype] the type of the file
-     * @param [options.contextInKey] whether the context is part of the key
      */
     constructor(options: POFileOptions) {
-        if (!options) throw new SyntaxError("POFile", "Missing required options in POFile constructor (pathName)");
+        if (!options) throw new Error("Missing required options in POFile constructor");
+
+        const optionsWithDefaults = {
+            sourceLocale: "en-US",
+            targetLocale: undefined,
+            datatype: "po",
+            contextInKey: false,
+            ...options,
+        };
 
         this.pathName = options.pathName;
 
-        this.sourceLocale = new Locale(options?.sourceLocale ?? "en-US");
-        this.targetLocale = options?.targetLocale ? new Locale(options.targetLocale) : undefined;
-        this.projectName = options?.projectName ?? path.basename(this.pathName, ".po");
-        this.datatype = options?.datatype ?? "po";
-        this.contextInKey = options?.contextInKey ?? false;
+        this.sourceLocale = new Locale(optionsWithDefaults.sourceLocale);
+        this.targetLocale = optionsWithDefaults.targetLocale ? new Locale(optionsWithDefaults.targetLocale) : undefined;
+        this.projectName = optionsWithDefaults.projectName ?? path.basename(this.pathName, ".po");
+        this.datatype = optionsWithDefaults.datatype;
+        this.contextInKey = optionsWithDefaults.contextInKey;
 
         this.parser = new Parser({
             pathName: this.pathName,
@@ -98,9 +130,7 @@ class POFile {
         this.generator = new Generator({
             pathName: this.pathName,
             targetLocale: this.targetLocale,
-            projectName: this.projectName,
-            datatype: this.datatype,
-            contextInKey: this.contextInKey
+            contextInKey: this.contextInKey,
         });
     }
 
@@ -110,7 +140,7 @@ class POFile {
      * handle the parsing.
      *
      * @param data the string to parse
-     * @throws SyntaxError if there is a syntax error in the file
+     * @throws {SyntaxError} when there is a syntax error in the file
      * @returns the set of resources extracted from the file
      */
     parse(data: string): TranslationSet {
@@ -153,7 +183,7 @@ class POFile {
      * Get the datatype of this PO file.
      * @returns the datatype of this PO file
      */
-    getDatatype(): string {
+    getDatatype(): string | undefined {
         return this.datatype;
     }
 

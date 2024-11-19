@@ -17,9 +17,6 @@
  * limitations under the License.
  */
 
-// @ts-ignore
-import { Resource } from 'ilib-tools-common';
-
 /**
  * Plural categories according to Unicode's CLDR.
  */
@@ -76,14 +73,19 @@ export function unescapeQuotes(str: string): string {
     return str ? str.replace(/\\"/g, '"') : str;
 }
 
+export type MakeKeyProps =
+    | readonly [ type: "plural", source: Plural, context?: string ]
+    | readonly [ type: "array", source: string[], context?: string ]
+    | readonly [ type: "string", source: string, context?: string ];
+
 /**
  * Get the key to use for the given source and context.
  * @param type the type of resource
  * @param source the source string, array, or plurals object
- * @param [context] the context to make part of the key
+ * @param context the context to make part of the key
  * @returns the key to use
  */
-export function makeKey(type: string, source: any, context?: string): string {
+export function makeKey(...[type, source, context]: MakeKeyProps): string {
     switch (type) {
         case "plural":
             const key = source.one ?? source.other;

@@ -17,64 +17,64 @@
  * limitations under the License.
  */
 
-// @ts-ignore
-import { TranslationSet } from 'ilib-tools-common';
-import Locale from 'ilib-locale';
+// @ts-expect-error -- untyped package
+import { TranslationSet } from "ilib-tools-common";
+// @ts-expect-error -- untyped package
+import Locale from "ilib-locale";
 
-import { Comments, escapeQuotes, makeKey } from './utils';
+import { Comments, escapeQuotes, makeKey } from "./utils";
 import { pluralForms, PluralForm } from "./pluralforms";
 
 /** Options for the generator constructor */
-export type GeneratorOptions = {
+export interface GeneratorOptions {
     /** the path to the po file */
-    pathName?: string,
+    pathName: string;
 
-    /** the target locale of the file */
-    targetLocale?: string,
+    /**
+     * the target locale of the file
+     *
+     * @default "en"
+     */
+    targetLocale?: string;
 
-    /** the name of the project that this po file is a part of */
-    projectName?: string,
-
-    /** the type of the data in the po file. This might be something like "python" or "javascript" to
-     * indicate the type of the code that the strings are used in. */
-    datatype?: string,
-
-    /** whether the context should be included as part of the key or not */
-    contextInKey?: boolean
-};
-
+    /**
+     * whether the context should be included as part of the key or not
+     *
+     * @default false
+     */
+    contextInKey?: boolean;
+}
 
 /**
- * @class Generate a PO file from a set of resources.
+ * Generate a PO file from a set of resources.
  */
 class Generator {
+    /** the path to the po file */
     private pathName: string;
+    /** the target locale of the file */
     private targetLocale: Locale;
-    private projectName: string;
+    /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
-    private datatype: string;
 
     private plurals: PluralForm;
 
     /**
      * Create a new PO file generator
-     * @param options the options to use to create this PO file
-     * @param options.pathName path to the file relative to the root
-     * @param options.targetLocale the locale of the file
-     * @param options.projectName the name of the project
-     * @param options.datatype the type of the file
-     * @param options.contextInKey whether the context is part of the key
      */
     constructor(options: GeneratorOptions) {
         if (!options) throw new Error("Generator: Missing required options in Generator constructor");
 
-        this.pathName = options.pathName;
-        this.targetLocale = new Locale(options.targetLocale);
-        this.projectName = options.projectName;
-        this.datatype = options.datatype;
-        this.contextInKey = options.contextInKey;
+        const optionsWithDefaults = {
+            targetLocale: "en",
+            contextInKey: false,
+            ...options,
+        };
 
-        this.plurals = pluralForms[this.targetLocale?.getLanguage() ?? "en"] || pluralForms.en;
+        this.pathName = options.pathName;
+        this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
+        this.contextInKey = optionsWithDefaults.contextInKey;
+        
+        this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
     }
 
     /**
@@ -102,32 +102,32 @@ class Generator {
         for (let i = 0; i < resources.length; i++) {
             const r = resources[i];
             const key: string = r.getKey() ?? makeKey(r.getType(), r.getSource(), this.contextInKey && r.getContext());
-            output += '\n';
-            let c : Comments = r.getComment() ? JSON.parse(r.getComment()) : {};
+            output += "\n";
+            let c: Comments = r.getComment() ? JSON.parse(r.getComment()) : {};
 
             if (c.translator && c.translator.length) {
                 c.translator.forEach((str: string) => {
-                    output += '# ' + str + '\n';
+                    output += "# " + str + "\n";
                 });
             }
             if (c.extracted) {
                 c.extracted.forEach((str: string) => {
-                    output += '#. ' + str + '\n';
+                    output += "#. " + str + "\n";
                 });
             }
             if (c.paths) {
                 c.paths.forEach((str: string) => {
-                    output += '#: ' + str + '\n';
+                    output += "#: " + str + "\n";
                 });
             }
             if (c.flags) {
                 c.flags.forEach((str: string) => {
-                    output += '#, ' + str + '\n';
+                    output += "#, " + str + "\n";
                 });
             }
             if (c.previous) {
                 c.previous.forEach((str: string) => {
-                    output += '#| ' + str + '\n';
+                    output += "#| " + str + "\n";
                 });
             }
             if (r.getContext()) {
@@ -151,8 +151,8 @@ class Generator {
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {
                     this.plurals.categories.forEach((category, index) => {
-                        const translation = translatedPlurals[category] !== sourcePlurals[category] ?
-                            translatedPlurals[category] : "";
+                        const translation =
+                            translatedPlurals[category] !== sourcePlurals[category] ? translatedPlurals[category] : "";
                         output += `msgstr[${index}] "${escapeQuotes(translation)}"\n`;
                     });
                 }
