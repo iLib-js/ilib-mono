@@ -18,7 +18,7 @@
  */
 
 
-// @ts-ignore
+// @ts-expect-error -- untyped package
 import { ResourceString } from "ilib-tools-common";
 
 import Parser from "../src/Parser";
@@ -29,7 +29,7 @@ describe("parser", () => {
         expect.assertions(1);
 
         expect(() => {
-            // @ts-ignore
+            // @ts-expect-error -- testing invalid args
             const parser = new Parser();
         }).toThrow();
     });
