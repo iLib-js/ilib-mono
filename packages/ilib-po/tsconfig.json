@@ -1,21 +1,12 @@
 {
+    "extends": "@tsconfig/node12",
     "compilerOptions": {
-        "allowJs": false, // https://github.com/microsoft/TypeScript/issues/35470,
-        "baseUrl": "./",
-        "moduleResolution": "node",
-        "checkJs": false,
-        "esModuleInterop": true,
-        "jsx": "react",
-        "module": "ES2020",
+        "allowJs": true,
+        "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
-        "paths": {
-            "*": ["node_modules/*", "src/*"]
-        },
-        "resolveJsonModule": true,
-        "target": "ES5",
-        "allowSyntheticDefaultImports": true,
-        "skipLibCheck": true,
+        "noImplicitAny": true
     },
-    "include": ["src/**/*"]
+    "include": ["."],
+    "exclude": ["node_modules", "dist", "docs"]
 }

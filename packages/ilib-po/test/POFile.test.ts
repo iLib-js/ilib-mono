@@ -19,7 +19,6 @@
 
 // @ts-ignore
 import { ResourceString } from "ilib-tools-common";
-import { describe, test, expect } from "@jest/globals";
 
 import POFile from "../src/POFile";
 
