@@ -20,7 +20,6 @@
 
 // @ts-ignore
 import { ResourceString } from "ilib-tools-common";
-import { describe, test, expect } from "@jest/globals";
 
 import Parser from "../src/Parser";
 import { CommentType } from "../src/utils";

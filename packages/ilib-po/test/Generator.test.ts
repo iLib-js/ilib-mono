@@ -19,7 +19,6 @@
 
 // @ts-ignore
 import { Resource, ResourceString, ResourcePlural, TranslationSet } from "ilib-tools-common";
-import { describe, test, expect } from "@jest/globals";
 
 import Generator from "../src/Generator";
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import path from 'node:path';
+import path from "path";
 
 // @ts-ignore
 import { TranslationSet } from 'ilib-tools-common';
