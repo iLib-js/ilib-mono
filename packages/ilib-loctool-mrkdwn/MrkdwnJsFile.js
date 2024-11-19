@@ -809,10 +809,11 @@ MrkdwnJsFile.prototype.localizeText = function(translations, locale) {
     }
 
     var output;
-    if (!this.project.settings || this.project.settings.outputStyle === "commonjs") {
-        output = "module.exports.messages = ";
-    } else {
+    if (!this.project.settings || !this.project.settings.mrkdwn ||
+         this.project.settings.mrkdwn.outputStyle !== "commonjs") {
         output = "export default messages = ";
+    } else {
+        output = "module.exports.messages = ";
     }
     output += JSON.stringify(localized, null, 4) + ";\n";
     return output;
