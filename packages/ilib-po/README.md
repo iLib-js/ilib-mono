@@ -47,7 +47,7 @@ const data: string = po.generate(translationSet);
 fs.writeFileSync('path/to/output/file.po', data, 'utf-8');
 ```
 
-Make sure to use UTF-8 encoding when reading and writing PO files as they may contain Unicode characters
+Make sure to use UTF-8 encoding when reading and writing PO files as they can contain Unicode characters
 in the translated files.
 
 ## License
