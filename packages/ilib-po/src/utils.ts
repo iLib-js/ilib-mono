@@ -17,23 +17,7 @@
  * limitations under the License.
  */
 
-/**
- * Plural categories according to Unicode's CLDR.
- */
-export type PluralCategory = "zero" | "one" | "two" | "few" | "many" | "other";
-
-/**
- * Plural forms of a particular string. Only the "other" form is required in all
- * languages. In English, the "one" form (singular) is also required.
- */
-export type Plural = {
-    other: string,
-    zero?: string,
-    one?: string,
-    two?: string,
-    few?: string,
-    many?: string
-};
+import { type Plural } from './pluralforms';
 
 /**
  * The types of comments that can be in a PO file.
@@ -88,7 +72,7 @@ export type MakeKeyProps =
 export function makeKey(...[type, source, context]: MakeKeyProps): string {
     switch (type) {
         case "plural":
-            const key = source.one ?? source.other;
+            const key = "one" in source ? source.one : source.other;
             return context ? key + " --- " + context : key;
         case "array":
             return context ? source[0] + " --- " + context : source[0];

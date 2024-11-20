@@ -23,7 +23,7 @@ import { TranslationSet } from "ilib-tools-common";
 import Locale from "ilib-locale";
 
 import { Comments, escapeQuotes, makeKey } from "./utils";
-import { pluralForms, PluralForm } from "./pluralforms";
+import pluralForms, { PluralCategory } from "./pluralforms";
 
 /** Options for the generator constructor */
 export interface GeneratorOptions {
@@ -56,7 +56,7 @@ class Generator {
     /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
 
-    private plurals: PluralForm;
+    private plurals: { rules: string; categories: readonly PluralCategory[] };
 
     /**
      * Create a new PO file generator
@@ -73,8 +73,8 @@ class Generator {
         this.pathName = options.pathName;
         this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
         this.contextInKey = optionsWithDefaults.contextInKey;
-        
-        this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
+
+        this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] ?? pluralForms.en;
     }
 
     /**

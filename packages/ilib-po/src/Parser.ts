@@ -24,8 +24,8 @@ import Locale from 'ilib-locale';
 
 import SyntaxError from './SyntaxError';
 import Tokenizer, { Token, TokenType } from './Tokenizer';
-import { PluralCategory, Plural, CommentType, Comments, makeKey } from './utils';
-import { pluralForms } from "./pluralforms";
+import { CommentType, Comments, makeKey } from './utils';
+import pluralForms, { PluralCategory, Plural, PartialPlural } from './pluralforms';
 
 /**
  * Options for the PO file parser constructor.
@@ -162,7 +162,7 @@ class Parser {
             translation: string | undefined,
             original: string | undefined,
             sourcePlurals: Plural | undefined,
-            translationPlurals: Plural | undefined,
+            translationPlurals: PartialPlural | undefined,
             category : PluralCategory | undefined;
 
         let resourceIndex = 0;
@@ -212,8 +212,8 @@ class Parser {
                             break;
                         case TokenType.PLURAL:
                             if (typeof(token.category) !== 'undefined') {
-                                const language = this.targetLocale?.getLanguage() ?? "en";
-                                const forms = pluralForms[language].categories || pluralForms.en.categories;
+                                const language: string = this.targetLocale?.getLanguage() ?? "en";
+                                const forms = (pluralForms[language] ?? pluralForms.en).categories;
                                 if (token.category >= forms.length) {
                                     restart();
                                 } else {
