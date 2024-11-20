@@ -22,7 +22,7 @@ import { TranslationSet } from "ilib-tools-common";
 // @ts-expect-error -- untyped package
 import Locale from "ilib-locale";
 
-import { Comments, escapeQuotes, makeKey } from "./utils";
+import { Comments, CommentType, escapeQuotes, makeKey } from "./utils";
 import { pluralForms, PluralForm } from "./pluralforms";
 
 /** Options for the generator constructor */
@@ -105,35 +105,35 @@ class Generator {
             output += "\n";
             let c: Comments = r.getComment() ? JSON.parse(r.getComment()) : {};
 
-            if (c.translator && c.translator.length) {
-                c.translator.forEach((str: string) => {
-                    output += "# " + str + "\n";
+            if (c[CommentType.TRANSLATOR]?.length) {
+                c[CommentType.TRANSLATOR].forEach(str => {
+                    output += `# ${str}\n`;
                 });
             }
-            if (c.extracted) {
-                c.extracted.forEach((str: string) => {
-                    output += "#. " + str + "\n";
+            if (c[CommentType.EXTRACTED]?.length) {
+                c[CommentType.EXTRACTED].forEach(str => {
+                    output += `#. ${str}\n`;
                 });
             }
-            if (c.paths) {
-                c.paths.forEach((str: string) => {
-                    output += "#: " + str + "\n";
+            if (c[CommentType.PATHS]?.length) {
+                c[CommentType.PATHS].forEach(str => {
+                    output += `#: ${str}\n`;
                 });
             }
-            if (c.flags) {
-                c.flags.forEach((str: string) => {
-                    output += "#, " + str + "\n";
+            if (c[CommentType.FLAGS]?.length) {
+                c[CommentType.FLAGS].forEach(str => {
+                    output += `#, ${str}\n`;
                 });
             }
-            if (c.previous) {
-                c.previous.forEach((str: string) => {
-                    output += "#| " + str + "\n";
+            if (c[CommentType.PREVIOUS]?.length) {
+                c[CommentType.PREVIOUS].forEach(str => {
+                    output += `#| ${str}\n`;
                 });
             }
             if (r.getContext()) {
-                output += 'msgctxt "' + escapeQuotes(r.getContext()) + '"\n';
+                output += `msgctxt "${escapeQuotes(r.getContext())}"\n`;
             }
-            output += 'msgid "' + escapeQuotes(key) + '"\n';
+            output += `msgid "${escapeQuotes(key)}"\n`;
             if (r.getType() === "string") {
                 let translatedText = r.getTarget() ?? "";
 
