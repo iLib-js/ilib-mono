@@ -1,67 +1,123 @@
 # Contributing
+We welcome contributions to the ilib-mono project!
+Please follow guidelines defined in this file to contribute and follow the existing code style and conventions.
+Ensure your code is documented and passes all linting and tests before submitting a pull request.
+
+This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
+Project status and project structure are described in the [README.md](./README.md) file.
+
+
+## Table of Contents
+- [Getting Started](#getting-started)
+- [Environment](#environment)
+- [Coding Guidelines](#coding-guidelines)
+- [Adding a New Package](#adding-a-new-package)
+- [Running scripts](#running-scripts)
+- [Documentation](#documentation)
+- [Versioning](#versioning)
+- [Publishing](#publishing)
+- [Reporting Issues](#reporting-issues)
+- [License](#license)
+
+
+## Getting Started
+External contributors can contribute to the project by following these steps:
+1. Fork the repository.
+2. Clone the forked repository to the local machine.
+3. Create a new branch for the feature or bugfix.
+4. Make your changes.
+5. Commit changes with a descriptive commit message.
+6. Push changes to the forked repository.
+7. Create a pull request to the main repository.
+
+Before contributing, please set up the project on the local machine by following the instructions in the [SETUP.md](./SETUP.md) file.
+
+If you're internal contributor, follow your internal guidelines.
+
 
 ## Environment
-
 This project is developed using the following tools:
+- Node.js for running JavaScript code.
+- pnpm  package manager for package management and package workspaces support.
+- Turborepo for monorepo task running (caching, parallelization).
 
--   [`nvm`](https://github.com/nvm-sh/nvm) for runtime version management
-    -   installation:
-    ```bash
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-    ```
-    or see [guide](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
-    -   optional, recommended: add automated `nvm use` to shell profile - see [guide](https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh)
--   [`NodeJS v20 LTS`](https://nodejs.org/en) runtime
-    -   installation:
-    ```bash
-        nvm install 20
-        nvm use # run in repo root to use version specified in .nvmrc
-    ```
-    or see [guide](https://nodejs.org/en/download/package-manager)
--   [`pnpm v9`](https://pnpm.io/) for package management and package workspaces support
-    -   installation:
-    ```bash
-        corepack enable pnpm # corepack should have been installed automatically during `nvm install`
-    ```
-    -   or see [guide](https://pnpm.io/installation#using-corepack)
-    -   pro tip: `pnpm` might be annoying to type; you can alias it to `pn` instead
-        -   example installation:
-        ```bash
-            echo 'alias pn="pnpm"' >> ~/.bashrc
-        ```
-        or see [guide](https://pnpm.io/installation#adding-a-permanent-alias-on-posix-systems)
--   [`turborepo`](https://turbo.build/repo/docs) for monorepo task running (caching, parallelization)
-    -   turborepo is installed as a dev dependency in the project - use it through package manager
-    ```bash
-        pnpm turbo <command>
-    ```
-    -   common commands are aliased in [root `package.json`](./package.json) scripts
-    -   optional, not recommended: [global installation docs](https://turbo.build/repo/docs/getting-started/installation#global-installation)
+Common commands are aliased in [root `package.json`](./package.json) scripts.
 
-## Adding a package
+## Coding Guidelines
+TBD
 
-Currently there is no common package template, as we're moving existing ilib packages into the monorepo without unification (this will be addressed in future).
+## Adding a New Package
+TBD
 
-A new package can be added simply by creating a new directory in the `packages` directory, and adding a `package.json` file there. To plug in to monorepo tasks (as defined in `turbo.json`), package should define the following scripts:
+Currently, there is no package template as we are moving existing `iLib-js` packages into the monorepo without unification.
+This will be addressed in the future.
+To manually create a new package, follow these steps:
 
--   `build`
--   `test`
--   `doc`
+1. Create a new directory under `packages/`.
+2. In the new directory, create a `package.json` file.
+3. Add the following scripts to the new package's `package.json` file to plug into monorepo tasks (defined in `turbo.json` in the monorepo root directory):
+    -   `build`
+    -   `test`
+    -   `doc`
 
-All of them are optional though.
-
-If the new package depends on another package in the monorepo, this dependency in `packages/<packageName>/package.json` should be defined using the `workspace:` protocol, e.g.:
-
-```json
-{
-    "dependencies": {
-        "ilib-common": "workspace:*"
+    These scripts are optional.
+4. If the new package depends on another package in the monorepo, define this dependency using the workspace protocol in the `dependencies` section of your `packages/<packageName>/package.json`, like this:
+    ```json
+    {
+        "dependencies": {
+            "ilib-common": "workspace:*"
+        }
     }
-}
+    ```
+    When you run `pnpm publish`, pnpm will automatically substitute this protocol with a proper semver version.
+    You can learn more about pnpm workspaces [here](https://pnpm.io/workspaces).
+
+
+## Running Scripts
+To run scripts for a single package run commands from the package root directory.
+### Build
+TBD
+
+To run the build, use:
+```bash
+pnpm build
 ```
 
-PNPM will automatically substitute this protocol wih a proper semver version upon `pnpm publish`. Read more about PNPM workspaces [here](https://pnpm.io/workspaces).
+### Doc
+TBD
 
-## Versioning and publishing
+To run the doc, use:
+```bash
+pnpm doc
+```
 
-TODO
+### Lint
+TBD
+
+### Test
+TDB
+
+To run the tests, use:
+```bash
+pnpm test
+```
+
+
+## Documentation
+TBD
+   
+
+## Versioning
+TBD
+
+
+## Publishing
+TBD
+
+
+## Reporting Issues
+To report a bug or submit a feature request, please create an issue on the GitHub repository.
+
+
+## License
+By contributing to `ilib-mono`, it is understood and acknowledged that contributions will be licensed under the Apache License.
