@@ -1,7 +1,11 @@
 ## Setup
 ### Prerequisites
 This project is developed using Node.js, nvm and pnpm.
-Make sure you've got them installed before continuing.
+Make sure you've got them installed in correct versions before continuing.
+
+Versions used for development:
+- Node.js: version specified in `.nvmrc` file
+- pnpm: version specified in `package.json` file
 
 You can find installation instructions at:
 - [nodejs.org](https://nodejs.org/)

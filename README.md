@@ -42,6 +42,9 @@ For example, to use the `ilib-common` package from within any other package in t
 import { JSUtils, Utils, Path } from 'ilib-common';
 ```
 
+### Targeted Node.js Versions
+`ilib-mono` aim to target Node.js versions >=12.0.0 when building packages for npm registry.
+
 
 ## Setup
 For detailed setup instructions to get the project running on local machine, please refer to the [SETUP.md](./SETUP.md) file.
@@ -56,4 +59,4 @@ For publishing instructions, please see the [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 
 ## License
-This project is licensed under the Apache License. See the [LICENSE](./LICENSE) file for details.
+This project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for details.

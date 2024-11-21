@@ -1,6 +1,6 @@
 # Contributing
 We welcome contributions to the ilib-mono project!
-Please follow guidelines defined in this file to contribute, follow the existing code style and conventions.
+Please follow guidelines defined in this file to contribute and follow the existing code style and conventions.
 Ensure your code is documented and passes all linting and tests before submitting a pull request.
 
 This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
@@ -21,6 +21,7 @@ Project status and project structure are described in the [README.md](./README.m
 
 
 ## Getting Started
+External contributors can contribute to the project by following these steps:
 1. Fork the repository.
 2. Clone the forked repository to the local machine.
 3. Create a new branch for the feature or bugfix.
@@ -30,6 +31,9 @@ Project status and project structure are described in the [README.md](./README.m
 7. Create a pull request to the main repository.
 
 Before contributing, please set up the project on the local machine by following the instructions in the [SETUP.md](./SETUP.md) file.
+
+If you're internal contributor, follow your internal guidelines.
+
 
 ## Environment
 This project is developed using the following tools:
