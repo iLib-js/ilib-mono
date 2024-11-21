@@ -8,5 +8,5 @@
         "noImplicitAny": true
     },
     "include": ["."],
-    "exclude": ["node_modules", "dist", "docs"]
+    "exclude": ["node_modules", "lib", "docs"]
 }
