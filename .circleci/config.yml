@@ -11,6 +11,7 @@ jobs:
         executor:
             name: node/default
             tag: 20.18-browsers
+            resource_class: xlarge
         environment:
             TURBO_UI: "false"
         steps:
