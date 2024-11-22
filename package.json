@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "test": "turbo test",
+    "test:ci": "turbo test --concurrency=5",
     "doc": "turbo doc"
   },
   "devDependencies": {

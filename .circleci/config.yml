@@ -21,4 +21,4 @@ jobs:
             - run:
                   command: pnpm build
             - run:
-                  command: pnpm test
+                  command: pnpm test:ci
