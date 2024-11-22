@@ -1694,6 +1694,12 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.20.0
+      ilib-po:
+        specifier: workspace:^1.0.0
+        version: link:../ilib-po
+      ilib-tools-common:
+        specifier: ^1.11.0
+        version: 1.11.0
       ilib-tree-node:
         specifier: workspace:^
         version: link:../ilib-tree-node
