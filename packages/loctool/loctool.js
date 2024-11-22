@@ -69,6 +69,9 @@ var commandOptionHelp = {
         "-f or --filetype\n" +
         "  Restrict operation to only the given list of file types. This allows you to\n" +
         "  run only the parts of the loctool that are needed at the moment.\n" +
+        "--intermediateFormat [format]\n" +
+        "  Specify the intermediate format to use when generating files for translation. The format can be 'xliff'\n" +
+        "  or 'po'. Default is 'xliff'.\n" +
         "--localizeOnly\n" +
         "  Generate a localization resource only. Do not create any other files at all after running loctool. \n" +
         "-n or --pseudo\n" +
@@ -256,6 +259,7 @@ var settings = {
     pull: false,
     identify: false,
     oldHamlLoc: false,
+    intermediateFormat: "xliff",
     nopseudo: true,
     targetDir: ".",            // target directory for all output files
     xliffsDir: ["."],
@@ -328,6 +332,18 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "-n" || val === "--pseudo") {
         settings.nopseudo = false;
+    } else if (val === "--intermediateFormat") {
+        if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
+            if (argv[i + 1] === "xliff" || argv[i + 1] === "po") {
+                settings.intermediateFormat = argv[++i];
+            } else {
+                console.error("Error: --intermediateFormat option requires a format argument to be 'xliff' or 'po'.");
+                usage();
+            }
+        } else {
+            console.error("Error: --intermediateFormat option requires a format argument to follow it.");
+            usage();
+        }
     } else if (val === "-o" || val === "--oldhaml") {
         settings.oldHamlLoc = true;
     } else if (val === "-i" || val === "--identify") {
