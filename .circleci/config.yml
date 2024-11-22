@@ -31,8 +31,6 @@ jobs:
             - node/install-packages:
                   pkg-manager: pnpm
             - run:
-                  command: pnpm build
-            - run:
                   command: pnpm test:ci
     test-affected:
         executor:
@@ -45,7 +43,5 @@ jobs:
             - checkout
             - node/install-packages:
                   pkg-manager: pnpm
-            - run:
-                  command: pnpm build
             - run:
                   command: pnpm test:ci:affected
