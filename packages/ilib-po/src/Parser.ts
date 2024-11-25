@@ -227,8 +227,8 @@ class Parser {
                         case TokenType.BLANKLINE:
                             if (source || sourcePlurals) {
                                 // emit a resource
-                                let key: string,
-                                    res: ResourceString | ResourcePlural;
+                                let key: string;
+                                let res: ResourceString | ResourcePlural | undefined = undefined;
                                 if (sourcePlurals) {
                                     key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
                                     res = new ResourcePlural({
