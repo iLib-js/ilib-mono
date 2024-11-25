@@ -91,6 +91,6 @@
         "@log4js-node/log4js-api": "^1.0.2",
         "ilib-ctype": "^1.2.1",
         "ilib-locale": "^1.2.2",
-        "ilib-xliff": "^1.2.0"
+        "ilib-xliff": "workspace:*"
     }
 }

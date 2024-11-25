@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "intl-messageformat": "^10.7.6",
-        "ilib-common": "^1.1.3",
+        "ilib-common": "workspace:*",
         "@babel/types": "^7.24.0",
         "@babel/generator": "^7.24.0",
         "docdash": "^2.0.2",
@@ -46,9 +46,9 @@
         "@babel/traverse": "^7.24.0",
         "@formatjs/intl": "^2.10.0",
         "ilib-istring": "^1.1.0",
-        "ilib-lint-common": "^3.0.0",
+        "ilib-lint-common": "workspace:*",
         "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "^1.9.1",
+        "ilib-tools-common": "workspace:*",
         "jsonpath": "^1.1.1",
         "regenerator-runtime": "^0.14.1"
     }

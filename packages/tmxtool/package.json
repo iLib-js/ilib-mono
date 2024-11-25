@@ -62,14 +62,14 @@
     },
     "devDependencies": {
         "docdash": "^2.0.2",
-        "ilib-tools-common": "^1.9.1",
+        "ilib-tools-common": "workspace:*",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",
         "jsdoc-to-markdown": "^8.0.0"
     },
     "dependencies": {
         "ilib-locale": "^1.2.2",
-        "ilib-tmx": "^1.1.2",
+        "ilib-tmx": "workspace:*",
         "options-parser": "^0.4.0"
     }
 }
