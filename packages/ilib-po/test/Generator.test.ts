@@ -70,6 +70,46 @@ describe("generator", () => {
         expect(actual).toBe(expected);
     });
 
+    test("Generator generate simple text with a key that is different than the source string", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false
+        });
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "asdf",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        const actual = generator.generate(translations);
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            '#k asdf\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n';
+
+        expect(actual).toBe(expected);
+    });
+
     test("Generator generate text multiple", () => {
         expect.assertions(2);
 
@@ -161,6 +201,54 @@ describe("generator", () => {
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
+            "msgid \"string 1\"\n" +
+            "msgid_plural \"strings 1\"\n" +
+            "msgstr[0] \"chaîne 1\"\n" +
+            "msgstr[1] \"chaînes 1\"\n";
+        expect(actual).toBe(expected);
+    });
+
+    test("Generator generate text with plural resources that have a key that is different than the singular string", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false
+        });
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "asdf",
+            source: {
+                one: "string 1",
+                other: "strings 1"
+            },
+            sourceLocale: "en-US",
+            target: {
+                one: "chaîne 1",
+                other: "chaînes 1"
+            },
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+
+        const actual = generator.generate(translations);
+
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            '#k asdf\n' +
             "msgid \"string 1\"\n" +
             "msgid_plural \"strings 1\"\n" +
             "msgstr[0] \"chaîne 1\"\n" +
@@ -367,7 +455,7 @@ describe("generator", () => {
         translations.add(new ResourceString({
             project: "foo",
             key: 'string "quoted" 1',
-            source: "string 1",
+            source: 'string "quoted" 1',
             sourceLocale: "en-US",
             target: 'chaîne "numéro" 1',
             targetLocale: "fr-FR",
@@ -491,12 +579,14 @@ describe("generator", () => {
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
             '\n' +
+            '#k string 1 --- context 1\n' +
             'msgctxt "context 1"\n' +
-            'msgid "string 1 --- context 1"\n' +
+            'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1 contexte 1"\n' +
             '\n' +
+            '#k string 1 --- context 2\n' +
             'msgctxt "context 2"\n' +
-            'msgid "string 1 --- context 2"\n' +
+            'msgid "string 1"\n' +
             'msgstr "chaîne numéro 2 contexte 2"\n';
 
         expect(actual).toBe(expected);

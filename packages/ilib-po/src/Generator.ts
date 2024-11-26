@@ -100,7 +100,8 @@ class Generator {
 
         for (let i = 0; i < resources.length; i++) {
             const r = resources[i];
-            const key: string = r.getKey() ?? makeKey(r.getType(), r.getSource(), this.contextInKey && r.getContext());
+            const type = r.getType();
+            const key: string = r.getKey() ?? makeKey(type, r.getSource(), this.contextInKey && r.getContext());
             output += "\n";
             const comment = r.getComment();
             let c: Comments = {};
@@ -135,11 +136,19 @@ class Generator {
                     output += `#| ${str}\n`;
                 });
             }
+            if (type === "string" && r.getSource() !== key) {
+                output += `#k ${escapeQuotes(r.getKey())}\n`;
+            } else if (type === "plural") {
+                const generatedKey = makeKey("plural", r.getSource(), this.contextInKey && r.getContext());
+                if (key !== generatedKey) {
+                    output += `#k ${escapeQuotes(r.getKey())}\n`;
+                }
+            }
             if (r.getContext()) {
                 output += `msgctxt "${escapeQuotes(r.getContext())}"\n`;
             }
-            if (r.getType() === "string") {
-                output += `msgid "${escapeQuotes(key)}"\n`;
+            if (type === "string") {
+                output += `msgid "${escapeQuotes(r.getSource())}"\n`;
                 let translatedText = r.getTarget() ?? "";
 
                 if (translatedText === r.getSource()) {
@@ -148,7 +157,7 @@ class Generator {
                 }
 
                 output += `msgstr "${escapeQuotes(translatedText)}"\n`;
-            } else if (r.getType() === "array") {
+            } else if (type === "array") {
                 const sourceArray = r.getSource();
                 let translatedArray = r.getTarget() || [];
 
@@ -164,8 +173,8 @@ class Generator {
                 });
             } else {
                 // plural string
-                output += `msgid "${escapeQuotes(key)}"\n`;
                 const sourcePlurals = r.getSource();
+                output += `msgid "${escapeQuotes(sourcePlurals.one)}"\n`;
                 let translatedPlurals = r.getTarget() || {};
 
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;

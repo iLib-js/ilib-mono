@@ -152,6 +152,45 @@ describe("parser", () => {
         expect(resources[1].getTargetLocale()).toBe("de-DE");
     });
 
+    test("Parser parse strings that have a key that is different than the source", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '#k str1\n' +
+            'msgid "string 1"\n' +
+            'msgstr "this is string one"\n' +
+            '\n' +
+            '#k str2\n' +
+            'msgid "string 2"\n' +
+            'msgstr "this is string two"\n'
+        );
+
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(2);
+        const resources = set.getAll();
+        expect(resources.length).toBe(2);
+
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("str1");
+        expect(resources[0].getTarget()).toBe("this is string one");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
+
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("str2");
+        expect(resources[1].getTarget()).toBe("this is string two");
+        expect(resources[1].getTargetLocale()).toBe("de-DE");
+    });
+
     test("ParserParsePluralString", () => {
         expect.assertions(9);
 
@@ -212,6 +251,43 @@ describe("parser", () => {
         expect(strings.one).toBe("one object");
         expect(strings.other).toBe("{$count} objects");
         expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        strings = resources[0].getTarget();
+        expect(strings.one).toBe("Ein Objekt");
+        expect(strings.other).toBe("{$count} Objekten");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
+    });
+
+    test("ParserParse plural string with translations and a key that is different than the singular", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '#k plural1\n' +
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "Ein Objekt"\n' +
+            'msgstr[1] "{$count} Objekten"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        const resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getType()).toBe("plural");
+        let strings = resources[0].getSource();
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("plural1");
         expect(resources[0].getSourceLocale()).toBe("en-US");
         strings = resources[0].getTarget();
         expect(strings.one).toBe("Ein Objekt");
