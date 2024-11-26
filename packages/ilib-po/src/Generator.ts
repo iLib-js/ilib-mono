@@ -125,6 +125,8 @@ class Generator {
                 c[CommentType.PATHS].forEach(str => {
                     output += `#: ${str}\n`;
                 });
+            } else if (r.getPath()) {
+                output += `#: ${r.getPath()}\n`;
             }
             if (c[CommentType.FLAGS]?.length) {
                 c[CommentType.FLAGS].forEach(str => {
