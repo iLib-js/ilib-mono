@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ResourceString, ResourcePlural, TranslationSet } from "ilib-tools-common";
+import { ResourceString, ResourcePlural, ResourceArray, TranslationSet } from "ilib-tools-common";
 
 import Generator from "../src/Generator";
 
@@ -135,12 +135,12 @@ describe("generator", () => {
         translations.add(new ResourcePlural({
             project: "foo",
             key: "string 1",
-            sourceStrings: {
+            source: {
                 one: "string 1",
                 other: "strings 1"
             },
             sourceLocale: "en-US",
-            targetStrings: {
+            target: {
                 one: "chaîne 1",
                 other: "chaînes 1"
             },
@@ -165,6 +165,62 @@ describe("generator", () => {
             "msgid_plural \"strings 1\"\n" +
             "msgstr[0] \"chaîne 1\"\n" +
             "msgstr[1] \"chaînes 1\"\n";
+        expect(actual).toBe(expected);
+    });
+
+    test("Generator generate text with array resources", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false
+        });
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "foo",
+            source: ["string 1", "string 2"],
+            sourceLocale: "en-US",
+            target: ["chaîne 1", "chaîne 2"],
+            targetLocale: "fr-FR",
+            datatype: "po",
+            comment: JSON.stringify({
+                translator: ["note for translators"],
+                extracted: ["extracted comment"],
+                paths: ["src/a/b/c.js:32"],
+                flags: ["c-format"]
+            })
+        }));
+
+        const actual = generator.generate(translations);
+
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            '# note for translators\n' +
+            '#. extracted comment\n' +
+            '#: src/a/b/c.js:32\n' +
+            '#, c-format\n' +
+            '#k foo\n' +
+            '## 0\n' +
+            "msgid \"string 1\"\n" +
+            "msgstr \"chaîne 1\"\n" +
+            '\n' +
+            '#k foo\n' +
+            '## 1\n' +
+            "msgid \"string 2\"\n" +
+            'msgstr "chaîne 2"\n'
         expect(actual).toBe(expected);
     });
 
@@ -511,12 +567,12 @@ describe("generator", () => {
         translations.add(new ResourcePlural({
             project: "foo",
             key: "{$count} object",
-            sourceStrings: {
+            source: {
                 one: "{$count} object",
                 other: "{$count} objects"
             },
             sourceLocale: "en-US",
-            targetStrings: {
+            target: {
                 one: "{$count} object",
                 other: "{$count} objects"
             },
@@ -526,12 +582,12 @@ describe("generator", () => {
         translations.add(new ResourcePlural({
             project: "foo",
             key: "{$count} item",
-            sourceStrings: {
+            source: {
                 one: "{$count} item",
                 other: "{$count} items"
             },
             sourceLocale: "en-US",
-            targetStrings: {
+            target: {
                 one: "{$count} item",
                 other: "{$count} items"
             },
@@ -578,12 +634,12 @@ describe("generator", () => {
         translations.add(new ResourcePlural({
             project: "foo",
             key: "{$count} object",
-            sourceStrings: {
+            source: {
                 one: "{$count} object",
                 other: "{$count} objects"
             },
             sourceLocale: "en-US",
-            targetStrings: {
+            target: {
                 one: "{$count} objet",
                 other: "{$count} objets"
             },
@@ -593,12 +649,12 @@ describe("generator", () => {
         translations.add(new ResourcePlural({
             project: "foo",
             key: "{$count} item",
-            sourceStrings: {
+            source: {
                 one: "{$count} item",
                 other: "{$count} items"
             },
             sourceLocale: "en-US",
-            targetStrings: {
+            target: {
                 one: "{$count} chose",
                 other: "{$count} choses"
             },
@@ -663,12 +719,12 @@ describe("generator", () => {
         set.add(new ResourcePlural({
             project: "foo",
             key: "one string",
-            sourceStrings: {
+            source: {
                 "one": "one string",
                 "other": "{$count} strings"
             },
             sourceLocale: "en-US",
-            targetStrings: {
+            target: {
                 "one": "{$count} струна",
                 "few": "{$count} струны",
                 "other": "{$count} струн"

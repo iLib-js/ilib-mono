@@ -72,7 +72,7 @@ class Generator {
         this.pathName = options.pathName;
         this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
         this.contextInKey = optionsWithDefaults.contextInKey;
-        
+
         this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
     }
 
@@ -102,7 +102,13 @@ class Generator {
             const r = resources[i];
             const key: string = r.getKey() ?? makeKey(r.getType(), r.getSource(), this.contextInKey && r.getContext());
             output += "\n";
-            let c: Comments = r.getComment() ? JSON.parse(r.getComment()) : {};
+            const comment = r.getComment();
+            let c: Comments = {};
+            if (comment) {
+                c = comment[0] === "{" ? JSON.parse(comment) : {
+                    [CommentType.EXTRACTED]: [comment],
+                };
+            }
 
             if (c[CommentType.TRANSLATOR]?.length) {
                 c[CommentType.TRANSLATOR].forEach(str => {
@@ -132,8 +138,8 @@ class Generator {
             if (r.getContext()) {
                 output += `msgctxt "${escapeQuotes(r.getContext())}"\n`;
             }
-            output += `msgid "${escapeQuotes(key)}"\n`;
             if (r.getType() === "string") {
+                output += `msgid "${escapeQuotes(key)}"\n`;
                 let translatedText = r.getTarget() ?? "";
 
                 if (translatedText === r.getSource()) {
@@ -142,10 +148,25 @@ class Generator {
                 }
 
                 output += `msgstr "${escapeQuotes(translatedText)}"\n`;
+            } else if (r.getType() === "array") {
+                const sourceArray = r.getSource();
+                let translatedArray = r.getTarget() || [];
+
+                sourceArray.forEach((source: string, index: number) => {
+                    if (index > 0) {
+                        output += "\n";
+                    }
+                    const translation = translatedArray[index] !== source ? translatedArray[index] : "";
+                    output += `#k ${escapeQuotes(r.getKey())}\n`;
+                    output += `## ${index}\n`;
+                    output += `msgid "${escapeQuotes(source)}"\n`;
+                    output += `msgstr "${escapeQuotes(translation)}"\n`;
+                });
             } else {
                 // plural string
-                const sourcePlurals = r.getSourcePlurals();
-                let translatedPlurals = r.getTargetPlurals() || {};
+                output += `msgid "${escapeQuotes(key)}"\n`;
+                const sourcePlurals = r.getSource();
+                let translatedPlurals = r.getTarget() || {};
 
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {

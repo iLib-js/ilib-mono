@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
+import { TranslationSet, ResourceString, ResourcePlural, ResourceArray } from 'ilib-tools-common';
 // @ts-expect-error -- untyped package
 import Locale from 'ilib-locale';
 
@@ -48,7 +48,7 @@ export interface BaseParserOptions {
 
     /**
      * whether the context should be included as part of the key or not
-     * 
+     *
      * @default false
      */
     contextInKey?: boolean
@@ -62,7 +62,7 @@ export interface ParserOptionsWithIgnoreCommentTypes {
 export interface ParserOptionsWithIgnoreAllCommentsFlag {
     /**
      * whether to ignore all comments
-     * 
+     *
      * @default false
      */
     ignoreComments?: boolean
@@ -81,13 +81,22 @@ enum State {
 
 export type ParserOptions = BaseParserOptions & (ParserOptionsWithIgnoreCommentTypes | ParserOptionsWithIgnoreAllCommentsFlag);
 
+// used to map the the key of an array of strings to the array itself
+type ArrayResources = {
+    [key: string]: ResourceArray
+};
+
 /** Mapping from PO comment type identifier char to enum {@link CommentType} value */
 const commentTypeMap = new Map([
     [' ', CommentType.TRANSLATOR],
     ['.', CommentType.EXTRACTED],
     [',', CommentType.FLAGS],
     ['|', CommentType.PREVIOUS],
-    [':', CommentType.PATHS]
+    [':', CommentType.PATHS],
+
+    // these two are extensions to the PO format so that we can encode array resources
+    ['k', CommentType.KEY],
+    ['#', CommentType.INDEX]
 ]);
 
 const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
@@ -162,12 +171,16 @@ class Parser {
             original: string | undefined,
             sourcePlurals: Plural | undefined,
             translationPlurals: Plural | undefined,
-            category : PluralCategory | undefined;
+            category : PluralCategory | undefined,
+            arrays: ArrayResources | undefined = {},
+            key: string | undefined,
+            type: string | undefined,
+            arrayIndex: number = 0;
 
         let resourceIndex = 0;
 
         function restart() {
-            comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
+            key = type = comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
             state = State.START;
         }
 
@@ -183,6 +196,7 @@ class Parser {
                             break;
                         case TokenType.MSGIDPLURAL:
                             state = State.MSGIDPLSTR;
+                            type = "plural";
                             break;
                         case TokenType.MSGCTXT:
                             state = State.MSGCTXTSTR;
@@ -192,20 +206,25 @@ class Parser {
                             break;
                         case TokenType.COMMENT:
                             if (token.value) {
-                                const type = token.value[0];
-                                if (type === ':' && !original) {
+                                const tokenType = token.value[0];
+                                if (tokenType === ':' && !original) {
                                     const match = rePathStrip.exec(token.value);
                                     original = (match && match.length > 1) ? match[1] : token.value;
                                 }
-                                const commentType = commentTypeMap.get(type);
-                                if (commentType && !this.commentsToIgnore.has(commentType)) {
+                                const commentType = commentTypeMap.get(tokenType);
+                                if (commentType === CommentType.KEY) {
+                                    key = token.value.substring(2);
+                                } else if (commentType === CommentType.INDEX) {
+                                    arrayIndex = parseInt(token.value.substring(2), 10);
+                                    type = "array";
+                                } else if (commentType && !this.commentsToIgnore.has(commentType)) {
                                     if (!comment) {
                                         comment = {};
                                     }
                                     if (!comment[commentType]) {
                                        comment[commentType] = [];
                                     }
-                                    comment[commentType].push(token.value.substring((type === ' ') ? 1 : 2));
+                                    comment[commentType].push(token.value.substring((tokenType === ' ') ? 1 : 2));
                                 } // else if it is in the comments set, ignore it
                             }
                             break;
@@ -227,10 +246,11 @@ class Parser {
                         case TokenType.BLANKLINE:
                             if (source || sourcePlurals) {
                                 // emit a resource
-                                let key: string;
-                                let res: ResourceString | ResourcePlural | undefined = undefined;
-                                if (sourcePlurals) {
-                                    key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
+                                let res: ResourceString | ResourcePlural | ResourceArray;
+                                if (type === "plural" && sourcePlurals) {
+                                    if (!key) {
+                                        key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
+                                    }
                                     res = new ResourcePlural({
                                         project: this.projectName,
                                         key: key,
@@ -245,8 +265,44 @@ class Parser {
                                         targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
                                         targetStrings: translationPlurals
                                     });
+                                } else if (type === "array") {
+                                    // if there is an existing array resource with the same key, use that one
+                                    // otherwise, create a new one and add it to the set
+                                    if (key) {
+                                        res = arrays[key];
+                                        if (!res) {
+                                            res = new ResourceArray({
+                                                project: this.projectName,
+                                                key: key,
+                                                sourceLocale: this.sourceLocale.getSpec(),
+                                                source: [],
+                                                pathName: original,
+                                                state: "new",
+                                                comment: comment && JSON.stringify(comment),
+                                                datatype: this.datatype,
+                                                context: context,
+                                                index: resourceIndex++,
+                                                targetLocale: this.targetLocale?.getSpec(),
+                                                target: []
+                                            });
+                                            arrays[key] = res;
+                                        }
+                                        // add the source and target to the array at the right index
+                                        res.source[arrayIndex] = source;
+                                        if (translation) {
+                                            if (!res.target) {
+                                                res.target = [];
+                                            }
+                                            res.target[arrayIndex] = translation;
+                                        }
+                                    } else {
+                                        // no key
+                                        throw new SyntaxError(this.pathName, tokenizer.getContext());
+                                    }
                                 } else if (source) {
-                                    key = makeKey("string", source, this.contextInKey ? context : undefined);
+                                    if (!key) {
+                                        key = makeKey("string", source, this.contextInKey ? context : undefined);
+                                    }
                                     res = new ResourceString({
                                         project: this.projectName,
                                         key: key,
