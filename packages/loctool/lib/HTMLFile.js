@@ -24,7 +24,7 @@ var htmlParser = require("html-parser");
 var jsstl = require("js-stl");
 var Locale = require("ilib/lib/Locale.js");
 var he = require("he");
-var MessageAccumulator = require("message-accumulator").default;
+var MessageAccumulator = require("message-accumulator");
 
 var Queue = jsstl.Queue;
 var Stack = jsstl.Stack;
