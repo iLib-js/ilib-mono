@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-
-// @ts-expect-error -- untyped package
 import { ResourceString } from "ilib-tools-common";
 
 import Parser from "../src/Parser";

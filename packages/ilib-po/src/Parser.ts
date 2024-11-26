@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// @ts-expect-error -- untyped package
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
 // @ts-expect-error -- untyped package
 import Locale from 'ilib-locale';
