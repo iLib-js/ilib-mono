@@ -1695,7 +1695,7 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-po:
-        specifier: workspace:^1.0.0
+        specifier: workspace:*
         version: link:../ilib-po
       ilib-tools-common:
         specifier: ^1.11.0
@@ -1761,6 +1761,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@jest/types':
+        specifier: ^29.6.3
+        version: 29.6.3
       cldr-core:
         specifier: ^43.1.0
         version: 43.1.0

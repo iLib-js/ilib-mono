@@ -441,6 +441,75 @@ describe("generator", () => {
         expect(actual).toBe(expected);
     });
 
+    test("Generator generate text where the path is not in the comments yet", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false
+        });
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po",
+            pathName: "src/a/b/c.js"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "po",
+            pathName: "src/a/b/x.js",
+            comment: JSON.stringify({
+                translator: ["note for translators 1", "note for translators 2"],
+                extracted: ["extracted comment 1", "extracted comment 2"],
+                flags: ["c-format", "javascript-format"],
+                previous: ["str2", "string2"]
+            })
+        }));
+
+        const actual = generator.generate(translations);
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            '#: src/a/b/c.js\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            '# note for translators 1\n' +
+            '# note for translators 2\n' +
+            '#. extracted comment 1\n' +
+            '#. extracted comment 2\n' +
+            '#: src/a/b/x.js\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str2\n' +
+            '#| string2\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne numéro 2"\n';
+
+        expect(actual).toBe(expected);
+    });
+
     test("Generator generate text with escaped quotes", () => {
         expect.assertions(2);
 
