@@ -9,7 +9,7 @@ lib/
 # Dependencies
 node_modules/
 
-# Editors' / IDEs' configuration files
+# Editors / IDEs
 .vscode/
 .idea/
 .project
@@ -32,6 +32,10 @@ node_modules/
 
 # Build Outputs
 !packages/loctool/lib/
+
+# Editors / IDEs
+packages/loctool/java/bin/
+packages/loctool/build.properties
 
 # Testing
 # This file is used for testing the ilib-lint package. It is used in test assertions in walk.test.js file.
