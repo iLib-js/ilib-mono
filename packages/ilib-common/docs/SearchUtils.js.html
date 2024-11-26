@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>SearchUtils.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ISet.html">ISet</a><ul class='methods'><li data-type='method'><a href="ISet.html#add">add</a></li><li data-type='method'><a href="ISet.html#asArray">asArray</a></li><li data-type='method'><a href="ISet.html#clear">clear</a></li><li data-type='method'><a href="ISet.html#contains">contains</a></li><li data-type='method'><a href="ISet.html#fromJS">fromJS</a></li><li data-type='method'><a href="ISet.html#isEmpty">isEmpty</a></li><li data-type='method'><a href="ISet.html#remove">remove</a></li><li data-type='method'><a href="ISet.html#toJS">toJS</a></li><li data-type='method'><a href="ISet.html#toJson">toJson</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-JSUtils.html">JSUtils</a><ul class='methods'><li data-type='method'><a href="module-JSUtils.html#.callAll">callAll</a></li><li data-type='method'><a href="module-JSUtils.html#.deepCopy">deepCopy</a></li><li data-type='method'><a href="module-JSUtils.html#.extend">extend</a></li><li data-type='method'><a href="module-JSUtils.html#.fromCodePoint">fromCodePoint</a></li><li data-type='method'><a href="module-JSUtils.html#.hashCode">hashCode</a></li><li data-type='method'><a href="module-JSUtils.html#.indexOf">indexOf</a></li><li data-type='method'><a href="module-JSUtils.html#.isArray">isArray</a></li><li data-type='method'><a href="module-JSUtils.html#.isDate">isDate</a></li><li data-type='method'><a href="module-JSUtils.html#.isEmpty">isEmpty</a></li><li data-type='method'><a href="module-JSUtils.html#.mapString">mapString</a></li><li data-type='method'><a href="module-JSUtils.html#.merge">merge</a></li><li data-type='method'><a href="module-JSUtils.html#.pad">pad</a></li><li data-type='method'><a href="module-JSUtils.html#.shallowCopy">shallowCopy</a></li><li data-type='method'><a href="module-JSUtils.html#.toCodePoint">toCodePoint</a></li><li data-type='method'><a href="module-JSUtils.html#.toHexString">toHexString</a></li></ul></li><li><a href="module-MathUtils.html">MathUtils</a><ul class='methods'><li data-type='method'><a href="module-MathUtils.html#.amod">amod</a></li><li data-type='method'><a href="module-MathUtils.html#.ceiling">ceiling</a></li><li data-type='method'><a href="module-MathUtils.html#.down">down</a></li><li data-type='method'><a href="module-MathUtils.html#.floor">floor</a></li><li data-type='method'><a href="module-MathUtils.html#.halfdown">halfdown</a></li><li data-type='method'><a href="module-MathUtils.html#.halfeven">halfeven</a></li><li data-type='method'><a href="module-MathUtils.html#.halfodd">halfodd</a></li><li data-type='method'><a href="module-MathUtils.html#.halfup">halfup</a></li><li data-type='method'><a href="module-MathUtils.html#.log10">log10</a></li><li data-type='method'><a href="module-MathUtils.html#.mod">mod</a></li><li data-type='method'><a href="module-MathUtils.html#.shiftDecimal">shiftDecimal</a></li><li data-type='method'><a href="module-MathUtils.html#.significant">significant</a></li><li data-type='method'><a href="module-MathUtils.html#.signum">signum</a></li><li data-type='method'><a href="module-MathUtils.html#.up">up</a></li></ul></li><li><a href="module-Path.html">Path</a></li><li><a href="module-SearchUtils.html">SearchUtils</a><ul class='methods'><li data-type='method'><a href="module-SearchUtils.html#.bisectionSearch">bisectionSearch</a></li><li data-type='method'><a href="module-SearchUtils.html#.bsearch">bsearch</a></li></ul></li><li><a href="module-Utils.html">Utils</a><ul class='methods'><li data-type='method'><a href="module-Utils.html#.getLocFiles">getLocFiles</a></li><li data-type='method'><a href="module-Utils.html#.getSublocales">getSublocales</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">SearchUtils.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * SearchUtils.js - Misc search utility routines
+ *
+ * Copyright © 2013-2015, 2021-2022 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @module SearchUtils
+ */
+
+/**
+ * Binary search a sorted array for a particular target value.
+ * If the exact value is not found, it returns the index of the smallest
+ * entry that is greater than the given target value.&lt;p>
+ *
+ * The comparator
+ * parameter is a function that knows how to compare elements of the
+ * array and the target. The function should return a value greater than 0
+ * if the array element is greater than the target, a value less than 0 if
+ * the array element is less than the target, and 0 if the array element
+ * and the target are equivalent.&lt;p>
+ *
+ * If the comparator function is not specified, this function assumes
+ * the array and the target are numeric values and should be compared
+ * as such.&lt;p>
+ *
+ *
+ * @static
+ * @param {*} target element being sought
+ * @param {Array} arr the array being searched
+ * @param {?function(*,*)=} comparator a comparator that is appropriate for comparing two entries
+ * in the array
+ * @return the index of the array into which the value would fit if
+ * inserted, or -1 if given array is not an array or the target is not
+ * a number
+ */
+export function bsearch(target, arr, comparator) {
+    if (typeof(arr) === 'undefined' || !arr || typeof(target) === 'undefined') {
+        return -1;
+    }
+
+    var high = arr.length - 1,
+        low = 0,
+        mid = 0,
+        value,
+        cmp = comparator || bsearch.numbers;
+
+    while (low &lt;= high) {
+        mid = Math.floor((high+low)/2);
+        value = cmp(arr[mid], target);
+        if (value > 0) {
+            high = mid - 1;
+        } else if (value &lt; 0) {
+            low = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+
+    return low;
+};
+
+/**
+ * Returns whether or not the given element is greater than, less than,
+ * or equal to the given target.&lt;p>
+ *
+ * @private
+ * @static
+ * @param {number} element the element being tested
+ * @param {number} target the target being sought
+ */
+bsearch.numbers = function(element, target) {
+    return element - target;
+};
+
+/**
+ * Do a bisection search of a function for a particular target value.&lt;p>
+ *
+ * The function to search is a function that takes a numeric parameter,
+ * does calculations, and returns gives a numeric result. The
+ * function should should be smooth and not have any discontinuities
+ * between the low and high values of the parameter.
+ *
+ *
+ * @static
+ * @param {number} target value being sought
+ * @param {number} low the lower bounds to start searching
+ * @param {number} high the upper bounds to start searching
+ * @param {number} precision minimum precision to support. Use 0 if you want to use the default.
+ * @param {?function(number)=} func function to search
+ * @return an approximation of the input value to the function that gives the desired
+ * target output value, correct to within the error range of Javascript floating point
+ * arithmetic, or NaN if there was some error
+ */
+export function bisectionSearch(target, low, high, precision, func) {
+    if (typeof(target) !== 'number' ||
+            typeof(low) !== 'number' ||
+            typeof(high) !== 'number' ||
+            typeof(func) !== 'function') {
+        return NaN;
+    }
+
+    var mid = 0,
+        value,
+        pre = precision > 0 ? precision : 1e-13;
+
+    do {
+        mid = (high+low)/2;
+        value = func(mid);
+        if (value > target) {
+            high = mid;
+        } else if (value &lt; target) {
+            low = mid;
+        }
+    } while (high - low > pre);
+
+    return mid;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Nov 26 2024 16:49:08 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

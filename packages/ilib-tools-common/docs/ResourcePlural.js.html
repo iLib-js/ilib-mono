@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ResourcePlural.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#getLocation">getLocation</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#addInstance">addInstance</a></li><li data-type='method'><a href="Resource.html#clearDirty">clearDirty</a></li><li data-type='method'><a href="Resource.html#escapeText">escapeText</a></li><li data-type='method'><a href="Resource.html#getAutoKey">getAutoKey</a></li><li data-type='method'><a href="Resource.html#getComment">getComment</a></li><li data-type='method'><a href="Resource.html#getContext">getContext</a></li><li data-type='method'><a href="Resource.html#getDNT">getDNT</a></li><li data-type='method'><a href="Resource.html#getDataType">getDataType</a></li><li data-type='method'><a href="Resource.html#getFlavor">getFlavor</a></li><li data-type='method'><a href="Resource.html#getId">getId</a></li><li data-type='method'><a href="Resource.html#getInstances">getInstances</a></li><li data-type='method'><a href="Resource.html#getKey">getKey</a></li><li data-type='method'><a href="Resource.html#getLocalize">getLocalize</a></li><li data-type='method'><a href="Resource.html#getLocation">getLocation</a></li><li data-type='method'><a href="Resource.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="Resource.html#getPath">getPath</a></li><li data-type='method'><a href="Resource.html#getProject">getProject</a></li><li data-type='method'><a href="Resource.html#getSource">getSource</a></li><li data-type='method'><a href="Resource.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Resource.html#getState">getState</a></li><li data-type='method'><a href="Resource.html#getTarget">getTarget</a></li><li data-type='method'><a href="Resource.html#getTargetLocale">getTargetLocale</a></li><li data-type='method'><a href="Resource.html#getType">getType</a></li><li data-type='method'><a href="Resource.html#isDirty">isDirty</a></li><li data-type='method'><a href="Resource.html#isInstance">isInstance</a></li><li data-type='method'><a href="Resource.html#same">same</a></li><li data-type='method'><a href="Resource.html#setComment">setComment</a></li><li data-type='method'><a href="Resource.html#setDNT">setDNT</a></li><li data-type='method'><a href="Resource.html#setProject">setProject</a></li><li data-type='method'><a href="Resource.html#setSourceLocale">setSourceLocale</a></li><li data-type='method'><a href="Resource.html#setState">setState</a></li><li data-type='method'><a href="Resource.html#setTargetLocale">setTargetLocale</a></li></ul></li><li><a href="ResourceArray.html">ResourceArray</a><ul class='methods'><li data-type='method'><a href="ResourceArray.html#addInstance">addInstance</a></li><li data-type='method'><a href="ResourceArray.html#addSourceItem">addSourceItem</a></li><li data-type='method'><a href="ResourceArray.html#addTargetItem">addTargetItem</a></li><li data-type='method'><a href="ResourceArray.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceArray.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourceArray.html#clearDirty">clearDirty</a></li><li data-type='method'><a href="ResourceArray.html#clone">clone</a></li><li data-type='method'><a href="ResourceArray.html#equals">equals</a></li><li data-type='method'><a href="ResourceArray.html#equals">equals</a></li><li data-type='method'><a href="ResourceArray.html#escapeText">escapeText</a></li><li data-type='method'><a href="ResourceArray.html#getAutoKey">getAutoKey</a></li><li data-type='method'><a href="ResourceArray.html#getComment">getComment</a></li><li data-type='method'><a href="ResourceArray.html#getContext">getContext</a></li><li data-type='method'><a href="ResourceArray.html#getDNT">getDNT</a></li><li data-type='method'><a href="ResourceArray.html#getDataType">getDataType</a></li><li data-type='method'><a href="ResourceArray.html#getFlavor">getFlavor</a></li><li data-type='method'><a href="ResourceArray.html#getId">getId</a></li><li data-type='method'><a href="ResourceArray.html#getInstances">getInstances</a></li><li data-type='method'><a href="ResourceArray.html#getKey">getKey</a></li><li data-type='method'><a href="ResourceArray.html#getLocalize">getLocalize</a></li><li data-type='method'><a href="ResourceArray.html#getLocation">getLocation</a></li><li data-type='method'><a href="ResourceArray.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="ResourceArray.html#getPath">getPath</a></li><li data-type='method'><a href="ResourceArray.html#getProject">getProject</a></li><li data-type='method'><a href="ResourceArray.html#getSource">getSource</a></li><li data-type='method'><a href="ResourceArray.html#getSourceArray">getSourceArray</a></li><li data-type='method'><a href="ResourceArray.html#getSourceItem">getSourceItem</a></li><li data-type='method'><a href="ResourceArray.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="ResourceArray.html#getState">getState</a></li><li data-type='method'><a href="ResourceArray.html#getTarget">getTarget</a></li><li data-type='method'><a href="ResourceArray.html#getTargetArray">getTargetArray</a></li><li data-type='method'><a href="ResourceArray.html#getTargetItem">getTargetItem</a></li><li data-type='method'><a href="ResourceArray.html#getTargetLocale">getTargetLocale</a></li><li data-type='method'><a href="ResourceArray.html#getType">getType</a></li><li data-type='method'><a href="ResourceArray.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourceArray.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourceArray.html#isDirty">isDirty</a></li><li data-type='method'><a href="ResourceArray.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourceArray.html#same">same</a></li><li data-type='method'><a href="ResourceArray.html#setComment">setComment</a></li><li data-type='method'><a href="ResourceArray.html#setDNT">setDNT</a></li><li data-type='method'><a href="ResourceArray.html#setProject">setProject</a></li><li data-type='method'><a href="ResourceArray.html#setSource">setSource</a></li><li data-type='method'><a href="ResourceArray.html#setSourceLocale">setSourceLocale</a></li><li data-type='method'><a href="ResourceArray.html#setState">setState</a></li><li data-type='method'><a href="ResourceArray.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourceArray.html#setTargetLocale">setTargetLocale</a></li><li data-type='method'><a href="ResourceArray.html#size">size</a></li><li data-type='method'><a href="ResourceArray.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourcePlural.html">ResourcePlural</a><ul class='methods'><li data-type='method'><a href="ResourcePlural.html#addInstance">addInstance</a></li><li data-type='method'><a href="ResourcePlural.html#addSourcePlural">addSourcePlural</a></li><li data-type='method'><a href="ResourcePlural.html#addTargetPlural">addTargetPlural</a></li><li data-type='method'><a href="ResourcePlural.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourcePlural.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourcePlural.html#clearDirty">clearDirty</a></li><li data-type='method'><a href="ResourcePlural.html#clone">clone</a></li><li data-type='method'><a href="ResourcePlural.html#equals">equals</a></li><li data-type='method'><a href="ResourcePlural.html#escapeText">escapeText</a></li><li data-type='method'><a href="ResourcePlural.html#getAllValidCategories">getAllValidCategories</a></li><li data-type='method'><a href="ResourcePlural.html#getAutoKey">getAutoKey</a></li><li data-type='method'><a href="ResourcePlural.html#getCategories">getCategories</a></li><li data-type='method'><a href="ResourcePlural.html#getClasses">getClasses</a></li><li data-type='method'><a href="ResourcePlural.html#getComment">getComment</a></li><li data-type='method'><a href="ResourcePlural.html#getContext">getContext</a></li><li data-type='method'><a href="ResourcePlural.html#getDNT">getDNT</a></li><li data-type='method'><a href="ResourcePlural.html#getDataType">getDataType</a></li><li data-type='method'><a href="ResourcePlural.html#getFlavor">getFlavor</a></li><li data-type='method'><a href="ResourcePlural.html#getId">getId</a></li><li data-type='method'><a href="ResourcePlural.html#getInstances">getInstances</a></li><li data-type='method'><a href="ResourcePlural.html#getKey">getKey</a></li><li data-type='method'><a href="ResourcePlural.html#getLocalize">getLocalize</a></li><li data-type='method'><a href="ResourcePlural.html#getLocation">getLocation</a></li><li data-type='method'><a href="ResourcePlural.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="ResourcePlural.html#getPath">getPath</a></li><li data-type='method'><a href="ResourcePlural.html#getProject">getProject</a></li><li data-type='method'><a href="ResourcePlural.html#getSource">getSource</a></li><li data-type='method'><a href="ResourcePlural.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="ResourcePlural.html#getSourcePlural">getSourcePlural</a></li><li data-type='method'><a href="ResourcePlural.html#getSourcePlurals">getSourcePlurals</a></li><li data-type='method'><a href="ResourcePlural.html#getSourceStrings">getSourceStrings</a></li><li data-type='method'><a href="ResourcePlural.html#getState">getState</a></li><li data-type='method'><a href="ResourcePlural.html#getTarget">getTarget</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetLocale">getTargetLocale</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetPlural">getTargetPlural</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetPlurals">getTargetPlurals</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetStrings">getTargetStrings</a></li><li data-type='method'><a href="ResourcePlural.html#getType">getType</a></li><li data-type='method'><a href="ResourcePlural.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourcePlural.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourcePlural.html#isDirty">isDirty</a></li><li data-type='method'><a href="ResourcePlural.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourcePlural.html#same">same</a></li><li data-type='method'><a href="ResourcePlural.html#setComment">setComment</a></li><li data-type='method'><a href="ResourcePlural.html#setDNT">setDNT</a></li><li data-type='method'><a href="ResourcePlural.html#setProject">setProject</a></li><li data-type='method'><a href="ResourcePlural.html#setSource">setSource</a></li><li data-type='method'><a href="ResourcePlural.html#setSourceLocale">setSourceLocale</a></li><li data-type='method'><a href="ResourcePlural.html#setState">setState</a></li><li data-type='method'><a href="ResourcePlural.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourcePlural.html#setTargetLocale">setTargetLocale</a></li><li data-type='method'><a href="ResourcePlural.html#size">size</a></li><li data-type='method'><a href="ResourcePlural.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourceString.html">ResourceString</a><ul class='methods'><li data-type='method'><a href="ResourceString.html#addInstance">addInstance</a></li><li data-type='method'><a href="ResourceString.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceString.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourceString.html#clearDirty">clearDirty</a></li><li data-type='method'><a href="ResourceString.html#clone">clone</a></li><li data-type='method'><a href="ResourceString.html#equals">equals</a></li><li data-type='method'><a href="ResourceString.html#escapeText">escapeText</a></li><li data-type='method'><a href="ResourceString.html#getAutoKey">getAutoKey</a></li><li data-type='method'><a href="ResourceString.html#getComment">getComment</a></li><li data-type='method'><a href="ResourceString.html#getContext">getContext</a></li><li data-type='method'><a href="ResourceString.html#getDNT">getDNT</a></li><li data-type='method'><a href="ResourceString.html#getDataType">getDataType</a></li><li data-type='method'><a href="ResourceString.html#getFlavor">getFlavor</a></li><li data-type='method'><a href="ResourceString.html#getId">getId</a></li><li data-type='method'><a href="ResourceString.html#getInstances">getInstances</a></li><li data-type='method'><a href="ResourceString.html#getKey">getKey</a></li><li data-type='method'><a href="ResourceString.html#getLocalize">getLocalize</a></li><li data-type='method'><a href="ResourceString.html#getLocation">getLocation</a></li><li data-type='method'><a href="ResourceString.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="ResourceString.html#getPath">getPath</a></li><li data-type='method'><a href="ResourceString.html#getProject">getProject</a></li><li data-type='method'><a href="ResourceString.html#getSource">getSource</a></li><li data-type='method'><a href="ResourceString.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="ResourceString.html#getState">getState</a></li><li data-type='method'><a href="ResourceString.html#getTarget">getTarget</a></li><li data-type='method'><a href="ResourceString.html#getTargetLocale">getTargetLocale</a></li><li data-type='method'><a href="ResourceString.html#getType">getType</a></li><li data-type='method'><a href="ResourceString.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourceString.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourceString.html#isDirty">isDirty</a></li><li data-type='method'><a href="ResourceString.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourceString.html#same">same</a></li><li data-type='method'><a href="ResourceString.html#setComment">setComment</a></li><li data-type='method'><a href="ResourceString.html#setDNT">setDNT</a></li><li data-type='method'><a href="ResourceString.html#setProject">setProject</a></li><li data-type='method'><a href="ResourceString.html#setSource">setSource</a></li><li data-type='method'><a href="ResourceString.html#setSourceLocale">setSourceLocale</a></li><li data-type='method'><a href="ResourceString.html#setState">setState</a></li><li data-type='method'><a href="ResourceString.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourceString.html#setTargetLocale">setTargetLocale</a></li><li data-type='method'><a href="ResourceString.html#size">size</a></li><li data-type='method'><a href="ResourceString.html#.cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceString.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourceXliff.html">ResourceXliff</a><ul class='methods'><li data-type='method'><a href="ResourceXliff.html#getLines">getLines</a></li><li data-type='method'><a href="ResourceXliff.html#getVersion">getVersion</a></li><li data-type='method'><a href="ResourceXliff.html#size">size</a></li></ul></li><li><a href="TranslationSet.html">TranslationSet</a><ul class='methods'><li data-type='method'><a href="TranslationSet.html#add">add</a></li><li data-type='method'><a href="TranslationSet.html#addAll">addAll</a></li><li data-type='method'><a href="TranslationSet.html#addSet">addSet</a></li><li data-type='method'><a href="TranslationSet.html#clear">clear</a></li><li data-type='method'><a href="TranslationSet.html#diff">diff</a></li><li data-type='method'><a href="TranslationSet.html#get">get</a></li><li data-type='method'><a href="TranslationSet.html#getAll">getAll</a></li><li data-type='method'><a href="TranslationSet.html#getBy">getBy</a></li><li data-type='method'><a href="TranslationSet.html#getBySource">getBySource</a></li><li data-type='method'><a href="TranslationSet.html#getClean">getClean</a></li><li data-type='method'><a href="TranslationSet.html#getContexts">getContexts</a></li><li data-type='method'><a href="TranslationSet.html#getLocales">getLocales</a></li><li data-type='method'><a href="TranslationSet.html#getProjects">getProjects</a></li><li data-type='method'><a href="TranslationSet.html#isDirty">isDirty</a></li><li data-type='method'><a href="TranslationSet.html#remove">remove</a></li><li data-type='method'><a href="TranslationSet.html#setClean">setClean</a></li><li data-type='method'><a href="TranslationSet.html#size">size</a></li></ul></li><li><a href="TranslationUnit.html">TranslationUnit</a><ul class='methods'><li data-type='method'><a href="TranslationUnit.html#addProperties">addProperties</a></li><li data-type='method'><a href="TranslationUnit.html#addVariant">addVariant</a></li><li data-type='method'><a href="TranslationUnit.html#addVariants">addVariants</a></li><li data-type='method'><a href="TranslationUnit.html#clone">clone</a></li><li data-type='method'><a href="TranslationUnit.html#getProperties">getProperties</a></li><li data-type='method'><a href="TranslationUnit.html#getVariants">getVariants</a></li><li data-type='method'><a href="TranslationUnit.html#hashKey">hashKey</a></li></ul></li><li><a href="TranslationVariant.html">TranslationVariant</a><ul class='methods'><li data-type='method'><a href="TranslationVariant.html#hashKey">hashKey</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#cleanString">cleanString</a></li><li><a href="global.html#containsActualText">containsActualText</a></li><li><a href="global.html#formatPath">formatPath</a></li><li><a href="global.html#getLocaleFromPath">getLocaleFromPath</a></li><li><a href="global.html#hashKey">hashKey</a></li><li><a href="global.html#ignoreTags">ignoreTags</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#localizableAttributes">localizableAttributes</a></li><li><a href="global.html#nonBreakingTags">nonBreakingTags</a></li><li><a href="global.html#objectMap">objectMap</a></li><li><a href="global.html#parsePath">parsePath</a></li><li><a href="global.html#selfClosingTags">selfClosingTags</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ResourcePlural.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * ResourcePlural.js - represents an array of plural strings in a resource file
+ *
+ * Copyright © 2022-2023 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Resource from "./Resource.js";
+import { cleanString } from "./utils.js";
+import log4js from "@log4js-node/log4js-api";
+
+const logger = log4js.getLogger("tools-common.ResourcePlural");
+
+/**
+ * @class A class that models a resource that handles translations of
+ * plurals.
+ * @extends Resource
+ */
+class ResourcePlural extends Resource {
+    /**
+     * Construct a new instance of a plural resource.
+     *
+     * Hashes of strings are used in Android apps to specify translations
+     * of the various categories of plurals.&lt;p>
+     *
+     * The props may contain any
+     * of properties from the Resource constructor and additionally,
+     * these properties:
+     *
+     * &lt;ul>
+     * &lt;li>&lt;i>source&lt;/i> {Object} A hash of strings that map the categories
+     * to translations.
+     * &lt;/ul>
+     *
+     * The properties of the strings hash can be any of the categories supported
+     * by the Unicode CLDR data:
+     *
+     * &lt;ul>
+     * &lt;li>zero
+     * &lt;li>one
+     * &lt;li>two
+     * &lt;li>few
+     * &lt;li>many
+     * &lt;/ul>
+     *
+     * @constructor
+     * @param {Object} props Any of the properties given above
+     */
+    constructor(props) {
+        super(props);
+
+        this.source = {};
+
+        // deep copy this so that the props can have a different set of
+        // plural forms than this instance
+        if (props) {
+            const source = props.source || props.sourceStrings || props.sourcePlurals;
+            if (typeof(source) === 'object') {
+                for (let p in source) {
+                    this.source[p] = source[p];
+                }
+            }
+
+            const target = props.target || props.targetStrings || props.targetPlurals;
+            if (typeof(target) === 'object') {
+                this.target = {};
+                for (let p in target) {
+                    this.target[p] = target[p];
+                }
+            }
+        }
+
+        this.datatype = this.datatype || "x-android-resource";
+        this.resType = ResourcePlural.resClass;
+    }
+
+    /**
+     * Set the source plurals hash of this plurals resource.
+     *
+     * @param {Object} plurals the source hash
+     */
+    setSource(plurals) {
+        if (typeof(plurals) !== 'object') return;
+        this.source = plurals;
+        this.dirty = true;
+    }
+
+    /**
+     * Return the array of source strings. This method is here
+     * for backwards compatilibity with the loctool plugins.
+     *
+     * @deprecated Use getSource() instead
+     * @returns {Array.&lt;String>} the array of source strings
+     */
+    getSourcePlurals() {
+        return this.getSource();
+    }
+
+    /**
+     * Return the array of target strings. This method is here
+     * for backwards compatilibity with the loctool plugins.
+     *
+     * @deprecated Use getTarget() instead
+     * @returns {Array.&lt;String>} the array of target strings
+     */
+    getTargetPlurals() {
+        return this.getTarget();
+    }
+
+    /**
+     * Return the array of source strings. This method is here
+     * for backwards compatilibity with the loctool plugins.
+     *
+     * @deprecated Use getSource() instead
+     * @returns {Array.&lt;String>} the array of source strings
+     */
+    getSourceStrings() {
+        return this.getSource();
+    }
+
+    /**
+     * Return the array of target strings. This method is here
+     * for backwards compatilibity with the loctool plugins.
+     *
+     * @deprecated Use getTarget() instead
+     * @returns {Array.&lt;String>} the array of target strings
+     */
+    getTargetStrings() {
+        return this.getTarget();
+    }
+
+    /**
+     * Set the target plurals hash of this plurals resource.
+     *
+     * @param {Object} plurals the target hash
+     */
+    setTarget(plurals) {
+        if (typeof(plurals) !== 'object') return;
+        this.target = plurals;
+        this.dirty = true;
+    }
+
+    /**
+     * Return the source string of the given plural category.
+     *
+     * @returns {String} the source string for the given
+     * plural category
+     */
+    getSourcePlural(pluralClass) {
+        return this.source &amp;&amp; this.source[pluralClass];
+    }
+
+    /**
+     * Return the target string of the given plural category.
+     *
+     * @returns {String} the target string for the given
+     * plural category
+     */
+    getTargetPlural(pluralClass) {
+        return this.target &amp;&amp; this.target[pluralClass];
+    }
+
+    /**
+     * Return an array of names of source categories of plurals
+     * that are used in this resource.
+     *
+     * @deprecated Use getCategories instead
+     *
+     * @returns {Array.&lt;string>} an array of source categories
+     */
+    getClasses() {
+        return this.getCategories();
+    }
+
+    /**
+     * Return an array of names of source categories of plurals
+     * that are used in this resource.
+     *
+     * @returns {Array.&lt;string>} an array of source categories
+     */
+    getCategories() {
+        return this.source &amp;&amp; Object.keys(this.source);
+    }
+
+    /**
+     * Return an array of names of all possible categories
+     * of plurals, even if they are not currently used in this
+     * plural instance.
+     *
+     * @returns {Array.&lt;string>} an array of category names
+     */
+    getAllValidCategories() {
+        return ResourcePlural.validPluralCategories;
+    }
+
+    /**
+     * Add a string with the given plural category to the source of
+     * this plural resource.
+     *
+     * @param {String} pluralCategory the CLDR category of this string
+     * @param {String} str the source string to add for the category
+     */
+    addSourcePlural(pluralCategory, str) {
+        logger.trace("Adding string '" + str + "' with category " + pluralCategory);
+        if (!pluralCategory || !str) return;
+        if (!this.source) {
+            this.source = {};
+        }
+        this.source[pluralCategory] = str;
+        this.dirty = true;
+    }
+
+    /**
+     * Add a string with the given plural category to the target of
+     * this plural resource.
+     *
+     * @param {String} pluralCategory the CLDR category of this string
+     * @param {String} str the target string to add for the category
+     */
+    addTargetPlural(pluralCategory, str) {
+        logger.trace("Adding string '" + str + "' with category " + pluralCategory);
+        // have to have a source plural string in order to add the target
+        if (!pluralCategory || !str || !this.source) return;
+        if (!this.target) {
+            this.target = {};
+        }
+        this.target[pluralCategory] = str;
+        this.dirty = true;
+    }
+
+    /**
+     * Return the length of the array of strings in this resource.
+     *
+     * @returns {number} the length of the array of strings in this
+     * resource
+     */
+    size() {
+        let len = this.source ? Object.keys(this.source).length : 0;
+        if (this.target) {
+            len = Math.max(len, Object.keys(this.target).length);
+        }
+        return len;
+    }
+
+    /**
+     * Clone this resource and override the properties with the given ones.
+     *
+     * @params {Object|undefined} overrides optional properties to override in
+     * the cloned object
+     * @returns {ResourceArray} a clone of this resource
+     */
+    clone(overrides) {
+        const r = new ResourcePlural(this);
+        if (overrides) {
+            for (let p in overrides) {
+                r[p] = overrides[p];
+            }
+        }
+        return r;
+    }
+
+    /**
+     * Return true if the other resources contains the same resources as
+     * the current one. The pathName, state, and comment fields are
+     * ignored as minor variations.
+     * @param {Resource} other another resource to test against the current one
+     * @returns {boolean} true if these represent the same resource, false otherwise
+     */
+    equals(other) {
+        if (!other || !this.same(other)) return false;
+
+        if (this.source || other.source) {
+            if (this.source &amp;&amp; other.source) {
+                for (let p in this.source) {
+                    if (this.source[p] !== other.source[p]) {
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
+
+        if (this.target || other.target) {
+            if (this.target &amp;&amp; other.target) {
+                for (let p in this.target) {
+                    if (this.target[p] !== other.target[p]) {
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Calculate a resource key string for this category of resource given the
+     * parameters.
+     *
+     * @static
+     * @return {String} a hash key
+     */
+    static hashKey(project, context, locale, reskey) {
+        const key = ["rp", project, context, locale, reskey].join("_");
+        logger.trace("Hashkey is " + key);
+        return key;
+    }
+
+    /**
+     * Return the a hash key that uniquely identifies this resource.
+     *
+     *  @return {String} a unique hash key for this resource
+     */
+    hashKey() {
+        const locale = this.targetLocale || this.getSourceLocale();
+        return ResourcePlural.hashKey(this.project, this.context, locale, this.reskey);
+    }
+
+    /**
+     * Return the a hash key that uniquely identifies the translation of
+     * this resource to the given locale.
+     *
+     * @param {String} locale a locale spec of the desired translation
+     * @return {String} a unique hash key for this resource
+     */
+    hashKeyForTranslation(locale) {
+        return ResourcePlural.hashKey(this.project, this.context, locale, this.reskey);
+    }
+
+    /**
+     * Return the a hash key that uniquely identifies this resource.
+     *
+     *  @return {String} a unique hash key for this resource
+     */
+    cleanHashKey() {
+        const cleaned = this.reskey &amp;&amp; this.reskey.replace(/\s+/g, " ").trim() || "";
+        const locale = this.targetLocale || this.getSourceLocale();
+        return ResourcePlural.hashKey(this.project, this.context, locale, cleaned);
+    }
+
+    /**
+     * Return the a hash key that uniquely identifies the translation of
+     * this resource to the given locale.
+     *
+     * @param {String} locale a locale spec of the desired translation
+     * @return {String} a unique hash key for this resource
+     */
+    cleanHashKeyForTranslation(locale) {
+        const cleaned = this.reskey &amp;&amp; this.reskey.replace(/\s+/g, " ").trim() || "";
+        return ResourcePlural.hashKey(this.project, this.context, locale, cleaned);
+    }
+
+    /**
+     * Check if the given resource is an instance of the current
+     * resource.
+     *
+     * @override
+     * @param {Resource} a resource to check
+     * @returns {boolean} true if this is an instance of
+     * the current resource, false otherwise.
+     */
+    isInstance(resource) {
+        if (!super.isInstance(resource)) {
+            return false;
+        }
+
+        // now check the properties specific to this resource subclass
+        return Object.keys(this.source).every(prop => {
+            return cleanString(this.source[prop]) === cleanString(resource.source[prop]);
+        });
+    }
+}
+
+/**
+ * The class of this kind of string plural.
+ *
+ * @static
+ * @const
+ */
+ResourcePlural.resClass = "plural";
+
+/**
+ * Acceptable values for plural categories
+ *
+ * @static
+ * @const
+ */
+ResourcePlural.validPluralCategories = ['zero', 'one', 'two', 'few', 'many', 'other'];
+
+export default ResourcePlural;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Nov 26 2024 16:49:54 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

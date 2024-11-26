@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>PrintfNumberedRule.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="PrintfMatchRule.html">PrintfMatchRule</a><ul class='methods'><li data-type='method'><a href="PrintfMatchRule.html#match">match</a></li><li data-type='method'><a href="PrintfMatchRule.html#match">match</a></li></ul></li><li></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">PrintfNumberedRule.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * PrintfMatchRule.js - a rule to match printf-style substition parameters
+ *
+ * Copyright © 2022-2024 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Locale from 'ilib-locale';
+import { Rule, Result } from 'ilib-lint-common';
+
+// from https://pubs.opengroup.org/onlinepubs/007904975/functions/fprintf.html
+const printfRegExp = /%(\d\$)?[\-\+ #0']*[\d\*]?(\.(\d*|\*))?(hh?|ll?|j|z|t|L)?[diouxXfFeEgGaAcCsSpn]/g;
+
+/**
+ * @class Represent an i18nlint rule.
+ */
+class PrintfMatchRule extends Rule {
+    constructor(options) {
+        super(options);
+        this.name = "resource-printf-params-numbered";
+        this.description = "Test that the printf-like substitution parameters in the source are numbered if there are multiple.";
+        this.sourceLocale = (options &amp;&amp; options.sourceLocale) || "en-US";
+    }
+
+    getRuleType() {
+        return "resource";
+    }
+
+    checkString(src, file, resource, lineNumber) {
+        let match;
+        let problems = [];
+        let sourceParams = [];
+        let totalParams = 0;
+
+        // find the source parameters
+        printfRegExp.lastIndex = 0;
+        match = printfRegExp.exec(src);
+        while (match) {
+            totalParams++;
+            if (!match[1]) {
+                // this one is missing the numbering!
+                sourceParams.push(match[0]);
+            }
+            match = printfRegExp.exec(src);
+        }
+        if (totalParams &lt; 2) {
+            // only a problem if there are 2 or more params because the
+            // translator may have to re-arrange the params and without
+            // numbering, they cannot be re-arranged
+            return undefined;
+        }
+
+        // check for unnumbered params
+        for (let i = 0; i &lt; sourceParams.length; i++) {
+            const srcParam = sourceParams[i];
+            const re = new RegExp(srcParam, "g");
+            problems.push(new Result({
+                severity: "error",
+                rule: this,
+                description: `Source string substitution parameter ${srcParam} must be numbered but it is not.`,
+                id: resource.getKey(),
+                highlight: src.replace(re, `&lt;e0>$&amp;&lt;/e0>`),
+                pathName: file,
+                lineNumber
+            }));
+        }
+
+        return problems;
+    }
+
+    /**
+     * @override
+     */
+    match(options) {
+        const { ir, locale } = options;
+
+        if (ir.getType() !== "resource") return;  // we can only process resources
+        const resources = ir.getRepresentation();
+
+        const results = resources.flatMap(resource => {
+            switch (resource.getType()) {
+                case 'string':
+                    return this.checkString(resource.getSource(), ir.sourceFile.getPath(), resource, options.lineNumber);
+                    break;
+        
+                case 'array':
+                    const srcArray = resource.getSource();
+                    return srcArray.flatMap((item, i) => {
+                        return this.checkString(srcArray[i], ir.sourceFile.getPath(), resource, options.lineNumber);
+                    }).filter(element => {
+                        return element;
+                    });
+                    break;
+        
+                case 'plural':
+                    const srcPlural = resource.getSource();
+                    const categories = Object.keys(srcPlural);
+                    return categories.flatMap(category => {
+                        return this.checkString(srcPlural[category], ir.sourceFile.getPath(), resource, options.lineNumber);
+                    });
+                    break;
+            }
+
+            // no match
+            return [];
+        });
+        return results.length > 1 ? results : results[0];
+    }
+}
+
+export default PrintfMatchRule;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Nov 26 2024 16:17:34 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

@@ -763,6 +763,19 @@ defined in [https://github.com/ilib-js/ilib-tools-common](https://github.com/ili
 This is the preference intermediate representation for
 resource files like Java properties or xliff. There are many
 rules that already know how to process Resource instances.</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>the star is a special type that means that the pipeline element
+can handle any type of file. Typically, this is used for pipeline elements
+that are used to check the content of the file for problems that are
+not related to the structure of the file itself, such as checking for
+character encoding problems or other issues.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
 **Kind**: instance abstract method of [<code>Parser</code>](#Parser)  
@@ -812,8 +825,8 @@ a name, and a description.</p>
 | Param | Type | Description |
 | --- | --- | --- |
 | [options] | <code>Object</code> | <p>options to the constructor</p> |
-| [options.getLogger] | <code>function</code> | <p>a callback function provided by</p> |
-| [options.settings] | <code>object</code> | <p>additional settings that can be passed from the pipeline element to the linter to retrieve the log4js logger</p> |
+| [options.getLogger] | <code>function</code> | <p>a callback function provided by the linter to retrieve the log4js logger</p> |
+| [options.settings] | <code>object</code> | <p>additional settings that can be passed from the linter to pipeline element from the configuration file</p> |
 
 
 * * *
@@ -865,6 +878,19 @@ defined in [https://github.com/ilib-js/ilib-tools-common](https://github.com/ili
 <li>line - the pipeline element produces a set of lines as an array of strings</li>
 <li>string - the pipeline element doesn't parse. Instead, it just treats the
 the file as one long string.</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>the star is a special type that means that the pipeline element
+can handle any type of file. Typically, this is used for pipeline elements
+that are used to check the content of the file for problems that are
+not related to the structure of the file itself, such as checking for
+character encoding problems or other issues.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p>Concrete subclasses must define this property.</p>
 
@@ -1672,7 +1698,9 @@ encoded in UTF-8.</p>
 
 ### sourceFile.type : <code>String</code>
 <p>The type of this file. This should match the type of
-pipeline elements that process this same type of file.</p>
+pipeline elements that process this same type of file. If the type
+of a file is not known, then the type should be &quot;string&quot; which means
+that the file is treated as a plain string of text.</p>
 
 **Kind**: instance property of [<code>SourceFile</code>](#SourceFile)  
 **Access**: protected  
