@@ -29,6 +29,27 @@ function getPluralCategories(plurals) {
 }
 
 /**
+ * Enum for the type of node in an AST, as defined by the IntlMessageFormat `declare enum TYPE`.
+ * Source: formatjs/icu-messageformat-parser/types.d.ts: 6
+ *
+ * @private
+ * @readonly
+ * @enum {number}
+ */
+
+const NodeType = {
+    'literal': 0,
+    'argument': 1,
+    'number': 2,
+    'date': 3,
+    'time': 4,
+    'select': 5,
+    'plural': 6,
+    'pound': 7,
+    'tag': 8,
+}
+
+/**
  * Reconstruct the string that this node in an AST represents.
  *
  * @private
@@ -41,24 +62,36 @@ function reconstructString(node) {
     }
 
     switch (node.type) {
-        case 0: // literal
+        case NodeType.literal:
             return node.value;
-        case 1: // argument
-            return '{' + node.value + '}';
-        case 2: // number
-        case 3: // date
-        case 4: // time
-            return '{' + node.value + ', ' +
-            (node.type === 2 ? 'number' : node.type === 3 ? 'date' : 'time') + '}';
-        case 5: // select
-        case 6: // plural
-            return '{' + node.value + ', ' +
-                (node.type === 5 ? "select" : "plural") + ', ' +
-                Object.entries(node.options).map(function(entry) {
-                    return entry[0] + ' {' + reconstructString(entry[1].value) + '}';
-                }).join(' ') + '}';
+        case NodeType.argument:
+            return `{${node.value}}`;
+        case NodeType.number:
+            return `{${node.value}, number}`;
+        case NodeType.date:
+            return `{${node.value}, date}`;
+        case NodeType.time:
+            return `{${node.value}, time}`;
+        case NodeType.select: {
+            const options = Object.entries(node.options).map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
+
+            return `{${node.value}, select, ${options}}`;
+        }
+        case NodeType.plural: {
+            const options = Object.entries(node.options).map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
+
+            return `{${node.value}, plural, ${options}}`;
+        }
+        case NodeType.tag:
+            const children = reconstructString(node.children);
+
+            return `<${node.value}>${children}</${node.value}>`;
         default:
-            throw new Error('Unsupported AST node type: ' + node.type);
+            throw new Error(`
+                Unsupported AST node type:
+                    * node type: ${node.type} (${Object.keys(NodeType).find(key => NodeType[key] === node.type)});
+                    * node value: ${node.value}
+            `);
     }
 }
 
@@ -119,7 +152,7 @@ module.exports.convertICUToPluralRes = function(resource) {
             var sources = {};
             var foundPlural = false;
             for (i = 0; i < ast.length; i++) {
-                if (ast[i].type === 6) {
+                if (ast[i].type === NodeType.plural) {
                     foundPlural = true;
                     opts = ast[i].options;
                     if (opts) {
