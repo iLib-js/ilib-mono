@@ -1,3 +1,0 @@
-# This file is used for testing the ilib-lint package. It is used in test assertions in walk.test.js file.
-# Do not remove this file from .gitignore.
-!ilib-mock-1.0.0.tgz
