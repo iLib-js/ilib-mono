@@ -675,6 +675,118 @@ describe("parser", () => {
         expect(resources[1].getPath()).toBe("src/bar.html");
     });
 
+    test("ParserParseExtractComments with our po extensions", () => {
+        expect.assertions(10);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '# translator\'s comments\n' +
+            '#: src/foo.html:32 src/bar.html:234\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#| str 1\n' +
+            '#k array1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "Zeichenfolge 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "Zeichenfolge 2"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        const resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getType()).toBe("array");
+        expect(resources[0].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[0].getTarget()).toStrictEqual(["Zeichenfolge 1", "Zeichenfolge 2"]);
+        expect(resources[0].getKey()).toBe("array1");
+        // the extension should be ignored in the comment field
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32 src/bar.html:234"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
+    });
+
+    test("ParserParseExtract with multiple array resources", () => {
+        expect.assertions(16);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '# translator\'s comments\n' +
+            '#: src/foo.html:32 src/bar.html:234\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#| str 1\n' +
+            '#k array1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "Zeichenfolge 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "Zeichenfolge 2"\n' +
+            '\n' +
+            '#: src/foo.html:39\n' +
+            '#k array2\n' +
+            '## 0\n' +
+            'msgid "string 3"\n' +
+            'msgstr "Zeichenfolge 3"\n' +
+            '\n' +
+            '#k array2\n' +
+            '## 1\n' +
+            'msgid "string 4"\n' +
+            'msgstr "Zeichenfolge 4"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(2);
+        const resources = set.getAll();
+        expect(resources.length).toBe(2);
+
+        expect(resources[0].getType()).toBe("array");
+        expect(resources[0].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[0].getTarget()).toStrictEqual(["Zeichenfolge 1", "Zeichenfolge 2"]);
+        expect(resources[0].getKey()).toBe("array1");
+        // the extension should be ignored in the comment field
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32 src/bar.html:234"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
+
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getSource()).toStrictEqual(["string 3", "string 4"]);
+        expect(resources[1].getTarget()).toStrictEqual(["Zeichenfolge 3", "Zeichenfolge 4"]);
+        expect(resources[1].getKey()).toBe("array2");
+        expect(resources[1].getPath()).toBe("src/foo.html");
+        expect(resources[1].getComment()).toBe('{"paths":["src/foo.html:39"]}');
+    });
+
     test("ParserParseExtractFileNameNoLineNumbers", () => {
         expect.assertions(12);
 
