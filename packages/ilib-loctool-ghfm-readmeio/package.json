@@ -56,9 +56,9 @@
     "dependencies": {
         "he": "^1.2.0",
         "ilib": "^14.1.0",
-        "ilib-tree-node": "^1.1.0",
+        "ilib-tree-node": "workspace:*",
         "log4js": "^2.11.0",
-        "message-accumulator": "^2.2.0",
+        "message-accumulator": "workspace:*",
         "rehype-raw": "^4.0.0",
         "remark-highlight.js": "^5.1.0",
         "remark-html": "^9.0.0",
