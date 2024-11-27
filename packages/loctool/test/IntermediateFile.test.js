@@ -19,7 +19,7 @@
 var fs = require("fs");
 var ToolsCommon = require("ilib-tools-common");
 
-var IntermediateFile = require("../lib/IntermediateFile.js");
+var getIntermediateFile = require("../lib/IntermediateFileFactory.js");
 var TranslationSet = require("../lib/TranslationSet.js");
 var ResourceFactory = require("../lib/ResourceFactory.js");
 
@@ -53,7 +53,7 @@ describe("intermediate file", function() {
             autoKey: false
         }));
 
-        var file = IntermediateFile.getIntermediateFile({
+        var file = getIntermediateFile({
             path: "test/testfiles/foo.xliff"
         });
 
@@ -118,7 +118,7 @@ describe("intermediate file", function() {
             autoKey: false
         }));
 
-        var file = IntermediateFile.getIntermediateFile({
+        var file = getIntermediateFile({
             path: "test/testfiles/foo.xliff",
         });
 
@@ -198,7 +198,7 @@ describe("intermediate file", function() {
 
         fs.writeFileSync("test/testfiles/foo.xliff", data, "utf-8");
 
-        var file = IntermediateFile.getIntermediateFile({
+        var file = getIntermediateFile({
             path: "test/testfiles/foo.xliff"
         });
 
@@ -275,7 +275,7 @@ describe("intermediate file", function() {
             autoKey: false
         }));
 
-        var file = IntermediateFile.getIntermediateFile({
+        var file = getIntermediateFile({
             path: "test/testfiles/foo.po"
         });
 
@@ -340,7 +340,7 @@ describe("intermediate file", function() {
             autoKey: false
         }));
 
-        var file = IntermediateFile.getIntermediateFile({
+        var file = getIntermediateFile({
             path: "test/testfiles/foo.po",
             sourceLocale: "en-US",
             targetLocale: "fr-FR"
@@ -434,7 +434,7 @@ describe("intermediate file", function() {
 
         fs.writeFileSync("test/testfiles/foo.po", data, "utf-8");
 
-        var file = IntermediateFile.getIntermediateFile({
+        var file = getIntermediateFile({
             path: "test/testfiles/foo.po",
             datatype: "json"
         });
