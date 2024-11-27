@@ -19,7 +19,6 @@
 
 import path from "path";
 
-// @ts-expect-error -- untyped package
 import { TranslationSet } from "ilib-tools-common";
 // @ts-expect-error -- untyped package
 import Locale from "ilib-locale";

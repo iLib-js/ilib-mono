@@ -93,9 +93,9 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-common": "^1.1.3",
-        "ilib-env": "^1.3.2",
-        "ilib-loader": "^1.3.2",
+        "ilib-common": "workspace:*",
+        "ilib-env": "workspace:*",
+        "ilib-loader": "workspace:*",
         "ilib-locale": "^1.2.2",
         "ilib-localematcher": "^1.2.2",
         "json5": "^2.2.1"

@@ -53,12 +53,12 @@
     },
     "dependencies": {
         "ilib": "^14.20.0",
-        "ilib-tools-common": "^1.0.1",
-        "ilib-yaml": "^1.0.1",
+        "ilib-tools-common": "workspace:*",
+        "ilib-yaml": "workspace:*",
         "micromatch": "^4.0.5"
     },
     "devDependencies": {
         "jest": "^29.0.0",
-        "loctool": "^2.24.1"
+        "loctool": "workspace:*"
     }
 }

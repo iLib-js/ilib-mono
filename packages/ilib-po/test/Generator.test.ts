@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// @ts-expect-error -- untyped package
 import { ResourceString, ResourcePlural, TranslationSet } from "ilib-tools-common";
 
 import Generator from "../src/Generator";

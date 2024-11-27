@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// @ts-expect-error -- untyped package
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
 // @ts-expect-error -- untyped package
 import Locale from 'ilib-locale';
@@ -228,8 +227,8 @@ class Parser {
                         case TokenType.BLANKLINE:
                             if (source || sourcePlurals) {
                                 // emit a resource
-                                let key: string,
-                                    res: ResourceString | ResourcePlural;
+                                let key: string;
+                                let res: ResourceString | ResourcePlural | undefined = undefined;
                                 if (sourcePlurals) {
                                     key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
                                     res = new ResourcePlural({

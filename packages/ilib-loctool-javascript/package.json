@@ -53,11 +53,11 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
-        "ilib-loctool-javascript-resource": "^1.0.5"
+        "ilib-loctool-javascript-resource": "workspace:*"
     },
     "devDependencies": {
-        "ilib-loctool-json": "^1.5.2",
+        "ilib-loctool-json": "workspace:*",
         "jest": "^26.6.3",
-        "loctool": "^2.23.1"
+        "loctool": "workspace:*"
     }
 }

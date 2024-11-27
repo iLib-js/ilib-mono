@@ -18,8 +18,8 @@ importers:
   packages/ilib-assemble:
     dependencies:
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
@@ -58,8 +58,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       ilib-env:
-        specifier: ^1.3.3
-        version: 1.4.0
+        specifier: workspace:*
+        version: link:../ilib-env
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
@@ -155,8 +155,8 @@ importers:
   packages/ilib-data-utils:
     dependencies:
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
     devDependencies:
       '@babel/core':
         specifier: ^7.23.3
@@ -297,11 +297,11 @@ importers:
         specifier: ^2.10.4
         version: 2.10.11(typescript@5.6.3)
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       ilib-lint-common:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: workspace:*
+        version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
@@ -309,8 +309,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       ilib-tools-common:
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       intl-messageformat:
         specifier: ^10.5
         version: 10.7.3
@@ -388,14 +388,14 @@ importers:
   packages/ilib-lint-python:
     dependencies:
       ilib-lint-common:
-        specifier: ^3.0.0
-        version: 3.1.0
+        specifier: workspace:*
+        version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: ^1.9.1
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
     devDependencies:
       docdash:
         specifier: ^2.0.2
@@ -416,17 +416,17 @@ importers:
   packages/ilib-lint-python-gnu:
     dependencies:
       ilib-lint-common:
-        specifier: ^3.0.0
-        version: 3.1.0
+        specifier: workspace:*
+        version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-loctool-po:
-        specifier: ^1.6.3
-        version: 1.6.3
+        specifier: workspace:*
+        version: link:../ilib-loctool-po
       ilib-tools-common:
-        specifier: ^1.9.1
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
     devDependencies:
       docdash:
         specifier: ^2.0.2
@@ -459,14 +459,14 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       ilib-lint-common:
-        specifier: ^3.0.0
-        version: 3.1.0
+        specifier: workspace:*
+        version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: ^1.9.1
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       jsonpath:
         specifier: ^1.1.1
         version: 1.1.1
@@ -484,8 +484,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       intl-messageformat:
         specifier: ^10.7.6
         version: 10.7.6
@@ -508,11 +508,11 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       ilib-common:
-        specifier: ^1.1.2
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       ilib-env:
-        specifier: ^1.3.3
-        version: 1.4.0
+        specifier: workspace:*
+        version: link:../ilib-env
       promise.allsettled:
         specifier: ^1.0.5
         version: 1.0.7
@@ -611,14 +611,14 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       ilib-env:
-        specifier: ^1.3.2
-        version: 1.4.0
+        specifier: workspace:*
+        version: link:../ilib-env
       ilib-loader:
-        specifier: ^1.3.2
-        version: 1.3.2
+        specifier: workspace:*
+        version: link:../ilib-loader
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
@@ -715,8 +715,8 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-android-resource:
     dependencies:
@@ -734,8 +734,8 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-csv:
     dependencies:
@@ -750,8 +750,8 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-ghfm:
     dependencies:
@@ -762,14 +762,14 @@ importers:
         specifier: ^14.19.0
         version: 14.20.0
       ilib-loctool-yaml:
-        specifier: ^1.5.1
-        version: 1.5.1
+        specifier: workspace:*
+        version: link:../ilib-loctool-yaml
       ilib-tree-node:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: workspace:*
+        version: link:../ilib-tree-node
       message-accumulator:
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: workspace:*
+        version: link:../message-accumulator
       micromatch:
         specifier: ^4.0.5
         version: 4.0.8
@@ -808,8 +808,8 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: ^2.24.0
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-ghfm-readmeio:
     dependencies:
@@ -820,14 +820,14 @@ importers:
         specifier: ^14.1.0
         version: 14.20.0
       ilib-tree-node:
-        specifier: ^1.1.0
-        version: 1.3.2
+        specifier: workspace:*
+        version: link:../ilib-tree-node
       log4js:
         specifier: ^2.11.0
         version: 2.11.0
       message-accumulator:
-        specifier: ^2.2.0
-        version: 2.2.3
+        specifier: workspace:*
+        version: link:../message-accumulator
       rehype-raw:
         specifier: ^4.0.0
         version: 4.0.2
@@ -863,8 +863,8 @@ importers:
         version: 1.4.1
     devDependencies:
       loctool:
-        specifier: ^2.10.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
       nodeunit:
         specifier: ^0.11.3
         version: 0.11.3
@@ -882,8 +882,8 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-html:
     dependencies:
@@ -900,15 +900,15 @@ importers:
         specifier: '>=0.0.6'
         version: 0.0.6
       message-accumulator:
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: workspace:*
+        version: link:../message-accumulator
     devDependencies:
       jest:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: ^2.24.0
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-java:
     dependencies:
@@ -920,8 +920,8 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-javascript:
     dependencies:
@@ -929,18 +929,18 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-loctool-javascript-resource:
-        specifier: ^1.0.5
-        version: 1.0.6
+        specifier: workspace:*
+        version: link:../ilib-loctool-javascript-resource
     devDependencies:
       ilib-loctool-json:
-        specifier: ^1.5.2
-        version: 1.5.4
+        specifier: workspace:*
+        version: link:../ilib-loctool-json
       jest:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-javascript-resource:
     dependencies:
@@ -952,8 +952,8 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-json:
     dependencies:
@@ -968,8 +968,8 @@ importers:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-jst:
     dependencies:
@@ -990,30 +990,30 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-jsx:
     dependencies:
       ilib-loctool-javascript-resource:
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: workspace:*
+        version: link:../ilib-loctool-javascript-resource
     devDependencies:
       jest:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-mrkdwn:
     dependencies:
       ilib-tree-node:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: workspace:*
+        version: link:../ilib-tree-node
       message-accumulator:
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: workspace:*
+        version: link:../message-accumulator
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8
@@ -1025,8 +1025,8 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: ^2.25.2
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-objectivec:
     dependencies:
@@ -1038,8 +1038,8 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-po:
     dependencies:
@@ -1054,8 +1054,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-properties:
     dependencies:
@@ -1067,8 +1067,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-ruby-ilib:
     dependencies:
@@ -1080,8 +1080,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-salesforce-metaxml:
     dependencies:
@@ -1089,8 +1089,8 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-loctool-xml:
-        specifier: ^1.1.2
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-loctool-xml
       micromatch:
         specifier: ^4.0.5
         version: 4.0.8
@@ -1102,8 +1102,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-strings:
     dependencies:
@@ -1115,8 +1115,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-swift:
     dependencies:
@@ -1128,8 +1128,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.20.2
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-tap-i18n:
     dependencies:
@@ -1137,11 +1137,11 @@ importers:
         specifier: ^14.20.0
         version: 14.20.0
       ilib-tools-common:
-        specifier: ^1.0.1
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       ilib-yaml:
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: workspace:*
+        version: link:../ilib-yaml
       micromatch:
         specifier: ^4.0.5
         version: 4.0.8
@@ -1150,8 +1150,8 @@ importers:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: ^2.24.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-xml:
     dependencies:
@@ -1166,8 +1166,8 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: ^2.20.2
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-yaml:
     dependencies:
@@ -1185,8 +1185,8 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-loctool-yaml-resource:
     dependencies:
@@ -1201,8 +1201,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: ^2.23.1
-        version: 2.25.2(typescript@5.6.3)
+        specifier: workspace:*
+        version: link:../loctool
 
   packages/ilib-po:
     dependencies:
@@ -1213,8 +1213,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
     devDependencies:
       '@tsconfig/node12':
         specifier: ^12.1.4
@@ -1265,14 +1265,14 @@ importers:
         specifier: ^2.2.0
         version: 2.2.1
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: ^1.9.1
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       xml-js:
         specifier: ^1.6.11
         version: 1.6.11
@@ -1335,8 +1335,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-xliff:
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: workspace:*
+        version: link:../ilib-xliff
     devDependencies:
       '@babel/core':
         specifier: ^7.24.5
@@ -1465,8 +1465,8 @@ importers:
   packages/ilib-xliff:
     dependencies:
       ilib-common:
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
@@ -1565,8 +1565,8 @@ importers:
   packages/ilib-yaml:
     dependencies:
       ilib-tools-common:
-        specifier: ^1.10.0
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       yaml:
         specifier: ^2.4.5
         version: 2.6.0
@@ -1656,8 +1656,8 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-tree-node:
-        specifier: ^1.3.0
-        version: 1.3.2
+        specifier: workspace:*
+        version: link:../ilib-tree-node
       intl-messageformat:
         specifier: ^10.5.14
         version: 10.7.3
@@ -1671,8 +1671,8 @@ importers:
         specifier: ^6.9.1
         version: 6.9.1
       message-accumulator:
-        specifier: ^2.2.1
-        version: 2.2.3
+        specifier: workspace:*
+        version: link:../message-accumulator
       micromatch:
         specifier: ^4.0.5
         version: 4.0.8
@@ -1735,8 +1735,8 @@ importers:
   packages/message-accumulator:
     dependencies:
       ilib-tree-node:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: workspace:*
+        version: link:../ilib-tree-node
     devDependencies:
       '@babel/core':
         specifier: ^7.23.9
@@ -1808,8 +1808,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tmx:
-        specifier: ^1.1.2
-        version: 1.1.3
+        specifier: workspace:*
+        version: link:../ilib-tmx
       options-parser:
         specifier: ^0.4.0
         version: 0.4.0
@@ -1818,8 +1818,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       ilib-tools-common:
-        specifier: ^1.9.1
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -5056,14 +5056,6 @@ packages:
   ilib-localematcher@1.3.1:
     resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
 
-  ilib-loctool-javascript-resource@1.0.6:
-    resolution: {integrity: sha512-0Jp8xCL0XkTNCkcDO7qlSE1VVT16Ty/mhSSdfEZZ0gSl6+ZsLHBeStsnOx93o02z15Q0eANT/Lm9IuP7/nxDaw==}
-    engines: {node: '>=6.0'}
-
-  ilib-loctool-json@1.5.4:
-    resolution: {integrity: sha512-acQX13xLobqAOoYBZ8xyP1OyX6Ci6yl+9TRo9lvz4bNiPyKTvkSQy/zn6Ru/xDSbJYXmlJrLrL6D92eRR8C6hA==}
-    engines: {node: '>=10.0'}
-
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     resolution: {integrity: sha512-uB3+9dlUzViyigj73g+C4rLz2E7ibMxxcbwZDwARYvoyc6JMVbViZigFnkUtmzrSV6K1y7EuLq+l0o6otOD7KQ==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
     version: 1.0.0
@@ -5076,34 +5068,13 @@ packages:
     resolution: {integrity: sha512-qP6wJwUn6YFhdKSP0MQMXsTkwaBSDxgv1cwGfLzrs1mT/nmz/blHGP7JT55+XAakbdd6SO4aZeOCF0lB4bhCxg==, tarball: file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz}
     version: 1.0.0
 
-  ilib-loctool-po@1.6.3:
-    resolution: {integrity: sha512-IaJXAWnumykTWjaU8XAWKudrOLuVFdfuvjzcc0UT+OzeiHYcWEt2R5ZulTPcmiF+j8W/X8fO1pkvgPDXkuXpPQ==}
-    engines: {node: '>=6.0'}
-
-  ilib-loctool-xml@1.1.3:
-    resolution: {integrity: sha512-qvt9OdDY0lNknRtmnPLUNBDDuTawt7F3fCdomdVYIpgShj8Yt4GgjZC96+LB2SbcFD2JahjBhfqz//0L8JiVzA==}
-    engines: {node: '>=6.0'}
-
-  ilib-loctool-yaml@1.5.1:
-    resolution: {integrity: sha512-Jvqo7Dfndu5hpii4ihCa+w2Oey697ti7o02mKtOxZouRxJJCB33JMCYFUCl4GXH+apVErsk3j5KK8dmY8PNt/g==}
-    engines: {node: '>=10.0'}
-
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     resolution: {integrity: sha512-jKrfpzwShklRzKlRCJ9Pzt2p6V3AM7YfvtuapWZNwc/jYOfBd/2WuprkWmm++zgdzh8wfveeBSn1CElCHCbv0w==, tarball: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz}
     version: 1.0.0
 
-  ilib-tmx@1.1.3:
-    resolution: {integrity: sha512-Yd4EVM8LzCPI9cDxEJV78/TtmHzyH0mriANeIYsUMboONW/rmdpQafzsJmVRMGJC18mzbaEneQDjvIXF7e4hgQ==}
-
   ilib-tools-common@1.11.0:
     resolution: {integrity: sha512-dCpjUj8wKBIhC81pAGeVs9s5Z+4AqNSOkLKFwyvMUMtVKH0vmeaTtrhSVsY1nnKkL4Ew2TNxYSqD2Eo22L2vNQ==}
     engines: {node: '>=10.0.0'}
-
-  ilib-tree-node@1.3.2:
-    resolution: {integrity: sha512-Dbg9rIOhd8TazHFwk3lFA0Gi6+fe3+YSqiuMRT46D7fomjf429vwzRzbHJB4uMyk8+bEsFUdQV23dbNvjkIdgw==}
-
-  ilib-tree-node@2.0.0:
-    resolution: {integrity: sha512-t+pcZg0D/G4olKEOlUgCe28I52DhK+o4e+Jvl42G+5XQCXiMAjmrp4Vxh3a2/kScW68xteJsVkWm5dp4ahwR2g==}
 
   ilib-xliff@1.2.0:
     resolution: {integrity: sha512-xwYjQVKhTpN2oyzGjjDoyTrSENyNLqmTbJwsp65eSBPg0u0BWiC0ohCMRylfWOvlaE4Iu7UPLR67/0D52BnuTw==}
@@ -5111,9 +5082,6 @@ packages:
   ilib-xml-js@1.7.0:
     resolution: {integrity: sha512-u2Uitc6238fQzIpwHx7qTt0GDii6ncBKtbLX6lvg67+x2iyQ4tz3nycyXg+c8wdaaVgqVGeBNs48uYGEKVJzkA==}
     hasBin: true
-
-  ilib-yaml@1.0.1:
-    resolution: {integrity: sha512-5e2wL5XzD6SjQHLnZUxOMgk1MzYMtxV1cAUZBKgxlLRMCVgmzyjpAB+JtAsj9Gutk4nqk068/ZOBBCMxb0TpuQ==}
 
   ilib@14.20.0:
     resolution: {integrity: sha512-ciPTPDwu7FehlyxU1hSjHJRyfq3YIf4n2BzMYzZNtBiCYw1dH0Yu53J7R9YaqQd8A+3RfGxSz6J76AGsvhCm2Q==}
@@ -6018,11 +5986,6 @@ packages:
     resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  loctool@2.25.2:
-    resolution: {integrity: sha512-o8pIDkqgDai3ncRlEHX5RvACDM3z03Gj8kJOBGWlm29EmBD3tqhse364gpdQ0ikXNeqShNNx2m2zVNU1cTw1zg==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-
   lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
 
@@ -6217,12 +6180,6 @@ packages:
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
-
-  message-accumulator@2.2.3:
-    resolution: {integrity: sha512-CemTV+KOsU8vrHrXrOAu5JF/gMNxhR9AHY+1ZmS+oTUcvgxBQy/Rcu6Qz9ckNZVk4S2R+u+TMumFxT33PkAh8w==}
-
-  message-accumulator@3.0.0:
-    resolution: {integrity: sha512-uMn+PG25T/pOnH3YW7nQywS0OI6VL1g/OHt9vZyr7XgdAIVDkna1pFxHAkV20VKH/rMYOMhVVy6an7fiZ7PNwA==}
 
   micromark-util-character@2.1.1:
     resolution: {integrity: sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==}
@@ -10648,7 +10605,7 @@ snapshots:
       '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
-      webpack: 5.95.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   babel-plugin-add-module-exports@1.0.4: {}
 
@@ -12862,15 +12819,6 @@ snapshots:
       ilib-common: 1.1.3
       ilib-locale: 1.2.2
 
-  ilib-loctool-javascript-resource@1.0.6:
-    dependencies:
-      ilib: 14.20.0
-
-  ilib-loctool-json@1.5.4:
-    dependencies:
-      ilib: 14.20.0
-      json5: 2.2.3
-
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:
       ilib: 14.20.0
@@ -12883,35 +12831,10 @@ snapshots:
     dependencies:
       ilib: 14.20.0
 
-  ilib-loctool-po@1.6.3:
-    dependencies:
-      ilib: 14.20.0
-      micromatch: 4.0.8
-
-  ilib-loctool-xml@1.1.3:
-    dependencies:
-      ilib: 14.20.0
-      xml-js: 1.6.11
-
-  ilib-loctool-yaml@1.5.1:
-    dependencies:
-      ilib: 14.20.0
-      micromatch: 4.0.8
-      yaml: 2.0.0
-
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:
       ilib-common: 1.1.3
       ilib-locale: 1.2.2
-
-  ilib-tmx@1.1.3:
-    dependencies:
-      '@log4js-node/log4js-api': 1.0.2
-      cldr-segmentation: 2.2.1
-      ilib-common: 1.1.3
-      ilib-locale: 1.2.2
-      ilib-tools-common: 1.11.0
-      xml-js: 1.6.11
 
   ilib-tools-common@1.11.0:
     dependencies:
@@ -12919,10 +12842,6 @@ snapshots:
       ilib-ctype: 1.2.1
       ilib-locale: 1.2.2
       ilib-xliff: 1.2.0
-
-  ilib-tree-node@1.3.2: {}
-
-  ilib-tree-node@2.0.0: {}
 
   ilib-xliff@1.2.0:
     dependencies:
@@ -12934,11 +12853,6 @@ snapshots:
   ilib-xml-js@1.7.0:
     dependencies:
       sax: 1.4.1
-
-  ilib-yaml@1.0.1:
-    dependencies:
-      ilib-tools-common: 1.11.0
-      yaml: 2.6.0
 
   ilib@14.20.0: {}
 
@@ -13723,7 +13637,11 @@ snapshots:
       pretty-format: 26.6.2
       throat: 5.0.0
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - ts-node
+      - utf-8-validate
 
   jest-leak-detector@26.6.2:
     dependencies:
@@ -14505,38 +14423,6 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
-  loctool@2.25.2(typescript@5.6.3):
-    dependencies:
-      '@formatjs/intl': 2.10.11(typescript@5.6.3)
-      build-gradle-reader: 1.0.0
-      cldr-segmentation: 2.2.1
-      he: 1.2.0
-      html-parser: 0.11.0
-      ilib: 14.20.0
-      ilib-tree-node: 1.3.2
-      intl-messageformat: 10.7.6
-      js-stl: 0.0.6
-      js-yaml: 4.1.0
-      log4js: 6.9.1
-      message-accumulator: 2.2.3
-      micromatch: 4.0.8
-      opencc-js: 1.0.5
-      readline-sync: 1.4.10
-      rehype-raw: 5.1.0
-      remark-frontmatter: 2.0.0
-      remark-highlight.js: 6.0.0
-      remark-parse: 8.0.3
-      remark-rehype: 8.1.0
-      remark-stringify: 8.1.1
-      unified: 9.2.2
-      unist-builder: 2.0.3
-      unist-util-filter: 2.0.3
-      util.promisify: 1.1.2
-      xml-js: 1.6.11
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
   lodash.camelcase@4.3.0: {}
 
   lodash.debounce@4.0.8: {}
@@ -14798,14 +14684,6 @@ snapshots:
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
-
-  message-accumulator@2.2.3:
-    dependencies:
-      ilib-tree-node: 1.3.2
-
-  message-accumulator@3.0.0:
-    dependencies:
-      ilib-tree-node: 2.0.0
 
   micromark-util-character@2.1.1:
     dependencies:
@@ -16809,7 +16687,7 @@ snapshots:
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.36.0
-      webpack: 5.95.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   terser@5.36.0:
     dependencies:
@@ -17470,36 +17348,6 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@3.2.3: {}
-
-  webpack@5.95.0:
-    dependencies:
-      '@types/estree': 1.0.6
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
-      browserslist: 4.24.2
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   webpack@5.95.0(webpack-cli@4.10.0):
     dependencies:
