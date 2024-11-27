@@ -54,7 +54,6 @@ describe("intermediate file", function() {
         }));
 
         var file = IntermediateFile.getIntermediateFile({
-            type: "xliff",
             path: "test/testfiles/foo.xliff"
         });
 
@@ -120,7 +119,6 @@ describe("intermediate file", function() {
         }));
 
         var file = IntermediateFile.getIntermediateFile({
-            type: "xliff",
             path: "test/testfiles/foo.xliff",
         });
 
@@ -201,7 +199,6 @@ describe("intermediate file", function() {
         fs.writeFileSync("test/testfiles/foo.xliff", data, "utf-8");
 
         var file = IntermediateFile.getIntermediateFile({
-            type: "xliff",
             path: "test/testfiles/foo.xliff"
         });
 
@@ -279,7 +276,6 @@ describe("intermediate file", function() {
         }));
 
         var file = IntermediateFile.getIntermediateFile({
-            type: "po",
             path: "test/testfiles/foo.po"
         });
 
@@ -345,7 +341,6 @@ describe("intermediate file", function() {
         }));
 
         var file = IntermediateFile.getIntermediateFile({
-            type: "po",
             path: "test/testfiles/foo.po",
             sourceLocale: "en-US",
             targetLocale: "fr-FR"
@@ -393,5 +388,107 @@ describe("intermediate file", function() {
             'msgid "baz"\n' +
             'msgstr "bazzes"\n';
         expect(data).toBe(expected);
+    });
+
+    test("test reading an intermediate file in PO format", function() {
+        expect.assertions(40);
+
+        var data =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  test/testfiles/foo.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n\n' +
+            '#. foo bar\n' +
+            '#: resources/en/US/foo.json\n' +
+            '#k asdfasdf\n' +
+            'msgctxt "foo"\n' +
+            'msgid "bar"\n' +
+            'msgstr "baz"\n' +
+            '\n' +
+            '#. foo bar\n' +
+            '#: resources/en/US/foo.json\n' +
+            '#k asdf\n' +
+            'msgctxt "foo"\n' +
+            'msgid "bar"\n' +
+            'msgid_plural "bars"\n' +
+            'msgstr[0] "baz"\n' +
+            'msgstr[1] "bazzes"\n' +
+            '\n' +
+            '#. foo bar\n' +
+            '#: resources/en/US/foo.json\n' +
+            'msgctxt "foo"\n' +
+            '#k fdsa\n' +
+            '## 0\n' +
+            'msgid "bar"\n' +
+            'msgstr "baz"\n' +
+            '\n' +
+            '#k fdsa\n' +
+            '## 1\n' +
+            'msgid "baz"\n' +
+            'msgstr "bazzes"\n';
+
+        fs.writeFileSync("test/testfiles/foo.po", data, "utf-8");
+
+        var file = IntermediateFile.getIntermediateFile({
+            path: "test/testfiles/foo.po",
+            datatype: "json"
+        });
+
+        var set = file.read();
+
+        expect(set.size()).toBe(3);
+        var resources = set.getAll();
+
+        var res = resources[0];
+        expect(res.getType()).toBe("string");
+        expect(res.getProject()).toBe("foo");
+        expect(res.getSourceLocale()).toBe("en-US");
+        expect(res.getTargetLocale()).toBe("fr-FR");
+        expect(res.getPath()).toBe("resources/en/US/foo.json");
+        expect(res.getDataType()).toBe("json");
+        expect(res.getContext()).toBe("foo");
+        expect(res.getKey()).toBe("asdfasdf");
+        expect(res.getSource()).toBe("bar");
+        expect(res.getTarget()).toBe("baz");
+        expect(res.getState()).toBe("new");
+        expect(res.getComment()).toBe("{\"extracted\":[\"foo bar\"],\"paths\":[\"resources/en/US/foo.json\"]}");
+        expect(res.getAutoKey()).toBe(false);
+
+        res = resources[1];
+
+        expect(res.getType()).toBe("plural");
+        expect(res.getProject()).toBe("foo");
+        expect(res.getSourceLocale()).toBe("en-US");
+        expect(res.getTargetLocale()).toBe("fr-FR");
+        expect(res.getPath()).toBe("resources/en/US/foo.json");
+        expect(res.getDataType()).toBe("json");
+        expect(res.getContext()).toBe("foo");
+        expect(res.getKey()).toBe("asdf");
+        expect(res.getSourcePlurals()).toStrictEqual({ one: "bar", other: "bars" });
+        expect(res.getTargetPlurals()).toStrictEqual({ one: "baz", other: "bazzes" });
+        expect(res.getState()).toBe("new");
+        expect(res.getComment()).toBe("{\"extracted\":[\"foo bar\"],\"paths\":[\"resources/en/US/foo.json\"]}");
+        expect(res.getAutoKey()).toBe(false);
+
+        res = resources[2];
+
+        expect(res.getType()).toBe("array");
+        expect(res.getProject()).toBe("foo");
+        expect(res.getSourceLocale()).toBe("en-US");
+        expect(res.getTargetLocale()).toBe("fr-FR");
+        expect(res.getPath()).toBe("resources/en/US/foo.json");
+        expect(res.getDataType()).toBe("json");
+        expect(res.getContext()).toBe("foo");
+        expect(res.getKey()).toBe("fdsa");
+        expect(res.getSourceArray()).toStrictEqual(["bar", "baz"]);
+        expect(res.getTargetArray()).toStrictEqual(["baz", "bazzes"]);
+        expect(res.getState()).toBe("new");
+        expect(res.getComment()).toBe("{\"extracted\":[\"foo bar\"],\"paths\":[\"resources/en/US/foo.json\"]}");
+        expect(res.getAutoKey()).toBe(false);
     });
 });
