@@ -145,7 +145,7 @@ describe("test conversions", function() {
 
     test("test converting a string resource from loctool to common", function() {
         expect.assertions(14);
-debugger;
+
         var resource = ResourceFactory({
             resType: "string",
             project: "foo",

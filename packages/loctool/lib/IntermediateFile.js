@@ -19,6 +19,7 @@
  */
 
 var fs = require("fs");
+var path = require("path");
 var PO = require("ilib-po");
 var POFile = PO.POFile;
 var TranslationSet = require("./TranslationSet.js");
@@ -112,8 +113,8 @@ POIntermediateFile.prototype.read = function() {
     var data = fs.readFileSync(this.path, "utf-8");
     var resources = this.po.parse(data);
     var set = new TranslationSet();
-    if (resources && resources.length) {
-        var converted = resources.map(function(resource) {
+    if (resources && resources.size() > 0) {
+        var converted = resources.getAll().map(function(resource) {
             return convert.convertResourceToLoctool(resource);
         });
         set.addAll(converted);
@@ -151,9 +152,18 @@ POIntermediateFile.prototype.write = function(set) {
  */
 var getIntermediateFile = function(options) {
     if (!options) return; // nothing to do
-    if (options.type === "xliff") {
+    let type = options.type;
+    if (!type && options.path) {
+        var ext = path.extname(options.path);
+        if (ext === ".xlf" || ext === ".xliff") {
+            type = "xliff";
+        } else if (ext === ".po" || ext === ".pot") {
+            type = "po";
+        }
+    }
+    if (type === "xliff") {
         return new XliffIntermediateFile(options);
-    } else if (options.type === "po") {
+    } else if (type === "po") {
         return new POIntermediateFile(options);
     } else {
         throw new Error("Unknown intermediate file type: " + options.type);
