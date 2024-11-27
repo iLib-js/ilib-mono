@@ -18,19 +18,18 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
-var path = require("path");
-var PO = require("ilib-po");
-var POFile = PO.POFile;
-var TranslationSet = require("./TranslationSet.js");
-
-var Xliff = require("./Xliff.js");
-var convert = require("./convertResources.js");
-
 /**
  * @interface Represents an intermediate file that is used to store the results of string extraction for the purpose of translation.
  *
  * @param {Object} options options for the intermediate file
+ * @param {String} options.path path to the file
+ * @param {String} options.project name of the project that these strings belong to
+ * @param {String} options.version
+ * @param {String} options.sourceLocale locale of the source strings
+ * @param {String} [options.targetLocale] locale of the target strings (if any)
+ * @param {boolean} [options.contextInKey] whether not the context of the string
+ * should be included in the key
+ * @param {String} [options.datatype] type of the data where these strings came from
  * @abstract
  */
 var IntermediateFile = function(options) {};
@@ -55,122 +54,4 @@ IntermediateFile.prototype = {
     write: function(set) {}
 };
 
-var XliffIntermediateFile = function(options) {
-    this.path = options.path;
-    this.xliff = new Xliff({
-        sourceLocale: options.sourceLocale,
-        targetLocale: options.targetLocale,
-        project: options.project,
-        version: options.version,
-        style: options.style,
-        allowDups: options.allowDups,
-        datatype: options.datatype,
-        contextInKey: options.contextInKey
-    });
-};
-
-XliffIntermediateFile.prototype = new IntermediateFile();
-XliffIntermediateFile.prototype.constructor = XliffIntermediateFile;
-XliffIntermediateFile.prototype.parent = IntermediateFile.prototype;
-
-XliffIntermediateFile.prototype.read = function() {
-    if (!fs.existsSync(this.path)) {
-        throw new Error("File not found: " + this.path);
-    }
-    var data = fs.readFileSync(this.path, "utf-8");
-    this.xliff.deserialize(data);
-    return this.xliff.getTranslationSet();
-};
-
-XliffIntermediateFile.prototype.write = function(set) {
-    this.xliff.addSet(set);
-    fs.writeFileSync(this.path, this.xliff.serialize(true), "utf-8");
-};
-
-var POIntermediateFile = function(options) {
-    this.path = options.path;
-    this.po = new POFile({
-        sourceLocale: options.sourceLocale,
-        targetLocale: options.targetLocale,
-        project: options.project,
-        version: options.version,
-        style: options.style,
-        allowDups: options.allowDups,
-        datatype: options.datatype,
-        contextInKey: options.contextInKey,
-        pathName: options.path
-    });
-};
-
-POIntermediateFile.prototype = new IntermediateFile();
-POIntermediateFile.prototype.constructor = POIntermediateFile;
-POIntermediateFile.prototype.parent = IntermediateFile.prototype;
-
-POIntermediateFile.prototype.read = function() {
-    if (!fs.existsSync(this.path)) {
-        throw new Error("File not found: " + this.path);
-    }
-    var data = fs.readFileSync(this.path, "utf-8");
-    var resources = this.po.parse(data);
-    var set = new TranslationSet();
-    if (resources && resources.size() > 0) {
-        var converted = resources.getAll().map(function(resource) {
-            return convert.convertResourceToLoctool(resource);
-        });
-        set.addAll(converted);
-    }
-    return set;
-};
-
-POIntermediateFile.prototype.write = function(set) {
-    var resources = set.getAll();
-    var common = resources.map(function(resource) {
-        return convert.convertResourceToCommon(resource);
-    });
-    var newSet = new TranslationSet();
-    newSet.addAll(common);
-    var data = this.po.generate(newSet);
-    fs.writeFileSync(this.path, data, "utf-8");
-};
-
-/**
- * Factory function to create an intermediate file of the requested type from the given path.
- * @static
- * @param {Object} options options for the intermediate file
- * @param {String} options.path the path to the file
- * @param {String} options.type the type of the file. This should be either "xliff" or "po".
- * @param {String} [options.sourceLocale] the source locale of the file
- * @param {String} [options.targetLocale] the target locale of the file
- * @param {String} [options.project] the project that the file is associated with
- * @param {String} [options.version] the version of the file
- * @param {String} [options.style] the style of the file (Valid parameters depend on the type of the file)
- * @param {boolean} [options.allowDups] whether to allow duplicate resources in the file
- * @param {String} [options.datatype] the datatype of the file
- * @param {boolean} [options.contextInKey] whether the context should be included in the key
- * @returns {IntermediateFile} the intermediate file
- * @throws {Error} if the type is not recognized
- */
-var getIntermediateFile = function(options) {
-    if (!options) return; // nothing to do
-    let type = options.type;
-    if (!type && options.path) {
-        var ext = path.extname(options.path);
-        if (ext === ".xlf" || ext === ".xliff") {
-            type = "xliff";
-        } else if (ext === ".po" || ext === ".pot") {
-            type = "po";
-        }
-    }
-    if (type === "xliff") {
-        return new XliffIntermediateFile(options);
-    } else if (type === "po") {
-        return new POIntermediateFile(options);
-    } else {
-        throw new Error("Unknown intermediate file type: " + options.type);
-    }
-};
-
-module.exports = {
-    IntermediateFile: IntermediateFile,
-    getIntermediateFile: getIntermediateFile
-};
+module.exports = IntermediateFile;
