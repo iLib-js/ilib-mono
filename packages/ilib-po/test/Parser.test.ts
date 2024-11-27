@@ -191,6 +191,43 @@ describe("parser", () => {
         expect(resources[1].getTargetLocale()).toBe("de-DE");
     });
 
+    test("Parser parse glean target locale from the parsed file", () => {
+        expect.assertions(9);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: de-DE\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "this is string one"\n');
+
+        expect(set).toBeTruthy();
+
+        const r = set.get(ResourceString.hashKey("foo", "de-DE", "string 1", "po"));
+        expect(r).toBeTruthy();
+
+        expect(r.getSource()).toBe("string 1");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getKey()).toBe("string 1");
+        expect(r.getTarget()).toBe("this is string one");
+        expect(r.getTargetLocale()).toBe("de-DE");
+        expect(r.getType()).toBe("string");
+    });
+
     test("ParserParsePluralString", () => {
         expect.assertions(9);
 
