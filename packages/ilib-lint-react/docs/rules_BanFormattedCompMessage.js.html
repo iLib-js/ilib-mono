@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>rules/BanFormattedCompMessage.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FlowParser.html">FlowParser</a><ul class='methods'><li data-type='method'><a href="FlowParser.html#parse">parse</a></li></ul></li><li><a href="FormatjsPlurals.html">FormatjsPlurals</a><ul class='methods'><li data-type='method'><a href="FormatjsPlurals.html#match">match</a></li></ul></li><li><a href="JSParser.html">JSParser</a><ul class='methods'><li data-type='method'><a href="JSParser.html#parse">parse</a></li></ul></li><li><a href="JSXParser.html">JSXParser</a><ul class='methods'><li data-type='method'><a href="JSXParser.html#parse">parse</a></li></ul></li><li><a href="PropertiesParser.html">PropertiesParser</a><ul class='methods'><li data-type='method'><a href="PropertiesParser.html#parse">parse</a></li></ul></li><li><a href="TSXParser.html">TSXParser</a><ul class='methods'><li data-type='method'><a href="TSXParser.html#parse">parse</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">rules/BanFormattedCompMessage.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * BanFormattedCompMessage.js
+ *
+ * Copyright © 2023 Box, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Result, Rule } from "ilib-lint-common";
+
+import _traverse from "@babel/traverse";
+const traverse = _traverse.default;
+
+// type imports
+/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @typedef {import("@babel/parser").ParseResult&lt;import("@babel/types").File>} ParseResult */
+
+export class BanFormattedCompMessage extends Rule {
+    /** @readonly */
+    name = "ban-formattedcompmessage";
+
+    /** @readonly */
+    description = "Disallow usage of deprecated FormattedCompMessage component";
+
+    /** @readonly */
+    link =
+        "https://github.com/ilib-js/ilib-lint-react/blob/main/docs/ban-formattedcompmessage.md";
+
+    /** @readonly */
+    type = "babel-ast";
+
+    /** @override */
+    match(/** @type {{ ir: IntermediateRepresentation }} */ { ir }) {
+        if (ir.type !== this.type) {
+            throw new Error(`Unexpected representation type!`);
+        }
+
+        const /** @type {ParseResult} */ tree = ir.getRepresentation();
+
+        const /** @type {import("@babel/types").JSXIdentifier[]} */ jsxNames =
+                [];
+        const /** @type {{ [rangeKey: string]: import("@babel/types").Identifier }} */ identifiers =
+                {};
+
+        traverse(tree, {
+            // find JSX opening elements with matching name
+            JSXOpeningElement(path) {
+                const nameNode = path.node.name;
+                if (
+                    nameNode.type === "JSXIdentifier" &amp;&amp;
+                    nameNode.name === "FormattedCompMessage"
+                ) {
+                    jsxNames.push(nameNode);
+                }
+            },
+            // find every non-JSX identifier with matching name (catch all kinds of imports and requires)
+            Identifier(path) {
+                if (path.node.name === "FormattedCompMessage") {
+                    // avoid duplicate matches (e.g. an import statement outputs two identifiers in the same range)
+                    const rangeKey = [path.node.start, path.node.end].join(":");
+                    if (rangeKey &amp;&amp; !(rangeKey in identifiers)) {
+                        identifiers[rangeKey] = path.node;
+                    }
+                }
+            }
+        });
+
+        const ranges = [...jsxNames, ...Object.values(identifiers)]
+            .map((node) => getRange(node))
+            .filter(
+                /** @type {&lt;T>(e: T | undefined) => e is T} */ (
+                    (range) => range !== undefined
+                )
+            );
+
+        return ranges
+            .sort((a, b) => rangesCompare(a, b))
+            .map((range) => {
+                return new Result({
+                    pathName: ir.sourceFile.getPath(),
+                    severity: "error",
+                    rule: this,
+                    description: `Do not use deprecated FormattedCompMessage component.`,
+                    id: undefined,
+                    // @TODO make a real highlight once IR contains raw content of the linted source file
+                    highlight: `Range: &lt;e0>${range[0]}:${range[1]}&lt;/e0>`
+                });
+            });
+    }
+}
+
+/** @typedef {readonly [number, number]} Range */
+
+const getRange = (/** @type {import("@babel/types").Node} */ node) =>
+    (typeof node.start === "number" &amp;&amp;
+        typeof node.end === "number" &amp;&amp;
+        /** @type {Range} */ ([node.start, node.end])) ||
+    undefined;
+
+const rangesCompare = (
+    /** @type {Range} */ one,
+    /** @type {Range} */ other
+) => {
+    const leftDiff = one[0] - other[0];
+    if (leftDiff !== 0) return leftDiff;
+    const rightDiff = one[1] - other[1];
+    return rightDiff;
+};
+
+export default BanFormattedCompMessage;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Nov 26 2024 16:17:35 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

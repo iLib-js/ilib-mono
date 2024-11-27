@@ -247,7 +247,8 @@ a name, and a description.</p></div>
 
             
 
-            <td class="description last"><p>a callback function provided by</p></td>
+            <td class="description last"><p>a callback function provided by the
+linter to retrieve the log4js logger</p></td>
         </tr>
 
     
@@ -282,7 +283,7 @@ a name, and a description.</p></div>
             
 
             <td class="description last"><p>additional settings that can be passed from the
-pipeline element to the linter to retrieve the log4js logger</p></td>
+linter to pipeline element from the configuration file</p></td>
         </tr>
 
     
@@ -352,7 +353,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line91">line 91</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -432,7 +433,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line53">line 53</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line54">line 54</a>
     </li></ul></dd>
     
 
@@ -514,7 +515,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line69">line 69</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -599,6 +600,19 @@ defined in <a href="https://github.com/ilib-js/ilib-tools-common">https://github
 <li>line - the pipeline element produces a set of lines as an array of strings</li>
 <li>string - the pipeline element doesn't parse. Instead, it just treats the
 the file as one long string.</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>the star is a special type that means that the pipeline element
+can handle any type of file. Typically, this is used for pipeline elements
+that are used to check the content of the file for problems that are
+not related to the structure of the file itself, such as checking for
+character encoding problems or other issues.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p>Concrete subclasses must define this property.</p></li></ul></dd>
     
@@ -606,7 +620,7 @@ the file as one long string.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line126">line 126</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line132">line 132</a>
     </li></ul></dd>
     
 
@@ -658,6 +672,19 @@ defined in <a href="https://github.com/ilib-js/ilib-tools-common">https://github
 <li>line - the pipeline element produces a set of lines as an array of strings</li>
 <li>string - the pipeline element doesn't parse. Instead, it just treats the
 the file as one long string.</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>the star is a special type that means that the pipeline element
+can handle any type of file. Typically, this is used for pipeline elements
+that are used to check the content of the file for problems that are
+not related to the structure of the file itself, such as checking for
+character encoding problems or other issues.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p>Concrete subclasses must define this property.</p>
 </div>
@@ -709,7 +736,7 @@ handles for users who are trying to discover whether or not to use it.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line101">line 101</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line102">line 102</a>
     </li></ul></dd>
     
 
@@ -818,7 +845,7 @@ Concrete subclasses must define PipelineElement.name.</p></li></ul></dd>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line77">line 77</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line78">line 78</a>
     </li></ul></dd>
     
 
@@ -929,7 +956,7 @@ process this same type of file.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line138">line 138</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line144">line 144</a>
     </li></ul></dd>
     
 
@@ -1037,7 +1064,7 @@ process this same type of file.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line58">line 58</a>
+        <a href="PipelineElement.js.html">PipelineElement.js</a>, <a href="PipelineElement.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -1121,7 +1148,7 @@ process this same type of file.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Wed Oct 23 2024 21:06:27 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Nov 26 2024 16:49:18 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

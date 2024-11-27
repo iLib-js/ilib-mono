@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>TranslationUnit.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TranslationUnit.html">TranslationUnit</a><ul class='methods'><li data-type='method'><a href="TranslationUnit.html#clone">clone</a></li></ul></li><li><a href="Xliff.html">Xliff</a><ul class='methods'><li data-type='method'><a href="Xliff.html#addTranslationUnits">addTranslationUnits</a></li><li data-type='method'><a href="Xliff.html#clear">clear</a></li><li data-type='method'><a href="Xliff.html#deserialize">deserialize</a></li><li data-type='method'><a href="Xliff.html#getBytes">getBytes</a></li><li data-type='method'><a href="Xliff.html#getLines">getLines</a></li><li data-type='method'><a href="Xliff.html#getTranslationUnits">getTranslationUnits</a></li><li data-type='method'><a href="Xliff.html#getVersion">getVersion</a></li><li data-type='method'><a href="Xliff.html#serialize">serialize</a></li><li data-type='method'><a href="Xliff.html#size">size</a></li><li data-type='method'><a href="Xliff.html#toString1">toString1</a></li><li data-type='method'><a href="Xliff.html#toString2">toString2</a></li><li data-type='method'><a href="Xliff.html#toStringCustom">toStringCustom</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#getAttribute">getAttribute</a></li><li><a href="global.html#getChildrenByName">getChildrenByName</a></li><li><a href="global.html#getText">getText</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">TranslationUnit.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * TranslationUnit.js - model a translation unit
+ *
+ * Copyright © 2022-2023 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @class A class that represents an translation unit in an
+ * xliff file. 
+ */
+class TranslationUnit {
+    /**
+     * Construct a new translation unit The options may be undefined, which represents
+     * a new, clean TranslationUnit instance. The options object may also
+     * be an object with the following properties:
+     *
+     * &lt;ul>
+     * &lt;li>&lt;i>source&lt;/i> - source text for this unit (required)
+     * &lt;li>&lt;i>sourceLocale&lt;/i> - the source locale spec for this unit (required)
+     * &lt;li>&lt;i>target&lt;/i> - target text for this unit (optional)
+     * &lt;li>&lt;i>targetLocale&lt;/i> - the target locale spec for this unit (optional)
+     * &lt;li>&lt;i>key&lt;/i> - the unique resource key for this translation unit (required)
+     * &lt;li>&lt;i>file&lt;/i> - path to the original source code file that contains the
+     * source text of this translation unit (required)
+     * &lt;li>&lt;i>project&lt;/i> - the project that this string/unit is part of
+     * &lt;li>&lt;i>resType&lt;/i> - type of this resource (string, array, plural) (optional)
+     * &lt;li>&lt;i>state&lt;/i> - the state of the current unit (optional)
+     * &lt;li>&lt;i>comment&lt;/i> - the translator's comment for this unit (optional)
+     * &lt;li>&lt;i>datatype&lt;/i> - the source of the data of this unit (optional)
+     * &lt;li>&lt;i>flavor&lt;/i> - the flavor that this string comes from (optional)
+     * &lt;li>&lt;i>translate&lt;/i> - flag that tells whether to translate this unit (optional)
+     * &lt;li>&lt;i>location&lt;/i> - the line and character location of the start of this
+     * translation unit in the xml representation of the file
+     * &lt;/ul>
+     *
+     * If the required properties are not given, the constructor throws an exception.&lt;p>
+     *
+     * For newly extracted strings, there is no target text yet. There must be a target
+     * locale for the translators to use when creating new target text, however. This
+     * means that there may be multiple translation units in a file with the same
+     * source locale and no target text, but different target locales.
+     *
+     * @constructor
+     * @param {Object|undefined} options options to
+     * initialize the unit, or undefined for a new empty unit
+     */
+    constructor(options) {
+        if (options) {
+            const everything = ["source", "sourceLocale", "key", "file", "project"].every((p) => {
+                return typeof(options[p]) !== "undefined";
+            });
+
+            if (!everything) {
+                const missing = ["source", "sourceLocale", "key", "file", "project"].filter((p) => {
+                    return typeof(options[p]) === "undefined";
+                });
+                throw new Error(`Missing required parameters in the TranslationUnit constructor: ${missing.join(", ")}`);
+            }
+
+            for (let p in options) {
+                this[p] = options[p];
+            }
+        }
+    }
+
+    /**
+     * Clone the current unit and return the clone.
+     * @returns {TranslationUnit} a clone of the current unit.
+     */
+    clone() {
+        return new TranslationUnit(this);
+    }
+}
+
+export default TranslationUnit;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.11</a> on Tue Nov 26 2024 16:16:07 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
