@@ -34,10 +34,10 @@ export interface BaseParserOptions {
     pathName: string,
 
     /** the source locale of the file */
-    sourceLocale: string,
+    sourceLocale?: string,
 
     /** the target locale of the file */
-    targetLocale: string,
+    targetLocale?: string,
 
     /** the name of the project that this po file is a part of */
     projectName: string,
@@ -99,6 +99,7 @@ const commentTypeMap = new Map([
     ['#', CommentType.INDEX]
 ]);
 
+const reTargetLocale = /"Language:\s*([^ \\]+)/;
 const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
 
 /**
@@ -111,7 +112,7 @@ class Parser {
     /** the source locale of the file */
     private sourceLocale: Locale;
     /** the target locale of the file */
-    private targetLocale: Locale;
+    private targetLocale: Locale | undefined;
     /** the type of the data in the po file. This might be something like "python" or "javascript" to
      * indicate the type of the code that the strings are used in. */
     private datatype: string;
@@ -128,15 +129,17 @@ class Parser {
 
         const optionsWithDefaults = {
             ignoreComments: false,
+            sourceLocale: "en-US",
+            contextInKey: false,
             ...options
         }
 
         this.pathName = optionsWithDefaults.pathName;
         this.sourceLocale = new Locale(optionsWithDefaults.sourceLocale);
-        this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
+        this.targetLocale = optionsWithDefaults.targetLocale ? new Locale(optionsWithDefaults.targetLocale) : undefined;
         this.projectName = optionsWithDefaults.projectName;
         this.datatype = optionsWithDefaults.datatype;
-        this.contextInKey = optionsWithDefaults.contextInKey ?? false;
+        this.contextInKey = optionsWithDefaults.contextInKey;
 
         if (optionsWithDefaults.ignoreComments === true) {
             // boolean true means ignore all comments
@@ -182,6 +185,14 @@ class Parser {
         function restart() {
             key = type = comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
             state = State.START;
+        }
+
+        // if the target locale is not set, try to get it from the file
+        if (!this.targetLocale) {
+            const match = reTargetLocale.exec(data);
+            if (match && match.length > 1) {
+                this.targetLocale = new Locale(match[1]);
+            }
         }
 
         restart();
