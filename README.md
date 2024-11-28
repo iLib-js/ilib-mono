@@ -12,6 +12,7 @@ Each package has its own `README.md` and `package.json`, which are located in th
 ## Table of Contents
 - [Project Status](#project-status)
 - [Project Structure](#project-structure)
+- [Targeted Node.js Versions](#targeted-nodejs-versions)
 - [Usage](#usage)
 - [Setup](#setup)
 - [Contributing](#contributing)
@@ -35,15 +36,16 @@ The project is structured as follows:
 - `pnpm-lock.yaml` - Contains the lockfile for pnpm.
 
 
+## Targeted Node.js Versions
+`ilib-mono` aim to target Node.js versions >=12.0.0 when building packages for npm registry.
+
+
 ## Usage
 To use packages in this monorepo, import them as any other npm package.
 For example, to use the `ilib-common` package from within any other package in the `/packages` directory, import it like this:
 ```javascript
 import { JSUtils, Utils, Path } from 'ilib-common';
 ```
-
-### Targeted Node.js Versions
-`ilib-mono` aim to target Node.js versions >=12.0.0 when building packages for npm registry.
 
 
 ## Setup

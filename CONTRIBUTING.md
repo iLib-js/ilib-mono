@@ -21,6 +21,8 @@ Project status and project structure are described in the [README.md](./README.m
 
 
 ## Getting Started
+If you're internal contributor, follow your internal guidelines.
+
 External contributors can contribute to the project by following these steps:
 1. Fork the repository.
 2. Clone the forked repository to the local machine.
@@ -32,7 +34,12 @@ External contributors can contribute to the project by following these steps:
 
 Before contributing, please set up the project on the local machine by following the instructions in the [SETUP.md](./SETUP.md) file.
 
-If you're internal contributor, follow your internal guidelines.
+
+### Pull Requests
+Every pull request should contain the following:
+- Documentation in the code (following the JSDoc/TSDoc standard).
+- Tests.
+- Changelog entry.
 
 
 ## Environment
@@ -43,8 +50,10 @@ This project is developed using the following tools:
 
 Common commands are aliased in [root `package.json`](./package.json) scripts.
 
+
 ## Coding Guidelines
 TBD
+
 
 ## Adding a New Package
 TBD
@@ -95,11 +104,37 @@ pnpm doc
 TBD
 
 ### Test
-TDB
+There are few ways to run tests:
+* for all packages in the monorepo, or
+* for an affected package(s) solely.
 
-To run the tests, use:
+#### 1. Run tests for all packages
+To run all the tests for all packages in the monorepo, use:
+
+```bash
+pnpm test:all
+```
+
+#### 2. Run tests for affected package(s)
+To run tests only for the affected packages, simply use:
 ```bash
 pnpm test
+```
+The `pnpm test` command automatically uses the `--affected` flag under the hood, ensuring that tests are only run for the projects that have been impacted by recent changes.
+This helps optimize the testing process by skipping tests for projects that haven't been modified.
+
+#### 3. Other options
+These may be useful for development and/or debugging purposes.
+These commands should be run from the root directory of the package you're interested in.
+
+1. Run all the tests for a single package in the monorepo:
+```bash
+pnpm test
+```
+
+2. Run all tests for a single file, by passing the path to the file as an argument to the `pnpm test` command, like this:
+```bash
+ pnpm test -- "packages/loctool/test/ResourceConvert.test.js"
 ```
 
 
