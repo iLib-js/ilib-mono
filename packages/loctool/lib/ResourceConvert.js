@@ -65,33 +65,31 @@ function reconstructString(node) {
         case NodeType.literal:
             return node.value;
         case NodeType.argument:
-            return `{${node.value}}`;
+            return "{" + node.value + "}";
         case NodeType.number:
-            return `{${node.value}, number}`;
+            return "{" + node.value + ", number}";
         case NodeType.date:
-            return `{${node.value}, date}`;
+            return "{" + node.value + ", date}";
         case NodeType.time:
-            return `{${node.value}, time}`;
+            return "{" + node.value + ", time}";
         case NodeType.select: {
-            const options = Object.entries(node.options).map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
+            const options = Object.entries(node.options).map(function (entry) {
+                return entry[0] + " {" + reconstructString(entry[1].value) + "}";
+            }).join(' ');
 
-            return `{${node.value}, select, ${options}}`;
+            return "{" + node.value + ", select, " + options + "}";
         }
         case NodeType.plural: {
             const options = Object.entries(node.options).map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
 
-            return `{${node.value}, plural, ${options}}`;
+            return "{" + node.value + ", plural, " + options + "}";
         }
         case NodeType.tag:
             const children = reconstructString(node.children);
 
-            return `<${node.value}>${children}</${node.value}>`;
+            return "<" + node.value + ">" + children + "</" + node.value + ">";
         default:
-            throw new Error(`
-                Unsupported AST node type:
-                    * node type: ${node.type} (${Object.keys(NodeType).find(key => NodeType[key] === node.type)});
-                    * node value: ${node.value}
-            `);
+            throw new Error('Unsupported AST node type: ' + node.type);
     }
 }
 

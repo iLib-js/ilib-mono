@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-const ResourcePlural = require("../lib/ResourcePlural.js");
-const ResourceString = require("../lib/ResourceString.js");
-const ResourceArray = require("../lib/ResourceArray.js");
-const convert = require("../lib/ResourceConvert.js");
+var ResourcePlural = require("../lib/ResourcePlural.js");
+var ResourceString = require("../lib/ResourceString.js");
+var ResourceArray = require("../lib/ResourceArray.js");
+var convert = require("../lib/ResourceConvert.js");
 
 describe("convertPluralResToICU", function () {
     test("converts plural source to string", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} string.",
@@ -36,25 +36,25 @@ describe("convertPluralResToICU", function () {
                 other: "Es gibt {n} Zeichenfolgen.",
             }
         });
-        const expected = "{count, plural, one {There is {n} string.} other {There are {n} strings.}}";
+        var expected = "{count, plural, one {There is {n} string.} other {There are {n} strings.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getSource()).toBe(expected);
     });
 
     test("converts plural source to string in a source-only resource", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} string.",
                 other: "There are {n} strings."
             }
         });
-        const expected = "{count, plural, one {There is {n} string.} other {There are {n} strings.}}";
+        var expected = "{count, plural, one {There is {n} string.} other {There are {n} strings.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getSource()).toBe(expected);
@@ -64,7 +64,7 @@ describe("convertPluralResToICU", function () {
     });
 
     test("converts plural target to string", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} string.",
@@ -76,16 +76,16 @@ describe("convertPluralResToICU", function () {
                 other: "Es gibt {n} Zeichenfolgen.",
             }
         });
-        const expected = "{count, plural, one {Es gibt {n} Zeichenfolge.} other {Es gibt {n} Zeichenfolgen.}}";
+        var expected = "{count, plural, one {Es gibt {n} Zeichenfolge.} other {Es gibt {n} Zeichenfolgen.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getTarget()).toBe(expected);
     });
 
     test("converts plural source to string when the target has more plural categories than the source", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} item.",
@@ -98,16 +98,16 @@ describe("convertPluralResToICU", function () {
                 other: "Jest {n} pozycji.",
             }
         });
-        const expected = "{count, plural, one {There is {n} item.} other {There are {n} items.}}";
+        var expected = "{count, plural, one {There is {n} item.} other {There are {n} items.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getSource()).toBe(expected);
     });
 
     test("converts plural target to string when the target has more plural categories than the source", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} item.",
@@ -120,16 +120,16 @@ describe("convertPluralResToICU", function () {
                 other: "Jest {n} pozycji.",
             }
         });
-        const expected = "{count, plural, one {Jest {n} pozycja.} few {Jest {n} pozycje.} other {Jest {n} pozycji.}}";
+        var expected = "{count, plural, one {Jest {n} pozycja.} few {Jest {n} pozycje.} other {Jest {n} pozycji.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getTarget()).toBe(expected);
     });
 
     test("converts plural source to string when the target has less plural categories than the source", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} item.",
@@ -140,16 +140,16 @@ describe("convertPluralResToICU", function () {
                 other: "{n}1件の商品があります。",
             }
         });
-        const expected = "{count, plural, one {There is {n} item.} other {There are {n} items.}}";
+        var expected = "{count, plural, one {There is {n} item.} other {There are {n} items.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getSource()).toBe(expected);
     });
 
     test("converts plural target to string when the target has less plural categories than the source", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} item.",
@@ -160,16 +160,16 @@ describe("convertPluralResToICU", function () {
                 other: "{n}1件の商品があります。",
             }
         });
-        const expected = "{count, plural, other {{n}1件の商品があります。}}";
+        var expected = "{count, plural, other {{n}1件の商品があります。}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getTarget()).toBe(expected);
     });
 
     test("don't convert array resources to a string", function () {
-        const plural = new ResourceArray({
+        var plural = new ResourceArray({
             sourceLocale: "en-US",
             sourceArray: [
                 "There is 1 string.",
@@ -182,53 +182,53 @@ describe("convertPluralResToICU", function () {
             ]
         });
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string).toBeUndefined(); // no conversion
     });
 
     test("don't convert string resources to a different string", function () {
-        const plural = new ResourceString({
+        var plural = new ResourceString({
             sourceLocale: "en-US",
             source: "There is 1 string.",
             targetLocale: "de-DE",
             target: "Es gibt 1 Zeichenfolge."
         });
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string).toBeUndefined(); // no conversion
     });
 
     test("converts string source to plural", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "de-DE",
             target: "{count, plural, one {Es gibt {n} Zeichenfolge.} other {Es gibt {n} Zeichenfolgen.}}",
         });
-        const expected = {
+        var expected = {
             one: "There is {n} string.",
             other: "There are {n} strings."
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getSourcePlurals()).toStrictEqual(expected);
     });
 
     test("converts string source to plural in a source-only resource", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}"
         });
-        const expected = {
+        var expected = {
             one: "There is {n} string.",
             other: "There are {n} strings."
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getSourcePlurals()).toStrictEqual(expected);
@@ -238,7 +238,7 @@ describe("convertPluralResToICU", function () {
     });
 
     test("converts plural source to string preserves all other fields", function () {
-        const plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             sourceLocale: "en-US",
             sourceStrings: {
                 one: "There is {n} string.",
@@ -257,9 +257,9 @@ describe("convertPluralResToICU", function () {
             comment: "no comment",
             state: "new"
         });
-        const expected = "{count, plural, one {There is {n} string.} other {There are {n} strings.}}";
+        var expected = "{count, plural, one {There is {n} string.} other {There are {n} strings.}}";
 
-        const string = convert.convertPluralResToICU(plural);
+        var string = convert.convertPluralResToICU(plural);
 
         expect(string.getType()).toBe("string");
         expect(string.getSource()).toBe(expected);
@@ -275,18 +275,18 @@ describe("convertPluralResToICU", function () {
 
 describe("convertICUToPluralRes", () => {
     test("converts string target to plural", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "de-DE",
             target: "{count, plural,  one {Es gibt {n} Zeichenfolge.} other {Es gibt {n} Zeichenfolgen.}}",
         });
-        const expected = {
+        var expected = {
             one: "Es gibt {n} Zeichenfolge.",
             other: "Es gibt {n} Zeichenfolgen.",
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getTargetPlurals()).toStrictEqual(expected);
@@ -294,7 +294,7 @@ describe("convertICUToPluralRes", () => {
 
     test.each([
         {
-q            name: "flat tags",
+            name: "flat tags",
             source: "{count, plural, one {There is {n} <b>string</b>.} other {There are {n} <b>strings</b>.}}",
             target: "{count, plural,  one {Es gibt {n} <b>Zeichenfolge</b>.} other {Es gibt {n} <b>Zeichenfolgen</b>.}}",
             expected: {
@@ -330,22 +330,23 @@ q            name: "flat tags",
             }
         },
     ])("converts string target to plural when it contains $name", function ({source, target, expected}) {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source,
             targetLocale: "de-DE",
             target,
         });
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getTargetPlurals()).toStrictEqual(expected);
     });
 
     test("throws SyntaxError when converting string target with unclosed tag to plural ", () => {
-        const consoleSpy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
-        const string = new ResourceString({
+        var consoleSpy = jest.spyOn(console, "log").mockImplementationOnce(() => {
+        });
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} <b>string.} other {There are {n} <b>strings.}}",
             targetLocale: "de-DE",
@@ -355,85 +356,85 @@ q            name: "flat tags",
         convert.convertICUToPluralRes(string);
 
         expect(consoleSpy).toHaveBeenCalledWith(expect.any(SyntaxError));
-        expect(consoleSpy).toHaveBeenCalledWith(expect.objectContaining({ message: "UNCLOSED_TAG" }));
+        expect(consoleSpy).toHaveBeenCalledWith(expect.objectContaining({message: "UNCLOSED_TAG"}));
 
         consoleSpy.mockRestore();
     });
 
     test("converts string source to plural when the target has more plural categories than the source", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "pl-PL",
             target: "{count, plural, one {Jest {n} pozycja.} few {Jest {n} pozycje.} other {Jest {n} pozycji.}}"
         });
-        const expected = {
+        var expected = {
             one: "There is {n} string.",
             other: "There are {n} strings."
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getSourcePlurals()).toStrictEqual(expected);
     });
 
     test("converts string target to plural when the target has more plural categories than the source", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "pl-PL",
             target: "{count, plural, one {Jest {n} pozycja.} few {Jest {n} pozycje.} other {Jest {n} pozycji.}}"
         });
-        const expected = {
+        var expected = {
             one: "Jest {n} pozycja.",
             few: "Jest {n} pozycje.",
             other: "Jest {n} pozycji.",
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getTargetPlurals()).toStrictEqual(expected);
     });
 
     test("converts string source to plural when the target has less plural categories than the source", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "ja-JP",
             target: "{count, plural, other {{n}1件の商品があります。}}"
         });
-        const expected = {
+        var expected = {
             one: "There is {n} string.",
             other: "There are {n} strings."
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getSourcePlurals()).toStrictEqual(expected);
     });
 
     test("converts string target to plural when the target has less plural categories than the source", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "ja-JP",
             target: "{count, plural, other {{n}1件の商品があります。}}"
         });
-        const expected = {
+        var expected = {
             other: "{n}1件の商品があります。",
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getTargetPlurals()).toStrictEqual(expected);
     });
 
     test("converts string target to plural, preserving all other fields", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {n} string.} other {There are {n} strings.}}",
             targetLocale: "de-DE",
@@ -446,12 +447,12 @@ q            name: "flat tags",
             comment: "no comment",
             state: "new"
         });
-        const expected = {
+        var expected = {
             one: "Es gibt {n} Zeichenfolge.",
             other: "Es gibt {n} Zeichenfolgen.",
         };
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural.getType()).toBe("plural");
         expect(plural.getTargetPlurals()).toStrictEqual(expected);
@@ -465,20 +466,20 @@ q            name: "flat tags",
     });
 
     test("does not convert non-plural string to plural", function () {
-        const string = new ResourceString({
+        var string = new ResourceString({
             sourceLocale: "en-US",
             source: "There is 1 string.",
             targetLocale: "de-DE",
             target: "Es gibt 1 Zeichenfolge."
         });
 
-        const plural = convert.convertICUToPluralRes(string);
+        var plural = convert.convertICUToPluralRes(string);
 
         expect(plural).toBeUndefined();
     });
 
     test("does not convert array to plural", function () {
-        const array = new ResourceArray({
+        var array = new ResourceArray({
             key: "c",
             sourceLocale: "en-US",
             sourceArray: [
@@ -494,13 +495,13 @@ q            name: "flat tags",
             ]
         });
 
-        const plural = convert.convertICUToPluralRes(array);
+        var plural = convert.convertICUToPluralRes(array);
 
         expect(plural).toBeUndefined();
     });
 
     test("does not convert plural to another plural", function () {
-        let plural = new ResourcePlural({
+        var plural = new ResourcePlural({
             key: "a",
             sourceLocale: "en-US",
             sourceStrings: {
