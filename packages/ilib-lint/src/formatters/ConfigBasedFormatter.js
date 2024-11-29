@@ -18,7 +18,7 @@
  */
 import log4js from 'log4js';
 
-import { Formatter, Result } from 'ilib-lint-common';
+import {Formatter, Result} from 'ilib-lint-common';
 
 var logger = log4js.getLogger("ilib-lint.formatters.ConfigBasedFormatter");
 
@@ -50,13 +50,13 @@ export class ConfigBasedFormatter extends Formatter {
      */
     constructor(options) {
         super(options);
-        
+
         if (!options) {
             throw "Attempt to create a ConfigBasedFormatter without options";
         }
 
         for (let prop of requiredFields) {
-            if (typeof(options[prop]) === 'undefined') {
+            if (typeof (options[prop]) === 'undefined') {
                 throw `Missing ${prop} field for a ConfigBasedFormatter`;
             }
             this[prop] = options[prop];
@@ -73,7 +73,7 @@ export class ConfigBasedFormatter extends Formatter {
     format(result) {
         if (!result) return "";
         let output = this.template;
-        
+
         for (let prop of resultFields) {
             output = output.replace(new RegExp(`{${prop}}`, "g"), result[prop] || "");
         }
@@ -82,11 +82,12 @@ export class ConfigBasedFormatter extends Formatter {
         output = output.replace(new RegExp("{ruleDescription}", "g"), result.rule.getDescription());
 
         output = output.replace(/<e\d><\/e\d>/g, `${this.highlightStart}${this.highlightEnd}`);
+        output = output.replace(/<e\d\/>/g, `${this.highlightStart}${this.highlightEnd}`);
         output = output.replace(/<e\d>/g, this.highlightStart);
         output = output.replace(/<\/e\d>/g, this.highlightEnd);
 
         let link = "";
-        if (typeof(result.rule.getLink) === 'function') {
+        if (typeof (result.rule.getLink) === 'function') {
             link = result.rule.getLink() || "";
         }
         output = output.replace(new RegExp("{ruleLink}", "g"), link);
