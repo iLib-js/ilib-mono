@@ -35,6 +35,7 @@ var XliffIntermediateFile = require("./XliffIntermediateFile.js");
  * @param {String} [options.version] the version of the file (for xliff files: "1.2" or "2.0")
  * @param {String} [options.datatype] the datatype of the file
  * @param {boolean} [options.contextInKey] whether the context should be included in the key
+ * @param {String} [options.style] style of the file (for xliff files)
  * @returns {IntermediateFile} the intermediate file
  * @throws {Error} if the type is not recognized
  */

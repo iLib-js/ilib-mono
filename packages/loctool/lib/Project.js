@@ -34,6 +34,7 @@ var utils = require("./utils.js");
 var conversions = require("./ResourceConvert.js");
 var pluralCategories = require("../db/pluralCategories.json");
 var log4js = require("log4js");
+var getIntermediateFile = require("./IntermediateFileFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.Project");
 
@@ -698,7 +699,7 @@ Project.prototype.getOutputLocale = function(locale) {
  * @param {String} locale the locale to check
  * @returns {String|undefined} inheritance locale. it returns undefind if it follows current default.
  */
- Project.prototype.getLocaleInherit = function(locale) {
+Project.prototype.getLocaleInherit = function(locale) {
     if (typeof (locale) !== "string") return undefined;
     return (this.localeInherit && this.localeInherit[locale] ? this.localeInherit[locale]: undefined);
 };
@@ -720,7 +721,8 @@ Project.prototype.close = function(cb) {
     if(!this.localizeOnly) {
         var dir = this.xliffsOut;
         var base = this.options.id;
-        var extractedPath = path.join(dir, base + "-extracted.xliff");
+        var fileFormat = this.settings.intermediateFormat || "xliff";
+        var extractedPath = path.join(dir, base + "-extracted." + fileFormat);
         var extracted = new TranslationSet(this.sourceLocale);
 
         // make sure the output dir exists before we attempt to write anything there!
@@ -768,15 +770,15 @@ Project.prototype.close = function(cb) {
                 extracted.convertToICU();
             }
             logger.info("Writing out the extracted strings to " + extractedPath);
-            var extractedXliff = new Xliff({
+            var extractedFile = getIntermediateFile({
+                type: fileFormat,
+                path: extractedPath,
                 sourceLocale: this.sourceLocale,
-                pathName: extractedPath,
                 allowDups: this.settings.allowDups,
                 version: this.settings.xliffVersion,
                 style: this.settings.xliffStyle
             });
-            extractedXliff.addSet(extracted);
-            fs.writeFileSync(extractedPath, extractedXliff.serialize(true), "utf-8");
+            extractedFile.write(extracted);
         } else {
             logger.info("No strings extracted from this run.");
         }
@@ -787,7 +789,7 @@ Project.prototype.close = function(cb) {
             for (var i = 0; i < newLocales.length; i++) {
                 var locale = newLocales[i];
                 if (!this.isSourceLocale(locale) && !PseudoFactory.isPseudoLocale(locale, this)) {
-                    var newPath = path.join(dir, base + "-new-" + locale + ".xliff");
+                    var newPath = path.join(dir, base + "-new-" + locale + "." + fileFormat);
                     var resources = newres.getAll().filter(function(res) {
                         return res.getTargetLocale() === locale && !res.dnt &&
                             (res.source || res.sourceArray || res.sourceStrings);
@@ -795,14 +797,17 @@ Project.prototype.close = function(cb) {
 
                     if (resources && resources.length) {
                         logger.info("Writing out the new strings to " + newPath);
-                        var newXliff = new Xliff({
+                        var newFile = getIntermediateFile({
+                            type: fileFormat,
+                            path: newPath,
                             project: this.name,
-                            pathName: newPath,
                             sourceLocale: this.sourceLocale,
+                            targetLocale: locale,
                             version: this.settings.xliffVersion,
                             style: this.settings.xliffStyle
                         });
 
+                        var set = new TranslationSet(this.sourceLocale);
                         resources.forEach(function(res) {
                             if (res.getType() === "plural") {
                                 // adjust the plural categories for the target language
@@ -818,10 +823,10 @@ Project.prototype.close = function(cb) {
                                     res = conversions.convertPluralResToICU(res);
                                 }
                             }
-                            newXliff.addResource(res);
+                            set.add(res);
                         }.bind(this));
 
-                        fs.writeFileSync(newPath, newXliff.serialize(true), "utf-8");
+                        newFile.write(set);
                     } else {
                         logger.info("No new strings to write to " + newPath);
                         if (fs.existsSync(newPath)) {

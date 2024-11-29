@@ -19,23 +19,8 @@
 
 var fs = require('fs');
 
-if (!Project) {
-    var ProjectFactory = require("../lib/ProjectFactory.js");
-    var Project = require("../lib/Project.js");
-}
-
-function diff(a, b) {
-    var min = Math.min(a.length, b.length);
-
-    for (var i = 0; i < min; i++) {
-        if (a[i] !== b[i]) {
-            console.log("Found difference at character " + i);
-            console.log("a: " + a.substring(i));
-            console.log("b: " + b.substring(i));
-            break;
-        }
-    }
-}
+var ProjectFactory = require("../lib/ProjectFactory.js");
+var Project = require("../lib/Project.js");
 
 function rmrf(path) {
     if (fs.existsSync(path)) {
@@ -43,56 +28,36 @@ function rmrf(path) {
     }
 }
 
-afterEach(function() {
-    [
-        "./test/testfiles/loctest-extracted.xliff",
-        "./test/testfiles/loctest-new-es-US.xliff",
-        "./test/testfiles/loctest-new-ja-JP.xliff",
-        "./test/testfiles/loctest-new-zh-Hans-CN.xliff",
-        "./test/testfiles/es-US/md/test1.md",
-        "./test/testfiles/ja-JP/md/test1.md",
-        "./test/testfiles/de-DE/md/test1.md",
-        "./test/testfiles/en-GB/md/test1.md",
-        "./test/testfiles/zh-Hans-CN/md/test1.md",
-        "./test/testfiles/loctest-new-en-GB.po",
-        "./test/testfiles/loctest-new-en-GB.xliff",
-        "./test/testfiles/project2/loctest-extracted.xliff",
-        "./test/testfiles/project2/loctest-new-es-US.xliff",
-        "./test/testfiles/project2/loctest-new-ja-JP.xliff",
-        "./test/testfiles/project2/loctest-new-ru-RU.xliff",
-        "./test/testfiles/project2/loctest-new-en-GB.xliff",
-        "./test/testfiles/project2/loctest.xliff",
-        "./test/testfiles/translations/loctest.xliff",
-        "./test/testfiles/project3/loctest-extracted.xliff",
-        "./test/testfiles/project3/loctest-new-es-US.xliff",
-        "./test/testfiles/project3/loctest-new-ja-JP.xliff",
-        "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff",
-        "./test/testfiles/project3/es-US.mock",
-        "./test/testfiles/project3/ja-JP.mock",
-        "./test/testfiles/project3/zh-Hans-CN.mock",
-        "./test/testfiles/loctest-extracted.po",
-        "./test/testfiles/loctest-new-es-US.po",
-        "./test/testfiles/loctest-new-ja-JP.po",
-        "./test/testfiles/loctest-new-zh-Hans-CN.po",
-        "./test/testfiles/project3/loctest-extracted.po",
-        "./test/testfiles/project3/loctest-new-es-US.po",
-        "./test/testfiles/project3/loctest-new-ja-JP.po",
-        "./test/testfiles/project3/loctest-new-zh-Hans-CN.po",
-        "./test/testfiles/project2/res/values-en/strings.xml",
-        "./test/testfiles/project2/res/values-en/plurals.xml",
-        "./test/testfiles/project2/res/values-es/strings.xml",
-        "./test/testfiles/project2/res/values-es/plurals.xml",
-        "./test/testfiles/project2/res/values-ja/strings.xml",
-        "./test/testfiles/project2/res/values-ja/plurals.xml",
-        "./test/testfiles/project2/res/values-ru/strings.xml",
-        "./test/testfiles/project2/res/values-ru/plurals.xml",
-        "./test/testfiles/project2/res/values-ps-rDO/strings.xml",
-        "./test/testfiles/project2/res/values-ps-rDO/arrays.xml",
-        "./test/testfiles/project2/res/values-ps-rDO/plurals.xml"
-    ].forEach(rmrf);
-});
-
 describe("project", function() {
+    afterEach(function() {
+        [
+            "./test/testfiles/loctest-extracted.xliff",
+            "./test/testfiles/loctest-new-es-US.xliff",
+            "./test/testfiles/loctest-new-ja-JP.xliff",
+            "./test/testfiles/loctest-new-zh-Hans-CN.xliff",
+            "./test/testfiles/es-US/md/test1.md",
+            "./test/testfiles/ja-JP/md/test1.md",
+            "./test/testfiles/zh-Hans-CN/md/test1.md",
+            "./test/testfiles/project2/loctest-extracted.xliff",
+            "./test/testfiles/project2/loctest-new-es-US.xliff",
+            "./test/testfiles/project2/loctest-new-ja-JP.xliff",
+            "./test/testfiles/project2/loctest-new-ru-RU.xliff",
+            "./test/testfiles/project3/loctest-new-es-US.xliff",
+            "./test/testfiles/project3/loctest-new-ja-JP.xliff",
+            "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff",
+            "./test/testfiles/project3/es-US.mock",
+            "./test/testfiles/project3/ja-JP.mock",
+            "./test/testfiles/project3/zh-Hans-CN.mock",
+            "./test/testfiles/loctest-extracted.po",
+            "./test/testfiles/loctest-new-es-US.po",
+            "./test/testfiles/loctest-new-ja-JP.po",
+            "./test/testfiles/loctest-new-zh-Hans-CN.po",
+            "./test/testfiles/project3/loctest-new-es-US.po",
+            "./test/testfiles/project3/loctest-new-ja-JP.po",
+            "./test/testfiles/project3/loctest-new-zh-Hans-CN.po"
+        ].forEach(rmrf);
+    });
+
     test("ProjectCreationAllEmpty", function() {
         expect.assertions(1);
         var project = ProjectFactory('', {});
@@ -101,6 +66,7 @@ describe("project", function() {
 
     test("ProjectGeneratesExtractedXliff", function() {
         expect.assertions(2);
+
         // set up first
         expect(!fs.existsSync("./test/testfiles/loctest-extracted.xliff")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {'locales': ['ja-JP']});
@@ -112,6 +78,30 @@ describe("project", function() {
                     project.save(function() {
                         project.close(function() {
                             expect(fs.existsSync("./test/testfiles/loctest-extracted.xliff")).toBeTruthy();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    test("Project generates extracted PO file", function() {
+        expect.assertions(2);
+
+        // set up first
+        expect(!fs.existsSync("./test/testfiles/loctest-extracted.po")).toBeTruthy();
+        var project = ProjectFactory('./test/testfiles', {
+            'locales': ['ja-JP'],
+            'intermediateFormat': 'po'
+        });
+        project.addPath("md/test1.md");
+        project.init(function() {
+            project.extract(function() {
+                project.generatePseudo();
+                project.write(function() {
+                    project.save(function() {
+                        project.close(function() {
+                            expect(fs.existsSync("./test/testfiles/loctest-extracted.po")).toBeTruthy();
                         });
                     });
                 });
@@ -136,6 +126,33 @@ describe("project", function() {
                             expect(fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
                             expect(fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
                             expect(fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    test("Project generates new strings PO files", function() {
+        expect.assertions(6);
+        // set up first
+        expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.po")).toBeTruthy();
+        var project = ProjectFactory('./test/testfiles', {
+            'locales': ['ja-JP'],
+            'intermediateFormat': 'po'
+        });
+        project.addPath("md/test1.md");
+        project.init(function() {
+            project.extract(function() {
+                project.generatePseudo();
+                project.write(function() {
+                    project.save(function() {
+                        project.close(function() {
+                            expect(fs.existsSync("./test/testfiles/loctest-new-es-US.po")).toBeTruthy();
+                            expect(fs.existsSync("./test/testfiles/loctest-new-ja-JP.po")).toBeTruthy();
+                            expect(fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.po")).toBeTruthy();
                         });
                     });
                 });
@@ -299,7 +316,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/loctest-new-ja-JP.xliff";
@@ -323,7 +339,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff";
@@ -347,7 +362,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/es-US.mock";
@@ -376,7 +390,6 @@ describe("project", function() {
                                 '        "other": "There are {n} items."\n' +
                                 '    }\n' +
                                 '}';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/ja-JP.mock";
@@ -405,7 +418,6 @@ describe("project", function() {
                                 '        "other": "There are {n} items."\n' +
                                 '    }\n' +
                                 '}';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/zh-Hans-CN.mock";
@@ -434,7 +446,200 @@ describe("project", function() {
                                 '        "other": "There are {n} items."\n' +
                                 '    }\n' +
                                 '}';
-                            diff(actual, expected);
+                            expect(actual).toBe(expected);
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    test("Project localize a mock file with plurals using no plural conversions, right content, using po files", function() {
+        expect.assertions(18);
+        // set up first
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/es-US.mock")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
+
+        var project = ProjectFactory('./test/testfiles/project3', {
+            xliffsDir: "translations2",
+            locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
+            intermediateFormat: 'po'
+        });
+        project.addPath("en-US.mock");
+        project.init(function() {
+            project.extract(function() {
+                project.write(function() {
+                    project.save(function() {
+                        project.close(function() {
+                            var filename = "./test/testfiles/project3/loctest-new-es-US.po";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                'msgid ""\n' +
+                                'msgstr ""\n' +
+                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-es-US.po  #-#-#-#-#\\n"\n' +
+                                '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+                                '"Content-Transfer-Encoding: 8bit\\n"\n' +
+                                '"Generated-By: loctool\\n"\n' +
+                                '"Project-Id-Version: 1\\n"\n' +
+                                '"Language: es-US\\n"\n' +
+                                '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+                                '\n' +
+                                '#: en-US.mock\n' +
+                                '#k plu1\n' +
+                                'msgid "singular"\n' +
+                                'msgid_plural "plural"\n' +
+                                'msgstr[0] ""\n' +
+                                'msgstr[1] ""\n' +
+                                '\n' +
+                                '#: en-US.mock\n' +
+                                '#k plu2\n' +
+                                'msgid "There is {n} item."\n' +
+                                'msgid_plural "There are {n} items."\n' +
+                                'msgstr[0] ""\n' +
+                                'msgstr[1] ""\n';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/loctest-new-ja-JP.po";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                'msgid ""\n' +
+                                'msgstr ""\n' +
+                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-ja-JP.po  #-#-#-#-#\\n"\n' +
+                                '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+                                '"Content-Transfer-Encoding: 8bit\\n"\n' +
+                                '"Generated-By: loctool\\n"\n' +
+                                '"Project-Id-Version: 1\\n"\n' +
+                                '"Language: ja-JP\\n"\n' +
+                                '"Plural-Forms: nplurals=1; plural=0;\\n"\n' +
+                                '\n' +
+                                '#: en-US.mock\n' +
+                                '#k plu1\n' +
+                                'msgid "singular"\n' +
+                                'msgid_plural "plural"\n' +
+                                'msgstr[0] ""\n' +
+                                '\n' +
+                                '#: en-US.mock\n' +
+                                '#k plu2\n' +
+                                'msgid "There is {n} item."\n' +
+                                'msgid_plural "There are {n} items."\n' +
+                                'msgstr[0] ""\n';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/loctest-new-zh-Hans-CN.po";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                'msgid ""\n' +
+                                'msgstr ""\n' +
+                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-zh-Hans-CN.po  #-#-#-#-#\\n"\n' +
+                                '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+                                '"Content-Transfer-Encoding: 8bit\\n"\n' +
+                                '"Generated-By: loctool\\n"\n' +
+                                '"Project-Id-Version: 1\\n"\n' +
+                                '"Language: zh-Hans-CN\\n"\n' +
+                                '"Plural-Forms: nplurals=1; plural=0;\\n"\n' +
+                                '\n' +
+                                '#: en-US.mock\n' +
+                                '#k plu1\n' +
+                                'msgid "singular"\n' +
+                                'msgid_plural "plural"\n' +
+                                'msgstr[0] ""\n' +
+                                '\n' +
+                                '#: en-US.mock\n' +
+                                '#k plu2\n' +
+                                'msgid "There is {n} item."\n' +
+                                'msgid_plural "There are {n} items."\n' +
+                                'msgstr[0] ""\n';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/es-US.mock";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '{\n' +
+                                '    "arr1": [\n' +
+                                '        "uno",\n' +
+                                '        "dos",\n' +
+                                '        "tres"\n' +
+                                '    ],\n' +
+                                '    "arr2": [\n' +
+                                '        "quatro",\n' +
+                                '        "cinco",\n' +
+                                '        "seis"\n' +
+                                '    ],\n' +
+                                '    "foobar1": "Esta es una cadena de prueba",\n' +
+                                '    "foobar2": "Esta es una segunda cadena de prueba",\n' +
+                                '    "plu1": {\n' +
+                                '        "one": "singular",\n' +
+                                '        "other": "plural"\n' +
+                                '    },\n' +
+                                '    "plu2": {\n' +
+                                '        "one": "There is {n} item.",\n' +
+                                '        "other": "There are {n} items."\n' +
+                                '    }\n' +
+                                '}';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/ja-JP.mock";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '{\n' +
+                                '    "arr1": [\n' +
+                                '        "1",\n' +
+                                '        "2",\n' +
+                                '        "3"\n' +
+                                '    ],\n' +
+                                '    "arr2": [\n' +
+                                '        "4",\n' +
+                                '        "5",\n' +
+                                '        "6"\n' +
+                                '    ],\n' +
+                                '    "foobar1": "これはテスト文字列です",\n' +
+                                '    "foobar2": "これは 2 番目のテスト文字列です",\n' +
+                                '    "plu1": {\n' +
+                                '        "one": "singular",\n' +
+                                '        "other": "plural"\n' +
+                                '    },\n' +
+                                '    "plu2": {\n' +
+                                '        "one": "There is {n} item.",\n' +
+                                '        "other": "There are {n} items."\n' +
+                                '    }\n' +
+                                '}';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/zh-Hans-CN.mock";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '{\n' +
+                                '    "arr1": [\n' +
+                                '        "一",\n' +
+                                '        "二",\n' +
+                                '        "三"\n' +
+                                '    ],\n' +
+                                '    "arr2": [\n' +
+                                '        "四",\n' +
+                                '        "五",\n' +
+                                '        "六"\n' +
+                                '    ],\n' +
+                                '    "foobar1": "这是一个测试字符串",\n' +
+                                '    "foobar2": "这是第二个测试字符串",\n' +
+                                '    "plu1": {\n' +
+                                '        "one": "singular",\n' +
+                                '        "other": "plural"\n' +
+                                '    },\n' +
+                                '    "plu2": {\n' +
+                                '        "one": "There is {n} item.",\n' +
+                                '        "other": "There are {n} items."\n' +
+                                '    }\n' +
+                                '}';
                             expect(actual).toBe(expected);
                         });
                     });
@@ -515,7 +720,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/loctest-new-ja-JP.xliff";
@@ -533,7 +737,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff";
@@ -551,7 +754,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/es-US.mock";
@@ -581,7 +783,6 @@ describe("project", function() {
                                 '        "other": "Hay {n} artículos."\n' +
                                 '    }\n' +
                                 '}';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/ja-JP.mock";
@@ -609,7 +810,6 @@ describe("project", function() {
                                 '        "other": "項目が {n} つあります。"\n' +
                                 '    }\n' +
                                 '}';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
 
                             filename = "./test/testfiles/project3/zh-Hans-CN.mock";
@@ -637,7 +837,6 @@ describe("project", function() {
                                 '        "other": "有 {n} 个项目。"\n' +
                                 '    }\n' +
                                 '}';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                         });
                     });
@@ -699,7 +898,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ja-JP.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -729,7 +927,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ru-RU.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -827,7 +1024,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ja-JP.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -856,7 +1052,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ru-RU.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -934,7 +1129,6 @@ describe("project", function() {
                                 '    </body>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                         });
                     });
@@ -1016,7 +1210,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ja-JP.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -1056,7 +1249,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ru-RU.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -1123,7 +1315,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                         });
                     });
@@ -1185,7 +1376,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ja-JP.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -1222,7 +1412,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                             filename = "./test/testfiles/project2/loctest-new-ru-RU.xliff";
                             expect(fs.existsSync(filename)).toBeTruthy();
@@ -1259,7 +1448,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                         });
                     });
@@ -1323,7 +1511,6 @@ describe("project", function() {
                                 '    </group>\n' +
                                 '  </file>\n' +
                                 '</xliff>';
-                            diff(actual, expected);
                             expect(actual).toBe(expected);
                         });
                     });

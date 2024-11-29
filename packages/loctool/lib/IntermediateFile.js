@@ -30,6 +30,7 @@
  * @param {boolean} [options.contextInKey] whether not the context of the string
  * should be included in the key
  * @param {String} [options.datatype] type of the data where these strings came from
+ * @param {String} [options.style] style of the file (for xliff files)
  * @abstract
  */
 var IntermediateFile = function(options) {};
