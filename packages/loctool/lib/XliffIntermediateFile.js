@@ -38,6 +38,7 @@ var IntermediateFile = require("./IntermediateFile.js");
  * @param {String} [options.project] the project that the file is associated with
  * @param {String} [options.version] the version of the file (for xliff files: "1.2" or "2.0")
  * @param {String} [options.datatype] the datatype of the file
+ * @param {String} [options.style] style of the file (for xliff files)
  * @param {boolean} [options.contextInKey] whether the context should be included in the key
  */
 var XliffIntermediateFile = function(options) {
@@ -50,7 +51,8 @@ var XliffIntermediateFile = function(options) {
         style: options.style,
         allowDups: options.allowDups,
         datatype: options.datatype,
-        contextInKey: options.contextInKey
+        contextInKey: options.contextInKey,
+        style: options.style
     });
 };
 
