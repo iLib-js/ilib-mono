@@ -66,10 +66,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language governing permissions and
 limitations under the License.
-
-## Release Notes
-
-### v1.0.0
-
-- extracted code and unit tests from ilib-loctool-po
-- converted to Typescript
