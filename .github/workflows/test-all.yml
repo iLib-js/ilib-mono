@@ -11,8 +11,6 @@ jobs:
         strategy:
             matrix:
                 node-version: [20]
-        env:
-            TURBO_UI: "false"
         steps:
             - uses: actions/checkout@v4
             - name: Install pnpm
