@@ -96,11 +96,13 @@ const commentTypeMap = new Map([
 
     // these two are extensions to the PO format so that we can encode array resources
     ['k', CommentType.KEY],
-    ['#', CommentType.INDEX]
+    ['#', CommentType.INDEX],
+    ['d', CommentType.DATATYPE]
 ]);
 
 const reTargetLocale = /"Language:\s*([^ \\]+)/;
 const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
+const reDefaultDataType = /"Data-Type:\s*([^ \\]+)/;
 
 /**
  * @class Parse a PO file
@@ -178,21 +180,26 @@ class Parser {
             arrays: ArrayResources | undefined = {},
             key: string | undefined,
             type: string | undefined,
-            arrayIndex: number = 0;
+            arrayIndex: number = 0,
+            defaultDataType: string | undefined = this.datatype,
+            datatype: string | undefined;
 
         let resourceIndex = 0;
 
         function restart() {
-            key = type = comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
+            datatype = key = type = comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
             state = State.START;
         }
 
-        // if the target locale is not set, try to get it from the file
-        if (!this.targetLocale) {
-            const match = reTargetLocale.exec(data);
-            if (match && match.length > 1) {
-                this.targetLocale = new Locale(match[1]);
-            }
+        // Get defaults from the file header if they are there.
+        // If the target locale is set in the file, use that as the default target locale
+        let match = reTargetLocale.exec(data);
+        if (match && match.length > 1) {
+            this.targetLocale = new Locale(match[1]);
+        }
+        match = reDefaultDataType.exec(data);
+        if (match && match.length > 1) {
+            defaultDataType = match[1];
         }
 
         restart();
@@ -225,6 +232,8 @@ class Parser {
                                 const commentType = commentTypeMap.get(tokenType);
                                 if (commentType === CommentType.KEY) {
                                     key = token.value.substring(2);
+                                } else if (commentType === CommentType.DATATYPE) {
+                                    datatype = token.value.substring(2);
                                 } else if (commentType === CommentType.INDEX) {
                                     arrayIndex = parseInt(token.value.substring(2), 10);
                                     type = "array";
@@ -236,7 +245,7 @@ class Parser {
                                        comment[commentType] = [];
                                     }
                                     comment[commentType].push(token.value.substring((tokenType === ' ') ? 1 : 2));
-                                } // else if it is in the comments set, ignore it
+                                } // else if it is not in the comments set, ignore it
                             }
                             break;
                         case TokenType.PLURAL:
@@ -270,7 +279,7 @@ class Parser {
                                         pathName: original,
                                         state: "new",
                                         comment: comment && JSON.stringify(comment),
-                                        datatype: this.datatype,
+                                        datatype: datatype || defaultDataType,
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
@@ -290,7 +299,7 @@ class Parser {
                                                 pathName: original,
                                                 state: "new",
                                                 comment: comment && JSON.stringify(comment),
-                                                datatype: this.datatype,
+                                                datatype: datatype || defaultDataType,
                                                 context: context,
                                                 index: resourceIndex++,
                                                 targetLocale: this.targetLocale?.getSpec(),
@@ -322,7 +331,7 @@ class Parser {
                                         pathName: original,
                                         state: "new",
                                         comment: comment && JSON.stringify(comment),
-                                        datatype: this.datatype,
+                                        datatype: datatype || defaultDataType,
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translation && this.targetLocale?.getSpec(),
@@ -339,6 +348,10 @@ class Parser {
                             break;
                         case TokenType.UNKNOWN:
                             throw new SyntaxError(this.pathName, tokenizer.getContext());
+                        case TokenType.STRING:
+                            // ignore -- probably a header string
+                            // no need to change state, as we go right back to START
+                            break;
                     }
                     break;
                 case State.MSGIDSTR:

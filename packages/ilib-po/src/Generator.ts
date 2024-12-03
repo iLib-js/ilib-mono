@@ -42,6 +42,11 @@ export interface GeneratorOptions {
      * @default false
      */
     contextInKey?: boolean;
+
+    /**
+     * The default data type of the resources
+     */
+     datatype?: string;
 }
 
 /**
@@ -54,6 +59,8 @@ class Generator {
     private targetLocale: Locale;
     /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
+    /** the default data type of the resources */
+    private datatype: string | undefined;
 
     private plurals: PluralForm;
 
@@ -72,6 +79,7 @@ class Generator {
         this.pathName = options.pathName;
         this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
         this.contextInKey = optionsWithDefaults.contextInKey;
+        this.datatype = optionsWithDefaults.datatype;
 
         this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
     }
@@ -96,6 +104,9 @@ class Generator {
             '"Project-Id-Version: 1\\n"\n' +
             `"Language: ${this.targetLocale.getSpec()}\\n"\n` +
             `"Plural-Forms: ${this.plurals.rules}\\n"\n`;
+        if (this.datatype) {
+            output += `"Data-Type: ${this.datatype}\\n"\n`;
+        }
         const resources = set.getAll();
 
         for (let i = 0; i < resources.length; i++) {
@@ -137,6 +148,9 @@ class Generator {
                 c[CommentType.PREVIOUS].forEach(str => {
                     output += `#| ${str}\n`;
                 });
+            }
+            if (r.getDataType() && this.datatype !== r.getDataType()) {
+                output += `#d ${r.getDataType()}\n`;
             }
             if (type === "string" && r.getSource() !== key) {
                 output += `#k ${escapeQuotes(r.getKey())}\n`;
