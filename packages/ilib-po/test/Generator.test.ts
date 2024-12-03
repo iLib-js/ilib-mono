@@ -37,7 +37,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -63,6 +64,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n';
@@ -76,7 +78,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -102,6 +105,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             '#k asdf\n' +
             'msgid "string 1"\n' +
@@ -116,7 +120,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -151,6 +156,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -167,7 +173,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -200,6 +207,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             "msgid \"string 1\"\n" +
             "msgid_plural \"strings 1\"\n" +
@@ -214,7 +222,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -247,6 +256,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             '#k asdf\n' +
             "msgid \"string 1\"\n" +
@@ -262,7 +272,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -295,6 +306,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             '# note for translators\n' +
             '#. extracted comment\n' +
@@ -318,7 +330,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -359,6 +372,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -379,7 +393,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -421,6 +436,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -447,7 +463,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -490,6 +507,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             '#: src/a/b/c.js\n' +
             'msgid "string 1"\n' +
@@ -516,7 +534,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -542,6 +561,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string \\"quoted\\" 1"\n' +
             'msgstr "chaîne \\"numéro\\" 1"\n';
@@ -555,7 +575,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -592,6 +613,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgctxt "context 1"\n' +
             'msgid "string 1"\n' +
@@ -610,7 +632,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/context.po",
             targetLocale: "fr-FR",
-            contextInKey: true
+            contextInKey: true,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -647,6 +670,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             '#k string 1 --- context 1\n' +
             'msgctxt "context 1"\n' +
@@ -667,7 +691,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -702,6 +727,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr ""\n' +
@@ -718,7 +744,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -765,6 +792,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "{$count} object"\n' +
             'msgid_plural "{$count} objects"\n' +
@@ -785,7 +813,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "fr-FR",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -832,6 +861,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "{$count} object"\n' +
             'msgid_plural "{$count} objects"\n' +
@@ -852,7 +882,8 @@ describe("generator", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "ru-RU",
-            contextInKey: false
+            contextInKey: false,
+            datatype: "po"
         });
         expect(generator).toBeTruthy();
 
@@ -913,6 +944,7 @@ describe("generator", () => {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: ru-RU\\n"\n' +
             '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "строка 1"\n' +
@@ -928,6 +960,176 @@ describe("generator", () => {
             '\n' +
             'msgid "string 3 and 4"\n' +
             'msgstr "строка 3 и 4"\n';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("Generator generate text with different datatypes", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false,
+            datatype: "po"
+        });
+
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "foo",
+            source: ["string 1", "string 2"],
+            sourceLocale: "en-US",
+            target: ["chaîne 1", "chaîne 2"],
+            targetLocale: "fr-FR",
+            datatype: "python"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            source: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            target: {
+                "one": "{$count} chaîne",
+                "other": "{$count} chaînes"
+            },
+            targetLocale: "fr-FR",
+            datatype: "javascript"
+        }));
+
+        const actual = generator.generate(translations);
+
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '\n' +
+            '#d json\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            '#d python\n' +
+            '#k foo\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#k foo\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne 2"\n' +
+            '\n' +
+            '#d javascript\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} chaîne"\n' +
+            'msgstr[1] "{$count} chaînes"\n';
+
+        expect(actual).toBe(expected);
+    });
+
+
+    test("Generator generate text with different datatypes, some of which are the same as the default datatype", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false,
+            datatype: "po"
+        });
+
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceArray({
+            project: "foo",
+            key: "foo",
+            source: ["string 1", "string 2"],
+            sourceLocale: "en-US",
+            target: ["chaîne 1", "chaîne 2"],
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            source: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            target: {
+                "one": "{$count} chaîne",
+                "other": "{$count} chaînes"
+            },
+            targetLocale: "fr-FR",
+            datatype: "javascript"
+        }));
+
+        const actual = generator.generate(translations);
+
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '\n' +
+            '#d json\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            '#k foo\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#k foo\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne 2"\n' +
+            '\n' +
+            '#d javascript\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} chaîne"\n' +
+            'msgstr[1] "{$count} chaînes"\n';
 
         expect(actual).toBe(expected);
     });
