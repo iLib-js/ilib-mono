@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"#-#-#-#-#  test/testfiles/project3/translations2/ja-JP.po  #-#-#-#-#\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: loctool\n"
+"Project-Id-Version: 1\n"
+"Language: ja-JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: en-US.mock
+#k foobar1
+msgid "This is a test string"
+msgstr "これはテスト文字列です"
+
+#: en-US.mock
+#k foobar2
+msgid "This is a second test string"
+msgstr "これは 2 番目のテスト文字列です"
+
+#: en-US.mock
+#k arr1
+## 0
+msgid "one"
+msgstr "1"
+
+#k arr1
+## 1
+msgid "two"
+msgstr "2"
+
+#k arr1
+## 2
+msgid "three"
+msgstr "3"
+
+#: en-US.mock
+#k arr2
+## 0
+msgid "four"
+msgstr "4"
+
+#k arr2
+## 1
+msgid "five"
+msgstr "5"
+
+#k arr2
+## 2
+msgid "six"
+msgstr "6"
+
+#: en-US.mock
+#k plu2
+msgid "There is {n} item."
+msgid_plural "There are {n} items."
+msgstr[0] "項目が {n} つあります。"

@@ -187,7 +187,8 @@ var Project = function(options, root, settings) {
         pseudoLocale: this.pseudoLocale,
         pathName: ((this.settings.xliffVersion !== 2) ? (path.join(this.xliffsDir[0], this.options.id + ".xliff")): undefined),
         project: this,
-        xliffsDir: this.xliffsDir
+        xliffsDir: this.xliffsDir,
+        intermediateFormat: this.settings.intermediateFormat
     });
 
     logger.debug("New Project: " + this.root + " source: " + this.sourceLocale + ", pseudo: " + this.pseudoLocale);
@@ -657,7 +658,8 @@ Project.prototype.generateMode = function(cb) {
 
     var genMode = new GenerateMode({
         targetDir: this.settings.targetDir,
-        xliffsDir: this.settings.xliffsDir
+        xliffsDir: this.settings.xliffsDir,
+        settings: this.settings
     });
 
     if (genMode) {

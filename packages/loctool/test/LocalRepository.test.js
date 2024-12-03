@@ -1,7 +1,7 @@
 /*
  * LocalRepository.test.js - test the Database Translation Set object.
  *
- * Copyright © 2016-2017, 2023 HealthTap, Inc.
+ * Copyright © 2016-2017, 2023-2024 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ describe("localrepository", function() {
 
     test("LocalRepositoryConstructorWithPath", function() {
         expect.assertions(10);
-
+debugger;
         var repo = new LocalRepository({
             sourceLocale: "en-US",
             pathName: "./test/testfiles/test.xliff"

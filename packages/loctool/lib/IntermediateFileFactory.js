@@ -28,7 +28,8 @@ var XliffIntermediateFile = require("./XliffIntermediateFile.js");
  * @static
  * @param {Object} options options for the intermediate file
  * @param {String} options.path the path to the file
- * @param {String} options.type the type of the file. This should be either "xliff" or "po".
+ * @param {String} [options.type] the type of the file. This should be either "xliff" or "po".
+ * Default is to determine the type from the file extension.
  * @param {String} [options.sourceLocale] the source locale of the file
  * @param {String} [options.targetLocale] the target locale of the file
  * @param {String} [options.project] the project that the file is associated with

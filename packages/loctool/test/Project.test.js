@@ -38,10 +38,13 @@ describe("project", function() {
             "./test/testfiles/es-US/md/test1.md",
             "./test/testfiles/ja-JP/md/test1.md",
             "./test/testfiles/zh-Hans-CN/md/test1.md",
+            "./test/testfiles/loctest-new-en-GB.po",
+            "./test/testfiles/loctest-new-en-GB.xliff",
             "./test/testfiles/project2/loctest-extracted.xliff",
             "./test/testfiles/project2/loctest-new-es-US.xliff",
             "./test/testfiles/project2/loctest-new-ja-JP.xliff",
             "./test/testfiles/project2/loctest-new-ru-RU.xliff",
+            "./test/testfiles/project3/loctest-extracted.xliff",
             "./test/testfiles/project3/loctest-new-es-US.xliff",
             "./test/testfiles/project3/loctest-new-ja-JP.xliff",
             "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff",
@@ -52,6 +55,7 @@ describe("project", function() {
             "./test/testfiles/loctest-new-es-US.po",
             "./test/testfiles/loctest-new-ja-JP.po",
             "./test/testfiles/loctest-new-zh-Hans-CN.po",
+            "./test/testfiles/project3/loctest-extracted.po",
             "./test/testfiles/project3/loctest-new-es-US.po",
             "./test/testfiles/project3/loctest-new-ja-JP.po",
             "./test/testfiles/project3/loctest-new-zh-Hans-CN.po"
@@ -188,6 +192,7 @@ describe("project", function() {
 
     test("Project localize an md file, right files exist", function() {
         expect.assertions(12);
+debugger;
         // set up first
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
@@ -209,7 +214,7 @@ describe("project", function() {
                             expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
                             expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
                             expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
-                            
+
                             expect(fs.existsSync("./test/testfiles/es-US/md/test1.md")).toBeTruthy();
                             expect(fs.existsSync("./test/testfiles/ja-JP/md/test1.md")).toBeTruthy();
                             expect(fs.existsSync("./test/testfiles/zh-Hans-CN/md/test1.md")).toBeTruthy();

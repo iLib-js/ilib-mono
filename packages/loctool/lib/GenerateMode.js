@@ -1,7 +1,7 @@
 /*
  * GenerateMode.js - Read xliff files.
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020, 2024, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ var log4js = require("log4js");
 var ilib = require("ilib");
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
-var Xliff = require("./Xliff.js");
+var getIntermediateFile = require("./IntermediateFileFactory.js");
 var logger = log4js.getLogger("loctool.lib.GenerateMode");
 
 /**
@@ -32,18 +32,23 @@ var logger = log4js.getLogger("loctool.lib.GenerateMode");
  *
  * @constructor
  * @param {String} sourceLocale the source locale for this set
+ * @param {String} xliffsDir the directory that contains the intermediate files
  */
 var GenerateMode = function (options) {
     logger.trace("GenerateMode constructor called");
     this.xliffsDir = ["."];
 
-    if (options && options.xliffsDir) {
-        this.xliffsDir = ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir];
+    if (options) {
+        this.xliffsDir = options.xliffsDir ?
+            (ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir]) :
+            ["."];
+        this.settings = options.settings;
     }
     this.ts = new TranslationSet(this.sourceLocale);
 };
 
 var xliffFileFilter = /([.*][\-])?([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]))?\.xliff$/;
+var poFileFilter = /([.*][\-])?([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]))?\.po$/;
 
 /**
  * Initialize this repository and read in all of the strings.
@@ -53,8 +58,11 @@ var xliffFileFilter = /([.*][\-])?([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-
  * initialization is done
  */
 GenerateMode.prototype.init = function() {
-    var dirs = ilib.isArray(this.xliffsDir) ? this.xliffsDir : [this.xliffsDir];
+    var dirs = this.xliffsDir;
     var list = [];
+    var fileFormat = (this.settings && this.settings.intermediateFormat) || "xliff";
+    var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
+
     dirs.forEach(function(dir) {
         try {
             var paths = fs.readdirSync(dir);
@@ -68,7 +76,7 @@ GenerateMode.prototype.init = function() {
 
     if (list) {
         list.filter(function(file) {
-            var match = xliffFileFilter.exec(file);
+            var match = fileFilter.exec(file);
             if (!match ||
                match.length < 2 ||
                (match.length >= 3 && match[2] && !utils.iso639[match[2]]) ||
@@ -78,13 +86,12 @@ GenerateMode.prototype.init = function() {
             }
             return true;
         }).forEach(function (pathName) {
-            var xliff = new Xliff({
-                sourceLocale: this.sourceLocale
+            var intermediateFile = getIntermediateFile({
+                sourceLocale: this.sourceLocale,
+                path: pathName
             });
             if (fs.existsSync(pathName)) {
-                var data = fs.readFileSync(pathName, "utf-8");
-                xliff.deserialize(data);
-                var ts = xliff.getTranslationSet();
+                var ts = intermediateFile.read();
                 this.ts.addSet(ts);
             } else {
                 logger.warn("Could not open xliff file: " + pathName);
