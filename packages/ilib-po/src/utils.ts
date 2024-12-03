@@ -45,7 +45,8 @@ export enum CommentType {
     PREVIOUS = "previous",
     PATHS = "paths",
     KEY = "key",
-    INDEX = "index"
+    INDEX = "index",
+    DATATYPE = "datatype"
 };
 
 /**
