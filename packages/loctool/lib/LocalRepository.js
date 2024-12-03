@@ -24,7 +24,7 @@ var ilib = require("ilib");
 
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
-var Xliff = require("./Xliff.js");
+var getIntermediateFile = require("./IntermediateFileFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.LocalRepository");
 
@@ -43,8 +43,12 @@ var LocalRepository = function (options) {
         this.pseudoLocale = options.pseudoLocale;
         this.pathName = options.pathName;
         this.project = options.project || {settings:{}};
-        this.xliffsDir = ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir];
+        this.xliffsDir = !this.pathName && options.xliffsDir ?
+            (ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir]) :
+            undefined;
+        this.intermediateFormat = options.intermediateFormat;
     }
+    this.intermediateFormat = this.intermediateFormat || "xliff";
     this.ts = new TranslationSet(this.sourceLocale);
 };
 
@@ -53,6 +57,7 @@ var LocalRepository = function (options) {
 // - Script the 4 letter ISO 15924 code for the script with only the first letter capitalized. This part is optional.
 // - REGION is the 2 letter upper-case ISO 3166 code for the region, OR the 3-digit UN.49 region code. This part is also optional.
 var xliffFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?\.xliff$/;
+var poFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?\.po$/;
 
 // recognize the UN.49 3-digit region codes
 var numericRegionCode = /^[0-9][0-9][0-9]$/;
@@ -69,16 +74,18 @@ LocalRepository.prototype.init = function(cb) {
         this.ts = new TranslationSet(this.sourceLocale); // empty set to start a new project
     }
 
-    var numXliffsRead = 0;
+    var numIFsRead = 0;
+    var fileFormat = this.intermediateFormat;
+    var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
 
-    if (this.xliffsDir) {
+    if (this.xliffsDir && this.xliffsDir.length > 0) {
         this.xliffsDir.forEach(function(dir) {
             if (fs.existsSync(dir)) {
                 var list = fs.readdirSync(dir);
                 var pathName;
 
                 list.filter(function(file) {
-                    var match = xliffFileFilter.exec(file);
+                    var match = fileFilter.exec(file);
                     if (!match ||
                        match.length < 2 ||
                        (match.length >= 3 && match[2] && !utils.iso639[match[2]]) ||
@@ -89,21 +96,20 @@ LocalRepository.prototype.init = function(cb) {
                     return true;
                 }).forEach(function (file) {
                     pathName = path.join(dir, file);
-                    var xliff = new Xliff({
-                        sourceLocale: this.sourceLocale
-                    });
                     if (fs.existsSync(pathName)) {
+                        var intermediateFile = getIntermediateFile({
+                            sourceLocale: this.sourceLocale,
+                            path: pathName
+                        });
                         logger.info("Reading in translations from the xliffs dir: " + pathName);
-                        var data = fs.readFileSync(pathName, "utf-8");
-                        xliff.deserialize(data);
-                        var ts = xliff.getTranslationSet();
+                        var ts = intermediateFile.read();
                         this.ts.addSet(ts);
-                        numXliffsRead++;
+                        numIFsRead++;
                     } else {
-                        logger.warn("Could not open xliff file: " + pathName);
+                        logger.warn("Could not open file: " + pathName);
                     }
                 }.bind(this));
-                if (numXliffsRead === 0) {
+                if (numIFsRead === 0) {
                     logger.warn("Dir exists, but could not read any translation files from it: " + this.xliffsDir);
                 }
             } else {
@@ -113,17 +119,16 @@ LocalRepository.prototype.init = function(cb) {
     }
 
     if (this.pathName) {
-        var xliff = new Xliff({
-            sourceLocale: this.sourceLocale
-        });
         if (fs.existsSync(this.pathName)) {
+            var intermediateFile = getIntermediateFile({
+                path: this.pathName,
+                sourceLocale: this.sourceLocale
+            });
             logger.info("Reading in translations from: " + this.pathName);
-            var data = fs.readFileSync(this.pathName, "utf-8");
-            xliff.deserialize(data);
-            var ts = xliff.getTranslationSet();
+            var ts = intermediateFile.read();
             this.ts.addSet(ts);
         } else {
-            logger.debug("Could not open xliff file: " + this.pathName);
+            logger.debug("Could not open intermediate file: " + this.pathName);
         }
     }
 
@@ -344,14 +349,16 @@ LocalRepository.prototype.close = function(cb) {
     logger.trace("Closing local repository. Set is dirty? " + this.ts.isDirty());
 
     if (this.pathName && this.ts.isDirty()) {
-        logger.debug("Writing resources to " + this.pathName);
-        var xliff = new Xliff({
+        var fileFormat = this.intermediateFormat;
+        var intermediateFile = getIntermediateFile({
+            type: fileFormat,
             sourceLocale: this.sourceLocale,
             project: this.project,
-            version: (this.project && this.project.settings.xliffVersion) || 1.2
+            version: (this.project && this.project.settings.xliffVersion) || "1.2",
+            path: this.pathName
         });
-        xliff.addSet(this.ts);
-        // fs.writeFileSync(this.pathName, xliff.serialize(), "utf-8");
+        logger.debug("Writing resources to " + this.pathName);
+        intermediateFile.write(this.ts);
     }
     cb();
 };
