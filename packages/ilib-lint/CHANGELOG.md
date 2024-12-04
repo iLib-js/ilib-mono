@@ -1,6 +1,6 @@
 # ilib-lint
 
-## .2.7.0
+## 2.7.0
 
 -   updated the resource snake case rule and resource camel case rule from declarative to programmatic, allowing for project-specific configurations.
 -   added the option to define a list of exceptions for both the resource snake case and camel case rules.
