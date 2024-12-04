@@ -4,6 +4,7 @@ on: pull_request
 
 jobs:
     test-affected:
+        name: Test Affected
         runs-on: ubuntu-latest
         strategy:
             matrix:
