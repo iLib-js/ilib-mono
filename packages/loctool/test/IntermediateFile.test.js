@@ -68,7 +68,7 @@ describe("intermediate file", function() {
         var set = new TranslationSet();
         set.add(ResourceFactory({
             resType: "string",
-            project: "foo",
+            project: "foobar",
             sourceLocale: "en-US",
             targetLocale: "fr-FR",
             pathName: "resources/en/US/foo.json",
@@ -83,7 +83,7 @@ describe("intermediate file", function() {
         }));
         set.add(ResourceFactory({
             resType: "plural",
-            project: "foo",
+            project: "foobar",
             sourceLocale: "en-US",
             targetLocale: "fr-FR",
             pathName: "resources/en/US/foo.json",
@@ -104,7 +104,7 @@ describe("intermediate file", function() {
         }));
         set.add(ResourceFactory({
             resType: "array",
-            project: "foo",
+            project: "foobar",
             sourceLocale: "en-US",
             targetLocale: "fr-FR",
             pathName: "resources/en/US/foo.json",
@@ -127,7 +127,7 @@ describe("intermediate file", function() {
         var data = fs.readFileSync("test/testfiles/foo.xliff", "utf-8");
         var expected = '<?xml version="1.0" encoding="utf-8"?>\n' +
             '<xliff version="1.2">\n' +
-            '  <file original="resources/en/US/foo.json" source-language="en-US" target-language="fr-FR" product-name="foo">\n' +
+            '  <file original="resources/en/US/foo.json" source-language="en-US" target-language="fr-FR" product-name="foobar">\n' +
             '    <body>\n' +
             '      <trans-unit id="1" resname="foo" restype="string" datatype="json" x-context="foo">\n' +
             '        <source>bar</source>\n' +
@@ -165,7 +165,7 @@ describe("intermediate file", function() {
 
         var data = '<?xml version="1.0" encoding="utf-8"?>\n' +
             '<xliff version="1.2">\n' +
-            '  <file original="resources/en/US/foo.json" source-language="en-US" target-language="fr-FR" product-name="foo">\n' +
+            '  <file original="resources/en/US/foo.json" source-language="en-US" target-language="fr-FR" product-name="foobar">\n' +
             '    <body>\n' +
             '      <trans-unit id="1" resname="foo" restype="string" datatype="json" x-context="foo">\n' +
             '        <source>bar</source>\n' +
@@ -209,7 +209,7 @@ describe("intermediate file", function() {
 
         var res = resources[0];
         expect(res.getType()).toBe("string");
-        expect(res.getProject()).toBe("foo");
+        expect(res.getProject()).toBe("foobar");
         expect(res.getSourceLocale()).toBe("en-US");
         expect(res.getTargetLocale()).toBe("fr-FR");
         expect(res.getPath()).toBe("resources/en/US/foo.json");
@@ -225,7 +225,7 @@ describe("intermediate file", function() {
         res = resources[1];
 
         expect(res.getType()).toBe("plural");
-        expect(res.getProject()).toBe("foo");
+        expect(res.getProject()).toBe("foobar");
         expect(res.getSourceLocale()).toBe("en-US");
         expect(res.getTargetLocale()).toBe("fr-FR");
         expect(res.getPath()).toBe("resources/en/US/foo.json");
@@ -241,7 +241,7 @@ describe("intermediate file", function() {
         res = resources[2];
 
         expect(res.getType()).toBe("array");
-        expect(res.getProject()).toBe("foo");
+        expect(res.getProject()).toBe("foobar");
         expect(res.getSourceLocale()).toBe("en-US");
         expect(res.getTargetLocale()).toBe("fr-FR");
         expect(res.getPath()).toBe("resources/en/US/foo.json");
@@ -286,11 +286,11 @@ describe("intermediate file", function() {
 
     test("test writing an intermediate file in PO format has the right contents", function() {
         expect.assertions(1);
-
+debugger;
         var set = new TranslationSet();
         set.add(ResourceFactory({
             resType: "string",
-            project: "foo",
+            project: "foobar",
             sourceLocale: "en-US",
             targetLocale: "fr-FR",
             pathName: "resources/en/US/foo.json",
@@ -305,7 +305,7 @@ describe("intermediate file", function() {
         }));
         set.add(ResourceFactory({
             resType: "plural",
-            project: "foo",
+            project: "foobar",
             sourceLocale: "en-US",
             targetLocale: "fr-FR",
             pathName: "resources/en/US/foo.json",
@@ -326,7 +326,7 @@ describe("intermediate file", function() {
         }));
         set.add(ResourceFactory({
             resType: "array",
-            project: "foo",
+            project: "foobar",
             sourceLocale: "en-US",
             targetLocale: "fr-FR",
             pathName: "resources/en/US/foo.json",
@@ -343,7 +343,9 @@ describe("intermediate file", function() {
         var file = getIntermediateFile({
             path: "test/testfiles/foo.po",
             sourceLocale: "en-US",
-            targetLocale: "fr-FR"
+            targetLocale: "fr-FR",
+            project: "foobar",
+            datatype: "json"
         });
 
         file.write(set);
@@ -358,7 +360,10 @@ describe("intermediate file", function() {
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
-            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: json\\n"\n' +
+            '"Project: foobar\\n"\n' +
+            '\n' +
             '#. foo bar\n' +
             '#: resources/en/US/foo.json\n' +
             '#k asdfasdf\n' +
@@ -402,7 +407,10 @@ describe("intermediate file", function() {
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
-            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: json\\n"\n' +
+            '"Project: manhattan\\n"\n' +
+            '\n' +
             '#. foo bar\n' +
             '#: resources/en/US/foo.json\n' +
             '#k asdfasdf\n' +
@@ -446,7 +454,7 @@ describe("intermediate file", function() {
 
         var res = resources[0];
         expect(res.getType()).toBe("string");
-        expect(res.getProject()).toBe("foo");
+        expect(res.getProject()).toBe("manhattan");
         expect(res.getSourceLocale()).toBe("en-US");
         expect(res.getTargetLocale()).toBe("fr-FR");
         expect(res.getPath()).toBe("resources/en/US/foo.json");
@@ -462,7 +470,7 @@ describe("intermediate file", function() {
         res = resources[1];
 
         expect(res.getType()).toBe("plural");
-        expect(res.getProject()).toBe("foo");
+        expect(res.getProject()).toBe("manhattan");
         expect(res.getSourceLocale()).toBe("en-US");
         expect(res.getTargetLocale()).toBe("fr-FR");
         expect(res.getPath()).toBe("resources/en/US/foo.json");
@@ -478,7 +486,7 @@ describe("intermediate file", function() {
         res = resources[2];
 
         expect(res.getType()).toBe("array");
-        expect(res.getProject()).toBe("foo");
+        expect(res.getProject()).toBe("manhattan");
         expect(res.getSourceLocale()).toBe("en-US");
         expect(res.getTargetLocale()).toBe("fr-FR");
         expect(res.getPath()).toBe("resources/en/US/foo.json");
