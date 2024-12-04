@@ -40,11 +40,11 @@ export interface BaseParserOptions {
     targetLocale?: string,
 
     /** the name of the project that this po file is a part of */
-    projectName: string,
+    projectName?: string,
 
     /** the type of the data in the po file. This might be something like "python" or "javascript" to
      * indicate the type of the code that the strings are used in. */
-    datatype: string,
+    datatype?: string,
 
     /**
      * whether the context should be included as part of the key or not
@@ -97,12 +97,14 @@ const commentTypeMap = new Map([
     // these two are extensions to the PO format so that we can encode array resources
     ['k', CommentType.KEY],
     ['#', CommentType.INDEX],
-    ['d', CommentType.DATATYPE]
+    ['d', CommentType.DATATYPE],
+    ['p', CommentType.PROJECT]
 ]);
 
 const reTargetLocale = /"Language:\s*([^ \\]+)/;
 const rePathStrip = /^: *(([^: ]|:[^\d])+)(:\d+)?/;
 const reDefaultDataType = /"Data-Type:\s*([^ \\]+)/;
+const reDefaultProject = /"Project:\s*([^ \\]+)/;
 
 /**
  * @class Parse a PO file
@@ -117,9 +119,9 @@ class Parser {
     private targetLocale: Locale | undefined;
     /** the type of the data in the po file. This might be something like "python" or "javascript" to
      * indicate the type of the code that the strings are used in. */
-    private datatype: string;
+    private datatype: string | undefined;
     /** the name of the project that this po file is a part of */
-    private projectName: string;
+    private projectName: string | undefined;
     /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
     /** set of comment types that should be ignored */
@@ -182,12 +184,14 @@ class Parser {
             type: string | undefined,
             arrayIndex: number = 0,
             defaultDataType: string | undefined = this.datatype,
-            datatype: string | undefined;
+            datatype: string | undefined,
+            defaultProject: string | undefined = this.projectName,
+            project: string | undefined;
 
         let resourceIndex = 0;
 
         function restart() {
-            datatype = key = type = comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
+            project = datatype = key = type = comment = context = source = translation = original = sourcePlurals = translationPlurals = category = undefined;
             state = State.START;
         }
 
@@ -200,6 +204,10 @@ class Parser {
         match = reDefaultDataType.exec(data);
         if (match && match.length > 1) {
             defaultDataType = match[1];
+        }
+        match = reDefaultProject.exec(data);
+        if (match && match.length > 1) {
+            defaultProject = match[1];
         }
 
         restart();
@@ -234,6 +242,8 @@ class Parser {
                                     key = token.value.substring(2);
                                 } else if (commentType === CommentType.DATATYPE) {
                                     datatype = token.value.substring(2);
+                                } else if (commentType === CommentType.PROJECT) {
+                                    project = token.value.substring(2);
                                 } else if (commentType === CommentType.INDEX) {
                                     arrayIndex = parseInt(token.value.substring(2), 10);
                                     type = "array";
@@ -272,14 +282,14 @@ class Parser {
                                         key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
                                     }
                                     res = new ResourcePlural({
-                                        project: this.projectName,
+                                        project: project ?? defaultProject,
                                         key: key,
                                         sourceLocale: this.sourceLocale.getSpec(),
                                         sourceStrings: sourcePlurals,
                                         pathName: original,
                                         state: "new",
                                         comment: comment && JSON.stringify(comment),
-                                        datatype: datatype || defaultDataType,
+                                        datatype: datatype ?? defaultDataType,
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
@@ -292,14 +302,14 @@ class Parser {
                                         res = arrays[key];
                                         if (!res) {
                                             res = new ResourceArray({
-                                                project: this.projectName,
+                                                project: project ?? defaultProject,
                                                 key: key,
                                                 sourceLocale: this.sourceLocale.getSpec(),
                                                 source: [],
                                                 pathName: original,
                                                 state: "new",
                                                 comment: comment && JSON.stringify(comment),
-                                                datatype: datatype || defaultDataType,
+                                                datatype: datatype ?? defaultDataType,
                                                 context: context,
                                                 index: resourceIndex++,
                                                 targetLocale: this.targetLocale?.getSpec(),
@@ -324,14 +334,14 @@ class Parser {
                                         key = makeKey("string", source, this.contextInKey ? context : undefined);
                                     }
                                     res = new ResourceString({
-                                        project: this.projectName,
+                                        project: project ?? defaultProject,
                                         key: key,
                                         sourceLocale: this.sourceLocale.getSpec(),
                                         source: source,
                                         pathName: original,
                                         state: "new",
                                         comment: comment && JSON.stringify(comment),
-                                        datatype: datatype || defaultDataType,
+                                        datatype: datatype ?? defaultDataType,
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translation && this.targetLocale?.getSpec(),
