@@ -1,3 +1,5 @@
+# loctool
+
 ## 2.25.2 (build 046)
 
 New Features:

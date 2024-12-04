@@ -1,3 +1,5 @@
+# ilib-loctool-javascript-resource
+
 ## 1.0.5
 
 -   update dependencies
