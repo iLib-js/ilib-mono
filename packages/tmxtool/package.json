@@ -52,12 +52,11 @@
         "node": ">= 14.0.0"
     },
     "scripts": {
-        "dist": "npm pack",
         "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
         "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node --watch",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS  --experimental-vm-modules --inspect-brk\" jest --testEnvironment node -i",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/*.js -m table > docs/ilibAssemble.md ; npm run doc:html",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/*.js -m table > docs/ilibAssemble.md && pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {

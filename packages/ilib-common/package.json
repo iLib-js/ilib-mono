@@ -45,7 +45,6 @@
     "files": [
         "src",
         "lib",
-        "docs",
         "README.md",
         "LICENSE"
     ],
@@ -55,22 +54,21 @@
     },
     "scripts": {
         "build": "pnpm build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
         "test": "pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
         "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" karma start --reporters dots",
-        "test:cli": "LANG=en_US.UTF8 pnpm build:dev; pnpm test:jest",
+        "test:cli": "LANG=en_US.UTF8 pnpm build:dev && pnpm test:jest",
         "test:web": "pnpm test:karma --single-run",
         "test:watch": "pnpm test:jest --watch",
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
         "debug": "pnpm build:dev; NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest --testEnvironment node -i",
         "debug:web": "pnpm test:karma",
         "clean": "git clean -f -d src test; rm -rf lib",
-        "doc": "mkdir -p docs; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md; pnpm doc:html",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibCommon.md && pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
