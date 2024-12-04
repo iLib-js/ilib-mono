@@ -24,3 +24,7 @@ jobs:
               run: pnpm install --frozen-lockfile
             - name: Run affected tests
               run: pnpm test:ci:affected
+              env:
+                  # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`
+                  # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
+                  TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
