@@ -11,6 +11,11 @@ jobs:
                 node-version: [20]
         steps:
             - uses: actions/checkout@v4
+              with:
+                  # workaround for `git error: fatal: bad object` when using `--affected`:
+                  # ensure PR base commit is fetched
+                  # per https://stackoverflow.com/a/78153130
+                  fetch-depth: $(( ${{ github.event.pull_request.commits }} + 1 ))
             - name: Install pnpm
               uses: pnpm/action-setup@v4
             - name: Use Node.js ${{ matrix.node-version }}
@@ -25,6 +30,7 @@ jobs:
             - name: Run affected tests
               run: pnpm test:ci:affected
               env:
-                  # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`
+                  # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
+                  # manually set PR base commit ref
                   # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
                   TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
