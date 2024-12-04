@@ -75,6 +75,6 @@
         "load-grunt-tasks": "^5.1.0"
     },
     "dependencies": {
-        "ilib-common": "workspace:*"
+        "ilib-common": "workspace:^"
     }
 }

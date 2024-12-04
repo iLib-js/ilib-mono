@@ -57,12 +57,12 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
-        "ilib-loctool-xml": "workspace:*",
+        "ilib-loctool-xml": "workspace:^",
         "micromatch": "^4.0.5",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
         "jest": "^26.3.0",
-        "loctool": "workspace:*"
+        "loctool": "workspace:^"
     }
 }

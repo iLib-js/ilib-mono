@@ -38,9 +38,9 @@
         "npm-run-all": "^4.1.5"
     },
     "dependencies": {
-        "ilib-lint-common": "workspace:*",
+        "ilib-lint-common": "workspace:^",
         "ilib-locale": "^1.2.2",
-        "ilib-loctool-po": "workspace:*",
-        "ilib-tools-common": "workspace:*"
+        "ilib-loctool-po": "workspace:^",
+        "ilib-tools-common": "workspace:^"
     }
 }

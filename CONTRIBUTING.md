@@ -82,7 +82,7 @@ To manually create a new package, follow these steps:
     ```json
     {
         "dependencies": {
-            "ilib-common": "workspace:*"
+            "ilib-common": "workspace:^"
         }
     }
     ```

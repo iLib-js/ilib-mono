@@ -55,10 +55,10 @@
         "html-parser": "^0.11.0",
         "ilib": "^14.19.0",
         "js-stl": ">=0.0.6",
-        "message-accumulator": "workspace:*"
+        "message-accumulator": "workspace:^"
     },
     "devDependencies": {
         "jest": "^26.0.0",
-        "loctool": "workspace:*"
+        "loctool": "workspace:^"
     }
 }

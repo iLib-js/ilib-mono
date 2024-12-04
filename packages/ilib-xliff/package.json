@@ -98,7 +98,7 @@
         "webpack-cli": "^4.10.0"
     },
     "dependencies": {
-        "ilib-common": "workspace:*",
+        "ilib-common": "workspace:^",
         "ilib-locale": "^1.2.2",
         "ilib-xml-js": "^1.7.0",
         "json5": "^2.2.1"

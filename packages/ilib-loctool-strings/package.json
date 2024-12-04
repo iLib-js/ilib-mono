@@ -55,6 +55,6 @@
     },
     "devDependencies": {
         "jest": "^26.3.0",
-        "loctool": "workspace:*"
+        "loctool": "workspace:^"
     }
 }

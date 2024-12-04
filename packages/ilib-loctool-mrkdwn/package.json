@@ -56,13 +56,13 @@
         "node": ">=10.0"
     },
     "dependencies": {
-        "ilib-tree-node": "workspace:*",
-        "message-accumulator": "workspace:*",
+        "ilib-tree-node": "workspace:^",
+        "message-accumulator": "workspace:^",
         "micromatch": "^4.0.8",
         "slack-message-parser": "^3.0.2"
     },
     "devDependencies": {
         "jest": "^26.0.0",
-        "loctool": "workspace:*"
+        "loctool": "workspace:^"
     }
 }

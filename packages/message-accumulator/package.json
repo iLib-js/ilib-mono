@@ -62,7 +62,7 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "dependencies": {
-        "ilib-tree-node": "workspace:*"
+        "ilib-tree-node": "workspace:^"
     },
     "devDependencies": {
         "@babel/core": "^7.23.9",
