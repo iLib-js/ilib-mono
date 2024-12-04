@@ -28,6 +28,7 @@ var getIntermediateFile = require("./IntermediateFileFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.LocalRepository");
 
+
 /**
  * @class A class that represents the local story of a set of
  * translations used in a project.
@@ -37,15 +38,26 @@ var logger = log4js.getLogger("loctool.lib.LocalRepository");
  */
 var LocalRepository = function (options) {
     logger.trace("LocalRepository constructor called");
+    var xliffsDir = ["."];
     this.sourceLocale = "en-US";
     if (options) {
         this.sourceLocale = options.sourceLocale || "en-US";
         this.pseudoLocale = options.pseudoLocale;
-        this.pathName = options.pathName;
-        this.project = options.project || {settings:{}};
-        this.xliffsDir = !this.pathName && options.xliffsDir ?
-            (ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir]) :
-            undefined;
+        if (options.xliffsDir) {
+            xliffsDir = ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir];
+        }
+        if (options.pathName) {
+            xliffsDir.find(function(dir) {
+                var pathName = path.join(dir, options.pathName);
+                if (fs.existsSync(pathName)) {
+                    this.pathName = pathName;
+                    return true;
+                }
+                return false;
+            }.bind(this));
+        }
+        this.project = options.project;
+        this.xliffsDir = !this.pathName && xliffsDir;
         this.intermediateFormat = options.intermediateFormat;
     }
     this.intermediateFormat = this.intermediateFormat || "xliff";
@@ -99,11 +111,11 @@ LocalRepository.prototype.init = function(cb) {
                     if (fs.existsSync(pathName)) {
                         var intermediateFile = getIntermediateFile({
                             sourceLocale: this.sourceLocale,
-                            path: pathName
+                            path: pathName,
+                            projectName: this.project && this.project.getProjectId()
                         });
                         logger.info("Reading in translations from the xliffs dir: " + pathName);
-                        var ts = intermediateFile.read();
-                        this.ts.addSet(ts);
+                        this.ts.addSet(intermediateFile.read());
                         numIFsRead++;
                     } else {
                         logger.warn("Could not open file: " + pathName);
@@ -122,17 +134,17 @@ LocalRepository.prototype.init = function(cb) {
         if (fs.existsSync(this.pathName)) {
             var intermediateFile = getIntermediateFile({
                 path: this.pathName,
-                sourceLocale: this.sourceLocale
+                sourceLocale: this.sourceLocale,
+                projectName: this.project && this.project.getProjectId()
             });
             logger.info("Reading in translations from: " + this.pathName);
-            var ts = intermediateFile.read();
-            this.ts.addSet(ts);
+            this.ts.addSet(intermediateFile.read());
         } else {
             logger.debug("Could not open intermediate file: " + this.pathName);
         }
     }
 
-    if (this.project.settings.convertPlurals) {
+    if (this.project && this.project.settings.convertPlurals) {
         this.ts.convertToPluralRes();
     }
 
@@ -348,12 +360,12 @@ LocalRepository.prototype.clear = function(cb) {
 LocalRepository.prototype.close = function(cb) {
     logger.trace("Closing local repository. Set is dirty? " + this.ts.isDirty());
 
-    if (this.pathName && this.ts.isDirty()) {
+    if (this.pathName && fs.existsSync(this.pathName) && this.ts.isDirty()) {
         var fileFormat = this.intermediateFormat;
         var intermediateFile = getIntermediateFile({
             type: fileFormat,
             sourceLocale: this.sourceLocale,
-            project: this.project,
+            projectName: this.project && this.project.getProjectId(),
             version: (this.project && this.project.settings.xliffVersion) || "1.2",
             path: this.pathName
         });

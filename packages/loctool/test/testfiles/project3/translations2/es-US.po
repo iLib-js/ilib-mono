@@ -7,6 +7,8 @@ msgstr ""
 "Project-Id-Version: 1\n"
 "Language: es-US\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Data-Type: mock\n"
+"Project: loctest\n"
 
 #:en-US.mock
 #k foobar1

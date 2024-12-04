@@ -25,6 +25,9 @@ var TranslationSet = require("./TranslationSet.js");
 var convert = require("./convertResources.js");
 var IntermediateFile = require("./IntermediateFile.js");
 
+var convertResourceToLoctool = convert.convertResourceToLoctool;
+var convertResourceToCommon = convert.convertResourceToCommon;
+
 /**
  * @class POIntermediateFile
  * @inherits IntermediateFile
@@ -45,7 +48,7 @@ var POIntermediateFile = function(options) {
     this.po = new POFile({
         sourceLocale: options.sourceLocale,
         targetLocale: options.targetLocale,
-        project: options.project,
+        projectName: options.project,
         datatype: options.datatype,
         contextInKey: options.contextInKey,
         pathName: options.path
@@ -67,10 +70,7 @@ POIntermediateFile.prototype.read = function() {
     var resources = this.po.parse(data);
     var set = new TranslationSet();
     if (resources && resources.size() > 0) {
-        var converted = resources.getAll().map(function(resource) {
-            return convert.convertResourceToLoctool(resource);
-        });
-        set.addAll(converted);
+        set.addAll(resources.getAll().map(convertResourceToLoctool));
     }
     return set;
 };
@@ -79,12 +79,8 @@ POIntermediateFile.prototype.read = function() {
  * @override
  */
 POIntermediateFile.prototype.write = function(set) {
-    var resources = set.getAll();
-    var common = resources.map(function(resource) {
-        return convert.convertResourceToCommon(resource);
-    });
     var newSet = new TranslationSet();
-    newSet.addAll(common);
+    newSet.addAll(set.getAll().map(convertResourceToCommon));
     var data = this.po.generate(newSet);
     fs.writeFileSync(this.path, data, "utf-8");
 };

@@ -123,13 +123,15 @@ class POFile {
             targetLocale: this.targetLocale,
             projectName: this.projectName,
             datatype: this.datatype,
-            contextInKey: this.contextInKey,
+            contextInKey: this.contextInKey
         });
 
         this.generator = new Generator({
             pathName: this.pathName,
             targetLocale: this.targetLocale,
             contextInKey: this.contextInKey,
+            datatype: this.datatype,
+            projectName: this.projectName
         });
     }
 

@@ -61,7 +61,7 @@ describe("localrepository", function() {
     });
 
     test("LocalRepositoryConstructorWithPath", function() {
-        expect.assertions(10);
+        expect.assertions(11);
 debugger;
         var repo = new LocalRepository({
             sourceLocale: "en-US",
@@ -84,6 +84,7 @@ debugger;
                 expect(resources[0].getTargetLocale()).toBe("de-DE");
                 expect(resources[0].getTarget()).toBe("foobarfoo");
                 expect(resources[0].getComment()).toBe("foobar is where it's at!");
+                expect(resources[0].getDataType()).toBe("plaintext");
 
                 repo.close(function() {
                 });

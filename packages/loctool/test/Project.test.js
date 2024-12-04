@@ -468,7 +468,7 @@ debugger;
         expect(!fs.existsSync("./test/testfiles/project3/es-US.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
-
+debugger;
         var project = ProjectFactory('./test/testfiles/project3', {
             xliffsDir: "translations2",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
@@ -493,18 +493,13 @@ debugger;
                                 '"Project-Id-Version: 1\\n"\n' +
                                 '"Language: es-US\\n"\n' +
                                 '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+                                '"Project: loctest\\n"\n' +
                                 '\n' +
                                 '#: en-US.mock\n' +
+                                '#d mock\n' +
                                 '#k plu1\n' +
                                 'msgid "singular"\n' +
                                 'msgid_plural "plural"\n' +
-                                'msgstr[0] ""\n' +
-                                'msgstr[1] ""\n' +
-                                '\n' +
-                                '#: en-US.mock\n' +
-                                '#k plu2\n' +
-                                'msgid "There is {n} item."\n' +
-                                'msgid_plural "There are {n} items."\n' +
                                 'msgstr[0] ""\n' +
                                 'msgstr[1] ""\n';
                             expect(actual).toBe(expected);
@@ -522,17 +517,13 @@ debugger;
                                 '"Project-Id-Version: 1\\n"\n' +
                                 '"Language: ja-JP\\n"\n' +
                                 '"Plural-Forms: nplurals=1; plural=0;\\n"\n' +
+                                '"Project: loctest\\n"\n' +
                                 '\n' +
                                 '#: en-US.mock\n' +
+                                '#d mock\n' +
                                 '#k plu1\n' +
                                 'msgid "singular"\n' +
                                 'msgid_plural "plural"\n' +
-                                'msgstr[0] ""\n' +
-                                '\n' +
-                                '#: en-US.mock\n' +
-                                '#k plu2\n' +
-                                'msgid "There is {n} item."\n' +
-                                'msgid_plural "There are {n} items."\n' +
                                 'msgstr[0] ""\n';
                             expect(actual).toBe(expected);
 
@@ -549,17 +540,13 @@ debugger;
                                 '"Project-Id-Version: 1\\n"\n' +
                                 '"Language: zh-Hans-CN\\n"\n' +
                                 '"Plural-Forms: nplurals=1; plural=0;\\n"\n' +
+                                '"Project: loctest\\n"\n' +
                                 '\n' +
                                 '#: en-US.mock\n' +
+                                '#d mock\n' +
                                 '#k plu1\n' +
                                 'msgid "singular"\n' +
                                 'msgid_plural "plural"\n' +
-                                'msgstr[0] ""\n' +
-                                '\n' +
-                                '#: en-US.mock\n' +
-                                '#k plu2\n' +
-                                'msgid "There is {n} item."\n' +
-                                'msgid_plural "There are {n} items."\n' +
                                 'msgstr[0] ""\n';
                             expect(actual).toBe(expected);
 
@@ -574,7 +561,7 @@ debugger;
                                 '        "tres"\n' +
                                 '    ],\n' +
                                 '    "arr2": [\n' +
-                                '        "quatro",\n' +
+                                '        "cuatro",\n' +
                                 '        "cinco",\n' +
                                 '        "seis"\n' +
                                 '    ],\n' +
@@ -585,8 +572,8 @@ debugger;
                                 '        "other": "plural"\n' +
                                 '    },\n' +
                                 '    "plu2": {\n' +
-                                '        "one": "There is {n} item.",\n' +
-                                '        "other": "There are {n} items."\n' +
+                                '        "other": "Hay {n} artículos.",\n' +
+                                '        "one": "Hay {n} artículo."\n' +
                                 '    }\n' +
                                 '}';
                             expect(actual).toBe(expected);
@@ -613,8 +600,7 @@ debugger;
                                 '        "other": "plural"\n' +
                                 '    },\n' +
                                 '    "plu2": {\n' +
-                                '        "one": "There is {n} item.",\n' +
-                                '        "other": "There are {n} items."\n' +
+                                '        "other": "項目が {n} つあります。"\n' +
                                 '    }\n' +
                                 '}';
                             expect(actual).toBe(expected);
@@ -641,8 +627,7 @@ debugger;
                                 '        "other": "plural"\n' +
                                 '    },\n' +
                                 '    "plu2": {\n' +
-                                '        "one": "There is {n} item.",\n' +
-                                '        "other": "There are {n} items."\n' +
+                                '        "other": "有 {n} 个项目。"\n' +
                                 '    }\n' +
                                 '}';
                             expect(actual).toBe(expected);
@@ -668,7 +653,7 @@ debugger;
             convertPlurals: true
         });
         project.addPath("en-US.mock");
-
+debugger;
         project.init(function() {
             project.extract(function() {
                 project.write(function() {
