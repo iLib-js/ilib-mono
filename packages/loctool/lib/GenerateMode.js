@@ -21,9 +21,11 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 var ilib = require("ilib");
+
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
 var getIntermediateFile = require("./IntermediateFileFactory.js");
+
 var logger = log4js.getLogger("loctool.lib.GenerateMode");
 
 /**
@@ -91,10 +93,9 @@ GenerateMode.prototype.init = function() {
                 path: pathName
             });
             if (fs.existsSync(pathName)) {
-                var ts = intermediateFile.read();
-                this.ts.addSet(ts);
+                this.ts.addSet(intermediateFile.read());
             } else {
-                logger.warn("Could not open xliff file: " + pathName);
+                logger.warn("Could not open intermediate file: " + pathName);
             }
         }.bind(this));
     }

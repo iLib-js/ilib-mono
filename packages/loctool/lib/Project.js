@@ -778,7 +778,8 @@ Project.prototype.close = function(cb) {
                 sourceLocale: this.sourceLocale,
                 allowDups: this.settings.allowDups,
                 version: this.settings.xliffVersion,
-                style: this.settings.xliffStyle
+                style: this.settings.xliffStyle,
+                project: base
             });
             extractedFile.write(extracted);
         } else {
@@ -802,7 +803,7 @@ Project.prototype.close = function(cb) {
                         var newFile = getIntermediateFile({
                             type: fileFormat,
                             path: newPath,
-                            project: this.name,
+                            project: base,
                             sourceLocale: this.sourceLocale,
                             targetLocale: locale,
                             version: this.settings.xliffVersion,
