@@ -1,51 +1,49 @@
-## Release Notes
+## 2.0.1
 
-### v2.0.1
+-   Fixed a bug where the exports were not properly set up in the package.json
 
-- Fixed a bug where the exports were not properly set up in the package.json
+## 2.0.0
 
-### v2.0.0
+-   Updated dependency from i18nlint-common to ilib-lint-common
+    -   IntermediateRepresentation now takes a SourceFile as an
+        parameter to the constructor instead of a file path
+    -   can now be loaded by ilib-lint >= v2
 
-- Updated dependency from i18nlint-common to ilib-lint-common
-    - IntermediateRepresentation now takes a SourceFile as an
-      parameter to the constructor instead of a file path
-    - can now be loaded by ilib-lint >= v2
+## 1.1.2
 
-### v1.1.2
+-   updated dependencies
+-   converted all unit tests from nodeunit to jest
 
-- updated dependencies
-- converted all unit tests from nodeunit to jest
+## 1.1.1
 
-### v1.1.1
+-   fixed a bug where doubled curly braces (= escaped curly braces) were
+    interpreted as replacement parameters
+-   updated dependencies
 
-- fixed a bug where doubled curly braces (= escaped curly braces) were
-  interpreted as replacement parameters
-- updated dependencies
+## 1.1.0
 
-### v1.1.0
+-   updated dependencies
+-   update to i18nlint-common 2.x which requires the use of an intermediate
+    representation
 
-- updated dependencies
-- update to i18nlint-common 2.x which requires the use of an intermediate
-  representation
+## 1.0.3
 
-### v1.0.3
+-   Fixed a bug where a numeric parameter in the target FString, such as
+    "{0}" would cause an exception
 
-- Fixed a bug where a numeric parameter in the target FString, such as
-  "{0}" would cause an exception
+## 1.0.2
 
-### v1.0.2
+-   Fix bug with parsing whitespace in params
+    -   allow for whitespace in the susbstitution parameter so that
+        {name} = { name }
+    -   match based on the name only, but highlight the whole text of
+        the parameter when there is an error
 
-- Fix bug with parsing whitespace in params
-    - allow for whitespace in the susbstitution parameter so that
-      {name} = { name }
-    - match based on the name only, but highlight the whole text of
-      the parameter when there is an error
+## 1.0.1
 
-### v1.0.1
+-   updated dependencies
 
-- updated dependencies
+## 1.0.0
 
-### v1.0.0
-
-- initial version
-- Rules for python resources
+-   initial version
+-   Rules for python resources

@@ -1,10 +1,7 @@
-## Release Notes
+## 1.0.1
 
-### 1.0.1
+-   Fixed a bug where the "outputStyle" setting was not behaving as documented above
 
-- Fixed a bug where the "outputStyle" setting was not behaving as documented above
+## 1.0.0
 
-### 1.0.0
-
-- Initial release
-
+-   Initial release
