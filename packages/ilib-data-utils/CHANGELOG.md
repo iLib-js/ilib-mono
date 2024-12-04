@@ -1,6 +1,6 @@
 # ilib-data-utils
 
-## 1.2.1 (not published yet)
+## 1.2.1 (unreleased)
 
 - removed unused dependencies
 
