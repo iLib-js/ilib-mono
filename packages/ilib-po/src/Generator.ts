@@ -47,6 +47,11 @@ export interface GeneratorOptions {
      * The default data type of the resources
      */
      datatype?: string;
+
+    /**
+     * The name of the project that the resources belong to
+     */
+    projectName?: string;
 }
 
 /**
@@ -61,6 +66,8 @@ class Generator {
     private contextInKey: boolean;
     /** the default data type of the resources */
     private datatype: string | undefined;
+    /** the name of the project that the resources belong to */
+    private projectName: string;
 
     private plurals: PluralForm;
 
@@ -80,6 +87,7 @@ class Generator {
         this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
         this.contextInKey = optionsWithDefaults.contextInKey;
         this.datatype = optionsWithDefaults.datatype;
+        this.projectName = optionsWithDefaults.projectName ?? "default";
 
         this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
     }
@@ -106,6 +114,9 @@ class Generator {
             `"Plural-Forms: ${this.plurals.rules}\\n"\n`;
         if (this.datatype) {
             output += `"Data-Type: ${this.datatype}\\n"\n`;
+        }
+        if (this.projectName) {
+            output += `"Project: ${this.projectName}\\n"\n`;
         }
         const resources = set.getAll();
 
@@ -151,6 +162,9 @@ class Generator {
             }
             if (r.getDataType() && this.datatype !== r.getDataType()) {
                 output += `#d ${r.getDataType()}\n`;
+            }
+            if (r.getProject() && this.projectName !== r.getProject()) {
+                output += `#p ${r.getProject()}\n`;
             }
             if (type === "string" && r.getSource() !== key) {
                 output += `#k ${escapeQuotes(r.getKey())}\n`;
