@@ -41,7 +41,6 @@
     "files": [
         "src",
         "lib",
-        "docs",
         "README.md",
         "LICENSE"
     ],
@@ -51,17 +50,16 @@
     },
     "scripts": {
         "build": "pnpm build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
         "test": "pnpm test:all",
         "test:all": "npm-run-all --npm-path pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
         "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i --testEnvironment node",
         "clean": "git clean -f -d src test; rm -rf lib",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibYaml.md ; pnpm doc:html",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibYaml.md && pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
@@ -88,7 +86,7 @@
         "npm-run-all": "^4.1.5"
     },
     "dependencies": {
-        "ilib-tools-common": "workspace:*",
+        "ilib-tools-common": "workspace:^",
         "yaml": "^2.4.5"
     }
 }

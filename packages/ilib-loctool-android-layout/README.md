@@ -5,26 +5,7 @@ allows it to read and localize android layout xml files.
 
 ## Release Notes
 
-### v1.0.3
-
-- update dependencies
-- convert unit tests from nodeunit to jest
-
-### v1.0.2
-
-- update dependencies
-- use the loctool's logger instead of its own
-
-### v1.0.1
-
-- Add missing functions that loctool needs to get resources out of this plugin
-
-### v1.0.0
-
-- initial release
-- support Android layout.xml files
-    - extract and localize strings
-    - externalize some other strings automatically into the strings.xml file
+See [CHANGELOG.md](./CHANGELOG.md)
 
 ## License
 

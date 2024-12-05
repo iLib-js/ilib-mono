@@ -45,7 +45,6 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "dist": "pnpm pack",
         "test": "node test/testSuite.js",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
         "clean": "git clean -f -d *"
@@ -56,9 +55,9 @@
     "dependencies": {
         "he": "^1.2.0",
         "ilib": "^14.1.0",
-        "ilib-tree-node": "workspace:*",
+        "ilib-tree-node": "workspace:^",
         "log4js": "^2.11.0",
-        "message-accumulator": "workspace:*",
+        "message-accumulator": "workspace:^",
         "rehype-raw": "^4.0.0",
         "remark-highlight.js": "^5.1.0",
         "remark-html": "^9.0.0",
@@ -72,7 +71,7 @@
         "unist-util-visit": "^1.4.0"
     },
     "devDependencies": {
-        "loctool": "workspace:*",
+        "loctool": "workspace:^",
         "nodeunit": "^0.11.3"
     }
 }
