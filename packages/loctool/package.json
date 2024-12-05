@@ -57,7 +57,7 @@
     },
     "scripts": {
         "clean": "ant clean",
-        "dist": "npm run generate ; npm pack",
+        "dist": "pnpm run generate ; pnpm pack",
         "generate": "node generate/genPluralCategories.js",
         "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node --detectOpenHandles",
         "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node --detectOpenHandles --watch",
