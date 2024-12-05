@@ -62,7 +62,7 @@ describe("localrepository", function() {
 
     test("LocalRepositoryConstructorWithPath", function() {
         expect.assertions(11);
-debugger;
+
         var repo = new LocalRepository({
             sourceLocale: "en-US",
             pathName: "./test/testfiles/test.xliff"

@@ -286,7 +286,7 @@ describe("intermediate file", function() {
 
     test("test writing an intermediate file in PO format has the right contents", function() {
         expect.assertions(1);
-debugger;
+
         var set = new TranslationSet();
         set.add(ResourceFactory({
             resType: "string",

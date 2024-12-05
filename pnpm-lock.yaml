@@ -4837,9 +4837,6 @@ packages:
     resolution: {integrity: sha512-dCpjUj8wKBIhC81pAGeVs9s5Z+4AqNSOkLKFwyvMUMtVKH0vmeaTtrhSVsY1nnKkL4Ew2TNxYSqD2Eo22L2vNQ==}
     engines: {node: '>=10.0.0'}
 
-  ilib-tree-node@1.3.2:
-    resolution: {integrity: sha512-Dbg9rIOhd8TazHFwk3lFA0Gi6+fe3+YSqiuMRT46D7fomjf429vwzRzbHJB4uMyk8+bEsFUdQV23dbNvjkIdgw==}
-
   ilib-xliff@1.2.0:
     resolution: {integrity: sha512-xwYjQVKhTpN2oyzGjjDoyTrSENyNLqmTbJwsp65eSBPg0u0BWiC0ohCMRylfWOvlaE4Iu7UPLR67/0D52BnuTw==}
 
@@ -11739,8 +11736,6 @@ snapshots:
       ilib-ctype: 1.2.1
       ilib-locale: 1.2.2
       ilib-xliff: 1.2.0
-
-  ilib-tree-node@1.3.2: {}
 
   ilib-xliff@1.2.0:
     dependencies:
