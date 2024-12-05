@@ -1,3 +1,7 @@
+// Extracts the existing release notes from the README.md files in monorepo packages in bulk into a separate CHANGELOG.md file
+// (replacing them with a link to changelog file in the readme).
+// Usage: node scripts/changelog-extract.js
+
 const fs = require("fs");
 const path = require("path");
 
@@ -32,12 +36,14 @@ for (const file of readmes) {
     fs.writeFileSync(path.join(path.dirname(file), "CHANGELOG.md"), releaseNotes);
     console.log("Changelog written to", path.join(path.dirname(file), "CHANGELOG.md"));
 
-    const newReadme = [...lines.slice(0, startIdx), 
+    const newReadme = [
+        ...lines.slice(0, startIdx),
         "## Release Notes",
         "",
         `See [CHANGELOG.md](./CHANGELOG.md)`,
         "",
-        ...lines.slice(startIdx + endIdx + 1)].join("\n");
+        ...lines.slice(startIdx + endIdx + 1),
+    ].join("\n");
     fs.writeFileSync(file, newReadme);
     console.log("Readme updated");
 }
