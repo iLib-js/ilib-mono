@@ -206,3 +206,7 @@ Essentially, this means that we assume that the file has the following mappings:
 
 This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
+
+## Release Notes
+
+See [CHANGELOG.md](./CHANGELOG.md)

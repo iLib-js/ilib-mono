@@ -237,6 +237,10 @@ Copyright © 2019, 2022-2023 JEDLSoft
 This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
 
+## Release Notes
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
 ## Appendix A. Mappings From GNU gettext Plural Number and Unicode Category
 
 These mappings are encoded in the file pluralforms.json which is packaged

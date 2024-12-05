@@ -113,6 +113,10 @@ If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
 be localized, and the loctool will continue on to the next file.
 
+## Release Notes
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
 ## License
 
 Copyright © 2019, 2022 JEDLSoft

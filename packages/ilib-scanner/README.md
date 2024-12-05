@@ -122,3 +122,8 @@ Now upload the ilib.js (and for dynamicdata mode, all of the locale data
 files as well) to your web server or check it in to your
 repo so that it all gets published with the next push. We also recommend that
 you check these files in to your source code control system.
+
+Release Notes
+-------------
+
+See [CHANGELOG.md](./CHANGELOG.md)

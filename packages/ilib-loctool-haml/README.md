@@ -6,3 +6,7 @@ Ilib loctool plugin to parse and localize Ruby HAML template files
 
 This plugin is license under Apache2. See the [LICENSE](./LICENSE)
 file for more details.
+
+## Release Notes
+
+See [CHANGELOG.md](./CHANGELOG.md)

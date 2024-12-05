@@ -3,6 +3,10 @@
 ilib-loctool-android-resource is a plugin for the loctool that
 allows it to read and localize android strings.xml files.
 
+## Release Notes
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
 ## License
 
 Copyright © 2019-2021, 2023 JEDLSoft
