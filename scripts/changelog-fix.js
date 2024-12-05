@@ -32,7 +32,12 @@ for (const file of readmes) {
     fs.writeFileSync(path.join(path.dirname(file), "CHANGELOG.md"), releaseNotes);
     console.log("Changelog written to", path.join(path.dirname(file), "CHANGELOG.md"));
 
-    const newReadme = [...lines.slice(0, startIdx), ...lines.slice(startIdx + endIdx + 1)].join("\n");
+    const newReadme = [...lines.slice(0, startIdx), 
+        "## Release Notes",
+        "",
+        `See [CHANGELOG.md](./CHANGELOG.md)`,
+        "",
+        ...lines.slice(startIdx + endIdx + 1)].join("\n");
     fs.writeFileSync(file, newReadme);
     console.log("Readme updated");
 }
