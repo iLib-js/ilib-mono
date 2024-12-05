@@ -16,5 +16,10 @@
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
     "turbo": "^2.2.3"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan@6.0.4.patch"
+    }
   }
 }
