@@ -40,7 +40,7 @@ a description of the syntax error
 
 #### Defined in
 
-[packages/ilib-po/src/SyntaxError.ts:29](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/SyntaxError.ts#L29)
+[packages/ilib-po/src/SyntaxError.ts:29](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/SyntaxError.ts#L29)
 
 ## Properties
 

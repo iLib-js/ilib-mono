@@ -24,7 +24,7 @@ false
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:70](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L70)
+[packages/ilib-po/src/POFile.ts:70](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/POFile.ts#L70)
 
 ***
 
@@ -45,7 +45,7 @@ indicate the type of the code that the strings are used in.
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:63](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L63)
+[packages/ilib-po/src/POFile.ts:63](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/POFile.ts#L63)
 
 ***
 
@@ -57,7 +57,7 @@ the path to the po file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:32](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L32)
+[packages/ilib-po/src/POFile.ts:32](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/POFile.ts#L32)
 
 ***
 
@@ -71,7 +71,7 @@ By default, this will be set to the base name of [pathName](POFileOptions.md#pat
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:39](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L39)
+[packages/ilib-po/src/POFile.ts:39](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/POFile.ts#L39)
 
 ***
 
@@ -89,7 +89,7 @@ the source locale of the file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:46](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L46)
+[packages/ilib-po/src/POFile.ts:46](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/POFile.ts#L46)
 
 ***
 
@@ -107,4 +107,4 @@ undefined
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:53](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L53)
+[packages/ilib-po/src/POFile.ts:53](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/POFile.ts#L53)

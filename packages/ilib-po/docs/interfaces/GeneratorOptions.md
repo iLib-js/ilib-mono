@@ -24,7 +24,19 @@ false
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:44](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/Generator.ts#L44)
+[packages/ilib-po/src/Generator.ts:44](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Generator.ts#L44)
+
+***
+
+### datatype?
+
+> `optional` **datatype**: `string`
+
+The default data type of the resources
+
+#### Defined in
+
+[packages/ilib-po/src/Generator.ts:49](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Generator.ts#L49)
 
 ***
 
@@ -36,7 +48,19 @@ the path to the po file
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:30](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/Generator.ts#L30)
+[packages/ilib-po/src/Generator.ts:30](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Generator.ts#L30)
+
+***
+
+### projectName?
+
+> `optional` **projectName**: `string`
+
+The name of the project that the resources belong to
+
+#### Defined in
+
+[packages/ilib-po/src/Generator.ts:54](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Generator.ts#L54)
 
 ***
 
@@ -54,4 +78,4 @@ the target locale of the file
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:37](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/Generator.ts#L37)
+[packages/ilib-po/src/Generator.ts:37](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Generator.ts#L37)

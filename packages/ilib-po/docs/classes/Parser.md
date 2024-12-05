@@ -27,7 +27,7 @@ Create a new PO file with the given path name.
 
 #### Defined in
 
-[packages/ilib-po/src/Parser.ts:117](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/Parser.ts#L117)
+[packages/ilib-po/src/Parser.ts:131](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Parser.ts#L131)
 
 ## Methods
 
@@ -57,4 +57,4 @@ SyntaxError if there is a syntax error in the file
 
 #### Defined in
 
-[packages/ilib-po/src/Parser.ts:153](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/Parser.ts#L153)
+[packages/ilib-po/src/Parser.ts:169](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Parser.ts#L169)
