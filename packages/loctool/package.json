@@ -72,7 +72,7 @@
         "ilib": "^14.18.0",
         "ilib-po": "workspace:*",
         "ilib-tools-common": "workspace:*",
-        "ilib-tree-node": "^1.3.0",
+        "ilib-tree-node": "workspace:*",
         "intl-messageformat": "^10.5.14",
         "js-stl": "^0.0.6",
         "js-yaml": "^4.1.0",
