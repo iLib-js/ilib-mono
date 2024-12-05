@@ -192,7 +192,7 @@ describe("project", function() {
 
     test("Project localize an md file, right files exist", function() {
         expect.assertions(12);
-debugger;
+
         // set up first
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
@@ -468,7 +468,7 @@ debugger;
         expect(!fs.existsSync("./test/testfiles/project3/es-US.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
-debugger;
+
         var project = ProjectFactory('./test/testfiles/project3', {
             xliffsDir: "translations2",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
@@ -653,7 +653,7 @@ debugger;
             convertPlurals: true
         });
         project.addPath("en-US.mock");
-debugger;
+
         project.init(function() {
             project.extract(function() {
                 project.write(function() {
