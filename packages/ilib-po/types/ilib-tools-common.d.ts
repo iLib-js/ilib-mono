@@ -10,14 +10,21 @@ module "ilib-tools-common" {
         size(): number;
     }
 
-    class ResourceString {
+    class Resource {
+        constructor(props: any);
+        source: any | Array<any | undefined>;
+        target: any | Array<any | undefined>;
+    }
+
+    class ResourceString extends Resource {
         constructor(props: any);
         static hashKey(...props: any[]): string;
     }
-    class ResourceArray {
+    class ResourceArray extends Resource {
         constructor(props: any);
     }
-    class ResourcePlural {
+    class ResourcePlural extends Resource {
         constructor(props: any);
     }
+
 }
