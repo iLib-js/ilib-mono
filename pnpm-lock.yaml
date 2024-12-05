@@ -1698,8 +1698,8 @@ importers:
         specifier: workspace:*
         version: link:../ilib-po
       ilib-tools-common:
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: workspace:*
+        version: link:../ilib-tools-common
       ilib-tree-node:
         specifier: workspace:^
         version: link:../ilib-tree-node
@@ -4836,6 +4836,9 @@ packages:
   ilib-tools-common@1.11.0:
     resolution: {integrity: sha512-dCpjUj8wKBIhC81pAGeVs9s5Z+4AqNSOkLKFwyvMUMtVKH0vmeaTtrhSVsY1nnKkL4Ew2TNxYSqD2Eo22L2vNQ==}
     engines: {node: '>=10.0.0'}
+
+  ilib-tree-node@1.3.2:
+    resolution: {integrity: sha512-Dbg9rIOhd8TazHFwk3lFA0Gi6+fe3+YSqiuMRT46D7fomjf429vwzRzbHJB4uMyk8+bEsFUdQV23dbNvjkIdgw==}
 
   ilib-xliff@1.2.0:
     resolution: {integrity: sha512-xwYjQVKhTpN2oyzGjjDoyTrSENyNLqmTbJwsp65eSBPg0u0BWiC0ohCMRylfWOvlaE4Iu7UPLR67/0D52BnuTw==}
@@ -11737,6 +11740,8 @@ snapshots:
       ilib-locale: 1.2.2
       ilib-xliff: 1.2.0
 
+  ilib-tree-node@1.3.2: {}
+
   ilib-xliff@1.2.0:
     dependencies:
       ilib-common: 1.1.3
@@ -12964,38 +12969,6 @@ snapshots:
   locate-path@7.2.0:
     dependencies:
       p-locate: 6.0.0
-
-  loctool@2.25.2(typescript@5.6.3):
-    dependencies:
-      '@formatjs/intl': 2.10.11(typescript@5.6.3)
-      build-gradle-reader: 1.0.0
-      cldr-segmentation: 2.2.1
-      he: 1.2.0
-      html-parser: 0.11.0
-      ilib: 14.20.0
-      ilib-tree-node: 1.3.2
-      intl-messageformat: 10.7.6
-      js-stl: 0.0.6
-      js-yaml: 4.1.0
-      log4js: 6.9.1
-      message-accumulator: 2.2.3
-      micromatch: 4.0.8
-      opencc-js: 1.0.5
-      readline-sync: 1.4.10
-      rehype-raw: 5.1.0
-      remark-frontmatter: 2.0.0
-      remark-highlight.js: 6.0.0
-      remark-parse: 8.0.3
-      remark-rehype: 8.1.0
-      remark-stringify: 8.1.1
-      unified: 9.2.2
-      unist-builder: 2.0.3
-      unist-util-filter: 2.0.3
-      util.promisify: 1.1.2
-      xml-js: 1.6.11
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   lodash.camelcase@4.3.0: {}
 
