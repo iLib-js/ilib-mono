@@ -1,6 +1,6 @@
 # loctool
 
-## 2.25.2 (build 046)
+## 2.25.2
 
 New Features:
 
@@ -9,7 +9,7 @@ Bug fixes:
 - fixed a bug in Utils.formatPath where it did not format the correct
   basename of a file if the file name did not have an extension on it
 
-## 2.25.1 (build 045)
+## 2.25.1
 
 New Features:
 
@@ -21,7 +21,7 @@ Bug fixes:
   trans units are filtered for uniqueness before the selection criteria
   are applied to them.
 
-## 2.25.0 (build 044)
+## 2.25.0
 
 New Features:
 
@@ -35,7 +35,7 @@ New Features:
   the strings are converted back into plurals again before they are
   sent to the plugins to write them out again in the resource file format.
 
-## 2.24.1 (build 043)
+## 2.24.1
 
 New Features:
 
@@ -48,7 +48,7 @@ Bug fixes:
   therefore never read. This meant that no localization could happen
   to locales with numeric region codes. (example locale spec: "es-419")
 
-## 2.24.0 (build 042)
+## 2.24.0
 
 New Features:
 
@@ -70,20 +70,20 @@ Bug fixes:
 - Converted all unit tests from nodeunit to jest.
 - Removed the `npm-shrinkwrap.json` in repository.
 
-## 2.23.1 (build 041)
+## 2.23.1
 
 Bug fixes:
 
 - forgot to include the npm-shrinkwrap.json in the published files
   list with the last release. Now it is there.
 
-## 2.23.0 (build 040)
+## 2.23.0
 
 New Features:
 
 - changed the `zxx-Hans-XX` pseudo style name to `debug-han-simplified`.
 
-## 2.22.0 (build 039)
+## 2.22.0
 
 New Features:
 
@@ -107,7 +107,7 @@ Bug Fixes:
   - in projects, filter out any resources, from any plugin, where the
     source is not defined. This goes for strings, arrays, or plurals.
 
-## 2.21.0 (build 038)
+## 2.21.0
 
 New Features:
 
@@ -115,7 +115,7 @@ New Features:
 
 Bug Fixes:
 
-## 2.20.3 (build 037)
+## 2.20.3
 
 New Features:
 
@@ -125,7 +125,7 @@ Bug Fixes:
 - fixed a problem where tmx file output was not adding the srclang attribute
   to the header of the tmx file
 
-## 2.20.2 (build 036)
+## 2.20.2
 
 New Features:
 
@@ -134,7 +134,7 @@ Bug Fixes:
 - convert would not read the local ./project.json which contains settings that could not
   be specified on the command-line. Now, it does!
 
-## 2.20.1 (build 035)
+## 2.20.1
 
 New Features:
 
@@ -146,14 +146,14 @@ Bug Fixes:
   would cause an error. Instead, it should just return the empty string to indicate that
   no locale was found.
 
-## 2.20.0 (build 034)
+## 2.20.0
 
 New Features:
 
 - Added a new `getRepository()` method on the Project class to get the local repository.
 - Added a new `getTranslationSet()` method on the LocalRepository class to get all of the translations.
 
-## 2.19.0 (build 033)
+## 2.19.0
 
 New Features:
 
@@ -163,7 +163,7 @@ Bug Fixes:
 
 - Fixed a bug where not correctly filtering pseudo locale.
 
-## 2.18.0 (build 032)
+## 2.18.0
 
 New Features:
 
@@ -172,7 +172,7 @@ New Features:
 
 Bug Fixes:
 
-## 2.17.0 (build 031)
+## 2.17.0
 
 New Features:
 
@@ -186,7 +186,7 @@ New Features:
 
 Bug Fixes:
 
-## 2.16.3 (build 030)
+## 2.16.3
 
 New Features:
 
@@ -199,7 +199,7 @@ Bug Fixes:
 - added more things to the default exclude list that do not include localizable
   strings such as the project.json or package.json files
 
-## 2.16.2 (build 030)
+## 2.16.2
 
 New Features:
 
@@ -210,7 +210,7 @@ Bug Fixes:
 - fixed a bug where a resource with an zero-length source string caused the
   xliff writer to throw exceptions
 
-## 2.16.1 (build 029)
+## 2.16.1
 
 New Features:
 
@@ -220,7 +220,7 @@ Bug Fixes:
   If you had a mapping with a template of "[dir]/[basename]\_[locale].[extension]",
   then the locale was not detected properly.
 
-## 2.16.0 (build 029)
+## 2.16.0
 
 New Features:
 
@@ -235,7 +235,7 @@ Bug Fixes:
   input would cause an exception. Now it checks for bad input and returns
   undefined.
 
-## 2.15.1 (build 028)
+## 2.15.1
 
 New Features:
 
@@ -248,7 +248,7 @@ Bug Fixes:
   there.
 - Updated package dependencies
 
-## 2.15.0 (build 027)
+## 2.15.0
 
 New Features:
 
@@ -267,7 +267,7 @@ Bug Fixes:
   into a newline. Now, it converts it into a "slash" character
   followed by an "n" character.
 
-## 2.14.2 (build 026)
+## 2.14.2
 
 New Features:
 
@@ -277,7 +277,7 @@ Bug Fixes:
 
 - Fixed a bug where the default excluded directory is not exclude
 
-## 2.14.1 (build 025)
+## 2.14.1
 
 New Features:
 
@@ -292,7 +292,7 @@ Bug Fixes:
   not calculated properly if the extension was not ".json". Now you can
   use any extension.
 
-## 2.14.0 (build 024)
+## 2.14.0
 
 New Features:
 
@@ -321,7 +321,7 @@ Bug Fixes:
   - Upgraded to opencc-js 1.0.3 to get the latest mappings and so that
     the data can be loaded synchronously
 
-## 2.13.1 (build 023)
+## 2.13.1
 
 Bug Fixes:
 
@@ -333,7 +333,7 @@ Bug Fixes:
   in the FileType class. Now it tests for the existence of the method before
   attempting to call it.
 
-## 2.13.0 (build 022)
+## 2.13.0
 
 New Features:
 
@@ -344,7 +344,7 @@ Bug Fixes:
 
 - Added guard code not to work if the object is empty when setting target locale for conversions
 
-## 2.12.0 (build 021)
+## 2.12.0
 
 New Features:
 
@@ -362,7 +362,7 @@ Bug Fixes:
   This made it harder to start new projects.
 - Xliff output didn't work if the source locale was something other than "en-US"
 
-## 2.11.0 (build 020)
+## 2.11.0
 
 New Features:
 
@@ -377,7 +377,7 @@ Bug Fixes:
   the source language would never show those plurals in the xliff output. Now the plurals output of
   xliff files follows the plural categories available in the target language instead of the source language.
 
-## 2.10.3 (build 019)
+## 2.10.3
 
 New Features:
 
@@ -385,7 +385,7 @@ Bug Fixes:
 
 - Added guard code to check if a file really exists in the given path before reading
 
-## 2.10.2 (build 018)
+## 2.10.2
 
 New Features:
 
@@ -393,7 +393,7 @@ Bug Fixes:
 
 - Added guard code to prevent an error when read directory list returns empty
 
-## 2.10.1 (build 017)
+## 2.10.1
 
 New Features:
 
@@ -403,7 +403,7 @@ Bug Fixes:
 - Updated the documentation to be more clear and to add a description of the xliffsDir setting
 - Added guard code not to stop the process even though an xliff path is not valid.
 
-## 2.10.0 (build 016)
+## 2.10.0
 
 New Features:
 
@@ -420,7 +420,7 @@ Bug Fixes:
 - Fixed a problem to parse xliff 2.0 files
 - Fixed a problem to merge xliff 2.0 files
 
-## 2.9.0 (build 015)
+## 2.9.0
 
 New Features:
 
@@ -439,7 +439,7 @@ Bug Fixes:
     a little slower
   - no longer depends on the `PrettyData` module
 
-## 2.8.1 (build 014)
+## 2.8.1
 
 Bug Fixes:
 
@@ -447,7 +447,7 @@ Bug Fixes:
   even when the fullyTranslated option is not turned on. If it is not turned on, it is not
   useful anyways so don't produce it.
 
-## 2.8.0 (build 013)
+## 2.8.0
 
 New Features:
 
@@ -465,7 +465,7 @@ Bug Fixes:
     into the subproject's directories, but into dirs that were relative
     to the root project instead
 
-## 2.7.2 (build 012)
+## 2.7.2
 
 Bug Fixes:
 
@@ -476,7 +476,7 @@ Bug Fixes:
   segment. Inline code is only translatable when it is part of a larger localizable piece of
   text, not when it is by itself.
 
-## 2.7.1 (build 011)
+## 2.7.1
 
 Bug Fixes:
 
@@ -486,7 +486,7 @@ Bug Fixes:
 - Fixed a bug where self-closed tags like <br/> in markdown files were not handled properly,
   causing exceptions that complained about syntax errors
 
-## 2.7.0 (build 010)
+## 2.7.0
 
 New Features:
 
@@ -505,7 +505,7 @@ Bug Fixes:
 - Fixed to include locale when creating cleanHashKey in ContextResourceString
 - Updated dependencies to the latest packages and fixed the resulting unit test failures due to the opencc update
 
-## 2.6.0 (build 009)
+## 2.6.0
 
 New Features:
 
@@ -559,14 +559,14 @@ There are [fifty][url] of them for sale.
 The link title for link reference definitions is included as a separate string
 to translate.
 
-## 2.5.0 (build 008)
+## 2.5.0
 
 New Features:
 
 - Added support to handle multiple group tags in an xliff file
   - loctool considersed only one group tag in an xliff file. but now we can support a case to have multiple groups in a xliff file
 
-## 2.4.0 (build 007)
+## 2.4.0
 
 New Features:
 
@@ -591,7 +591,7 @@ Bug Fixes:
   so that scripts that call the loctool can fail appropriately instead of just
   quietly and obliviously carrying on.
 
-## 2.3.2 (build 006)
+## 2.3.2
 
 Bug Fixes:
 
@@ -600,14 +600,14 @@ Bug Fixes:
 - now uses remark-frontmatter to parse the headers
 - now parses linkreferences properly when the text is not the default
 
-## 2.3.1 (build 005)
+## 2.3.1
 
 Bug Fixes:
 
 - Fixed incorrect npm packaging in v2.3.0. Testing packages were included in
   the dependencies instead of the dev dependencies.
 
-## 2.3.0 (build 004)
+## 2.3.0
 
 New Features:
 
@@ -643,7 +643,7 @@ Bug Fixes:
   project's node modules, it was not finding and loading that plugin. Now loctool will check the
   loctool directory, the current project, and the ../plugins directory for plugins.
 
-## 2.2.0 (build 003)
+## 2.2.0
 
 New Features:
 
@@ -666,7 +666,7 @@ Bug Fixes:
   they are at the beginning or end of the string. They are not optimized out. Other components that
   appear at the beginning or end of the string are still optimized out as normal.
 
-## 2.1.0 (build 002)
+## 2.1.0
 
 New Features:
 
@@ -685,7 +685,7 @@ New Features:
     - Eventually, the built-in file type modules will go away, and
       all projects will use plugins exclusively
 
-## 2.0.0 (build 001)
+## 2.0.0
 
 New Features:
 
@@ -717,21 +717,21 @@ Bug Fixes:
   with alignment.
 - Fixed some duplicate entries in the British and NZ spellings files
 
-## 1.1.2 (build 006)
+## 1.1.2
 
 Bug Fixes:
 
 - HTML and HTML template files were not localized properly when there is a &lt;!DOCTYPE&gt; tag in the text.
   The output included the attributes of the tag, but not the tag itself. This is corrected now.
 
-## 1.1.1 (build 003)
+## 1.1.1
 
 Bug Fixes:
 
 - the package.json was screwed up so it didn't publish the code. This is fixed now. No code
   differences from 1.1.0
 
-## 1.1.0 (build 002)
+## 1.1.0
 
 New Features:
 
@@ -754,7 +754,7 @@ Bug Fixes:
 - Xliff merging was not working correctly due to mishandling of command-line parameters. Fixed now.
 - Fixed a broken unit test
 
-## 1.0.0 (build 001)
+## 1.0.0
 
 New Features:
 
