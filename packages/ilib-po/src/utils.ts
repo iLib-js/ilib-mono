@@ -43,7 +43,11 @@ export enum CommentType {
     EXTRACTED = "extracted",
     FLAGS = "flags",
     PREVIOUS = "previous",
-    PATHS = "paths"
+    PATHS = "paths",
+    KEY = "key",
+    INDEX = "index",
+    DATATYPE = "datatype",
+    PROJECT = "project"
 };
 
 /**

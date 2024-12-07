@@ -1,0 +1,60 @@
+msgid ""
+msgstr ""
+"#-#-#-#-#  test/testfiles/project3/translations2/es-US.po  #-#-#-#-#\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: loctool\n"
+"Project-Id-Version: 1\n"
+"Language: es-US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Data-Type: mock\n"
+"Project: loctest\n"
+
+#:en-US.mock
+#k foobar1
+msgid "This is a test string"
+msgstr "Esta es una cadena de prueba"
+
+#:en-US.mock
+#k foobar2
+msgid "This is a second test string"
+msgstr "Esta es una segunda cadena de prueba"
+
+#: en-US.mock
+#k arr1
+## 0
+msgid "one"
+msgstr "uno"
+
+#k arr1
+## 1
+msgid "two"
+msgstr "dos"
+
+#k arr1
+## 2
+msgid "three"
+msgstr "tres"
+
+#: en-US.mock
+#k arr2
+## 0
+msgid "four"
+msgstr "cuatro"
+
+#k arr2
+## 1
+msgid "five"
+msgstr "cinco"
+
+#k arr2
+## 2
+msgid "six"
+msgstr "seis"
+
+#: en-US.mock
+#k plu2
+msgid "There is {n} item."
+msgid_plural "There are {n} items."
+msgstr[0] "Hay {n} artículo."
+msgstr[1] "Hay {n} artículos."
