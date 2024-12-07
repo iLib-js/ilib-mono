@@ -71,6 +71,6 @@
     "dependencies": {
         "ilib-ctype": "^1.2.1",
         "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "workspace:^"
+        "ilib-tools-common": "workspace:^1.11.0"
     }
 }
