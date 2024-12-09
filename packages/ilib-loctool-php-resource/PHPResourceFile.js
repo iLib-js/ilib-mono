@@ -163,7 +163,9 @@ PHPResourceFile.prototype.getContent = function() {
         ' * === Auto-generated class. Do not manually edit this file. ===\n' +
         ' *\n' +
         ' */\n' +
-        'class Translation' + spec + '\n' +
+        // make sure to remove any hyphens from the locale spec so that it is
+        // a valid PHP class name
+        'class Translation' + spec.replace(/-/g, "") + '\n' +
         '{\\n' +
         '    /**\n' +
         '     * Gives the pre-populated map of tags to translations\n' +

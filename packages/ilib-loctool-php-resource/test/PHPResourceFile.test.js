@@ -40,7 +40,6 @@ var p = new CustomProject({
         "it-IT": "ItIT",
         "ja-JP": "JaJP",
         "ko-KR": "KoKR",
-        "nl-NL": "NlNL",
         "pt-BR": "PtBR",
         "sv-SE": "SvSE",
         "zh-Hans-CN": "ZhCN",
@@ -636,4 +635,80 @@ describe("PHPresourcefile", function() {
 
         expect(actual).toBe(expected);
     });
+
+    test("PHPResourceFile right contents for a locale that is not in the locale map", function() {
+        expect.assertions(2);
+
+        var phprf = new PHPResourceFile({
+            type: phpft,
+            project: p,
+            locale: "nl-NL"
+        });
+
+        expect(phprf).toBeTruthy();
+
+        [
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "nl-NL",
+                key: "source_text",
+                sourceLocale: "en-US",
+                source: "source text",
+                target: "bron tekst"
+            }),
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "nl-NL",
+                key: "more_source_text",
+                sourceLocale: "en-US",
+                source: "more source text",
+                target: "meer bron tekst"
+            }),
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "nl-NL",
+                key: "yet_more_source_text",
+                sourceLocale: "en-US",
+                source: "yet more source text",
+                target: "nog meer bron tekst"
+            })
+        ].forEach(function(res) {
+            phprf.addResource(res);
+        });
+
+        // should use the default locale spec in the first line
+        var expected =
+            '<?php\n' +
+            '\n' +
+            '/**\n' +
+            ' * === Auto-generated class. Do not manually edit this file. ===\n' +
+            ' *\n' +
+            ' */\n' +
+            // the dash should be removed from the locale name to make this a valid PHP identifier
+            'class TranslationnlNL\n' +
+            '{\\n' +
+            '    /**\n' +
+            '     * Gives the pre-populated map of tags to translations\n' +
+            '     *\n' +
+            '     * @return array\n' +
+            '     */\n' +
+            '    public function getTranslationsMap() {\n' +
+            '        return [\n' +
+            "            'more_source_text' => 'meer bron tekst',\n" +
+            "            'source_text' => 'bron tekst',\n" +
+            "            'yet_more_source_text' => 'nog meer bron tekst'\n" +
+            '        ];\n' +
+            '    }\n' +
+            '}\n' +
+            '\n' +
+            '?>\n';
+
+        var actual = phprf.getContent();
+
+        expect(actual).toBe(expected);
+    });
+
 });
