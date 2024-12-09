@@ -7,7 +7,7 @@ resource keys to their values.
 
 ## Release Notes
 
-See the [change log](./ChangeLog.md) for details on changes between releases.
+See the [change log](./CHANGELOG.md) for details on changes between releases.
 
 ## License
 
