@@ -18,6 +18,7 @@
  */
 
 var PHPResourceFile = require("../PHPResourceFile.js");
+var PHPResourceFileType = require("../PHPResourceFileType.js");
 var CustomProject = require("loctool/lib/CustomProject.js");
 
 var p = new CustomProject({
@@ -28,39 +29,38 @@ var p = new CustomProject({
     }
 }, "./testfiles", {
     locales:["en-GB", "de-DE", "de-AT"],
+    // map to non-standard locale specifiers
+    "localeMap": {
+        "da-DK": "DaDK",
+        "de-DE": "DeDE",
+        "en-US": "EnUS",
+        "en-GB": "EnGB",
+        "es-ES": "EsES",
+        "fr-FR": "FrFR",
+        "it-IT": "ItIT",
+        "ja-JP": "JaJP",
+        "ko-KR": "KoKR",
+        "nl-NL": "NlNL",
+        "pt-BR": "PtBR",
+        "sv-SE": "SvSE",
+        "zh-Hans-CN": "ZhCN",
+        "zh-Hant-HK": "ZhHK",
+        "zh-Hant-TW": "ZhTW",
+        "zh-Hans-SG": "ZhSG"
+    },
     "php": {
-        // map to non-standard locale specifiers
-        "localeMap": {
-            "da-DK": "DaDK",
-            "de-DE": "DeDE",
-            "en-US": "EnUS",
-            "en-GB": "EnGB",
-            "es-ES": "EsES",
-            "fr-FR": "FrFR",
-            "it-IT": "ItIT",
-            "ja-JP": "JaJP",
-            "ko-KR": "KoKR",
-            "nl-NL": "NlNL",
-            "pt-BR": "PtBR",
-            "sv-SE": "SvSE",
-            "zh-Hans-CN": "ZhCN",
-            "zh-Hant-HK": "ZhHK",
-            "zh-Hant-TW": "ZhTW",
-            "zh-Hans-SG": "ZhSG"
-        },
-        "mappings": {
-            "**/*.php": {
-                template: "resource-files/Translation[locale].php"
-            }
-        }
+        "template": "localized/Translation[locale].php"
     }
 });
+
+var phpft = new PHPResourceFileType(p);
 
 describe("PHPresourcefile", function() {
     test("PHPResourceFileConstructor", function() {
         expect.assertions(1);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p
         });
         expect(phprf).toBeTruthy();
@@ -70,6 +70,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(1);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             pathName: "localized/TranslationEnUS.php",
             locale: "en-US"
@@ -82,6 +83,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(3);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
             locale: "de-DE"
@@ -129,6 +131,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
             locale: "de-DE"
@@ -184,9 +187,9 @@ describe("PHPresourcefile", function() {
             '     */\n' +
             '    public function getTranslationsMap() {\n' +
             '        return [\n' +
+            "            'more_source_text' => 'mehr Quellentext',\n" +
             "            'source_text' => 'Quellentext',\n" +
-            "            'more_source_text' => 'mehr Quellentext'\n" +
-            "            'yet_more_source_text' => 'noch mehr Quellentext',\n" +
+            "            'yet_more_source_text' => 'noch mehr Quellentext'\n" +
             '        ];\n' +
             '    }\n' +
             '}\n' +
@@ -200,6 +203,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
             locale: "de-DE"
@@ -236,6 +240,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
             locale: "de-DE"
@@ -281,8 +286,8 @@ describe("PHPresourcefile", function() {
             '     */\n' +
             '    public function getTranslationsMap() {\n' +
             '        return [\n' +
-            "            'source_text' => 'Quellen\"text',\n" +
-            "            'more_source_text' => 'mehr Quellen\"text'\n" +
+            "            'more_source_text' => 'mehr Quellen\"text',\n" +
+            "            'source_text' => 'Quellen\"text'\n" +
             '        ];\n' +
             '    }\n' +
             '}\n' +
@@ -296,6 +301,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
             locale: "de-DE"
@@ -341,8 +347,8 @@ describe("PHPresourcefile", function() {
             '     */\n' +
             '    public function getTranslationsMap() {\n' +
             '        return [\n' +
-            "            'source_text' => 'Quellen\\'text',\n" +
-            "            'more_source_text' => 'mehr Quellen\\'text'\n" +
+            "            'more_source_text' => 'mehr Quellen\\'text',\n" +
+            "            'source_text' => 'Quellen\\'text'\n" +
             '        ];\n' +
             '    }\n' +
             '}\n' +
@@ -352,23 +358,11 @@ describe("PHPresourcefile", function() {
         expect(phprf.getContent()).toBe(expected);
     });
 
-    test("PHPResourceFileGetResourceFilePathDefaultLocaleForLanguage", function() {
-        expect.assertions(2);
-
-        var phprf = new PHPResourceFile({
-            project: p,
-            locale: "de-DE"
-        });
-
-        expect(phprf).toBeTruthy();
-
-        expect(phprf.getResourceFilePath()).toBe("testfiles/localized/de.php");
-    });
-
     test("PHPResourceFileGetResourceFilePathDefaultLocaleForLanguageNoDefaultAvailable", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             locale: "de-DE"
         });
@@ -378,23 +372,11 @@ describe("PHPresourcefile", function() {
         expect(phprf.getResourceFilePath()).toBe("testfiles/localized/TranslationDeDE.php");
     });
 
-    test("PHPResourceFileGetResourceFilePathNonDefaultLocaleForLanguage", function() {
-        expect.assertions(2);
-
-        var phprf = new PHPResourceFile({
-            project: p,
-            locale: "de-AT"
-        });
-
-        expect(phprf).toBeTruthy();
-
-        expect(phprf.getResourceFilePath()).toBe("testfiles/localized/TranslationDeAT.php");
-    });
-
     test("PHPResourceFileGetResourceFilePathDefaultLocaleForLanguageZH", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             locale: "zh-Hans-CN"
         });
@@ -409,6 +391,7 @@ describe("PHPresourcefile", function() {
 
         // should default to English/US
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p
         });
 
@@ -421,6 +404,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             locale: "de-AT",
             pathName: "path/to/foo.php"
@@ -435,6 +419,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             locale: "de-DE"
         });
@@ -490,9 +475,9 @@ describe("PHPresourcefile", function() {
             '     */\n' +
             '    public function getTranslationsMap() {\n' +
             '        return [\n' +
+            "            'more_source_text' => 'mehr Quellentext',\n" +
             "            'source_text' => 'Quellentext',\n" +
-            "            'more_source_text' => 'mehr Quellentext'\n" +
-            "            'yet_more_source_text' => 'noch mehr Quellentext',\n" +
+            "            'yet_more_source_text' => 'noch mehr Quellentext'\n" +
             '        ];\n' +
             '    }\n' +
             '}\n' +
@@ -508,6 +493,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             locale: "zh-Hans-CN"
         });
@@ -563,9 +549,9 @@ describe("PHPresourcefile", function() {
             '     */\n' +
             '    public function getTranslationsMap() {\n' +
             '        return [\n' +
+            "            'more_source_text' => '更多源文本',\n" +
             "            'source_text' => '源文本',\n" +
-            "            'more_source_text' => '更多源文本'\n" +
-            "            'yet_more_source_text' => '还有附加源文本',\n" +
+            "            'yet_more_source_text' => '还有附加源文本'\n" +
             '        ];\n' +
             '    }\n' +
             '}\n' +
@@ -581,6 +567,7 @@ describe("PHPresourcefile", function() {
         expect.assertions(2);
 
         var phprf = new PHPResourceFile({
+            type: phpft,
             project: p,
             locale: "zh-Hant-HK"
         });
@@ -636,9 +623,9 @@ describe("PHPresourcefile", function() {
             '     */\n' +
             '    public function getTranslationsMap() {\n' +
             '        return [\n' +
+            "            'more_source_text' => '更多源文本',\n" +
             "            'source_text' => '原始文字',\n" +
-            "            'more_source_text' => '更多源文本'\n" +
-            "            'yet_more_source_text' => '還有額外的源文本',\n" +
+            "            'yet_more_source_text' => '還有額外的源文本'\n" +
             '        ];\n' +
             '    }\n' +
             '}\n' +

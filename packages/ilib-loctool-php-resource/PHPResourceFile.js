@@ -130,6 +130,10 @@ function clean(str) {
     return str.replace(/\s+/, " ").trim();
 }
 
+function escapeQuotes(str) {
+    return str.replace(/'/g, "\\'");
+}
+
 /**
  * Return the default locale spec for this resource file.
  * @private
@@ -151,7 +155,31 @@ PHPResourceFile.prototype.getDefaultSpec = function() {
  * @returns {String} the content of the resource file
  */
 PHPResourceFile.prototype.getContent = function() {
-    var json = {};
+    var spec = this.project.getOutputLocale(this.locale.getSpec());
+    var prefix =
+        '<?php\n' +
+        '\n' +
+        '/**\n' +
+        ' * === Auto-generated class. Do not manually edit this file. ===\n' +
+        ' *\n' +
+        ' */\n' +
+        'class Translation' + spec + '\n' +
+        '{\\n' +
+        '    /**\n' +
+        '     * Gives the pre-populated map of tags to translations\n' +
+        '     *\n' +
+        '     * @return array\n' +
+        '     */\n' +
+        '    public function getTranslationsMap() {\n' +
+        '        return [';
+    var suffix =
+        '        ];\n' +
+        '    }\n' +
+        '}\n' +
+        '\n' +
+        '?>\n';
+
+    var output = prefix;
 
     if (this.set.isDirty()) {
         var resources = this.set.getAll();
@@ -161,67 +189,42 @@ PHPResourceFile.prototype.getContent = function() {
             return (left.getKey() < right.getKey()) ? -1 : (left.getKey() > right.getKey() ? 1 : 0);
         });
 
-        for (var j = 0; j < resources.length; j++) {
-            var resource = resources[j];
-            if (resource.getSource() && resource.getTarget()) {
-                if (clean(resource.getSource()) !== clean(resource.getTarget())) {
-                    this.logger.trace("writing translation for " + resource.getKey() + " as " + resource.getTarget());
-                    json[resource.getKey()] = this.project.settings.identify ?
-                        '<span loclang="PHP" locid="' + resource.getKey() + '">' + resource.getTarget() + '</span>' :
-                        resource.getTarget();
-                } else {
-                    this.logger.trace("skipping translation with no change");
+        var resText = "";
+        resources.map(function(resource) {
+            if (resource.getTarget()) {
+                this.logger.trace("writing translation for " + resource.getKey() + " as " + resource.getTarget());
+                if (resText.length > 0) {
+                    resText += ",";
                 }
+                resText += "\n            '" +
+                    escapeQuotes(resource.getKey()) +
+                    "' => '" +
+                    escapeQuotes(resource.getTarget()) +
+                    "'";
             } else {
-                this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
+                this.logger.trace("String resource " + resource.getKey() + " has no target text. Skipping...");
             }
-        }
+        }.bind(this));
+        output += resText;
     }
-
-    var defaultSpec = this.pathName ? this.locale.getSpec() : this.getDefaultSpec();
-
-    // allow for a project-specific prefix to the file to do things like importing modules and such
-    var output = "";
-    var settings = this.project.settings;
-    if (settings && settings.PHPResourceFile && settings.PHPResourceFile.prefix) {
-        output = settings.PHPResourceFile.prefix;
-    }
-    output += 'ilib.data.strings_' + defaultSpec.replace(/-/g, "_") + " = ";
-    output += JSON.stringify(json, undefined, 4);
-    output += ";\n";
-
-    // take care of double-escaped unicode chars
-    output = output.replace(/\\\\u/g, "\\u");
+    output += '\n';
+    output += suffix;
 
     return output;
 };
 
 /**
- * Find the path for the resource file for the given project, context,
- * and locale.
+ * Find the path for the resource file for the given locale.
  *
  * @param {String} locale the name of the locale in which the resource
  * file will reside
- * @param {String|undefined} flavor the name of the flavor if any
- * @return {String} the ios strings resource file path that serves the
- * given project, context, and locale.
+ * @return {String} the php resource file path that serves the
+ * given locale.
  */
-PHPResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
+PHPResourceFile.prototype.getResourceFilePath = function(locale) {
     if (this.pathName) return this.pathName;
 
-    var localeDir, dir, newPath, spec;
-    locale = locale || this.locale;
-
-    var defaultSpec = this.getDefaultSpec();
-
-    var filename = defaultSpec + ".js";
-
-    dir = path.join(this.project.target, this.project.getResourceDirs("js")[0] ||this.project.getResourceDirs("PHP")[0] || ".");
-    newPath = path.join(dir, filename);
-
-    this.logger.trace("Getting resource file path for locale " + locale + ": " + newPath);
-
-    return newPath;
+    return this.type.getLocalizedPath(this.locale);
 };
 
 /**
@@ -234,12 +237,10 @@ PHPResourceFile.prototype.write = function() {
             this.logger.trace("Calculating path name ");
 
             // must be a new file, so create the name
-            this.pathName = this.getResourceFilePath();
+            this.pathName = this.getResourceFilePath(this.locale);
         } else {
             this.defaultSpec = this.locale.getSpec();
         }
-
-        var json = {};
 
         this.logger.info("Writing PHP resources for locale " + this.locale + " to file " + this.pathName);
 

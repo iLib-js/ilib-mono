@@ -19,7 +19,12 @@
 
 var path = require("path");
 
+var mm = require("micromatch");
+var Locale = require("ilib-locale");
+
 var PHPResourceFile = require("./PHPResourceFile.js");
+
+var defaultTemplate = "resource-files/Translation[locale].php";
 
 /**
  * @class Manage a collection of Android resource files.
@@ -65,6 +70,24 @@ PHPResourceFileType.prototype.handles = function(pathName) {
 };
 
 /**
+ * Return the location on disk where the resource file for the given
+ * locale should be written.
+ *
+ * @param {String} locale the locale spec for the target locale
+ * @returns {String} the localized path name
+ */
+PHPResourceFileType.prototype.getLocalizedPath = function(locale) {
+    var template = (this.project.settings &&
+        this.project.settings.php &&
+        this.project.settings.php.template) || defaultTemplate;
+    var l = new Locale(this.project.getOutputLocale(locale));
+
+    return path.normalize(path.join(this.project.root, this.API.utils.formatPath(template, {
+        locale: l
+    })));
+};
+
+/**
  * Write out all resources for this file type. For PHP resources, each
  * resource file is written out by itself. This method will
  * iterate through all of the resource files it knows about and cause them
@@ -91,6 +114,10 @@ PHPResourceFileType.prototype.name = function() {
  * given path
  */
 PHPResourceFileType.prototype.newFile = function(pathName, options) {
+    if (this.resourceFiles[options.locale]) {
+        return this.resourceFiles[options.locale];
+    }
+
     var file = new PHPResourceFile({
         project: this.project,
         pathName: pathName,
@@ -105,15 +132,14 @@ PHPResourceFileType.prototype.newFile = function(pathName, options) {
 };
 
 /**
- * Find or create the resource file object for the given project, context,
- * and locale.
+ * Find or create the resource file object for the given locale.
  *
  * @param {String} locale the name of the locale in which the resource
  * file will reside
  * @param {String} pathName the optional path to the resource file if the
  * caller has already calculated what it should be
- * @return {PHPResourceFile} the Android resource file that serves the
- * given project, context, and locale.
+ * @return {PHPResourceFile} the PHP resource file that serves the
+ * given locale.
  */
 PHPResourceFileType.prototype.getResourceFile = function(locale, pathName) {
     var loc = locale || this.project.sourceLocale;
