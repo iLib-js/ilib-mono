@@ -2,4 +2,4 @@
 "ilib-po": patch
 ---
 
-Fixed variable used before assignment bug
+Fixed a bug where a variable was used before assignment.

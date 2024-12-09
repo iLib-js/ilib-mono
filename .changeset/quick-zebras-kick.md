@@ -44,4 +44,4 @@
 "tmxtool": patch
 ---
 
-Linked dependencies within the monorepo
+Linked dependencies within the monorepo.

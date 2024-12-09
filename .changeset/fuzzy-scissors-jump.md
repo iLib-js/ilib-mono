@@ -3,4 +3,4 @@
 "loctool": patch
 ---
 
-Updated message-accumulator and ilib-tree-node to latest major version
+Updated message-accumulator and ilib-tree-node to the latest major version.
