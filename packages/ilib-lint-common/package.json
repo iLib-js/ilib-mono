@@ -51,12 +51,11 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "dist": "pnpm doc; pnpm build:prod; pnpm build:pkg; pnpm pack",
         "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
         "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --watch",
         "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-lint-common.md; pnpm run doc:html",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-lint-common.md && pnpm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json",
         "types": "tsc -p ./jsconfig.json"
     },

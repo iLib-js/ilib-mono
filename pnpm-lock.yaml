@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@changesets/assemble-release-plan@6.0.4':
+    hash: nowpi7bkp5evn6urgxw3ibasiy
+    path: patches/@changesets__assemble-release-plan@6.0.4.patch
+
 importers:
 
   .:
@@ -18,7 +23,7 @@ importers:
   packages/ilib-assemble:
     dependencies:
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       ilib-locale:
         specifier: ^1.2.2
@@ -58,7 +63,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       ilib-env:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-env
       ilib-locale:
         specifier: ^1.2.2
@@ -155,7 +160,7 @@ importers:
   packages/ilib-data-utils:
     dependencies:
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
     devDependencies:
       '@babel/core':
@@ -297,10 +302,10 @@ importers:
         specifier: ^2.10.4
         version: 2.10.11(typescript@5.6.3)
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       ilib-lint-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
@@ -309,7 +314,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
       intl-messageformat:
         specifier: ^10.5
@@ -388,13 +393,13 @@ importers:
   packages/ilib-lint-python:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
     devDependencies:
       docdash:
@@ -416,16 +421,16 @@ importers:
   packages/ilib-lint-python-gnu:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-loctool-po:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loctool-po
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
     devDependencies:
       docdash:
@@ -459,13 +464,13 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       ilib-lint-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
       jsonpath:
         specifier: ^1.1.1
@@ -484,7 +489,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       intl-messageformat:
         specifier: ^10.7.6
@@ -508,10 +513,10 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       ilib-env:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-env
       promise.allsettled:
         specifier: ^1.0.5
@@ -611,13 +616,13 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       ilib-env:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-env
       ilib-loader:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loader
       ilib-locale:
         specifier: ^1.2.2
@@ -715,7 +720,7 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-android-resource:
@@ -734,7 +739,7 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-csv:
@@ -750,7 +755,7 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-ghfm:
@@ -762,13 +767,13 @@ importers:
         specifier: ^14.19.0
         version: 14.20.0
       ilib-loctool-yaml:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loctool-yaml
       ilib-tree-node:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tree-node
       message-accumulator:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../message-accumulator
       micromatch:
         specifier: ^4.0.5
@@ -808,7 +813,7 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-ghfm-readmeio:
@@ -820,13 +825,13 @@ importers:
         specifier: ^14.1.0
         version: 14.20.0
       ilib-tree-node:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tree-node
       log4js:
         specifier: ^2.11.0
         version: 2.11.0
       message-accumulator:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../message-accumulator
       rehype-raw:
         specifier: ^4.0.0
@@ -863,7 +868,7 @@ importers:
         version: 1.4.1
     devDependencies:
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
       nodeunit:
         specifier: ^0.11.3
@@ -882,7 +887,7 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-html:
@@ -900,14 +905,14 @@ importers:
         specifier: '>=0.0.6'
         version: 0.0.6
       message-accumulator:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../message-accumulator
     devDependencies:
       jest:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-java:
@@ -920,7 +925,7 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-javascript:
@@ -929,17 +934,17 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-loctool-javascript-resource:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
       ilib-loctool-json:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loctool-json
       jest:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-javascript-resource:
@@ -952,7 +957,7 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-json:
@@ -968,7 +973,7 @@ importers:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-jst:
@@ -990,29 +995,29 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-jsx:
     dependencies:
       ilib-loctool-javascript-resource:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
       jest:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-mrkdwn:
     dependencies:
       ilib-tree-node:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tree-node
       message-accumulator:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../message-accumulator
       micromatch:
         specifier: ^4.0.8
@@ -1025,7 +1030,7 @@ importers:
         specifier: ^26.0.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-objectivec:
@@ -1038,7 +1043,7 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-po:
@@ -1054,7 +1059,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-properties:
@@ -1067,7 +1072,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-ruby-ilib:
@@ -1080,7 +1085,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-salesforce-metaxml:
@@ -1089,7 +1094,7 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-loctool-xml:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-loctool-xml
       micromatch:
         specifier: ^4.0.5
@@ -1102,7 +1107,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-strings:
@@ -1115,7 +1120,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-swift:
@@ -1128,7 +1133,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-tap-i18n:
@@ -1137,10 +1142,10 @@ importers:
         specifier: ^14.20.0
         version: 14.20.0
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
       ilib-yaml:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-yaml
       micromatch:
         specifier: ^4.0.5
@@ -1150,7 +1155,7 @@ importers:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-xml:
@@ -1166,7 +1171,7 @@ importers:
         specifier: ^26.3.0
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-yaml:
@@ -1185,7 +1190,7 @@ importers:
         specifier: ^26.6.3
         version: 26.6.3
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-yaml-resource:
@@ -1201,7 +1206,7 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-po:
@@ -1213,7 +1218,7 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
     devDependencies:
       '@tsconfig/node12':
@@ -1265,13 +1270,13 @@ importers:
         specifier: ^2.2.0
         version: 2.2.1
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       ilib-locale:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
       xml-js:
         specifier: ^1.6.11
@@ -1335,7 +1340,7 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-xliff:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-xliff
     devDependencies:
       '@babel/core':
@@ -1465,7 +1470,7 @@ importers:
   packages/ilib-xliff:
     dependencies:
       ilib-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-common
       ilib-locale:
         specifier: ^1.2.2
@@ -1565,7 +1570,7 @@ importers:
   packages/ilib-yaml:
     dependencies:
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
       yaml:
         specifier: ^2.4.5
@@ -1656,7 +1661,7 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
       ilib-tree-node:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tree-node
       intl-messageformat:
         specifier: ^10.5.14
@@ -1671,7 +1676,7 @@ importers:
         specifier: ^6.9.1
         version: 6.9.1
       message-accumulator:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../message-accumulator
       micromatch:
         specifier: ^4.0.5
@@ -1735,7 +1740,7 @@ importers:
   packages/message-accumulator:
     dependencies:
       ilib-tree-node:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tree-node
     devDependencies:
       '@babel/core':
@@ -1808,7 +1813,7 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       ilib-tmx:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tmx
       options-parser:
         specifier: ^0.4.0
@@ -1818,7 +1823,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       ilib-tools-common:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ilib-tools-common
       jest:
         specifier: ^29.7.0
@@ -9409,7 +9414,7 @@ snapshots:
       resolve-from: 5.0.0
       semver: 7.6.3
 
-  '@changesets/assemble-release-plan@6.0.4':
+  '@changesets/assemble-release-plan@6.0.4(patch_hash=nowpi7bkp5evn6urgxw3ibasiy)':
     dependencies:
       '@changesets/errors': 0.2.0
       '@changesets/get-dependents-graph': 2.1.2
@@ -9425,7 +9430,7 @@ snapshots:
   '@changesets/cli@2.27.9':
     dependencies:
       '@changesets/apply-release-plan': 7.0.5
-      '@changesets/assemble-release-plan': 6.0.4
+      '@changesets/assemble-release-plan': 6.0.4(patch_hash=nowpi7bkp5evn6urgxw3ibasiy)
       '@changesets/changelog-git': 0.2.0
       '@changesets/config': 3.0.3
       '@changesets/errors': 0.2.0
@@ -9476,7 +9481,7 @@ snapshots:
 
   '@changesets/get-release-plan@4.0.4':
     dependencies:
-      '@changesets/assemble-release-plan': 6.0.4
+      '@changesets/assemble-release-plan': 6.0.4(patch_hash=nowpi7bkp5evn6urgxw3ibasiy)
       '@changesets/config': 3.0.3
       '@changesets/pre': 2.0.1
       '@changesets/read': 0.6.1

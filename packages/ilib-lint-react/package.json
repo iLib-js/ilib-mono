@@ -22,17 +22,16 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "dist": "pnpm pack",
         "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md ; pnpm run doc:html",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md && pnpm run doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
         "intl-messageformat": "^10.7.6",
-        "ilib-common": "workspace:*",
+        "ilib-common": "workspace:^",
         "@babel/types": "^7.24.0",
         "@babel/generator": "^7.24.0",
         "docdash": "^2.0.2",
@@ -46,9 +45,9 @@
         "@babel/traverse": "^7.24.0",
         "@formatjs/intl": "^2.10.0",
         "ilib-istring": "^1.1.0",
-        "ilib-lint-common": "workspace:*",
+        "ilib-lint-common": "workspace:^",
         "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "workspace:*",
+        "ilib-tools-common": "workspace:^",
         "jsonpath": "^1.1.1",
         "regenerator-runtime": "^0.14.1"
     }
