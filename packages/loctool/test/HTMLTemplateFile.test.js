@@ -1,7 +1,7 @@
 /*
  * HTMLTemplateFile.test.js - test the HTML template file handler object.
  *
- * Copyright © 2016-2017, 2019, 2023 2023 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019, 2023-2024 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,21 @@ function diff(a, b) {
         }
     }
 }
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/tmpl/CookieFlowTemplate.de-DE.tmpl.html",
+        "./test/testfiles/tmpl/CookieFlowTemplate.fr-FR.tmpl.html",
+        "./test/testfiles/tmpl/nostrings.de-DE.tmpl.html",
+        "./test/testfiles/tmpl/nostrings.fr-FR.tmpl.html"
+    ].forEach(rmrf);
+});
 
 describe("htmltemplatefile", function() {
     test("HTMLTemplateFileConstructor", function() {
