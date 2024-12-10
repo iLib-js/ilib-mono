@@ -46,7 +46,6 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "dist": "pnpm pack",
         "test": "jest",
         "test:watch": "jest --watch",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
@@ -57,12 +56,12 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
-        "ilib-loctool-xml": "workspace:*",
+        "ilib-loctool-xml": "workspace:^",
         "micromatch": "^4.0.5",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
         "jest": "^26.3.0",
-        "loctool": "workspace:*"
+        "loctool": "workspace:^"
     }
 }

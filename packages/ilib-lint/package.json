@@ -48,14 +48,13 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "dist": "pnpm pack",
         "test": "pnpm test:jest",
         "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --trace-warnings --experimental-vm-modules\" jest",
         "test:watch": "pnpm test:jest --watch",
         "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --trace-warnings --experimental-vm-modules --inspect-brk\" jest -i",
         "lint": "node src/index.js",
         "clean": "git clean -f -d src test",
-        "doc": "mkdir -p docs; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md; pnpm doc:html",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md && pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json",
         "types": "tsc -p ./jsconfig.json"
     },
@@ -73,11 +72,11 @@
     },
     "dependencies": {
         "@formatjs/intl": "^2.10.4",
-        "ilib-common": "workspace:*",
-        "ilib-lint-common": "workspace:*",
+        "ilib-common": "workspace:^",
+        "ilib-lint-common": "workspace:^",
         "ilib-locale": "^1.2.2",
         "ilib-localeinfo": "^1.1.0",
-        "ilib-tools-common": "workspace:*",
+        "ilib-tools-common": "workspace:^",
         "intl-messageformat": "^10.5",
         "json5": "^2.2.3",
         "log4js": "^6.9.1",

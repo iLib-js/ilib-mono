@@ -143,16 +143,4 @@ file for more details.
 
 ## Release Notes
 
-### v1.1.1
-
-- fixed a problem between using loctool internal resources and ilib-tools-common
-  resources. They are almost the same, but not completely, which lead to
-  problems in producing localized versions of the tap yaml files.
-
-### v1.1.0
-
-- Added the ability to use the global locale mapping
-
-### v1.0.0
-
-- Initial version
+See [CHANGELOG.md](./CHANGELOG.md)

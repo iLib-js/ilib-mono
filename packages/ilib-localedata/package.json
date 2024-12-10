@@ -51,18 +51,17 @@
     },
     "scripts": {
         "build": "pnpm build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:test": "webpack-cli --config webpack-test.config.js",
-        "build:pkg": "mkdir -p lib ; echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
+        "build:pkg": "mkdir -p lib && echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "test": "echo success TODO fix this pnpm test:cli",
-        "test:cli": "LANG=en_US.UTF8 pnpm build:dev ; bash test/testSuite.sh",
+        "test:cli": "LANG=en_US.UTF8 pnpm build:dev && bash test/testSuite.sh",
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
-        "test:web": "LANG=en_US.UTF8 pnpm build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
-        "debug": "pnpm build:dev ; node --inspect-brk test/testSuite.js",
+        "test:web": "LANG=en_US.UTF8 pnpm build:test && open-cli ./test/testSuite.html && open-cli ./test/testSuite.html -- firefox",
+        "debug": "pnpm build:dev && node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test ; rm -rf lib",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-localedata.md",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-localedata.md && pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
@@ -93,9 +92,9 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-common": "workspace:*",
-        "ilib-env": "workspace:*",
-        "ilib-loader": "workspace:*",
+        "ilib-common": "workspace:^",
+        "ilib-env": "workspace:^",
+        "ilib-loader": "workspace:^",
         "ilib-locale": "^1.2.2",
         "ilib-localematcher": "^1.2.2",
         "json5": "^2.2.1"

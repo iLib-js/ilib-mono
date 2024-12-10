@@ -69,7 +69,4 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.0.0
-
-- extracted code and unit tests from ilib-loctool-po
-- converted to Typescript
+See [CHANGELOG.md](./CHANGELOG.md)
