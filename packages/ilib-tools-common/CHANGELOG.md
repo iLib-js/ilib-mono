@@ -1,5 +1,13 @@
 # ilib-tools-common
 
+## 1.12.1
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-xliff@1.2.1
+
 ## 1.12.0
 
 - Added support for the dnt flag (do not translate) in Resources

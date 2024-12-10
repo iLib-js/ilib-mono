@@ -1,5 +1,11 @@
 # ilib-common
 
+## 1.1.5
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.1.4 (unreleased)
 
 - convert all unit tests from nodeunit to jest

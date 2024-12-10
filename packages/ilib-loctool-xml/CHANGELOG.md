@@ -1,5 +1,11 @@
 # ilib-loctool-xml
 
+## 1.1.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.1.2
 
 - update dependencies

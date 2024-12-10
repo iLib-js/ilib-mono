@@ -1,6 +1,6 @@
 {
     "name": "message-accumulator",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "main": "./lib/message-accumulator.js",
     "module": "./src/message-accumulator.js",
     "exports": {

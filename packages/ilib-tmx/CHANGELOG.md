@@ -1,5 +1,14 @@
 # ilib-tmx
 
+## 1.1.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-tools-common@1.12.1
+  - ilib-common@1.1.5
+
 ## 1.1.3
 
 - fixed a problem where the library did not come with ES2015 code

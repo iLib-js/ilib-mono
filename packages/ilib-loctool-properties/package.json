@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-properties",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "main": "./PropertiesFileType.js",
     "description": "A loctool plugin that knows how to process properties files",
     "license": "Apache-2.0",

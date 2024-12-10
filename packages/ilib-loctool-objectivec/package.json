@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-objectivec",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "main": "./ObjectiveCFileType.js",
     "description": "A loctool plugin that knows how to extract localizable strings from Objective-C files",
     "license": "Apache-2.0",

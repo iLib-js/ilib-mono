@@ -1,5 +1,13 @@
 # ilib-assemble
 
+## 1.3.1
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-common@1.1.5
+
 ## 1.3.0
 
 - Removed the `mkdirp` package dependency.

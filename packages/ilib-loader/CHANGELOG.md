@@ -1,5 +1,13 @@
 # ilib-loader
 
+## 1.3.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-common@1.1.5
+
 ## 1.3.3
 
 - Converted all unit tests from nodeunit to jest

@@ -1,5 +1,13 @@
 # ilib-xliff
 
+## 1.2.1
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-common@1.1.5
+
 ## 1.2.0
 
 - added support for parsing inline content markup in XLIFF 1.2 (`<x />` etc.)

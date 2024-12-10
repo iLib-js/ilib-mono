@@ -1,5 +1,14 @@
 # ilib-localedata
 
+## 1.5.1
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-common@1.1.5
+  - ilib-loader@1.3.4
+
 ## 1.5.0
 
 - added the `crossRoots` option to LocaleData.loadData which will

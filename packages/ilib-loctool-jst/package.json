@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-jst",
-    "version": "1.1.3",
+    "version": "1.1.4",
     "main": "./JavaScriptFileType.js",
     "description": "A loctool plugin that knows how to process Javascript Template (JST) files",
     "license": "Apache-2.0",

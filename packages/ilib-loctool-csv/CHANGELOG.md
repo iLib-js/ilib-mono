@@ -1,5 +1,11 @@
 # ilib-loctool-csv
 
+## 1.2.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.2.3
 
 - update dependencies

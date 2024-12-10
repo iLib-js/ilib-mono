@@ -1,5 +1,15 @@
 # ilib-lint
 
+## 2.7.1
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-tools-common@1.12.1
+  - ilib-lint-common@3.1.1
+  - ilib-common@1.1.5
+
 ## 2.7.0
 
 - updated the resource snake case rule and resource camel case rule from declarative to programmatic, allowing for project-specific configurations.

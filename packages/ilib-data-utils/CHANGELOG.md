@@ -1,5 +1,13 @@
 # ilib-data-utils
 
+## 1.2.2
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-common@1.1.5
+
 ## 1.2.1 (unreleased)
 
 - removed unused dependencies

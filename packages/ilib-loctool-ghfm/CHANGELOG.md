@@ -1,5 +1,14 @@
 # ilib-loctool-ghfm
 
+## 1.11.6
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - message-accumulator@3.0.1
+  - ilib-loctool-yaml@1.5.2
+
 ## 1.11.5
 
 - fixed incorrect imports of certain dependencies, which caused this

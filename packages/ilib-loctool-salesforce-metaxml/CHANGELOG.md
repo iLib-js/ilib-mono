@@ -1,5 +1,13 @@
 # ilib-loctool-salesforce-metaxml
 
+## 1.1.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-loctool-xml@1.1.4
+
 ## 1.1.3
 
 - update dependencies

@@ -1,5 +1,15 @@
 # ilib-lint-python-gnu
 
+## 2.0.2
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+- Updated dependencies [ff316a5]
+  - ilib-tools-common@1.12.1
+  - ilib-lint-common@3.1.1
+  - ilib-loctool-po@1.6.4
+
 ## 2.0.1
 
 - Fixed a bug where the exports were not properly set up in the package.json
