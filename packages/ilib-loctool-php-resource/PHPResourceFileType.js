@@ -50,12 +50,6 @@ var PHPResourceFileType = function(project) {
     this.resourceFiles = {};
 };
 
-/*
-PHPResourceFileType.prototype = new FileType();
-PHPResourceFileType.prototype.parent = FileType;
-PHPResourceFileType.prototype.constructor = PHPResourceFileType;
-*/
-
 /**
  * Return true if this file type handles the type of file in the
  * given path name.
@@ -145,13 +139,14 @@ PHPResourceFileType.prototype.newFile = function(pathName, options) {
  */
 PHPResourceFileType.prototype.getResourceFile = function(locale, pathName) {
     var loc = locale || this.project.sourceLocale;
+    var formattedPathName = pathName ?
+        this.API.utils.formatPath(pathName, {
+            locale: loc
+        }) : this.getLocalizedPath(loc);
+    var key = [loc, formattedPathName].join("_");
 
-    if (!this.resourceFiles[loc]) {
-        var formattedPathName = pathName ?
-            this.API.utils.formatPath(pathName, {
-                locale: loc
-            }) : this.getLocalizedPath(loc);
-        this.resourceFiles[loc] = new PHPResourceFile({
+    if (!this.resourceFiles[key]) {
+        this.resourceFiles[key] = new PHPResourceFile({
             project: this.project,
             locale: loc,
             pathName: formattedPathName,
@@ -161,7 +156,7 @@ PHPResourceFileType.prototype.getResourceFile = function(locale, pathName) {
         this.logger.trace("Defining new resource file");
     }
 
-    return this.resourceFiles[loc];
+    return this.resourceFiles[key];
 };
 
 /**

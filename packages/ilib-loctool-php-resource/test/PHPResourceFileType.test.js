@@ -96,12 +96,12 @@ describe("PHPresourcefiletype", function() {
         var ptf = new PHPResourceFileType(p);
         expect(ptf).toBeTruthy();
 
-        var phprf1 = ptf.getResourceFile("fr-FR", "fr/FR/foo.phpon");
+        var phprf1 = ptf.getResourceFile("fr-FR");
         expect(phprf1.getLocale().toString()).toBe("fr-FR");
 
         var phprf2 = ptf.getResourceFile("fr-FR", "sublibrary/fr/FR/foo.phpon");
         expect(phprf2.getLocale().toString()).toBe("fr-FR");
 
-        expect(phprf1).not.toBe(phprf2);
+        expect(phprf1 !== phprf2).toBeTruthy();
     });
 });
