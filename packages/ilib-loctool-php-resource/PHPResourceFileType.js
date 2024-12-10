@@ -46,6 +46,8 @@ var PHPResourceFileType = function(project) {
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
+
+    this.resourceFiles = {};
 };
 
 /*
@@ -136,29 +138,30 @@ PHPResourceFileType.prototype.newFile = function(pathName, options) {
  *
  * @param {String} locale the name of the locale in which the resource
  * file will reside
- * @param {String} pathName the optional path to the resource file if the
- * caller has already calculated what it should be
+ * @param {String|undefined} pathName the optional path template to the
+ * resource file if the caller has already got a template for the path
  * @return {PHPResourceFile} the PHP resource file that serves the
  * given locale.
  */
 PHPResourceFileType.prototype.getResourceFile = function(locale, pathName) {
     var loc = locale || this.project.sourceLocale;
-    var key = [loc, pathName].join("_");
 
-    var resfile = this.resourceFiles && this.resourceFiles[key];
-
-    if (!resfile) {
-        resfile = this.resourceFiles[key] = new PHPResourceFile({
+    if (!this.resourceFiles[loc]) {
+        var formattedPathName = pathName ?
+            this.API.utils.formatPath(pathName, {
+                locale: loc
+            }) : this.getLocalizedPath(loc);
+        this.resourceFiles[loc] = new PHPResourceFile({
             project: this.project,
             locale: loc,
-            pathName: pathName,
+            pathName: formattedPathName,
             type: this
         });
 
         this.logger.trace("Defining new resource file");
     }
 
-    return resfile;
+    return this.resourceFiles[loc];
 };
 
 /**

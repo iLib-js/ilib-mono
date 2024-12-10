@@ -13,11 +13,14 @@ project.json file:
 - `sourceLocale`: The locale of the source strings. This is the locale
   that the strings in the source files are assumed to be in. The default
   is "en-US".
-- `template`: The template to use when generating the output file. The
-  default is `resource-files/Translation[locale].php`. See the documentation
-  of the loctool itself for more information about the template syntax.
+- `template`: The default path template to use when generating the output file
+  name if the source file mapping does not specify it. The default value for 
+  this default is `resource-files/Translation[locale].php` but you can set it
+  here for any file types that do not set it on their own. See the documentation
+  of the loctool itself for more information about path template syntax.
 
-Example project.json configuration snippet:
+Example project.json configuration snippet where strings are extracted from
+tmpl files and the localized resources are output to PHP files:
 
 ```json
 {
@@ -26,30 +29,50 @@ Example project.json configuration snippet:
             "en-US",
             "fr-FR"
         ],
+        "resourceFileTypes" : {
+            "php" : "ilib-loctool-php-resource"
+        },
+        "template": {
+            "mappings": {
+                "admin/**/*.tmpl": {
+                    "sourceLocale": "en-US",
+                    "template": "localized/Template[locale].php"
+                },
+                "src/**/*.tmpl": {
+                    "sourceLocale": "en-US"
+                }
+            }
+        }
         "php": {
             "sourceLocale": "en-US",
-            "template": "localized/Lang[locale].php"
         }
     }
 }
 ```
 
-Additionally, you must specify the plugin name in the loctool configuration
-for resource file types. For example:
+The resourceFileTypes property maps datatypes to loctool plugins. This registers
+the named plugin as the resource file type for resources from your source that
+have that datatype. For example, let's say we use a made up datatype of "template"
+which represents a UI written in some templating language. If you are extracting
+resources from template .tmpl files, you would use "template" as the source file
+data type and map that to "ilib-loctool-php-resource" to output the results to
+php resource files. See the loctool plugin you are using to parse your project's
+source files to find out what the source file data type is.
 
-```json
-{
-    "resourceFileTypes" : {
-        "[your source file data type here]" : "ilib-loctool-php-resource"
-    }
-}
-```
+Note that the `template` property can be specified in the mapping for your source
+files (as shown above), or globally for the whole project in the settings.php.template
+property. If specified in both places, the mapping property takes precedence. Note
+that most of the time you will want to specify the template in the mapping property
+because the source file plugin will already have a default template that may be
+inappropriate for your resources and its default template overrides the one specified
+in the settings.php.template property.
 
-This registers the plugin as the resource file type for resources from
-your source. For example, if you are extracting resources from PHP files,
-you would use "php" as the source file data type. See the loctool plugin
-you are using to parse the source files to find out what the source file
-data type is.
+In the example above, the strings extracted from `admin/**/*.tmpl` files will be output
+to `localized/Template[locale].php` as per the mapping, and the strings extracted
+from `src/**/*.tmpl` files will be output to `localized/Lang[locale].php` as per the
+global setting in the `php` property. If the template is not specified
+in either location, the default template will be used which is
+`resource-files/Translation[locale].php`.
 
 ## Release Notes
 

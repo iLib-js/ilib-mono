@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-php-resource",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "main": "./PHPResourceFileType.js",
     "description": "A loctool plugin that knows how to output PHP resource files",
     "license": "Apache-2.0",
@@ -43,7 +43,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "dist": "pnpm pack",
+        "build": "pnpm pack",
         "test": "jest",
         "test:watch": "jest --watch",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
