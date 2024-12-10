@@ -1,5 +1,11 @@
 # ilib-loctool-javascript-resource
 
+## 1.0.7
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.0.5
 
 - update dependencies

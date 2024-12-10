@@ -1,5 +1,11 @@
 # ilib-loctool-po
 
+## 1.6.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.6.3
 
 - update dependencies

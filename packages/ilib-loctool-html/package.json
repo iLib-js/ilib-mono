@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-html",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "main": "./HTMLFileType.js",
     "description": "A loctool plugin that knows how to localize static html files",
     "license": "Apache-2.0",

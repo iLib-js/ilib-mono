@@ -1,5 +1,11 @@
 # ilib-loctool-android-resource
 
+## 1.0.4
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.0.3
 
 - update dependencies

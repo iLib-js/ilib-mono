@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-android-layout",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "main": "./AndroidLayoutFileType.js",
     "description": "A loctool plugin that knows how to process Android Layout Files",
     "license": "Apache-2.0",

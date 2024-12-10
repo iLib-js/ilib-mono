@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-javascript-resource",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "main": "./JavaScriptResourceFileType.js",
     "description": "A loctool plugin that knows how to process JS resource files",
     "license": "Apache-2.0",

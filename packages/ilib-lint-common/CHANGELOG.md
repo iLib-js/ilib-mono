@@ -1,5 +1,11 @@
 # ilib-lint-common
 
+## 3.1.1
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 3.1.0
 
 - added formatOutput() method to the Formatter class

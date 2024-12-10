@@ -1,5 +1,11 @@
 # ilib-loctool-yaml
 
+## 1.5.2
+
+### Patch Changes
+
+- ff316a5: Linked dependencies within the monorepo.
+
 ## 1.5.1
 
 - update dependencies

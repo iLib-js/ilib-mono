@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-ghfm-readmeio",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "main": "./MarkdownFileType.js",
     "description": "A loctool plugin that knows how to process github-flavored markdown files with www.readme.io extensions",
     "license": "Apache-2.0",
