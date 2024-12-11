@@ -51,7 +51,6 @@ function rmrf(path) {
 }
 
 afterEach(() => {
-debugger;
     [
         "./test/testfiles/test/output.tmx",
         "./test/test/output.tmx"
