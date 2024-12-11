@@ -1660,6 +1660,12 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.20.0
+      ilib-po:
+        specifier: workspace:^1.1.0
+        version: link:../ilib-po
+      ilib-tools-common:
+        specifier: workspace:^1.11.0
+        version: link:../ilib-tools-common
       ilib-tree-node:
         specifier: workspace:^
         version: link:../ilib-tree-node
@@ -1721,6 +1727,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@jest/types':
+        specifier: ^29.6.3
+        version: 29.6.3
       cldr-core:
         specifier: ^43.1.0
         version: 43.1.0
@@ -5062,7 +5071,7 @@ packages:
     resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
-    resolution: {integrity: sha512-uB3+9dlUzViyigj73g+C4rLz2E7ibMxxcbwZDwARYvoyc6JMVbViZigFnkUtmzrSV6K1y7EuLq+l0o6otOD7KQ==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
+    resolution: {integrity: sha512-G/20MuXksGohqBfMoHLeuME4u3JwqW8qmAzDoUUCVmalQQYg7dARztde6cxx7VrOoilo4kwS4bt0L+yGs5u0PA==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
     version: 1.0.0
 
   ilib-loctool-mock-resource@file:packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz:

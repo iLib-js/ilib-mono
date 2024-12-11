@@ -152,6 +152,82 @@ describe("parser", () => {
         expect(resources[1].getTargetLocale()).toBe("de-DE");
     });
 
+    test("Parser parse strings that have a key that is different than the source", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '#k str1\n' +
+            'msgid "string 1"\n' +
+            'msgstr "this is string one"\n' +
+            '\n' +
+            '#k str2\n' +
+            'msgid "string 2"\n' +
+            'msgstr "this is string two"\n'
+        );
+
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(2);
+        const resources = set.getAll();
+        expect(resources.length).toBe(2);
+
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("str1");
+        expect(resources[0].getTarget()).toBe("this is string one");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
+
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("str2");
+        expect(resources[1].getTarget()).toBe("this is string two");
+        expect(resources[1].getTargetLocale()).toBe("de-DE");
+    });
+
+    test("Parser parse glean target locale from the parsed file", () => {
+        expect.assertions(9);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: de-DE\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "this is string one"\n');
+
+        expect(set).toBeTruthy();
+
+        const r = set.get(ResourceString.hashKey("foo", "de-DE", "string 1", "po"));
+        expect(r).toBeTruthy();
+
+        expect(r.getSource()).toBe("string 1");
+        expect(r.getSourceLocale()).toBe("en-US");
+        expect(r.getKey()).toBe("string 1");
+        expect(r.getTarget()).toBe("this is string one");
+        expect(r.getTargetLocale()).toBe("de-DE");
+        expect(r.getType()).toBe("string");
+    });
+
     test("ParserParsePluralString", () => {
         expect.assertions(9);
 
@@ -212,6 +288,43 @@ describe("parser", () => {
         expect(strings.one).toBe("one object");
         expect(strings.other).toBe("{$count} objects");
         expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        strings = resources[0].getTarget();
+        expect(strings.one).toBe("Ein Objekt");
+        expect(strings.other).toBe("{$count} Objekten");
+        expect(resources[0].getTargetLocale()).toBe("de-DE");
+    });
+
+    test("ParserParse plural string with translations and a key that is different than the singular", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '#k plural1\n' +
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "Ein Objekt"\n' +
+            'msgstr[1] "{$count} Objekten"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        const resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getType()).toBe("plural");
+        let strings = resources[0].getSource();
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("plural1");
         expect(resources[0].getSourceLocale()).toBe("en-US");
         strings = resources[0].getTarget();
         expect(strings.one).toBe("Ein Objekt");
@@ -675,6 +788,129 @@ describe("parser", () => {
         expect(resources[1].getPath()).toBe("src/bar.html");
     });
 
+    test("ParserParseExtractComments with our po extensions", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '# translator\'s comments\n' +
+            '#: src/foo.html:32 src/bar.html:234\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#| str 1\n' +
+            '#k array1\n' +
+            '#d datatype1\n' +
+            '#p manhattan\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "Zeichenfolge 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '#d datatype1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "Zeichenfolge 2"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        const resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getType()).toBe("array");
+        expect(resources[0].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[0].getTarget()).toStrictEqual(["Zeichenfolge 1", "Zeichenfolge 2"]);
+        expect(resources[0].getDataType()).toBe("datatype1");
+        expect(resources[0].getKey()).toBe("array1");
+        // the extension should be ignored in the comment field
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32 src/bar.html:234"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
+        expect(resources[0].getProject()).toBe("manhattan");
+    });
+
+    test("ParserParseExtract with multiple array resources", () => {
+        expect.assertions(18);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '# translator\'s comments\n' +
+            '#: src/foo.html:32 src/bar.html:234\n' +
+            '#. This is comments from the engineer to the translator for string 1.\n' +
+            '#, c-format\n' +
+            '#| str 1\n' +
+            '#k array1\n' +
+            '#d datatype1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "Zeichenfolge 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '#d datatype1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "Zeichenfolge 2"\n' +
+            '\n' +
+            '#: src/foo.html:39\n' +
+            '#k array2\n' +
+            '#d datatype2\n' +
+            '## 0\n' +
+            'msgid "string 3"\n' +
+            'msgstr "Zeichenfolge 3"\n' +
+            '\n' +
+            '#k array2\n' +
+            '#d datatype2\n' +
+            '## 1\n' +
+            'msgid "string 4"\n' +
+            'msgstr "Zeichenfolge 4"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(2);
+        const resources = set.getAll();
+        expect(resources.length).toBe(2);
+
+        expect(resources[0].getType()).toBe("array");
+        expect(resources[0].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[0].getTarget()).toStrictEqual(["Zeichenfolge 1", "Zeichenfolge 2"]);
+        expect(resources[0].getKey()).toBe("array1");
+        expect(resources[0].getDataType()).toBe("datatype1");
+        // the extension should be ignored in the comment field
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32 src/bar.html:234"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
+
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getSource()).toStrictEqual(["string 3", "string 4"]);
+        expect(resources[1].getTarget()).toStrictEqual(["Zeichenfolge 3", "Zeichenfolge 4"]);
+        expect(resources[1].getKey()).toBe("array2");
+        expect(resources[1].getDataType()).toBe("datatype2");
+        expect(resources[1].getPath()).toBe("src/foo.html");
+        expect(resources[1].getComment()).toBe('{"paths":["src/foo.html:39"]}');
+    });
+
     test("ParserParseExtractFileNameNoLineNumbers", () => {
         expect.assertions(12);
 
@@ -912,5 +1148,362 @@ describe("parser", () => {
         expect(resources[0].getSource()).toBe("string 1");
         expect(resources[0].getKey()).toBe("string 1");
         expect(resources[0].getComment()).toBeFalsy();
+    });
+
+    test("ParserParse use default datatype", () => {
+        expect.assertions(33);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +  // should override the targetLocale in the constructor
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: javascript\\n"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#k str1\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#k array1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne 2"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#k plural1\n' +
+            'msgid "{$count} object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} objet"\n' +
+            'msgstr[1] "{$count} objets"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(3);
+        const resources = set.getAll();
+        expect(resources.length).toBe(3);
+
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getTarget()).toBe("chaîne 1");
+        expect(resources[0].getKey()).toBe("str1");
+        expect(resources[0].getPath()).toBe("src/foo.html");
+        expect(resources[0].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[0].getDataType()).toBe("javascript");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[1].getTarget()).toStrictEqual(["chaîne 1", "chaîne 2"]);
+        expect(resources[1].getKey()).toBe("array1");
+        expect(resources[1].getPath()).toBe("src/foo.html");
+        expect(resources[1].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[1].getDataType()).toBe("javascript");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[2].getType()).toBe("plural");
+        let strings = resources[2].getSource();
+        expect(strings.one).toBe("{$count} object");
+        expect(strings.other).toBe("{$count} objects");
+        strings = resources[2].getTarget();
+        expect(strings.one).toBe("{$count} objet");
+        expect(strings.other).toBe("{$count} objets");
+        expect(resources[2].getKey()).toBe("plural1");
+        expect(resources[2].getPath()).toBe("src/foo.html");
+        expect(resources[2].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[2].getDataType()).toBe("javascript");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
+    });
+
+    test("ParserParse use the datatype included in each resource", () => {
+        expect.assertions(33);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +  // should override the targetLocale in the constructor
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: javascript\\n"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#d asdfasdf\n' +
+            '#k str1\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#d asdfasdf\n' +
+            '#k array1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne 2"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#d asdfasdf\n' +
+            '#k plural1\n' +
+            'msgid "{$count} object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} objet"\n' +
+            'msgstr[1] "{$count} objets"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(3);
+        const resources = set.getAll();
+        expect(resources.length).toBe(3);
+
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getTarget()).toBe("chaîne 1");
+        expect(resources[0].getKey()).toBe("str1");
+        expect(resources[0].getPath()).toBe("src/foo.html");
+        expect(resources[0].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[0].getDataType()).toBe("asdfasdf");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[1].getTarget()).toStrictEqual(["chaîne 1", "chaîne 2"]);
+        expect(resources[1].getKey()).toBe("array1");
+        expect(resources[1].getPath()).toBe("src/foo.html");
+        expect(resources[1].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[1].getDataType()).toBe("asdfasdf");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[2].getType()).toBe("plural");
+        let strings = resources[2].getSource();
+        expect(strings.one).toBe("{$count} object");
+        expect(strings.other).toBe("{$count} objects");
+        strings = resources[2].getTarget();
+        expect(strings.one).toBe("{$count} objet");
+        expect(strings.other).toBe("{$count} objets");
+        expect(resources[2].getKey()).toBe("plural1");
+        expect(resources[2].getPath()).toBe("src/foo.html");
+        expect(resources[2].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[2].getDataType()).toBe("asdfasdf");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
+    });
+
+    test("ParserParse use the file project name", () => {
+        expect.assertions(33);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +  // should override the targetLocale in the constructor
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Project: manhattan\\n"\n' +  // should override the projectName in the constructor
+            '\n' +
+            '#: src/foo.html\n' +
+            '#k str1\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#k array1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne 2"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#k plural1\n' +
+            'msgid "{$count} object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} objet"\n' +
+            'msgstr[1] "{$count} objets"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(3);
+        const resources = set.getAll();
+        expect(resources.length).toBe(3);
+
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getTarget()).toBe("chaîne 1");
+        expect(resources[0].getKey()).toBe("str1");
+        expect(resources[0].getPath()).toBe("src/foo.html");
+        expect(resources[0].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[0].getProject()).toBe("manhattan");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[1].getTarget()).toStrictEqual(["chaîne 1", "chaîne 2"]);
+        expect(resources[1].getKey()).toBe("array1");
+        expect(resources[1].getPath()).toBe("src/foo.html");
+        expect(resources[1].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[1].getProject()).toBe("manhattan");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[2].getType()).toBe("plural");
+        let strings = resources[2].getSource();
+        expect(strings.one).toBe("{$count} object");
+        expect(strings.other).toBe("{$count} objects");
+        strings = resources[2].getTarget();
+        expect(strings.one).toBe("{$count} objet");
+        expect(strings.other).toBe("{$count} objets");
+        expect(resources[2].getKey()).toBe("plural1");
+        expect(resources[2].getPath()).toBe("src/foo.html");
+        expect(resources[2].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[2].getProject()).toBe("manhattan");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
+    });
+
+    test("ParserParse use project name in each resource", () => {
+        expect.assertions(33);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +  // should override the targetLocale in the constructor
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Project: manhattan\\n"\n' +  // should override the projectName in the constructor
+            '\n' +
+            '#: src/foo.html\n' +
+            '#p losangeles\n' +
+            '#k str1\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#p losangeles\n' +
+            '#k array1\n' +
+            '## 0\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne 1"\n' +
+            '\n' +
+            '#k array1\n' +
+            '## 1\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne 2"\n' +
+            '\n' +
+            '#: src/foo.html\n' +
+            '#p losangeles\n' +
+            '#k plural1\n' +
+            'msgid "{$count} object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} objet"\n' +
+            'msgstr[1] "{$count} objets"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(3);
+        const resources = set.getAll();
+        expect(resources.length).toBe(3);
+
+        expect(resources[0].getType()).toBe("string");
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getTarget()).toBe("chaîne 1");
+        expect(resources[0].getKey()).toBe("str1");
+        expect(resources[0].getPath()).toBe("src/foo.html");
+        expect(resources[0].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[0].getProject()).toBe("losangeles");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        expect(resources[0].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[1].getType()).toBe("array");
+        expect(resources[1].getSource()).toStrictEqual(["string 1", "string 2"]);
+        expect(resources[1].getTarget()).toStrictEqual(["chaîne 1", "chaîne 2"]);
+        expect(resources[1].getKey()).toBe("array1");
+        expect(resources[1].getPath()).toBe("src/foo.html");
+        expect(resources[1].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[1].getProject()).toBe("losangeles");
+        expect(resources[1].getSourceLocale()).toBe("en-US");
+        expect(resources[1].getTargetLocale()).toBe("fr-FR");
+
+        expect(resources[2].getType()).toBe("plural");
+        let strings = resources[2].getSource();
+        expect(strings.one).toBe("{$count} object");
+        expect(strings.other).toBe("{$count} objects");
+        strings = resources[2].getTarget();
+        expect(strings.one).toBe("{$count} objet");
+        expect(strings.other).toBe("{$count} objets");
+        expect(resources[2].getKey()).toBe("plural1");
+        expect(resources[2].getPath()).toBe("src/foo.html");
+        expect(resources[2].getComment()).toBe('{"paths":["src/foo.html"]}');
+        expect(resources[2].getProject()).toBe("losangeles");
+        expect(resources[2].getSourceLocale()).toBe("en-US");
+        expect(resources[2].getTargetLocale()).toBe("fr-FR");
     });
 });
