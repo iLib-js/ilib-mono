@@ -1,7 +1,7 @@
 /*
  * POFile.test.js - test the po and pot file handler object.
  *
- * Copyright © 2021, 2023 Box, Inc.
+ * Copyright © 2021, 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,14 @@
 var path = require("path");
 var fs = require("fs");
 
-if (!POFile) {
-    var POFile = require("../POFile.js");
-    var POFileType = require("../POFileType.js");
+var POFile = require("../POFile.js");
+var POFileType = require("../POFileType.js");
 
-    var CustomProject =  require("loctool/lib/CustomProject.js");
-    var TranslationSet =  require("loctool/lib/TranslationSet.js");
-    var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
-    var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
-    var ResourceArray =  require("loctool/lib/ResourceArray.js");
-}
+var CustomProject =  require("loctool/lib/CustomProject.js");
+var TranslationSet =  require("loctool/lib/TranslationSet.js");
+var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
+var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
+var ResourceArray =  require("loctool/lib/ResourceArray.js");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -123,6 +121,28 @@ var p2 = new CustomProject({
 });
 
 var t2 = new POFileType(p2);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/po/de-DE.po",
+        "./test/testfiles/po/fr-FR.po",
+        "./test/testfiles/po/no.po",
+        "./test/testfiles/po/ru-RU.po",
+        "./test/testfiles/po/ru.po",
+        "./test/testfiles/resources/template_ru-RU.po",
+        "./test/testfiles/resources/template_nb.po",
+        "./test/testfiles/resources/template_de-DE.po",
+        "./test/testfiles/resources/fr-FR.po",
+        "./test/testfiles/resources/template_fr-FR.po",
+        "./test/testfiles/resources/de-DE.po"
+    ].forEach(rmrf);
+});
 
 describe("pofile", function() {
     test("POInit", function() {
