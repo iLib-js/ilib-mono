@@ -1046,6 +1046,22 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-php-resource:
+    dependencies:
+      ilib-locale:
+        specifier: ^1.2.2
+        version: 1.2.2
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+    devDependencies:
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+      loctool:
+        specifier: workspace:^
+        version: link:../loctool
+
   packages/ilib-loctool-po:
     dependencies:
       ilib:

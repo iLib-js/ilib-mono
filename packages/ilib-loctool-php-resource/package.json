@@ -1,0 +1,63 @@
+{
+    "name": "ilib-loctool-php-resource",
+    "version": "0.1.0",
+    "main": "./PHPResourceFileType.js",
+    "description": "A loctool plugin that knows how to output PHP resource files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "javascript"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "PHPResourceFileType.js",
+        "PHPResourceFile.js",
+        "CHANGELOG.md"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "build": "pnpm pack",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "clean": "git clean -f -d *"
+    },
+    "engines": {
+        "node": ">=12.0"
+    },
+    "dependencies": {
+        "ilib-locale": "^1.2.2",
+        "micromatch": "^4.0.8"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "loctool": "workspace:^"
+    }
+}
