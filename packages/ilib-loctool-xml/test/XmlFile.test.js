@@ -172,6 +172,28 @@ beforeAll(function() {
     });
 });
 
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/resources/ja/JP/messages.xml",
+        "./test/testfiles/resources/ru/RU/messages.xml",
+        "./test/testfiles/resources/de/DE/sparse2.xml",
+        "./test/testfiles/resources/de/DE/messages.xml",
+        "./test/testfiles/resources/fr/FR/sparse2.xml",
+        "./test/testfiles/resources/fr/FR/messages.xml",
+        "./test/testfiles/resources/deep_de-DE.xml",
+        "./test/testfiles/resources/deep_fr-FR.xml",
+        "./test/testfiles/x/y/nomatch-ja_JP.xml",
+        "./test/testfiles/x/y/nomatch-fr_FR.xml",
+        "./test/testfiles/x/y/nomatch-ru_RU.xml"
+    ].forEach(rmrf);
+});
+
 describe("xmlfile", function() {
     test("XmlFileConstructor", function() {
         expect.assertions(1);

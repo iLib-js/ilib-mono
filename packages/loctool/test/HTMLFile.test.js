@@ -1,7 +1,7 @@
 /*
  * HTMLFile.test.js - test the HTML file handler object.
  *
- * Copyright © 2018, 2023 2023 Box, Inc.
+ * Copyright © 2018, 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,21 @@ function diff(a, b) {
 }
 
 var base = path.dirname(module.id);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/html/CookieFlow.de-DE.html",
+        "./test/testfiles/html/CookieFlow.fr-FR.html",
+        "./test/testfiles/html/nostrings.de-DE.html",
+        "./test/testfiles/html/nostrings.fr-FR.html"
+    ].forEach(rmrf);
+});
 
 describe("htmlfile", function() {
     test("HTMLFileConstructor", function() {

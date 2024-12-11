@@ -66,6 +66,28 @@ var p2 = new WebProject({
 var mdft = new MarkdownFileType(p);
 var base = path.dirname(module.id);
 
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/md/subproject/de-DE/notrans2.md",
+        "./test/testfiles/md/subproject/de-DE/notrans.md",
+        "./test/testfiles/md/subproject/fr-FR/notrans2.md",
+        "./test/testfiles/md/subproject/fr-FR/notrans.md",
+        "./test/testfiles/de-DE/md/nostrings.md",
+        "./test/testfiles/de-DE/md/test1.md",
+        "./test/testfiles/de-DE/md/test3.md",
+        "./test/testfiles/fr-FR/md/nostrings.md",
+        "./test/testfiles/fr-FR/md/test1.md",
+        "./test/testfiles/fr-FR/md/test3.md",
+        "./test/testfiles/en-GB/md/test1.md"
+    ].forEach(rmrf);
+});
+
 describe("markdown", function() {
     test("MarkdownFileConstructor", function() {
         expect.assertions(1);

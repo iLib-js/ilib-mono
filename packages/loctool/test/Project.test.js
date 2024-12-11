@@ -24,12 +24,6 @@ if (!Project) {
     var Project = require("../lib/Project.js");
 }
 
-function rmrf(path) {
-    if (fs.existsSync(path)) {
-        fs.unlinkSync(path);
-    }
-}
-
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
 
@@ -43,6 +37,61 @@ function diff(a, b) {
     }
 }
 
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/loctest-extracted.xliff",
+        "./test/testfiles/loctest-new-es-US.xliff",
+        "./test/testfiles/loctest-new-ja-JP.xliff",
+        "./test/testfiles/loctest-new-zh-Hans-CN.xliff",
+        "./test/testfiles/es-US/md/test1.md",
+        "./test/testfiles/ja-JP/md/test1.md",
+        "./test/testfiles/de-DE/md/test1.md",
+        "./test/testfiles/en-GB/md/test1.md",
+        "./test/testfiles/zh-Hans-CN/md/test1.md",
+        "./test/testfiles/loctest-new-en-GB.po",
+        "./test/testfiles/loctest-new-en-GB.xliff",
+        "./test/testfiles/project2/loctest-extracted.xliff",
+        "./test/testfiles/project2/loctest-new-es-US.xliff",
+        "./test/testfiles/project2/loctest-new-ja-JP.xliff",
+        "./test/testfiles/project2/loctest-new-ru-RU.xliff",
+        "./test/testfiles/project2/loctest-new-en-GB.xliff",
+        "./test/testfiles/project2/loctest.xliff",
+        "./test/testfiles/translations/loctest.xliff",
+        "./test/testfiles/project3/loctest-extracted.xliff",
+        "./test/testfiles/project3/loctest-new-es-US.xliff",
+        "./test/testfiles/project3/loctest-new-ja-JP.xliff",
+        "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff",
+        "./test/testfiles/project3/es-US.mock",
+        "./test/testfiles/project3/ja-JP.mock",
+        "./test/testfiles/project3/zh-Hans-CN.mock",
+        "./test/testfiles/loctest-extracted.po",
+        "./test/testfiles/loctest-new-es-US.po",
+        "./test/testfiles/loctest-new-ja-JP.po",
+        "./test/testfiles/loctest-new-zh-Hans-CN.po",
+        "./test/testfiles/project3/loctest-extracted.po",
+        "./test/testfiles/project3/loctest-new-es-US.po",
+        "./test/testfiles/project3/loctest-new-ja-JP.po",
+        "./test/testfiles/project3/loctest-new-zh-Hans-CN.po",
+        "./test/testfiles/project2/res/values-en/strings.xml",
+        "./test/testfiles/project2/res/values-en/plurals.xml",
+        "./test/testfiles/project2/res/values-es/strings.xml",
+        "./test/testfiles/project2/res/values-es/plurals.xml",
+        "./test/testfiles/project2/res/values-ja/strings.xml",
+        "./test/testfiles/project2/res/values-ja/plurals.xml",
+        "./test/testfiles/project2/res/values-ru/strings.xml",
+        "./test/testfiles/project2/res/values-ru/plurals.xml",
+        "./test/testfiles/project2/res/values-ps-rDO/strings.xml",
+        "./test/testfiles/project2/res/values-ps-rDO/arrays.xml",
+        "./test/testfiles/project2/res/values-ps-rDO/plurals.xml"
+    ].forEach(rmrf);
+});
+
 describe("project", function() {
     test("ProjectCreationAllEmpty", function() {
         expect.assertions(1);
@@ -53,7 +102,6 @@ describe("project", function() {
     test("ProjectGeneratesExtractedXliff", function() {
         expect.assertions(2);
         // set up first
-        rmrf("./test/testfiles/loctest-extracted.xliff");
         expect(!fs.existsSync("./test/testfiles/loctest-extracted.xliff")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {'locales': ['ja-JP']});
         project.addPath("md/test1.md");
@@ -74,9 +122,6 @@ describe("project", function() {
     test("ProjectGeneratesNewStringsXliffs", function() {
         expect.assertions(6);
         // set up first
-        rmrf("./test/testfiles/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/loctest-new-zh-Hans-CN.xliff");
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
@@ -101,10 +146,6 @@ describe("project", function() {
     test("ProjectLocalizeOnlyGeneratesNoXliffs", function() {
         expect.assertions(8);
         // set up first
-        rmrf("./test/testfiles/loctest-extracted.xliff");
-        rmrf("./test/testfiles/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/loctest-new-zh-Hans-CN.xliff");
         expect(!fs.existsSync("./test/testfiles/loctest-extracted.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
@@ -131,12 +172,6 @@ describe("project", function() {
     test("Project localize an md file, right files exist", function() {
         expect.assertions(12);
         // set up first
-        rmrf("./test/testfiles/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/loctest-new-zh-Hans-CN.xliff");
-        rmrf("./test/testfiles/es-US/md/test1.md");
-        rmrf("./test/testfiles/ja-JP/md/test1.md");
-        rmrf("./test/testfiles/zh-Hans-CN/md/test1.md");
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
@@ -171,12 +206,6 @@ describe("project", function() {
     test("Project localize a mock file with plurals using no plural conversions", function() {
         expect.assertions(12);
         // set up first
-        rmrf("./test/testfiles/project3/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff");
-        rmrf("./test/testfiles/project3/es-US.mock");
-        rmrf("./test/testfiles/project3/ja-JP.mock");
-        rmrf("./test/testfiles/project3/zh-Hans-CN.mock");
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
@@ -212,12 +241,6 @@ describe("project", function() {
     test("Project localize a mock file with plurals using no plural conversions, right content", function() {
         expect.assertions(18);
         // set up first
-        rmrf("./test/testfiles/project3/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff");
-        rmrf("./test/testfiles/project3/es-US.mock");
-        rmrf("./test/testfiles/project3/ja-JP.mock");
-        rmrf("./test/testfiles/project3/zh-Hans-CN.mock");
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
@@ -423,12 +446,6 @@ describe("project", function() {
     test("Project localize a mock file with plurals using plural conversions", function() {
         expect.assertions(12);
         // set up first
-        rmrf("./test/testfiles/project3/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff");
-        rmrf("./test/testfiles/project3/es-US.mock");
-        rmrf("./test/testfiles/project3/ja-JP.mock");
-        rmrf("./test/testfiles/project3/zh-Hans-CN.mock");
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
@@ -465,12 +482,6 @@ describe("project", function() {
     test("Project localize a mock file with plurals using plural conversions, right content", function() {
         expect.assertions(18);
         // set up first
-        rmrf("./test/testfiles/project3/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff");
-        rmrf("./test/testfiles/project3/es-US.mock");
-        rmrf("./test/testfiles/project3/ja-JP.mock");
-        rmrf("./test/testfiles/project3/zh-Hans-CN.mock");
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
@@ -638,9 +649,6 @@ describe("project", function() {
     test("ProjectGeneratesCorrectPluralCategoriesInNewStringsXliffs", function() {
         expect.assertions(9);
         // set up first
-        rmrf("./test/testfiles/project2/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ru-RU.xliff");
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ru-RU.xliff")).toBeTruthy();
@@ -777,9 +785,6 @@ describe("project", function() {
     test("Project generates correct plural strings in new strings files with convertPlural turned on", function() {
         expect.assertions(9);
         // set up first
-        rmrf("./test/testfiles/project2/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ru-RU.xliff");
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ru-RU.xliff")).toBeTruthy();
@@ -891,7 +896,6 @@ describe("project", function() {
     test("Project generates correct plural strings in the extracted strings files with convertPlural turned on", function() {
         expect.assertions(3);
         // set up first
-        rmrf("./test/testfiles/project2/loctest-extracted.xliff");
         expect(!fs.existsSync("./test/testfiles/project2/loctest-extracted.xliff")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles/project2', {
             convertPlurals: true
@@ -942,9 +946,6 @@ describe("project", function() {
     test("ProjectGeneratesCorrectPluralCategoriesInNewStringsXliffs20", function() {
         expect.assertions(9);
         // set up first
-        rmrf("./test/testfiles/project2/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ru-RU.xliff");
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ru-RU.xliff")).toBeTruthy();
@@ -1134,9 +1135,6 @@ describe("project", function() {
     test("Project generates correct plural strings in new strings file after convert option is turned on", function() {
         expect.assertions(9);
         // set up first
-        rmrf("./test/testfiles/project2/loctest-new-es-US.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ja-JP.xliff");
-        rmrf("./test/testfiles/project2/loctest-new-ru-RU.xliff");
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project2/loctest-new-ru-RU.xliff")).toBeTruthy();
@@ -1273,7 +1271,6 @@ describe("project", function() {
     test("Project generates correct plural strings in new strings file after convert option is turned on", function() {
         expect.assertions(3);
         // set up first
-        rmrf("./test/testfiles/project2/loctest-extracted.xliff");
         expect(!fs.existsSync("./test/testfiles/project2/loctest-extracted.xliff")).toBeTruthy();
         // adds Japanese and Russian to the list of locales to generate
         var project = ProjectFactory('./test/testfiles/project2', {

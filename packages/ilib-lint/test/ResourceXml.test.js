@@ -108,7 +108,7 @@ describe("testResourceXML", () => {
             target: "Diese Zeichenfolge enthält <c0><b>xml</b> Elementer</c0>.",
             pathName: "a/b/c.xliff"
         });
-debugger;
+
         const actual = rule.matchString({
             source: resource.getSource(),
             target: resource.getTarget(),
@@ -211,7 +211,7 @@ debugger;
             target: "Diese Zeichenfolge enthält <>pxml</>p.",
             pathName: "a/b/c.xliff"
         });
-debugger;
+;
         const actual = rule.matchString({
             source: resource.getSource(),
             target: resource.getTarget(),
@@ -347,7 +347,7 @@ debugger;
             resource,
             file: "a/b/c.xliff"
         });
-debugger;
+
         // if the source contains XML tags, the target must too
         const expected = [
             new Result({

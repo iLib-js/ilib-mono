@@ -1,7 +1,7 @@
 /*
  * HamlFile.test.js - test the Haml file handler object.
  *
- * Copyright © 2019, 2023 Box, Inc.
+ * Copyright © 2019, 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-if (!HamlFile) {
-    var HamlFile = require("../HamlFile.js");
-    var HamlFileType = require("../HamlFileType.js");
-    var CustomProject =  require("loctool/lib/CustomProject.js");
-    var ResourceString =  require("loctool/lib/ResourceString.js");
-    var TranslationSet =  require("loctool/lib/TranslationSet.js");
-    var fs = require("fs");
-}
+var HamlFile = require("../HamlFile.js");
+var HamlFileType = require("../HamlFileType.js");
+var CustomProject =  require("loctool/lib/CustomProject.js");
+var ResourceString =  require("loctool/lib/ResourceString.js");
+var TranslationSet =  require("loctool/lib/TranslationSet.js");
+
+var fs = require("fs");
+
 function diff(a, b) {
     if ((!a || !b) && (a || b)) {
         console.log("a is " + a + ", b is " + b);
@@ -55,6 +55,19 @@ var pi = new CustomProject({
     identify: true
 });
 var hft = new HamlFileType(p);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        ".//test/testfiles/ruby/t2.fr-FR.html.haml"
+    ].forEach(rmrf);
+});
+
 describe("hamlfile", function() {
     test("HamlFileConstructor", function() {
         expect.assertions(1);

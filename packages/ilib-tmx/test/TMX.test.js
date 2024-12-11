@@ -44,6 +44,19 @@ function diff(a, b) {
 
 const loctoolVersion = JSON.parse(fs.readFileSync(Path.join(__dirname, "..", "package.json"), "utf-8")).version;
 
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(() => {
+    [
+        "./test/testfiles/test/output.tmx",
+        "./test/test/output.tmx"
+    ].forEach(rmrf);
+});
+
 describe("testTMX", () => {
     test("TMXConstructor", () => {
         expect.assertions(1);

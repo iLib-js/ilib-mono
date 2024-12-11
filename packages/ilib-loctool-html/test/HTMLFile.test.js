@@ -1,7 +1,7 @@
 /*
  * HTMLFile.test.js - test the HTML file handler object.
  *
- * Copyright © 2018-2019, 2023 Box, Inc.
+ * Copyright © 2018-2019, 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
  */
 var path = require("path");
 var fs = require("fs");
-if (!HTMLFile) {
-    var HTMLFile = require("../HTMLFile.js");
-    var HTMLFileType = require("../HTMLFileType.js");
-    var CustomProject =  require("loctool/lib/CustomProject.js");
-    var TranslationSet =  require("loctool/lib/TranslationSet.js");
-    var ResourceString =  require("loctool/lib/ResourceString.js");
-}
+
+var HTMLFile = require("../HTMLFile.js");
+var HTMLFileType = require("../HTMLFileType.js");
+var CustomProject =  require("loctool/lib/CustomProject.js");
+var TranslationSet =  require("loctool/lib/TranslationSet.js");
+var ResourceString =  require("loctool/lib/ResourceString.js");
+
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
     for (var i = 0; i < min; i++) {
@@ -55,6 +55,22 @@ var p2 = new CustomProject({
     targetDir: "testfiles"
 });
 var t = new HTMLFileType(p2);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/testfiles/html/CookieFlow.de-DE.html",
+        "./test/testfiles/testfiles/html/CookieFlow.fr-FR.html",
+        "./test/testfiles/testfiles/html/nostrings.de-DE.html",
+        "./test/testfiles/testfiles/html/nostrings.fr-FR.html"
+    ].forEach(rmrf);
+});
+
 describe("htmlfile", function() {
     test("HTMLFileConstructor", function() {
         expect.assertions(1);

@@ -26,6 +26,19 @@ import SourceFile from '../src/SourceFile.js';
 
 import {describe, expect, test} from '@jest/globals';
 
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "test/testfiles/test.txt",
+        "test/testfiles/test2.txt"
+    ].forEach(rmrf);
+});
+
 /**
  * @jest-environment node
  * @type {import('@jest/types').Global.TestFrameworkGlobals}

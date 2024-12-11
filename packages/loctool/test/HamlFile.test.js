@@ -1,7 +1,7 @@
 /*
  * HamlFile.test.js - test the Haml file handler object.
  *
- * Copyright © 2016-2017, 2023 HealthTap, Inc.
+ * Copyright © 2016-2017, 2023-2024 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,14 @@
  * limitations under the License.
  */
 
-if (!HamlFile) {
-    var HamlFile = require("../lib/HamlFile.js");
-    var HamlFileType = require("../lib/HamlFileType.js");
-    var WebProject =  require("../lib/WebProject.js");
-    var ResourceString =  require("../lib/ResourceString.js");
-    var TranslationSet =  require("../lib/TranslationSet.js");
-    var ResourceString =  require("../lib/ResourceString.js");
+var HamlFile = require("../lib/HamlFile.js");
+var HamlFileType = require("../lib/HamlFileType.js");
+var WebProject =  require("../lib/WebProject.js");
+var ResourceString =  require("../lib/ResourceString.js");
+var TranslationSet =  require("../lib/TranslationSet.js");
+var ResourceString =  require("../lib/ResourceString.js");
 
-    var fs = require("fs");
-}
+var fs = require("fs");
 
 function diff(a, b) {
     if ((!a || !b) && (a || b)) {
@@ -75,6 +73,18 @@ var p2 = new WebProject({
 });
 
 var hft = new HamlFileType(p);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/testfiles/ruby/t2.fr-FR.html.haml"
+    ].forEach(rmrf);
+});
 
 describe("hamlfile", function() {
     test("HamlFileConstructor", function() {

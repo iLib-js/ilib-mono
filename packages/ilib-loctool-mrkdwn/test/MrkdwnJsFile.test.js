@@ -19,14 +19,12 @@
 var path = require("path");
 var fs = require("fs");
 
-if (!MrkdwnJsFile) {
-    var MrkdwnJsFile = require("../MrkdwnJsFile.js");
-    var MrkdwnJsFileType = require("../MrkdwnJsFileType.js");
-    var CustomProject = require("loctool/lib/CustomProject.js");
-    var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
-    var TranslationSet = require("loctool/lib/TranslationSet.js");
-    var ResourceString = require("loctool/lib/ResourceString.js");
-}
+var MrkdwnJsFile = require("../MrkdwnJsFile.js");
+var MrkdwnJsFileType = require("../MrkdwnJsFileType.js");
+var CustomProject = require("loctool/lib/CustomProject.js");
+var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
+var TranslationSet = require("loctool/lib/TranslationSet.js");
+var ResourceString = require("loctool/lib/ResourceString.js");
 
 var p = new CustomProject({
     name: "foo",
@@ -107,6 +105,21 @@ var p4 = new CustomProject({
     }
 });
 var mdft4 = new MrkdwnJsFileType(p4);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "test/testfiles/js/nostrings_de-DE.js",
+        "test/testfiles/js/nostrings_fr-FR.js",
+        "test/testfiles/js/test1_de-DE.js",
+        "test/testfiles/js/test1_fr-FR.js"
+    ].forEach(rmrf);
+});
 
 describe("mrkdwn", function() {
     test("MrkdwnJsFileConstructor", function() {

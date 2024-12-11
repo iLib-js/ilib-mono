@@ -1,7 +1,7 @@
 /*
  * XliffSplit.test.js - test the split of Xliff object.
  *
- * Copyright © 2020, 2023 JEDLSoft
+ * Copyright © 2020, 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,15 @@ function rmrf(path) {
         fs.unlinkSync(path);
     }
 }
+
+afterEach(() => {
+    [
+        "./test/testfiles/xliff20/output-en-US.xliff",
+        "./test/testfiles/xliff20/output-ko-KR.xliff",
+        "./test/testfiles/xliff20/splitTest/app1/en-US.xliff",
+        "./test/testfiles/xliff20/splitTest/app2/en-US.xliff"
+    ].forEach(rmrf);
+});
 
 describe("xliffsplit", function() {
     test("XliffSplitnoParameter", function() {
