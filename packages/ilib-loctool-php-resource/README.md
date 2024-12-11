@@ -80,7 +80,7 @@ See the [change log](./CHANGELOG.md) for details on changes between releases.
 
 ## License
 
-Copyright © 2024 JEDLSoft
+Copyright © 2024 Box, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
