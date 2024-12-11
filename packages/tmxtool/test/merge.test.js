@@ -17,10 +17,22 @@
  * limitations under the License.
  */
 
+import fs from 'fs';
 import TMX from 'ilib-tmx';
-import { TranslationUnit } from 'ilib-tools-common';
 
 import merge from '../src/merge.js';
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "test/testfiles/merge.tmx"
+    ].forEach(rmrf);
+});
 
 describe("testmerge", () => {
     test("MergeNormal", () => {

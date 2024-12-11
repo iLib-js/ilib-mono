@@ -17,10 +17,22 @@
  * limitations under the License.
  */
 
+import fs from 'fs';
 import TMX from 'ilib-tmx';
-import { TranslationUnit } from 'ilib-tools-common';
 
 import diff from '../src/diff.js';
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "test/testfiles/diff.tmx"
+    ].forEach(rmrf);
+});
 
 describe("testdiff", () => {
     test("DiffNormal", () => {
