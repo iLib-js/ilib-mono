@@ -1,7 +1,7 @@
 /*
  * MarkdownFile.test.js - test the Markdown file handler object.
  *
- * Copyright © 2019-2023 Box, Inc.
+ * Copyright © 2019-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@
 var path = require("path");
 var fs = require("fs");
 
-if (!MarkdownFile) {
-    var MarkdownFile = require("../MarkdownFile.js");
-    var MarkdownFileType = require("../MarkdownFileType.js");
-    var CustomProject = require("loctool/lib/CustomProject.js");
-    var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
-    var TranslationSet = require("loctool/lib/TranslationSet.js");
-    var ResourceString = require("loctool/lib/ResourceString.js");
-}
+var MarkdownFile = require("../MarkdownFile.js");
+var MarkdownFileType = require("../MarkdownFileType.js");
+var CustomProject = require("loctool/lib/CustomProject.js");
+var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
+var TranslationSet = require("loctool/lib/TranslationSet.js");
+var ResourceString = require("loctool/lib/ResourceString.js");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -111,6 +109,27 @@ var p3 = new CustomProject({
 });
 
 var mdft3 = new MarkdownFileType(p3);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "test/testfiles/subproject/de-DE/notrans.md",
+        "test/testfiles/subproject/de-DE/notrans2.md",
+        "test/testfiles/subproject/fr-FR/notrans.md",
+        "test/testfiles/subproject/fr-FR/notrans2.md",
+        "test/testfiles/test/testfiles/de-DE/md/nostrings.md",
+        "test/testfiles/test/testfiles/de-DE/md/test1.md",
+        "test/testfiles/test/testfiles/de-DE/md/test3.md",
+        "test/testfiles/test/testfiles/fr-FR/md/nostrings.md",
+        "test/testfiles/test/testfiles/fr-FR/md/test1.md",
+        "test/testfiles/test/testfiles/fr-FR/md/test3.md"
+    ].forEach(rmrf);
+});
 
 describe("markdown", function() {
     test("MarkdownFileConstructor", function() {
