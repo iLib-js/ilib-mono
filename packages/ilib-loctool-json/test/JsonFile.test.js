@@ -20,16 +20,14 @@
 var path = require("path");
 var fs = require("fs");
 
-if (!JsonFile) {
-    var JsonFile = require("../JsonFile.js");
-    var JsonFileType = require("../JsonFileType.js");
+var JsonFile = require("../JsonFile.js");
+var JsonFileType = require("../JsonFileType.js");
 
-    var CustomProject =  require("loctool/lib/CustomProject.js");
-    var TranslationSet =  require("loctool/lib/TranslationSet.js");
-    var ResourceString =  require("loctool/lib/ResourceString.js");
-    var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
-    var ResourceArray =  require("loctool/lib/ResourceArray.js");
-}
+var CustomProject =  require("loctool/lib/CustomProject.js");
+var TranslationSet =  require("loctool/lib/TranslationSet.js");
+var ResourceString =  require("loctool/lib/ResourceString.js");
+var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
+var ResourceArray =  require("loctool/lib/ResourceArray.js");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -137,6 +135,24 @@ var p2 = new CustomProject({
 });
 
 var t2 = new JsonFileType(p2);
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "test/testfiles/resources/de/DE/messages.json",
+        "test/testfiles/resources/de/DE/sparse2.json",
+        "test/testfiles/resources/fr/FR/messages.json",
+        "test/testfiles/resources/fr/FR/str.json",
+        "test/testfiles/resources/fr/FR/sparse2.json",
+        "test/testfiles/resources/deep_de-DE.json",
+        "test/testfiles/resources/deep_fr-FR.json"
+    ].forEach(rmrf);
+});
 
 describe("jsonfile", function() {
     test("JsonFileConstructor", function() {
