@@ -50,9 +50,9 @@
     },
     "scripts": {
         "test": "pnpm test:jest",
-        "test:jest": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --trace-warnings --experimental-vm-modules\" jest",
+        "test:jest": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test:jest --watch",
-        "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --trace-warnings --experimental-vm-modules --inspect-brk\" jest -i",
+        "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "lint": "node src/index.js",
         "clean": "git clean -f -d src test",
         "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md && pnpm doc:html",

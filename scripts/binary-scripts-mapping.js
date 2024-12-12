@@ -20,6 +20,65 @@ const scriptsMap = new Map([
         `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules" jest --testEnvironment node`,
         `LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node`,
     ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules --inspect-brk" jest -i`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules --inspect-brk" jest -i  --testEnvironment node`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i  --testEnvironment node`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules --inspect-brk" jest -i --testEnvironment node`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i --testEnvironment node`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules" jest  --testEnvironment node`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js  --testEnvironment node`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules" jest --testEnvironment node --detectOpenHandles`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules" jest --testEnvironment node --detectOpenHandles --watch`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles --watch`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules" jest --testEnvironment node --watch`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --watch`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --experimental-vm-modules" jest --watch`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --watch`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --trace-warnings --experimental-vm-modules --inspect-brk" jest -i`,
+        `LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i`,
+    ],
+    [
+        `LANG=en_US.UTF8 NODE_OPTIONS="$NODE_OPTIONS --trace-warnings --experimental-vm-modules" jest`,
+        `LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js`,
+    ],
+    [
+        `NODE_OPTIONS="$NODE_OPTIONS  --experimental-vm-modules --inspect-brk" jest --testEnvironment node --detectOpenHandles -i`,
+        `node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles -i`,
+    ],
+    [
+        `NODE_OPTIONS="$NODE_OPTIONS  --experimental-vm-modules --inspect-brk" jest --testEnvironment node -i`,
+        `node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i`,
+    ],
+    [`NODE_OPTIONS="$NODE_OPTIONS --inspect-brk" jest`, `node --inspect-brk node_modules/jest/bin/jest.js`],
+    [`NODE_OPTIONS="$NODE_OPTIONS --inspect-brk" jest -i`, `node --inspect-brk node_modules/jest/bin/jest.js -i`],
+    [`jest --watch`, `node node_modules/jest/bin/jest.js --watch`],
+    [
+        `pnpm build:dev && node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --testEnvironment node -i`,
+        `pnpm build:dev && node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i`,
+    ],
+    [
+        `pnpm build:dev; NODE_OPTIONS="$NODE_OPTIONS --inspect-brk" jest --testEnvironment node -i`,
+        `pnpm build:dev; node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i`,
+    ],
 ]);
 
 const packageFiles = fs

@@ -46,7 +46,7 @@
     },
     "scripts": {
         "test": "node test/testSuite.js",
-        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d *"
     },
     "engines": {

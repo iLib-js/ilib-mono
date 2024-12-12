@@ -47,8 +47,8 @@
     },
     "scripts": {
         "test": "node node_modules/jest/bin/jest.js",
-        "test:watch": "jest --watch",
-        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "test:watch": "node node_modules/jest/bin/jest.js --watch",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d *"
     },
     "engines": {

@@ -42,9 +42,9 @@
     "scripts": {
         "build": "grunt babel",
         "test": "npm-run-all --npm-path pnpm build test:cli",
-        "test:cli": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest  --testEnvironment node",
+        "test:cli": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js  --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
-        "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i  --testEnvironment node",
+        "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i  --testEnvironment node",
         "clean": "git clean -f -d * ; rm -rf lib",
         "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibTreeNode.md && pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
