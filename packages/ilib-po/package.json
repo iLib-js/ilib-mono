@@ -47,7 +47,7 @@
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
         "types": "tsc",
-        "test": "jest",
+        "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test --watch",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
         "clean": "git clean -f -d src test",

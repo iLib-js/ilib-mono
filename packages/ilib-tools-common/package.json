@@ -57,7 +57,7 @@
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
+        "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
         "debug": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules --inspect-brk\" jest -i --testEnvironment node",
         "clean": "git clean -f -d src test; rm -rf lib",

@@ -53,7 +53,7 @@
         "node": ">= 14.0.0"
     },
     "scripts": {
-        "test": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node",
+        "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:watch": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --testEnvironment node --watch",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS  --experimental-vm-modules --inspect-brk\" jest --testEnvironment node -i",
         "clean": "git clean -f -d src test",
