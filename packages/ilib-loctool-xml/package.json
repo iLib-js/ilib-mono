@@ -55,6 +55,7 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
+        "micromatch": "^4.0.8",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
