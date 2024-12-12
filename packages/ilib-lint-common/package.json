@@ -61,7 +61,9 @@
         "types": "tsc -p ./jsconfig.json"
     },
     "devDependencies": {
+        "@jest/globals": "^29.7.0",
         "@tsconfig/node14": "^14.1.0",
+        "@types/jest": "^29.5.14",
         "@types/node": "^20.11.5",
         "docdash": "^2.0.2",
         "jest": "^29.7.0",

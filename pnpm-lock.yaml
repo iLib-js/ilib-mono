@@ -46,7 +46,7 @@ importers:
         version: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -192,7 +192,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -258,7 +258,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
@@ -368,9 +368,15 @@ importers:
 
   packages/ilib-lint-common:
     devDependencies:
+      '@jest/globals':
+        specifier: ^29.7.0
+        version: 29.7.0
       '@tsconfig/node14':
         specifier: ^14.1.0
         version: 14.1.2
+      '@types/jest':
+        specifier: ^29.5.14
+        version: 29.5.14
       '@types/node':
         specifier: ^20.11.5
         version: 20.17.4
@@ -407,7 +413,7 @@ importers:
         version: 2.0.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -438,7 +444,7 @@ importers:
         version: 2.0.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -496,7 +502,7 @@ importers:
         version: 10.7.6
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -678,7 +684,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -971,7 +977,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.0.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1169,7 +1175,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.0.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1220,7 +1226,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1324,7 +1330,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -1403,7 +1409,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.0.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.3
         version: 4.0.4
@@ -1469,7 +1475,7 @@ importers:
         version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -1551,7 +1557,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
+        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1639,7 +1645,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.0.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
@@ -1751,7 +1757,7 @@ importers:
         version: file:packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
 
   packages/message-accumulator:
     dependencies:
@@ -1806,7 +1812,7 @@ importers:
         version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -1843,7 +1849,7 @@ importers:
         version: link:../ilib-tools-common
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -9899,11 +9905,7 @@ snapshots:
       jest-runner: 26.6.3
       jest-runtime: 26.6.3
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - supports-color
-      - ts-node
-      - utf-8-validate
 
   '@jest/test-sequencer@29.7.0':
     dependencies:
@@ -10626,7 +10628,7 @@ snapshots:
       '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
-      webpack: 5.95.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   babel-plugin-add-module-exports@1.0.4: {}
 
@@ -11216,6 +11218,21 @@ snapshots:
       nested-error-stacks: 2.1.1
       pify: 4.0.1
       safe-buffer: 5.2.1
+
+  create-jest@29.7.0:
+    dependencies:
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-config: 29.7.0
+      jest-util: 29.7.0
+      prompts: 2.4.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
 
   create-jest@29.7.0(@types/node@12.20.55):
     dependencies:
@@ -13410,6 +13427,27 @@ snapshots:
       - supports-color
       - ts-node
 
+  jest-cli@29.7.0(node-notifier@8.0.2):
+    dependencies:
+      '@jest/core': 29.7.0(node-notifier@8.0.2)
+      '@jest/test-result': 29.7.0
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      create-jest: 29.7.0
+      exit: 0.1.2
+      import-local: 3.2.0
+      jest-config: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      yargs: 17.7.2
+    optionalDependencies:
+      node-notifier: 8.0.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
   jest-config@26.6.3:
     dependencies:
       '@babel/core': 7.26.0
@@ -13435,6 +13473,34 @@ snapshots:
       - canvas
       - supports-color
       - utf-8-validate
+
+  jest-config@29.7.0:
+    dependencies:
+      '@babel/core': 7.26.0
+      '@jest/test-sequencer': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.26.0)
+      chalk: 4.1.2
+      ci-info: 3.9.0
+      deepmerge: 4.3.1
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-circus: 29.7.0
+      jest-environment-node: 29.7.0
+      jest-get-type: 29.6.3
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-runner: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      micromatch: 4.0.8
+      parse-json: 5.2.0
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
 
   jest-config@29.7.0(@types/node@12.20.55):
     dependencies:
@@ -14064,6 +14130,20 @@ snapshots:
       '@jest/types': 29.6.3
       import-local: 3.2.0
       jest-cli: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+    optionalDependencies:
+      node-notifier: 8.0.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  jest@29.7.0(node-notifier@8.0.2):
+    dependencies:
+      '@jest/core': 29.7.0(node-notifier@8.0.2)
+      '@jest/types': 29.6.3
+      import-local: 3.2.0
+      jest-cli: 29.7.0(node-notifier@8.0.2)
     optionalDependencies:
       node-notifier: 8.0.2
     transitivePeerDependencies:
@@ -17369,36 +17449,6 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@3.2.3: {}
-
-  webpack@5.95.0:
-    dependencies:
-      '@types/estree': 1.0.6
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
-      browserslist: 4.24.2
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   webpack@5.95.0(webpack-cli@4.10.0):
     dependencies:
