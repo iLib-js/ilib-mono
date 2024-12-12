@@ -1,8 +1,9 @@
 {
     "name": "tmxtool",
     "version": "1.0.3",
-    "main": "./src/index.js",
     "type": "module",
+    "main": "./src/index.js",
+    "module": "./src/index.js",
     "bin": {
         "tmxtool": "./src/index.js",
         "tmxtool.bat": "./tmxtool.bat"

@@ -3,6 +3,12 @@
     "version": "1.2.2",
     "main": "./lib/index.js",
     "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "require": "./lib/index.js",
+            "import": "./src/index.js"
+        }
+    },
     "description": "Utilities used to generate locale data for ilib packages",
     "keywords": [
         "internationalization",
