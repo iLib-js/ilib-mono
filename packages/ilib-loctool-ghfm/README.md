@@ -91,7 +91,7 @@ This is the text that is being commented upon.
 You can have references and links in your markdown as normal:
 
 ```
-See the code on [github](https://github.com/ilib-js/ilib-loctool-ghfm).
+See the code on [github](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loctool-ghfm).
 ```
 
 which becomes:
@@ -108,11 +108,11 @@ special HTML comment directive:
 
 ```
 <!-- i18n-enable localize-links -->
-See the code on [github](https://github.com/ilib-js/ilib-loctool-ghfm).
+See the code on [github](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loctool-ghfm).
 <!-- i18n-disable localize-links -->
 ```
 
-In this case, the URL `https://github.com/ilib-js/ilib-loctool-ghfm` will
+In this case, the URL `https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loctool-ghfm` will
 be extracted as a separate string resource which can be localized independently,
 presumably to point to a localized version of the website.
 
@@ -168,7 +168,7 @@ settings to that path, such as an output path name template. The mappings are
 minimatch style.
 
 The template follows the syntax for path name templates defined in the
-the [loctool](https://github.com/iLib-js/loctool/blob/development/lib/utils.js#L1881)
+the [loctool](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/lib/utils.js.js#L1881)
 itself.
 
 The frontmatter setting specifies an array of strings that represent the names

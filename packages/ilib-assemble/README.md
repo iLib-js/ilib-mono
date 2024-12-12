@@ -140,7 +140,7 @@ The ilib-assemble tool takes the following options:
   --quiet or -q. Produce no progress output during the run, except for error messages.
 * --resources or -r. Include translated resource files, usually the output from
     in the output files such that they can be loaded with ilib-resbundle. The
-    resource files should come from ilib's [loctool](http://github.com/ilib-js/loctool)
+    resource files should come from ilib's [loctool](https://github.com/iLib-js/ilib-mono/tree/main/packages/loctool)
     or other such localization tool which produces a set of translated resource
     files. VAL is the path to the root of a resource file tree. You can specify
     this option multiple times, once for each resources directory.
@@ -197,7 +197,7 @@ the webpack bundles. In order to exclude them, add the following to your
     },
 ```
 
-See the documentation for [ilib-loader](https://github.com/ilib-js/ilib-loader)
+See the documentation for [ilib-loader](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loader)
 for more details.
 
 ## License

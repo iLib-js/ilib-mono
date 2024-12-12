@@ -759,7 +759,7 @@ syntactical elements in the file. This can be converted to
 an abstract syntax tree afterwards, which would be more useful
 for checking for problems.</li>
 <li>resources - array of instances of Resource classes as
-defined in [https://github.com/ilib-js/ilib-tools-common](https://github.com/ilib-js/ilib-tools-common).
+defined in [https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common).
 This is the preference intermediate representation for
 resource files like Java properties or xliff. There are many
 rules that already know how to process Resource instances.</li>
@@ -874,7 +874,7 @@ instances with the same type are sent in to that element for processing.</p>
 <p>There are three types that are reserved, however:</p>
 <ul>
 <li>resource - the pipeline element returns an array of Resource instances as
-defined in [https://github.com/ilib-js/ilib-tools-common](https://github.com/ilib-js/ilib-tools-common).</li>
+defined in [https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common).</li>
 <li>line - the pipeline element produces a set of lines as an array of strings</li>
 <li>string - the pipeline element doesn't parse. Instead, it just treats the
 the file as one long string.</li>
