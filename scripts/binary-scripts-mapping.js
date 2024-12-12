@@ -47,7 +47,7 @@ for (const path of packageFiles) {
         fs.writeFileSync(path, JSON.stringify(pkg, null, 4));
     }
 
-    scriptsSet.add(...Object.values(scripts));
+    Object.values(scripts).forEach((scriptValue) => scriptsSet.add(scriptValue));
 }
 
 console.log([...scriptsSet].sort().join("\n"));
