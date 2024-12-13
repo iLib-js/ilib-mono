@@ -42,9 +42,9 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest",
+        "test": "node node_modules/jest/bin/jest.js",
+        "test:watch": "node node_modules/jest/bin/jest.js --watch",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js",
         "clean": "git clean -f -d *"
     },
     "engines": {
