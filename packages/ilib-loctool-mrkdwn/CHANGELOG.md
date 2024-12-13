@@ -1,5 +1,11 @@
 # ilib-loctool-mrkdwn
 
+## 1.0.3
+
+### Patch Changes
+
+- 5ec8679: Added missing dependency on ilib.
+
 ## 1.0.2
 
 ### Patch Changes
