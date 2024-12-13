@@ -53,7 +53,7 @@
         "ilib": "^14.18.0"
     },
     "devDependencies": {
-        "jest": "^26.3.0",
+        "jest": "^29.7.0",
         "loctool": "workspace:^"
     }
 }

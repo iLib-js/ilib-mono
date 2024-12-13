@@ -62,7 +62,7 @@
         "slack-message-parser": "^3.0.2"
     },
     "devDependencies": {
-        "jest": "^26.0.0",
+        "jest": "^29.7.0",
         "loctool": "workspace:^"
     }
 }
