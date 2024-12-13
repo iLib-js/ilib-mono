@@ -1,6 +1,6 @@
 {
     "name": "ilib-assemble",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "type": "module",
     "main": "./src/index.js",
     "module": "./src/index.js",
