@@ -17,14 +17,11 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
 var Locale = require("ilib/lib/Locale.js");
-var ResBundle = require("ilib/lib/ResBundle.js");
 var mm = require("micromatch");
 
 var RegexFile = require("./RegexFile.js");
-var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
 
 var RegexFileType = function(project) {
     this.type = "regex";
@@ -38,6 +35,7 @@ var RegexFileType = function(project) {
     // figure out what file extensions we should be looking for by looking at the minimatch
     // expressions in the mappings
     if (project.settings && project.settings.regex && project.settings.regex.mappings) {
+        this.mappings = project.settings.regex.mappings;
         var globExpressions = Object.keys(project.settings.regex.mappings);
         this.extensions = globExpressions.map(function(expression) {
             var match = expression.match(/\.(\w+)$/);
@@ -89,6 +87,7 @@ RegexFileType.prototype.getMapping = function(pathName) {
     if (typeof(pathName) === "undefined") {
         return undefined;
     }
+    pathName = path.normalize(pathName);
     var regexSettings = this.project.settings.regex;
     var mappings = regexSettings && regexSettings.mappings;
     if (!mappings) {
