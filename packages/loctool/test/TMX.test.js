@@ -1,7 +1,7 @@
 /*
  * TMX.test.js - test the Tmx object.
  *
- * Copyright © 2021, 2023 Box, Inc.
+ * Copyright © 2021, 2023-2024 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,14 @@
  * limitations under the License.
  */
 
-if (!Tmx) {
-    var path = require("path");
-    var fs = require("fs");
+var path = require("path");
+var fs = require("fs");
 
-    var Tmx = require("../lib/TMX.js");
-    var TranslationUnit = Tmx.TranslationUnit;
-    var ResourceString = require("../lib/ResourceString.js");
-    var ContextResourceString = require("../lib/ContextResourceString.js");
-    var IosLayoutResourceString = require("../lib/IosLayoutResourceString.js");
-    var ResourceArray = require("../lib/ResourceArray.js");
-    var ResourceString = require("../lib/ResourceString.js");
-    var ResourcePlural = require("../lib/ResourcePlural.js");
-    var ResourceFactory = require("../lib/ResourceFactory.js");
-}
+var Tmx = require("../lib/TMX.js");
+var ResourceString = require("../lib/ResourceString.js");
+var ResourceArray = require("../lib/ResourceArray.js");
+var ResourceString = require("../lib/ResourceString.js");
+var ResourcePlural = require("../lib/ResourcePlural.js");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -46,6 +40,18 @@ function diff(a, b) {
 }
 
 var loctoolVersion = require("../package.json").version;
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(function() {
+    [
+        "./test/test/testfiles/test/output.tmx"
+    ].forEach(rmrf);
+});
 
 describe("tmx", function() {
     test("TmxConstructor", function() {
@@ -2874,10 +2880,7 @@ describe("tmx", function() {
         tmx.addResource(res);
 
         var base = path.dirname(module.id);
-        if (fs.existsSync(path.join(base, "test/testfiles/test/output.tmx"))) {
-            fs.unlinkSync(path.join(base, "test/testfiles/test/output.tmx"));
-        }
-        expect(!fs.existsSync(path.join(base, "test/testfiles/test/output.tmx"))).toBeTruthy();
+        expect(fs.existsSync(path.join(base, "test/testfiles/test/output.tmx"))).toBeFalsy();
         tmx.write(path.join(base, "test/testfiles"));
         expect(fs.existsSync(path.join(base, "test/testfiles/test/output.tmx"))).toBeTruthy();
         var actual = fs.readFileSync(path.join(base, "test/testfiles/test/output.tmx"), "utf-8");

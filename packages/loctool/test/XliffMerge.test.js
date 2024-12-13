@@ -1,7 +1,7 @@
 /*
  * XliffMerge.test.js - test the merge of Xliff object.
  *
- * Copyright © 2020, 2023 JEDLSoft
+ * Copyright © 2020, 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,23 @@
  */
 var fs = require("fs");
 
-if (!Xliff) {
-    var Xliff = require("../lib/Xliff.js");
-}
-
-if (!XliffMerge) {
-    var XliffMerge = require("../lib/XliffMerge.js");
-}
+var Xliff = require("../lib/Xliff.js");
+var XliffMerge = require("../lib/XliffMerge.js");
 
 function rmrf(path) {
     if (fs.existsSync(path)) {
         fs.unlinkSync(path);
     }
 }
+
+afterEach(() => {
+    [
+        "./test/testfiles/xliff20/output-en-US.xliff",
+        "./test/testfiles/xliff20/output-ko-KR.xliff",
+        "./test/testfiles/xliff20/splitTest/app1/en-US.xliff",
+        "./test/testfiles/xliff20/splitTest/app2/en-US.xliff"
+    ].forEach(rmrf);
+});
 
 describe("xliffmerge", function() {
     test("XliffMergenoParameter", function() {

@@ -1,7 +1,7 @@
 /*
  * Xliff20.test.js - test the Xliff 2.0 object.
  *
- * Copyright © 2019,2021, 2023 JEDLSoft
+ * Copyright © 2019, 2021, 2023-2024 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-if (!Xliff) {
-    var Xliff = require("../lib/Xliff.js");
-    var TranslationUnit = Xliff.TranslationUnit;
-    var ResourceString = require("../lib/ResourceString.js");
-    var ContextResourceString = require("../lib/ContextResourceString.js");
-    var IosLayoutResourceString = require("../lib/IosLayoutResourceString.js");
-    var ResourceArray = require("../lib/ResourceArray.js");
-    var ResourcePlural = require("../lib/ResourcePlural.js");
-    var ResourceFactory = require("../lib/ResourceFactory.js");
-}
+var fs = require("fs");
+
+var Xliff = require("../lib/Xliff.js");
+var TranslationUnit = Xliff.TranslationUnit;
+var ResourceString = require("../lib/ResourceString.js");
+var ContextResourceString = require("../lib/ContextResourceString.js");
+var IosLayoutResourceString = require("../lib/IosLayoutResourceString.js");
+var ResourceArray = require("../lib/ResourceArray.js");
+var ResourcePlural = require("../lib/ResourcePlural.js");
+var ResourceFactory = require("../lib/ResourceFactory.js");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -40,6 +40,21 @@ function diff(a, b) {
         }
     }
 }
+
+function rmrf(path) {
+    if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+    }
+}
+
+afterEach(() => {
+    [
+        "./test/testfiles/xliff20/output-en-US.xliff",
+        "./test/testfiles/xliff20/output-ko-KR.xliff",
+        "./test/testfiles/xliff20/splitTest/app1/en-US.xliff",
+        "./test/testfiles/xliff20/splitTest/app2/en-US.xliff"
+    ].forEach(rmrf);
+});
 
 describe("xliff20", function() {
     beforeAll(function () {
