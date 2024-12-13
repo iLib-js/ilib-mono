@@ -50,8 +50,13 @@ used within the json property:
           Regular expressions use [JavaScript regular expression
           syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions).
           The regular expressions must contain named capturing groups to
-          indicate the various parts that form a Resource. The named
-          capturing groups should be from this list:
+          indicate the various parts that form a Resource. The value of
+          the named capturing group can be any string. If the string is
+          surrounded by quotes (either single or double), the plugin will
+          remove the quotes. For array resources, the strings should be
+          separated by commas and may have quotes around each element of
+          the array. The names of the named capturing groups should be from
+          this list:
             - `source` - the string in the source language (required). For
               plural resources, use this for the singular form of the string.
               For array resources, this should contain the list of strings

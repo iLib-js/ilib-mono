@@ -1,5 +1,5 @@
 /*
- * RegexFileType.test.js - test the HTML template file type handler object.
+ * RegexFileType.test.js - test the regex file type handler object.
  *
  * Copyright © 2024 Box, Inc.
  *
@@ -77,15 +77,16 @@ describe("javascriptfiletype", function() {
 
         expect(rft).toBeTruthy();
     });
-    
+
     test("RegexFileType gives the right set of extensions", function() {
         expect.assertions(2);
-        
+
         var rft = new RegexFileType(p);
         expect(rft).toBeTruthy();
-        
+
         var exts = rft.getExtensions();
         exts.sort();
+        // should automatically calculate the extensions from the mappings
         expect(exts).toEqual(["js", "tmpl"]);
     });
 
@@ -122,6 +123,7 @@ describe("javascriptfiletype", function() {
         var rft = new RegexFileType(p);
         expect(rft).toBeTruthy();
 
+        // no dot in the extension
         expect(rft.handles("foojs")).toBeFalsy();
     });
 
@@ -166,7 +168,7 @@ describe("javascriptfiletype", function() {
 
     test("RegexFileType get the right resource file type for a js file", function() {
         expect.assertions(4);
-debugger;
+
         var rft = new RegexFileType(p);
         expect(rft).toBeTruthy();
 

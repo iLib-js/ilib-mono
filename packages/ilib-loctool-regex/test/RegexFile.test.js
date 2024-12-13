@@ -35,8 +35,50 @@ var p = new CustomProject({
                 "sourceLocale": "en-US",
                 "expressions": [
                     {
-                        "expression": "\b\\$t\\s*\\(\"(?<source>[^\"]*)\"\\)",
+                        // regular string $t('string')
+                        "expression": "\\b\\$t\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
                         "flags": "g",
+                        "datatype": "javascript",
+                        "resourceType": "string",
+                        "keyStrategy": "hash"
+                    },
+                    {
+                        // plural string $p('singular', 'plural')
+                        "expression": "\\b\\$p\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*,\\s*\'(?<sourcePlural>[^\']*)\'\\s*\\)",
+                        "flags": "g",
+                        "datatype": "javascript",
+                        "resourceType": "plural",
+                        "keyStrategy": "hash"
+                    },
+                    {
+                        // array of strings $a(["string1", "string2"])
+                        "expression": "\\b\\$a\\s*\\(\\s*\\[(?<source>[^\]]*)\\s*\\]\\s*\\)",
+                        "flags": "g",
+                        "datatype": "javascript",
+                        "resourceType": "array",
+                        "keyStrategy": "hash"
+                    },
+                    {
+                        // regular string, but where the key strategy is to use the whole source string
+                        "expression": "\\b\\$wholekey\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "flags": "g",
+                        "datatype": "javascript",
+                        "resourceType": "string",
+                        "keyStrategy": "source"
+                    },
+                    {
+                        // regular string, but where the key strategy is to use the trunctated source string
+                        "expression": "\\b\\$truncatedkey\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "flags": "g",
+                        "datatype": "javascript",
+                        "resourceType": "string",
+                        "keyStrategy": "truncate"
+                    },
+                    {
+                        // regular string that contains escaped Unicode characters. We include the "u" flag
+                        // in the regular expression flags
+                        "expression": "\\b\\$u\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "flags": "gu",
                         "datatype": "javascript",
                         "resourceType": "string",
                         "keyStrategy": "hash"
@@ -44,7 +86,7 @@ var p = new CustomProject({
                 ]
             },
             "**/*.tmpl": {
-                "resourceFileType": "ilib-loctool-php-resource",
+                "resourceFileType": "ilib-loctool-javascript-resource",
                 "template": "resources/Translation[locale].json",
                 "sourceLocale": "en-US",
                 "expressions": [
@@ -52,7 +94,7 @@ var p = new CustomProject({
                         // example:
                         // {* @L10N The message shown to users whose passwords have just been changed *}
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
-                        "expression": "\\{.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "expression": "(\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\})?.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
@@ -74,20 +116,6 @@ var p = new CustomProject({
 });
 
 var rft = new RegexFileType(p);
-
-// test a different wrapper
-var p2 = new CustomProject({
-    id: "app",
-    plugins: [require.resolve("../.")],
-    sourceLocale: "en-US"
-}, "./test/testfiles", {
-    locales:["en-GB"],
-    javascript: {
-        wrapper: "(^r|\\Wr)b\\s*\\.\\s*getString(JS)?"
-    }
-});
-
-var rft2 = new RegexFileType(p2);
 
 describe("regex file tests", function() {
     test("RegexFileConstructor", function() {
@@ -123,54 +151,31 @@ describe("regex file tests", function() {
         expect(rf).toBeTruthy();
     });
 
-    test("RegexFileMakeKey", function() {
+    test("RegexFile MakeKey returns the hash for javascript files", function() {
         expect.assertions(2);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        expect(rf.makeKey("This is a test")).toBe("This is a test");
+        // the config says to use a hash for the key for javascript files
+        expect(rf.makeKey("This is a test")).toBe("r654479252");
     });
 
-    test("RegexFileParseSimpleGetByKey", function() {
-        expect.assertions(5);
-
+    test("RegexFileParse simple string", function() {
+        expect.assertions(6);
+debugger;
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test")');
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "This is a test"
-        });
-        expect(r).toBeTruthy();
-
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("This is a test");
-    });
-
-    test("RegexFileParseSimpleGetBySource", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getString("This is a test")');
+        rf.parse("$t('This is a test')");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -178,83 +183,21 @@ describe("regex file tests", function() {
         var r = set.getBySource("This is a test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
+        expect(r.getDatatype()).toBe("javascript");
     });
 
-    test("RegexFileParseJSSimpleGetBySource", function() {
+    test("RegexFileParse more complex string", function() {
         expect.assertions(5);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getStringJS("This is a test")');
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
-    });
-
-    test("RegexFileParseSimpleSingleQuotes", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse("RB.getString('This is a test')");
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
-    });
-
-    test("RegexFileParseJSSimpleSingleQuotes", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse("RB.getStringJS('This is a test')");
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
-    });
-
-    test("RegexFileParseMoreComplexSingleQuotes", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse("if (subcat == 'Has types') {title = RB.getString('Types of {topic}').format({topic: topic.attribute.name})}");
+        rf.parse("if (subcat == 'Has types') {\n    title = $t('Types of {topic}').format({topic: topic.attribute.name});\n}");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -262,20 +205,20 @@ describe("regex file tests", function() {
         var r = set.getBySource("Types of {topic}");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("Types of {topic}");
-        expect(r.getKey()).toBe("Types of {topic}");
+        expect(r.getKey()).toBe("r1028922458");
     });
 
-    test("RegexFileParseSimpleIgnoreWhitespace", function() {
+    test("RegexFileParse simple string but ignore the whitespace", function() {
         expect.assertions(5);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('   RB.getString  (    \t "This is a test"    );  ');
+        rf.parse('   $t  (    \t "This is a test"    );  ');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -283,36 +226,15 @@ describe("regex file tests", function() {
         var r = set.getBySource("This is a test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
     });
 
-    test("RegexFileParseJSCompressWhitespaceInKey", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getStringJS("\t\t This \\n \n is \\\n\t a    test")');
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("\t\t This \\n \n is \t a    test");
-    });
-
-    test("RegexFileParseSimpleRightSize", function() {
+    test("RegexFileParse simple string and translation set has the right size", function() {
         expect.assertions(4);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
@@ -320,131 +242,63 @@ describe("regex file tests", function() {
         var set = rf.getTranslationSet();
         expect(set.size()).toBe(0);
 
-        rf.parse('RB.getString("This is a test")');
+        rf.parse("$t('This is a test');");
 
         expect(set).toBeTruthy();
 
         expect(set.size()).toBe(1);
     });
 
-    test("RegexFileParseSimpleWithTranslatorComment", function() {
-        expect.assertions(6);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('\tRB.getString("This is a test"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
-        expect(r.getComment()).toBe("this is a translator's comment");
-    });
-
-    test("RegexFileParseSingleQuotesWithTranslatorComment", function() {
-        expect.assertions(6);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse("\tRB.getString('This is a test'); // i18n: this is a translator\'s comment\n\tfoo('This is not');");
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
-        expect(r.getComment()).toBe("this is a translator's comment");
-    });
-
-    test("RegexFileParseSingleQuotesWithEmbeddedSingleQuotes", function() {
+    test("RegexFileParse plural string", function() {
         expect.assertions(5);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse(
-            '    RB.getString(\'We\\\'ll notify you when {prefix}{last_name} accepts you as a friend!\').format({\n' +
-            '        prefix: detail.name_prefix,\n' +
-            '        last_name: detail.last_name\n' +
-            '    });'
-        );
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("We'll notify you when {prefix}{last_name} accepts you as a friend!");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("We'll notify you when {prefix}{last_name} accepts you as a friend!");
-        expect(r.getKey()).toBe("We'll notify you when {prefix}{last_name} accepts you as a friend!");
-    });
-
-    test("RegexFileParseSingleQuotesWithEmbeddedDoubleQuotes", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse(
-            '    RB.getString("We\\"ll notify you when {prefix}{last_name} accepts you as a friend!").format({\n' +
-            '        prefix: detail.name_prefix,\n' +
-            '        last_name: detail.last_name\n' +
-            '    });'
-        );
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource('We"ll notify you when {prefix}{last_name} accepts you as a friend!');
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe('We"ll notify you when {prefix}{last_name} accepts you as a friend!');
-        expect(r.getKey()).toBe('We"ll notify you when {prefix}{last_name} accepts you as a friend!');
-    });
-
-    test("RegexFileParseSimpleWithUniqueIdAndTranslatorComment", function() {
-        expect.assertions(6);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('\tRB.getString("This is a test", "foobar"); // i18n: this is a translator\'s comment\n\tfoo("This is not");');
+        rf.parse("$p('This is the singular', 'This is the plural');");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
         var r = set.getBy({
-            reskey: "foobar"
+            reskey: "r145739915"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("foobar");
-        expect(r[0].getComment()).toBe("this is a translator's comment");
+        expect(r.getSourcePlurals()).toStrictEqual({
+            "one": "This is the singular",
+            "other": "This is the plural"
+        });
+        expect(r.getKey()).toBe("r145739915");
+    });
+
+    test("RegexFileParse array of strings", function() {
+        expect.assertions(5);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/js/t1.js",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse("$a( ['This is the first string', 'This is the second string'] );");
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        var r = set.getBy({
+            reskey: "r523019971"
+        });
+        expect(r).toBeTruthy();
+        expect(r.getSourceArray()).toStrictEqual([
+            "This is the first string",
+            "This is the second string"
+        ]);
+        expect(r.getKey()).toBe("r523019971");
     });
 
     test("RegexFileParseWithKey", function() {
@@ -452,123 +306,38 @@ describe("regex file tests", function() {
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/templates/t1.tmpl",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test", "unique_id")');
+        rf.parse('<span class="alert alert-info">{\'Your password was changed. Please log in again.\'|f:\'login_success_password_changed\'}</span>');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
         var r = set.getBy({
-            reskey: "unique_id"
+            reskey: "login_success_password_changed"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("unique_id");
+        expect(r[0].getSource()).toBe("Your password was changed. Please log in again.");
+        expect(r[0].getKey()).toBe("login_success_password_changed");
+        expect(r[0].getDatatype()).toBe("template");
     });
 
-    test("RegexFileParseJSWithKey", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getStringJS("This is a test", "unique_id")');
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "unique_id"
-        });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("unique_id");
-    });
-
-    test("RegexFileParseWithKeySingleQuotes", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse("RB.getString('This is a test', 'unique_id')");
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "unique_id"
-        });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("unique_id");
-    });
-
-    test("RegexFileParseJSWithKeySingleQuotes", function() {
-        expect.assertions(5);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse("RB.getStringJS('This is a test', 'unique_id')");
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "unique_id"
-        });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("unique_id");
-    });
-
-    test("RegexFileParseWithKeyCantGetBySource", function() {
-        expect.assertions(3);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getString("This is a test", "unique_id")');
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBySource("This is a test");
-        expect(!r).toBeTruthy();
-    });
-
-    test("RegexFileParseMultiple", function() {
+    test("RegexFile parse multiple strings in the same file", function() {
         expect.assertions(8);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");');
+        rf.parse("$t('This is a test');\n" +
+            "\ta.parse(\"This is another test.\");\n" +
+            "\t\t$t('This is also a test');");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -576,57 +345,59 @@ describe("regex file tests", function() {
         var r = set.getBySource("This is a test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
 
         r = set.getBySource("This is also a test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is also a test");
-        expect(r.getKey()).toBe("This is also a test");
+        expect(r.getKey()).toBe("r999080996");
     });
 
-    test("RegexFileParseMultipleWithKey", function() {
+    test("RegexFile parse multiple strings with keys", function() {
         expect.assertions(10);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/templates/t1.tmpl",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test", "x");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "y");');
+        rf.parse(
+            '<span class="alert alert-info">{\'Your password was changed. Please log in again.\'|f:\'login_success_password_changed\'}</span>\n' +
+            '<span class="alert alert-info">{\'Forgot your password?\'|f:\'login_forgot_password\'}</span>');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
         var r = set.getBy({
-            reskey: "x"
+            reskey: "login_success_password_changed"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getSource()).toBe("Your password was changed. Please log in again.");
         expect(!r[0].getAutoKey()).toBeTruthy();
-        expect(r[0].getKey()).toBe("x");
+        expect(r[0].getKey()).toBe("login_success_password_changed");
 
         r = set.getBy({
-            reskey: "y"
+            reskey: "login_forgot_password"
         });
         expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
+        expect(r[0].getSource()).toBe("Forgot your password?");
         expect(!r[0].getAutoKey()).toBeTruthy();
-        expect(r[0].getKey()).toBe("y");
+        expect(r[0].getKey()).toBe("login_forgot_password");
     });
 
-    test("RegexFileParseMultipleSameLine", function() {
+    test("RegexFile parse multiple strings on the same line", function() {
         expect.assertions(12);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test"), RB.getString("This is a second test"), RB.getString("This is a third test")');
+        rf.parse("$t('This is a test'), $t('This is a second test'), $t('This is a third test');");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -636,58 +407,56 @@ describe("regex file tests", function() {
         var r = set.getBySource("This is a test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
 
         r = set.getBySource("This is a second test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a second test");
-        expect(r.getKey()).toBe("This is a second test");
+        expect(r.getKey()).toBe("r1039674256");
 
         r = set.getBySource("This is a third test");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a third test");
-        expect(r.getKey()).toBe("This is a third test");
+        expect(r.getKey()).toBe("r917302952");
     });
 
-    test("RegexFileParseMultipleWithComments", function() {
-        expect.assertions(10);
+    test("RegexFile parse with translator's comments", function() {
+        expect.assertions(6);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/templates/t1.tmpl",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test");\t// i18n: bar');
+        rf.parse('{* @L10N The message shown to users whose passwords have just been changed *}\n' +
+            '\'{\'Your password was changed. Please log in again.\'|f:\'login_success_password_changed\'}\n');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBy({
+            reskey: "login_success_password_changed"
+        });
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
-        expect(r.getComment()).toBe("foo");
-
-        r = set.getBySource("This is also a test");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is also a test");
-        expect(r.getKey()).toBe("This is also a test");
-        expect(r.getComment()).toBe("bar");
+        expect(r.getSource()).toBe("Your password was changed. Please log in again.");
+        expect(r.getKey()).toBe("login_success_password_changed");
+        expect(r.getComment()).toBe("The message shown to users whose passwords have just been changed");
     });
 
-    test("RegexFileParseMultipleWithUniqueIdsAndComments", function() {
+    test("RegexFileParse multiple strigs with unique IDs and their own separate comments", function() {
         expect.assertions(10);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/templates/t1.tmpl",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test", "asdf");   // i18n: foo\n\ta.parse("This is another test.");\n\t\tRB.getString("This is also a test", "kdkdkd");\t// i18n: bar');
+        rf.parse('{* foo *}{\'This is a test\'|f:\'asdf\'}\n' +
+            '{* bar *}{\'This is also a test\'|f:\'kdkdkd\'}\n');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -714,229 +483,151 @@ describe("regex file tests", function() {
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test");');
+        rf.parse("$t('This is a test');\n" +
+            "\ta.parse('This is another test to see that it doesn\'t extract this one erroneously.');\n" +
+            "\t\t$t('This is a test');\n");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBy({
+            reskey: "r654479252"
+        });
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
 
+        // should not have two entries with the same key and the same source
         expect(set.size()).toBe(1);
     });
 
-    test("RegexFileParseDupsDifferingByKeyOnly", function() {
+    test("RegexFileParse dups that differ by key only", function() {
         expect.assertions(8);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/templates/t1.tmpl",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('RB.getString("This is a test");\n\ta.parse("This is another test.");\n\t\tRB.getString("This is a test", "unique_id");');
+        rf.parse('{\'This is a test\'|f:\'asdf\'}\n' +
+            '{\'This is a test\'|f:\'kdkdkd\'}\n');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBy({
+            reskey: "asdf"
+        });
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("asdf");
 
         r = set.getBy({
-            reskey: "unique_id"
+            reskey: "kdkdkd"
         });
         expect(r).toBeTruthy();
         expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("unique_id");
+        expect(r[0].getKey()).toBe("kdkdkd");
     });
 
-    test("RegexFileParseBogusConcatenation", function() {
-        expect.assertions(2);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getString("This is a test" + " and this isnt");');
-
-        var set = rf.getTranslationSet();
-
-        expect(set.size()).toBe(0);
-    });
-
-    test("RegexFileParseBogusConcatenation2", function() {
-        expect.assertions(2);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getString("This is a test" + foobar);');
-
-        var set = rf.getTranslationSet();
-        expect(set.size()).toBe(0);
-    });
-
-    test("RegexFileParseBogusNonStringParam", function() {
-        expect.assertions(2);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getString(foobar);');
-
-        var set = rf.getTranslationSet();
-        expect(set.size()).toBe(0);
-    });
-
-    test("RegexFileParseEmptyParams", function() {
-        expect.assertions(2);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('RB.getString();');
-
-        var set = rf.getTranslationSet();
-        expect(set.size()).toBe(0);
-    });
-
-    test("RegexFileParseWholeWord", function() {
-        expect.assertions(2);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('EPIRB.getString("This is a test");');
-
-        var set = rf.getTranslationSet();
-        expect(set.size()).toBe(0);
-    });
-
-    test("RegexFileParseSubobject", function() {
-        expect.assertions(2);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse('App.RB.getString("This is a test");');
-
-        var set = rf.getTranslationSet();
-        expect(set.size()).toBe(1);
-    });
-
-    test("RegexFileParsePunctuationBeforeRB", function() {
-        expect.assertions(9);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse(
-            "        <%\n" +
-            "        var listsOver4 = false;\n" +
-            "        var seemoreLen = 0;\n" +
-            "        var subcats = [RB.getStringJS('Personal'), RB.getStringJS('Smart Watches')];\n" +
-            "        _.each(subcats, function(subcat, j){\n" +
-            "            var list = topic.attribute.kb_attribute_relationships[subcat] || [];\n" +
-            "            if (list.length > 0) {\n" +
-            "        %>\n");
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        expect(set.size()).toBe(2);
-
-        var r = set.getBySource("Personal");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Personal");
-        expect(r.getKey()).toBe("Personal");
-
-        r = set.getBySource("Smart Watches");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Smart Watches");
-        expect(r.getKey()).toBe("Smart Watches");
-    });
-
-    test("RegexFileParseEmptyString", function() {
+    test("RegexFile when the result of parsing is the empty string", function() {
         expect.assertions(3);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse("var subcats = [RB.getStringJS(''), RB.getString(''), RB.getStringJS('', 'foo')];\n");
+        rf.parse("var subcats = [$t(''), $t(''), $t('')];\n");
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
+        // no need to translate empty strings!
         expect(set.size()).toBe(0);
     });
 
-    test("RegexFileParseNonString", function() {
-        expect.assertions(3);
+    test("RegexFile using a whole key strategy", function() {
+        expect.assertions(5);
 
         var rf = new RegexFile({
             project: p,
-            pathName: undefined,
+            pathName: "./testfiles/js/t1.js",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        rf.parse("var subcats = [\n" +
-        "    RB.getStringJS(variableName),\n" +
-        "    RB.getString(undefined),\n" +
-        "    RB.getStringJS(variableName, 'foo')\n" +
-        "    RB.getString(function(x) {\n" +
-        "       return foo.getId(x);\n" +
-        "    }),\n" +
-        "];\n");
+        rf.parse('$wholekey("This is a test with a really long source string that just drones on and on and on");');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        expect(set.size()).toBe(0);
+        var r = set.getBy({
+            reskey: "This is a test with a really long source string that just drones on and on and on"
+        });
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test with a really long source string that just drones on and on and on");
+        expect(r.getKey()).toBe("This is a test with a really long source string that just drones on and on and on");
     });
 
-    test("RegexFileExtractFile", function() {
+    test("RegexFile using a truncated key strategy", function() {
+        expect.assertions(5);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/js/t1.js",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse('$truncatedkey("This is a test with a really long source string that just drones on and on and on");');
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        // should truncate the key to 32 characters
+        var r = set.getBy({
+            reskey: "This is a test with a really lon"
+        });
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test with a really long source string that just drones on and on and on");
+        expect(r.getKey()).toBe("This is a test with a really lon");
+    });
+
+
+    test("RegexFile using a key with escaped Unicode characters", function() {
+        expect.assertions(5);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/js/t1.js",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse('$u("This is a test with an escaped Unicode character: \\u00a9");');
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        var r = set.getBy({
+            reskey: "r604348468"
+        });
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test with an escaped Unicode character: ©");
+        expect(r.getKey()).toBe("r604348468");
+    });
+
+    test("RegexFile extract strings from a file on disk", function() {
         expect.assertions(8);
 
         var rf = new RegexFile({
@@ -953,50 +644,73 @@ describe("regex file tests", function() {
 
         expect(set.size()).toBe(2);
 
-        var r = set.getBySource("This is a test");
+        var r = set.getBy({
+            reskey: "r654479252"
+        });
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
-        expect(r.getKey()).toBe("This is a test");
+        expect(r.getKey()).toBe("r654479252");
 
         var r = set.getBy({
-            reskey: "id1"
+            reskey: "r963237711"
         });
         expect(r).toBeTruthy();
         expect(r[0].getSource()).toBe("This is a test with a unique id");
-        expect(r[0].getKey()).toBe("id1");
+        expect(r[0].getKey()).toBe("r963237711");
     });
 
-    test("RegexFileExtractTemplateFile", function() {
-        expect.assertions(11);
+    test("RegexFile extract strings from a template file on disk", function() {
+        expect.assertions(22);
 
         var rf = new RegexFile({
             project: p,
-            pathName: "./tmpl/topic_types.tmpl.html",
+            pathName: "./tmpl/topic_types.tmpl",
             type: rft
         });
         expect(rf).toBeTruthy();
 
-        // should read the file
+        // should read the file and apply the right set of regexes
         rf.extract();
 
         var set = rf.getTranslationSet();
 
-        expect(set.size()).toBe(4);
+        expect(set.size()).toBe(8);
 
-        var r = set.getBySource("Hand-held Devices");
+        var r = set.getBy({
+            reskey: "description"
+        });
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Hand-held Devices");
-        expect(r.getKey()).toBe("Hand-held Devices");
+        expect(r.getSource()).toBe("Description");
+        expect(r.getKey()).toBe("description");
+        expect(r.getDatatype()).toBe("template");
+        expect(r.getComment()).toBe("topic type label for the icon");
 
-        r = set.getBySource("Tablets");
+        r = set.getBy({
+            reskey: "participants"
+        });
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Tablets");
-        expect(r.getKey()).toBe("Tablets");
+        expect(r.getSource()).toBe("Participants");
+        expect(r.getKey()).toBe("participants");
+        expect(r.getDatatype()).toBe("template");
+        expect(r.getComment()).toBe("topic type label for the icon");
 
-        r = set.getBySource("Smart Watches");
+        r = set.getBy({
+            reskey: "activities"
+        });
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Smart Watches");
-        expect(r.getKey()).toBe("Smart Watches");
+        expect(r.getSource()).toBe("Activities and Events");
+        expect(r.getKey()).toBe("activities");
+        expect(r.getDatatype()).toBe("template");
+        expect(r.getComment()).toBe("topic type label for the icon");
+
+        r = set.getBy({
+            reskey: "see_more"
+        });
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("See More");
+        expect(r.getKey()).toBe("see_more");
+        expect(r.getDatatype()).toBe("template");
+        expect(r.getComment()).toBe("topic type label for the icon");
     });
 
     test("RegexFileExtractUndefinedFile", function() {
@@ -1033,137 +747,5 @@ describe("regex file tests", function() {
         var set = rf.getTranslationSet();
 
         expect(set.size()).toBe(0);
-    });
-
-    test("RegexFileParseWithAlternateWrapper", function() {
-        expect.assertions(9);
-
-        var rf = new RegexFile({
-            project: p2,
-            pathName: undefined,
-            type: rft2
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse(
-            "if (subcat === 'Has types') {\n" +
-            "    buttonText = rb\n" +
-            "                . getStringJS   (\n" +
-            "                     'Start Download'\n" +
-            "                ) ;\n" +
-            "    title = rb\n" +
-            "                .  getString (\n" +
-            "                     'Types of {topic}',\n" +
-            "                     'unique key'\n" +
-            "                )\n" +
-            "                .format({\n" +
-            "                    topic: topic.attribute.name\n" +
-            "                });\n" +
-            "}\n"
-        );
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "unique key"
-        });
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(1);
-        expect(r[0].getSource()).toBe("Types of {topic}");
-        expect(r[0].getKey()).toBe("unique key");
-
-        r = set.getBySource("Start Download");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Start Download");
-        expect(r.getKey()).toBe("Start Download");
-    });
-
-    test("RegexFileParseWithAlternateWrapperAndEmbeddedQuote", function() {
-        expect.assertions(9);
-
-        var rf = new RegexFile({
-            project: p2,
-            pathName: undefined,
-            type: rft2
-        });
-        expect(rf).toBeTruthy();
-
-        rf.parse(
-            "if (subcat === 'Has types') {\n" +
-            "    buttonText = rb\n" +
-            "                . getStringJS   (\n" +
-            "                     'Start \\\"Download'\n" +
-            "                ) ;\n" +
-            "    title = rb\n" +
-            "                .  getString (\n" +
-            "                     'Types of {topic}',\n" +
-            "                     'unique key'\n" +
-            "                )\n" +
-            "                .format({\n" +
-            "                    topic: topic.attribute.name\n" +
-            "                });\n" +
-            "}\n"
-        );
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "unique key"
-        });
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(1);
-        expect(r[0].getSource()).toBe("Types of {topic}");
-        expect(r[0].getKey()).toBe("unique key");
-
-        r = set.getBySource("Start \"Download");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Start \"Download");
-        expect(r.getKey()).toBe("Start \"Download");
-    });
-
-    test("RegexFileParseParametersWithExtraTrailingCommas", function() {
-        expect.assertions(9);
-
-        var rf = new RegexFile({
-            project: p,
-            pathName: undefined,
-            type: rft
-        });
-        expect(rf).toBeTruthy();
-
-        // eslint has this nasty habit of inserting useless extra commas at the end
-        // of parameter lists
-        rf.parse(
-            "if (subcat === 'Has types') {\n" +
-            "    buttonText = RB.getStringJS(\n" +
-            "        'Start Download',\n" +
-            "    );\n" +
-            "    title = RB.getString(\n" +
-            "        'Types of {topic}',\n" +
-            "        'unique key',\n" +
-            "    )\n" +
-            "    .format({\n" +
-            "        topic: topic.attribute.name\n" +
-            "    });\n" +
-            "}\n"
-        );
-
-        var set = rf.getTranslationSet();
-        expect(set).toBeTruthy();
-
-        var r = set.getBy({
-            reskey: "unique key"
-        });
-        expect(r).toBeTruthy();
-        expect(r.length).toBe(1);
-        expect(r[0].getSource()).toBe("Types of {topic}");
-        expect(r[0].getKey()).toBe("unique key");
-
-        r = set.getBySource("Start Download");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("Start Download");
-        expect(r.getKey()).toBe("Start Download");
     });
 });

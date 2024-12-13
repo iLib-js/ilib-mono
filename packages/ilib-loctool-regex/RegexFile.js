@@ -51,26 +51,17 @@ var RegexFile = function(props) {
     this.localeSpec = props.locale || (this.mapping && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) || "en-US";
     this.locale = new Locale(this.localeSpec);
 
-    // get the regexp that finds the function call that wraps strings to translate
-    var jsSettings = this.project.settings && this.project.settings.Regex;
-    var wrapper = (jsSettings && jsSettings.wrapper) || "(^R|\\WR)B\\s*\\.\\s*getString(JS)?";
-
-    if (wrapper) {
-        this.wrapperCaptureGroupCount = 0;
-        for (var i = 0; i < wrapper.length; i++) {
-            if (wrapper[i] === '\\') {
-                i++;
-            } else if (wrapper[i] === '(') {
-                this.wrapperCaptureGroupCount++;
+    // get the regexps that finds the strings to translate
+    this.mapping = this.type && this.type.getMapping(this.pathName);
+    if (this.mapping) {
+        this.mapping.expressions.forEach(function(exp) {
+            // make sure the expression string is turned into a real regex
+            if (!exp.regex) {
+                exp.regex = new RegExp(exp.expression, exp.flags);
             }
-        }
+            exp.regex.lastIndex = 0;
+        });
     }
-    this.reGetString = new RegExp(wrapper + strGetString, "g");
-    this.reGetStringWithId = new RegExp(wrapper + strGetStringWithId, "g");
-    this.reGetStringBogusConcatenation1 = new RegExp(wrapper + strGetStringBogusConcatenation1, "g");
-    this.reGetStringBogusConcatenation2 = new RegExp(wrapper + strGetStringBogusConcatenation2, "g");
-    this.reGetStringBogusParam = new RegExp(wrapper + strGetStringBogusParam, "g");
-
     this.resourceIndex = 0;
 };
 
@@ -82,7 +73,7 @@ var RegexFile = function(props) {
  * @param {String} string the string to unescape
  * @returns {String} the unescaped string
  */
-RegexFile.unescapeString = function(string) {
+function unescapeString(string) {
     var unescaped = string;
 
     unescaped = unescaped.
@@ -99,6 +90,24 @@ RegexFile.unescapeString = function(string) {
 };
 
 /**
+ * If the given string is surrounded by quotes, remove the quotes.
+ * Otherwise, return the string unchanged.
+ *
+ * @param {String} str the string to strip
+ * @returns {String} the string without quotes
+ */
+function stripQuotes(str) {
+    var trimmed = str.trim();
+    if (trimmed && trimmed.length > 1) {
+        if ((trimmed.charAt(0) === "\"" && trimmed.charAt(str.length - 1) === "\"") ||
+            (trimmed.charAt(0) === "'" && trimmed.charAt(str.length - 1) === "'")) {
+            return trimmed.substring(1, trimmed.length - 1);
+        }
+    }
+    return trimmed;
+}
+
+/**
  * Clean the string to make a resource name string. This means
  * removing leading and trailing white space, compressing
  * whitespaces, and unescaping characters. This changes
@@ -109,15 +118,15 @@ RegexFile.unescapeString = function(string) {
  * @param {String} string the string to clean
  * @returns {String} the cleaned string
  */
-RegexFile.cleanString = function(string) {
-    var unescaped = RegexFile.unescapeString(string);
+function cleanString(string) {
+    var unescaped = unescapeString(string);
 
     unescaped = unescaped.
         replace(/\\[btnfr]/g, " ").
         replace(/[ \n\t\r\f]+/g, " ").
         trim();
 
-    return unescaped;
+    return stripQuotes(unescaped);
 };
 
 /**
@@ -133,10 +142,28 @@ RegexFile.cleanString = function(string) {
  * @returns {String} a unique key for this string
  */
 RegexFile.prototype.makeKey = function(source) {
-    return RegexFile.unescapeString(source);
+    return this.API.utils.hashKey(source);
 };
 
-var reI18nComment = new RegExp("//\\s*i18n\\s*:\\s*(.*)$");
+/**
+ * Parse the array of strings from the given data string and return
+ * the array of strings as an actual array.
+ *
+ * @param {String} data the string to parse
+ * @returns {Array.<String>} the array of strings
+ */
+function parseArray(data) {
+    var arr;
+
+    if (data) {
+        arr = data.split(",");
+        arr = arr.map(function(item) {
+            return Regex.cleanString(item);
+        });
+    }
+
+    return arr;
+}
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -147,116 +174,100 @@ RegexFile.prototype.parse = function(data) {
     this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
-    var comment, match, key;
+    this.mapping.expressions.forEach(function(exp) {
+        var regex = exp.regex;
+        regex.lastIndex = 0; // just in case
+        var result = regex.exec(data);
+        while (result && result.length > 1) {
+            var r, source, key, comment, context, flavor;
 
-    reI18nComment.lastIndex = 0;
-    this.reGetString.lastIndex = 0; // just to be safe
+            source = result.source.trim();
+            if (source && source.length < 1) {
+                this.logger.warn("Found a string with no length in file " + this.pathName);
+                return;
+            }
 
-    var result = this.reGetString.exec(data);
-    while (result && result.length > 1 && result[this.wrapperCaptureGroupCount+1]) {
-        // different matches for single and double quotes
-        match = (result[this.wrapperCaptureGroupCount+1][0] === '"') ?
-            result[this.wrapperCaptureGroupCount+2] :
-            result[this.wrapperCaptureGroupCount+4];
+            comment = result.comment;
+            context = result.context;
+            flavor = result.flavor;
+            key = result.key;
 
-        if (match && match.length) {
-            this.logger.trace("Found string key: " + this.makeKey(match) + ", string: '" + match + "'");
+            if (!key) {
+                var src = cleanString(source);
+                switch (exp.keyStrategy) {
+                    default:
+                    case "hash":
+                        key = this.makeKey(src);
+                        break;
+                    case "source":
+                        key = src;
+                        break;
+                    case "truncate":
+                        key = src.substring(0, 32);
+                        break;
+                }
+            }
 
-            var last = data.indexOf('\n', this.reGetString.lastIndex);
-            last = (last === -1) ? data.length : last;
-            var line = data.substring(this.reGetString.lastIndex, last);
-            var commentResult = reI18nComment.exec(line);
-            comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
-
-            var r = this.API.newResource({
-                resType: "string",
-                project: this.project.getProjectId(),
-                key: RegexFile.unescapeString(match),
-                sourceLocale: this.project.sourceLocale,
-                source: RegexFile.cleanString(match),
-                autoKey: true,
-                pathName: this.pathName,
-                state: "new",
-                comment: comment,
-                datatype: this.type.datatype,
-                index: this.resourceIndex++
-            });
-            // for use later when we write out resources
-            r.mapping = this.mapping;
+            switch (exp.resourceType) {
+                case "string":
+                    source = cleanString(result.source);
+                    r = this.API.newResource({
+                        resType: exp.resourceType,
+                        project: this.project.getProjectId(),
+                        key: key,
+                        sourceLocale: this.project.sourceLocale,
+                        source: source,
+                        pathName: this.pathName,
+                        state: "new",
+                        comment: comment,
+                        datatype: exp.datatype,
+                        context: context,
+                        flavor: flavor,
+                        index: this.resourceIndex++
+                    });
+                    break;
+                case "plural":
+                    r = this.API.newResource({
+                        resType: exp.resourceType,
+                        project: this.project.getProjectId(),
+                        key: key,
+                        sourceLocale: this.project.sourceLocale,
+                        source: source,
+                        sourcePlurals: {
+                            one: cleanString(source),
+                            other: cleanString(result.sourcePlural)
+                        },
+                        pathName: this.pathName,
+                        state: "new",
+                        comment: comment,
+                        datatype: exp.datatype,
+                        context: context,
+                        flavor: flavor,
+                        index: this.resourceIndex++
+                    });
+                    break;
+                case "array":
+                    r = this.API.newResource({
+                        resType: exp.resourceType,
+                        project: this.project.getProjectId(),
+                        key: key,
+                        sourceLocale: this.project.sourceLocale,
+                        sourceArray: parseArray(result.source),
+                        pathName: this.pathName,
+                        state: "new",
+                        comment: comment,
+                        datatype: exp.datatype,
+                        context: context,
+                        flavor: flavor,
+                        index: this.resourceIndex++
+                    });
+                    break;
+            }
             this.set.add(r);
-        } else {
-            this.logger.warn("Warning: Bogus empty string in get string call: ");
-            this.logger.warn("... " + data.substring(result.index, this.reGetString.lastIndex) + " ...");
+
+            result = regex.exec(data);
         }
-        result = this.reGetString.exec(data);
-    }
-
-    // just to be safe
-    reI18nComment.lastIndex = 0;
-    this.reGetStringWithId.lastIndex = 0;
-
-    result = this.reGetStringWithId.exec(data);
-    while (result && result.length > 2 && result[this.wrapperCaptureGroupCount+1]) {
-        // different matches for single and double quotes
-        var autoKey = false;
-        match = (result[this.wrapperCaptureGroupCount+1][0] === '"') ?
-            result[this.wrapperCaptureGroupCount+2] :
-            result[this.wrapperCaptureGroupCount+4];
-        key = (result[this.wrapperCaptureGroupCount+6] && result[this.wrapperCaptureGroupCount+6][0] === '"') ?
-            result[this.wrapperCaptureGroupCount+7] :
-            result[this.wrapperCaptureGroupCount+9];
-        if (!key) {
-            key = RegexFile.unescapeString(match);
-            autoKey = true;
-        }
-
-        if (match && key && match.length && key.length) {
-            var last = data.indexOf('\n', this.reGetStringWithId.lastIndex);
-            last = (last === -1) ? data.length : last;
-            var line = data.substring(this.reGetStringWithId.lastIndex, last);
-            var commentResult = reI18nComment.exec(line);
-            comment = (commentResult && commentResult.length > 1) ? commentResult[1] : undefined;
-
-            this.logger.trace("Found string '" + match + "' with unique key " + key + ", comment: " + comment);
-
-            var r = this.API.newResource({
-                resType: "string",
-                project: this.project.getProjectId(),
-                key: key,
-                sourceLocale: this.project.sourceLocale,
-                source: RegexFile.cleanString(match),
-                pathName: this.pathName,
-                state: "new",
-                comment: comment,
-                datatype: this.type.datatype,
-                index: this.resourceIndex++,
-                autoKey: autoKey
-            });
-            // for use later when we write out resources
-            r.mapping = this.mapping;
-            this.set.add(r);
-        } else {
-            this.logger.warn("Warning: Bogus empty string in get string call: ");
-            this.logger.warn("... " + data.substring(result.index, this.reGetString.lastIndex) + " ...");
-        }
-        result = this.reGetStringWithId.exec(data);
-    }
-
-    // now check for and report on errors in the source
-    this.API.utils.generateWarnings(data, this.reGetStringBogusConcatenation1,
-        "Warning: string concatenation is not allowed in the RB.getString() parameters:",
-        this.logger,
-        this.pathName);
-
-    this.API.utils.generateWarnings(data, this.reGetStringBogusConcatenation2,
-        "Warning: string concatenation is not allowed in the RB.getString() parameters:",
-        this.logger,
-        this.pathName);
-
-    this.API.utils.generateWarnings(data, this.reGetStringBogusParam,
-        "Warning: non-string arguments are not allowed in the RB.getString() parameters:",
-        this.logger,
-        this.pathName);
+    }.bind(this));
 };
 
 /**

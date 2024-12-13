@@ -54,9 +54,8 @@
         "node": ">=12.0"
     },
     "devDependencies": {
-        "ilib-loctool-javascript-resource": "workspace:*",
-        "ilib-loctool-php-resource": "workspace:*",
+        "ilib-loctool-javascript-resource": "workspace:^",
         "jest": "^29.7.0",
-        "loctool": "workspace:*"
+        "loctool": "workspace:^"
     }
 }

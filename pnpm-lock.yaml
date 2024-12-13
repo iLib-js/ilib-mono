@@ -1628,13 +1628,13 @@ importers:
   packages/ilib-loctool-regex:
     devDependencies:
       ilib-loctool-javascript-resource:
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: workspace:^
+        version: link:../ilib-loctool-javascript-resource
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../loctool
 
   packages/ilib-loctool-ruby-ilib:
@@ -5428,10 +5428,6 @@ packages:
 
   ilib-localematcher@1.3.1:
     resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
-
-  ilib-loctool-javascript-resource@1.0.6:
-    resolution: {integrity: sha512-0Jp8xCL0XkTNCkcDO7qlSE1VVT16Ty/mhSSdfEZZ0gSl6+ZsLHBeStsnOx93o02z15Q0eANT/Lm9IuP7/nxDaw==}
-    engines: {node: '>=6.0'}
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     resolution: {integrity: sha512-G/20MuXksGohqBfMoHLeuME4u3JwqW8qmAzDoUUCVmalQQYg7dARztde6cxx7VrOoilo4kwS4bt0L+yGs5u0PA==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
@@ -12472,10 +12468,6 @@ snapshots:
     dependencies:
       ilib-common: 1.1.3
       ilib-locale: 1.2.2
-
-  ilib-loctool-javascript-resource@1.0.6:
-    dependencies:
-      ilib: 14.20.0
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:
