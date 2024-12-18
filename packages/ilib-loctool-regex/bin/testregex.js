@@ -47,11 +47,26 @@ function stringifyRegexResult(result) {
     if (!result) return;
     var str = "[\n";
     for (var i = 0; i < result.length; i++) {
-        str += "  '" + i + "': " + stringify(result[i]).replace(/[\[\]]/g, "") + ",\n";
+        var stringified = stringify(result[i]).replace(/[\[\]]/g, "");
+        stringified = stringified.length > 80 ? stringified.substring(0, 79) + '…"' : stringified;
+        var matchString = result[i] ? stringified : "undefined"
+        str += '  "' + i + '": ' + matchString + ",\n";
     }
+    str += '  "groups": ';
+    var groups = {};
+    Object.keys(result.groups).forEach(function(key) {
+        if (key.match(/^\d/)) {
+            return;
+        }
+        groups[key] = JSON.stringify(result.groups[key]);
+    })
+    str += JSON.stringify(groups, undefined, 2).split(/\n/g).join("\n  ") + ",\n";
     str += '  "index": ' + result.index + ",\n";
-    str += '  "groups": ' + stringify(result.groups, undefined, 2).split(/\n/g).join("\n  ") + "\n";
+    str += '  "length": ' + result.length + "\n";
     str += "]";
+    if (!groups.source) {
+        str += ",\nWarning: no source group found in the match! Cannot create a Resource from this match.";
+    }
     return str;
 }
 
@@ -61,11 +76,10 @@ files.forEach(function(file) {
         var regexFile = rft.newFile(file, {});
         console.log("File: " + file);
         console.log("Matched mapping: " + stringify(rft.getMappingName(file)));
-        console.log("Matches:");
         regexFile.parse(data, function(info) {
-            console.log("Regular expression: " + info.expression.expression);
+            console.log("Trying regular expression: " + info.expression.expression);
             console.log("  Flags: " + info.expression.flags);
-            console.log("  Result\n" + stringifyRegexResult(info.result));
+            console.log("  Result:\n" + stringifyRegexResult(info.result));
         });
         console.log("\n");
     } catch (e) {

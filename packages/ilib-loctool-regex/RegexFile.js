@@ -191,120 +191,118 @@ RegexFile.prototype.parse = function(data, cb) {
             var array = undefined;
 
             source = result.groups && result.groups.source && result.groups.source.trim();
-            if (!source || source.length < 1) {
-                this.logger.warn("Found match with no source string, " + this.pathName);
-                return;
-            }
+            if (source && source.length > 0) {
+                if (result.groups) {
+                    if (result.groups.sourcePlural) {
+                        sourcePlural = cleanString(result.groups.sourcePlural);
+                    }
+                    if (result.groups.comment) {
+                        comment = cleanString(result.groups.comment);
+                    }
+                    if (result.groups.context) {
+                        context = cleanString(result.groups.context);
+                    }
+                    if (result.groups.flavor) {
+                        flavor = cleanString(result.groups.flavor);
+                    }
+                    if (result.groups.key) {
+                        key = cleanString(result.groups.key);
+                    }
+                }
 
-            if (result.groups) {
-                if (result.groups.sourcePlural) {
-                    sourcePlural = cleanString(result.groups.sourcePlural);
+                if (exp.resourceType === "array") {
+                    array = parseArray(source);
                 }
-                if (result.groups.comment) {
-                    comment = cleanString(result.groups.comment);
-                }
-                if (result.groups.context) {
-                    context = cleanString(result.groups.context);
-                }
-                if (result.groups.flavor) {
-                    flavor = cleanString(result.groups.flavor);
-                }
-                if (result.groups.key) {
-                    key = cleanString(result.groups.key);
-                }
-            }
 
-            if (exp.resourceType === "array") {
-                array = parseArray(source);
-            }
+                if (!key) {
+                    // src should contain the source string to use to generate the key
+                    var src;
+                    switch (exp.resourceType) {
+                        case "string":
+                            src = cleanString(source);
+                            break;
+                        case "plural":
+                            src = sourcePlural;
+                            break;
+                        case "array":
+                            src = array.join("");
+                            break;
+                    }
 
-            if (!key) {
-                // src should contain the source string to use to generate the key
-                var src;
+                    switch (exp.keyStrategy) {
+                        default:
+                        case "hash":
+                            key = this.makeKey(src);
+                            break;
+                        case "source":
+                            key = src;
+                            break;
+                        case "truncate":
+                            key = src.substring(0, 32);
+                            break;
+                    }
+                }
+
                 switch (exp.resourceType) {
                     case "string":
-                        src = cleanString(source);
+                        source = cleanString(source);
+                        r = this.API.newResource({
+                            resType: exp.resourceType,
+                            project: this.project.getProjectId(),
+                            key: key,
+                            sourceLocale: this.project.sourceLocale,
+                            source: source,
+                            pathName: this.pathName,
+                            state: "new",
+                            autoKey: true,
+                            comment: comment,
+                            datatype: exp.datatype,
+                            context: context,
+                            flavor: flavor,
+                            index: this.resourceIndex++
+                        });
                         break;
                     case "plural":
-                        src = sourcePlural;
+                        r = this.API.newResource({
+                            resType: exp.resourceType,
+                            project: this.project.getProjectId(),
+                            key: key,
+                            sourceLocale: this.project.sourceLocale,
+                            source: source,
+                            sourcePlurals: {
+                                one: cleanString(source),
+                                other: sourcePlural
+                            },
+                            pathName: this.pathName,
+                            state: "new",
+                            comment: comment,
+                            datatype: exp.datatype,
+                            context: context,
+                            flavor: flavor,
+                            index: this.resourceIndex++
+                        });
                         break;
                     case "array":
-                        src = array.join("");
+                        r = this.API.newResource({
+                            resType: exp.resourceType,
+                            project: this.project.getProjectId(),
+                            key: key,
+                            sourceLocale: this.project.sourceLocale,
+                            sourceArray: array,
+                            pathName: this.pathName,
+                            state: "new",
+                            comment: comment,
+                            datatype: exp.datatype,
+                            context: context,
+                            flavor: flavor,
+                            index: this.resourceIndex++
+                        });
                         break;
                 }
-
-                switch (exp.keyStrategy) {
-                    default:
-                    case "hash":
-                        key = this.makeKey(src);
-                        break;
-                    case "source":
-                        key = src;
-                        break;
-                    case "truncate":
-                        key = src.substring(0, 32);
-                        break;
-                }
+                this.set.add(r);
+            } else {
+                this.logger.warn("Found match with no source string, " + this.pathName);
             }
-
-            switch (exp.resourceType) {
-                case "string":
-                    source = cleanString(source);
-                    r = this.API.newResource({
-                        resType: exp.resourceType,
-                        project: this.project.getProjectId(),
-                        key: key,
-                        sourceLocale: this.project.sourceLocale,
-                        source: source,
-                        pathName: this.pathName,
-                        state: "new",
-                        autoKey: true,
-                        comment: comment,
-                        datatype: exp.datatype,
-                        context: context,
-                        flavor: flavor,
-                        index: this.resourceIndex++
-                    });
-                    break;
-                case "plural":
-                    r = this.API.newResource({
-                        resType: exp.resourceType,
-                        project: this.project.getProjectId(),
-                        key: key,
-                        sourceLocale: this.project.sourceLocale,
-                        source: source,
-                        sourcePlurals: {
-                            one: cleanString(source),
-                            other: sourcePlural
-                        },
-                        pathName: this.pathName,
-                        state: "new",
-                        comment: comment,
-                        datatype: exp.datatype,
-                        context: context,
-                        flavor: flavor,
-                        index: this.resourceIndex++
-                    });
-                    break;
-                case "array":
-                    r = this.API.newResource({
-                        resType: exp.resourceType,
-                        project: this.project.getProjectId(),
-                        key: key,
-                        sourceLocale: this.project.sourceLocale,
-                        sourceArray: array,
-                        pathName: this.pathName,
-                        state: "new",
-                        comment: comment,
-                        datatype: exp.datatype,
-                        context: context,
-                        flavor: flavor,
-                        index: this.resourceIndex++
-                    });
-                    break;
-            }
-            this.set.add(r);
-
             result = regex.exec(data);
         }
     }.bind(this));

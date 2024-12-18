@@ -104,14 +104,14 @@ Example configuration for a web project with PHP and JavaScript files:
                     "sourceLocale": "en-US",
                     "expressions": [
                         {
-                            "expression": "\\btranslate\\s*(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
+                            "expression": "translate\\s*(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
                             "flags": "g",
                             "datatype": "php",
                             "resourceType": "string",
                             "keyStrategy": "source"
                         },
                         {
-                            "expression": "\\btranslate\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*,\\s*['\"](?<key>[^'\"]*)['\"]\\s*\\)",
+                            "expression": "translate\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*,\\s*['\"](?<key>[^'\"]*)['\"]\\s*\\)",
                             "flags": "g",
                             "datatype": "php",
                             "resourceType": "string"
@@ -170,8 +170,9 @@ will just mysteriously not show up in the resource file.
 
 To help you get your regular expressions right, you can test them using
 the `testregex` command line tool that comes with this plugin. The `testregex`
-tool takes a path to your project's config file and the name of a file
-to match against. It will run the regular expressions in the config file
+tool takes a path to the root of your project where the project.json config file
+is located, and the name of a file to match against.
+It will run the regular expressions in the config file
 against the contents of the file and show you the results in a very verbose
 manner. This can help you see exactly what the regular expression is doing
 and perhaps give a clue as to why it is not extracting the strings that
@@ -180,20 +181,30 @@ you expect.
 Example usage:
 
 ```sh
-testregex folder/a/b/c/project.json myfile.php
+testregex folder/a/b/c myfile.php
 ```
 
-This will run the regular expressions in the `project.json` file against
+This will run the regular expressions in the `folder/a/b/c/project.json` file against
 the contents of the `myfile.php` file in the same way that the loctool
 will and show you the results.
 
 Example output:
 
 ```
-Running regular expression "\\btranslate\\s*(\\s*['\"](?<source>[^'\"]*)['\"]\\s*)" against file "myfile.php"
-Extracted strings:
-    translate("Hello, world!")
-    translate("Goodbye, world!")
+File: ./myfile.php
+Matched mapping: ["**/*.php"]
+Trying regular expression: translate\s*(\s*['"](?<source>[^'"]*)['"]\s*\)
+  Flags: g
+  Result:
+[
+  "0": "translate(\"Hello, world!\");",
+  "1": "Hello, world!",
+  "groups": {
+    "source": "Hello, world!"
+  },
+  "index": 0,
+  "length": 2
+]
 ```
 
 ## Release Notes
