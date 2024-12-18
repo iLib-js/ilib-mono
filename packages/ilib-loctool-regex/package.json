@@ -2,6 +2,7 @@
     "name": "ilib-loctool-regex",
     "version": "1.0.0",
     "main": "./RegexFileType.js",
+    "bin": "./bin/testregex.js",
     "description": "A loctool plugin that knows how to process any files using regular expressions",
     "license": "Apache-2.0",
     "keywords": [
@@ -33,6 +34,7 @@
         }
     ],
     "files": [
+        "bin",
         "README.md",
         "CHANGELOG.md",
         "LICENSE",
@@ -48,13 +50,13 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
-        "clean": "git clean -f -d *"
+        "clean": "git clean -f -d *",
+        "testregex": "node ./bin/testregex.js"
     },
     "engines": {
         "node": ">=12.0"
     },
     "devDependencies": {
-        "flatted": "^3.3.2",
         "ilib-loctool-javascript-resource": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
