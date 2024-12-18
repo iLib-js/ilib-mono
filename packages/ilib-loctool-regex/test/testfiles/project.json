@@ -1,0 +1,106 @@
+{
+    "name": "sample",
+    "id": "sample",
+    "version": "1.0.0",
+    "description": "Sample project for testing regular expressions against files",
+    "type": "custom",
+    "sourceLocale": "en",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "javascript": "target"
+    },
+    "includes": [
+        "**/*.js",
+        "**/*.tmpl"
+    ],
+    "excludes": [
+        ".git",
+        ".github",
+        "test",
+        "node_modules",
+        "xliffs",
+        "**/*.po",
+        "**/*.pot",
+        "**/*.mo",
+        "**/*.xliff"
+    ],
+    "settings": {
+        "locales":["en-GB", "de-DE", "fr-FR", "ja-JP"],
+        "regex": {
+            "mappings": {
+                "**/*.js": {
+                    "resourceFileType": "ilib-loctool-javascript-resource",
+                    "template": "resources/strings_[locale].json",
+                    "sourceLocale": "en-US",
+                    "expressions": [
+                        {
+                            "expression": "\\$t\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "string",
+                            "keyStrategy": "hash"
+                        },
+                        {
+                            "expression": "\\$p\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*,\\s*['\"](?<sourcePlural>[^'\"]*)['\"]\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "plural",
+                            "keyStrategy": "hash"
+                        },
+                        {
+                            "expression": "\\$a\\s*\\(\\s*\\[(?<source>[^\\]]*)\\s*\\]\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "array",
+                            "keyStrategy": "hash"
+                        },
+                        {
+                            "expression": "\\$wholekey\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "string",
+                            "keyStrategy": "source"
+                        },
+                        {
+                            "expression": "\\$truncatedkey\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "string",
+                            "keyStrategy": "truncate"
+                        },
+                        {
+                            "expression": "\\$u\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
+                            "flags": "gu",
+                            "datatype": "javascript",
+                            "resourceType": "string",
+                            "keyStrategy": "hash"
+                        }
+                    ]
+                },
+                "**/*.tmpl": {
+                    "resourceFileType": "ilib-loctool-javascript-resource",
+                    "template": "resources/Translation[locale].json",
+                    "sourceLocale": "en-US",
+                    "expressions": [
+                        {
+                            "expression": "(\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\})?.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                            "flags": "gsv",
+                            "datatype": "template",
+                            "resourceType": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        "php": {
+            "localeMap": {
+                "en-US": "EnUS",
+                "en-GB": "EnGB",
+                "de-DE": "DeDE",
+                "fr-FR": "FrFR",
+                "ja-JP": "JaJP"
+            },
+            "sourceLocale": "en-US"
+        }
+    }
+}

@@ -154,6 +154,48 @@ localized and placed in a JSON resource file. The resource file will be
 named `strings-[locale].json` where `[locale]` is replaced with the locale
 of the localized strings.
 
+## Testing your Regular Expressions
+
+Getting regular expressions right can be tricky. The `ilib-loctool-regex`
+plugin uses the JavaScript regular expression engine to extract strings
+from your source files. This means that you can use any regular expression
+that is valid in JavaScript. Javascript regular expressions have their
+own quirks different than other regular expression engines. Often, you
+will create a regular expression,
+place it into the config file, run the loctool, and see that it does not
+extract all the strings you expect it to extract. This is almost always
+because the regular expression itself is not quite right. When this happens,
+you will not necessarily get any error messages from the loctool. The strings
+will just mysteriously not show up in the resource file.
+
+To help you get your regular expressions right, you can test them using
+the `testregex` command line tool that comes with this plugin. The `testregex`
+tool takes a path to your project's config file and the name of a file
+to match against. It will run the regular expressions in the config file
+against the contents of the file and show you the results in a very verbose
+manner. This can help you see exactly what the regular expression is doing
+and perhaps give a clue as to why it is not extracting the strings that
+you expect.
+
+Example usage:
+
+```sh
+testregex folder/a/b/c/project.json myfile.php
+```
+
+This will run the regular expressions in the `project.json` file against
+the contents of the `myfile.php` file in the same way that the loctool
+will and show you the results.
+
+Example output:
+
+```
+Running regular expression "\\btranslate\\s*(\\s*['\"](?<source>[^'\"]*)['\"]\\s*)" against file "myfile.php"
+Extracted strings:
+    translate("Hello, world!")
+    translate("Goodbye, world!")
+```
+
 ## Release Notes
 
 Please see the [release notes](./CHANGELOG.md) for information on the

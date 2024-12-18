@@ -19,15 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Locale = require("ilib/lib/Locale");
-
-
-var strGetStringBogusConcatenation1 = "\\s*\\(\\s*(\"[^\"]*\"|'[^']*')\\s*\\+";
-var strGetStringBogusConcatenation2 = "\\s*\\([^\\)]*\\+\\s*(\"[^\"]*\"|'[^']*')\\s*\\)";
-var strGetStringBogusParam = "\\s*\\([^\"'\\)]*\\)/";
-
-var strGetString = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*\\)";
-var strGetStringWithId = "\\s*\\(\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')\\s*,\\s*(\"((\\\\\"|[^\"])*)\"|'((\\\\'|[^'])*)')?\\s*,?\\s*\\)";
+var Locale = require("ilib-locale");
 
 /**
  * Create a new Regex file with the given path name and within
@@ -74,6 +66,7 @@ var RegexFile = function(props) {
  * @returns {String} the unescaped string
  */
 function unescapeString(string) {
+    if (!string) return string;
     var unescaped = string;
 
     unescaped = unescaped.
@@ -119,6 +112,7 @@ function stripQuotes(str) {
  * @returns {String} the cleaned string
  */
 function cleanString(string) {
+    if (!string) return string;
     var unescaped = unescapeString(string);
 
     unescaped = unescaped.
@@ -158,7 +152,7 @@ function parseArray(data) {
     if (data) {
         arr = data.split(",");
         arr = arr.map(function(item) {
-            return Regex.cleanString(item);
+            return cleanString(item);
         });
     }
 
@@ -170,7 +164,9 @@ function parseArray(data) {
  * project's translation set.
  * @param {String} data the string to parse
  */
-RegexFile.prototype.parse = function(data) {
+RegexFile.prototype.parse = function(data, cb) {
+    // The cb parameter is a hidden, undocumented parameter that is used for testing only.
+    // It is a callback that gets called to give information about regex matches
     this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
@@ -179,21 +175,64 @@ RegexFile.prototype.parse = function(data) {
         regex.lastIndex = 0; // just in case
         var result = regex.exec(data);
         while (result && result.length > 1) {
-            var r, source, key, comment, context, flavor;
+            if (typeof(cb) === "function") {
+                cb({
+                    expression: exp,
+                    result: result
+                });
+            }
+            var r = undefined;
+            var key = undefined;
+            var source = undefined;
+            var sourcePlural = undefined;
+            var comment = undefined;
+            var context = undefined;
+            var flavor = undefined;
+            var array = undefined;
 
-            source = result.source.trim();
-            if (source && source.length < 1) {
-                this.logger.warn("Found a string with no length in file " + this.pathName);
+            source = result.groups && result.groups.source && result.groups.source.trim();
+            if (!source || source.length < 1) {
+                this.logger.warn("Found match with no source string, " + this.pathName);
                 return;
             }
 
-            comment = result.comment;
-            context = result.context;
-            flavor = result.flavor;
-            key = result.key;
+            if (result.groups) {
+                if (result.groups.sourcePlural) {
+                    sourcePlural = cleanString(result.groups.sourcePlural);
+                }
+                if (result.groups.comment) {
+                    comment = cleanString(result.groups.comment);
+                }
+                if (result.groups.context) {
+                    context = cleanString(result.groups.context);
+                }
+                if (result.groups.flavor) {
+                    flavor = cleanString(result.groups.flavor);
+                }
+                if (result.groups.key) {
+                    key = cleanString(result.groups.key);
+                }
+            }
+
+            if (exp.resourceType === "array") {
+                array = parseArray(source);
+            }
 
             if (!key) {
-                var src = cleanString(source);
+                // src should contain the source string to use to generate the key
+                var src;
+                switch (exp.resourceType) {
+                    case "string":
+                        src = cleanString(source);
+                        break;
+                    case "plural":
+                        src = sourcePlural;
+                        break;
+                    case "array":
+                        src = array.join("");
+                        break;
+                }
+
                 switch (exp.keyStrategy) {
                     default:
                     case "hash":
@@ -210,7 +249,7 @@ RegexFile.prototype.parse = function(data) {
 
             switch (exp.resourceType) {
                 case "string":
-                    source = cleanString(result.source);
+                    source = cleanString(source);
                     r = this.API.newResource({
                         resType: exp.resourceType,
                         project: this.project.getProjectId(),
@@ -219,6 +258,7 @@ RegexFile.prototype.parse = function(data) {
                         source: source,
                         pathName: this.pathName,
                         state: "new",
+                        autoKey: true,
                         comment: comment,
                         datatype: exp.datatype,
                         context: context,
@@ -235,7 +275,7 @@ RegexFile.prototype.parse = function(data) {
                         source: source,
                         sourcePlurals: {
                             one: cleanString(source),
-                            other: cleanString(result.sourcePlural)
+                            other: sourcePlural
                         },
                         pathName: this.pathName,
                         state: "new",
@@ -252,7 +292,7 @@ RegexFile.prototype.parse = function(data) {
                         project: this.project.getProjectId(),
                         key: key,
                         sourceLocale: this.project.sourceLocale,
-                        sourceArray: parseArray(result.source),
+                        sourceArray: array,
                         pathName: this.pathName,
                         state: "new",
                         comment: comment,
@@ -268,6 +308,8 @@ RegexFile.prototype.parse = function(data) {
             result = regex.exec(data);
         }
     }.bind(this));
+
+    return this.set;
 };
 
 /**
