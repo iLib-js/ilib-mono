@@ -86,6 +86,8 @@ type ArrayResources = {
     [key: string]: ResourceArray
 };
 
+type ResourceTypeSpecifier = "string" | "plural" | "array";
+
 /** Mapping from PO comment type identifier char to enum {@link CommentType} value */
 const commentTypeMap = new Map([
     [' ', CommentType.TRANSLATOR],
@@ -95,10 +97,10 @@ const commentTypeMap = new Map([
     [':', CommentType.PATHS],
 
     // these two are extensions to the PO format so that we can encode array resources
-    ['k', CommentType.KEY],
-    ['#', CommentType.INDEX],
-    ['d', CommentType.DATATYPE],
-    ['p', CommentType.PROJECT]
+    ['k', CommentType.KEY],       // unique key of the resource if it is different from the source string
+    ['#', CommentType.INDEX],     // index of the string in an array resource
+    ['d', CommentType.DATATYPE],  // type of the data where the resource is used (like "javascript" or "python")
+    ['p', CommentType.PROJECT]    // name of the project that this resource is a part of
 ]);
 
 const reTargetLocale = /"Language:\s*([^ \\]+)/;
@@ -181,7 +183,7 @@ class Parser {
             category : PluralCategory | undefined,
             arrays: ArrayResources | undefined = {},
             key: string | undefined,
-            type: string | undefined,
+            type: ResourceTypeSpecifier | undefined,
             arrayIndex: number = 0,
             defaultDataType: string | undefined = this.datatype,
             datatype: string | undefined,
@@ -276,8 +278,12 @@ class Parser {
                         case TokenType.BLANKLINE:
                             if (source || sourcePlurals) {
                                 // emit a resource
-                                let res: Resource | undefined = undefined;
-                                if (type === "plural" && sourcePlurals) {
+                                let res: Resource;
+                                if (type === "plural") {
+                                    if (!sourcePlurals) {
+                                        // plural resources need to have a plural string!
+                                        throw new SyntaxError(this.pathName, tokenizer.getContext());
+                                    }
                                     if (!key) {
                                         key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
                                     }
@@ -329,7 +335,11 @@ class Parser {
                                         // no key
                                         throw new SyntaxError(this.pathName, tokenizer.getContext());
                                     }
-                                } else if (source) {
+                                } else {
+                                    if (!source) {
+                                        // string resources need to have a source string!
+                                        throw new SyntaxError(this.pathName, tokenizer.getContext());
+                                    }
                                     if (!key) {
                                         key = makeKey("string", source, this.contextInKey ? context : undefined);
                                     }
@@ -348,9 +358,7 @@ class Parser {
                                         target: translation
                                     });
                                 }
-                                if (res) {
-                                    set.add(res);
-                                }
+                                set.add(res);
                             }
                             if (token.type === TokenType.END) {
                                 state = State.END;

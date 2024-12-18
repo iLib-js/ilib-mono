@@ -80,6 +80,7 @@ class Generator {
         const optionsWithDefaults = {
             targetLocale: "en",
             contextInKey: false,
+            projectName: "default",
             ...options,
         };
 
@@ -87,7 +88,7 @@ class Generator {
         this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
         this.contextInKey = optionsWithDefaults.contextInKey;
         this.datatype = optionsWithDefaults.datatype;
-        this.projectName = optionsWithDefaults.projectName ?? "default";
+        this.projectName = optionsWithDefaults.projectName;
 
         this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
     }
