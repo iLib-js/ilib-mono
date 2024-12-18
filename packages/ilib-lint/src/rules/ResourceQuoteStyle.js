@@ -33,7 +33,9 @@ import ResourceRule from './ResourceRule.js';
  * @prop {string} quoteEndAlt
  * @prop {RegExp} quotesNative
  * @prop {RegExp} quotesNativeAlt
- *
+ */
+
+/**
  * @typedef {BaseRegExpCollection} SourceRegExpCollection
  */
 
@@ -44,8 +46,10 @@ import ResourceRule from './ResourceRule.js';
  * @prop {RegExp} quotesAllAlt
  * @prop {string} nonQuoteChars
  * @prop {string} nonQuoteCharsAlt
- *
- * @typedef {BaseRegExpCollection & ExtendedRegExpCollection} TargetRegExpCollection
+ */
+
+/**
+ * @ignore @typedef {BaseRegExpCollection & ExtendedRegExpCollection} TargetRegExpCollection
  */
 
 /**

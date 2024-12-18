@@ -142,7 +142,7 @@ export class ResourceSourceICUUnexplainedParams extends ResourceRule {
     }
 
     /**
-     * @typedef {{
+     * @ignore @typedef {{
      *     element: MessageFormatElement;
      *     parent: undefined | ICUAstNode;
      * }} ICUAstNode
@@ -156,7 +156,7 @@ export class ResourceSourceICUUnexplainedParams extends ResourceRule {
      */
     traverseIcuAst(
         /** @type {MessageFormatElement[]} */ message,
-        /** @type {(node: ICUAstNode) => void} */ callback,
+        /** @ignore @type {(node: ICUAstNode) => void} */ callback,
         /** @type {ICUAstNode | undefined} */ parent
     ) {
         for (const element of message) {

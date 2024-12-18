@@ -39,8 +39,8 @@ const skipComponents = new Set([
 ]);
 
 // type imports
-/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
-/** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
+/** @ignore @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @ignore @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
 
 class NoHardCodedStrings extends Rule {
     /** @readonly */
