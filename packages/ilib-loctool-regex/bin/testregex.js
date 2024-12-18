@@ -19,13 +19,9 @@
  */
 
 var fs = require("fs");
-var path = require("path");
-var flatted = require("flatted");
 
 var ProjectFactory = require("loctool/lib/ProjectFactory.js");
 var RegexFileType = require("../RegexFileType.js");
-
-var stringify = flatted.stringify;
 
 if (process.argv.length < 4) {
     console.log("Usage: testregex path-to-project-dir file1 [file2 ...]");
@@ -47,7 +43,7 @@ function stringifyRegexResult(result) {
     if (!result) return;
     var str = "[\n";
     for (var i = 0; i < result.length; i++) {
-        var stringified = stringify(result[i]).replace(/[\[\]]/g, "");
+        var stringified = JSON.stringify(result[i]).replace(/[\[\]]/g, "");
         stringified = stringified.length > 80 ? stringified.substring(0, 79) + '…"' : stringified;
         var matchString = result[i] ? stringified : "undefined"
         str += '  "' + i + '": ' + matchString + ",\n";
@@ -58,7 +54,7 @@ function stringifyRegexResult(result) {
         if (key.match(/^\d/)) {
             return;
         }
-        groups[key] = JSON.stringify(result.groups[key]);
+        groups[key] = result.groups[key];
     })
     str += JSON.stringify(groups, undefined, 2).split(/\n/g).join("\n  ") + ",\n";
     str += '  "index": ' + result.index + ",\n";
@@ -75,10 +71,9 @@ files.forEach(function(file) {
         var data = fs.readFileSync(file, "utf-8");
         var regexFile = rft.newFile(file, {});
         console.log("File: " + file);
-        console.log("Matched mapping: " + stringify(rft.getMappingName(file)));
+        console.log('Matched mapping: "' + rft.getMappingName(file) + '"');
         regexFile.parse(data, function(info) {
-            console.log("Trying regular expression: " + info.expression.expression);
-            console.log("  Flags: " + info.expression.flags);
+            console.log("Trying regular expression: /" + info.expression.expression + "/" + info.expression.flags);
             console.log("  Result:\n" + stringifyRegexResult(info.result));
         });
         console.log("\n");

@@ -1203,7 +1203,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
+        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1637,9 +1637,6 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
-      flatted:
-        specifier: ^3.3.2
-        version: 3.3.2
       ilib-loctool-javascript-resource:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
@@ -2107,7 +2104,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -4884,9 +4881,6 @@ packages:
 
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
-
-  flatted@3.3.2:
-    resolution: {integrity: sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==}
 
   follow-redirects@1.0.0:
     resolution: {integrity: sha512-7s+wBk4z5xTwVJuozRBAyRofWKjD3uG2CUjZfZTrw9f+f+z8ZSxOjAqfIDLtc0Hnz+wGK2Y8qd93nGGjXBYKsQ==}
@@ -11719,8 +11713,6 @@ snapshots:
   flatmap@0.0.3: {}
 
   flatted@3.3.1: {}
-
-  flatted@3.3.2: {}
 
   follow-redirects@1.0.0:
     dependencies:
