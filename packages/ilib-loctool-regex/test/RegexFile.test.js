@@ -36,7 +36,7 @@ var p = new CustomProject({
                 "expressions": [
                     {
                         // regular string $t('string')
-                        "expression": "\\b\\$t\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "expression": "\\$t\\s*\\(\\s*[\'\"](?<source>[^\'\"]*)[\'\"]\\s*\\)",
                         "flags": "g",
                         "datatype": "javascript",
                         "resourceType": "string",
@@ -44,7 +44,7 @@ var p = new CustomProject({
                     },
                     {
                         // plural string $p('singular', 'plural')
-                        "expression": "\\b\\$p\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*,\\s*\'(?<sourcePlural>[^\']*)\'\\s*\\)",
+                        "expression": "\\$p\\s*\\(\\s*[\'\"](?<source>[^\'\"]*)[\'\"]\\s*,\\s*[\'\"](?<sourcePlural>[^\'\"]*)[\'\"]\\s*\\)",
                         "flags": "g",
                         "datatype": "javascript",
                         "resourceType": "plural",
@@ -52,7 +52,7 @@ var p = new CustomProject({
                     },
                     {
                         // array of strings $a(["string1", "string2"])
-                        "expression": "\\b\\$a\\s*\\(\\s*\\[(?<source>[^\]]*)\\s*\\]\\s*\\)",
+                        "expression": "\\$a\\s*\\(\\s*\\[(?<source>[^\\]]*)\\s*\\]\\s*\\)",
                         "flags": "g",
                         "datatype": "javascript",
                         "resourceType": "array",
@@ -60,7 +60,7 @@ var p = new CustomProject({
                     },
                     {
                         // regular string, but where the key strategy is to use the whole source string
-                        "expression": "\\b\\$wholekey\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "expression": "\\$wholekey\\s*\\(\\s*[\'\"](?<source>[^\'\"]*)[\'\"]\\s*\\)",
                         "flags": "g",
                         "datatype": "javascript",
                         "resourceType": "string",
@@ -68,7 +68,7 @@ var p = new CustomProject({
                     },
                     {
                         // regular string, but where the key strategy is to use the trunctated source string
-                        "expression": "\\b\\$truncatedkey\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "expression": "\\$truncatedkey\\s*\\(\\s*[\'\"](?<source>[^\'\"]*)[\'\"]\\s*\\)",
                         "flags": "g",
                         "datatype": "javascript",
                         "resourceType": "string",
@@ -77,7 +77,7 @@ var p = new CustomProject({
                     {
                         // regular string that contains escaped Unicode characters. We include the "u" flag
                         // in the regular expression flags
-                        "expression": "\\b\\$u\\s*\\(\\s*\'(?<source>[^\']*)\'\\s*\\)",
+                        "expression": "\\$u\\s*\\(\\s*[\'\"](?<source>[^\'\"]*)[\'\"]\\s*\\)",
                         "flags": "gu",
                         "datatype": "javascript",
                         "resourceType": "string",
@@ -95,7 +95,9 @@ var p = new CustomProject({
                         // {* @L10N The message shown to users whose passwords have just been changed *}
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
                         "expression": "(\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\})?.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
-                        "flags": "g",
+                        // need dotall flag to match across lines, the global flag to match multiple instances
+                        // and the sticky flag to match multiple times
+                        "flags": "gsv",
                         "datatype": "template",
                         "resourceType": "string"
                     }
@@ -167,7 +169,7 @@ describe("regex file tests", function() {
 
     test("RegexFileParse simple string", function() {
         expect.assertions(6);
-debugger;
+
         var rf = new RegexFile({
             project: p,
             pathName: "./testfiles/js/t1.js",
@@ -184,7 +186,7 @@ debugger;
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
-        expect(r.getDatatype()).toBe("javascript");
+        expect(r.getDataType()).toBe("javascript");
     });
 
     test("RegexFileParse more complex string", function() {
@@ -250,7 +252,7 @@ debugger;
     });
 
     test("RegexFileParse plural string", function() {
-        expect.assertions(5);
+        expect.assertions(6);
 
         var rf = new RegexFile({
             project: p,
@@ -264,10 +266,12 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "r145739915"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSourcePlurals()).toStrictEqual({
             "one": "This is the singular",
             "other": "This is the plural"
@@ -276,7 +280,7 @@ debugger;
     });
 
     test("RegexFileParse array of strings", function() {
-        expect.assertions(5);
+        expect.assertions(6);
 
         var rf = new RegexFile({
             project: p,
@@ -290,10 +294,12 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "r523019971"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSourceArray()).toStrictEqual([
             "This is the first string",
             "This is the second string"
@@ -302,7 +308,7 @@ debugger;
     });
 
     test("RegexFileParseWithKey", function() {
-        expect.assertions(5);
+        expect.assertions(7);
 
         var rf = new RegexFile({
             project: p,
@@ -316,13 +322,15 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "login_success_password_changed"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("Your password was changed. Please log in again.");
-        expect(r[0].getKey()).toBe("login_success_password_changed");
-        expect(r[0].getDatatype()).toBe("template");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
+        expect(r.getSource()).toBe("Your password was changed. Please log in again.");
+        expect(r.getKey()).toBe("login_success_password_changed");
+        expect(r.getDataType()).toBe("template");
     });
 
     test("RegexFile parse multiple strings in the same file", function() {
@@ -354,8 +362,8 @@ debugger;
     });
 
     test("RegexFile parse multiple strings with keys", function() {
-        expect.assertions(10);
-
+        expect.assertions(12);
+debugger;
         var rf = new RegexFile({
             project: p,
             pathName: "./testfiles/templates/t1.tmpl",
@@ -370,21 +378,25 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "login_success_password_changed"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("Your password was changed. Please log in again.");
-        expect(!r[0].getAutoKey()).toBeTruthy();
-        expect(r[0].getKey()).toBe("login_success_password_changed");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
+        expect(r.getSource()).toBe("Your password was changed. Please log in again.");
+        expect(r.getAutoKey()).toBeTruthy();
+        expect(r.getKey()).toBe("login_success_password_changed");
 
-        r = set.getBy({
+        resources = set.getBy({
             reskey: "login_forgot_password"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("Forgot your password?");
-        expect(!r[0].getAutoKey()).toBeTruthy();
-        expect(r[0].getKey()).toBe("login_forgot_password");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
+        expect(r.getSource()).toBe("Forgot your password?");
+        expect(r.getAutoKey()).toBeTruthy();
+        expect(r.getKey()).toBe("login_forgot_password");
     });
 
     test("RegexFile parse multiple strings on the same line", function() {
@@ -421,7 +433,7 @@ debugger;
     });
 
     test("RegexFile parse with translator's comments", function() {
-        expect.assertions(6);
+        expect.assertions(7);
 
         var rf = new RegexFile({
             project: p,
@@ -436,17 +448,19 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "login_success_password_changed"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("Your password was changed. Please log in again.");
         expect(r.getKey()).toBe("login_success_password_changed");
         expect(r.getComment()).toBe("The message shown to users whose passwords have just been changed");
     });
 
-    test("RegexFileParse multiple strigs with unique IDs and their own separate comments", function() {
-        expect.assertions(10);
+    test("RegexFileParse multiple strings with unique IDs and their own separate comments", function() {
+        expect.assertions(12);
 
         var rf = new RegexFile({
             project: p,
@@ -461,25 +475,29 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "asdf"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("asdf");
-        expect(r[0].getComment()).toBe("foo");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("asdf");
+        expect(r.getComment()).toBe("foo");
 
-        r = set.getBy({
+        resources = set.getBy({
             reskey: "kdkdkd"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is also a test");
-        expect(r[0].getKey()).toBe("kdkdkd");
-        expect(r[0].getComment()).toBe("bar");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("kdkdkd");
+        expect(r.getComment()).toBe("bar");
     });
 
     test("RegexFileParseWithDups", function() {
-        expect.assertions(6);
+        expect.assertions(7);
 
         var rf = new RegexFile({
             project: p,
@@ -495,10 +513,12 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "r654479252"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
 
@@ -507,7 +527,7 @@ debugger;
     });
 
     test("RegexFileParse dups that differ by key only", function() {
-        expect.assertions(8);
+        expect.assertions(10);
 
         var rf = new RegexFile({
             project: p,
@@ -522,19 +542,23 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "asdf"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("asdf");
 
-        r = set.getBy({
+        resources = set.getBy({
             reskey: "kdkdkd"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test");
-        expect(r[0].getKey()).toBe("kdkdkd");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
+        expect(r.getSource()).toBe("This is a test");
+        expect(r.getKey()).toBe("kdkdkd");
     });
 
     test("RegexFile when the result of parsing is the empty string", function() {
@@ -557,7 +581,7 @@ debugger;
     });
 
     test("RegexFile using a whole key strategy", function() {
-        expect.assertions(5);
+        expect.assertions(6);
 
         var rf = new RegexFile({
             project: p,
@@ -571,16 +595,18 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "This is a test with a really long source string that just drones on and on and on"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("This is a test with a really long source string that just drones on and on and on");
         expect(r.getKey()).toBe("This is a test with a really long source string that just drones on and on and on");
     });
 
     test("RegexFile using a truncated key strategy", function() {
-        expect.assertions(5);
+        expect.assertions(6);
 
         var rf = new RegexFile({
             project: p,
@@ -595,18 +621,20 @@ debugger;
         expect(set).toBeTruthy();
 
         // should truncate the key to 32 characters
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "This is a test with a really lon"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("This is a test with a really long source string that just drones on and on and on");
         expect(r.getKey()).toBe("This is a test with a really lon");
     });
 
 
     test("RegexFile using a key with escaped Unicode characters", function() {
-        expect.assertions(5);
-
+        expect.assertions(6);
+debugger;
         var rf = new RegexFile({
             project: p,
             pathName: "./testfiles/js/t1.js",
@@ -619,16 +647,18 @@ debugger;
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "r604348468"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("This is a test with an escaped Unicode character: ©");
         expect(r.getKey()).toBe("r604348468");
     });
 
     test("RegexFile extract strings from a file on disk", function() {
-        expect.assertions(8);
+        expect.assertions(10);
 
         var rf = new RegexFile({
             project: p,
@@ -644,23 +674,27 @@ debugger;
 
         expect(set.size()).toBe(2);
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "r654479252"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("This is a test");
         expect(r.getKey()).toBe("r654479252");
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "r963237711"
         });
-        expect(r).toBeTruthy();
-        expect(r[0].getSource()).toBe("This is a test with a unique id");
-        expect(r[0].getKey()).toBe("r963237711");
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
+        expect(r.getSource()).toBe("This is a test with a unique id");
+        expect(r.getKey()).toBe("r963237711");
     });
 
     test("RegexFile extract strings from a template file on disk", function() {
-        expect.assertions(22);
+        expect.assertions(26);
 
         var rf = new RegexFile({
             project: p,
@@ -676,40 +710,48 @@ debugger;
 
         expect(set.size()).toBe(8);
 
-        var r = set.getBy({
+        var resources = set.getBy({
             reskey: "description"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        var r = resources[0];
         expect(r.getSource()).toBe("Description");
         expect(r.getKey()).toBe("description");
-        expect(r.getDatatype()).toBe("template");
+        expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
 
         r = set.getBy({
             reskey: "participants"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
         expect(r.getSource()).toBe("Participants");
         expect(r.getKey()).toBe("participants");
-        expect(r.getDatatype()).toBe("template");
+        expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
 
         r = set.getBy({
             reskey: "activities"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
         expect(r.getSource()).toBe("Activities and Events");
         expect(r.getKey()).toBe("activities");
-        expect(r.getDatatype()).toBe("template");
+        expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
 
         r = set.getBy({
             reskey: "see_more"
         });
-        expect(r).toBeTruthy();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
         expect(r.getSource()).toBe("See More");
         expect(r.getKey()).toBe("see_more");
-        expect(r.getDatatype()).toBe("template");
+        expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
     });
 

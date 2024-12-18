@@ -54,8 +54,13 @@
         "node": ">=12.0"
     },
     "devDependencies": {
+        "flatted": "^3.3.2",
         "ilib-loctool-javascript-resource": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
+    },
+    "dependencies": {
+        "ilib-locale": "^1.2.2",
+        "micromatch": "^4.0.8"
     }
 }

@@ -18,7 +18,7 @@
  */
 
 var path = require("path");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var mm = require("micromatch");
 
 var RegexFile = require("./RegexFile.js");
@@ -100,6 +100,26 @@ RegexFileType.prototype.getMapping = function(pathName) {
     });
 
     return match && mappings[match];
+}
+
+/**
+ * Return the property name of the mapping that corresponds to
+ * the given path. This is mostly used in the testregex command
+ * to tell the caller which mapping matched the given path.
+ *
+ * @param {String} pathName the path to check
+    * @returns {String} the property name of the mapping object
+    * corresponding to the path or undefined if none of the mappings
+    * match
+    */
+RegexFileType.prototype.getMappingName = function(pathName) {
+    var mapping = this.getMapping(pathName);
+    if (mapping) {
+        return Object.keys(this.project.settings.regex.mappings).find(function(key) {
+            return this.project.settings.regex.mappings[key] === mapping;
+        }.bind(this));
+    }
+    return undefined;
 }
 
 /**
