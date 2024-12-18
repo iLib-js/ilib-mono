@@ -24,6 +24,9 @@ import { getAttribute as getAttr, getText as getText, getChildrenByName as getCh
 
 import TranslationUnit from './TranslationUnit.js';
 
+// type imports
+/** @ignore @typedef {import("ilib-xml-js").Element} Element */
+
 /**
  * Return a string that can be used as an HTML attribute value.
  * @private
@@ -768,11 +771,14 @@ class Xliff {
      * `equiv-text` attribute content is used instead.
      *
      * @private
-     * @param {import("ilib-xml-js").Element} contentElement XLIFF content element (e.g. <source> or <target>)
+     * @param {Element} contentElement XLIFF content element (e.g. <source> or <target>)
      * @returns {string}
      */
     static getTextWithContentMarkup(contentElement) {
-        /** @type {(el: import("ilib-xml-js").Element) => string | undefined} */
+        /**
+         * @param {Element} el
+         * @returns {string | undefined}
+         */
         const visitElement = (el) => {
             if (el.type === "text") {
                 if (el.text === undefined) {
@@ -816,7 +822,7 @@ class Xliff {
      * Parse xliff 1.* files
      *
      * @private
-     * @param {import("ilib-xml-js").Element} xliff
+     * @param {Element} xliff
      */
     parse1(xliff) {
         const files = getChildren(xliff, "file") ?? [];
@@ -1092,7 +1098,7 @@ class Xliff {
             }
 
             if (json.xliff._attributes.version.startsWith("1")) {
-                const jsonLarge = /** @type {import('ilib-xml-js').Element} */ (xmljs.xml2js(xml, {
+                const jsonLarge = /** @type {Element} */ (xmljs.xml2js(xml, {
                     trim: false,
                     nativeTypeAttribute: true,
                     compact: false,
