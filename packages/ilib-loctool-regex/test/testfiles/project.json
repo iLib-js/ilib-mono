@@ -84,7 +84,7 @@
                     "expressions": [
                         {
                             "expression": "(\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\})?.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
-                            "flags": "gsv",
+                            "flags": "g",
                             "datatype": "template",
                             "resourceType": "string"
                         }
