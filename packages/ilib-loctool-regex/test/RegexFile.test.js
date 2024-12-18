@@ -92,12 +92,26 @@ var p = new CustomProject({
                 "expressions": [
                     {
                         // example:
+                        // {* @L10N This comment is on the same line *} {'Your password change is cancelled.'|f:'login_password_change_cancelled'}
+                        "expression": "\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "flags": "g",
+                        "datatype": "template",
+                        "resourceType": "string"
+                    },
+                    {
+                        // example:
                         // {* @L10N The message shown to users whose passwords have just been changed *}
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
-                        "expression": "(\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\})?.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
-                        // need dotall flag to match across lines, the global flag to match multiple instances
-                        // and the sticky flag to match multiple times
-                        "flags": "gsv",
+                        "expression": "\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\n.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "flags": "g",
+                        "datatype": "template",
+                        "resourceType": "string"
+                    },
+                    {
+                        // example:
+                        // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
+                        "expression": "\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
                     }
@@ -363,7 +377,7 @@ describe("regex file tests", function() {
 
     test("RegexFile parse multiple strings with keys", function() {
         expect.assertions(12);
-debugger;
+
         var rf = new RegexFile({
             project: p,
             pathName: "./testfiles/templates/t1.tmpl",
@@ -443,7 +457,7 @@ debugger;
         expect(rf).toBeTruthy();
 
         rf.parse('{* @L10N The message shown to users whose passwords have just been changed *}\n' +
-            '\'{\'Your password was changed. Please log in again.\'|f:\'login_success_password_changed\'}\n');
+            '{\'Your password was changed. Please log in again.\'|f:\'login_success_password_changed\'}\n');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -469,8 +483,8 @@ debugger;
         });
         expect(rf).toBeTruthy();
 
-        rf.parse('{* foo *}{\'This is a test\'|f:\'asdf\'}\n' +
-            '{* bar *}{\'This is also a test\'|f:\'kdkdkd\'}\n');
+        rf.parse('{* @L10N foo *}{\'This is a test\'|f:\'asdf\'}\n' +
+            '{* @L10N bar *}{\'This is also a test\'|f:\'kdkdkd\'}\n');
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -634,7 +648,7 @@ debugger;
 
     test("RegexFile using a key with escaped Unicode characters", function() {
         expect.assertions(6);
-debugger;
+
         var rf = new RegexFile({
             project: p,
             pathName: "./testfiles/js/t1.js",
@@ -694,7 +708,7 @@ debugger;
     });
 
     test("RegexFile extract strings from a template file on disk", function() {
-        expect.assertions(26);
+        expect.assertions(32);
 
         var rf = new RegexFile({
             project: p,
@@ -708,7 +722,7 @@ debugger;
 
         var set = rf.getTranslationSet();
 
-        expect(set.size()).toBe(8);
+        expect(set.size()).toBe(9);
 
         var resources = set.getBy({
             reskey: "description"
@@ -721,7 +735,7 @@ debugger;
         expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
 
-        r = set.getBy({
+        resources = set.getBy({
             reskey: "participants"
         });
         expect(resources).toBeTruthy();
@@ -732,7 +746,7 @@ debugger;
         expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
 
-        r = set.getBy({
+        resources = set.getBy({
             reskey: "activities"
         });
         expect(resources).toBeTruthy();
@@ -743,16 +757,27 @@ debugger;
         expect(r.getDataType()).toBe("template");
         expect(r.getComment()).toBe("topic type label for the icon");
 
-        r = set.getBy({
+        resources = set.getBy({
             reskey: "see_more"
         });
         expect(resources).toBeTruthy();
         expect(resources.length).toBe(1);
         r = resources[0];
-        expect(r.getSource()).toBe("See More");
+        expect(r.getSource()).toBe("See more");
         expect(r.getKey()).toBe("see_more");
         expect(r.getDataType()).toBe("template");
-        expect(r.getComment()).toBe("topic type label for the icon");
+        expect(r.getComment()).toBe("label for the button that shows more items");
+
+        resources = set.getBy({
+            reskey: "cancel"
+        });
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
+        expect(r.getSource()).toBe("Cancel");
+        expect(r.getKey()).toBe("cancel");
+        expect(r.getDataType()).toBe("template");
+        expect(r.getComment()).toBeUndefined();
     });
 
     test("RegexFileExtractUndefinedFile", function() {

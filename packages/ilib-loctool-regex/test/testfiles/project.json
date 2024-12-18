@@ -83,7 +83,19 @@
                     "sourceLocale": "en-US",
                     "expressions": [
                         {
-                            "expression": "(\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\})?.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                            "expression": "\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\n.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                            "flags": "g",
+                            "datatype": "template",
+                            "resourceType": "string"
+                        },
+                        {
+                            "expression": "\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                            "flags": "g",
+                            "datatype": "template",
+                            "resourceType": "string"
+                        },
+                        {
+                            "expression": "\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
                             "flags": "g",
                             "datatype": "template",
                             "resourceType": "string"
