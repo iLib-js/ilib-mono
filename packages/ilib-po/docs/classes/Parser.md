@@ -21,15 +21,13 @@ Create a new PO file with the given path name.
 
 • **options**: `ParserOptions`
 
-the options to use to create this PO file
-
 #### Returns
 
 [`Parser`](Parser.md)
 
 #### Defined in
 
-[packages/ilib-po/src/Parser.ts:107](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/Parser.ts#L107)
+[packages/ilib-po/src/Parser.ts:131](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Parser.ts#L131)
 
 ## Methods
 
@@ -59,4 +57,4 @@ SyntaxError if there is a syntax error in the file
 
 #### Defined in
 
-[packages/ilib-po/src/Parser.ts:139](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/Parser.ts#L139)
+[packages/ilib-po/src/Parser.ts:169](https://github.com/iLib-js/ilib-mono/blob/f51f38d36fc6d0448a50f2150420f1900bba3e95/packages/ilib-po/src/Parser.ts#L169)

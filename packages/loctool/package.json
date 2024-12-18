@@ -69,6 +69,8 @@
         "he": "^1.2.0",
         "html-parser": "^0.11.0",
         "ilib": "^14.18.0",
+        "ilib-po": "workspace:^",
+        "ilib-tools-common": "workspace:^",
         "ilib-tree-node": "workspace:^",
         "intl-messageformat": "^10.5.14",
         "js-stl": "^0.0.6",
@@ -91,6 +93,7 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
+        "@types/jest": "^29.5.14",
         "cldr-core": "^43.1.0",
         "ilib-loctool-mock": "file:test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz",
         "ilib-loctool-mock-json": "file:test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz",
