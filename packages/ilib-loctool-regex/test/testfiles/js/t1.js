@@ -7,5 +7,5 @@ var t1 = function() {
 t1.prototype.tester = function() {
     $t("This is a test");
 
-    $("This is a test with a unique id");
+    $t("This is a test with a unique id");
 };

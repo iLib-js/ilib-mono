@@ -90,9 +90,11 @@
                     <%
                     if (list.length > 3) {
                     %>
+                    <button class="cancel">
+                        {'Cancel' | f:'cancel'}
+                    </button>
                     <a href="#" class="seemoreButton">
-                        {* @L10N label for the button that shows more items *}
-                        {'See more' | f:'see_more'}
+                        {* @L10N label for the button that shows more items *} {'See more' | f:'see_more'}
                     </a>
                     <%
                     }

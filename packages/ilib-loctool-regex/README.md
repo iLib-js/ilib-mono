@@ -207,6 +207,34 @@ Trying regular expression: translate\s*(\s*['"](?<source>[^'"]*)['"]\s*\)
 ]
 ```
 
+### Some Tips
+
+- Regular expressions are case sensitive by default. If you want to
+  match case insensitively, you can add the `i` flag to the regular
+  expression.
+- Regular expressions are greedy by default. This means that they will
+  match as much as possible. If you want to match as little as possible,
+  you can add the `?` flag to the regular expression.
+- Regular expressions will match the first occurrence in the string by
+  default. If you want to match all occurrences, you can add the `g` flag
+  to the regular expression. Pretty much all regular expressions in your
+  config file should have the `g` flag.
+- Regular expressions by default only match regular ASCII characters. If
+  you want to match Unicode characters, you can add the `u` or the `v`
+  flag to the regular expression. This will allow you to match any Unicode
+  character in the string encoded with the `\u` escape sequences. Example:
+  `/\u{1F600}/u` will match the Unicode character for the grinning face emoji.
+- Expressions in the config file are applied in the order they are listed.
+  If you have two expressions that could match the same string or part of the
+  same string, the first one that matches will be the one that is used. Make
+  sure that the expressions are listed such that the longer expressions are
+  listed first.
+- To test your regular expressions in a much more friendly and interactive
+  way, you can use the [RegExr](https://regexr.com/) website. This website
+  allows you to enter a regular expression and a string to match against. It
+  will show you the results in real time as you type. It can also give you
+  a description of what each part of the regular expression does.
+
 ## Release Notes
 
 Please see the [release notes](./CHANGELOG.md) for information on the

@@ -20,6 +20,7 @@
 var fs = require("fs");
 var path = require("path");
 var Locale = require("ilib-locale");
+var IString = require("ilib-istring");
 
 /**
  * Create a new Regex file with the given path name and within
@@ -57,6 +58,8 @@ var RegexFile = function(props) {
     this.resourceIndex = 0;
 };
 
+var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
+
 /**
  * Unescape the string to make the same string that would be
  * in memory in the target programming language.
@@ -68,6 +71,15 @@ var RegexFile = function(props) {
 function unescapeString(string) {
     if (!string) return string;
     var unescaped = string;
+
+    // first, unescape unicode characters
+    while ((match = reUnicodeChar.exec(unescaped))) {
+        if (match && match.length > 1) {
+            var value = parseInt(match[1], 16);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reUnicodeChar.lastIndex = 0;
+        }
+    }
 
     unescaped = unescaped.
         replace(/\\\\n/g, "").                // line continuation
@@ -160,6 +172,184 @@ function parseArray(data) {
 }
 
 /**
+ * Match the given data against the given expression. If the expression
+ * matches, create a new resource and add it to the set. Then, partition
+ * the original data into the parts before and after the match and return
+ * them so that the caller can continue to parse the data with the match
+ * removed.
+ *
+ * If the expression does not match, return undefined.
+ *
+ * @param {String} data the data to match
+ * @param {Object} exp the expression to match against
+ * @returns {Object|undefined} if the expression matched, return an object
+ * with the before and after strings. If the expression did not match, return
+ * undefined.
+ */
+RegexFile.prototype.matchExpression = function(data, exp, cb) {
+    var regex = exp.regex;
+    regex.lastIndex = 0;
+    var result = regex.exec(data);
+    if (result && result.length > 1) {
+        var r = undefined;
+        var key = undefined;
+        var source = undefined;
+        var sourcePlural = undefined;
+        var comment = undefined;
+        var context = undefined;
+        var flavor = undefined;
+        var array = undefined;
+
+        source = result.groups && result.groups.source && result.groups.source.trim();
+
+        if (typeof(cb) === "function") {
+            cb({
+                expression: exp,
+                result: result
+            });
+        }
+
+        if (!source || source.length < 1) {
+            this.logger.warn("Found match with no source string, " + this.pathName);
+            return undefined;
+        }
+
+        if (result.groups) {
+            if (result.groups.sourcePlural) {
+                sourcePlural = cleanString(result.groups.sourcePlural);
+            }
+            if (result.groups.comment) {
+                comment = cleanString(result.groups.comment);
+            }
+            if (result.groups.context) {
+                context = cleanString(result.groups.context);
+            }
+            if (result.groups.flavor) {
+                flavor = cleanString(result.groups.flavor);
+            }
+            if (result.groups.key) {
+                key = cleanString(result.groups.key);
+            }
+        }
+
+        if (exp.resourceType === "array") {
+            array = parseArray(source);
+        }
+
+        if (!key) {
+            // src should contain the source string to use to generate the key
+            var src;
+            switch (exp.resourceType) {
+                default:
+                case "string":
+                    src = cleanString(source);
+                    break;
+                case "plural":
+                    src = sourcePlural;
+                    break;
+                case "array":
+                    src = array.join("");
+                    break;
+            }
+
+            switch (exp.keyStrategy) {
+                default:
+                case "hash":
+                    key = this.makeKey(src);
+                    break;
+                case "source":
+                    key = src;
+                    break;
+                case "truncate":
+                    key = src.substring(0, 32);
+                    break;
+            }
+        }
+
+        switch (exp.resourceType) {
+            case "string":
+                source = cleanString(source);
+                r = this.API.newResource({
+                    resType: exp.resourceType,
+                    project: this.project.getProjectId(),
+                    key: key,
+                    sourceLocale: this.project.sourceLocale,
+                    source: source,
+                    pathName: this.pathName,
+                    state: "new",
+                    autoKey: true,
+                    comment: comment,
+                    datatype: exp.datatype,
+                    context: context,
+                    flavor: flavor,
+                    index: this.resourceIndex++
+                });
+                break;
+            case "plural":
+                r = this.API.newResource({
+                    resType: exp.resourceType,
+                    project: this.project.getProjectId(),
+                    key: key,
+                    sourceLocale: this.project.sourceLocale,
+                    source: source,
+                    sourcePlurals: {
+                        one: cleanString(source),
+                        other: sourcePlural
+                    },
+                    pathName: this.pathName,
+                    state: "new",
+                    comment: comment,
+                    datatype: exp.datatype,
+                    context: context,
+                    flavor: flavor,
+                    index: this.resourceIndex++
+                });
+                break;
+            case "array":
+                r = this.API.newResource({
+                    resType: exp.resourceType,
+                    project: this.project.getProjectId(),
+                    key: key,
+                    sourceLocale: this.project.sourceLocale,
+                    sourceArray: array,
+                    pathName: this.pathName,
+                    state: "new",
+                    comment: comment,
+                    datatype: exp.datatype,
+                    context: context,
+                    flavor: flavor,
+                    index: this.resourceIndex++
+                });
+                break;
+        }
+        this.set.add(r);
+        return {
+            before: data.substring(0, result.index),
+            after: data.substring(result.index + result[0].length)
+        };
+    }
+
+    return undefined;
+};
+
+/**
+ * Parse the given chunk of data using the given expression. Return
+ * an array of chunks that did not match the expression.
+ *
+ * @param {String} data the data to parse
+ * @param {Object} exp the expression to match against
+ * @returns {Array.<String>} an array of chunks that did not match the expression
+ */
+RegexFile.prototype.parseChunk = function(data, exp, cb) {
+    var result = this.matchExpression(data, exp, cb);
+    if (result) {
+        return [result.before].concat(this.parseChunk(result.after, exp, cb));
+    } else {
+        return [data];
+    }
+};
+
+/**
  * Parse the data string looking for the localizable strings and add them to the
  * project's translation set.
  * @param {String} data the string to parse
@@ -170,141 +360,22 @@ RegexFile.prototype.parse = function(data, cb) {
     this.logger.debug("Extracting strings from " + this.pathName);
     this.resourceIndex = 0;
 
+    var chunks = [data];
+
+    // Parse the chunks of data into smaller and smaller pieces until we have found
+    // all the localizable strings. For each chunk, we find all matches of the 
+    // regular expression, convert them into resources, and add them to the set.
+    // Then, return an array of chunks that did not match the current expression. We
+    // then parse each of those chunks with the next expression in the list. This is
+    // a recursive process that will eventually terminate when there are no more
+    // expressions or when the chunks are empty. The order of the expressions is
+    // important because the first expression that matches will be the one that
+    // is used to create the resource and subsequent expressions will only match
+    // in the parts of the file that did not match the previous expressions.
     this.mapping.expressions.forEach(function(exp) {
-        var regex = exp.regex;
-        regex.lastIndex = 0; // just in case
-        var result = regex.exec(data);
-        while (result && result.length > 1) {
-            if (typeof(cb) === "function") {
-                cb({
-                    expression: exp,
-                    result: result
-                });
-            }
-            var r = undefined;
-            var key = undefined;
-            var source = undefined;
-            var sourcePlural = undefined;
-            var comment = undefined;
-            var context = undefined;
-            var flavor = undefined;
-            var array = undefined;
-
-            source = result.groups && result.groups.source && result.groups.source.trim();
-            if (source && source.length > 0) {
-                if (result.groups) {
-                    if (result.groups.sourcePlural) {
-                        sourcePlural = cleanString(result.groups.sourcePlural);
-                    }
-                    if (result.groups.comment) {
-                        comment = cleanString(result.groups.comment);
-                    }
-                    if (result.groups.context) {
-                        context = cleanString(result.groups.context);
-                    }
-                    if (result.groups.flavor) {
-                        flavor = cleanString(result.groups.flavor);
-                    }
-                    if (result.groups.key) {
-                        key = cleanString(result.groups.key);
-                    }
-                }
-
-                if (exp.resourceType === "array") {
-                    array = parseArray(source);
-                }
-
-                if (!key) {
-                    // src should contain the source string to use to generate the key
-                    var src;
-                    switch (exp.resourceType) {
-                        case "string":
-                            src = cleanString(source);
-                            break;
-                        case "plural":
-                            src = sourcePlural;
-                            break;
-                        case "array":
-                            src = array.join("");
-                            break;
-                    }
-
-                    switch (exp.keyStrategy) {
-                        default:
-                        case "hash":
-                            key = this.makeKey(src);
-                            break;
-                        case "source":
-                            key = src;
-                            break;
-                        case "truncate":
-                            key = src.substring(0, 32);
-                            break;
-                    }
-                }
-
-                switch (exp.resourceType) {
-                    case "string":
-                        source = cleanString(source);
-                        r = this.API.newResource({
-                            resType: exp.resourceType,
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.project.sourceLocale,
-                            source: source,
-                            pathName: this.pathName,
-                            state: "new",
-                            autoKey: true,
-                            comment: comment,
-                            datatype: exp.datatype,
-                            context: context,
-                            flavor: flavor,
-                            index: this.resourceIndex++
-                        });
-                        break;
-                    case "plural":
-                        r = this.API.newResource({
-                            resType: exp.resourceType,
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.project.sourceLocale,
-                            source: source,
-                            sourcePlurals: {
-                                one: cleanString(source),
-                                other: sourcePlural
-                            },
-                            pathName: this.pathName,
-                            state: "new",
-                            comment: comment,
-                            datatype: exp.datatype,
-                            context: context,
-                            flavor: flavor,
-                            index: this.resourceIndex++
-                        });
-                        break;
-                    case "array":
-                        r = this.API.newResource({
-                            resType: exp.resourceType,
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.project.sourceLocale,
-                            sourceArray: array,
-                            pathName: this.pathName,
-                            state: "new",
-                            comment: comment,
-                            datatype: exp.datatype,
-                            context: context,
-                            flavor: flavor,
-                            index: this.resourceIndex++
-                        });
-                        break;
-                }
-                this.set.add(r);
-            } else {
-                this.logger.warn("Found match with no source string, " + this.pathName);
-            }
-            result = regex.exec(data);
-        }
+        chunks = chunks.flatMap(function(chunk) {
+            return this.parseChunk(chunk, exp, cb);
+        }.bind(this));
     }.bind(this));
 
     return this.set;
