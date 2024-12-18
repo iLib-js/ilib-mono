@@ -483,7 +483,7 @@ which takes a Result instance as a parameter and returns a formatted string.
 
 If you would like to look at an example formatter plugin, see the definition of
 the built-in default formatter
-[ansi-console-formatter](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint/blob/main/src/formatters/AnsiConsoleFormatter.js)
+[ansi-console-formatter](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/formatters/AnsiConsoleFormatter.js)
 which formats a Result for colorful output on an ANSI console.
 
 ## Example Plugin
