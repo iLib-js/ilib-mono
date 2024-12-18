@@ -19,7 +19,7 @@ the ilib-lint tool.
 
 ## Full API Docs
 
-See the [full API docs](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-common/tree/main/docs) for more information.
+See the [full API docs](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-common/docs/ilib-lint-common.md) for more information.
 
 ## License
 
