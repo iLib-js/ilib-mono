@@ -12,8 +12,8 @@ module "ilib-tools-common" {
 
     class Resource {
         constructor(props: any);
-        source: any | Array<any | undefined>;
-        target: any | Array<any | undefined>;
+        source: any;
+        target: any;
     }
 
     class ResourceString extends Resource {

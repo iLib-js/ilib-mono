@@ -93,7 +93,7 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "@jest/types": "^29.6.3",
+        "@types/jest": "^29.5.14",
         "cldr-core": "^43.1.0",
         "ilib-loctool-mock": "file:test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz",
         "ilib-loctool-mock-json": "file:test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz",
