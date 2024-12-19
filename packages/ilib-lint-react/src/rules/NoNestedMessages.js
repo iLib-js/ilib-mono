@@ -39,7 +39,7 @@ class NoNestedMessages extends Rule {
 
     /** @readonly */
     link =
-        "https://github.com/ilib-js/ilib-lint-react/blob/main/docs/no-nested-messages.md";
+        "https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-react/docs/no-nested-messages.md";
 
     /** @readonly */
     type = "babel-ast";

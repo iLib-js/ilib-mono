@@ -47,7 +47,7 @@ export class ResourceSourceICUUnexplainedParams extends ResourceRule {
         "Check if replacement parameters used in the source string are explained in the comments for translators.";
     /** @override */
     link =
-        "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-icu-unexplained-params.md";
+        "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-icu-unexplained-params.md";
 
     /** @param {any} [opts] */
     constructor(opts) {

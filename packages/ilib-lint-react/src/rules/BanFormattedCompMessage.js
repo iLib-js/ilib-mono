@@ -35,7 +35,7 @@ export class BanFormattedCompMessage extends Rule {
 
     /** @readonly */
     link =
-        "https://github.com/ilib-js/ilib-lint-react/blob/main/docs/ban-formattedcompmessage.md";
+        "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-react/docs/ban-formattedcompmessage.md";
 
     /** @readonly */
     type = "babel-ast";

@@ -28,7 +28,7 @@ import ResourceRule from './ResourceRule.js';
 class ResourceDNTTerms extends ResourceRule {
     /** @readonly */ name = "resource-dnt-terms";
     /** @readonly */ description = "Ensure that Do Not Translate terms have not been translated.";
-    /** @readonly */ link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-dnt-terms.md";
+    /** @readonly */ link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-dnt-terms.md";
 
     /**
      * @protected

@@ -49,7 +49,7 @@ class ResourceStateChecker extends Rule {
         this.name = "resource-state-checker";
         this.description = "Ensure that resources have a particular state.";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
-        this.link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-state-checker.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-state-checker.md";
 
         if (options) {
             if (typeof(options.param) === "string") {

@@ -51,7 +51,7 @@ class NoHardCodedStrings extends Rule {
 
     /** @readonly */
     link =
-        "https://github.com/ilib-js/ilib-lint-react/blob/main/docs/no-hard-coded-strings.md";
+        "https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-react/docs/no-hard-coded-strings.md";
 
     /** @readonly */
     type = "babel-ast";

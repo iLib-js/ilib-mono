@@ -26,7 +26,7 @@ import ResourceRule from './ResourceRule.js';
 class ResourceCompleteness extends ResourceRule {
     /** @readonly */ name = "resource-completeness";
     /** @readonly */ description = "Ensure that resources are complete, i.e. have both source and target elements.";
-    /** @readonly */ link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-completeness.md";
+    /** @readonly */ link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-completeness.md";
 
     constructor(options) {
         super(options);
