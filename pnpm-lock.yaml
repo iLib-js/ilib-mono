@@ -687,7 +687,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1572,7 +1572,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
+        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1697,6 +1697,12 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.20.0
+      ilib-po:
+        specifier: workspace:^
+        version: link:../ilib-po
+      ilib-tools-common:
+        specifier: workspace:^
+        version: link:../ilib-tools-common
       ilib-tree-node:
         specifier: workspace:^
         version: link:../ilib-tree-node
@@ -1758,6 +1764,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@types/jest':
+        specifier: ^29.5.14
+        version: 29.5.14
       cldr-core:
         specifier: ^43.1.0
         version: 43.1.0
@@ -4812,7 +4821,7 @@ packages:
     resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
-    resolution: {integrity: sha512-uB3+9dlUzViyigj73g+C4rLz2E7ibMxxcbwZDwARYvoyc6JMVbViZigFnkUtmzrSV6K1y7EuLq+l0o6otOD7KQ==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
+    resolution: {integrity: sha512-G/20MuXksGohqBfMoHLeuME4u3JwqW8qmAzDoUUCVmalQQYg7dARztde6cxx7VrOoilo4kwS4bt0L+yGs5u0PA==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
     version: 1.0.0
 
   ilib-loctool-mock-resource@file:packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz:
@@ -9737,7 +9746,7 @@ snapshots:
       '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
-      webpack: 5.95.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   babel-plugin-add-module-exports@1.0.4: {}
 
@@ -15613,36 +15622,6 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@3.2.3: {}
-
-  webpack@5.95.0:
-    dependencies:
-      '@types/estree': 1.0.6
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
-      browserslist: 4.24.2
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   webpack@5.95.0(webpack-cli@4.10.0):
     dependencies:

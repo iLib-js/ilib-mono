@@ -5,7 +5,7 @@
       <trans-unit id="1" resname="foobar" restype="string" datatype="plaintext">
         <source>Asdf asdf</source>
         <target>foobarfoo</target>
-        <note annotates="source">foobar is where it&apos;s at!</note>
+        <note>foobar is where it's at!</note>
       </trans-unit>
     </body>
   </file>
@@ -14,17 +14,17 @@
       <trans-unit id="2" resname="huzzah" restype="string" datatype="plaintext">
         <source>baby baby</source>
         <target>bebe bebe</target>
-        <note annotates="source">come &amp; enjoy it with us</note>
+        <note>come &amp; enjoy it with us</note>
       </trans-unit>
       <trans-unit id="3" resname="ohhuzzah" restype="string" datatype="plaintext">
-        <source x-key="oh">baby baby</source>
+        <source>baby baby</source>
         <target>oh bebe bebe</target>
-        <note annotates="source">come &amp; enjoy it with them</note>
+        <note>come &amp; enjoy it with them</note>
       </trans-unit>
-      <trans-unit id="4">
-        <source x-key="asdfasdf">Hello</source>
+      <trans-unit id="4" resname="asdfasdf" restype="string" datatype="plaintext">
+        <source>asdfasdf</source>
         <target>Hallo</target>
-        <note annotates="source">come &amp; enjoy it with them</note>
+        <note>come &amp; enjoy it with them</note>
       </trans-unit>
     </body>
   </file>

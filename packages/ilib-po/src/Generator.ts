@@ -42,6 +42,16 @@ export interface GeneratorOptions {
      * @default false
      */
     contextInKey?: boolean;
+
+    /**
+     * The default data type of the resources
+     */
+     datatype?: string;
+
+    /**
+     * The name of the project that the resources belong to
+     */
+    projectName?: string;
 }
 
 /**
@@ -54,6 +64,10 @@ class Generator {
     private targetLocale: Locale;
     /** whether the context should be included as part of the key or not */
     private contextInKey: boolean;
+    /** the default data type of the resources */
+    private datatype: string | undefined;
+    /** the name of the project that the resources belong to */
+    private projectName: string;
 
     private plurals: PluralForm;
 
@@ -66,13 +80,16 @@ class Generator {
         const optionsWithDefaults = {
             targetLocale: "en",
             contextInKey: false,
+            projectName: "default",
             ...options,
         };
 
         this.pathName = options.pathName;
         this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
         this.contextInKey = optionsWithDefaults.contextInKey;
-        
+        this.datatype = optionsWithDefaults.datatype;
+        this.projectName = optionsWithDefaults.projectName;
+
         this.plurals = pluralForms[this.targetLocale.getLanguage() ?? "en"] || pluralForms.en;
     }
 
@@ -96,13 +113,26 @@ class Generator {
             '"Project-Id-Version: 1\\n"\n' +
             `"Language: ${this.targetLocale.getSpec()}\\n"\n` +
             `"Plural-Forms: ${this.plurals.rules}\\n"\n`;
+        if (this.datatype) {
+            output += `"Data-Type: ${this.datatype}\\n"\n`;
+        }
+        if (this.projectName) {
+            output += `"Project: ${this.projectName}\\n"\n`;
+        }
         const resources = set.getAll();
 
         for (let i = 0; i < resources.length; i++) {
             const r = resources[i];
-            const key: string = r.getKey() ?? makeKey(r.getType(), r.getSource(), this.contextInKey && r.getContext());
+            const type = r.getType();
+            const key: string = r.getKey() ?? makeKey(type, r.getSource(), this.contextInKey && r.getContext());
             output += "\n";
-            let c: Comments = r.getComment() ? JSON.parse(r.getComment()) : {};
+            const comment = r.getComment();
+            let c: Comments = {};
+            if (comment) {
+                c = comment[0] === "{" ? JSON.parse(comment) : {
+                    [CommentType.EXTRACTED]: [comment],
+                };
+            }
 
             if (c[CommentType.TRANSLATOR]?.length) {
                 c[CommentType.TRANSLATOR].forEach(str => {
@@ -118,6 +148,8 @@ class Generator {
                 c[CommentType.PATHS].forEach(str => {
                     output += `#: ${str}\n`;
                 });
+            } else if (r.getPath()) {
+                output += `#: ${r.getPath()}\n`;
             }
             if (c[CommentType.FLAGS]?.length) {
                 c[CommentType.FLAGS].forEach(str => {
@@ -129,11 +161,25 @@ class Generator {
                     output += `#| ${str}\n`;
                 });
             }
+            if (r.getDataType() && this.datatype !== r.getDataType()) {
+                output += `#d ${r.getDataType()}\n`;
+            }
+            if (r.getProject() && this.projectName !== r.getProject()) {
+                output += `#p ${r.getProject()}\n`;
+            }
+            if (type === "string" && r.getSource() !== key) {
+                output += `#k ${escapeQuotes(r.getKey())}\n`;
+            } else if (type === "plural") {
+                const generatedKey = makeKey("plural", r.getSource(), this.contextInKey && r.getContext());
+                if (key !== generatedKey) {
+                    output += `#k ${escapeQuotes(r.getKey())}\n`;
+                }
+            }
             if (r.getContext()) {
                 output += `msgctxt "${escapeQuotes(r.getContext())}"\n`;
             }
-            output += `msgid "${escapeQuotes(key)}"\n`;
-            if (r.getType() === "string") {
+            if (type === "string") {
+                output += `msgid "${escapeQuotes(r.getSource())}"\n`;
                 let translatedText = r.getTarget() ?? "";
 
                 if (translatedText === r.getSource()) {
@@ -142,10 +188,25 @@ class Generator {
                 }
 
                 output += `msgstr "${escapeQuotes(translatedText)}"\n`;
+            } else if (type === "array") {
+                const sourceArray = r.getSource();
+                let translatedArray = r.getTarget() || [];
+
+                sourceArray.forEach((source: string, index: number) => {
+                    if (index > 0) {
+                        output += "\n";
+                    }
+                    const translation = translatedArray[index] !== source ? translatedArray[index] : "";
+                    output += `#k ${escapeQuotes(r.getKey())}\n`;
+                    output += `## ${index}\n`;
+                    output += `msgid "${escapeQuotes(source)}"\n`;
+                    output += `msgstr "${escapeQuotes(translation)}"\n`;
+                });
             } else {
                 // plural string
-                const sourcePlurals = r.getSourcePlurals();
-                let translatedPlurals = r.getTargetPlurals() || {};
+                const sourcePlurals = r.getSource();
+                output += `msgid "${escapeQuotes(sourcePlurals.one)}"\n`;
+                let translatedPlurals = r.getTarget() || {};
 
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {

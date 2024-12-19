@@ -6,6 +6,11 @@
         "declaration": true,
         "declarationMap": true
     },
-    "include": ["src", "types"],
-    "exclude": ["src/**/*.test.ts"]
+    "include": [
+        "src",
+        "types"
+    ],
+    "exclude": [
+        "src/**/*.test.ts"
+    ]
 }

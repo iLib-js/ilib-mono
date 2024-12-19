@@ -26,7 +26,7 @@ Create a new PO file with the given path name.
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:101](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L101)
+[packages/ilib-po/src/POFile.ts:101](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L101)
 
 ## Methods
 
@@ -53,7 +53,7 @@ the generated PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:206](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L206)
+[packages/ilib-po/src/POFile.ts:208](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L208)
 
 ***
 
@@ -71,7 +71,7 @@ whether the context is part of the key in this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:193](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L193)
+[packages/ilib-po/src/POFile.ts:195](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L195)
 
 ***
 
@@ -89,7 +89,7 @@ the datatype of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:185](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L185)
+[packages/ilib-po/src/POFile.ts:187](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L187)
 
 ***
 
@@ -107,7 +107,7 @@ the path name of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:153](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L153)
+[packages/ilib-po/src/POFile.ts:155](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L155)
 
 ***
 
@@ -125,7 +125,7 @@ the project name of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:177](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L177)
+[packages/ilib-po/src/POFile.ts:179](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L179)
 
 ***
 
@@ -143,7 +143,7 @@ the source locale of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:161](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L161)
+[packages/ilib-po/src/POFile.ts:163](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L163)
 
 ***
 
@@ -161,7 +161,7 @@ the target locale of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:169](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L169)
+[packages/ilib-po/src/POFile.ts:171](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L171)
 
 ***
 
@@ -191,4 +191,4 @@ when there is a syntax error in the file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:145](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L145)
+[packages/ilib-po/src/POFile.ts:147](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/POFile.ts#L147)
