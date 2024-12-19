@@ -1,16 +1,16 @@
 #!/bin/bash
-set -eu pipefail
+set -euo pipefail
 
 ## Script to add an existing iLib-js repository into the monorepo
 ## in a way that keeps the commit history.
-## Usage: ./add-repo.sh ilib-common ilib-lint-common ...
+## Usage: scripts/add-repo.sh ilib-common wadimw/ilib-loctool-pendo-md ...
 
-URL_TEMPLATE='git@github.com:iLib-js/<repo>.git'
-SUBTREE_PREFIX_TEMPLATE='packages/<repo>'
+# allow overwriting default org for all packages
+DEFAULT_ORG=${DEFAULT_ORG:-"iLib-js"}
 
 # exit if running on main branch
 if [ "$(git branch --show-current)" == "main" ]; then
-    echo "Do not run this script on the main branch"
+    echo "Do not run this script on the main branch of the monorepo"
     exit 1
 fi
 
@@ -23,15 +23,29 @@ fi
 # for each repository name in arguments
 for REPO in "$@"
 do
-    echo "Adding repository $REPO"
+    # optionally parse github org if provided as org/repo,
+    # otherwise default to iLib-js
+    ORG=$DEFAULT_ORG
+    if [[ "$REPO" == *"/"* ]]; then
+        ORG=$(echo "$REPO" | cut -d'/' -f1)
+        REPO=$(echo "$REPO" | cut -d'/' -f2)
+    fi
 
-    # construct git url
-    URL="${URL_TEMPLATE//<repo>/$REPO}"
+    echo "Adding package from repository $ORG/$REPO"
+
+    SUBTREE_PREFIX="packages/$REPO"
+    if [ -d "packages/$REPO" ]; then
+        echo "Package $REPO already exists in the monorepo"
+        exit 1
+    fi
+
+    # construct git SSH url
+    URL="git@github.com:$ORG/$REPO.git"
     echo "Git URL $URL"
 
     # add remote to the monorepo
     REMOTE="$REPO"
-    echo "Adding remote $REMOTE"
+    echo "Adding temp remote $REMOTE"
     git remote add "$REMOTE" "$URL"
 
     # discover default branch name
@@ -39,11 +53,14 @@ do
     echo "Discovered default branch $BRANCH"
     git fetch "$REMOTE" "$BRANCH"
 
-    # add subtree for the remote
-    PREFIX="${SUBTREE_PREFIX_TEMPLATE//<repo>/$REPO}"
-    echo "Adding subtree $PREFIX"
-    git subtree add --prefix "$PREFIX" "$REMOTE/$BRANCH"
+    # add subtree for the remote in folder packages/repo
+    
+    echo "Adding $REMOTE/$BRANCH in subtree $SUBTREE_PREFIX"
+    git subtree add --prefix "$SUBTREE_PREFIX" "$REMOTE/$BRANCH"
 
     # cleanup: remove remote
+    echo "Removing temp remote $REMOTE"
     git remote remove "$REMOTE"
 done
+
+echo "All packages added"

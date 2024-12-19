@@ -1,42 +1,72 @@
 #!/bin/bash
-set -eu pipefail
+set -euo pipefail
 
-## Script to open a pull request in all iLib-js repositories which were added into the monorepo
+## Script to open a pull request in repositories which were added into the monorepo
 ## to add a deprecation notice to the README.md file.
-## Usage: ./push_deprecation.sh
+## Usage: scripts/push_deprecation.sh [ilib-common wadimw/ilib-loctool-pendo-md ...]
+## Note: you need to have the GitHub CLI installed and authenticated
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-MONOREPO_ROOT_DIR="$SCRIPT_DIR/.."
-cd "$MONOREPO_ROOT_DIR"
+# allow overwriting default org for all packages
+DEFAULT_ORG=${DEFAULT_ORG:-"iLib-js"}
 
-URL_TEMPLATE='git@github.com:iLib-js/<repo>.git'
+# allow overwriting default reviewers
+REVIEWERS=${REVIEWERS:-"ehoogerbeets,nmkedziora,wadimw"}
 
-# list of original repositories which did not have the ilib- prefix
-REPO_NAMES_NO_PREFIX='xliff;tmx'
+# some packages that we already have were added with path packages/ilib-<package>
+# but didn't have the ilib- prefix in the original repository name ilib-js/<package>;
+# map them to the correct repository names (e.g. package ilib-xliff > repository ilib-js/xliff)
+PKG_TO_REPO_MAP=(
+    "ilib-xliff:xliff"
+    "ilib-tmx:tmx"
+)
 
-# for each existing package in packages directory
-for PACKAGE in packages/*; do
-    PACKAGE_NAME=$(basename "$PACKAGE")
-    echo "Processing package $PACKAGE_NAME"
+# ensure that the GitHub CLI is installed and authenticated
+if ! command -v gh &> /dev/null; then
+    echo "GitHub CLI is not installed. Please install it before running this script"
+    exit 1
+fi
+if ! gh auth status -h github.com &> /dev/null; then
+    echo "GitHub CLI is not authenticated. Please authenticate before running this script"
+    exit 1
+fi
 
-    # get repo name - optionally remove the ilib- prefix from it if it is in the list
-    # so basically ilib-lint > ilib-lint, ilib-xliff > xliff, message-accumulator > message-accumulator
-    REPO=$(echo "$REPO_NAMES_NO_PREFIX" | grep -o "${PACKAGE_NAME#'ilib-'}" || true)
-    if [ -z "$REPO" ]; then
-        REPO=$PACKAGE_NAME
+# if no repositories are provided through arguments, use foldernames in packages/ directory
+REPOS=("$@")
+if [ ${#REPOS[@]} -eq 0 ]; then
+    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+    # shellcheck disable=SC2207 # we want to split the output of ls
+    REPOS=($(ls "$SCRIPT_DIR/../packages"))
+fi
+
+for REPO in "${REPOS[@]}"; do
+    # parse `org/` prefix if provided
+    ORG=$DEFAULT_ORG
+    if [[ "$REPO" == *"/"* ]]; then
+        ORG=$(echo "$REPO" | cut -d'/' -f1)
+        REPO=$(echo "$REPO" | cut -d'/' -f2)
     fi
+    
+    # map package name to repository name if needed
+    for mapping in "${PKG_TO_REPO_MAP[@]}"; do
+        if [ "$REPO" == "${mapping%%:*}" ]; then
+            REPO="${mapping#*:}"
+            break
+        fi
+    done
 
-    # construct git url
-    URL="${URL_TEMPLATE//<repo>/$REPO}"
+    echo "Processing repository $ORG/$REPO"
+
+    # construct git SSH url
+    URL="git@github.com:$ORG/$REPO.git"
     echo "Git URL $URL"
 
     # check if the repository exists
     if ! git ls-remote --exit-code "$URL" &> /dev/null; then
-        echo "Repository $REPO does not exist"
+        echo "Repository $URL does not exist"
         continue
     fi
 
-    # clone the repository
+    # clone the repository to a temporary directory
     REPO_DIR=$(mktemp -d)
     git clone "$URL" "$REPO_DIR" --depth 1
     pushd "$REPO_DIR"
@@ -44,6 +74,14 @@ for PACKAGE in packages/*; do
     # verify that the README.md file exists
     if [ ! -f README.md ]; then
         echo "Repository $REPO does not have a README.md file"
+        popd
+        rm -rf "$REPO_DIR"
+        continue
+    fi
+
+    # check if the repository is already deprecated
+    if grep -q "Deprecation Notice" README.md; then
+        echo "Repository $REPO already has a deprecation notice"
         popd
         rm -rf "$REPO_DIR"
         continue
@@ -74,8 +112,8 @@ for PACKAGE in packages/*; do
     # create a pull request
     gh pr create --base "$BASE_BRANCH" --head "$HEAD_BRANCH" \
         --title "Add deprecation notice" \
-        --body "Added deprecatin notice to the repository readme with a link to ilib-mono." \
-        --reviewer "ehoogerbeets,nmkedziora,wadimw"
+        --body "Added deprecation notice to the repository readme with a link to ilib-mono." \
+        --reviewer "$REVIEWERS"
     
     # cleanup
     popd
