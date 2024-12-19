@@ -1,5 +1,15 @@
 # ilib-tmx
 
+## 1.1.5
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [f9f1095]
+- Updated dependencies [ae2549a]
+  - ilib-tools-common@1.12.2
+  - ilib-common@1.1.6
+
 ## 1.1.4
 
 ### Patch Changes

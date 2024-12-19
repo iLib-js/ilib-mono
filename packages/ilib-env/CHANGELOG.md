@@ -1,5 +1,11 @@
 # ilib-env
 
+## 1.4.1
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+
 ## 1.4.0
 
 - Update to detect webOS platform with webOSSystem value.

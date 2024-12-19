@@ -1,5 +1,14 @@
 # ilib-loader
 
+## 1.3.5
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [ae2549a]
+  - ilib-common@1.1.6
+  - ilib-env@1.4.1
+
 ## 1.3.4
 
 ### Patch Changes

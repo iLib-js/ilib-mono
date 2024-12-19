@@ -1,5 +1,11 @@
 # ilib-loctool-javascript
 
+## 1.1.5
+
+### Patch Changes
+
+- 5ec8679: Added missing dependency on micromatch.
+
 ## 1.1.4
 
 ### Patch Changes

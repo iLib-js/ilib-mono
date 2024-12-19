@@ -1,5 +1,15 @@
 # ilib-localedata
 
+## 1.5.2
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [ae2549a]
+  - ilib-common@1.1.6
+  - ilib-loader@1.3.5
+  - ilib-env@1.4.1
+
 ## 1.5.1
 
 ### Patch Changes
