@@ -14,7 +14,7 @@
         "tree",
         "node"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-tree-node",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-tree-node",
     "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
@@ -37,7 +37,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
         "build": "grunt babel",

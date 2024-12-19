@@ -91,7 +91,7 @@ class Parser extends PipelineElement {
      *   an abstract syntax tree afterwards, which would be more useful
      *   for checking for problems.
      * - resources - array of instances of Resource classes as
-     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     *   defined in {@link https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common}.
      *   This is the preference intermediate representation for
      *   resource files like Java properties or xliff. There are many
      *   rules that already know how to process Resource instances.

@@ -41,7 +41,7 @@ class ResourceXML extends ResourceRule {
         this.name = "resource-xml";
         this.description = "Ensure that XML in translated resources match the source";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
-        this.link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-xml.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-xml.md";
     }
 
     /**

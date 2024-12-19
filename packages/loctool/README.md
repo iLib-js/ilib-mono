@@ -24,10 +24,9 @@ get it from npm or from github.com:
 the necessary JS libraries that the loctool depends upon:
 
 ```
-git clone git@github.com:iLib-js/loctool.git
-cd loctool
-npm install
+git clone git@github.com:iLib-js/ilib-mono.git
 ```
+then follow the steps from [ilib-mono/SETUP.md](https://github.com/iLib-js/ilib-mono/blob/main/SETUP.md)
 
 If you did these steps, you can run it in situ as if it were installed by npm.
 The difference is that now you can make a branch and recontribute your fixes as

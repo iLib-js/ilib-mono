@@ -113,7 +113,7 @@ class PipelineElement {
      * There are three types that are reserved, however:
      *
      * - resource - the pipeline element returns an array of Resource instances as
-     *   defined in {@link https://github.com/ilib-js/ilib-tools-common}.
+     *   defined in {@link https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common}.
      * - line - the pipeline element produces a set of lines as an array of strings
      * - string - the pipeline element doesn't parse. Instead, it just treats the
      *   the file as one long string.

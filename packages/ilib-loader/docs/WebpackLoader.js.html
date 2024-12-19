@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>WebpackLoader.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FakeLoader.html">FakeLoader</a><ul class='methods'><li data-type='method'><a href="FakeLoader.html#addPaths">addPaths</a></li><li data-type='method'><a href="FakeLoader.html#getName">getName</a></li><li data-type='method'><a href="FakeLoader.html#getPlatforms">getPlatforms</a></li><li data-type='method'><a href="FakeLoader.html#loadFile">loadFile</a></li><li data-type='method'><a href="FakeLoader.html#loadFiles">loadFiles</a></li><li data-type='method'><a href="FakeLoader.html#setAsyncMode">setAsyncMode</a></li><li data-type='method'><a href="FakeLoader.html#setSyncMode">setSyncMode</a></li><li data-type='method'><a href="FakeLoader.html#supportsSync">supportsSync</a></li></ul></li><li><a href="Loader.html">Loader</a><ul class='methods'><li data-type='method'><a href="Loader.html#addPaths">addPaths</a></li><li data-type='method'><a href="Loader.html#getName">getName</a></li><li data-type='method'><a href="Loader.html#getPlatforms">getPlatforms</a></li><li data-type='method'><a href="Loader.html#loadFile">loadFile</a></li><li data-type='method'><a href="Loader.html#loadFiles">loadFiles</a></li><li data-type='method'><a href="Loader.html#setAsyncMode">setAsyncMode</a></li><li data-type='method'><a href="Loader.html#setSyncMode">setSyncMode</a></li><li data-type='method'><a href="Loader.html#supportsSync">supportsSync</a></li></ul></li><li><a href="NodeLoader.html">NodeLoader</a><ul class='methods'><li data-type='method'><a href="NodeLoader.html#addPaths">addPaths</a></li><li data-type='method'><a href="NodeLoader.html#getName">getName</a></li><li data-type='method'><a href="NodeLoader.html#getPlatforms">getPlatforms</a></li><li data-type='method'><a href="NodeLoader.html#loadFile">loadFile</a></li><li data-type='method'><a href="NodeLoader.html#loadFiles">loadFiles</a></li><li data-type='method'><a href="NodeLoader.html#setAsyncMode">setAsyncMode</a></li><li data-type='method'><a href="NodeLoader.html#setSyncMode">setSyncMode</a></li><li data-type='method'><a href="NodeLoader.html#supportsSync">supportsSync</a></li></ul></li><li><a href="WebpackLoader.html">WebpackLoader</a><ul class='methods'><li data-type='method'><a href="WebpackLoader.html#addPaths">addPaths</a></li><li data-type='method'><a href="WebpackLoader.html#getName">getName</a></li><li data-type='method'><a href="WebpackLoader.html#getPlatforms">getPlatforms</a></li><li data-type='method'><a href="WebpackLoader.html#loadFile">loadFile</a></li><li data-type='method'><a href="WebpackLoader.html#loadFiles">loadFiles</a></li><li data-type='method'><a href="WebpackLoader.html#setAsyncMode">setAsyncMode</a></li><li data-type='method'><a href="WebpackLoader.html#setSyncMode">setSyncMode</a></li><li data-type='method'><a href="WebpackLoader.html#supportsSync">supportsSync</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#LoaderFactory">LoaderFactory</a></li><li><a href="global.html#registerLoader">registerLoader</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">WebpackLoader.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * WebpackLoader.js - Loader implementation for webpack'ed ilib
+ *
+ * Copyright © 2022 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import log4js from '@log4js-node/log4js-api';
+import { Path } from 'ilib-common';
+
+import Loader from './Loader.js';
+
+/**
+ * Class that loads files under Webpack.
+ *
+ * All loaders must support asynchronous operation. That is, they take
+ * a file name or a list of file names and return a promise to load
+ * them. Some loader may optionally also support synchronous operation
+ * as well if the locale files are located locally.
+ *
+ * @extends Loader
+ */
+class WebpackLoader extends Loader {
+    /**
+     * Create a loader instance.
+     *
+     * @param {Object} options
+     * @constructor
+     */
+    constructor(options) {
+        super(options);
+
+        this.logger = log4js.getLogger("ilib-loader");
+    }
+
+    /**
+     * Return an array of platform names for the platforms that this
+     * loader supports.
+     * @returns {Array.&lt;string>} the names of the platform.
+     */
+    getPlatforms() {
+        return ["browser"];
+    }
+
+    /**
+     * Return a string identifying this type of loader.
+     * @returns {string} the name of this type of loader
+     */
+    getName() {
+        return "Webpack Loader";
+    }
+
+    /**
+     * Load an individual file specified by the path name, and return its
+     * content. If the file does not exist or could not be loaded, this method
+     * will return undefined.&lt;p>
+     *
+     * There are no options that this loader uses, so the options parameter is
+     * ignored.&lt;p>
+     *
+     * The file loaded must be a javascript file named for the full BCP-47 locale
+     * spec (eg. "zh-Hans-CN.js") or "root.js" for the generic shared data. The
+     * files should be constructed before webpack is
+     * called. In order to include the data file automatically in webpack, you must
+     * create a resolver alias called "calling-module" to point to the location where
+     * the file was generated. Example setting in webpack.config.js
+     *
+     * &lt;code>
+     *    "resolve": {
+     *        "alias": {
+     *            "calling-module": "my-module/locale"
+     *        }
+     *    }
+     * &lt;/code>
+     *
+     * The value may be the name of your module with an optional subpath, or the
+     * absolute path to the directory where the files are stored. Without this alias,
+     * no files will be included and the webpack build will fail.&lt;p>
+     *
+     * For files that end with a ".js" or ".mjs" extension, this method should
+     * treat the file as a Javascript module and load it accordingly. All other
+     * file types will be loaded as UTF-8 text.
+     *
+     * @param {string} pathName a file name to load
+     * @param {Object} options options guiding the load, as per above
+     * @returns {Promise|undefined} A promise to load the file contents
+     * in async mode. If this method returns undefined or the promise resolves
+     * to the value undefined, this indicates that the file did not exist or
+     * could not be loaded.
+     */
+    loadFile(pathName, options) {
+        if (!pathName || typeof(pathName) !== 'string') return undefined;
+        if (options &amp;&amp; options.sync) {
+            throw "The webpack loader does not support synchronous loading of data.";
+        }
+        this.logger.trace(`Loading file ${pathName} from webpack asynchronously`);
+
+        const fileName = Path.basename(pathName);
+
+        return import(
+            /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root).js(on)?$/ */
+            /* webpackChunkName: "ilib.[request]" */
+            /* webpackMode: "lazy" */
+            `calling-module/${fileName}`
+        ).catch((e) => {
+            this.logger.trace(e);
+            return undefined;
+        });
+    }
+};
+
+export default WebpackLoader;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Dec 19 2024 16:53:44 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

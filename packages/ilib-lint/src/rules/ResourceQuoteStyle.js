@@ -33,7 +33,9 @@ import ResourceRule from './ResourceRule.js';
  * @prop {string} quoteEndAlt
  * @prop {RegExp} quotesNative
  * @prop {RegExp} quotesNativeAlt
- *
+ */
+
+/**
  * @typedef {BaseRegExpCollection} SourceRegExpCollection
  */
 
@@ -44,8 +46,10 @@ import ResourceRule from './ResourceRule.js';
  * @prop {RegExp} quotesAllAlt
  * @prop {string} nonQuoteChars
  * @prop {string} nonQuoteCharsAlt
- *
- * @typedef {BaseRegExpCollection & ExtendedRegExpCollection} TargetRegExpCollection
+ */
+
+/**
+ * @ignore @typedef {BaseRegExpCollection & ExtendedRegExpCollection} TargetRegExpCollection
  */
 
 /**
@@ -99,7 +103,7 @@ class ResourceQuoteStyle extends ResourceRule {
         this.name = "resource-quote-style";
         this.description = "Ensure that the proper quote characters are used in translated resources";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
-        this.link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-quote-style.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-quote-style.md";
 
         if (options?.param === "localeOnly") {
             // only localized quotes are allowed in the target string

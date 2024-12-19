@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>CharacterInfo.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TrieNode.html">TrieNode</a></li><li><a href="module.exports.html">exports</a></li><li></li><li></li><li></li><li></li><li></li></ul><h3>Modules</h3><ul><li><a href="module-Utils.html">Utils</a><ul class='methods'><li data-type='method'><a href="module-Utils.html#.coelesce">coelesce</a></li><li data-type='method'><a href="module-Utils.html#.findMember">findMember</a></li><li data-type='method'><a href="module-Utils.html#.hexStringUTF16String">hexStringUTF16String</a></li><li data-type='method'><a href="module-Utils.html#.hexToChar">hexToChar</a></li><li data-type='method'><a href="module-Utils.html#.isArray">isArray</a></li><li data-type='method'><a href="module-Utils.html#.isMember">isMember</a></li><li data-type='method'><a href="module-Utils.html#.localeMergeAndPrune">localeMergeAndPrune</a></li><li data-type='method'><a href="module-Utils.html#.merge">merge</a></li><li data-type='method'><a href="module-Utils.html#.toHexString">toHexString</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#add">add</a></li><li><a href="global.html#cleanForm">cleanForm</a></li><li><a href="global.html#ge">ge</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getBidiClass">getBidiClass</a></li><li><a href="global.html#getBidiMirrored">getBidiMirrored</a></li><li><a href="global.html#getCategory">getCategory</a></li><li><a href="global.html#getCharacter">getCharacter</a></li><li><a href="global.html#getCombiningClass">getCombiningClass</a></li><li><a href="global.html#getDecomposition">getDecomposition</a></li><li><a href="global.html#getDecompositionType">getDecompositionType</a></li><li><a href="global.html#getLine">getLine</a></li><li><a href="global.html#getName">getName</a></li><li><a href="global.html#getNumericType">getNumericType</a></li><li><a href="global.html#getNumericValue">getNumericValue</a></li><li><a href="global.html#getSimpleLowercase">getSimpleLowercase</a></li><li><a href="global.html#getSimpleTitlecase">getSimpleTitlecase</a></li><li><a href="global.html#getSimpleUppercase">getSimpleUppercase</a></li><li><a href="global.html#length">length</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">CharacterInfo.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * CharacterInfo.js - info on one character in a unicode character database file
+ * 
+ * Copyright © 2022, JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { hexToChar } from './Utils';
+
+/**
+ * @class
+ * Represents information about a particular character.
+ * 
+ * @constructor
+ * @param {string} row a row from the UnicodeData.txt file to parse
+ */
+export default class CharacterInfo {
+    constructor(fields) {
+        if (typeof(fields) !== 'object') {
+            return undefined;
+        }
+    
+        this.c = hexToChar(fields[0]);
+        this.name = fields[1];
+        this.category = fields[2];
+        this.ccc = (fields[3].length > 0) ? parseInt(fields[3], 10) : 0;
+        this.bidiClass = fields[4];
+    
+        if (fields[5].length > 0) {
+            var decomp = fields[5];
+            var start = decomp.indexOf('&lt;');
+            if (start !== -1) {
+                var end = decomp.lastIndexOf('>');
+                this.decompType = decomp.substring(start+1, end);
+                decomp = decomp.substring(end+1);
+            } else {
+                this.decompType = "canon"; // default is canonical decomposition
+            }
+            var chars = decomp.split(' ');
+            this.decomp = "";
+            for (var i = 0; i &lt; chars.length; i++) {
+                if (chars[i].length > 0) {
+                    this.decomp += hexToChar(chars[i]);
+                }
+            }
+        }
+    
+        // TODO get the digit value from fields 6, 7, 8
+    
+        this.bidiMirrored = (fields[9] &amp;&amp; fields[9] == 'Y');
+        this.upper = (fields[12] &amp;&amp; fields[12].length > 0) ? hexToChar(fields[12]) : "";
+        this.lower = (fields[13] &amp;&amp; fields[13].length > 0) ? hexToChar(fields[13]) : "";
+        this.title = (fields[14] &amp;&amp; fields[14].length > 0) ? hexToChar(fields[14]) : "";
+    }
+
+    /**
+     * @return {string}
+     */
+    getCharacter() {
+        return this.c;
+    }
+
+    /**
+     * @return {string}
+     */
+    getName() {
+        return this.name;
+    }
+
+    /**
+     * @return {string}
+     */
+    getCategory() {
+        return this.category;
+    }
+
+    /**
+     * @return {number}
+     */
+    getCombiningClass() {
+        return this.ccc;
+    }
+
+    /**
+     * @return {string}
+     */
+    getBidiClass() {
+        return this.bidiClass;
+    }
+
+    /**
+     * @return {string}
+     */
+    getDecompositionType() {
+        return this.decompType || "";
+    }
+
+    /**
+     * @return {string}
+     */
+    getDecomposition() {
+        return this.decomp || this.c;
+    }
+
+    /**
+     * @return {string}
+     */
+    getNumericType() {
+
+    }
+
+    /**
+     * @return {number}
+     */
+    getNumericValue() {
+
+    }
+
+    /**
+     * @return {boolean}
+     */
+    getBidiMirrored() {
+        return this.bidiMirrored;
+    }
+
+    /**
+     * @return {string}
+     */
+    getSimpleUppercase() {
+        return this.upper;
+    }
+
+    /**
+     * @return {string}
+     */
+    getSimpleLowercase() {
+        return this.lower;
+    }
+
+    /**
+     * @return {string}
+     */
+    getSimpleTitlecase() {
+        return this.title;
+    }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Dec 19 2024 16:53:44 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

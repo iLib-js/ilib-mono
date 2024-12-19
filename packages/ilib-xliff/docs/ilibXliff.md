@@ -6,8 +6,25 @@
 xliff file.</p>
 </dd>
 <dt><a href="#Xliff">Xliff</a></dt>
-<dd><p>A class that represents an xliff file. Xliff stands for Xml 
+<dd><p>A class that represents an xliff file. Xliff stands for Xml
 Localization Interchange File Format.</p>
+</dd>
+</dl>
+
+## Constants
+
+<dl>
+<dt><a href="#getAttribute">getAttribute</a> ⇒ <code>string</code> | <code>undefined</code></dt>
+<dd><p>Return value of a specified attribute from a supplied xml element converted to a string. If the attribute is not
+found, undefined is returned.</p>
+</dd>
+<dt><a href="#getText">getText</a> ⇒ <code>string</code> | <code>undefined</code></dt>
+<dd><p>Return value of the first text element from a supplied xml element converted to a string. If the text element is not
+found, undefined is returned.</p>
+</dd>
+<dt><a href="#getChildrenByName">getChildrenByName</a> ⇒ <code>Array.&lt;Element&gt;</code> | <code>undefined</code></dt>
+<dd><p>Return array of elements with a specified name from a supplied xml element or undefined if the element is not found
+or has no children.</p>
 </dd>
 </dl>
 
@@ -48,6 +65,8 @@ source text of this translation unit (required)
 <li><i>datatype</i> - the source of the data of this unit (optional)
 <li><i>flavor</i> - the flavor that this string comes from (optional)
 <li><i>translate</i> - flag that tells whether to translate this unit (optional)
+<li><i>location</i> - the line and character location of the start of this
+translation unit in the xml representation of the file
 </ul>
 
 If the required properties are not given, the constructor throws an exception.<p>
@@ -78,7 +97,7 @@ Clone the current unit and return the clone.
 <a name="Xliff"></a>
 
 ## Xliff
-A class that represents an xliff file. Xliff stands for Xml 
+A class that represents an xliff file. Xliff stands for Xml
 Localization Interchange File Format.
 
 **Kind**: global class  
@@ -93,6 +112,8 @@ Localization Interchange File Format.
     * [.toString2()](#Xliff+toString2) ⇒ <code>String</code>
     * [.toStringCustom()](#Xliff+toStringCustom) ⇒ <code>String</code>
     * [.serialize(untranslated)](#Xliff+serialize) ⇒ <code>String</code>
+    * [.getLines()](#Xliff+getLines)
+    * [.getBytes()](#Xliff+getBytes)
     * [.deserialize(xml)](#Xliff+deserialize)
     * [.getVersion()](#Xliff+getVersion) ⇒ <code>String</code>
     * [.clear()](#Xliff+clear)
@@ -228,6 +249,26 @@ xml text
 
 * * *
 
+<a name="Xliff+getLines"></a>
+
+### xliff.getLines()
+Return the number of lines in the file. This is only really
+accurate after it has been serialized or deserialized.
+
+**Kind**: instance method of [<code>Xliff</code>](#Xliff)  
+
+* * *
+
+<a name="Xliff+getBytes"></a>
+
+### xliff.getBytes()
+Return the number of bytes in the file. This is only really
+accurate after it has been serialized or deserialized.
+
+**Kind**: instance method of [<code>Xliff</code>](#Xliff)  
+
+* * *
+
 <a name="Xliff+deserialize"></a>
 
 ### xliff.deserialize(xml)
@@ -264,6 +305,53 @@ the settings from the constructor are still kept. Only the translation units are
 removed.
 
 **Kind**: instance method of [<code>Xliff</code>](#Xliff)  
+
+* * *
+
+<a name="getAttribute"></a>
+
+## getAttribute ⇒ <code>string</code> \| <code>undefined</code>
+Return value of a specified attribute from a supplied xml element converted to a string. If the attribute is not
+found, undefined is returned.
+
+**Kind**: global constant  
+
+| Param | Type |
+| --- | --- |
+| element | <code>Element</code> \| <code>undefined</code> | 
+| attrName | <code>string</code> | 
+
+
+* * *
+
+<a name="getText"></a>
+
+## getText ⇒ <code>string</code> \| <code>undefined</code>
+Return value of the first text element from a supplied xml element converted to a string. If the text element is not
+found, undefined is returned.
+
+**Kind**: global constant  
+
+| Param | Type |
+| --- | --- |
+| element | <code>Element</code> \| <code>undefined</code> | 
+
+
+* * *
+
+<a name="getChildrenByName"></a>
+
+## getChildrenByName ⇒ <code>Array.&lt;Element&gt;</code> \| <code>undefined</code>
+Return array of elements with a specified name from a supplied xml element or undefined if the element is not found
+or has no children.
+
+**Kind**: global constant  
+
+| Param | Type |
+| --- | --- |
+| element | <code>Element</code> \| <code>undefined</code> | 
+| elName | <code>string</code> | 
+
 
 * * *
 

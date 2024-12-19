@@ -19,7 +19,7 @@
         "data",
         "locale"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-assemble",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-assemble",
     "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "ehoogerbeets@gmail.com",
     "license": "Apache-2.0",
@@ -46,7 +46,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
         "test": "pnpm test:cli",

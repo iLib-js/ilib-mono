@@ -219,7 +219,7 @@ or any of them at the same time.
 ## Common Code
 
 All plugins should import and use the classes in the
-[ilib-lint-common](https://github.com/ilib-js/ilib-lint-common) package.
+[ilib-lint-common](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-common) package.
 This defines the super classes for each plugin type, as well as a number
 of utility classes and functions.
 
@@ -259,7 +259,7 @@ representation so that the appropriate rules can parse that representation.
 The standard representations are:
 
 - resources - the file is converted into an array of
-  [Resource](https://github.com/iLib-js/ilib-tools-common/blob/main/src/Resource.js)
+  [Resource](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-tools-common/src/Resource.js)
   instances
 - lines - the file in converted into a simple array of lines
 - source - the file is not parsed. Instead, the entire text of the file is used to
@@ -269,7 +269,7 @@ The resources representation is intended to represent entries in resource files
 such as xliff files, gnu po files, or java properties files. Each entry in the
 resource file is represented as an instance of one of the standard resource
 classes all defined in the
-[ilib-tools-common](https://github.com/ilib-js/ilib-tools-common)
+[ilib-tools-common](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-tools-common/src)
 project:
 
 - ResourceString - the resource is a single string
@@ -288,13 +288,13 @@ for your class should define the following properties:
 - `this.description` - a description of this type of parser to display to users
 
 It should also override the
-[parseData()](https://github.com/iLib-js/ilib-lint-common/blob/main/src/Parser.js)
+[parseData()](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Parser.js)
 method which parses a string, and the
-[parse()](https://github.com/iLib-js/ilib-lint-common/blob/main/src/Parser.js)
+[parse()](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Parser.js)
 method, which loads data from the file and then parses it.
 
 You can see an example of a parser plugin by looking at the gnu PO file parser at
-[ilib-lint-python-gnu](https://github.com/ilib-js/ilib-lint-python-gnu/blob/main/src/POParser.js).
+[ilib-lint-python-gnu](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-python-gnu/src/POParser.js).
 That parser interprets a .po file as a resource file and returns a set of
 Resource instances.
 
@@ -302,7 +302,7 @@ Resource instances.
 
 Rules interpret the intermediate representation of a file produced by a Parser
 and produce a single
-[Result](https://github.com/iLib-js/ilib-lint-common/blob/main/src/Result.js)
+[Result](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Result.js)
 instance, an array of Result instances, one for each problem found, or undefined
 if there are no problems found.
 
@@ -370,8 +370,8 @@ locale first needs to look up what the correct quote style even is in
 order to apply the rule.
 
 In order to create a rule instance, create a class that extends the
-[Rule](https://github.com/ilib-js/ilib-lint-common/blob/main/src/Rule.js)
-class in the [ilib-lint-common](https://github.com/ilib-js/ilib-lint-common/) project.
+[Rule](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Rule.js)
+class in the [ilib-lint-common](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-common) package.
 The constructor of this class should define the following properties:
 
 - `this.name` - a unique name for this rule
@@ -389,13 +389,13 @@ part is that the name should uniquely identify your Rule so that you can use it
 in config files.
 
 The rule should also override and implement the getRuleType() method and the
-[match()](https://github.com/iLib-js/ilib-lint-common/blob/main/src/Rule.js) method,
+[match()](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Rule.js) method,
 which takes an intermediate representation as a parameter and returns either
 a single Result, an array of Result, or undefined.
 
 If you would like to see an example rule plugin, see the definition of
 the built-in ICU plural matcher rule:
-[resource-icu-plurals](https://github.com/ilib-js/ilib-lint/blob/main/src/rules/ResourceICUPlurals.js)
+[resource-icu-plurals](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceICUPlurals.js)
 which checks resources to make sure that plurals in source and target strings
 have the correct syntax for ICU and formatjs.
 
@@ -435,7 +435,7 @@ syntax. (Each rule defines for itself what parameters/initalizers it accepts.)
 
 ### Formatters
 
-Formatters transform a [Result object](https://github.com/iLib-js/ilib-lint-common/blob/main/src/Result.js) into a format that the consumer can use. For the most part, the consumer
+Formatters transform a [Result object](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Result.js) into a format that the consumer can use. For the most part, the consumer
 is a human, so the result should be formatted in text so that the user can read
 it easily. Other times, the consumer is another program, so the result should be
 formatted for easy parsing. Formatters can formats the results in any way necessary.
@@ -468,8 +468,8 @@ sure that fields in a CSV file are escaped properly to conform to CSV syntax, an
 include escaping code in it.
 
 In order to create a formatter instance, create a class that extends the
-[Formatter](https://github.com/ilib-js/ilib-lint-common/blob/main/src/Formatter.js)
-class in the [ilib-lint-common](https://github.com/ilib-js/ilib-lint-common/) project.
+[Formatter](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Formatter.js)
+class in the [ilib-lint-common](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-common) project.
 The constructor of this class should define the following properties:
 
 - `this.name` - a unique name for this formatter
@@ -478,17 +478,17 @@ The constructor of this class should define the following properties:
   of the rule and how to resolve the problem it found
 
 The formatter should also override and implement the
-[format()](https://github.com/iLib-js/ilib-lint-common/blob/main/src/Formatter.js) method,
+[format()](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-common/src/Formatter.js) method,
 which takes a Result instance as a parameter and returns a formatted string.
 
 If you would like to look at an example formatter plugin, see the definition of
 the built-in default formatter
-[ansi-console-formatter](https://github.com/ilib-js/ilib-lint/blob/main/src/formatters/AnsiConsoleFormatter.js)
+[ansi-console-formatter](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/formatters/AnsiConsoleFormatter.js)
 which formats a Result for colorful output on an ANSI console.
 
 ## Example Plugin
 
-You can take a look at the [ilib-lint-python](https://github.com/ilib-js/ilib-lint-python)
+You can take a look at the [ilib-lint-python](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-lint-python)
 plugin as a working example of ilib-lint plugin. It implements some rules that
 check the various types of substitution parameters that python/django and
 gnu gettext support.

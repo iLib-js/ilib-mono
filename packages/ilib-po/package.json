@@ -16,7 +16,7 @@
         "gettext",
         "translation"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-po",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-po",
     "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
@@ -42,7 +42,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
