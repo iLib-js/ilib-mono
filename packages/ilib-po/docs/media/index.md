@@ -13,5 +13,4 @@
 
 ## Type Aliases
 
-- [GeneratorOptions](type-aliases/GeneratorOptions.md)
 - [POFileOptions](type-aliases/POFileOptions.md)

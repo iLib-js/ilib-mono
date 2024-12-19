@@ -11,7 +11,7 @@
 - [POFile](classes/POFile.md)
 - [SyntaxError](classes/SyntaxError.md)
 
-## Interfaces
+## Type Aliases
 
-- [GeneratorOptions](interfaces/GeneratorOptions.md)
-- [POFileOptions](interfaces/POFileOptions.md)
+- [GeneratorOptions](type-aliases/GeneratorOptions.md)
+- [POFileOptions](type-aliases/POFileOptions.md)

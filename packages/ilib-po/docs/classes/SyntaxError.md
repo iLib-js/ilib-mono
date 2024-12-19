@@ -40,7 +40,7 @@ a description of the syntax error
 
 #### Defined in
 
-[packages/ilib-po/src/SyntaxError.ts:29](https://github.com/iLib-js/ilib-mono/blob/2476eed8f7d6e8d3967aa6de3e229a9bd34f9e08/packages/ilib-po/src/SyntaxError.ts#L29)
+[packages/ilib-po/src/SyntaxError.ts:29](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/SyntaxError.ts#L29)
 
 ## Properties
 
@@ -104,7 +104,7 @@ Optional override for formatting stack traces
 
 #### See
 
-https://github.com/v8/v8/wiki/Stack%20Trace%20API#customizing-stack-traces
+https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 #### Inherited from
 
@@ -112,7 +112,7 @@ https://github.com/v8/v8/wiki/Stack%20Trace%20API#customizing-stack-traces
 
 #### Defined in
 
-node\_modules/.pnpm/@types+node@12.20.55/node\_modules/@types/node/globals.d.ts:140
+node\_modules/.pnpm/@types+node@20.17.4/node\_modules/@types/node/globals.d.ts:98
 
 ***
 
@@ -126,7 +126,7 @@ node\_modules/.pnpm/@types+node@12.20.55/node\_modules/@types/node/globals.d.ts:
 
 #### Defined in
 
-node\_modules/.pnpm/@types+node@12.20.55/node\_modules/@types/node/globals.d.ts:142
+node\_modules/.pnpm/@types+node@20.17.4/node\_modules/@types/node/globals.d.ts:100
 
 ## Methods
 
@@ -138,7 +138,7 @@ Create .stack property on a target object
 
 #### Parameters
 
-• **targetObject**: `Object`
+• **targetObject**: `object`
 
 • **constructorOpt?**: `Function`
 
@@ -152,4 +152,4 @@ Create .stack property on a target object
 
 #### Defined in
 
-node\_modules/.pnpm/@types+node@12.20.55/node\_modules/@types/node/globals.d.ts:133
+node\_modules/.pnpm/@types+node@20.17.4/node\_modules/@types/node/globals.d.ts:91
