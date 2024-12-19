@@ -6,7 +6,6 @@
 
 # Class: POFile
 
-POFile
 Represents a GNU PO resource file.
 
 ## Constructors
@@ -19,9 +18,7 @@ Create a new PO file with the given path name.
 
 #### Parameters
 
-• **options**: [`POFileOptions`](../type-aliases/POFileOptions.md)
-
-the options to use to create this PO file
+• **options**: [`POFileOptions`](../interfaces/POFileOptions.md)
 
 #### Returns
 
@@ -29,7 +26,7 @@ the options to use to create this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:78](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L78)
+[packages/ilib-po/src/POFile.ts:101](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L101)
 
 ## Methods
 
@@ -56,7 +53,7 @@ the generated PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:177](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L177)
+[packages/ilib-po/src/POFile.ts:206](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L206)
 
 ***
 
@@ -74,25 +71,25 @@ whether the context is part of the key in this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:164](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L164)
+[packages/ilib-po/src/POFile.ts:193](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L193)
 
 ***
 
 ### getDatatype()
 
-> **getDatatype**(): `string`
+> **getDatatype**(): `undefined` \| `string`
 
 Get the datatype of this PO file.
 
 #### Returns
 
-`string`
+`undefined` \| `string`
 
 the datatype of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:156](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L156)
+[packages/ilib-po/src/POFile.ts:185](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L185)
 
 ***
 
@@ -110,7 +107,7 @@ the path name of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:124](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L124)
+[packages/ilib-po/src/POFile.ts:153](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L153)
 
 ***
 
@@ -128,7 +125,7 @@ the project name of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:148](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L148)
+[packages/ilib-po/src/POFile.ts:177](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L177)
 
 ***
 
@@ -146,25 +143,25 @@ the source locale of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:132](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L132)
+[packages/ilib-po/src/POFile.ts:161](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L161)
 
 ***
 
 ### getTargetLocale()
 
-> **getTargetLocale**(): `string`
+> **getTargetLocale**(): `undefined` \| `string`
 
 Get the target locale of this PO file.
 
 #### Returns
 
-`string`
+`undefined` \| `string`
 
 the target locale of this PO file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:140](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L140)
+[packages/ilib-po/src/POFile.ts:169](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L169)
 
 ***
 
@@ -190,8 +187,8 @@ the set of resources extracted from the file
 
 #### Throws
 
-SyntaxError if there is a syntax error in the file
+when there is a syntax error in the file
 
 #### Defined in
 
-[packages/ilib-po/src/POFile.ts:116](https://github.com/iLib-js/ilib-mono/blob/c0fae8bde5f06bd45cef09be8f7ab667ccfdb8fe/packages/ilib-po/src/POFile.ts#L116)
+[packages/ilib-po/src/POFile.ts:145](https://github.com/iLib-js/ilib-mono/blob/93e89be607a435a4b66a7be8ed5050a5552f16db/packages/ilib-po/src/POFile.ts#L145)

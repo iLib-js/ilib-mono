@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>TreeNode.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Node.html">Node</a><ul class='methods'><li data-type='method'><a href="Node.html#add">add</a></li><li data-type='method'><a href="Node.html#toArray">toArray</a></li><li data-type='method'><a href="Node.html#.fromArray">fromArray</a></li></ul></li><li></li></ul><h3>Global</h3><ul><li><a href="global.html#isNode">isNode</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">TreeNode.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * TreeNode.js - build, construct, and deconstruct a tree
+ *
+ * @license
+ * Copyright © 2019, 2021, 2024 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+function isNode(obj) {
+    return typeof(obj) === "object" &amp;&amp; obj instanceof Node;
+}
+
+/**
+ * @class Node
+ * @param {Object} an object to make into a tree node
+ */
+class Node {
+    /**
+     * Create a new node instance.
+     */
+    constructor(obj) {
+        if (obj) {
+            // shallow copy all properties into this node
+            Object.keys(obj).forEach(key => {
+                if (key !== "children" &amp;&amp; typeof(obj[key]) !== 'undefined') {
+                    this[key] = obj[key];
+                }
+            });
+        } else {
+            this.type = "text";
+        }
+        this.children = [];
+    }
+
+    /**
+     * Add a child node to the current context of the tree.
+     * @param {Node} child the child to add
+     */
+    add(child) {
+        if (!isNode(child)) {
+            return;
+        }
+
+        this.children.push(child);
+    }
+
+    addChildren(array) {
+        if (!Array.isArray(array) || !array.every(element => (element instanceof Node))) {
+            return;
+        }
+        array.forEach(element => this.add(element));
+    }
+
+    /**
+     * Flatten the current node and all of its descendents into an
+     * array and return it. When a node has children, it is
+     * flattened into two nodes: a start node, followed by nodes for
+     * all its children, and an end node. The start and end nodes
+     * are marked by a "use" property set to "start" and "end".
+     *
+     * @returns {Array.&lt;Node>} an array of Nodes flattened from
+     * the current node
+     */
+    toArray() {
+        if (this.children.length) {
+            let ret = [];
+
+            let clone = new Node(this);
+            clone.use = "start";
+            ret.push(clone);
+
+            for (let i = 0; i &lt; this.children.length; i++) {
+                ret = ret.concat(this.children[i].toArray());
+            }
+
+            clone = new Node(this);
+            clone.use = "end";
+            ret.push(clone);
+
+            return ret;
+        } else if (this.type === "text") {
+            this.use = undefined;
+            return [this];
+        } else {
+            // self closing component
+            let clone = new Node(this);
+            clone.use = "startend";
+            return [clone];
+        }
+    }
+
+    /**
+     * Recreate a full tree again from a flattened array of Node
+     * instances. If the instances are well-formed (that is,
+     * all start nodes are matched with end nodes with strict
+     * nesting), then the tree is valid. If the array is not
+     * well-formed, then the shape of the resulting tree will
+     * probably not be valid and the results of this static method
+     * are not defined.
+     *
+     * @static
+     * @param {Array.&lt;Node>} array the array of Node instances
+     * to reconstruct into a tree
+     * @returns {Node} a node that is the root of a tree
+     * reconstructed from the array of Nodes
+     */
+    static fromArray(array) {
+        if (!array || !Array.isArray(array) || !array.length) {
+            return undefined;
+        }
+
+        if (!array.every(node => typeof node === "object")) {
+            return undefined;
+        }
+
+        let clone;
+        if (array.length === 1) {
+            if (isNode(array[0])) {
+                clone = new Node(array[0]);
+                clone.use = undefined;
+            }
+            return clone;
+        }
+
+        let rootExtra, startIndex = 0;
+        if (array[0].use === "start") {
+            rootExtra = array[0];
+            startIndex = 1;
+        } else {
+            rootExtra = {type: "root"};
+            startIndex = 0;
+        }
+        // not a tree? Make a wrapper node!
+        let root = new Node(rootExtra);
+        let stack = [];
+        let current = root;
+
+        root.use = undefined;
+        stack.push(root);
+
+        for (let i = startIndex; i &lt; array.length; i++) {
+            if (isNode(array[i])) {
+                if (array[i].use === "start") {
+                    clone = new Node(array[i]);
+                    clone.use = undefined;
+                    stack.push(clone);
+                    current.add(clone);
+                    current = clone;
+                } else if (array[i].use === "end") {
+                    if (stack.length > 1) {
+                        stack.pop();
+                        current = stack[stack.length-1];
+                    }
+                } else {
+                    current.add(array[i]);
+                }
+            }
+        }
+
+        return root;
+    }
+}
+
+export default Node;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Dec 19 2024 16:53:40 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
