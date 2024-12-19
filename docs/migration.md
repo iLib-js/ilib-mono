@@ -5,7 +5,7 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 -   **History**
     -   Package should be migrated along with its commit history using [`git subtree`](https://www.atlassian.com/git/tutorials/git-subtree) - this is automated through [`scripts/add_repo.sh`](../scripts/add_repo.sh); remember to do a _regular merge_ (not a _squash merge_) when merging the migration PR
     -   Original package repository should have a deprecation notice with a link to the monorepo and it should be marked as [archived](https://docs.github.com/en/repositories/archiving-a-github-repository/archiving-repositories); see [`scripts/push_deprecation.sh`](../scripts/push_deprecation.sh) and [`scripts/archive_repos.sh`](../scripts/archive_repos.sh)
-    -   Tags/releases should be migrated in the new format `<package-name>-v<version>` (e.g. `ilib-common-v1.0.0`); thanks to using subtree, commits of those tags will NOT change; see [`scripts/sync_tags.sh`](../scripts/sync_tags.sh)
+    -   Tags/releases should be migrated in the new format `<package-name>@<version>` (e.g. `ilib-common@1.0.0`); thanks to using subtree, commits of those tags will NOT change; see [`scripts/sync_tags.sh`](../scripts/sync_tags.sh)
 -   **Structure**
     -   The package should be placed in `packages/<package-name>` directory (handled by subtree script)
     -   Build artifacts should be placed in `lib` directory
