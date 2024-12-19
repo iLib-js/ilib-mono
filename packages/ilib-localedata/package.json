@@ -24,7 +24,7 @@
         "translation",
         "localedata"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-localedata",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-localedata",
     "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",

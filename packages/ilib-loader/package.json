@@ -24,7 +24,7 @@
         "translation",
         "loader"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-mono/packages/ilib-loader",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loader",
     "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
