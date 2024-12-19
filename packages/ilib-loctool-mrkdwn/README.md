@@ -75,7 +75,7 @@ Inline snippets are represented with self-closing XML tags.
 You can have references and links in your mrkdwn as normal:
 
 ```
-See the code on <https://github.com/ilib-js/ilib-loctool-mrkdwn|github>.
+See the code on <https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loctool-mrkdwn|github>.
 ```
 
 which becomes:
@@ -114,7 +114,7 @@ settings to that path, such as an output path name template. The mappings are
 minimatch style.
 
 The template follows the syntax for path name templates defined in the
-the [loctool](https://github.com/iLib-js/loctool/blob/development/lib/utils.js#L1881)
+the [loctool](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/lib/utils.js#L1881)
 itself.
 
 The localeMap setting specifies the mapping between locales that are used

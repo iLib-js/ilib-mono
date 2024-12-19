@@ -74,7 +74,7 @@ Example configuration:
 
 In the above example, any file named `*.page-meta.xml` will be parsed with the
 `my-page-meta-schema` schema found in the `xml/schemas` directory. (See the
-documentation of the (ilib-loctool-xml)[https://github.com/iLib-js/ilib-loctool-xml/blob/main/README.md]
+documentation of the (ilib-loctool-xml)[https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-xml/README.md]
 plugin for details on that.) The
 resources from that file will go to augment the source strings of the strings
 found in the resource file translation meta xml.
