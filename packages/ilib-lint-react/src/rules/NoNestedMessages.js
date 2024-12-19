@@ -27,8 +27,8 @@ import _generate from "@babel/generator";
 const generate = _generate.default;
 
 // type imports
-/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
-/** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
+/** @ignore @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @ignore @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
 
 class NoNestedMessages extends Rule {
     /** @readonly */

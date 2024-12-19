@@ -19,8 +19,11 @@
  */
 
 import Locale from 'ilib-locale';
-
 import ResourceRule from './ResourceRule.js';
+
+// type imports
+/** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
+/** @ignore @typedef {import("ilib-lint-common").Result} Result */
 
 // figure out which regex flags are supported on this version of node
 let regexFlags = "g";
@@ -43,6 +46,8 @@ function getLangSpec(spec) {
     return locale.getLangSpec();
 }
 
+/** @ignore @typedef {("error"|"warning"|"suggestion")} Severity */
+
 class DeclarativeResourceRule extends ResourceRule {
     /**
      * Construct a new regular expression-based declarative resource rule.
@@ -56,7 +61,7 @@ class DeclarativeResourceRule extends ResourceRule {
      *   screen when the check fails. Example: "The URL {matchString} did
      *   not appear in the target." (Currently, matchString is the only
      *   replacement param that is supported.)
-     * @param {String} options.regexps an array of strings that encode
+     * @param {String[]} options.regexps an array of strings that encode
      *   regular expressions to look for. Only one of these regexps needs to
      *   match in order to trigger a result from this rule. The first one that
      *   matches will be taken, so the order of regular expressions is
@@ -65,7 +70,7 @@ class DeclarativeResourceRule extends ResourceRule {
      * @param {String} [options.sourceLocale] the source locale of this rule
      * @param {String} [options.link] the URL to a web page that explains this
      *   rule in more detail
-     * @param {{"error"|"warning"|"suggestion"}} [options.severity] the severity
+     * @param {Severity} [options.severity] the severity
      *   of the Result if this rule matches
      * @param {Array.<String>} [options.locales] the target locales to which this
      *   rule applies. If specified, this rule will skip resources that have a

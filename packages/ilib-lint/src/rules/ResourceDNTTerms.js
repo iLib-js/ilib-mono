@@ -23,6 +23,9 @@ import path from "node:path";
 
 import ResourceRule from './ResourceRule.js';
 
+// type imports
+/** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
+
 /** Rule to ensure that Do Not Translate terms have not been translated;
  * i.e., if a DNT term appears in source, it has to appear in target as well */
 class ResourceDNTTerms extends ResourceRule {
@@ -86,10 +89,11 @@ class ResourceDNTTerms extends ResourceRule {
      * Check that if a given resource has a DNT term in the source, then
      * it also exists in the target
      * @override
-     * @param {string} source the source string
-     * @param {string} target the target string
-     * @param {import("ilib-tools-common").Resource} resource the resource being checked 
-     * @param {string} file the file where the resource came from
+     * @param {Object} props
+     * @param {string} props.source the source string
+     * @param {string} props.target the target string
+     * @param {Resource} props.resource the resource being checked 
+     * @param {string} props.file the file where the resource came from
      * @returns {Array.<Result>|undefined} the results
      */
     matchString({ source, target, resource, file }) {
@@ -98,7 +102,7 @@ class ResourceDNTTerms extends ResourceRule {
             rule: this,
             pathName: file,
             locale: resource.getTargetLocale(),
-            severity: "error",
+            severity: /** @ignore @type {const} */ ("error"),
             description: "A DNT term is missing in target string.",
         };
 

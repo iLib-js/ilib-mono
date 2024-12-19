@@ -19,8 +19,11 @@
 
 import { IntlMessageFormat } from 'intl-messageformat';
 
+// type imports
+/** @ignore @typedef {import("@formatjs/icu-messageformat-parser").MessageFormatElement} MessageFormatElement */
+
 /** @returns {string} */
-function concatIntlAstText(/** @type {import("@formatjs/icu-messageformat-parser").MessageFormatElement[]} */ astElements) {
+function concatIntlAstText(/** @type {MessageFormatElement[]} */ astElements) {
     return astElements
         .map((element) => {
             switch (element.type) {

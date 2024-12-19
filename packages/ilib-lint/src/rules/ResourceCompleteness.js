@@ -22,6 +22,9 @@ import Locale from "ilib-locale";
 
 import ResourceRule from './ResourceRule.js';
 
+// type imports
+/** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
+
 /** Rule to check that a resource has both source and target elements */
 class ResourceCompleteness extends ResourceRule {
     /** @readonly */ name = "resource-completeness";
@@ -38,7 +41,7 @@ class ResourceCompleteness extends ResourceRule {
      * @param {Object} params a parameters object
      * @param {string} params.source the source string
      * @param {string} params.target the target string
-     * @param {import("ilib-tools-common").Resource} params.resource the resource being checked
+     * @param {Resource} params.resource the resource being checked
      * @param {string} params.file the file where the resource came from
      * @returns {Array.<Result>|undefined} the results
      */

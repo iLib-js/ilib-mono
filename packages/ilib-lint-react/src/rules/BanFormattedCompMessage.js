@@ -23,8 +23,11 @@ import _traverse from "@babel/traverse";
 const traverse = _traverse.default;
 
 // type imports
-/** @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
-/** @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
+/** @ignore @typedef {import("ilib-lint-common").IntermediateRepresentation} IntermediateRepresentation */
+/** @ignore @typedef {import("@babel/parser").ParseResult<import("@babel/types").File>} ParseResult */
+/** @ignore @typedef {import("@babel/types").JSXIdentifier} JSXIdentifier */
+/** @ignore @typedef {import("@babel/types").Identifier} Identifier */
+/** @ignore @typedef {import("@babel/types").Node} Node */
 
 export class BanFormattedCompMessage extends Rule {
     /** @readonly */
@@ -48,9 +51,9 @@ export class BanFormattedCompMessage extends Rule {
 
         const /** @type {ParseResult} */ tree = ir.getRepresentation();
 
-        const /** @type {import("@babel/types").JSXIdentifier[]} */ jsxNames =
+        const /** @type {JSXIdentifier[]} */ jsxNames =
                 [];
-        const /** @type {{ [rangeKey: string]: import("@babel/types").Identifier }} */ identifiers =
+        const /** @type {Record<String, Identifier>} */ identifiers =
                 {};
 
         traverse(tree, {
@@ -79,7 +82,7 @@ export class BanFormattedCompMessage extends Rule {
         const ranges = [...jsxNames, ...Object.values(identifiers)]
             .map((node) => getRange(node))
             .filter(
-                /** @type {<T>(e: T | undefined) => e is T} */ (
+                /** @ignore @type {<T>(e: T | undefined) => e is T} */ (
                     (range) => range !== undefined
                 )
             );
@@ -100,9 +103,9 @@ export class BanFormattedCompMessage extends Rule {
     }
 }
 
-/** @typedef {readonly [number, number]} Range */
+/** @ignore @typedef {readonly [number, number]} Range */
 
-const getRange = (/** @type {import("@babel/types").Node} */ node) =>
+const getRange = (/** @type {Node} */ node) =>
     (typeof node.start === "number" &&
         typeof node.end === "number" &&
         /** @type {Range} */ ([node.start, node.end])) ||
