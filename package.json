@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
+    "semver": "^7.6.3",
     "turbo": "^2.2.3"
   },
   "pnpm": {
