@@ -38,7 +38,7 @@ export class ResourceSourceICUPluralParams extends ResourceRule {
     /** @override */
     description = "Verify that the 'one' category of an ICU plural contains the same replacement parameters as the 'other' category.";
     /** @override */
-    link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-icu-plural-params.md";
+    link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-icu-plural-params.md";
 
     /**
      * @param {any} [opts]

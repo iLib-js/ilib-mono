@@ -63,7 +63,7 @@ class FormatjsPlurals extends Rule {
         this.name = "source-formatjs-plurals";
         this.description = "Ensure that plurals in formatjs style have the correct syntax";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
-        this.link = "https://github.com/ilib-js/ilib-lint-react/blob/main/docs/source-formatjs-plurals.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-react/docs/source-formatjs-plurals.md";
     }
 
     getRuleType() {

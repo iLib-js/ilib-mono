@@ -38,7 +38,7 @@ export class ResourceSourceICUPluralCategories extends ResourceRule {
     /** @override */
     description = "Verify that categories of an ICU plural in the source of a Resource are valid";
     /** @override */
-    link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-icu-plurals.md";
+    link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-icu-plurals.md";
 
     /**
      * @param {any} [opts]

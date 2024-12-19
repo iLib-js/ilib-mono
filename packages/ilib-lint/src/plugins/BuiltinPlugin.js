@@ -51,7 +51,7 @@ export const regexRules = [
         description: "Ensure that URLs that appear in the source string are also used in the translated string",
         note: "URL '{matchString}' from the source string does not appear in the target string",
         regexps: [ "((https?|github|ftps?|mailto|file|data|irc):\\/\\/)([\\da-zA-Z\\.-]+)\\.([a-zA-Z\\.]{2,6})([\\/\w\\.-]*)*\\/?" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-url-match.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-url-match.md"
     },
     {
         type: "resource-matcher",
@@ -59,7 +59,7 @@ export const regexRules = [
         description: "Ensure that named parameters that appear in the source string are also used in the translated string",
         note: "The named parameter '{matchString}' from the source string does not appear in the target string",
         regexps: [ "\\{\\w+\\}" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-named-params.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-named-params.md"
     },
     {
         type: "resource-target",
@@ -67,7 +67,7 @@ export const regexRules = [
         description: "Ensure that the target does not contain any full-width Latin characters.",
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII letters instead.",
         regexps: [ "[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-fullwidth-latin.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-latin.md"
     },
     {
         type: "resource-target",
@@ -75,7 +75,7 @@ export const regexRules = [
         description: "Ensure that the target does not contain any full-width digits.",
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII digits instead.",
         regexps: [ "[\\uFF10-\\uFF19]+" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-fullwidth-digits.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-digits.md"
     },
     {
         type: "resource-target",
@@ -83,7 +83,7 @@ export const regexRules = [
         description: "Ensure that the target does not contain specific full-width punctuation: percent sign, question mark, or exclamation mark.",
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII symbols instead.",
         regexps: [ "[\\uFF01\\uFF05\\uFF1F]+" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-fullwidth-punctuation-subset.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-punctuation-subset.md",
         locales: "ja"
     },
         {
@@ -92,7 +92,7 @@ export const regexRules = [
         description: "Ensure that the target does not contain a space character between a double-byte and single-byte character.",
         note: "The space character is not allowed in the target string between a double- and single-byte character. Remove the space character.",
         regexps: [ "[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF]\\s+[\\x00-\\x20\\x30-\\x39\\x41-\\x5A\\x61-\\x7A\\x8A\\x8C\\x8E\\x9A\\x9C\\x9E\\x9F\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\xFF]|[\\x00-\\x20\\x30-\\x39\\x41-\\x5A\\x61-\\x7A\\x8A\\x8C\\x8E\\x9A\\x9C\\x9E\\x9F\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\xFF]\\s+[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF]" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-space-between-double-and-single-byte-character.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-space-between-double-and-single-byte-character.md",
         severity: "warning",
         locales: "ja"
     },
@@ -102,7 +102,7 @@ export const regexRules = [
         description: "Ensure that the target does not contain half-width kana characters.",
         note: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
         regexps: [ "[ｧ-ﾝﾞﾟ]+" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-halfwidth-kana-characters.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-halfwidth-kana-characters.md",
         severity: "warning"
     },
     {
@@ -112,7 +112,7 @@ export const regexRules = [
         note: "Double-byte space characters should not be used in the target string. Use ASCII symbols instead.",
         // per https://en.wikipedia.org/wiki/Whitespace_character
         regexps: [ "[\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000]+" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-double-byte-space.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-double-byte-space.md",
         severity: "warning",
         locales: "ja"
     },
@@ -122,7 +122,7 @@ export const regexRules = [
         description: "Ensure that there is no whitespace adjacent to the fullwidth punctuation characters.",
         note: "There should be no space adjacent to fullwidth punctuation characters '{matchString}'. Remove it.",
         regexps: [ "(\\s+[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]|[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]\\s+)" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-space-with-fullwidth-punctuation.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-space-with-fullwidth-punctuation.md",
         severity: "warning",
         locales: "ja"
     },
@@ -132,7 +132,7 @@ export const regexRules = [
         description: "Ensure that there are no replacement variables surrounded by single quotes which escape them in the source strings.",
         note: "There should be no escaped replacement parameters. Use Unicode quotes ‘like this’ (U+2018 and U+2019) or double quotes instead.",
         regexps: [ "(?:^|[^'])(?<match>''?\\{.*?\\}''?)" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-escaped-curly-braces.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-escaped-curly-braces.md",
         severity: "error",
         useStripped: false
     },
@@ -142,7 +142,7 @@ export const regexRules = [
         description: "Ensure that there are no replacement variables surrounded by single quotes which escape them in the target strings.",
         note: "There should be no escaped replacement parameters in the translation. Use quotes that are native for the target language or use tripled single-quotes instead.",
         regexps: [ "(?:^|[^'])(?<match>''?\\{.*?\\}''?)" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-escaped-curly-braces.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-escaped-curly-braces.md",
         severity: "error",
         useStripped: false
     },
@@ -152,7 +152,7 @@ export const regexRules = [
         description: "Ensure that source strings do not contain dashes in the replacement parameters.",
         note: "Dashes are not allowed in replacement parameters. Use a different character such as underscore.",
         regexps: [ "(?:^|[^'])(?<match>\\{[^}]*?-[^}]*\\})" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-dashes-in-replacement-params.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-dashes-in-replacement-params.md",
         severity: "error"
     },
     {
@@ -161,7 +161,7 @@ export const regexRules = [
         description: "Ensure that source strings do not contain the (s) construct to indicate a possible plural. That is not translatable to many languages.",
         note: "The (s) construct is not allowed in source strings. Use real plural syntax instead.",
         regexps: [ "(?<match>\\w+\\(s\\))(?:\\s|\\p{P}|$)" ],  // \p{P} means punctuation
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-lazy-plurals.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-lazy-plurals.md",
         severity: "warning"
     },
     {
@@ -170,7 +170,7 @@ export const regexRules = [
         description: "Ensure that source strings do not contain percentage formatting. Percentages should be formatted using a locale-sensitive number formatter instead.",
         note: "Do not format percentages in English strings. Use a locale-sensitive number formatter and substitute the result of that into this string.",
         regexps: [ "(?<match>\\{[\\w_.$0-9]+\\}\\s*%)(\\s|$)" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-percentage-formatting.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-manual-percentage-formatting.md",
         severity: "warning"
     },
     {
@@ -179,7 +179,7 @@ export const regexRules = [
         description: "Ensure that source strings do not contain replacement parameters that are nouns or adjectives.",
         note: "Do not substitute nouns into UI strings. Use separate strings for each noun instead.",
         regexps: [ "\\b(?<match>([Aa][Nn]?|[Tt][Hh][Ee])\\s+\\{.*?\\})" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-noun-replacement-params.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-noun-replacement-params.md",
         severity: "error",
         useStripped: false
     },
@@ -189,7 +189,7 @@ export const regexRules = [
         description: "Ensure that source strings do not contain currency formatting. Currencies should be formatted using a locale-sensitive number formatter instead.",
         note: "Do not format currencies in English strings. Use a locale-sensitive number formatter and substitute the result of that into this string.",
         regexps: [ "(?<match>\\$\\s*\\{[\\w_.$0-9]+\\})" ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-currency-formatting.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-manual-currency-formatting.md",
         severity: "error"
     },
     {
@@ -230,7 +230,7 @@ export const regexRules = [
             "\\{[Hh][Hh]?\\}:\\{[Mm][Mm]?\\}:\\{[Ss][Ss]?\\}",
             "\\{[Hh][Hh]?\\}:\\{[Mm][Mm]?\\}"
         ],
-        link: "https://github.com/ilib-js/ilib-lint/blob/main/docs/source-no-manual-date-formatting.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-manual-date-formatting.md",
         severity: "error"
     },
 ];

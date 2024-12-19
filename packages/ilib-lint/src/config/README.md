@@ -134,7 +134,7 @@ Here is an example of a configuration file:
             "description": "Ensure that named parameters that appear in the source string are also used in the translated string",
             "note": "The named parameter '{matchString}' from the source string does not appear in the target string",
             "regexps": ["\\{\\w+\\}"],
-            "link": "https://github.com/ilib-js/ilib-lint/blob/main/README.md"
+            "link": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/README.md"
         }
     ],
     "formatters": [

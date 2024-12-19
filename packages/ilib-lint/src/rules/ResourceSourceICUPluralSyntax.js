@@ -32,7 +32,7 @@ export class ResourceSourceICUPluralSyntax extends ResourceRule {
     /** @override */
     description = "Verify that syntax of an ICU plural in the source of a Resource is valid";
     /** @override */
-    link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-icu-plurals.md";
+    link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-icu-plurals.md";
 
     /**
      * @param {any} [opts]

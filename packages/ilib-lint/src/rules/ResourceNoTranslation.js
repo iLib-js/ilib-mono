@@ -30,7 +30,7 @@ import ResourceRule from './ResourceRule.js';
 class ResourceNoTranslation extends ResourceRule {
     #name = "resource-no-translation";
     #description = "Ensure that each resource in a resource file has a proper translation";
-    #link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-no-translation.md";
+    #link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-translation.md";
 
     /**
      * Make a new rule instance.

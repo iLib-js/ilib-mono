@@ -25,7 +25,7 @@ class ResourceEdgeWhitespace extends ResourceRule {
     /** @readonly */ name = "resource-edge-whitespace";
     /** @readonly */ description =
         "Ensure that if there are whitespaces on edges of source string, matching ones are there in target as well";
-    /** @readonly */ link = "https://github.com/ilib-js/ilib-lint/blob/main/docs/resource-edge-whitespace.md";
+    /** @readonly */ link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-edge-whitespace.md";
 
     constructor() {
         super({});

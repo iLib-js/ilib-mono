@@ -20,7 +20,7 @@ class ResourceCamelCase extends ResourceRule {
 
         this.name = "resource-camel-case";
         this.description = "Ensure that when source strings contain only camel case and no whitespace, then the targets are the same";
-        this.link = "https://gihub.com/ilib-js/ilib-lint/blob/main/docs/resource-camel-case.md";
+        this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-camel-case.md";
         this.regexps = [
             "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
             "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
