@@ -185,9 +185,9 @@ class Parser {
             key: string | undefined,
             type: ResourceTypeSpecifier | undefined,
             arrayIndex: number = 0,
-            defaultDataType: string | undefined = this.datatype,
+            fileDataType: string | undefined = this.datatype,
             datatype: string | undefined,
-            defaultProject: string | undefined = this.projectName,
+            fileProject: string | undefined = this.projectName,
             project: string | undefined;
 
         let resourceIndex = 0;
@@ -205,11 +205,11 @@ class Parser {
         }
         match = reDefaultDataType.exec(data);
         if (match && match.length > 1) {
-            defaultDataType = match[1];
+            fileDataType = match[1];
         }
         match = reDefaultProject.exec(data);
         if (match && match.length > 1) {
-            defaultProject = match[1];
+            fileProject = match[1];
         }
 
         restart();
@@ -288,14 +288,14 @@ class Parser {
                                         key = makeKey("plural", sourcePlurals, this.contextInKey ? context : undefined);
                                     }
                                     res = new ResourcePlural({
-                                        project: project ?? defaultProject,
+                                        project: project ?? fileProject,
                                         key: key,
                                         sourceLocale: this.sourceLocale.getSpec(),
                                         sourceStrings: sourcePlurals,
                                         pathName: original,
                                         state: "new",
                                         comment: comment && JSON.stringify(comment),
-                                        datatype: datatype ?? defaultDataType,
+                                        datatype: datatype ?? fileDataType,
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
@@ -308,14 +308,14 @@ class Parser {
                                         res = arrays[key];
                                         if (!res) {
                                             res = new ResourceArray({
-                                                project: project ?? defaultProject,
+                                                project: project ?? fileProject,
                                                 key: key,
                                                 sourceLocale: this.sourceLocale.getSpec(),
                                                 source: [],
                                                 pathName: original,
                                                 state: "new",
                                                 comment: comment && JSON.stringify(comment),
-                                                datatype: datatype ?? defaultDataType,
+                                                datatype: datatype ?? fileDataType,
                                                 context: context,
                                                 index: resourceIndex++,
                                                 targetLocale: this.targetLocale?.getSpec(),
@@ -344,14 +344,14 @@ class Parser {
                                         key = makeKey("string", source, this.contextInKey ? context : undefined);
                                     }
                                     res = new ResourceString({
-                                        project: project ?? defaultProject,
+                                        project: project ?? fileProject,
                                         key: key,
                                         sourceLocale: this.sourceLocale.getSpec(),
                                         source: source,
                                         pathName: original,
                                         state: "new",
                                         comment: comment && JSON.stringify(comment),
-                                        datatype: datatype ?? defaultDataType,
+                                        datatype: datatype ?? fileDataType,
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translation && this.targetLocale?.getSpec(),
