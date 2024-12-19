@@ -1,5 +1,25 @@
 # loctool
 
+## 2.26.0
+
+### Minor Changes
+
+- 0672f4c: - Added the ability to read and write intermediate files in po format - Added a new command-line parameter "--intermediateFormat" to choose
+  between xliff (default) and po - The output intermediate files are the `<project>-extracted.<ext>` and
+  `<project>-new-<locale>.<ext>` files. - Can represent all of string, plural, or array resources - Can also read po or xliff files as the source of translations
+  in the xliffs dir. (Unfortunately, the parameter is still called
+  xliffsDir even though it may now contain po files with translations.)
+
+### Patch Changes
+
+- Updated dependencies [f9f1095]
+- Updated dependencies [0672f4c]
+- Updated dependencies [ae2549a]
+  - ilib-tools-common@1.12.2
+  - ilib-po@1.1.0
+  - message-accumulator@3.0.2
+  - ilib-tree-node@2.0.1
+
 ## 2.25.3
 
 ### Patch Changes

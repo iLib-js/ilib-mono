@@ -1,5 +1,12 @@
 # ilib-lint-common
 
+## 3.1.2
+
+### Patch Changes
+
+- f9f1095: Unified package entrypoint definitions. This should help resolve edge cases where older packages (like Jest 26) were unable to correctly load some of them.
+- ae2549a: Fixed broken links in package metadata.
+
 ## 3.1.1
 
 ### Patch Changes

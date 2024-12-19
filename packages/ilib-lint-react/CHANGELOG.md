@@ -1,5 +1,16 @@
 # ilib-lint-react
 
+## 2.0.3
+
+### Patch Changes
+
+- f9f1095: Unified package entrypoint definitions. This should help resolve edge cases where older packages (like Jest 26) were unable to correctly load some of them.
+- cb08afe: Updated rule documentation links to point to the monorepo.
+- Updated dependencies [f9f1095]
+- Updated dependencies [ae2549a]
+  - ilib-tools-common@1.12.2
+  - ilib-lint-common@3.1.2
+
 ## 2.0.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # ilib-common
 
+## 1.1.6
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [ae2549a]
+  - ilib-env@1.4.1
+
 ## 1.1.5
 
 ### Patch Changes

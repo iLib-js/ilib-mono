@@ -1,5 +1,13 @@
 # message-accumulator
 
+## 3.0.2
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [ae2549a]
+  - ilib-tree-node@2.0.1
+
 ## 3.0.1
 
 ### Patch Changes

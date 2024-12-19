@@ -1,5 +1,14 @@
 # ilib-yaml
 
+## 1.0.3
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [f9f1095]
+- Updated dependencies [ae2549a]
+  - ilib-tools-common@1.12.2
+
 ## 1.0.2
 
 ### Patch Changes

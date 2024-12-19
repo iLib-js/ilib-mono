@@ -1,5 +1,13 @@
 # ilib-xliff
 
+## 1.2.2
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+- Updated dependencies [ae2549a]
+  - ilib-common@1.1.6
+
 ## 1.2.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # ilib-tree-node
 
+## 2.0.1
+
+### Patch Changes
+
+- ae2549a: Fixed broken links in package metadata.
+
 ## 2.0.0
 
 - convert all unit tests from nodeunit to jest
