@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-export { default as CharacterInfo } from './CharacterInfo';
-export { default as CharmapFile } from './CharmapFile';
-export { default as Trie } from './Trie';
-export { default as UnicodeData } from './UnicodeData';
-export { default as UnicodeFile } from './UnicodeFile';
-export * as Utils from './Utils';
-export { default as WeightVector } from './WeightVector';
+export { default as CharacterInfo } from "./CharacterInfo.js";
+export { default as CharmapFile } from "./CharmapFile.js";
+export { default as Trie } from "./Trie.js";
+export { default as UnicodeData } from "./UnicodeData.js";
+export { default as UnicodeFile } from "./UnicodeFile.js";
+export * as Utils from "./Utils.js";
+export { default as WeightVector } from "./WeightVector.js";

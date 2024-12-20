@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import UnicodeFile from './UnicodeFile';
-import CharacterInfo from './CharacterInfo';
+import UnicodeFile from './UnicodeFile.js';
+import CharacterInfo from './CharacterInfo.js';
 
 /**
  * @class

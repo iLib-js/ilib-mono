@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { hexToChar } from './Utils';
+import { hexToChar } from './Utils.js';
 
 /**
  * @class
