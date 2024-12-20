@@ -68,8 +68,8 @@
         "typescript": "^5.3.3"
     },
     "dependencies": {
-        "ilib-ctype": "^1.2.1",
-        "ilib-locale": "^1.2.2",
+        "ilib-ctype": "workspace:^",
+        "ilib-locale": "workspace:^",
         "ilib-tools-common": "workspace:^"
     }
 }

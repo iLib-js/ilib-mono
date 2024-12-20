@@ -104,6 +104,6 @@
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
         "ilib-env": "workspace:^",
-        "ilib-locale": "^1.2.2"
+        "ilib-locale": "workspace:^"
     }
 }

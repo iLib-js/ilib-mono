@@ -70,7 +70,7 @@
     },
     "dependencies": {
         "ilib-common": "workspace:^",
-        "ilib-locale": "^1.2.2",
+        "ilib-locale": "workspace:^",
         "json5": "^2.2.3",
         "options-parser": "^0.4.0",
         "uglify-js-export": "^3.19.2"

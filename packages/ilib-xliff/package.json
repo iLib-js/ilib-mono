@@ -97,7 +97,7 @@
     },
     "dependencies": {
         "ilib-common": "workspace:^",
-        "ilib-locale": "^1.2.2",
+        "ilib-locale": "workspace:^",
         "ilib-xml-js": "^1.7.0",
         "json5": "^2.2.1"
     }

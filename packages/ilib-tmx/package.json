@@ -81,7 +81,7 @@
         "@log4js-node/log4js-api": "^1.0.2",
         "cldr-segmentation": "^2.2.0",
         "ilib-common": "workspace:^",
-        "ilib-locale": "^1.2.2",
+        "ilib-locale": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "xml-js": "^1.6.11"
     }

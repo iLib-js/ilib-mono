@@ -68,7 +68,7 @@
         "jsdoc-to-markdown": "^8.0.0"
     },
     "dependencies": {
-        "ilib-locale": "^1.2.2",
+        "ilib-locale": "workspace:^",
         "ilib-tmx": "workspace:^",
         "options-parser": "^0.4.0"
     }
