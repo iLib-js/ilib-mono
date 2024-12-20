@@ -61,7 +61,6 @@
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:web": "webpack-cli --env dev --config webpack-test.config.js",
-        "dist": "npm run build:prod ; npm pack",
         "test": "npm-run-all --npm-path pnpm build:dev test:all",
         "test:cli": "LANG=en_US.UTF8 npm run build:dev ; node --experimental-vm-modules node_modules/.bin/jest --testEnvironment node",
         "test:web": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/.bin/karma start --reporters dots --single-run",
