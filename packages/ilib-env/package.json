@@ -61,7 +61,7 @@
         "test": "pnpm run test:all",
         "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" karma start --reporters dots",
-        "test:cli": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:dev test:jest",
+        "test:cli": "pnpm test:jest",
         "test:web": "pnpm test:karma --single-run",
         "test:watch": "pnpm test:jest --watch",
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
