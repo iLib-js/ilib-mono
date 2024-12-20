@@ -57,7 +57,7 @@
         "url": "git@github.com:iLib-js/ilib-address.git"
     },
     "scripts": {
-        "build": "npm run build:prod",
+        "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod",
         "build:dev": "grunt babel --mode=dev",
         "build:webtest": "webpack-cli --config webpack-test.config.js",
@@ -67,11 +67,11 @@
         "build:test": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble build:webtest",
         "test": "npm-run-all --npm-path pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:locales build:dev ; bash test/testSuite.sh",
-        "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test:web": "LANG=en_US.UTF8 pnpm build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
-        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "debug": "pnpm build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz assembled locales.json",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibAddress.md ; npm run doc:html",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibAddress.md ; pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {

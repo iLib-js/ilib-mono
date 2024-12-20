@@ -54,7 +54,7 @@
         "url": "git@github.com:iLib-js/ilib-istring.git"
     },
     "scripts": {
-        "build": "npm run build:prod",
+        "build": "pnpm build:prod",
         "build:test": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble build:webtest",
         "build:data": "cd scripts ; node generate.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
@@ -67,7 +67,7 @@
         "test:web": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:assemble build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "test": "npm-run-all --npm-path pnpm build:dev test:cli",
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
-        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "debug": "pnpm build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz assembled locales.json",
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibIString.md",
         "doc:html": "jsdoc -c jsdoc.json"
