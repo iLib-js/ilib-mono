@@ -68,3 +68,11 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 18. Update links in documentation and source code to point to the monorepo
 19. Ensure package is licensed under Apache-2.0
 20. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
+21. Regenerate lockfile `pnpm install` and docs `pnpm doc`
+
+after merging
+
+1. Sync old tags `scripts/sync_tags.sh package1 package2`
+2. Push deprecation notices `scripts/push_deprecation.sh package1 package2`
+3. Archive old repos `scripts/archive_repos.sh package1 package2`
+4. Release
