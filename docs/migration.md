@@ -48,21 +48,22 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 
 ## Step-by-step
 
-1. Migrate repos as subtrees `scripts/add_repo.sh package1 package2`
+1. Migrate repo as subtrees `scripts/add_repo.sh package1 package2`
 2. Remove old ci config `rm -r packages/{package1,package2}/.circleci`
 3. Remove conditional-install from `prepare` scripts and devDependencies, readd `jest` to devDependencies directly
 4. Link workspace packages `node scripts/link-workspace-packages.js && pnpm install`
 5. Validate package entrypoints `node scripts/check-package-exports.js`
-6. Replace `jest` calls in scripts to `node --args node_modules/jest/bin/jest.js`
-7. Update `jest` (and related) to latest `pnpm --filter '[origin/main]' up --latest '*jest*'`
-8. Ensure all scripts use `pnpm` instead of `npm` (incl. `npm-run-all`)
-9. Ensure lifecycle scripts `build`, `test`, `doc` are present (if applicable) and run everything that's needed (e.g. `build` runs both `build:prod` and `build:pkg`)
-10. Ensure `test` don't run `build`
-11. Ensure scripts generate files to expected directories (`build` to `lib`, `doc` to `docs`)
-12. Ensure `files` in `package.json` lists only files that should be included in the published package (exclude `docs`)
-13. Run ALL affected tests `pnpm test` from monorepo root
-14. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test with `pnpm changeset version` then revert both
-15. Update links in package.json to point to the monorepo
-16. Update links in documentation and source code to point to the monorepo
-17. Ensure package is licensed under Apache-2.0
-18.
+6. Ensure all scripts use `pnpm` instead of `npm` (incl. `npm-run-all`)
+7. Ensure `build` is present (if applicable) and runs everything that's needed for publishing the package (e.g. `build:prod`, `build:pkg` and `build:locales`)
+8. Ensure `test` script is present and runs all unit tests (e.g. `test:cli` and `test:web` if applicable)
+9. Ensure no test script runs `build`
+10. Replace `jest` binstub calls in scripts to `node node_modules/jest/bin/jest.js`
+11. Run tests for all affected packages `pnpm test` (from monorepo root) and keep fixing until it works
+12. Update `jest` (and related) to latest `pnpm --filter '[origin/main]' up --latest '*jest*'` and rerun tests
+13. Ensure scripts generate files to expected directories (`build` to `lib`, `doc` to `docs`)
+14. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
+15. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
+16. Update links in package.json to point to the monorepo
+17. Update links in documentation and source code to point to the monorepo
+18. Ensure package is licensed under Apache-2.0
+19. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
