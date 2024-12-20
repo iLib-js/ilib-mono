@@ -1,1 +1,0 @@
-"ar-EG","ar-SA","az-Latn-AZ","be-BY","ca-AD","ca-ES","en-US","es-ES","eu-ES","fa-IR","fr-FR","ga-IE","he-IL","hr-HR","hy-AM","ig-NG","it-IT","ja-JP","ka-GE","lb-LU","lo-LA","lt-LT","lv-LV","mk-MK","mt-MT","my-MM","ne-NP","pl-PL","ps-AF","ps-PK","pt-BR","pt-PT","ru-RU","sk-KS","sl-SL","tg-TJ","tk-TM","wo-SN","yo-BJ","yo-NG","zu-ZA"

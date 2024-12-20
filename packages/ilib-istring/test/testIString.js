@@ -23,7 +23,7 @@ import { getPlatform, setLocale } from 'ilib-env';
 import Locale from 'ilib-locale';
 import { LocaleData } from 'ilib-localedata';
 
-import { localeList } from './locales.js';
+import { localeList } from './locales.cjs';
 
 let setUpPerformed = false;
 

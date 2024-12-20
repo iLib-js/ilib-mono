@@ -16,19 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require("webpack");
+var path = require("path");
+var moduleRoot = path.resolve(__dirname, "..");
 
 module.exports = {
     mode: "development",
-    entry: "./test/testSuiteWeb.js",
+    entry: path.join(moduleRoot, "test/testSuiteWeb.js"),
     output: {
-        path: path.resolve(__dirname, 'test'),
+        path: path.join(moduleRoot, "test-web"),
         filename: "ilib-istring-test.js",
         library: {
             name: "ilibIStringTest",
-            type: "umd"
-        }
+            type: "umd",
+        },
     },
     externals: {
         "./NodeLoader.js": "NodeLoader",
@@ -36,8 +37,8 @@ module.exports = {
         "./RhinoLoader.js": "RhinoLoader",
         "./NashornLoader.js": "NashornLoader",
         "./RingoLoader.js": "RingoLoader",
-        "log4js": "log4js",
-        "nodeunit": "nodeunit"
+        log4js: "log4js",
+        nodeunit: "nodeunit",
     },
     devtool: false,
     module: {
@@ -48,39 +49,34 @@ module.exports = {
                 include: /node_modules\/ilib-/,
                 use: [
                     {
-                        loader: 'babel-loader',
+                        loader: "babel-loader",
                         options: {
                             minified: false,
                             compact: false,
-                            presets: [
-                                '@babel/preset-env'
-                            ],
+                            presets: ["@babel/preset-env"],
                             options: {
-                                "exclude": [
+                                exclude: [
                                     // \\ for Windows, \/ for Mac OS and Linux
                                     /node_modules[\\\/]webpack[\\\/]buildin/,
                                 ],
                             },
-                            plugins: [
-                                "add-module-exports",
-                                "@babel/plugin-transform-regenerator"
-                            ]
-                        }
+                            plugins: ["add-module-exports", "@babel/plugin-transform-regenerator"],
+                        },
                     },
-                    { loader: '@open-wc/webpack-import-meta-loader' }
-                ]
-            }
-        ]
+                    { loader: "@open-wc/webpack-import-meta-loader" },
+                ],
+            },
+        ],
     },
     resolve: {
         fallback: {
-            buffer: require.resolve("buffer")
+            buffer: require.resolve("buffer"),
         },
         alias: {
-            "calling-module": path.join(path.dirname(module.id), "assembled")
-        }
+            "calling-module": path.join(moduleRoot, "assembled"),
+        },
     },
     optimization: {
-        minimize: false
-    }
+        minimize: false,
+    },
 };
