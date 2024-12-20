@@ -18,7 +18,6 @@
  */
 
 import { TranslationSet, Resource, ResourceString, ResourcePlural, ResourceArray } from 'ilib-tools-common';
-// @ts-expect-error -- untyped package
 import Locale from 'ilib-locale';
 
 import SyntaxError from './SyntaxError';
@@ -34,10 +33,10 @@ export interface BaseParserOptions {
     pathName: string,
 
     /** the source locale of the file */
-    sourceLocale?: string,
+    sourceLocale?: string | Locale,
 
     /** the target locale of the file */
-    targetLocale?: string,
+    targetLocale?: string | Locale,
 
     /** the name of the project that this po file is a part of */
     projectName?: string,

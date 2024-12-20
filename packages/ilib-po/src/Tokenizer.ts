@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// @ts-expect-error -- untyped package
 import { isSpace, isAlpha, isAlnum } from 'ilib-ctype';
 
 import { unescapeQuotes } from './utils';
