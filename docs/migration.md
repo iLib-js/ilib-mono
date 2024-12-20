@@ -14,7 +14,7 @@ Below is a list of aspect that need to be accounted for when migrating existing 
     -   **Internal Dependencies**: If the package depends on other packages that are in the monorepo already, update them to use `workspace:^`; verify if any breaking changes were introduced between explicit dependency version and current workspace head and update migrated package accordingly
     -   **External Dependencies**: Ensure that all dependencies are included since pnpm uses [_isolated `node_modules`_](https://pnpm.io/motivation#creating-a-non-flat-node_modules-directory)
     -   **Dependents**: If the package is depended upon by other packages in the monorepo, update them to use `workspace:^` () and verify everything works as expected
-    -   **Conditional Install**: Some of ilib packages utilized conditional install package in the prepare script to install Jest 26 when developing on older Node versions - this should be removed
+    -   **Conditional Install**: Some of ilib packages utilized conditional install package in the prepare script to install Jest 26 when developing on older Node versions - this should be removed and Jest should be specified directly in devDependenciess
     -   **Workspace Dependency Conflicts**: In principle, pnpm should prevent issues with conflicting versions between workspace packages - unfortunately it's not perfect (see [pnpm issue #8863](https://github.com/pnpm/pnpm/issues/8863)); as of now, the only recommendation is to ensure that Jest should be installed in latest version common for all workspace packages
 -   **Scripts**:
     -   **Package manager**: Update all applicable scripts to use `pnpm` instead of `npm`
