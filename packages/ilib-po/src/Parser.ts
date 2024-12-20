@@ -18,7 +18,6 @@
  */
 
 import { TranslationSet, ResourceString, ResourcePlural } from 'ilib-tools-common';
-// @ts-expect-error -- untyped package
 import Locale from 'ilib-locale';
 
 import SyntaxError from './SyntaxError';
@@ -34,10 +33,10 @@ export interface BaseParserOptions {
     pathName: string,
 
     /** the source locale of the file */
-    sourceLocale: string,
+    sourceLocale: string | Locale,
 
     /** the target locale of the file */
-    targetLocale: string,
+    targetLocale: string | Locale | undefined,
 
     /** the name of the project that this po file is a part of */
     projectName: string,
@@ -102,7 +101,7 @@ class Parser {
     /** the source locale of the file */
     private sourceLocale: Locale;
     /** the target locale of the file */
-    private targetLocale: Locale;
+    private targetLocale: Locale | undefined;
     /** the type of the data in the po file. This might be something like "python" or "javascript" to
      * indicate the type of the code that the strings are used in. */
     private datatype: string;
@@ -124,7 +123,7 @@ class Parser {
 
         this.pathName = optionsWithDefaults.pathName;
         this.sourceLocale = new Locale(optionsWithDefaults.sourceLocale);
-        this.targetLocale = new Locale(optionsWithDefaults.targetLocale);
+        this.targetLocale = optionsWithDefaults.targetLocale ? new Locale(optionsWithDefaults.targetLocale) : undefined;
         this.projectName = optionsWithDefaults.projectName;
         this.datatype = optionsWithDefaults.datatype;
         this.contextInKey = optionsWithDefaults.contextInKey ?? false;
