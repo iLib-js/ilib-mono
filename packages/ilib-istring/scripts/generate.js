@@ -30,11 +30,13 @@ const merge = Utils.merge;
 const mergeAndPrune = Utils.mergeAndPrune;
 const makeDirs = Utils.makeDirs;
 
+const moduleRoot = path.resolve(import.meta.dirname, '..');
+
 function loadJson(filePath) {
     return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
 
-const pluralData = loadJson("../node_modules/cldr-core/supplemental/plurals.json");
+const pluralData = loadJson(`${moduleRoot}/node_modules/cldr-core/supplemental/plurals.json`);
 
 function usage() {
     console.log("Usage: genplurals [-h]\n" +
@@ -228,7 +230,7 @@ function create_rule(cldr_rule_object) {
 }
 
 function calcLocalePath(language, script, region) {
-    let fullpath = "../locale";
+    let fullpath = `${moduleRoot}/locale`;
     if (language) {
         fullpath = path.join(fullpath, language);
     }

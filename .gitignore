@@ -34,6 +34,8 @@ node_modules/
 !packages/loctool/lib/
 packages/ilib-address/assembled
 packages/ilib-address/test-web
+packages/ilib-istring/assembled
+packages/ilib-istring/test-web
 
 
 # Misc
