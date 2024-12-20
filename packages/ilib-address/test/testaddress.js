@@ -22,7 +22,7 @@ import { getPlatform } from 'ilib-env';
 
 import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
-import { localeList } from './locales.js';
+import { localeList } from './locales.cjs';
 
 function searchRegions(array, regionCode) {
     return array.find((region) => {
