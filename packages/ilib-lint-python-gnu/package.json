@@ -37,7 +37,7 @@
     },
     "dependencies": {
         "ilib-lint-common": "workspace:^",
-        "ilib-locale": "^1.2.2",
+        "ilib-locale": "workspace:^",
         "ilib-loctool-po": "workspace:^",
         "ilib-tools-common": "workspace:^"
     }
