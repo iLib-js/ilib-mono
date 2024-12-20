@@ -32,6 +32,8 @@ node_modules/
 
 # Build Outputs
 !packages/loctool/lib/
+packages/ilib-address/assembled
+packages/ilib-address/test-web
 
 
 # Misc
