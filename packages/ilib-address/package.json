@@ -65,7 +65,6 @@
         "build:locales": "echo '{\"locales\":[' $(cat locales.txt) ']}' > locales.json ; echo 'export const localeList = ' > test/locales.js ; cat locales.json >> test/locales.js",
         "build:assemble": "npm-run-all --npm-path pnpm build:locales ; ilib-assemble -m .  --resources ./locale --localefile ./locales.json assembled src",
         "build:test": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble build:webtest",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; npm pack",
         "test": "npm-run-all --npm-path pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:locales build:dev ; bash test/testSuite.sh",
         "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",

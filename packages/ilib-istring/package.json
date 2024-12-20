@@ -63,7 +63,6 @@
         "build:dev": "grunt babel --mode=dev",
         "build:assemble": "npm-run-all --npm-path pnpm build:locales ; ilib-assemble -m .  --localefile ./locales.json assembled src",
         "build:webtest": "webpack-cli --env dev --config webpack-test.config.js",
-        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; npm pack",
         "test:cli": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:locales build:pkg build:dev ; bash test/testSuite.sh",
         "test:web": "LANG=en_US.UTF8 npm-run-all --npm-path pnpm build:assemble build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
         "test": "npm-run-all --npm-path pnpm build:dev test:cli",
