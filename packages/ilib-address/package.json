@@ -62,7 +62,7 @@
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "build:test:web": "npm-run-all --npm-path pnpm build:test:web-suite build:dev build:assemble",
+        "build:test:web": "npm-run-all --npm-path pnpm build:assemble build:dev build:test:web-suite",
         "build:test:web-suite": "webpack-cli --config test/webpack-testSuite.config.cjs",
         "test": "pnpm test:cli",
         "test:cli": "pnpm bash test/testSuite.sh",
