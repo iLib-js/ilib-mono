@@ -61,9 +61,10 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 11. Run tests for all affected packages `pnpm test` (from monorepo root) and keep fixing until it works
 12. Update `jest` (and related) to latest `pnpm --filter '[origin/main]' up --latest '*jest*'` and rerun tests
 13. Ensure scripts generate files to expected directories (`build` to `lib`, `doc` to `docs`)
-14. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
-15. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
-16. Update links in package.json to point to the monorepo
-17. Update links in documentation and source code to point to the monorepo
-18. Ensure package is licensed under Apache-2.0
-19. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
+14. Remove .gitignores from each package `rm packages/{package1,package2}/**/.gitignore`, re-run `build` and `test`, then `git status` and optionally add untracked files to the monorepo root `.gitignore`
+15. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
+16. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
+17. Update links in package.json to point to the monorepo
+18. Update links in documentation and source code to point to the monorepo
+19. Ensure package is licensed under Apache-2.0
+20. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
