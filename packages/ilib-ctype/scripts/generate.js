@@ -29,6 +29,8 @@ import stringify from 'json-stable-stringify';
 
 import { Utils } from 'ilib-data-utils';
 
+const moduleRoot = path.resolve(import.meta.dirname, '..');
+
 const charIterator = Utils.charIterator;
 const isMember = Utils.isMember;
 const coelesce = Utils.coelesce;
@@ -89,7 +91,7 @@ function writeJs(letter, data) {
 
 export const `;
 
-    const fileName = `../src/${type}.js`;
+    const fileName = `${moduleRoot}/src/${type}.js`;
     const contents = header + type + " = " + stringify(data, {space: 4}) + ";";
     console.log(`Writing file ${fileName} ...`);
     fs.writeFileSync(fileName, contents, "utf-8");
@@ -100,7 +102,7 @@ export const `;
  */
 let map = {};
 let rangeLetter;
-const dgc = readJson("../node_modules/ucd-full/extracted/DerivedGeneralCategory.json");
+const dgc = readJson(`${moduleRoot}/node_modules/ucd-full/extracted/DerivedGeneralCategory.json`);
 
 for (let i = 0; i < dgc.DerivedGeneralCategory.length; i++) {
     const entry = dgc.DerivedGeneralCategory[i];
@@ -384,7 +386,7 @@ function createKeys(keyTitle, keyList) {
 }
 
 let ctypeMap = {}, rangeName;
-const blockFile = readJson("../node_modules/ucd-full/Blocks.json");
+const blockFile = readJson(`${moduleRoot}/node_modules/ucd-full/Blocks.json`);
 
 for (let i = 0; i < blockFile.Blocks.length; i++) {
     const entry = blockFile.Blocks[i];
