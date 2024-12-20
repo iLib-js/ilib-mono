@@ -58,8 +58,8 @@
     },
     "scripts": {
         "build": "pnpm build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:test": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "test": "pnpm test:all",
