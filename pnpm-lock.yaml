@@ -599,8 +599,8 @@ importers:
   packages/ilib-es6:
     dependencies:
       ilib:
-        specifier: 14.20.0
-        version: 14.20.0
+        specifier: 14.21.0
+        version: 14.21.0
     devDependencies:
       jest:
         specifier: ^29.7.0
@@ -5436,6 +5436,9 @@ packages:
 
   ilib@14.20.0:
     resolution: {integrity: sha512-ciPTPDwu7FehlyxU1hSjHJRyfq3YIf4n2BzMYzZNtBiCYw1dH0Yu53J7R9YaqQd8A+3RfGxSz6J76AGsvhCm2Q==}
+
+  ilib@14.21.0:
+    resolution: {integrity: sha512-b1sqJQeCtbcckiaf/hAVpHx1I0gCCdzZpEp9J7Cqx7jXzXoUHkggnhx3aDvKun394yMu3eaODB4VPrF98D4ZZA==}
 
   import-local@3.2.0:
     resolution: {integrity: sha512-2SPlun1JUPWoM6t3F0dw0FkCF/jWY8kttcY4f599GLTSjh2OCuuhdTkJQsEcZzBqbXZGKMK2OqW1oZsjtf/gQA==}
@@ -12429,15 +12432,15 @@ snapshots:
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:
-      ilib: 14.20.0
+      ilib: 14.21.0
 
   ilib-loctool-mock-resource@file:packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz:
     dependencies:
-      ilib: 14.20.0
+      ilib: 14.21.0
 
   ilib-loctool-mock@file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz:
     dependencies:
-      ilib: 14.20.0
+      ilib: 14.21.0
 
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:
@@ -12472,6 +12475,8 @@ snapshots:
       sax: 1.4.1
 
   ilib@14.20.0: {}
+
+  ilib@14.21.0: {}
 
   import-local@3.2.0:
     dependencies:
