@@ -93,10 +93,14 @@ used within the `regex` property:
         - keyStrategy - if the unique key is not extracted with a capturing group
           in the source file, this property can be used to specify how to calculate
           a key automatically. This can be one of the following values:
-            - "hash" - use a hash of the source string as the key
-            - "source" - use the whole source string as the key
+            - "hash" - use a hash of the source string as the key. The hash is
+              usually much shorter than the source string, but has a 1 in a
+              few million chance of conflicting with the hash of another unrelated
+              string.
+            - "source" - use the whole source string as the key. This can get
+              quite long, but it is always unique.
             - "truncate" - use the first 32 characters of the source
-              string as the key
+              string as the key. This fixed-length key is usually unique.
 
 Example configuration for a web project with PHP and JavaScript files:
 
@@ -162,7 +166,9 @@ given regular expressions. Explanation of the above regexes:
 
 1. The first regular expression extracts strings
 that are passed as the first parameter to the `translate` function. It will match
-a string like `translate("string to translate")`.
+a string like `translate("string to translate")`. Since the string does not have
+a unique id, one is generated using the `source` strategy. That is, the source
+string itself is re-used as its own unique id.
 1. The second regular expression extracts strings that are passed as the first
 parameter to the `translate` function and the second parameter is the
 key of the string. It will match a string like `translate("string to translate", "unique.id")`.
@@ -187,7 +193,10 @@ the first parameter to the `$t` function. The extracted strings will be
 localized and placed in a JSON resource file. The resource file will be
 named `strings-[locale].json` where `[locale]` is replaced with the locale
 of the localized strings. It matches strings like 
-`$t("this is the string to translate")`.
+`$t("this is the string to translate")`. Since this type of string extracted
+from js files file do not have their own unique id, one is generated using
+the `hash` strategy. That is, the hash of the source string is taken, and
+the string version of that hash is used as unique id.
 
 ## Some Tips for Getting Your Regular Expressions to Work Correctly
 
@@ -200,9 +209,11 @@ of the localized strings. It matches strings like
 - Regular expressions are greedy by default. This means that they will
   match as much as possible. If you want to match as little as possible,
   you can add the `?` flag to the regular expression. For example, the
-  regular expression `"[^"]*"` will match a string, but it may capture
+  regular expression `"[^"]*"` will match a string, but it may also capture
   everything between two strings on the same line. `"[^"]*?"` will only
-  match the first string on the line.
+  match the first string on the line. Example input:
+  `"first string", other stuff, "second string"`. The first regex will
+  match all of that, whereas the second one will only match "first string".
 - Remember to escape things properly in the json strings. If you put
   the regular expression `"a\sb"`, it will be looking for the string "asb".
   You need to escape the backslack in order to get "a" followed by a
