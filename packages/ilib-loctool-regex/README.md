@@ -168,15 +168,14 @@ parameter to the `translate` function and the second parameter is the
 key of the string. It will match a string like `translate("string to translate", "unique.id")`.
 1. The third regular expression is an example of an array translation. The
 `source` capturing group will have a value like `"a", "b", "c"` which this plugin
-will transform into a an array of 3 strings. This will match a string like
+will transform into an array of 3 strings. This will match a string like
 `translateArray(["a", "b", "c"])`.
 1. The fourth regular expression is an example of a plural translation. The
 first parameter to the `translatePlural` function is the singular string and is
 assigned to the `source` capturing group. The second parameter is the plural
-string and is assigned to the `sourcePlural` capturing group.
-1. The fifth regular expression extracts strings from js files. It is looking
-for the source string in first parameter of calls to the `$t` function. It matches
-strings like `$t("this is the string to translate")`
+string and is assigned to the `sourcePlural` capturing group. This creates a plural
+resource where the `source` string is the `one` plural category, and the `sourcePlural`
+string is the `other` plural category.
 
 The extracted strings will be localized and placed in
 a PHP resource file. The resource file will be named `Translations-[locale].php`
@@ -187,7 +186,8 @@ expression. The regular expression extracts strings that are passed as
 the first parameter to the `$t` function. The extracted strings will be
 localized and placed in a JSON resource file. The resource file will be
 named `strings-[locale].json` where `[locale]` is replaced with the locale
-of the localized strings.
+of the localized strings. It matches strings like 
+`$t("this is the string to translate")`.
 
 ## Some Tips for Getting Your Regular Expressions to Work Correctly
 
@@ -222,7 +222,15 @@ of the localized strings.
   If you have two expressions that could match the same string or part of the
   same string, the first one that matches will be the one that is used. Make
   sure that the expressions are listed such that the longer expressions are
-  listed first.
+  listed first so that they can more easily match. Example, if you have an
+  expression that can match `functionCall("first param"` and another that
+  can match `functionCall("first param", "second param"`, you will see that
+  there is overlap in what they can match. The first
+  expression will match and the second one never will because the first
+  expression will "use up" the input first. If you reverse their
+  order, then the second one will match only if there are two parameters 
+  to the `functionCall` call, otherwise the first one will match if there
+  is only one parameter, which is what is intended.
 - To test your regular expressions in a much more friendly and interactive
   way, you can use the [RegExr](https://regexr.com/) website. This website
   allows you to enter a regular expression and a string to match against. It
