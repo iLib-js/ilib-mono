@@ -194,7 +194,7 @@ localized and placed in a JSON resource file. The resource file will be
 named `strings-[locale].json` where `[locale]` is replaced with the locale
 of the localized strings. It matches strings like 
 `$t("this is the string to translate")`. Since this type of string extracted
-from js files file do not have their own unique id, one is generated using
+from js files does not have its own unique id, one is generated using
 the `hash` strategy. That is, the hash of the source string is taken, and
 the string version of that hash is used as unique id.
 
@@ -283,7 +283,12 @@ testregex folder/a/b/c myfile.php
 
 This will run the regular expressions in the `folder/a/b/c/project.json` file against
 the contents of the `myfile.php` file in the same way that the loctool
-will and show you the results.
+will, and it will show you the results of every match in the file in the order that they
+were matched. The match result is in the style of the output of a regular expression
+match that you may see in a js debugger such as chrome inspect. ie. it is a hybrid of an
+array of numbered match group values and an object with other properties, such as the "groups"
+subobject which gives the values of named capturing groups you might have defined in your
+expression.
 
 Example output:
 
