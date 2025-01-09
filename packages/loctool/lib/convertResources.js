@@ -26,9 +26,11 @@ var ResourceFactory = require("./ResourceFactory.js");
  * the loctool internal representation.
  *
  * @param {Resource} resource the resource to convert in tools common representation
- * @returns {Resource} the converted resource in loctool representation
+ * @returns {Resource|undefined} the converted resource in loctool representation,
+ * or undefined if the resource is undefined
  */
 var convertResourceToLoctool = function(resource) {
+    if (!resource) return undefined;
     var type = resource.getType();
     var options = {
         resType: type,
@@ -41,7 +43,8 @@ var convertResourceToLoctool = function(resource) {
         reskey: resource.getKey(),
         state: resource.getState(),
         comment: resource.getComment(),
-        autoKey: resource.autoKey
+        autoKey: resource.autoKey,
+        flavor: resource.getFlavor()
     };
     if (type === "string") {
         options.source = resource.getSource();
@@ -61,9 +64,11 @@ var convertResourceToLoctool = function(resource) {
  * the tools common representation.
  *
  * @param {Resource} resource the resource to convert in loctool representation
- * @returns {Resource} the converted resource in tools common representation
+ * @returns {Resource|undefined} the converted resource in tools common
+ * representation, or undefined if the resource is undefined
  */
 var convertResourceToCommon = function(resource) {
+    if (!resource) return undefined;
     var constructor =
         resource.getType() === "array" ? ToolsCommon.ResourceArray :
         resource.getType() === "plural" ? ToolsCommon.ResourcePlural :
@@ -80,7 +85,8 @@ var convertResourceToCommon = function(resource) {
         comment: resource.getComment(),
         datatype: resource.getDataType(),
         context: resource.getContext(),
-        autoKey: resource.autoKey
+        autoKey: resource.autoKey,
+        flavor: resource.getFlavor()
     });
 };
 
