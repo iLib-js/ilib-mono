@@ -27,6 +27,8 @@ import TranslationUnit from './TranslationUnit.js';
 import TranslationVariant from './TranslationVariant.js';
 import Location from './Location.js';
 import walk from './DirectoryWalk.js';
+import {convertPluralResToICU, convertICUToPluralRes} from './ResourceConvert.js';
+
 import {
     formatPath,
     parsePath,
@@ -66,5 +68,7 @@ export {
     ignoreTags,
     localizableAttributes,
     Location,
-    walk
+    walk,
+    convertPluralResToICU,
+    convertICUToPluralRes
 };
