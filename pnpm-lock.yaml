@@ -2216,9 +2216,6 @@ importers:
       ilib-tree-node:
         specifier: workspace:^
         version: link:../ilib-tree-node
-      intl-messageformat:
-        specifier: ^10.5.14
-        version: 10.7.3
       js-stl:
         specifier: ^0.0.6
         version: 0.0.6
@@ -15905,7 +15902,7 @@ snapshots:
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.36.0
-      webpack: 5.95.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   terser@5.36.0:
     dependencies:
