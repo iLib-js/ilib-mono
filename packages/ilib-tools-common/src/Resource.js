@@ -43,6 +43,24 @@ const translationImportant = [
  */
 class Resource {
     /**
+     * The type of this resource instance.
+     * @type {String | undefined}
+     */
+    resType;
+
+    /**
+     * The source string or strings for the resource.
+     * @type {String|Array.<String>|Object}
+     */
+    source;
+
+    /**
+     * The target string or strings for the resource.
+     * @type {String|Array.<String>|Object}
+     */
+    target;
+
+    /**
      * Construct a new Resource instance.
      * The props may contain any
      * of the following properties:
@@ -138,7 +156,7 @@ class Resource {
     /**
      * Return the target string or strings for this resource.
      *
-     * @returns {String|Array.<String>|Object} the source string or
+     * @returns {String|Array.<String>|Object|undefined} the source string or
      * strings of this resource
      */
     getTarget() {
@@ -437,7 +455,7 @@ class Resource {
      * properties, it is not added to the list of instances. This
      * can be checked easily by calling the isInstance() method.
      *
-     * @param {Resource} an instance of the current resource to
+     * @param {Resource} resource an instance of the current resource to
      * record
      * @returns {boolean} true if the instance was added, and
      * and false otherwise
@@ -463,7 +481,7 @@ class Resource {
      * affect the possible translation match between the given and
      * the current resource.
      *
-     * @param {Resource} a resource to check
+     * @param {Resource} resource a resource to check
      * @returns {boolean} true if this is an instance of
      * the current resource, false otherwise.
      */
