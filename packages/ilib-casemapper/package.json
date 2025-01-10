@@ -46,7 +46,6 @@
     "files": [
         "src",
         "lib",
-        "docs",
         "README.md",
         "LICENSE"
     ],
