@@ -24,8 +24,8 @@
         "translation",
         "case"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-casemapper",
-    "bugs": "https://github.com/iLib-js/ilib-casemapper/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-casemapper",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -51,7 +51,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-casemapper.git"
+        "url": "git@github.com:iLib-js/ilib-mono.git"
     },
     "scripts": {
         "build": "pnpm build:prod",
