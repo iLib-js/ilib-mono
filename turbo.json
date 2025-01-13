@@ -5,10 +5,6 @@
         "dependsOn": ["^build"],
         "outputs": ["lib/**"]
       },
-      "doc": {
-        "dependsOn": ["^doc"],
-        "outputs": ["docs/**"]
-      },
       "test": {
         "dependsOn": ["build", "^test"]
       }
