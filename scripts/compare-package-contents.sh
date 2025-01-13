@@ -21,6 +21,7 @@ fi
 
 # Build packages and pack them into a tarball in the `compare-packs/local` directory
 PACKS_LOCAL=compare-packs/local
+rm -rf "$PACKS_LOCAL"
 mkdir -p "$PACKS_LOCAL"
 pnpm turbo run build --affected
 pnpm -F '[main]' exec pnpm pack --pack-destination ../../"$PACKS_LOCAL"
@@ -37,10 +38,10 @@ for file in "$PACKS_LOCAL"/*.tgz; do
     
     # Download the corresponding package from npm as tarball
     # Ensure matching major version
-    if [ -f "$(ls compare-packs/npm/"$package_name"-[0-9]*)" ]; then
+    if compgen -G "$PACKS_NPM/$package_name-[0-9]*"; then
         echo "Package $package_name already downloaded"
     else
-        npm pack "$package_name@$package_version_major" --pack-destination "$PACKS_NPM"
+        npm pack "$package_name@$package_version_major" --pack-destination "$PACKS_NPM" || continue
     fi
 
     echo "Comparing $package_name"
