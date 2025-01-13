@@ -4,11 +4,9 @@ An intrinsic string replacement that includes formatting capabilities
 
 ## Installation
 
-```
+```sh
 npm install ilib-istring
-
-or
-
+# or
 yarn add ilib-istring
 ```
 
@@ -31,22 +29,22 @@ for details.
 
 IString contains the following functionality above and beyond the String class:
 
-* format - format parameters into a string
-* formatChoice - format parameters into a string, taking care to pluralize
+- format - format parameters into a string
+- formatChoice - format parameters into a string, taking care to pluralize
   properly for the locale
-* codePointAt - return the Unicode code point at the given index
-* forEach - visit each character in the string
-* forEachCodePoint - visit each code point in the string
-* iterator - return an iterator through the code points
-* charIterator - return an iterator through the characters
-* setLocale - set the locale of this string
-* getLocale - get the locale of this string
-* codePointLength - return the number of code points in this string
+- codePointAt - return the Unicode code point at the given index
+- forEach - visit each character in the string
+- forEachCodePoint - visit each code point in the string
+- iterator - return an iterator through the code points
+- charIterator - return an iterator through the characters
+- setLocale - set the locale of this string
+- getLocale - get the locale of this string
+- codePointLength - return the number of code points in this string
 
 Additionally, this class modifies the behaviour of the following methods:
 
-* constructor - add a second parameter
-* localeCompare - always compare using the instance's locale rather than
+- constructor - add a second parameter
+- localeCompare - always compare using the instance's locale rather than
   the system's locale
 
 ### Formatting
@@ -59,11 +57,11 @@ class are the `format` and `formatChoice` methods.
 To format a string, pass in an object containing named parameters:
 
 ```javascript
-import IString from 'ilib-istring';
+import IString from "ilib-istring";
 
 const string = new IString("This is a {value} test.");
 
-console.log(string.format({value: "big"}));
+console.log(string.format({ value: "big" }));
 // will print:
 // This is a big test.
 ```
@@ -163,18 +161,18 @@ the code point yourself using the next character.
 
 The new methods of IString now do the code point calculations for you.
 
-* [codePointAt](./docs/IString.html#codePointAt) - split the string into a sequence of code points, and then
+- [codePointAt](./docs/IString.html#codePointAt) - split the string into a sequence of code points, and then
   return the code point at the given index. This is different than
   the `charAt` method, which returns Unicode characters.
-* [forEach](./docs/IString.html#forEach) - split the string into a sequence of code points, convert
+- [forEach](./docs/IString.html#forEach) - split the string into a sequence of code points, convert
   each to a full character (in the BMP or extended planes) and then
   call a callback function for each character
-* [forEachCodePoint](./docs/IString.html#forEachCodePoint) - split the string into a sequence of code points,
+- [forEachCodePoint](./docs/IString.html#forEachCodePoint) - split the string into a sequence of code points,
   and then call a callback function for each one
-* [iterator](./docs/IString.html#iterator) - return an iterator through the sequence of code points
-* [charIterator](./docs/IString.html#charIterator) - return an iterator through the sequence of code
+- [iterator](./docs/IString.html#iterator) - return an iterator through the sequence of code points
+- [charIterator](./docs/IString.html#charIterator) - return an iterator through the sequence of code
   points that are returned as full characters
-* [codePointLength](./docs/IString.html#codePointLength) - return the total number of code points in this string
+- [codePointLength](./docs/IString.html#codePointLength) - return the total number of code points in this string
   when the string is converted into a sequence of code points
 
 ### Return values
@@ -196,7 +194,7 @@ for-of construct.
 Spread operator example, spreads accross all characters in the string:
 
 ```javascript
-import IString from 'ilib-istring';
+import IString from "ilib-istring";
 
 var string = new IString("this is a test.");
 console.log(JSON.stringify(...string));
@@ -204,12 +202,12 @@ console.log(JSON.stringify(...string));
 ```
 
 ```javascript
-import IString from 'ilib-istring';
+import IString from "ilib-istring";
 
 var string = new IString("this is a test.");
 
 for (let ch of string) {
-    console.log(ch);
+  console.log(ch);
 }
 /*
 prints:
@@ -250,16 +248,4 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.1.0
-
-* Update to CLDR v44
-
-### v1.0.1
-
-* remove references to import.meta in the transpiled code so that it
-  runs properly when you require() this package
-
-### v1.0.0
-
-- initial version
-- copied from ilib 14.9.0
+See [CHANGELOG.md](./CHANGELOG.md)

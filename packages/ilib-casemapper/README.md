@@ -8,11 +8,9 @@ is depends on who you ask!
 
 ## Installation
 
-```
+```sh
 npm install ilib-casemapper
-
-or
-
+# or
 yarn add ilib-casemapper
 ```
 
@@ -24,19 +22,17 @@ class. By default, this will use the mappings for English.
 Here is how you would map a letter using the Turkish rules:
 
 ```javascript
-ES2015:
-
+// ES2015
 var CaseMapper = require("ilib-casemapper");
-var cm = new CaseMapper({locale: "tr-TR"});
+var cm = new CaseMapper({ locale: "tr-TR" });
 
-var upper = cm.map('i'); // "upper" should now contain "İ"
+var upper = cm.map("i"); // "upper" should now contain "İ"
 
-ES6:
-
+// ES6
 import CaseMapper from "ilib-casemapper";
-const cm = new CaseMapper({locale: "tr-TR"});
+const cm = new CaseMapper({ locale: "tr-TR" });
 
-const upper = cm.map('i'); // "upper" should now contain "İ"
+const upper = cm.map("i"); // "upper" should now contain "İ"
 ```
 
 In general, you should be able to use the case mapper in older Javascript
@@ -49,17 +45,16 @@ Here is how you use the case mapper to lower:
 ```javascript
 import CaseMapper from "ilib-casemapper";
 const cm = new CaseMapper({
-    locale: "tr-TR",
-    direction: "lower"
+  locale: "tr-TR",
+  direction: "lower"
 });
 
-const upper = cm.map('İ'); // "upper" should now contain "i"
+const upper = cm.map("İ"); // "upper" should now contain "i"
 ```
 
 Full documentation: [CaseMapper class](./docs/CaseMapper.md)
 
-
-# License
+## License
 
 Copyright © 2023, JEDLSoft
 
@@ -76,10 +71,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-# Release Notes
+## Release Notes
 
-### v1.0.0
-
-- Code taken from ilib 14.19.0 and converted to an ES6 module.
-- Use babel to transpile it back to ES2015 so it can be used in either ES215 or
-  ES6 code
+See [CHANGELOG.md](./CHANGELOG.md)

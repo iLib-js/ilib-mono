@@ -3,15 +3,13 @@
 ES6 wrappers around the ilib classes so that you can import just what you need and use
 the classes with promises.
 
-Usage
------
+## Usage
 
 All classes that ilib contains are echoed here in ilib-es6. You may use these as you
 had before with the exact same API. However, there are a few additional methods and
 other differences.
 
-Including Classes
------------------
+## Including Classes
 
 With ilib-es6, you import classes instead of requiring them.
 
@@ -29,9 +27,7 @@ new syntax with ilib-es6:
 import { AddressFmt } from 'ilib-es6';
 ```
 
-
-Asynchronous Calls Using Promises
---------------
+## Asynchronous Calls Using Promises
 
 When calling classes asynchronously, you can continue to use callbacks as before or
 you can use the promises returned from the _create_ factory method.
@@ -43,7 +39,7 @@ var AddressFmt = require("ilib/lib/AddressFmt.js");
 
 new AddressFmt({
   sync: false,
-  onLoad: function(af) {
+  onLoad: function (af) {
     // format some addresses using the af formatter
   }
 });
@@ -54,15 +50,14 @@ new async calls using promises:
 ```javascript
 import { AddressFmt } from "ilib-es6";
 
-AddressFmt.create().then(af => {
+AddressFmt.create().then((af) => {
   // format some addresses using the af formatter
 });
 ```
 
 Note that you can still use either method above. Both are still supported.
 
-Promises with Parameters
--------------
+## Promises with Parameters
 
 The _create_ factory method takes the same parameters that the class's constructor takes. For example,
 to create an address formatter in Switzerland with French, you would do:
@@ -72,7 +67,7 @@ import { AddressFmt } from "ilib-es6";
 
 AddressFmt.create({
   locale: "fr-CH"
-}).then(af => {
+}).then((af) => {
   // format some Swiss addresses using the af formatter
 });
 ```
@@ -80,8 +75,7 @@ AddressFmt.create({
 Note that you do not need to pass the _sync_ or _onLoad_ parameters to the _create_ factory method. Calling
 the create factory method implies asynchronous mode using promises instead of callbacks.
 
-Asynchronous Methods
--------------
+## Asynchronous Methods
 
 Promises are also supported for some class methods that are asynchronous as well.
 Example:
@@ -89,16 +83,17 @@ Example:
 ```javascript
 import { AddressFmt } from "ilib-es6";
 
-AddressFmt.create().then(af => {
-  // false for "asynchronous". getFormatInfo returns a promise as well.
-  return af.getFormatInfo("en-US", false);
-}).then(info => {
-  // use the info here to create an address input form
-});
+AddressFmt.create()
+  .then((af) => {
+    // false for "asynchronous". getFormatInfo returns a promise as well.
+    return af.getFormatInfo("en-US", false);
+  })
+  .then((info) => {
+    // use the info here to create an address input form
+  });
 ```
 
-Synchronous Classes
------------
+## Synchronous Classes
 
 You can continue using ilib classes synchronously as you had before.
 
@@ -126,8 +121,7 @@ constructed asynchronously with sync: false, the constructor returns an empty
 default instance and calls the callback function given in the onLoad property
 when all of the locale data is finished loading.
 
-Using Factories
----------------
+## Using Factories
 
 Factory functions in ilib now have two types: a regular version that returns an
 instance of the class, and the asynchronous-only version that returns a promise.
@@ -136,19 +130,18 @@ The async version of the factory always has an "Async" suffix at the end of its 
 Synchronous:
 
 ```javascript
-import { CalendarFactory } from 'ilib-es6';
+import { CalendarFactory } from "ilib-es6";
 
-let cal = CalendarFactory({locale: 'ja-JP'});
+let cal = CalendarFactory({ locale: "ja-JP" });
 // do something with the new cal calendar.
 ```
 
 Asynchronous:
 
 ```javascript
-import { CalendarFactoryAsync } from 'ilib-es6';
+import { CalendarFactoryAsync } from "ilib-es6";
 
-
-CalendarFactoryAsync({locale: 'ja-JP'}).then(function(cal) {
+CalendarFactoryAsync({ locale: "ja-JP" }).then(function (cal) {
   // do something with the new cal calendar.
 });
 ```
@@ -170,8 +163,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Versions
---------
+## Versions
 
 Starting with version 14.2.0, the version of ilib-es6 will echo the version of ilib
 that it goes with. Earlier than that, version 2.0.0 of ilib-es6 went with ilib versions

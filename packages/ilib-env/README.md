@@ -16,11 +16,9 @@ See the [full API documentation](./docs/ilibEnv.md).
 
 ## Installation
 
-```
+```sh
 npm install ilib-env
-
-or
-
+# or
 yarn add ilib-env
 ```
 
@@ -29,19 +27,15 @@ yarn add ilib-env
 Return the name of the platform upon which the code is currently running.
 
 ```javascript
-ES2015:
-
+// ES2015
 var ilibEnv = require("ilib-env");
 var platform = ilibEnv.getPlatform();
 
-ES6:
-
-import { getPlatform } from 'ilib-env';
+// ES6
+import { getPlatform } from "ilib-env";
 const platform = getPlatform();
-
-or
-
-import ilibEnv from 'ilib-env';
+// or
+import ilibEnv from "ilib-env";
 const platform = ilibEnv.getPlatform();
 ```
 
@@ -62,19 +56,15 @@ The string will have one of the following values:
 Return the BCP-47 locale specifier for the platform on which this code is running.
 
 ```javascript
-ES2015:
-
+// ES2015
 var ilibEnv = require("ilib-env");
 var locale = ilibEnv.getLocale();
 
-ES6:
-
-import { getLocale } from 'ilib-env';
+// ES6
+import { getLocale } from "ilib-env";
 const locale = getLocale();
-
-or
-
-import ilibEnv from 'ilib-env';
+// or
+import ilibEnv from "ilib-env";
 const locale = ilibEnv.getLocale();
 ```
 
@@ -89,19 +79,15 @@ it will return a default of "en-US".
 Return the IANA timezone specifier for the platform on which this code is running.
 
 ```javascript
-ES2015:
-
+// ES2015
 var ilibEnv = require("ilib-env");
 var timezone = ilibEnv.getTimeZone();
 
-ES6:
-
-import { getTimeZone } from 'ilib-env';
+// ES6
+import { getTimeZone } from "ilib-env";
 const timezone = getTimeZone();
-
-or
-
-import ilibEnv from 'ilib-env';
+// or
+import ilibEnv from "ilib-env";
 const timezone = ilibEnv.getTimeZone();
 ```
 
@@ -118,25 +104,21 @@ runningn on a browser (ie. the getPlatform() function does not return "browser")
 then the return value of this function is undefined.
 
 ```javascript
-ES2015:
-
+// ES2015
 var ilibEnv = require("ilib-env");
 if (ilibEnv.getPlatform() === "browser") {
-    browser = ilibEnv.getBrowser();
+  browser = ilibEnv.getBrowser();
 }
 
-ES6:
-
-import { getPlatform, getBrowser } from 'ilib-env';
+// ES6
+import { getPlatform, getBrowser } from "ilib-env";
 if (getPlatform() === "browser") {
-    browser = getBrowser();
+  browser = getBrowser();
 }
-
-or
-
-import ilibEnv from 'ilib-env';
+// or
+import ilibEnv from "ilib-env";
 if (ilibEnv.getPlatform() === "browser") {
-    browser = ilibEnv.getBrowser();
+  browser = ilibEnv.getBrowser();
 }
 ```
 
@@ -159,28 +141,24 @@ and you can check whether or not a variable is defined in the top scope
 using the `isGlobal()` function.
 
 ```javascript
-ES2015:
-
+// ES2015
 var ilibEnv = require("ilib-env");
 var top = ilibEnv.top();
 if (ilibEnv.isGlobal("variableName")) {
-    // safe to reference variableName
+  // safe to reference variableName
 }
 
-ES6:
-
-import { top, isGlobal } from 'ilib-env';
+// ES6
+import { top, isGlobal } from "ilib-env";
 const top = top();
 if (isGlobal("variableName")) {
-    // safe to reference variableName
+  // safe to reference variableName
 }
-
-or
-
-import ilibEnv from 'ilib-env';
+// or
+import ilibEnv from "ilib-env";
 const top = ilibEnv.top();
 if (ilibEnv.isGlobal("variableName")) {
-    // safe to reference variableName
+  // safe to reference variableName
 }
 ```
 

@@ -1,6 +1,6 @@
-# ilib-common
+# ilib-ctype
 
-Various utility classes for the ilib packages.
+Utility functions for dealing with character types.
 
 ## Installation
 
@@ -44,11 +44,11 @@ The functions are as follows:
   the concept of case, this always returns true.
 - isXdigit - is this character a hexadecimal digit?
 
-Additionally, there is a `withinRange()` function which returns 
-true if the given character is within the named Unicode range. 
+Additionally, there is a `withinRange()` function which returns
+true if the given character is within the named Unicode range.
 
 ```javascript
-import { withinRange } from 'ilib-ctype';
+import { withinRange } from "ilib-ctype";
 
 console.log(withinRange("\uFE2A", "HalfMarks")); // prints true
 ```
@@ -61,8 +61,8 @@ an example of how you would use the `isAlpha` function.
 ```javascript
 import { isAlpha } from "ilib-ctype";
 
-console.log(isAlpha("a"));   // prints true
-console.log(isAlpha("3"));   // prints false
+console.log(isAlpha("a")); // prints true
+console.log(isAlpha("3")); // prints false
 ```
 
 If you are using this package in a webpack bundle, make sure to
@@ -91,21 +91,4 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.2.1
-
-- updated dependencies
-- converted all unit tests from nodeunit to jest
-
-### v1.2.0
-
-- update to UCD 15.1.0
-
-### v1.1.0
-
-- made this package into a true hybrid package that supports both
-  commonjs and ESM
-
-### v1.0.0
-
-- initial version
-- copied from ilib 14.8.0
+See [CHANGELOG.md](./CHANGELOG.md)

@@ -5,11 +5,9 @@ are also known as IETF locale tags.
 
 ## Installation
 
-```
+```sh
 npm install ilib-locale
-
-or
-
+# or
 yarn add ilib-locale
 ```
 
@@ -18,14 +16,12 @@ yarn add ilib-locale
 Here is how you load ilib-locale:
 
 ```javascript
-ES2015:
-
+//ES2015
 var Locale = require("ilib-locale");
 var l = new Locale("ja-JP");
 
-ES6:
-
-import Locale from 'ilib-locale';
+//ES6
+import Locale from "ilib-locale";
 var l = new Locale("ja-JP");
 ```
 
@@ -87,7 +83,7 @@ console.log("Locale is valid: " + l.isValid());
 In order for a locale spec to be valid, each of its parts needs to conform to the
 codes in the ISO standard that governs that part:
 
-- Language. Language codes must be one of the [two-](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or 
+- Language. Language codes must be one of the [two-](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or
   [three-](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) lower-case letter codes from the
   [ISO 639](https://en.wikipedia.org/wiki/ISO_639) standard.
 - Script. Script codes must be one of the four letter codes from the
@@ -96,7 +92,6 @@ codes in the ISO standard that governs that part:
   [ISO 3166](https://en.wikipedia.org/wiki/ISO_3166) alpha-2
   standard or a 3 digit code from the [UN M49](https://en.wikipedia.org/wiki/UN_M49)
   standard or the [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric) numeric-3 standard.
-
 
 # License
 
@@ -115,54 +110,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-# Release Notes
+## Release Notes
 
-### v1.2.3
-
-* Convert all unit tests from nodeunit to jest
-* added ability to run tests on browsers via karma
-
-### v1.2.2
-
-* This module is now a hybrid ESM/CommonJS package that works under node
-  or webpack
-
-### v1.2.1
-
-* Removed dependency on polyfills that are not needed, which should make this
-  easier to depend upon.
-
-### v1.2.0
-
-* Now ships both the ES6 modules in the src directory and the commonjs code
-  (transpiled with babel) in the lib directory. Callers can choose which one
-  they would like to use.
-
-### v1.1.1
-
-* Update dependencies and target the right node & browser versions with babel
-
-### v1.1.0
-
-- added the ability to parse locale specs that contain underscores
-  instead of dashes. Some locale specs for Java properties file names
-  or in some gnu gettext libraries are specified with underscores.
-  (ie. "zh_Hans_CN" === "zh-Hans-CN" now)
-- updated dependencies
-
-### v1.0.2
-
-- fixed some incorrect unit tests
-
-### v1.0.1
-
-- do not put the module name into the package.json, because it screws
-up the import of ilib-locale in other apps that use webpack
-- added API documentation
-- added new way of doing web testing using a webpacked version of the tests
-
-### v1.0.0
-
-- Code taken from ilib 14.7.0 and converts to an ES6 module.
-- Use babel to transpile it back to ES2015 so it can be used in either ES215 or 
-  ES6 code
+See [CHANGELOG.md](./CHANGELOG.md)

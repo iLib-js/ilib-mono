@@ -2,13 +2,11 @@
 
 Library to parse and format mailing addresses.
 
-Address Parsing and Formatting in iLib
-===================================
+## Address Parsing and Formatting in iLib
 
 This tutorial shows you how you can parse mailing addresses in various locales, and format them again easily.
 
-Motivation
-----------
+## Motivation
 
 Why would you want to parse and format addresses?
 
@@ -22,29 +20,32 @@ There is even more fun to be had if you try to parse names in other countries wh
 
 Given all the above, the humble Javascript programmer needs a little help to parse and format addresses so they don't have to be an expert in the address formats for a large number of countries. Enter iLib.
 
-Parsing Addresses with iLib-address
----------------------------
+## Parsing Addresses with iLib-address
 
 Parsing addresses is a simple matter of creating an instance of the Address class. Here is an example:
 
-~~~~~~
+```js
 import { Address } from "ilib-address";
 
-const address = new Address("LG Silicon Valley Lab\n5150 Great America Pkwy\nSanta Clara, CA 95054\nUSA");
-~~~~~~
+const address = new Address(
+  "LG Silicon Valley Lab\n5150 Great America Pkwy\nSanta Clara, CA 95054\nUSA"
+);
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 
-var address = new Address("LG Silicon Valley Lab\n5150 Great America Pkwy\nSanta Clara, CA 95054\nUSA");
-~~~~~~
+var address = new Address(
+  "LG Silicon Valley Lab\n5150 Great America Pkwy\nSanta Clara, CA 95054\nUSA"
+);
+```
 
 Now, assuming your current locale is en-US, the "address" variable should contain the following properties:
 
-~~~~~~
+```js
 {
     country: "USA",
     countryCode: "US",
@@ -53,90 +54,89 @@ Now, assuming your current locale is en-US, the "address" variable should contai
     locality: "Santa Clara",
     streetAddress: "LG Silicon Valley Lab, 5150 Great America Pkwy"
 }
-~~~~~~
+```
 
-Parsing in Other Countries
---------------------------
+## Parsing in Other Countries
 
 Just like other iLib classes, you can pass in options to the constructor to control how the parsing proceeds. For example, let's say you want to parse the address in Korea instead, even though your current locale is en-US:
 
-~~~~~~
+```js
 import { Address } from "ilib-address";
 
 const address = new Address("한국 서울시 영등포구 여의대로 128 LG트윈타워", {
-    locale: "ko-KR"
+  locale: "ko-KR"
 });
-~~~~~~
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 
 var address = new Address("한국 서울시 영등포구 여의대로 128 LG트윈타워", {
-    locale: "ko-KR"
+  locale: "ko-KR"
 });
-~~~~~~
+```
 
 Now the properties are:
 
-~~~~~~
+```js
 {
     country: "한국",
     countryCode: "KR",
     locality: "서울시",
     streetAddress: "영등포구 여의대로 128 LG트윈타워"
 }
-~~~~~~
+```
 
 Without the explicit locale option, the parser will use the current locale to parse the string.
 
-Parsing Addresses with Latin Script
------------------------------------
+## Parsing Addresses with Latin Script
 
 Let's say your US contact list contains an address outside of the US. Parsing would be a little more difficult if the foreign address is in a different script than the US (ie. non-Latin characters).
 
 Fortunately, the Address parser can recognize the foreign country, and can automatically use the rules of that country to parse the rest of the address. Note that for many countries, you can write addresses in Latin or the native script, and Address will use the correct set of rules to parse each of them, depending on what characters it finds in the string. Here is an example:
 
-~~~~~~
+```js
 import { Address } from "ilib-address";
 
 // note: no locale is specified here!
-const address = new Address("LG Electronics, Gasan-dong, Geumcheon-gu, Seoul, South Korea");
-~~~~~~
+const address = new Address(
+  "LG Electronics, Gasan-dong, Geumcheon-gu, Seoul, South Korea"
+);
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 
 // note: no locale is specified here!
-var address = new Address("LG Electronics, Gasan-dong, Geumcheon-gu, Seoul, South Korea");
-~~~~~~
+var address = new Address(
+  "LG Electronics, Gasan-dong, Geumcheon-gu, Seoul, South Korea"
+);
+```
 
 Now the properties are the same as when the locale was specified explicitly:
 
-~~~~~~
+```js
 {
     country: "South Korea",
     countryCode: "KR",
     locality: "Seoul",
     streetAddress: "LG Electronics, Gasan-dong, Geumcheon-gu"
 }
-~~~~~~
+```
 
-
-It Doesn't Work All the Time
-----------------------------
+## It Doesn't Work All the Time
 
 There are many types of addresses and strings where the parser's heuristics do not work properly. Don't expect that it should work in 100% of the cases!
 
-If needed, the parser can be upgraded in the future to support more things and special cases. Please let us know if you have a very common case that is not supported. (email to "marketing@translationcircle.com")
+If needed, the parser can be upgraded in the future to support more things and special cases. Please let us know if you have a very common case that is not supported. (email to marketing@translationcircle.com)
 
-Formatting Addresses
-----------------
+## Formatting Addresses
 
 In some contacts services, such as Google Contacts, addresses are given as whole addresses in a single string, and you need the parser documented in the previous section to decipher the parts.
 
@@ -144,184 +144,181 @@ But what if you have the address fields already separated? How would you format 
 
 There is where you would use the class AddressFmt to reassemble the parts into a single string. Here is an example:
 
-~~~~~~
+```js
 import { Address, AddressFmt } from "ilib-address";
 
 // presumably, these parts came from your database or contacts list
 const address = new Address({
-    country: "USA",
-    countryCode: "US",
-    postalCode: "95054",
-    region: "CA",
-    locality: "Santa Clara",
-    streetAddress: "LG Silicon Valley Lab, 5150 Great America Pkwy"
+  country: "USA",
+  countryCode: "US",
+  postalCode: "95054",
+  region: "CA",
+  locality: "Santa Clara",
+  streetAddress: "LG Silicon Valley Lab, 5150 Great America Pkwy"
 });
 const af = new AddressFmt();
 const formatted = af.format(address);
-~~~~~~
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 var AddressFmt = ilibAddres.AddressFmt;
 
 // presumably, these parts came from your database or contacts list
 var address = new Address({
-    country: "USA",
-    countryCode: "US",
-    postalCode: "95054",
-    region: "CA",
-    locality: "Santa Clara",
-    streetAddress: "LG Silicon Valley Lab, 5150 Great America Pkwy"
+  country: "USA",
+  countryCode: "US",
+  postalCode: "95054",
+  region: "CA",
+  locality: "Santa Clara",
+  streetAddress: "LG Silicon Valley Lab, 5150 Great America Pkwy"
 });
 var af = new AddressFmt();
 var formatted = af.format(address);
-~~~~~~
+```
 
 Now the name in the "formatted" variable will appear as the string:
 
-> LG Silicon Valley Lab
-> 5150 Great America Parkway
-> Santa Clara, CA 95054
+> LG Silicon Valley Lab  
+> 5150 Great America Parkway  
+> Santa Clara, CA 95054  
 > USA
 
-Formatting Addresses in Foreign Countries
-----------------------
+## Formatting Addresses in Foreign Countries
 
 Let's say your contact list contains an address outside of your current locale. In this case, iLib will use the format data for the current locale to format the country, and load the format data for that foreign country and use those to format the parts of address inside that foreign country.
 
 For example, let's say the current iLib locale is "en-US", and the user has a contact in Germany. Here is how the code would look:
 
-~~~~~~
+```js
 import { Address, AddressFmt } from "ilib-address";
 
 const address = new Address({
-    country: "Germany",
-    countryCode: "DE",
-    postalCode: "40880",
-    locality: "Ratingen",
-    streetAddress: "LG Electronics Deutschland GmbH, Berliner Str 93"
+  country: "Germany",
+  countryCode: "DE",
+  postalCode: "40880",
+  locality: "Ratingen",
+  streetAddress: "LG Electronics Deutschland GmbH, Berliner Str 93"
 });
 const af = new AddressFmt();
 const formatted = af.format(address);
-~~~~~~
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 var AddressFmt = ilibAddressFmt.AddressFmt;
 
 var address = new Address({
-    country: "Germany",
-    countryCode: "DE",
-    postalCode: "40880",
-    locality: "Ratingen",
-    streetAddress: "LG Electronics Deutschland GmbH, Berliner Str 93"
+  country: "Germany",
+  countryCode: "DE",
+  postalCode: "40880",
+  locality: "Ratingen",
+  streetAddress: "LG Electronics Deutschland GmbH, Berliner Str 93"
 });
 var af = new AddressFmt();
 var formatted = af.format(address);
-~~~~~~
+```
 
 Note that you should preserve the countryCode field in the database that the parser gave you, so that you can pass it back to the formatter again as above.
 
 Here is what the value of the "formatted" variable will end up being:
 
-> LG Electronics Deutschland GmbH
-> Berliner Str 93
-> 40880 Ratingen
+> LG Electronics Deutschland GmbH  
+> Berliner Str 93  
+> 40880 Ratingen  
 > Germany
 
 Note that the name of the country is in English still, because when you put an envelope into the mail in the US, the English-speaking US Post employee will be reading the address and looking for the name of the country where the the letter should be sent. The rest of the address above the "Germany" line is formatted according to the German conventions.
 
-Mixed Asian and Western Addresses
----------------------------------
+## Mixed Asian and Western Addresses
 
 This gets even more tricky when mixing Asian and Western together. Let's say you had an address in Korea in your English/US contact list. In Korean, you would put the name of the country at the top (it goes from biggest to smallest). In the US, you would put the name of the country at the bottom. Since it is being mailed from the US to Korea, you start off with US rules, and then use Korean rules for the rest of the address. Here is how it would look:
 
-~~~~~~
+```js
 import { Address, AddressFmt } from "ilib-address";
 
 // presumably, these parts came from your database or contacts list
 const address = new Address({
-    country: "Republic of Korea",
-    countryCode: "KR",
-    locality: "서울시",
-    streetAddress: "영등포구 여의대로 128 LG트윈타워"
+  country: "Republic of Korea",
+  countryCode: "KR",
+  locality: "서울시",
+  streetAddress: "영등포구 여의대로 128 LG트윈타워"
 });
 const af = new AddressFmt();
 const formatted = af.format(address);
-~~~~~~
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 var AddressFmt = ilibAddress.ilibAddressFmt;
 
 // presumably, these parts came from your database or contacts list
 var address = new Address({
-    country: "Republic of Korea",
-    countryCode: "KR",
-    locality: "서울시",
-    streetAddress: "영등포구 여의대로 128 LG트윈타워"
+  country: "Republic of Korea",
+  countryCode: "KR",
+  locality: "서울시",
+  streetAddress: "영등포구 여의대로 128 LG트윈타워"
 });
 var af = new AddressFmt();
 var formatted = af.format(address);
-~~~~~~
+```
 
 Here is what the value of the "formatted" variable will end up being:
 
-> 서울시 영등포구 여의대로 128 LG트윈타워
+> 서울시 영등포구 여의대로 128 LG트윈타워  
 > Republic of Korea
 
-Latin Script in Asian Addresses
--------------------------------
+## Latin Script in Asian Addresses
 
 Some addresses in Asia are written in Latin script for the convenience of the reader. In this case, the locale data for many of the Asian locales has two sets of rules: one for Asian addresses that are written in Asian scripts, and another for those that are written in Latin script.
 
 Here is an example in Hong Kong, where because of its unique history, it is very common to find both Chinese character and Latin character addresses.
 
-~~~~~~
+```js
 import { Address, AddressFmt } from "ilib-address";
 
 // presumably, these parts came from your database or contacts list
 const address = new Address({
-    country: "Hong Kong",
-    countryCode: "HK",
-    locality: "North Point",
-    streetAddress: "5F, 633 King's Road"
+  country: "Hong Kong",
+  countryCode: "HK",
+  locality: "North Point",
+  streetAddress: "5F, 633 King's Road"
 });
 const af = new AddressFmt();
 const formatted = af.format(address);
-~~~~~~
+```
 
 or in older Javascript:
 
-~~~~~~
+```js
 var ilibAddress = require("ilib-address");
 var Address = ilibAddress.Address;
 var AddressFmt = ilibAddress.AddressFmt;
 
 // presumably, these parts came from your database or contacts list
 var address = new Address({
-    country: "Hong Kong",
-    countryCode: "HK",
-    locality: "North Point",
-    streetAddress: "5F, 633 King's Road"
+  country: "Hong Kong",
+  countryCode: "HK",
+  locality: "North Point",
+  streetAddress: "5F, 633 King's Road"
 });
 var af = new AddressFmt();
 var formatted = af.format(address);
-~~~~~~
+```
 
 The formatter does the right thing here for the script. Here is what the value of the "formatted" variable will end up being:
 
-> 5F, 633 King's Road
-> North Point
+> 5F, 633 King's Road  
+> North Point  
 > Hong Kong
 
 ## License
@@ -343,12 +340,4 @@ limitations under the License.
 
 ## Release Notes
 
-### v1.0.1
-
-- Updated dependencies
-- published the locale data in the npm package that was missing in the
-  initial release. (whoops!)
-
-### v1.0.0
-
-- Initial version copied from ilib 14.15.2
+See [CHANGELOG.md](./CHANGELOG.md)
