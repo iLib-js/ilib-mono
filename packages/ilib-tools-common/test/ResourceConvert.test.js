@@ -244,7 +244,7 @@ describe("resource conversion functions", function() {
 
     test("convert string source to plural", function() {
         expect.assertions(3);
-debugger;
+
         const string = new ResourceString({
             sourceLocale: "en-US",
             source: "{count, plural, one {There is {count} string.} other {There are {count} strings.}}",
