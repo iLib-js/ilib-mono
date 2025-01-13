@@ -73,6 +73,11 @@
         "one",
         "other"
     ],
+    "blo": [
+        "zero",
+        "one",
+        "other"
+    ],
     "bm": [
         "other"
     ],
@@ -128,6 +133,10 @@
         "one",
         "few",
         "many",
+        "other"
+    ],
+    "csw": [
+        "one",
         "other"
     ],
     "cy": [
@@ -444,6 +453,11 @@
     "lkt": [
         "other"
     ],
+    "lld": [
+        "one",
+        "many",
+        "other"
+    ],
     "ln": [
         "one",
         "other"
@@ -657,6 +671,7 @@
     ],
     "scn": [
         "one",
+        "many",
         "other"
     ],
     "sd": [
