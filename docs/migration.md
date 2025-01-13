@@ -76,3 +76,41 @@ after merging
 2. Push deprecation notices `scripts/push_deprecation.sh package1 package2`
 3. Archive old repos `scripts/archive_repos.sh package1 package2`
 4. Release
+
+### PR Checklist
+
+This checklist below can be pasted into PR description to track the progress of the migration.
+
+```markdown
+Package migration checklist:
+
+- [ ] Migrate repo as subtree
+- [ ] Remove old ci config
+- [ ] Remove conditional-install, readd dependencies directly
+- [ ] Link workspace packages
+- [ ] Validate package entrypoints
+- [ ] Ensure all scripts use `pnpm`
+- [ ] Ensure `build` is present (if applicable) and runs everything needed for publishing
+- [ ] Ensure `test` script is present and runs all unit tests
+- [ ] Ensure test scripts don't run `build`
+- [ ] Replace binstub calls in scripts
+- [ ] Run tests for all affected packages and keep fixing until it works
+- [ ] Update `jest` (and related) to latest and rerun tests
+- [ ] Ensure scripts generate files to expected directories
+- [ ] Remove package-specific .gitignore, readd untracked files to root `.gitignore`
+- [ ] Remove unnecessary entries from `files` in `package.json`
+- [ ] Verify nothing's missing from package bundles
+- [ ] Extract changelogs and update to monorepo format, verify changelog autoformatting
+- [ ] Update URLs in package.json to point to the monorepo
+- [ ] Update links in documentation and source code to point to the monorepo
+- [ ] Ensure package is licensed under Apache-2.0
+- [ ] Create patchbump changeset for migrated packages
+- [ ] Regenerate lockfile
+- [ ] Regenerate docs
+
+After merge:
+
+- [ ] Sync old tags
+- [ ] Push deprecation notice
+- [ ] Archive old repo
+```
