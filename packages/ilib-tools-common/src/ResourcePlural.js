@@ -30,6 +30,13 @@ const logger = log4js.getLogger("tools-common.ResourcePlural");
  */
 class ResourcePlural extends Resource {
     /**
+     * The names of the pivot variables for the plural or plurals in this resource.
+     * @property {Array.<String>}
+     * @private
+     */
+    pivots = [];
+
+    /**
      * Construct a new instance of a plural resource.
      *
      * Hashes of strings are used in Android apps to specify translations
@@ -79,6 +86,10 @@ class ResourcePlural extends Resource {
                 for (let p in target) {
                     this.target[p] = target[p];
                 }
+            }
+
+            if (props.pivots) {
+                this.pivots = props.pivots;
             }
         }
 
@@ -191,7 +202,8 @@ class ResourcePlural extends Resource {
      * @returns {Array.<string>} an array of source categories
      */
     getCategories() {
-        return this.source && Object.keys(this.source);
+        return (this.target && Object.keys(this.target)) ||
+            (this.source && Object.keys(this.source));
     }
 
     /**
@@ -383,6 +395,12 @@ class ResourcePlural extends Resource {
         return Object.keys(this.source).every(prop => {
             return cleanString(this.source[prop]) === cleanString(resource.source[prop]);
         });
+    }
+
+    /**
+     */
+    getPivots() {
+        return this.pivots;
     }
 }
 
