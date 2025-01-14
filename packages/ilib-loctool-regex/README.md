@@ -316,7 +316,7 @@ most recent updates to this package.
 
 ## License
 
-Copyright © 2024 Box, Inc.
+Copyright © 2024-2025 Box, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
