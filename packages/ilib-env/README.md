@@ -27,7 +27,7 @@ yarn add ilib-env
 Return the name of the platform upon which the code is currently running.
 
 ```javascript
-// ES2015
+// ES5
 var ilibEnv = require("ilib-env");
 var platform = ilibEnv.getPlatform();
 
@@ -56,7 +56,7 @@ The string will have one of the following values:
 Return the BCP-47 locale specifier for the platform on which this code is running.
 
 ```javascript
-// ES2015
+// ES5
 var ilibEnv = require("ilib-env");
 var locale = ilibEnv.getLocale();
 
@@ -79,7 +79,7 @@ it will return a default of "en-US".
 Return the IANA timezone specifier for the platform on which this code is running.
 
 ```javascript
-// ES2015
+// ES5
 var ilibEnv = require("ilib-env");
 var timezone = ilibEnv.getTimeZone();
 
@@ -104,7 +104,7 @@ runningn on a browser (ie. the getPlatform() function does not return "browser")
 then the return value of this function is undefined.
 
 ```javascript
-// ES2015
+// ES5
 var ilibEnv = require("ilib-env");
 if (ilibEnv.getPlatform() === "browser") {
   browser = ilibEnv.getBrowser();
@@ -141,7 +141,7 @@ and you can check whether or not a variable is defined in the top scope
 using the `isGlobal()` function.
 
 ```javascript
-// ES2015
+// ES5
 var ilibEnv = require("ilib-env");
 var top = ilibEnv.top();
 if (ilibEnv.isGlobal("variableName")) {

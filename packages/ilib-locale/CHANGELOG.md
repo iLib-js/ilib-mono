@@ -47,5 +47,5 @@
 ## 1.0.0
 
 - Code taken from ilib 14.7.0 and converts to an ES6 module.
-- Use babel to transpile it back to ES2015 so it can be used in either ES215 or
+- Use Babel to transpile it back to ES5 so it can be used in either ES5 or
   ES6 code

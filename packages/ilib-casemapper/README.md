@@ -22,7 +22,7 @@ class. By default, this will use the mappings for English.
 Here is how you would map a letter using the Turkish rules:
 
 ```javascript
-// ES2015
+// ES5
 var CaseMapper = require("ilib-casemapper");
 var cm = new CaseMapper({ locale: "tr-TR" });
 
