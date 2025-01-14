@@ -36,7 +36,7 @@ do
     SUBTREE_PREFIX="packages/$REPO"
     if [ -d "packages/$REPO" ]; then
         echo "Package $REPO already exists in the monorepo"
-        exit 1
+        continue
     fi
 
     # construct git SSH url
