@@ -35,10 +35,14 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 -   **Changelog**
     -   **Generation**: Changelog entries and version updates are handled automatically through [changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md); note that the file will be automatically updated (including reformatting by prettier)
     -   **Migration**: If the package already has a changelog, it should be adjusted to the monorepo format; existing entries should be migrated to the `CHANGELOG.md` file structured as follows: mandatory H1 `# package-name` and H2 version `## X.Y.Z` (no `v` prefix), then optionally: H3 `### kind Changes` (e.g. `### Patch Changes`) and bullet points with changes; see [`packages/ilib-assemble/CHANGELOG.md`](../packages/ilib-assemble/CHANGELOG.md) for an example; README should be updated to point to the new location of the changelog; to verify the changelog is correctly formatted, optionally run changelog generation using `pnpm changeset version` (ensure you've added a changeset first and that you don't accidentally overwrite your WIP) and inspect the updated file
--   **License**: Package should be licensed under Apache-2.0 license; make sure to include the license file in the repository and publish bundle (`files` field in `package.json`)
+-   **License**: Package should be licensed under Apache-2.0 license
+    -   **File**: Apache 2.0 requires a `LICENSE` file in package root - make sure it's there and is included in published bundle (`files` field in `package.json`)
+    -   **Headers**: Source files should include the short license header (copy from any other package in the monorepo)
 -   **Documentation**
     -   **Links**: Update all links in the documentation to point to the new location in the monorepo - see notes on links above
+    -   **Copyright**: Update the copyright year in doc generation config, optionally in new or modified source code files
 -   **Environment**
+    -   **IDE**: Currently we are against IDE-specific files in the monorepo - all configuration, scripts etc. should be IDE-agnostic; `.project`, `.vscode`, `.idea` should be removed after migration
     -   **Node**: Package should work with Node.js 12 LTS and newer
     -   **TypeScript**: If the package is written in TS, it should use configuration similar to [`ilib-po`](../packages/ilib-po/tsconfig.json) package (shared configuration will be extracted in the future); in particular, note that to ensure that the package works on Node 12, `tsconfig.json` should extend `@tsconfig/node12` and `@types/node@12` [sic - major 12] should be installed.
 -   **Gitignores**: There should be no package-specific `.gitignore`; we opt to use a single `.gitignore` in the monorepo root to ensure consistent package structure and increase visibility of outliers; if the package has its own `.gitignore`, it should be removed, and the monorepo root `.gitignore` should be updated to include any package-specific entries; remember to verify gitignore changes by running the package's scripts - in particular, run `test` script to ensure that all generated files are cleaned up or ignored
@@ -61,14 +65,16 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 11. Run tests for all affected packages `pnpm test` (from monorepo root) and keep fixing until it works
 12. Update `jest` (and related) to latest `pnpm --filter '[origin/main]' up --latest '*jest*'` and rerun tests
 13. Ensure scripts generate files to expected directories (`build` to `lib`, `doc` to `docs`)
-14. Remove .gitignores from each package `rm packages/{package1,package2}/**/.gitignore`, re-run `build` and `test`, then `git status` and optionally add untracked files to the monorepo root `.gitignore`
-15. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
-16. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
-17. Update links in package.json to point to the monorepo
-18. Update links in documentation and source code to point to the monorepo
-19. Ensure package is licensed under Apache-2.0
-20. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
-21. Regenerate lockfile `pnpm install` and docs `pnpm doc`
+14. Remove IDE config `rm -r packages/{package1,package2}/{.project,.vscode,.idea}`; optionally carry over useful settings to package scripts (e.g. debug run script) in IDE-agnostic way
+15. Remove .gitignores from each package `rm packages/{package1,package2}/**/.gitignore`, re-run `build` and `test`, then `git status` and optionally add untracked files to the monorepo root `.gitignore`
+16. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
+17. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
+18. Update links in package.json to point to the monorepo
+19. Update links in documentation and source code to point to the monorepo
+20. Update copyright year in doc generation config and modified source code files
+21. Ensure package is licensed under Apache-2.0, check license file in package root and bundle config, check headers in source files
+22. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
+23. Regenerate lockfile `pnpm install` and docs `pnpm doc`
 
 after merging
 
@@ -97,13 +103,15 @@ Package migration checklist:
 - [ ] Run tests for all affected packages and keep fixing until it works
 - [ ] Update `jest` (and related) to latest and rerun tests
 - [ ] Ensure scripts generate files to expected directories
+- [ ] Remove IDE-specific configs
 - [ ] Remove package-specific .gitignore, readd untracked files to root `.gitignore`
 - [ ] Remove unnecessary entries from `files` in `package.json`
 - [ ] Verify nothing's missing from package bundles
 - [ ] Extract changelogs and update to monorepo format, verify changelog autoformatting
 - [ ] Update URLs in package.json to point to the monorepo
 - [ ] Update links in documentation and source code to point to the monorepo
-- [ ] Ensure package is licensed under Apache-2.0
+- [ ] Update copyright year
+- [ ] Check license file and headers
 - [ ] Create patchbump changeset for migrated packages
 - [ ] Regenerate lockfile
 - [ ] Regenerate docs
