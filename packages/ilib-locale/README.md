@@ -95,7 +95,7 @@ codes in the ISO standard that governs that part:
 
 # License
 
-Copyright © 2021-2023, JEDLSoft
+Copyright © 2021-2025, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
