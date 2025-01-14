@@ -16,7 +16,7 @@ yarn add ilib-locale
 Here is how you load ilib-locale:
 
 ```javascript
-//ES2015
+//ES5
 var Locale = require("ilib-locale");
 var l = new Locale("ja-JP");
 
