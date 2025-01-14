@@ -1,7 +1,7 @@
 /*
  * RegexFile.test.js - test the Regex file handler object.
  *
- * Copyright © 2024 Box, Inc.
+ * Copyright © 2024-2025 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,24 @@ var p = new CustomProject({
     }
 });
 
+var p2 = new CustomProject({
+    id: "emptyapp",
+    plugins: [require.resolve("../.")],
+    sourceLocale: "en-US"
+}, "./test/testfiles", {
+    "locales":["en-GB", "de-DE", "fr-FR", "ja-JP"],
+    "regex": {
+        "mappings": {
+            "**/*.js": {
+                "template": "resources/strings_[locale].json"
+                // no other settings to test if we detect the lack of them
+            }
+        }
+    }
+});
+
 var rft = new RegexFileType(p);
+var rft2 = new RegexFileType(p2);
 
 describe("regex file tests", function() {
     test("RegexFileConstructor", function() {
@@ -814,5 +831,36 @@ describe("regex file tests", function() {
         var set = rf.getTranslationSet();
 
         expect(set.size()).toBe(0);
+    });
+
+    test("RegexFile reports missing a mapping for a file, but goes on", function() {
+        expect.assertions(2);
+
+        var rf = new RegexFile({
+            project: p2,
+            pathName: "./testfiles/js/t1.php",  // no mappings for php files
+            type: rft2
+        });
+        expect(rf).toBeTruthy();
+
+        var actual = rf.parse("$t('This is a test');");
+        expect(actual).toBeUndefined();
+    });
+
+    test("RegexFile throws correct error if you attempt to parse a file with no expressions available", function() {
+        expect.assertions(1);
+
+        var rf = new RegexFile({
+            project: p2,
+            pathName: "./testfiles/js/t1.js",
+            type: rft2
+        });
+
+        // there is a mapping for *.js files, but there are no regular expressions in it
+        // in this case, we throw the error to force the user to put in some regular expressions
+
+        expect(() => rf.parse("$t('This is a test');")).toThrow(
+            new Error("No expressions found in project.json for ./testfiles/js/t1.js")
+        );
     });
 });

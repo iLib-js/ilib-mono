@@ -1,7 +1,7 @@
 /*
  * RegexFileType.js - Represents a collection of regex-parsable files
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,12 @@ var Locale = require("ilib-locale");
 var mm = require("micromatch");
 
 var RegexFile = require("./RegexFile.js");
+
+var defaultMappings = {
+    "**/*.js": {
+        "template": "resources/strings_[locale].json"
+    }
+};
 
 var RegexFileType = function(project) {
     this.type = "regex";

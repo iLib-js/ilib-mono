@@ -1642,7 +1642,7 @@ importers:
         version: link:../ilib-loctool-javascript-resource
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool

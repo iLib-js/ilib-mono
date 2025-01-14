@@ -1,7 +1,7 @@
 /*
  * RegexFile.js - plugin to extract resources from a Regex source code file
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ var RegexFile = function(props) {
 
     // get the regexps that finds the strings to translate
     this.mapping = this.type && this.type.getMapping(this.pathName);
-    if (this.mapping) {
+    if (this.mapping && this.mapping.expressions) {
         this.mapping.expressions.forEach(function(exp) {
             // make sure the expression string is turned into a real regex
             if (!exp.regex) {
@@ -361,6 +361,20 @@ RegexFile.prototype.parse = function(data, cb) {
     this.resourceIndex = 0;
 
     var chunks = [data];
+
+    if (!this.mapping) {
+        // report the problem, but continue processing other files
+        const msg = "No mapping found in project.json for " + this.pathName;
+        this.logger.debug(msg);
+        return undefined;
+    }
+
+    if (!this.mapping.expressions || this.mapping.expressions.length < 1) {
+        // there is a mapping, but it is misconfigured, so throw an exception
+        const msg = "No expressions found in project.json for " + this.pathName;
+        this.logger.error(msg);
+        throw new Error(msg);
+    }
 
     // Parse the chunks of data into smaller and smaller pieces until we have found
     // all the localizable strings. For each chunk, we find all matches of the 
