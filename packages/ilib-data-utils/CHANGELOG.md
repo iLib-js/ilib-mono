@@ -1,5 +1,11 @@
 # ilib-data-utils
 
+## 1.2.4
+
+### Patch Changes
+
+- 6e67c67: Fixed extensionless ESM imports which could prevent ESM modules fom using this package.
+
 ## 1.2.3
 
 ### Patch Changes

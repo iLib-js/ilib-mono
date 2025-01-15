@@ -1,6 +1,6 @@
 {
     "name": "ilib-es6",
-    "version": "14.20.0",
+    "version": "14.21.0",
     "main": "./src/index.js",
     "module": "./src/index.js",
     "type": "module",

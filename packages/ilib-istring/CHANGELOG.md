@@ -1,5 +1,14 @@
 # ilib-istring
 
+## 1.1.1
+
+### Patch Changes
+
+- 09986f9: Fixed missing dependency on regenerator-runtime.
+- 6bf9033: Migrated package into monorepo.
+- Updated dependencies [6bf9033]
+  - ilib-locale@1.2.4
+
 ## 1.1.0
 
 - Update to CLDR v44
