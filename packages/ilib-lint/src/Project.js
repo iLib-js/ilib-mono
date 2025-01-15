@@ -577,7 +577,7 @@ class Project extends DirItem {
      */
     run() {
         let exitValue = 0;
-        
+
         let startTime = new Date();
         const results = this.findIssues(this.options.opt.locales);
         let endTime = new Date();
