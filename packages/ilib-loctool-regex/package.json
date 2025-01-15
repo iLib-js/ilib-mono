@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-regex",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "main": "./RegexFileType.js",
     "bin": "./bin/testregex.js",
     "description": "A loctool plugin that knows how to process any files using regular expressions",
