@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * testregex.js - utility command to test your regex project against
  * real files

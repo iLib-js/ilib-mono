@@ -2,7 +2,9 @@
     "name": "ilib-loctool-regex",
     "version": "0.0.0",
     "main": "./RegexFileType.js",
-    "bin": "./bin/testregex.js",
+    "bin": {
+        "testregex": "./bin/testregex.js"
+    },
     "description": "A loctool plugin that knows how to process any files using regular expressions",
     "license": "Apache-2.0",
     "keywords": [
