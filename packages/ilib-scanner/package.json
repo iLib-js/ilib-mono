@@ -48,7 +48,7 @@
         "node": ">=6.0"
     },
     "dependencies": {
-        "ilib-locale": "^1.1.0",
+        "ilib-locale": "workspace:^",
         "options-parser": "^0.4.0"
     }
 }

@@ -20,7 +20,6 @@
 import path from "path";
 
 import { TranslationSet } from "ilib-tools-common";
-// @ts-expect-error -- untyped package
 import Locale from "ilib-locale";
 
 import Parser from "./Parser";
@@ -160,7 +159,7 @@ class POFile {
      * Get the source locale of this PO file.
      * @returns the source locale of this PO file
      */
-    getSourceLocale(): string {
+    getSourceLocale(): string | undefined{
         return this.sourceLocale.getSpec();
     }
 

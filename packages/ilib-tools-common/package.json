@@ -71,7 +71,6 @@
         "@babel/runtime": "^7.24.5",
         "babel-loader": "^9.1.3",
         "babel-plugin-add-module-exports": "^1.0.4",
-        "conditional-install": "^1.0.1",
         "docdash": "^2.0.2",
         "grunt": "^1.6.1",
         "grunt-babel": "^8.0.0",
@@ -88,8 +87,8 @@
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-ctype": "^1.2.1",
-        "ilib-locale": "^1.2.2",
+        "ilib-ctype": "workspace:^",
+        "ilib-locale": "workspace:^",
         "ilib-xliff": "workspace:^"
     }
 }

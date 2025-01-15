@@ -18,7 +18,6 @@
  */
 
 import { TranslationSet } from "ilib-tools-common";
-// @ts-expect-error -- untyped package
 import Locale from "ilib-locale";
 
 import { Comments, CommentType, escapeQuotes, makeKey } from "./utils";
@@ -34,7 +33,7 @@ export interface GeneratorOptions {
      *
      * @default "en"
      */
-    targetLocale?: string;
+    targetLocale?: string | Locale;
 
     /**
      * whether the context should be included as part of the key or not

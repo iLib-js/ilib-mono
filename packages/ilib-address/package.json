@@ -1,0 +1,112 @@
+{
+    "name": "ilib-address",
+    "version": "1.0.1",
+    "main": "./lib/index.js",
+    "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        },
+        "./assemble.mjs": "./assemble.mjs"
+    },
+    "description": "Classes to parse and format mailing addresses",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "date",
+        "time",
+        "format",
+        "locale",
+        "translation",
+        "address"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-address",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "assemble.mjs",
+        "src",
+        "locale",
+        "lib",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "build": "pnpm build:prod",
+        "build:assemble": "ilib-assemble -m . --resources ./locale --localefile ./locales.json assembled src",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:test:web": "npm-run-all --npm-path pnpm build:assemble build:dev build:test:web-suite",
+        "build:test:web-suite": "webpack-cli --config test/webpack-testSuite.config.cjs",
+        "test": "pnpm test:cli",
+        "test:cli": "pnpm bash test/testSuite.sh",
+        "test:web": "open-cli ./test/testSuite.html && open-cli ./test/testSuite.html -- firefox",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
+        "debug": "node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d src test && rm -rf lib assembled *.tgz assembled locales.json",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibAddress.md && pnpm doc:html",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.26.0",
+        "@babel/preset-env": "^7.26.0",
+        "@babel/register": "^7.25.9",
+        "@babel/runtime": "^7.26.0",
+        "@open-wc/webpack-import-meta-loader": "^0.4.7",
+        "assertextras": "^1.1.0",
+        "babel-loader": "^9.2.1",
+        "babel-plugin-add-module-exports": "^1.0.4",
+        "babel-plugin-module-resolver": "^5.0.2",
+        "babel-plugin-transform-import-meta": "^2.2.1",
+        "docdash": "^2.0.2",
+        "grunt": "^1.6.1",
+        "grunt-babel": "^8.0.0",
+        "grunt-cli": "^1.5.0",
+        "grunt-contrib-clean": "^2.0.1",
+        "grunt-contrib-uglify": "^5.2.2",
+        "ilib-assemble": "workspace:^",
+        "jsdoc": "^4.0.4",
+        "jsdoc-to-markdown": "^9.0.4",
+        "load-grunt-tasks": "^5.1.0",
+        "nodeunit": "^0.11.3",
+        "npm-run-all": "^4.1.5",
+        "open-cli": "^8.0.0",
+        "webpack": "^5.95.0",
+        "webpack-cli": "^5.1.4"
+    },
+    "dependencies": {
+        "ilib-common": "workspace:^",
+        "ilib-ctype": "workspace:^",
+        "ilib-env": "workspace:^",
+        "ilib-istring": "workspace:^",
+        "ilib-locale": "workspace:^",
+        "ilib-localedata": "workspace:^",
+        "ilib-resbundle": "^1.0.2"
+    }
+}

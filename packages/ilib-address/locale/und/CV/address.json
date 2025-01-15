@@ -1,0 +1,63 @@
+{
+    "formats": {
+        "default": "{streetAddress}\n{postalCode} {locality}\n{region}\n{country}",
+        "nocountry": "{streetAddress}\n{postalCode} {locality}\n{region}"
+    },
+    "startAt": "end",
+    "fields": [
+        {
+            "name": "region",
+            "line": "last",
+            "pattern": [
+                "boa vista",
+                "brava",
+                "maio",
+                "mosteiros",
+                "paul",
+                "porto vovo",
+                "praia",
+                "ribeira brava",
+                "ribeira grande",
+                "ribeira grande de santiago",
+                "santiago",
+                "ribeira",
+                "sal",
+                "santa catarina",
+                "santa catarina de fogo",
+                "santa cruz",
+                "são domingos",
+                "sao domingos",
+                "são filipe",
+                "sao filipe",
+                "são lourenço dos órgãos",
+                "sao lourenco dos orgaos",
+                "são lourenço",
+                "sao lourenco",
+                "são miguel",
+                "sao miguel",
+                "são salvador do mundo",
+                "sao salvador do mundo",
+                "são nicolau",
+                "sao nicolau",
+                "são vicente",
+                "sao vicente",
+                "tarrafal",
+                "tarrafal de são nicolau",
+                "tarrafal de sao nicolau"
+            ]
+        },
+        {
+            "name": "locality",
+            "line": "last",
+            "pattern": "([A-za-zÃÉZÁÇÊJXÍÓKÚWYÕÀÂÔãézáçêjxíókúwyõàâô\\s.'\"]+)"
+        },
+        {
+            "name": "postalCode",
+            "line": "last",
+            "pattern": "([0-9]{4})"
+        }
+    ],
+    "fieldNames": {
+        "region": "Municipality"
+    }
+}

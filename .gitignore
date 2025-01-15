@@ -32,13 +32,19 @@ node_modules/
 
 # Build Outputs
 !packages/loctool/lib/
-
+packages/ilib-address/assembled
+packages/ilib-istring/assembled
 
 # Misc
 packages/loctool/java/bin/
 packages/loctool/build.properties
 
 # Testing
+
+# Generated test suites for running in a browser
+packages/ilib-address/test-web
+packages/ilib-istring/test-web
+
 # Those files are used for testing purposes and should not be removed from .gitignore.
 !packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
 !packages/ilib-lint/test/ilib-mock/ilib-mock-1.0.0.tgz

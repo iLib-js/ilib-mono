@@ -24,7 +24,7 @@ false
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:44](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/Generator.ts#L44)
+[packages/ilib-po/src/Generator.ts:43](https://github.com/iLib-js/ilib-mono/blob/ddf9d893c14f3d56f8b7c289351b045aed9742ab/packages/ilib-po/src/Generator.ts#L43)
 
 ***
 
@@ -36,7 +36,7 @@ The default data type of the resources
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:49](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/Generator.ts#L49)
+[packages/ilib-po/src/Generator.ts:48](https://github.com/iLib-js/ilib-mono/blob/ddf9d893c14f3d56f8b7c289351b045aed9742ab/packages/ilib-po/src/Generator.ts#L48)
 
 ***
 
@@ -48,7 +48,7 @@ the path to the po file
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:30](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/Generator.ts#L30)
+[packages/ilib-po/src/Generator.ts:29](https://github.com/iLib-js/ilib-mono/blob/ddf9d893c14f3d56f8b7c289351b045aed9742ab/packages/ilib-po/src/Generator.ts#L29)
 
 ***
 
@@ -60,13 +60,13 @@ The name of the project that the resources belong to
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:54](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/Generator.ts#L54)
+[packages/ilib-po/src/Generator.ts:53](https://github.com/iLib-js/ilib-mono/blob/ddf9d893c14f3d56f8b7c289351b045aed9742ab/packages/ilib-po/src/Generator.ts#L53)
 
 ***
 
 ### targetLocale?
 
-> `optional` **targetLocale**: `string`
+> `optional` **targetLocale**: `string` \| `Locale`
 
 the target locale of the file
 
@@ -78,4 +78,4 @@ the target locale of the file
 
 #### Defined in
 
-[packages/ilib-po/src/Generator.ts:37](https://github.com/iLib-js/ilib-mono/blob/bbaba6e1d1be2b1d17df08b5e5a2853c275b9abd/packages/ilib-po/src/Generator.ts#L37)
+[packages/ilib-po/src/Generator.ts:36](https://github.com/iLib-js/ilib-mono/blob/ddf9d893c14f3d56f8b7c289351b045aed9742ab/packages/ilib-po/src/Generator.ts#L36)

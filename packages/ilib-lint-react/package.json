@@ -43,9 +43,9 @@
         "@babel/parser": "^7.24.0",
         "@babel/traverse": "^7.24.0",
         "@formatjs/intl": "^2.10.0",
-        "ilib-istring": "^1.1.0",
+        "ilib-istring": "workspace:^",
         "ilib-lint-common": "workspace:^",
-        "ilib-locale": "^1.2.2",
+        "ilib-locale": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "jsonpath": "^1.1.1",
         "regenerator-runtime": "^0.14.1"
