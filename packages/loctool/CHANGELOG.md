@@ -1,5 +1,11 @@
 # loctool
 
+## 2.27.0
+
+### Minor Changes
+
+- fb8b2eb: Updated the plural categories that loctool uses to those defined in CLDR 46.1
+
 ## 2.26.0
 
 ### Minor Changes

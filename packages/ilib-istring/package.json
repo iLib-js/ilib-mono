@@ -1,6 +1,6 @@
 {
     "name": "ilib-istring",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {

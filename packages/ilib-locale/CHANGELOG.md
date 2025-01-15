@@ -1,5 +1,11 @@
 # ilib-locale
 
+## 1.2.4
+
+### Patch Changes
+
+- 6bf9033: Migrated package into monorepo.
+
 ## 1.2.3
 
 - Convert all unit tests from nodeunit to jest

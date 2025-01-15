@@ -1,5 +1,11 @@
 # ilib-ctype
 
+## 1.2.2
+
+### Patch Changes
+
+- 6bf9033: Migrated package into monorepo.
+
 ## 1.2.1
 
 - updated dependencies
