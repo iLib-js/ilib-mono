@@ -64,8 +64,8 @@
         "loctool": "workspace:^"
     },
     "dependencies": {
-        "ilib-istring": "^1.1.0",
-        "ilib-locale": "^1.2.2",
+        "ilib-istring": "workspace:^",
+        "ilib-locale": "workspace:^",
         "micromatch": "^4.0.8"
     }
 }

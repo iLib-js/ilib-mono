@@ -44,10 +44,9 @@ function stringifyRegexResult(result) {
     if (!result) return;
     var str = "[\n";
     for (var i = 0; i < result.length; i++) {
-        var stringified = JSON.stringify(result[i]).replace(/[\[\]]/g, "");
+        var stringified = result[i] ? JSON.stringify(result[i]).replace(/[\[\]]/g, "") : "undefined";
         stringified = stringified.length > 80 ? stringified.substring(0, 79) + '…"' : stringified;
-        var matchString = result[i] ? stringified : "undefined"
-        str += '  "' + i + '": ' + matchString + ",\n";
+        str += '  "' + i + '": ' + stringified + ",\n";
     }
     str += '  "groups": ';
     var groups = {};

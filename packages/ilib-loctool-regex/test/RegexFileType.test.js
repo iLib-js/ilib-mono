@@ -87,7 +87,7 @@ describe("javascriptfiletype", function() {
         var exts = rft.getExtensions();
         exts.sort();
         // should automatically calculate the extensions from the mappings
-        expect(exts).toEqual(["js", "tmpl"]);
+        expect(exts).toEqual([".js", ".tmpl"]);
     });
 
     test("RegexFileType handles JS files", function() {

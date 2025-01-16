@@ -44,7 +44,7 @@ var RegexFileType = function(project) {
         this.mappings = project.settings.regex.mappings;
         var globExpressions = Object.keys(project.settings.regex.mappings);
         this.extensions = globExpressions.map(function(expression) {
-            var match = expression.match(/\.(\w+)$/);
+            var match = expression.match(/(\.\w+)$/);
             if (match && match.length > 1) {
                 return match[1];
             }
