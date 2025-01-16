@@ -85,9 +85,11 @@ used within the `regex` property:
           helps when trying to escape or unescape the string. Typically this
           is something like "java" or "js" or "html". This can be any string.
         - resourceType - the type of the resource that is being extracted.
-          This can be one of the following values:
-            - string - a simple string (the default - must define the source capturing group)
-            - plural - a plural string (regex must define both source and sourcePlural capturing groups)
+          See the description below for how the named capturing groups are
+          mapped to field names for each of these resource types.
+          The `resourceType` setting must have one of the following values:
+            - string - a simple string
+            - plural - a plural string
             - array - an array of strings
         - context - the context of the string. This can be any string
           that gives more information about the context of the string. This
@@ -212,6 +214,52 @@ from js files does not have its own unique id, one is generated using
 the `hash` strategy. That is, the hash of the source string is calculated
 and prepended with an "r" for "resource" (eg. "r34523234") and that is used
 as the unique id for that string.
+
+### Resource Type Field Mapping
+
+The `resourceType` setting for each mapping specifies the type of the
+resource that is being extracted. The named capturing groups in the regular
+expression are mapped to the fields in the resource file based on this
+setting. The following table shows how the named capturing groups are
+mapped to the fields in the resource file for each of the resource types:
+
+| Resource Type | Named Capturing Groups | Resource Fields      |
+|---------------|------------------------|----------------------|
+| string        | source                 | source               |
+| plural        | source                 | source.one           |
+| plural        | sourcePlural           | source.other         |
+| array         | source                 | source               |
+| all           | key                    | reskey               |
+| all           | comment                | comment              |
+| all           | context                | context              |
+| all           | flavor                 | flavor               |
+
+For array resource types, the `source` capturing group should contain a
+comma-separated list of strings. The plugin will split this string on commas
+and trim the quotes from each part. This will be the array of strings
+in the resource file.
+
+Example source file:
+
+```javascript
+$t(["array", "to", "translate"], "unique_reskey");
+```
+
+The expressions in the sample configuration above would parse this example
+and set the value of the `source` capturing group to
+`"array", "to", "translate"` which would create a resource file entry
+like this:
+
+```javascript
+    const resource = new ResourceArray({
+        "reskey": "unique_reskey",
+        "source": [
+            "array",
+            "to",
+            "translate"
+        ]
+    });
+```
 
 ## Some Tips for Getting Your Regular Expressions to Work Correctly
 

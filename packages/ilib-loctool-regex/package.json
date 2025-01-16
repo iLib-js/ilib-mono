@@ -49,9 +49,9 @@
     },
     "scripts": {
         "dist": "pnpm pack",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",
+        "test": "node node_modules/jest/bin/jest.js",
+        "test:watch": "node node_modules/jest/bin/jest.js --watch",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d *",
         "testregex": "node ./bin/testregex.js"
     },
@@ -61,6 +61,9 @@
     "devDependencies": {
         "ilib-loctool-javascript-resource": "workspace:^",
         "jest": "^29.7.0",
+        "loctool": "workspace:^"
+    },
+    "peerDependency": {
         "loctool": "workspace:^"
     },
     "dependencies": {
