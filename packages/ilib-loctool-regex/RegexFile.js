@@ -187,6 +187,8 @@ function parseArray(data) {
  * undefined.
  */
 RegexFile.prototype.matchExpression = function(data, exp, cb) {
+    // The cb parameter is a hidden, undocumented parameter that is used for testing only.
+    // It is a callback that gets called to give information about regex matches
     var regex = exp.regex;
     regex.lastIndex = 0;
     var result = regex.exec(data);

@@ -23,14 +23,19 @@ var CustomProject =  require("loctool/lib/CustomProject.js");
 
 var p = new CustomProject({
     id: "app",
-    plugins: [require.resolve("../.")],
-    sourceLocale: "en-US"
+    plugins: [
+        require.resolve("../.")
+    ],
+    sourceLocale: "en-US",
+    resourceFileTypes: {
+        "javascript": "ilib-loctool-javascript-resource"
+    }
 }, "./test/testfiles", {
     "locales":["en-GB", "de-DE", "fr-FR", "ja-JP"],
     "regex": {
         "mappings": {
             "**/*.js": {
-                "resourceFileType": "ilib-loctool-javascript-resource",
+                "resourceFileType": "javascript",
                 "template": "resources/strings_[locale].json",
                 "sourceLocale": "en-US",
                 "expressions": [
@@ -86,7 +91,7 @@ var p = new CustomProject({
                 ]
             },
             "**/*.tmpl": {
-                "resourceFileType": "ilib-loctool-javascript-resource",
+                "resourceFileType": "javascript",
                 "template": "resources/Translation[locale].json",
                 "sourceLocale": "en-US",
                 "expressions": [

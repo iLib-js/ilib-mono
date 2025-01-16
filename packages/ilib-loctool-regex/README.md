@@ -29,12 +29,15 @@ used within the `regex` property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - resourceFileType - the type of the resource file that will be
-      generated from the localized strings. This is the name of the
-      plugin that will be used to generate the resource file. This
-      overrides the shared resourceFileType at the root level of the
-      project.json, which specifies the default resource file type
-      for the whole project.
+    - resourceFileType - the name of the type of the resource file that
+      will be generated from the localized strings extracted from these
+      files. The resource file types are defined in the `resourceFileTypes`
+      setting at the top level of the `project.json` file. The name can
+      be any string as long as it is defined in `resourceFileTypes` object.
+      The resourceFileTypes object gives a mapping between these names
+      and the npm package name of the plugin that implements the resource
+      file type. The plugin must be installed in the project, with a
+      dependency in the `package.json` file in order to be loaded successfully.
     - template - the template to specify the output resource file
       path. See the loctool documentation for more information on
       how to use path name templates.
@@ -106,11 +109,16 @@ Example configuration for a web project with PHP and JavaScript files:
 
 ```json
 {
+    "projectType": "custom",
+    "resourceFileTypes": {
+        "php": "ilib-loctool-php-resource",
+        "json": "ilib-loctool-javascript-resource"
+    },
     "settings": {
         "regex": {
             "mappings": {
                 "**/*.php": {
-                    "resourceFileType": "ilib-loctool-php-resource",
+                    "resourceFileType": "php",
                     "template": "resources/Translations-[locale].php",
                     "sourceLocale": "en-US",
                     "expressions": [
@@ -142,7 +150,7 @@ Example configuration for a web project with PHP and JavaScript files:
                     ]
                 },
                 "**/*.js": {
-                    "resourceFileType": "ilib-loctool-json",
+                    "resourceFileType": "json",
                     "template": "resources/strings-[locale].json",
                     "sourceLocale": "en-US",
                     "expressions": [
@@ -183,20 +191,27 @@ string and is assigned to the `sourcePlural` capturing group. This creates a plu
 resource where the `source` string is the `one` plural category, and the `sourcePlural`
 string is the `other` plural category.
 
-The extracted strings will be localized and placed in
-a PHP resource file. The resource file will be named `Translations-[locale].php`
-where `[locale]` is replaced with the locale of the localized strings.
+The first mapping extracts strings from PHP files. The strings are
+extracted from the first parameter of `translate` function calls. The extracted
+strings will be
+localized and placed in a resource file of the type `php` which is implemented
+by the npm package `ilib-loctool-php-resource`. The resource file will be named
+`Translations-[locale].php` where `[locale]` is replaced with the locale of the
+localized strings, and the loctool will produce one of these files for each
+locale that it processes.
 
 Furthermore, any file named `*.js` will be parsed with the given regular
-expression. The regular expression extracts strings that are passed as
+js expression. The regular expression extracts strings that are passed as
 the first parameter to the `$t` function. The extracted strings will be
-localized and placed in a JSON resource file. The resource file will be
+localized and placed in a resource file of type `json`, which is implemented
+by the npm package `ilib-loctool-javascript-resource`. The resource file will be
 named `strings-[locale].json` where `[locale]` is replaced with the locale
 of the localized strings. It matches strings like 
 `$t("this is the string to translate")`. Since this type of string extracted
 from js files does not have its own unique id, one is generated using
-the `hash` strategy. That is, the hash of the source string is taken, and
-the string version of that hash is used as unique id.
+the `hash` strategy. That is, the hash of the source string is calculated
+and prepended with an "r" for "resource" (eg. "r34523234") and that is used
+as the unique id for that string.
 
 ## Some Tips for Getting Your Regular Expressions to Work Correctly
 

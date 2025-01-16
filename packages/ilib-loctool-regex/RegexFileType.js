@@ -51,16 +51,6 @@ var RegexFileType = function(project) {
             // no extension in this glob expression, so don't return anything
             return undefined;
         }.bind(this));
-
-        // make sure all of the resource file types are loaded
-        this.fileTypes = {};
-        globExpressions.forEach(function(expression) {
-            var mapping = project.settings.regex.mappings[expression];
-            if (mapping && mapping.resourceFileType) {
-                var resourceFileTypeClass = require(mapping.resourceFileType);
-                mapping.resourceFileTypeInstance = new resourceFileTypeClass(project);
-            }
-        });
     }
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
@@ -215,7 +205,9 @@ RegexFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
 RegexFileType.prototype.write = function(translations, locales) {
     // distribute all the resources to their resource files
     // and then let them write themselves out
-    var resFileType = this.project.getResourceFileType(this.type);
+
+    // this is the default global resource file
+    var globalResFileType = this.project.getResourceFileType(this.type);
     var res, file,
         resources = this.extracted.getAll(),
         db = this.project.db,
@@ -255,9 +247,15 @@ RegexFileType.prototype.write = function(translations, locales) {
                         r.reskey = res.reskey;
                     }
 
-                    file = resFileType.getResourceFile(locale, this.getLocalizedPath(res.mapping, res.getPath(), locale));
-                    file.addResource(r);
-                    this.logger.trace("Added " + r.reskey + " to " + file.pathName);
+                    var mapping = this.getMapping(res.getPath());
+                    var resFileType = this.project.getResourceFileType(mapping.resourceFileType);
+                    if (resFileType) {
+                        file = resFileType.getResourceFile(locale, this.getLocalizedPath(mapping, res.getPath(), locale));
+                        file.addResource(r);
+                        this.logger.trace("Added " + r.reskey + " to " + file.pathName);
+                    } else {
+                        this.logger.warn("No resource file type for " + res.getPath());
+                    }
                 }
             }.bind(this));
         }.bind(this));
@@ -270,7 +268,9 @@ RegexFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale(), this.getLocalizedPath(res.mapping, res.getPath(), locale));
+            var mapping = this.getMapping(res.getPath());
+            this.project.getResourceFileType(mapping.resourceFileType);
+            file = resFileType.getResourceFile(res.getTargetLocale(), this.getLocalizedPath(mapping, res.getPath(), locale));
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
@@ -319,17 +319,14 @@ RegexFileType.prototype.getResourceFileType = function() {
  * The path is matched against the mappings in the project settings to determine
  * which resource file type to use.
  *
- * @param {String} pathName path to the file in question
+ * @param {String} pathName the path to the file
  * @returns {Function|undefined} an instance of the file type class, or undefined if
  * the file type could not be determined
  */
 RegexFileType.prototype.getResourceFileTypeForPath = function(pathName) {
     var mapping = this.getMapping(pathName);
-    if (mapping && mapping.resourceFileTypeInstance) {
-        return mapping.resourceFileTypeInstance;
-    }
-    return undefined;
-};
+    return this.project.getResourceFileType(mapping.resourceFileType);
+}
 
 /**
  * Return the translation set containing all of the extracted
