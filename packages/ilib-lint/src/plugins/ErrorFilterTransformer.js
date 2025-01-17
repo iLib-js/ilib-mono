@@ -41,7 +41,7 @@ class ErrorFilterTransformer extends Transformer {
      * @returns {IntermediateRepresentation} the filtered intermediate representation
      */
     transform(ir, results, fileStats) {
-        if (ir.getType() !== 'resource') {
+        if (ir.getType() !== 'resource' || !results) {
             return ir;
         }
         const resources = ir.getRepresentation();
@@ -51,9 +51,7 @@ class ErrorFilterTransformer extends Transformer {
         });
         const filteredResources = resources.filter(resource => {
             const result = resultIndex[resource.getKey()];
-            if (result && result.type === 'error') {
-                return false;
-            }
+            return !result || result.severity !== 'error';
         });
         return new IntermediateRepresentation({
             type: ir.getType(),
