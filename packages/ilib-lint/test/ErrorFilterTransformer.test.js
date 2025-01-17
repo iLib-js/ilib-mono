@@ -19,6 +19,7 @@
 
 import { Transformer, IntermediateRepresentation, Result } from "ilib-lint-common";
 import { ResourceString, ResourceArray, ResourcePlural } from "ilib-tools-common";
+import { jest } from '@jest/globals';
 
 import ErrorFilterTransformer from "../src/plugins/ErrorFilterTransformer.js";
 
@@ -37,7 +38,7 @@ describe("ErrorFilterTransformer", () => {
     });
 
     test("can filter errors out of an intermediate representation", () => {
-        expect.assertions(1);
+        expect.assertions(4);
 
         const eft = new ErrorFilterTransformer();
         const resource1 = new ResourceString({
@@ -139,7 +140,7 @@ describe("ErrorFilterTransformer", () => {
 
         const transformed = eft.transform(representation, results, undefined);
 
-        expect(transformed).toBe(representation);
+        expect(transformed).toStrictEqual(representation);
     });
     
     test("returns the same representation if there are no results", () => {
@@ -177,7 +178,7 @@ describe("ErrorFilterTransformer", () => {
 
         const transformed = eft.transform(representation, [], undefined);
 
-        expect(transformed).toBe(representation);
+        expect(transformed).toStrictEqual(representation);
     });
 
     test("returns the original representation if it is not a resource representation", () => {
@@ -207,7 +208,7 @@ describe("ErrorFilterTransformer", () => {
 
         const transformed = eft.transform(representation, [], undefined);
 
-        expect(transformed).toBe(representation);
+        expect(transformed).toStrictEqual(representation);
     });
     
     test("returns the original representation if the results only contains errors that do not apply to the resources", () => {
@@ -257,6 +258,6 @@ describe("ErrorFilterTransformer", () => {
 
         const transformed = eft.transform(representation, results, undefined);
 
-        expect(transformed).toBe(representation);
+        expect(transformed).toStrictEqual(representation);
     });
 });
