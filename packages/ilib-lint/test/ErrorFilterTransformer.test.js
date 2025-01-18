@@ -82,7 +82,7 @@ describe("ErrorFilterTransformer", () => {
             sourceFile: jest.fn(() => "sourceFile")
         });
 
-        const transformed = eft.transform(representation, results, undefined);
+        const transformed = eft.transform(representation, results);
 
         expect(transformed).toBeDefined();
         const ir = transformed.getRepresentation();
@@ -138,7 +138,7 @@ describe("ErrorFilterTransformer", () => {
             sourceFile: jest.fn(() => "sourceFile")
         });
 
-        const transformed = eft.transform(representation, results, undefined);
+        const transformed = eft.transform(representation, results);
 
         expect(transformed).toStrictEqual(representation);
     });
@@ -176,7 +176,7 @@ describe("ErrorFilterTransformer", () => {
             sourceFile: jest.fn(() => "sourceFile")
         });
 
-        const transformed = eft.transform(representation, [], undefined);
+        const transformed = eft.transform(representation, []);
 
         expect(transformed).toStrictEqual(representation);
     });
@@ -191,7 +191,7 @@ describe("ErrorFilterTransformer", () => {
             sourceFile: "sourceFile"
         });
 
-        const transformed = eft.transform(representation, [], undefined);
+        const transformed = eft.transform(representation, []);
 
         expect(transformed).toBe(representation);
     });
@@ -206,7 +206,7 @@ describe("ErrorFilterTransformer", () => {
             sourceFile: "sourceFile"
         });
 
-        const transformed = eft.transform(representation, [], undefined);
+        const transformed = eft.transform(representation, []);
 
         expect(transformed).toStrictEqual(representation);
     });
@@ -256,7 +256,7 @@ describe("ErrorFilterTransformer", () => {
             sourceFile: jest.fn(() => "sourceFile")
         });
 
-        const transformed = eft.transform(representation, results, undefined);
+        const transformed = eft.transform(representation, results);
 
         expect(transformed).toStrictEqual(representation);
     });
