@@ -37,10 +37,9 @@ class ErrorFilterTransformer extends Transformer {
      * 
      * @param {IntermediateRepresentation} ir the intermediate representation to filter
      * @param {Result[]|undefined} results the results of the linting process
-     * @param {FileStats|undefined} fileStats the statistics of the files
      * @returns {IntermediateRepresentation} the filtered intermediate representation
      */
-    transform(ir, results, fileStats) {
+    transform(ir, results) {
         if (ir.getType() !== 'resource' || !results) {
             return ir;
         }
