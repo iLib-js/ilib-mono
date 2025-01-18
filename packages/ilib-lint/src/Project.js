@@ -543,6 +543,22 @@ class Project extends DirItem {
     }
 
     /**
+     * Apply any transformer plugins to the intermediate representation of
+     * each file.
+     */
+    applyTransformers() {
+        // this.files.forEach(file => file.applyTransformers());
+    }
+
+    /**
+     * Serialize files in this project using the Serializer plugin for the
+     * file type of each file.
+     */
+    serialize() {
+        // this.files.forEach(file => file.serialize());
+    }
+
+    /**
      * Return the I18N Score of this project. The score is a number from
      * zero to 100 which gives the approximate localization readiness of
      * the whole project. The absolute number of the score is not as
@@ -579,7 +595,10 @@ class Project extends DirItem {
         let exitValue = 0;
 
         let startTime = new Date();
+
         const results = this.findIssues(this.options.opt.locales);
+        this.applyTransformers();
+
         let endTime = new Date();
 
         this.resultStats = {
