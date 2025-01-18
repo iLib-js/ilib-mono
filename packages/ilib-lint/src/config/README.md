@@ -92,12 +92,21 @@ The `ilib-lint-config.json` file can have any of the following properties:
         the parser that knows how to parse files with the file name extension
         of the file being parsed. Eg, "js" files will be parsed by the
         "Javascript" parser. The idea behind the parsers array is that in some
-        projects, there are some file types uses a non-standard file name
-        extension and thus none of the parsers knows how to parse it. For
+        projects, there are some file types that use a non-standard file name
+        extension and thus none of the parsers know how to parse it. For
         example, your project might have have some ".jscript"
         files in it, which are really Javascript, but the linter does not know
         that yet. You would specify the "Javascript" parser in the "jscript" file
         type to specify how to parse files of that type.
+    -   transformers (Array of String) - name the transformers to apply to files
+        of this type. The transformers are applied in the order specified.
+        If none are specified, then the linter will not apply any transformers.
+    -   serializer (String) - name the serializer to use when serializing a file
+        of this type. If the file has been modified in some way, either by a
+        Transformer or a Fixer plugin, the serializer can be used to serialize
+        the modified file. If not specified, the linter will try to determine the
+        serializer from the file name extension of the source file. If no appropriate
+        serializer is found, the file will not be serialized.
 -   paths (Object) - this maps sets of files to file types. The properties in this
     object are [micromatch](https://github.com/micromatch/micromatch) glob expressions
     that select a subset of files within the current project. The glob expressions
@@ -187,8 +196,12 @@ Here is an example of a configuration file:
             // these are actually special xliff files in our project,
             // but they have the same syntax as regular xliff, so we can
             // still use the regular xliff parser to parse them
-            "parsers": [ "xliff" ],
-            "ruleset": ["resource"]
+            "parsers": [ "sdlxliff" ],
+            "ruleset": ["resource"],
+            // this transformer filters out all the "do not translate" translation units
+            // from the xliff file -- they should not be translated anyways!
+            "transformers": ["RemoveDoNotTranslateUnits"],
+            "serializer": "sdlxliff"
         }
     },
     // this maps micromatch path expressions to a file type definition
@@ -210,3 +223,77 @@ Here is an example of a configuration file:
     }
 }
 ```
+
+### Hierarchy
+
+It may be instructive to understand how the hierarchy of settings works, as many
+settings depend on other settings.
+
+The top level setting is "paths". This maps a set of micromatch expressions to a
+file type. In the example above, the "paths" object maps "src/**/*.json" to the
+"json" file type. That is, all of the json files in the "src" directory and its
+subdirectories will be processed with the rules for the json file type. The idea
+is that you can define a set of file types in the "filetypes" section that are
+different from each other, and then map sets of files in your project to those
+file types. In this way, you can have a project that contains json files in the
+src directory, and those json files are treated differently than json files in
+the test directory.
+
+A file type is a set of settings that apply to a particular type of file. It
+specifies how to handle that file, what rules to apply, and so on. You can 
+think of the settings in a file type definition as a pipeline. The pipeline
+starts with the file. First, the file is read from disk, and then parsers are
+applied so that the linter can sense of the file contents. From there, sets
+of rules are applied to find any problems or issues with the file. Next, if
+the plugins define any fixers, those fixers are applied to the file to try
+to fix any problems. Next, if there are any transformers, those transformers
+are applied to the file to transform it in some way. Finally, if the file has
+been modified in some way, either by a Transformer or a Fixer plugin, the last
+part of the pipeline is a serializer, which can write the file back to disk.
+
+A rule is a way to define a set of conditions that must be met in
+order for a file to be considered valid. Rules can be implemented as
+declarative rules, which are defined in the config file, or as plugin rules,
+which are defined with code in a plugin. Rules can be applied to any file
+type as long as it understands the file type. For example, a rule that checks
+for a missing semicolon could be applied to a JavaScript file, but it would
+not be applied to a JSON file.
+
+A declarative rule is made up of one or more
+"matchers", which are regular expressions that match against the text in the
+file. If a matcher matches, the rule is considered to have failed, and a
+"result" is generated. A result is an object that contains information about
+the failure, such as the line number, column number, and a message.
+
+A rule set is simply a named collection of rules that can be applied to a file
+type.
+
+Results are collected together across all files and all rule sets and
+presented to the user in a variety of ways depending on the formatter that is
+used. The most common way is to output the results to the console in a
+colorful human-readable format. Alternately, the results can be serialized to
+a file in a variety of formats, including JSON or HTML, which might be
+read by another tool or program such as an integrated development environment (IDE).
+A plugin can implement a custom formatter to output the results in a format that
+is useful to the consumer of the results.
+
+Illustration of the hierarchy:
+
+```
+paths
+    |
+    +---> filetypes
+    |         |
+    |         +---> rulesets
+    |                   |
+    |                   +---> rules
+    |
+    +---> rulesets
+              |
+              +---> rules
+```
+
+The paths may map to file types, which in turn map to rulesets, which in turn map to rules.
+Paths may also map directly to rulesets or rules if you do not want to define
+a whole file type.
+
