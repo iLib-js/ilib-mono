@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import walk from "../src/DirectoryWalk.js";
+import { walk } from "../src/index.js";
 
 describe("test walk", () => {
     test("test on a regular dir with no includes or excludes or subdirectories", () => {
