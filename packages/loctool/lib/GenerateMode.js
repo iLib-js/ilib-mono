@@ -24,8 +24,9 @@ var ilib = require("ilib");
 
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
-var getIntermediateFile = require("./IntermediateFileFactory.js");
+var iff = require("./IntermediateFileFactory.js");
 
+var getIntermediateFile = iff.getIntermediateFile;
 var logger = log4js.getLogger("loctool.lib.GenerateMode");
 
 /**
