@@ -58,7 +58,7 @@ describe("test walk", () => {
         const files = walk("./test/testfiles/walk2323");
         expect(files).toEqual([]);
     });
-    
+
     test("test on a non-string param", () => {
         expect.assertions(1);
 
@@ -201,7 +201,7 @@ describe("test walk", () => {
             }
         ]);
     });
-    
+
     test("test on a regular dir with subdirectories, but no includes or excludes", () => {
         expect.assertions(1);
 
