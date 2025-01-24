@@ -1,7 +1,7 @@
 /*
  * LocalRepository.js - a collection of resource strings backed by a local set of files
  *
- * Copyright © 2016-2017, 2020, 2022, 2024 HealthTap, Inc.
+ * Copyright © 2016-2017, 2020, 2022, 2024-2025 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,16 @@ var fs = require("fs");
 var path = require("path");
 var log4js = require("log4js");
 var ilib = require("ilib");
+var itc = require("ilib-tools-common");
 
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
 var iff = require("./IntermediateFileFactory.js");
 
+var getIntermediateFile = iff.getIntermediateFile;
+var getIntermediateFileExtensions = iff.getIntermediateFileExtensions;
 var logger = log4js.getLogger("loctool.lib.LocalRepository");
+var walk = itc.walk;
 
 var getIntermediateFile = iff.getIntermediateFile;
 
@@ -76,6 +80,24 @@ var poFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-
 var numericRegionCode = /^[0-9][0-9][0-9]$/;
 
 /**
+ * Take a file list returned from the walk() function and return a list of
+ * full path names for each file. We do not need the names of the directories.
+ * @private
+ * @param {Array.<File>} fileList the list of files to filter
+ * @param {String} directory the directory to prepend to each file name
+ * @returns {Array.<String>} the list of full path names
+ */
+function getFullPaths(fileList, directory) {
+    return fileList.flatMap(function(file) {
+        var pathName = path.join(directory, file.path);
+        if (file.type === "directory") {
+            return getFullPaths(file.children, pathName);
+        }
+        return pathName;
+    });
+}
+
+/**
  * Initialize this repository and read in all of the strings.
  *
  * @param {Project} project the current project
@@ -92,41 +114,31 @@ LocalRepository.prototype.init = function(cb) {
     var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
 
     if (this.xliffsDir && this.xliffsDir.length > 0) {
+        var files = [];
+        var miniMatchExpressions = getIntermediateFileExtensions().map(function(ext) {
+            return "**/*." + ext;
+        });
         this.xliffsDir.forEach(function(dir) {
-            if (fs.existsSync(dir)) {
-                var list = fs.readdirSync(dir);
-                var pathName;
+            if (!fs.existsSync(dir)) {
+               logger.warn("Translation dir " + dir + " does not exist.");
+               return;
+            }
+            var fileList = walk(dir, miniMatchExpressions);
+            files = files.concat(getFullPaths(fileList, dir));
+        }.bind(this));
 
-                list.filter(function(file) {
-                    var match = fileFilter.exec(file);
-                    if (!match ||
-                       match.length < 2 ||
-                       (match.length >= 3 && match[2] && !utils.iso639[match[2]]) ||
-                       (match.length >= 5 && match[4] && !utils.iso15924[match[4]]) ||
-                       (match.length >= 7 && match[6] && !utils.iso3166[match[6]] && !numericRegionCode.test(match[6]))) {
-                        return false;
-                    }
-                    return true;
-                }).forEach(function (file) {
-                    pathName = path.join(dir, file);
-                    if (fs.existsSync(pathName)) {
-                        var intermediateFile = getIntermediateFile({
-                            sourceLocale: this.sourceLocale,
-                            path: pathName,
-                            projectName: this.project && this.project.getProjectId()
-                        });
-                        logger.info("Reading in translations from the xliffs dir: " + pathName);
-                        this.ts.addSet(intermediateFile.read());
-                        numIFsRead++;
-                    } else {
-                        logger.warn("Could not open file: " + pathName);
-                    }
-                }.bind(this));
-                if (numIFsRead === 0) {
-                    logger.warn("Dir exists, but could not read any translation files from it: " + this.xliffsDir);
-                }
+        files.forEach(function(file) {
+            if (fs.existsSync(file)) {
+                var intermediateFile = getIntermediateFile({
+                    sourceLocale: this.sourceLocale,
+                    path: file,
+                    projectName: this.project && this.project.getProjectId()
+                });
+                logger.info("Reading in translations from the translations dir: " + file);
+                this.ts.addSet(intermediateFile.read());
+                numIFsRead++;
             } else {
-               logger.warn("Xliff dir " + dir + " does not exist.");
+                logger.warn("Could not open file: " + file);
             }
         }.bind(this));
     }

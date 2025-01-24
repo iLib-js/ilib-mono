@@ -1,7 +1,7 @@
 /*
  * Project.js - represents an project
  *
- * Copyright © 2016-2017, 2019-2024 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2025 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,6 @@ var log4js = require("log4js");
 var iff = require("./IntermediateFileFactory.js");
 
 var getIntermediateFile = iff.getIntermediateFile;
-var getIntermediateFileExtension = iff.getIntermediateFileExtension;
-
 var logger = log4js.getLogger("loctool.lib.Project");
 
 function smartJoin(parent, child) {

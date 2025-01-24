@@ -351,7 +351,7 @@ describe("test walk", () => {
 
     test("test on a regular dir with subdirectories, includes and excludes, where the includes override the excludes", () => {
         expect.assertions(1);
-debugger;
+
         const files = walk("./test/testfiles/walk2", ["sub1/c.js"], ["sub1/*"]);
         expect(files).toEqual([
             {
