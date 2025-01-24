@@ -1,0 +1,109 @@
+<div class="topicTypes">
+    <div class="topbarContainer">
+        <div class="topbar">
+            <a class="item description" topic_chooser="#description">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Description' | f:'description'}
+                </div>
+            </a>
+            <a class="item conditions" topic_chooser="#participants">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Participants' | f:'participants'}
+                    (<span class="number"></span>)
+                </div>
+            </a>
+            <a class="item symptoms" topic_chooser="#visitors">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Visitors' | f:'visitors'}
+                    (<span class="number"></span>)
+                </div>
+            </a>
+            <a class="item treatments" topic_chooser="#spectators">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Spectators' | f:'spectators'}
+                    (<span class="number"></span>)
+                </div>
+            </a>
+            <a class="item tests" topic_chooser="#tests">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Tests' | f:'tests'}
+                    (<span class="number"></span>)
+                </div>
+            </a>
+            <a class="item riskFactors" topic_chooser="#activities">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Activities and Events' | f:'activities'}
+                    (<span class="number"></span>)
+                </div>
+            </a>
+            <a class="item resolution" topic_chooser="#solutions">
+                <div class="iconContainer"><div class="icon"></div></div>
+                <div>
+                    {* @L10N topic type label for the icon *}
+                    {'Solutions' | f:'solutions'}
+                    (<span class="number"></span>)
+                </div>
+            </a>
+        </div>
+        <a href="#" class="left arrow"></a>
+        <a href="#" class="right arrow"></a>
+    </div>
+
+    <div class="content">
+        <div class="section devices" id="devices">
+            <%
+            var listsOver4 = false;
+            var seemoreLen = 0;
+            var subcats = [$t('Tablets'), $t('Smart Watches'), $t('Hand-held Devices'), $t('Other')];
+            _.each(subcats, function(subcat, j){
+                var list = topic.attribute.kb_attribute_relationships[subcat] || [];
+                if (list.length > 0) {
+            %>
+                    <div class="subcatTitle"><div class="icon <%= subcat %>"></div><%= subcat %></div>
+                    <%
+                    _.each(list, function(item, i){
+                        var more = i > 2 ? 'more m' + Math.floor(i/100) : '';
+                    %>
+                    <a href="<%= item.url.toHashFragment() %>" class="topicBasic <%= more %>">
+                        <%= App.image_tag( item.image_url_low_res, {'class' : 'topicImg'}) %>
+                        <div class="name"><%= item.name %></div>
+                        <div class="salesContainer">
+                            <div class="salesBullet <%= item.sales %>"></div>
+                            <div class="sales"><%= item.sales %></div>
+                        </div>
+                    </a>
+                    <%
+                    });
+                    %>
+                    <%
+                    if (list.length > 3) {
+                    %>
+                    <button class="cancel">
+                        {'Cancel' | f:'cancel'}
+                    </button>
+                    <a href="#" class="seemoreButton">
+                        {* @L10N label for the button that shows more items *} {'See more' | f:'see_more'}
+                    </a>
+                    <%
+                    }
+                    %>
+            <%
+                }
+            });
+            %>
+        </div>
+
+    </div>
+</div>
