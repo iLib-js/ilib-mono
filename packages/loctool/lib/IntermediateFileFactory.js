@@ -60,4 +60,16 @@ var getIntermediateFile = function(options) {
     }
 };
 
-module.exports = getIntermediateFile;
+var intFormatToFileExtensionMap = {
+    "xliff": "xliff",
+    "po": "pot"
+};
+
+var getIntermediateFileExtension = function(type) {
+    return intFormatToFileExtensionMap[type] || type;
+};
+
+module.exports = {
+    getIntermediateFile,
+    getIntermediateFileExtension
+};

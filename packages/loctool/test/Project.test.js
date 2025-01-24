@@ -35,10 +35,12 @@ describe("project", function() {
             "./test/testfiles/loctest-new-es-US.xliff",
             "./test/testfiles/loctest-new-ja-JP.xliff",
             "./test/testfiles/loctest-new-zh-Hans-CN.xliff",
+            "./test/testfiles/de-DE/md/test1.md",
+            "./test/testfiles/en-GB/md/test1.md",
             "./test/testfiles/es-US/md/test1.md",
             "./test/testfiles/ja-JP/md/test1.md",
             "./test/testfiles/zh-Hans-CN/md/test1.md",
-            "./test/testfiles/loctest-new-en-GB.po",
+            "./test/testfiles/loctest-new-en-GB.pot",
             "./test/testfiles/loctest-new-en-GB.xliff",
             "./test/testfiles/project2/loctest-extracted.xliff",
             "./test/testfiles/project2/loctest-new-es-US.xliff",
@@ -46,6 +48,16 @@ describe("project", function() {
             "./test/testfiles/project2/loctest-new-ru-RU.xliff",
             "./test/testfiles/project2/loctest-new-en-GB.xliff",
             "./test/testfiles/project2/loctest.xliff",
+            "./test/testfiles/project2/res/values-en/arrays.xml",
+            "./test/testfiles/project2/res/values-en/plurals.xml",
+            "./test/testfiles/project2/res/values-es/arrays.xml",
+            "./test/testfiles/project2/res/values-es/plurals.xml",
+            "./test/testfiles/project2/res/values-ja/arrays.xml",
+            "./test/testfiles/project2/res/values-ja/plurals.xml",
+            "./test/testfiles/project2/res/values-ps-rDO/arrays.xml",
+            "./test/testfiles/project2/res/values-ps-rDO/plurals.xml",
+            "./test/testfiles/project2/res/values-ru/arrays.xml",
+            "./test/testfiles/project2/res/values-ru/plurals.xml",
             "./test/testfiles/translations/loctest.xliff",
             "./test/testfiles/project3/loctest-extracted.xliff",
             "./test/testfiles/project3/loctest-new-es-US.xliff",
@@ -54,14 +66,14 @@ describe("project", function() {
             "./test/testfiles/project3/es-US.mock",
             "./test/testfiles/project3/ja-JP.mock",
             "./test/testfiles/project3/zh-Hans-CN.mock",
-            "./test/testfiles/loctest-extracted.po",
-            "./test/testfiles/loctest-new-es-US.po",
-            "./test/testfiles/loctest-new-ja-JP.po",
-            "./test/testfiles/loctest-new-zh-Hans-CN.po",
-            "./test/testfiles/project3/loctest-extracted.po",
-            "./test/testfiles/project3/loctest-new-es-US.po",
-            "./test/testfiles/project3/loctest-new-ja-JP.po",
-            "./test/testfiles/project3/loctest-new-zh-Hans-CN.po"
+            "./test/testfiles/loctest-extracted.pot",
+            "./test/testfiles/loctest-new-es-US.pot",
+            "./test/testfiles/loctest-new-ja-JP.pot",
+            "./test/testfiles/loctest-new-zh-Hans-CN.pot",
+            "./test/testfiles/project3/loctest-extracted.pot",
+            "./test/testfiles/project3/loctest-new-es-US.pot",
+            "./test/testfiles/project3/loctest-new-ja-JP.pot",
+            "./test/testfiles/project3/loctest-new-zh-Hans-CN.pot"
         ].forEach(rmrf);
     });
 
@@ -96,7 +108,7 @@ describe("project", function() {
         expect.assertions(2);
 
         // set up first
-        expect(!fs.existsSync("./test/testfiles/loctest-extracted.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/loctest-extracted.pot")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {
             'locales': ['ja-JP'],
             'intermediateFormat': 'po'
@@ -108,7 +120,7 @@ describe("project", function() {
                 project.write(function() {
                     project.save(function() {
                         project.close(function() {
-                            expect(fs.existsSync("./test/testfiles/loctest-extracted.po")).toBeTruthy();
+                            expect(fs.existsSync("./test/testfiles/loctest-extracted.pot")).toBeTruthy();
                         });
                     });
                 });
@@ -145,7 +157,7 @@ describe("project", function() {
         // set up first
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.po")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.po")).toBeTruthy();
-        expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.pot")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {
             'locales': ['ja-JP'],
             'intermediateFormat': 'po'
@@ -157,9 +169,9 @@ describe("project", function() {
                 project.write(function() {
                     project.save(function() {
                         project.close(function() {
-                            expect(fs.existsSync("./test/testfiles/loctest-new-es-US.po")).toBeTruthy();
-                            expect(fs.existsSync("./test/testfiles/loctest-new-ja-JP.po")).toBeTruthy();
-                            expect(fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.po")).toBeTruthy();
+                            expect(fs.existsSync("./test/testfiles/loctest-new-es-US.pot")).toBeTruthy();
+                            expect(fs.existsSync("./test/testfiles/loctest-new-ja-JP.pot")).toBeTruthy();
+                            expect(fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.pot")).toBeTruthy();
                         });
                     });
                 });
@@ -465,9 +477,9 @@ describe("project", function() {
     test("Project localize a mock file with plurals using no plural conversions, right content, using po files", function() {
         expect.assertions(18);
         // set up first
-        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.po")).toBeTruthy();
-        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.po")).toBeTruthy();
-        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.po")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.pot")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.pot")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.pot")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/es-US.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
@@ -483,13 +495,13 @@ describe("project", function() {
                 project.write(function() {
                     project.save(function() {
                         project.close(function() {
-                            var filename = "./test/testfiles/project3/loctest-new-es-US.po";
+                            var filename = "./test/testfiles/project3/loctest-new-es-US.pot";
                             expect(fs.existsSync(filename)).toBeTruthy();
                             var actual = fs.readFileSync(filename, "utf8");
                             var expected =
                                 'msgid ""\n' +
                                 'msgstr ""\n' +
-                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-es-US.po  #-#-#-#-#\\n"\n' +
+                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-es-US.pot  #-#-#-#-#\\n"\n' +
                                 '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
                                 '"Content-Transfer-Encoding: 8bit\\n"\n' +
                                 '"Generated-By: loctool\\n"\n' +
@@ -507,13 +519,13 @@ describe("project", function() {
                                 'msgstr[1] ""\n';
                             expect(actual).toBe(expected);
 
-                            filename = "./test/testfiles/project3/loctest-new-ja-JP.po";
+                            filename = "./test/testfiles/project3/loctest-new-ja-JP.pot";
                             expect(fs.existsSync(filename)).toBeTruthy();
                             var actual = fs.readFileSync(filename, "utf8");
                             var expected =
                                 'msgid ""\n' +
                                 'msgstr ""\n' +
-                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-ja-JP.po  #-#-#-#-#\\n"\n' +
+                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-ja-JP.pot  #-#-#-#-#\\n"\n' +
                                 '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
                                 '"Content-Transfer-Encoding: 8bit\\n"\n' +
                                 '"Generated-By: loctool\\n"\n' +
@@ -530,13 +542,13 @@ describe("project", function() {
                                 'msgstr[0] ""\n';
                             expect(actual).toBe(expected);
 
-                            filename = "./test/testfiles/project3/loctest-new-zh-Hans-CN.po";
+                            filename = "./test/testfiles/project3/loctest-new-zh-Hans-CN.pot";
                             expect(fs.existsSync(filename)).toBeTruthy();
                             var actual = fs.readFileSync(filename, "utf8");
                             var expected =
                                 'msgid ""\n' +
                                 'msgstr ""\n' +
-                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-zh-Hans-CN.po  #-#-#-#-#\\n"\n' +
+                                '"#-#-#-#-#  test/testfiles/project3/loctest-new-zh-Hans-CN.pot  #-#-#-#-#\\n"\n' +
                                 '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
                                 '"Content-Transfer-Encoding: 8bit\\n"\n' +
                                 '"Generated-By: loctool\\n"\n' +

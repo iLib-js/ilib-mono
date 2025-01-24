@@ -34,7 +34,10 @@ var utils = require("./utils.js");
 var conversions = require("./ResourceConvert.js");
 var pluralCategories = require("../db/pluralCategories.json");
 var log4js = require("log4js");
-var getIntermediateFile = require("./IntermediateFileFactory.js");
+var iff = require("./IntermediateFileFactory.js");
+
+var getIntermediateFile = iff.getIntermediateFile;
+var getIntermediateFileExtension = iff.getIntermediateFileExtension;
 
 var logger = log4js.getLogger("loctool.lib.Project");
 
@@ -724,7 +727,7 @@ Project.prototype.close = function(cb) {
         var dir = this.xliffsOut;
         var base = this.options.id;
         var fileFormat = this.settings.intermediateFormat || "xliff";
-        var extractedPath = path.join(dir, base + "-extracted." + fileFormat);
+        var extractedPath = path.join(dir, base + "-extracted." + getIntermediateFileExtension(fileFormat));
         var extracted = new TranslationSet(this.sourceLocale);
 
         // make sure the output dir exists before we attempt to write anything there!
@@ -792,7 +795,7 @@ Project.prototype.close = function(cb) {
             for (var i = 0; i < newLocales.length; i++) {
                 var locale = newLocales[i];
                 if (!this.isSourceLocale(locale) && !PseudoFactory.isPseudoLocale(locale, this)) {
-                    var newPath = path.join(dir, base + "-new-" + locale + "." + fileFormat);
+                    var newPath = path.join(dir, base + "-new-" + locale + "." + getIntermediateFileExtension(fileFormat));
                     var resources = newres.getAll().filter(function(res) {
                         return res.getTargetLocale() === locale && !res.dnt &&
                             (res.source || res.sourceArray || res.sourceStrings);

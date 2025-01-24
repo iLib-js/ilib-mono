@@ -19,9 +19,12 @@
 var fs = require("fs");
 var ToolsCommon = require("ilib-tools-common");
 
-var getIntermediateFile = require("../lib/IntermediateFileFactory.js");
+var iff = require("../lib/IntermediateFileFactory.js");
 var TranslationSet = require("../lib/TranslationSet.js");
 var ResourceFactory = require("../lib/ResourceFactory.js");
+
+var getIntermediateFile = iff.getIntermediateFile;
+var getIntermediateFileExtension = iff.getIntermediateFileExtension;
 
 describe("intermediate file", function() {
     afterEach(function() {
@@ -31,6 +34,23 @@ describe("intermediate file", function() {
         if (fs.existsSync("test/testfiles/foo.po")) {
             fs.unlinkSync("test/testfiles/foo.po");
         }
+    });
+
+    test("get the right intermediate file extension for xliff format files", function() {
+        expect.assertions(1);
+
+        expect(getIntermediateFileExtension("xliff")).toBe("xliff");
+    });
+
+    test("get the right intermediate file extension for po format files", function() {
+        expect.assertions(1);
+        expect(getIntermediateFileExtension("po")).toBe("pot");
+    });
+
+    test("get the right intermediate file extension for unknown format files", function() {
+        expect.assertions(1);
+        // should return the format name if it is not recognized
+        expect(getIntermediateFileExtension("foo")).toBe("foo");
     });
 
     test("test writing an intermediate file in xliff format", function() {

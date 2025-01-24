@@ -24,10 +24,11 @@ var ilib = require("ilib");
 
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
-var getIntermediateFile = require("./IntermediateFileFactory.js");
+var iff = require("./IntermediateFileFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.LocalRepository");
 
+var getIntermediateFile = iff.getIntermediateFile;
 
 /**
  * @class A class that represents the local story of a set of
@@ -69,7 +70,7 @@ var LocalRepository = function (options) {
 // - Script the 4 letter ISO 15924 code for the script with only the first letter capitalized. This part is optional.
 // - REGION is the 2 letter upper-case ISO 3166 code for the region, OR the 3-digit UN.49 region code. This part is also optional.
 var xliffFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?\.xliff$/;
-var poFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?\.po$/;
+var poFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-Z][A-Z]|[0-9][0-9][0-9]))?\.pot?$/;
 
 // recognize the UN.49 3-digit region codes
 var numericRegionCode = /^[0-9][0-9][0-9]$/;
