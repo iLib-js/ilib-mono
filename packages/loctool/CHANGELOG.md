@@ -1,5 +1,15 @@
 # loctool
 
+## 2.28.0
+
+### Minor Changes
+
+- 90c28fa: - added the ability to read and write .pot files as
+  intermediate file format and as translation file
+  format.
+  - Also, .po file can still be read and written if necessary
+    as the format for po and pot files are the same.
+
 ## 2.27.0
 
 ### Minor Changes
