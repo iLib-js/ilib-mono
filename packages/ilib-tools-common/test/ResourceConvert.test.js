@@ -528,6 +528,40 @@ describe("resource conversion functions", function() {
         expect(plural.getPivots()).toStrictEqual(["count"]);
     });
 
+    test("convert an ICU plural source string into a plural resource with text before the plural but not after ", function() {
+        expect.assertions(3);
+
+        const string = new ResourceString({
+            sourceLocale: "en-US",
+            source: "There {count, plural, one {is # item in your cart.} other {are # items in your cart.}}"
+        });
+        const expected = {
+            one: "There is {count} item in your cart.",
+            other: "There are {count} items in your cart."
+        };
+        const plural = convertICUToPluralRes(string);
+        expect(plural.getType()).toBe("plural");
+        expect(plural.getSource()).toStrictEqual(expected);
+        expect(plural.getPivots()).toStrictEqual(["count"]);
+    });
+
+    test("convert an ICU plural source string into a plural resource with text after the plural but not before", function() {
+        expect.assertions(3);
+
+        const string = new ResourceString({
+            sourceLocale: "en-US",
+            source: "{count, plural, one {There is # item} other {There are # items}} in your cart."
+        });
+        const expected = {
+            one: "There is {count} item in your cart.",
+            other: "There are {count} items in your cart."
+        };
+        const plural = convertICUToPluralRes(string);
+        expect(plural.getType()).toBe("plural");
+        expect(plural.getSource()).toStrictEqual(expected);
+        expect(plural.getPivots()).toStrictEqual(["count"]);
+    });
+
     test("convert an ICU plural target string with text outside the plural into a plural resource", function() {
         expect.assertions(3);
         const string = new ResourceString({
