@@ -37,6 +37,7 @@ var log4js = require("log4js");
 var iff = require("./IntermediateFileFactory.js");
 
 var getIntermediateFile = iff.getIntermediateFile;
+var getIntermediateFileExtension = iff.getIntermediateFileExtension;
 var logger = log4js.getLogger("loctool.lib.Project");
 
 function smartJoin(parent, child) {
