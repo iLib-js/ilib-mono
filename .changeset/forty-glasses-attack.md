@@ -8,7 +8,7 @@ Modified the way loctool reads translated resource files
   has changed.
   - Previously, it would read `[dir]/*.xliff` and now it reads `[dir]/**/*.xliff`
     or `[dir]/**/*.po`. That is, it reads each directory recursively.
-- renamed -x and --xliffDir to -t and --translations but the old
+- renamed -x and --xliffsDir to -t and --translations but the old
   command-line arguments are still accepted
 - does not read only resource files that have a locale in their
   file name. It reads all files in the xliffDir.
