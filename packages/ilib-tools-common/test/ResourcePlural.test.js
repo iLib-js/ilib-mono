@@ -1579,9 +1579,9 @@ describe("testResourcePlural", () => {
                 "one,one": "Jest {countFiles} plik i {countDirs} katalog",
                 "one,few": "Jest {countFiles} plik i {countDirs} katalogi",
                 "one,other": "Jest {countFiles} plik i {countDirs} katalogów",
-                "few,one": "Jest {countFiles} pliki i {countDirs} katalog",
-                "few,few": "Jest {countFiles} pliki i {countDirs} katalogi",
-                "few,other": "Jest {countFiles} pliki i {countDirs} katalogów",
+                "few,one": "Są {countFiles} pliki i {countDirs} katalog",
+                "few,few": "Są {countFiles} pliki i {countDirs} katalogi",
+                "few,other": "Są {countFiles} pliki i {countDirs} katalogów",
                 "other,one": "Jest {countFiles} plików i {countDirs} katalog",
                 "other,few": "Jest {countFiles} plików i {countDirs} katalogi",
                 "other,other": "Jest {countFiles} plików i {countDirs} katalogów"
@@ -1603,9 +1603,9 @@ describe("testResourcePlural", () => {
             "one,one": "Jest {countFiles} plik i {countDirs} katalog",
             "one,few": "Jest {countFiles} plik i {countDirs} katalogi",
             "one,other": "Jest {countFiles} plik i {countDirs} katalogów",
-            "few,one": "Jest {countFiles} pliki i {countDirs} katalog",
-            "few,few": "Jest {countFiles} pliki i {countDirs} katalogi",
-            "few,other": "Jest {countFiles} pliki i {countDirs} katalogów",
+            "few,one": "Są {countFiles} pliki i {countDirs} katalog",
+            "few,few": "Są {countFiles} pliki i {countDirs} katalogi",
+            "few,other": "Są {countFiles} pliki i {countDirs} katalogów",
             "other,one": "Jest {countFiles} plików i {countDirs} katalog",
             "other,few": "Jest {countFiles} plików i {countDirs} katalogi",
             "other,other": "Jest {countFiles} plików i {countDirs} katalogów"
@@ -1767,6 +1767,7 @@ describe("testResourcePlural", () => {
             sourceLocale: "en-US",
             key: "asdf",
             source: {
+                "zero,zero": "There are no files and no directories",
                 "one,one": "There is {countFiles} file and {countDirs} directory",
                 "one,other": "There are {countFiles} files and {countDirs} directories",
                 "other,one": "There is {countFiles} file and {countDirs} directory",
@@ -1777,9 +1778,9 @@ describe("testResourcePlural", () => {
                 "one,one": "Jest {countFiles} plik i {countDirs} katalog",
                 "one,few": "Jest {countFiles} plik i {countDirs} katalogi",
                 "one,other": "Jest {countFiles} plik i {countDirs} katalogów",
-                "few,one": "Jest {countFiles} pliki i {countDirs} katalog",
-                "few,few": "Jest {countFiles} pliki i {countDirs} katalogi",
-                "few,other": "Jest {countFiles} pliki i {countDirs} katalogów",
+                "few,one": "Są {countFiles} pliki i {countDirs} katalog",
+                "few,few": "Są {countFiles} pliki i {countDirs} katalogi",
+                "few,other": "Są {countFiles} pliki i {countDirs} katalogów",
                 "other,one": "Jest {countFiles} plików i {countDirs} katalog",
                 "other,few": "Jest {countFiles} plików i {countDirs} katalogi",
                 "other,other": "Jest {countFiles} plików i {countDirs} katalogów"
@@ -1792,7 +1793,7 @@ describe("testResourcePlural", () => {
 
         expect(rs).toBeTruthy();
 
-        // should give the categories of the target plural
-        expect(rs.getCategories()).toStrictEqual(["one,one", "one,few", "one,other", "few,one", "few,few", "few,other", "other,one", "other,few", "other,other"]);
+        // should give a superset of the source and target categories
+        expect(rs.getCategories().sort()).toStrictEqual(["zero,zero", "one,one", "one,few", "one,other", "few,one", "few,few", "few,other", "other,one", "other,few", "other,other"].sort());
     });
 });

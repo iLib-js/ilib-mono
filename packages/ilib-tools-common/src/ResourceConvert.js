@@ -43,7 +43,8 @@ function getPluralCategories(plurals) {
 }
 
 /**
- * Calculate the depth of a tree.
+ * Calculate the depth of a tree. See the jsdoc for constructPluralTree()
+ * for a discussion of plural trees.
  * @private
  * @param {Object} tree the tree to calculate the depth
  * @returns {Number} the depth of the tree
@@ -59,7 +60,7 @@ function treeDepth(tree) {
 }
 
 /**
- * Convert a plural tree into an ICU-style plural string.
+ * Convert a plural tree and an array of pivots into an ICU-style plural string.
  * @example
  * if the plural tree is {
  *   "one": {
@@ -71,10 +72,10 @@ function treeDepth(tree) {
  *     "other": "{f} files {d} directories"
  *   }
  * }
- * then this function returns the string:
+ * and the pivots are `["f", "d"]` then this function returns the string:
  *   "{f, plural, one {{d, plural, one {{f} file {d} directory} other {{f} file {d} directories}}} other {{d, plural, one {{f} files {d} directory} other {{f} files {d} directories}}}}"
  * @private
- * @param {Object} pluralTree the plural tree to convert
+ * @param {Object|undefined} pluralTree the plural tree to convert
  * @param {Array<String>} pivots the pivot variable names of levels of the tree
  * @returns {String|undefined} the ICU-style plural string, or undefined if the plural
  * tree is not defined
@@ -117,6 +118,8 @@ const NodeType = {
 
 /**
  * Reconstruct the string that this node in an AST represents.
+ * Formatjs does not publish a function that does this, so we
+ * have to reconstruct it ourselves.
  *
  * @private
  * @param {Node | Node[]} node the node to reconstruct
@@ -162,9 +165,22 @@ function reconstructString(node) {
 }
 
 /**
- * Construct a tree of plural choices from a set of plural choices.
+ * Construct a tree of plural choices from a set of plural choices. A
+ * plural tree is an intermediate representation of the choices that
+ * are available in a multi-key plural resource.
+ *
+ * It is structured like this:
+ * - the top level is the first plural category for the first pivot variable
+ * - the second level is the second plural category for second pivot variable
+ * - [etc]
+ * - the leafs the string for that plural category combination
+ *
+ * This works properly for any number of pivot variables, including if there
+ * are zero or one. The plural tree is used to generate an ICU-style plural
+ * string.
+ *
  * @example
- * if the choices are {
+ * if the set of choices are {
  *   "one,one": "{f} file {d} directory",
  *   "one,other": "{f} file {d} directories",
  *   "other,one": "{f} files {d} directory",
@@ -182,7 +198,8 @@ function reconstructString(node) {
  *   }
  * }
  * @private
- * @param {Object} choices the source
+ * @param {Object|undefined} choices the plurals (either source or target)
+ * from a ResourcePlural instance
  * @returns {Object|undefined} the plural tree, or undefined if the source
  * choices are not defined
  */
@@ -219,6 +236,16 @@ function constructPluralTree(choices) {
  * The complement function is convertICUToPluralRes() which does
  * the opposite.
  *
+ * @example
+ * if plural resource has source plurals like this:
+ * {
+ *   "one": "# item",
+ *   "other": "# items"
+ * }
+ * and the pivot variable name is "count", then this function returns
+ * a ResourceString instance that contains the string:
+ *   "{count, plural, one {# item} other {# items}}"
+ *
  * @param {ResourcePlural} resource the resource to convert into an
  * ICU-style plural resource string
  * @returns {ResourceString|undefined} the plural resource converted into a
@@ -248,13 +275,40 @@ export function convertPluralResToICU(resource) {
 
 /**
  * Distribute non-plural nodes in an AST into the inside of plural nodes.
- * Some string contain a part that is outside of a plural node and a part
- * that is inside a plural node. This makes it more difficult for translators
- * to translate the string properly in all of the plural cases. This function
- * takes an AST and distributes the non-plural nodes into the plural nodes.
+ * Some plural strings contain a part that is outside of the plural and a part
+ * that is inside of the plural. eg. "There {count, plural, one {is # item} other {are # items}}."
  *
- * This function will perform this distribution recursively on the AST in case there are
- * nested plural nodes.
+ * This kind of string makes it more difficult for translators
+ * to translate properly in all of the plural cases because they have to put it
+ * the whole string together mentally for each plural category. Translators are not
+ * programmers, so the ICU plural syntax is often confusing for them. Also, it may be
+ * valid grammatically to put certain parts of a sentence outside of the plural in English
+ * but not in other languages. The English-speaking engineer who wrote the string
+ * may not even be aware that in some languages, the parts they have put outside
+ * of the plural are also grammatically affected by the plurality of the pivot variable.
+ *
+ * This function takes an AST and distributes the non-plural nodes inside the plural
+ * nodes so that the plural choices end up being whole sentences or phrases. This allows
+ * translators to see the whole sentence or phrase for each plural category and translate
+ * all of the parts of the sentence properly, including the parts that the English-speaking
+ * engineer did not realize would be important to the translator.
+ *
+ * Another affect of representing the string with the plurals "on the outside" is that
+ * it is easier to represent the plural choices in a translation system that does
+ * not support plurals at all. Each plural choice can be sent for translation as an
+ * independent, whole string. After translation, the independent plural choice strings
+ * can be recombined to form the full set of plural strings for the target locale encoded
+ * in a single ResourcePlural instance. From there, it can be converted into an ICU
+ * style plural in a string resource using convertPluralResToICU().
+ *
+ * This function will perform this distribution recursively on the AST in case
+ * there are nested or multiple plural nodes. The end result is that all of the
+ * plural nodes in a tree are pushed up to the root, and the text and other
+ * nodes are pushed down to the leaves.
+ *
+ * After translation, the structure of the AST may be very different from the original
+ * English source string, but it should be functionally equivalent from the software
+ * user's perspective. They will see properly translated plurals in the user interface.
  *
  * @example If the source string is,
  *   "By clicking 'Accept', you agree to delete {count, plural, one {# item} other {# items}}."
@@ -319,7 +373,10 @@ function distributePlurals(node) {
 }
 
 /**
- * Get the pivot variables of all of the plural AST node at the top of the tree.
+ * Get the name of the pivot variables of all of the plural AST node at the
+ * root of the tree. These are listed in the array in the order that they
+ * appear in the AST.
+ *
  * @private
  * @param {Node|Node[]} node the AST node to get the pivot variables from
  * @returns {Array<String>} the pivot variables

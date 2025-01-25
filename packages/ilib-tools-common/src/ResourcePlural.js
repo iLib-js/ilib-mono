@@ -197,13 +197,16 @@ class ResourcePlural extends Resource {
 
     /**
      * Return an array of names of source categories of plurals
-     * that are used in this resource.
+     * that are used in this resource, either in the source or
+     * target.
      *
      * @returns {Array.<string>} an array of source categories
      */
     getCategories() {
-        return (this.target && Object.keys(this.target)) ||
-            (this.source && Object.keys(this.source));
+        const categories = (this.target ? Object.keys(this.target) : []).concat(
+            this.source ? Object.keys(this.source) : []);
+        const set = new Set(categories);
+        return set.size > 0 ? Array.from(set) : [];
     }
 
     /**
