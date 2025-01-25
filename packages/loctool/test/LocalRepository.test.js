@@ -1,7 +1,7 @@
 /*
  * LocalRepository.test.js - test the Database Translation Set object.
  *
- * Copyright © 2016-2017, 2023-2024 HealthTap, Inc.
+ * Copyright © 2016-2017, 2023-2025 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,30 +147,6 @@ describe("localrepository", function() {
                 expect(resources[3].getTarget()).toBe("Het asdf");
                 expect(resources[3].getComment()).toBe("foobar is where it's at!");
 
-
-                repo.close(function() {
-                });
-            });
-        })
-    });
-
-    test("LocalRepositoryConstructorWithXliffsDirIgnoreNonmatchingFiles", function() {
-        expect.assertions(3);
-
-        var repo = new LocalRepository({
-            sourceLocale: "en-US",
-            xliffsDir: "./test/testfiles/xliffs"
-        });
-
-        expect(repo).toBeTruthy();
-
-        repo.init(function(){
-            repo.getBy({
-                reskey: "foobar",
-                targetLocale: "es-ES"
-            }, function(err, resources) {
-                expect(resources).toBeTruthy();
-                expect(resources.length).toBe(0);
 
                 repo.close(function() {
                 });

@@ -2,7 +2,7 @@
 /*
  * loctool.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, 2019-2024, HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2025, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ var exitValue = 0;
 
 function getVersion() {
     var pkg = require("./package.json");
-    return "loctool v" + pkg.version + " Copyright (c) 2016-2017, 2019-2024, HealthTap, Inc. and JEDLSoft";
+    return "loctool v" + pkg.version + " Copyright (c) 2016-2017, 2019-2025, HealthTap, Inc., JEDLSoft, and Box, Inc.";
 }
 
 var commandOptionHelp = {
@@ -235,8 +235,9 @@ function usage() {
         "  are single locale.\n" +
         "-v or --version\n" +
         "  Print the current loctool version and exit\n" +
-        "-x or --xliffs\n" +
-        "  Specify a dir or comma-separated array of dirs where the xliffs files live. Default: \".\"\n" +
+        "-t or --translations\n" +
+        "  Specify a dir or comma-separated array of dirs where the translation files live. The files\n" +
+        "  maybe in xliff or po or pot file format. Default: \".\"\n" +
         "--noxliffDups\n" +
         "  Do not allow duplicated strings in extracted xliff file. (Default is 'true') \n" +
         "command\n" +
@@ -407,11 +408,12 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "-v" || val === "--version") {
         printVersion();
-    } else if (val === "-x" || val === "--xliffs") {
+    } else if (val === "-x" || val === "--xliffs" || val === '-t' || val === '--translations') {
+        // support the old "-x" and "--xliffs" options as well as the new "-t" and "--translations" options
         if (i+1 < argv.length && argv[i+1] && argv[i+1][0] !== "-") {
             settings.xliffsDir = argv[++i].split(/,/g);
         } else {
-            console.error("Error: -x (--xliffs) option requires a directory name argument to follow it.");
+            console.error("Error: -t (--translations or -x or --xliffs) option requires a directory name argument to follow it.");
             usage();
         }
     } else if (val === "-z" || val === "--xliffsOut") {

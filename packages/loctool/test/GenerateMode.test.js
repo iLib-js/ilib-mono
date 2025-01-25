@@ -1,7 +1,7 @@
 /*
  * GenerateMode.test.js - test the GenerateMode object.
  *
- * Copyright © 2020, 2023-2024 JEDLSoft.
+ * Copyright © 2020, 2023-2025 JEDLSoft.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ describe("genmodemode", function() {
     test("GenerateModeProcess", function() {
         expect.assertions(1);
         var settings = {
+            xliffsDir: "./xliffs",
             rootDir: ".",
             projectType: "sample"
         };

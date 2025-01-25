@@ -26,6 +26,7 @@ import ResourceXliff from './ResourceXliff.js';
 import TranslationUnit from './TranslationUnit.js';
 import TranslationVariant from './TranslationVariant.js';
 import Location from './Location.js';
+import walk from './DirectoryWalk.js';
 import {
     formatPath,
     parsePath,
@@ -64,5 +65,6 @@ export {
     selfClosingTags,
     ignoreTags,
     localizableAttributes,
-    Location
+    Location,
+    walk
 };

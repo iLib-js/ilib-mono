@@ -2,7 +2,7 @@
  * IntermediateFileFactory.js - represents an intermediate file that is used to
  * store the results of string extraction for the purpose of translation.
  *
- * Copyright © 2024 Box, Inc.
+ * Copyright © 2024-2025 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,16 @@ var getIntermediateFileExtension = function(type) {
     return intFormatToFileExtensionMap[type] || type;
 };
 
+/**
+ * Return an array of all known file name extensions for intermediate files.
+ * @returns {Array} array of extensions
+ */
+var getIntermediateFileExtensions = function() {
+    return ["xlf", "xliff", "po", "pot"];
+};
+
 module.exports = {
     getIntermediateFile,
-    getIntermediateFileExtension
+    getIntermediateFileExtension,
+    getIntermediateFileExtensions
 };

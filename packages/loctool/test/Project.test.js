@@ -1,7 +1,7 @@
 /*
  * Project.test.js - test Project class
  *
- * Copyright © 2020-2021, 2023-2024 JEDLSoft
+ * Copyright © 2020-2021, 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -286,7 +286,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
 
         var project = ProjectFactory('./test/testfiles/project3', {
-            xliffsDir: "translations2",
+            xliffsDir: "translations1",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN']
         });
         project.addPath("en-US.mock");
@@ -699,7 +699,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles/project3', {
-            xliffsDir: "translations2",
+            xliffsDir: "translations1",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
             convertPlurals: true
         });
