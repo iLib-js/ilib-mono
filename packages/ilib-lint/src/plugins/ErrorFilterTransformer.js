@@ -31,10 +31,10 @@ class ErrorFilterTransformer extends Transformer {
     constructor(options) {
         super(options);
     }
-    
+
     /**
      * Filter out errors from the intermediate representation.
-     * 
+     *
      * @param {IntermediateRepresentation} ir the intermediate representation to filter
      * @param {Result[]|undefined} results the results of the linting process
      * @returns {IntermediateRepresentation} the filtered intermediate representation

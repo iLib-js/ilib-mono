@@ -91,7 +91,7 @@ describe("ErrorFilterTransformer", () => {
         // resource1 should be filtered out because it has an error
         expect(ir[0]).toEqual(resource2);
     });
-    
+
     test("returns the same represetation if there are only warnings", () => {
         expect.assertions(1);
 
@@ -142,7 +142,7 @@ describe("ErrorFilterTransformer", () => {
 
         expect(transformed).toStrictEqual(representation);
     });
-    
+
     test("returns the same representation if there are no results", () => {
         expect.assertions(1);
 
@@ -195,7 +195,7 @@ describe("ErrorFilterTransformer", () => {
 
         expect(transformed).toBe(representation);
     });
-    
+
     test("returns the original representation if the representation is empty", () => {
         expect.assertions(1);
 
@@ -210,7 +210,7 @@ describe("ErrorFilterTransformer", () => {
 
         expect(transformed).toStrictEqual(representation);
     });
-    
+
     test("returns the original representation if the results only contains errors that do not apply to the resources", () => {
         expect.assertions(1);
 
