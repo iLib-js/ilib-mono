@@ -117,17 +117,17 @@ const NodeType = {
 };
 
 /**
- * Reconstruct the string that this node in an AST represents.
+ * Serialize the AST to the string that this node represents.
  * Formatjs does not publish a function that does this, so we
- * have to reconstruct it ourselves.
+ * have to reconstruct/serialize the tree ourselves.
  *
  * @private
  * @param {Node | Node[]} node the node to reconstruct
  * @returns {string} the reconstructed string
  */
-function reconstructString(node) {
+function serializeToIcuMessage(node) {
     if (Array.isArray(node)) {
-        return node.map(reconstructString).join('');
+        return node.map(serializeToIcuMessage).join('');
     }
 
     switch (node.type) {
@@ -145,18 +145,18 @@ function reconstructString(node) {
             return `{${node.value}, time}`;
         case NodeType.select: {
             const options = Object.entries(node.options).
-                map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
+                map(entry => `${entry[0]} {${serializeToIcuMessage(entry[1].value)}}`).join(' ');
 
             return `{${node.value}, select, ${options}}`;
         }
         case NodeType.plural: {
             const options = Object.entries(node.options).
-                map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
+                map(entry => `${entry[0]} {${serializeToIcuMessage(entry[1].value)}}`).join(' ');
 
             return `{${node.value}, plural, ${options}}`;
         }
         case NodeType.tag:
-            const children = reconstructString(node.children);
+            const children = serializeToIcuMessage(node.children);
 
             return `<${node.value}>${children}</${node.value}>`;
         default:
@@ -426,7 +426,7 @@ function convertASTToPluralChoices(ast, pivot = undefined, categories = []) {
     } else {
         // leaf node, so add it to the choices directly using the multi-key syntax
         const category = categories.join(',');
-        choices[category] = reconstructString(ast);
+        choices[category] = serializeToIcuMessage(ast);
     }
 
     return choices;
