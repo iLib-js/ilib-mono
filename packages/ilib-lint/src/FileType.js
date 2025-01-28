@@ -33,33 +33,7 @@ const logger = log4js.getLogger("ilib-lint.FileType");
  */
 class FileType {
     /**
-     * Contructor a new instance of a file type. The options
-     * for a file type must contain the following properties:
-     *
-     * - name - the name or glob spec for this file type
-     * - project - the Project that this file type is a part of
-     *
-     * Additionally, the options may optionally contain the
-     * following properties:
-     *
-     * - locales (Array of String) - list of locales to use with this file type,
-     *   which overrides the global locales for the project
-     * - type (String) - specifies the way that files of this file type
-     *   are parsed. This can be one of "resource", "source", "line", or
-     *   "ast".
-     * - template (String) - the path name template for this file type
-     *   which shows how to extract the locale from the path
-     *   name if the path includes it. Many file types do not
-     *   include the locale in the path, and in those cases,
-     *   the template can be left out.
-     * - ruleset (Array of String) - a list of rule set names
-     *   to use with this file type
-     * - parsers (Array of String) - an array of names of parsers to
-     *   apply to this file type. This is mainly useful when the source
-     *   code is in a file with an unexpected or ambiguous file
-     *   name extension. For example, a ".js" file may contain
-     *   regular Javascript code, but it may also be React JSX
-     *   code, or even Javascript with JSX and Flow type definitions.
+     * Contructor a new instance of a file type.
      *
      * The array of parsers will be used to attempt to parse each
      * source file. If a parser throws an exception/error while parsing,
@@ -70,13 +44,32 @@ class FileType {
      *
      * @param {Object} options the options governing the construction
      * of this file type as documented above
+     * @param {String} options.name the name or glob spec for this file type
+     * @param {Project} options.project the Project that this file type is a part of
+     * @param {Array.<String>} [options.locales] list of locales to use with this file type
+     * @param {String} [options.type] specifies the way that files of this file type
+     * are parsed. This can be one of "resource", "source", "line", or
+     * "ast".
+     * @param {String} [options.template] the path name template for this file type
+     * which shows how to extract the locale from the path
+     * name if the path includes it. Many file types
+     * do not include the locale in the path, and in those cases,
+     * the template can be left out.
+     * @param {Array.<String>} [options.ruleset] a list of rule set names
+     * to use with this file type
+     * @param {Array.<String>} [options.parsers] an array of names of parsers to
+     * apply to this file type
+     * @param {Array.<String>} [options.transformers] an array of transformer names
+     * to apply to files of this type after the rules have been applied
+     * @param {String} [options.serializer] a serializer to use if the file has been
+     * modified by a transformer or a fixer
      * @constructor
      */
     constructor(options) {
         if (!options || !options.name || !options.project) {
             throw "Missing required options to the FileType constructor";
         }
-        ["name", "project", "locales", "ruleset", "template", "type", "parsers"].forEach(prop => {
+        ["name", "project", "locales", "ruleset", "template", "type", "parsers", "transformers", "serializer"].forEach(prop => {
             if (typeof(options[prop]) !== 'undefined') {
                 this[prop] = options[prop];
             }
@@ -109,6 +102,27 @@ class FileType {
                 }
                 return parser;
             });
+        }
+
+        /*
+        if (this.transformers) {
+            const transformerMgr = this.project.getTransformerManager();
+            this.transformerClasses = this.transformers.map(transformerName => {
+                const transformer = transformerMgr.getByName(transformerName);
+                if (!transformer) {
+                    throw `Could not find transformer ${transformerName} named in the configuration for filetype ${this.name}`;
+                }
+                return transformer;
+            });
+        }
+        */
+
+        if (this.serializer) {
+            const serializerMgr = this.project.getSerializerManager();
+            this.serializerClass = serializerMgr.getByName(this.serializer);
+            if (!this.serializerClass) {
+                throw `Could not find serializer ${this.serializer} named in the configuration for filetype ${this.name}`;
+            }
         }
     }
 
@@ -194,6 +208,18 @@ class FileType {
         // can just return the list of rule instances. Cache it for subsequent calls.
         this.rules = set.getRules();
         return this.rules;
+    }
+
+    /**
+     * Return an instance of the serializer class for this file type.
+     *
+     * @returns {Serializer|undefined} an instance of the serializer class for this
+     * file type or undefined if there is no serializer for this file type.
+     */
+    getSerializer() {
+        if (this.serializerClass) {
+            return new this.serializerClass();
+        }
     }
 }
 

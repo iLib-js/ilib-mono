@@ -567,7 +567,13 @@ class Project extends DirItem {
      */
     serialize() {
         if (this.options.opt.write) {
-            // this.files.forEach(file => file.serialize());
+            this.files.forEach(file => {
+                const ir = file.getIR();
+                const serializer = file.getFileType().getSerializer();
+                if (ir.isDirty() && serializer) {
+                    serializer.serialize(ir);
+                }
+            });
         }
         // this.files.forEach(file => file.serialize());
     }
