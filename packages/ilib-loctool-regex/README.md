@@ -14,7 +14,10 @@ of the `project.json` file:
 - The `projectType` setting should be set to `custom`
 - The `resourceFileTypes` setting should be set to an object that
   maps a resource file type to a loctool plugin that implements
-  the resource file format.
+  the resource file format. You can choose any name for the resource
+  file type, but you should choose a name that is descriptive of the
+  type of resource file that will be generated, and one that is
+  unique.
 
 ### Custom Settings
 
