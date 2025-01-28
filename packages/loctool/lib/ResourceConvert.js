@@ -19,79 +19,14 @@
 
 var ResourceString = require("./ResourceString.js");
 var ResourcePlural = require("./ResourcePlural.js");
-var IntlMessageFormat = require("intl-messageformat").IntlMessageFormat;
+var convertRes = require("./convertResources.js");
+var ToolsCommon = require("ilib-tools-common");
 
-function getPluralCategories(plurals) {
-    if (!plurals) return "";
-    return Object.keys(plurals).map(function(category) {
-        return `${category} {${plurals[category]}}`;
-    }).join(" ");
-}
+var convertResourceToLoctool = convertRes.convertResourceToLoctool;
+var convertResourceToCommon = convertRes.convertResourceToCommon;
 
-/**
- * Enum for the type of node in an AST, as defined by the IntlMessageFormat `declare enum TYPE`.
- * Source: formatjs/icu-messageformat-parser/types.d.ts: 6
- *
- * @private
- * @readonly
- * @enum {number}
- */
-
-const NodeType = {
-    'literal': 0,
-    'argument': 1,
-    'number': 2,
-    'date': 3,
-    'time': 4,
-    'select': 5,
-    'plural': 6,
-    'pound': 7,
-    'tag': 8,
-}
-
-/**
- * Reconstruct the string that this node in an AST represents.
- *
- * @private
- * @param {Node} node the node to reconstruct
- * @returns {string} the reconstructed string
- */
-function reconstructString(node) {
-    if (Array.isArray(node)) {
-        return node.map(reconstructString).join('');
-    }
-
-    switch (node.type) {
-        case NodeType.literal:
-            return node.value;
-        case NodeType.argument:
-            return "{" + node.value + "}";
-        case NodeType.number:
-            return "{" + node.value + ", number}";
-        case NodeType.date:
-            return "{" + node.value + ", date}";
-        case NodeType.time:
-            return "{" + node.value + ", time}";
-        case NodeType.select: {
-            const options = Object.entries(node.options).map(function (entry) {
-                return entry[0] + " {" + reconstructString(entry[1].value) + "}";
-            }).join(' ');
-
-            return "{" + node.value + ", select, " + options + "}";
-        }
-        case NodeType.plural: {
-            const options = Object.entries(node.options).map(entry => `${entry[0]} {${reconstructString(entry[1].value)}}`).join(' ');
-
-            return "{" + node.value + ", plural, " + options + "}";
-        }
-        case NodeType.tag:
-            const children = reconstructString(node.children);
-
-            return "<" + node.value + ">" + children + "</" + node.value + ">";
-        default:
-            throw new Error('Unsupported AST node type: ' + node.type);
-    }
-}
+var convertPluralResToICU = ToolsCommon.convertPluralResToICU;
+var convertICUToPluralRes = ToolsCommon.convertICUToPluralRes;
 
 /**
  * Convert a plural resource to an ICU-style plural string resource.
@@ -108,23 +43,9 @@ function reconstructString(node) {
  * string resource
  */
 module.exports.convertPluralResToICU = function(resource) {
-    if (resource.getType() === "plural") {
-        var targetPlurals = resource.getTargetPlurals();
-        return new ResourceString({
-            key: resource.getKey(),
-            sourceLocale: resource.getSourceLocale(),
-            source: `{count, plural, ${getPluralCategories(resource.getSourcePlurals())}}`,
-            targetLocale: resource.getTargetLocale(),
-            target: targetPlurals ? `{count, plural, ${getPluralCategories(targetPlurals)}}` : undefined,
-            project: resource.getProject(),
-            pathName: resource.getPath(),
-            datatype: resource.getDataType(),
-            flavor: resource.getFlavor(),
-            comment: resource.getComment(),
-            state: resource.getState()
-        });
-    }
-    return undefined;
+    var commonPlural = convertResourceToCommon(resource);
+    var commonString = convertPluralResToICU(commonPlural);
+    return convertResourceToLoctool(commonString);
 };
 
 /**
@@ -142,61 +63,7 @@ module.exports.convertPluralResToICU = function(resource) {
  * plural resource
  */
 module.exports.convertICUToPluralRes = function(resource) {
-    if (resource.getType() === "string") {
-        try {
-            var i, opts;
-            var imf = new IntlMessageFormat(resource.getSource(), resource.getSourceLocale());
-            var ast = imf.getAst();
-            var sources = {};
-            var foundPlural = false;
-            for (i = 0; i < ast.length; i++) {
-                if (ast[i].type === NodeType.plural) {
-                    foundPlural = true;
-                    opts = ast[i].options;
-                    if (opts) {
-                        Object.keys(opts).forEach(function(category) {
-                            sources[category] = reconstructString(opts[category].value);
-                        });
-                    }
-                }
-            }
-
-            if (!foundPlural) {
-                // this is a regular non-plural string, so don't convert anything
-                return undefined;
-            }
-            var targetString = resource.getTarget();
-            var targets;
-            if (targetString) {
-                imf = new IntlMessageFormat(resource.getTarget(), resource.getTargetLocale());
-                var ast = imf.getAst();
-                targets = {};
-                for (i = 0; i < ast.length; i++) {
-                    opts = ast[i].options;
-                    if (opts) {
-                        Object.keys(opts).forEach(function(category) {
-                            targets[category] = reconstructString(opts[category].value);
-                        });
-                    }
-                }
-            }
-            return new ResourcePlural({
-                key: resource.getKey(),
-                sourceLocale: resource.getSourceLocale(),
-                sourcePlurals: sources,
-                targetLocale: resource.getTargetLocale(),
-                targetPlurals: targets,
-                project: resource.getProject(),
-                pathName: resource.getPath(),
-                datatype: resource.getDataType(),
-                flavor: resource.getFlavor(),
-                comment: resource.getComment(),
-                state: resource.getState()
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    return undefined;
+    var commonString = convertResourceToCommon(resource);
+    var commonPlural = convertICUToPluralRes(commonString);
+    return convertResourceToLoctool(commonPlural);
 };
-

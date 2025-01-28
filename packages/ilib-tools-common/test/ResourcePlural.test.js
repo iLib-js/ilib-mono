@@ -1486,4 +1486,314 @@ describe("testResourcePlural", () => {
         expect(rs.isDirty()).toBeTruthy();
     });
 
+    test("ResourcePlural constructor with multi-key plural", () => {
+        expect.assertions(3);
+
+        const rs = new ResourcePlural({
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: [ "countFiles", "countDirs" ]
+        });
+
+        expect(rs).toBeTruthy();
+        expect(rs.getSource()).toStrictEqual({
+            "one,one": "There is {countFiles} file and {countDirs} directory",
+            "one,other": "There are {countFiles} files and {countDirs} directories",
+            "other,one": "There is {countFiles} file and {countDirs} directory",
+            "other,other": "There are {countFiles} files and {countDirs} directories"
+        });
+        expect(rs.getPivots()).toStrictEqual([ "countFiles", "countDirs" ]);
+    });
+
+    test("ResourcePlural constructor with multi-key source and target plural and pivots", () => {
+        expect.assertions(4);
+
+        const rs = new ResourcePlural({
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            targetLocale: "de-DE",
+            target: {
+                "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+                "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        expect(rs).toBeTruthy();
+        expect(rs.getSource()).toStrictEqual({
+            "one,one": "There is {countFiles} file and {countDirs} directory",
+            "one,other": "There are {countFiles} files and {countDirs} directories",
+            "other,one": "There is {countFiles} file and {countDirs} directory",
+            "other,other": "There are {countFiles} files and {countDirs} directories"
+        });
+        expect(rs.getTarget()).toStrictEqual({
+            "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+            "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+            "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+            "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+        });
+        expect(rs.getPivots()).toStrictEqual(["countFiles", "countDirs"]);
+    });
+
+    test("ResourcePlural constructor with multi-key source and target plural and pivots in Polish", () => {
+        expect.assertions(4);
+
+        const rs = new ResourcePlural({
+
+            project: "foo",
+            context: "blah",
+            sourceLocale: "pl-PL",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            targetLocale: "pl-PL",
+            target: {
+                "one,one": "Jest {countFiles} plik i {countDirs} katalog",
+                "one,few": "Jest {countFiles} plik i {countDirs} katalogi",
+                "one,other": "Jest {countFiles} plik i {countDirs} katalogów",
+                "few,one": "Są {countFiles} pliki i {countDirs} katalog",
+                "few,few": "Są {countFiles} pliki i {countDirs} katalogi",
+                "few,other": "Są {countFiles} pliki i {countDirs} katalogów",
+                "other,one": "Jest {countFiles} plików i {countDirs} katalog",
+                "other,few": "Jest {countFiles} plików i {countDirs} katalogi",
+                "other,other": "Jest {countFiles} plików i {countDirs} katalogów"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        expect(rs).toBeTruthy();
+        expect(rs.getSource()).toStrictEqual({
+            "one,one": "There is {countFiles} file and {countDirs} directory",
+            "one,other": "There are {countFiles} files and {countDirs} directories",
+            "other,one": "There is {countFiles} file and {countDirs} directory",
+            "other,other": "There are {countFiles} files and {countDirs} directories"
+        });
+        expect(rs.getTarget()).toStrictEqual({
+            "one,one": "Jest {countFiles} plik i {countDirs} katalog",
+            "one,few": "Jest {countFiles} plik i {countDirs} katalogi",
+            "one,other": "Jest {countFiles} plik i {countDirs} katalogów",
+            "few,one": "Są {countFiles} pliki i {countDirs} katalog",
+            "few,few": "Są {countFiles} pliki i {countDirs} katalogi",
+            "few,other": "Są {countFiles} pliki i {countDirs} katalogów",
+            "other,one": "Jest {countFiles} plików i {countDirs} katalog",
+            "other,few": "Jest {countFiles} plików i {countDirs} katalogi",
+            "other,other": "Jest {countFiles} plików i {countDirs} katalogów"
+        });
+        expect(rs.getPivots()).toStrictEqual(["countFiles", "countDirs"]);
+    });
+
+    test("ResourcePlural copy constructor with multi-key source and target plural and pivots", () => {
+        expect.assertions(4);
+
+        const rs = new ResourcePlural({
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            targetLocale: "de-DE",
+            target: {
+                "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+                "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        const rs2 = new ResourcePlural(rs);
+
+        expect(rs2).toBeTruthy();
+        expect(rs2.getSource()).toStrictEqual({
+            "one,one": "There is {countFiles} file and {countDirs} directory",
+            "one,other": "There are {countFiles} files and {countDirs} directories",
+            "other,one": "There is {countFiles} file and {countDirs} directory",
+            "other,other": "There are {countFiles} files and {countDirs} directories"
+        });
+        expect(rs2.getTarget()).toStrictEqual({
+            "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+            "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+            "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+            "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+        });
+        expect(rs2.getPivots()).toStrictEqual(["countFiles", "countDirs"]);
+    });
+
+    test("ResourcePlural getClone() with multi-key source and target plural and pivots", () => {
+        expect.assertions(4);
+
+        const rs = new ResourcePlural({
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            targetLocale: "de-DE",
+            target: {
+                "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+                "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        const rs2 = rs.clone();
+
+        expect(rs2).toBeTruthy();
+        expect(rs2.getSource()).toStrictEqual({
+            "one,one": "There is {countFiles} file and {countDirs} directory",
+            "one,other": "There are {countFiles} files and {countDirs} directories",
+            "other,one": "There is {countFiles} file and {countDirs} directory",
+            "other,other": "There are {countFiles} files and {countDirs} directories"
+        });
+        expect(rs2.getTarget()).toStrictEqual({
+            "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+            "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+            "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+            "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+        });
+        expect(rs2.getPivots()).toStrictEqual(["countFiles", "countDirs"]);
+    });
+
+    test("ResourcePlural getCategories() with multi-key source plural", () => {
+        expect.assertions(1);
+
+        const rs = new ResourcePlural({
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        // no target, so this should give the categories of the source plural
+        expect(rs.getCategories()).toStrictEqual(["one,one", "one,other", "other,one", "other,other"]);
+    });
+
+    test("ResourcePlural getCategories() with multi-key source and target plural", () => {
+        expect.assertions(1);
+
+        const rs = new ResourcePlural({
+
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            targetLocale: "de-DE",
+            target: {
+                "one,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "one,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse",
+                "other,one": "Es gibt {countFiles} Datei und {countDirs} Verzeichnis",
+                "other,other": "Es gibt {countFiles} Dateien und {countDirs} Verzeichnisse"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        expect(rs.getCategories()).toStrictEqual(["one,one", "one,other", "other,one", "other,other"]);
+    });
+
+    test("ResourcePlural getCategories with multi-key source and target plural with pivots in Polish", () => {
+        expect.assertions(2);
+
+        const rs = new ResourcePlural({
+            project: "foo",
+            context: "blah",
+            sourceLocale: "en-US",
+            key: "asdf",
+            source: {
+                "zero,zero": "There are no files and no directories",
+                "one,one": "There is {countFiles} file and {countDirs} directory",
+                "one,other": "There are {countFiles} files and {countDirs} directories",
+                "other,one": "There is {countFiles} file and {countDirs} directory",
+                "other,other": "There are {countFiles} files and {countDirs} directories"
+            },
+            targetLocale: "pl-PL",
+            target: {
+                "one,one": "Jest {countFiles} plik i {countDirs} katalog",
+                "one,few": "Jest {countFiles} plik i {countDirs} katalogi",
+                "one,other": "Jest {countFiles} plik i {countDirs} katalogów",
+                "few,one": "Są {countFiles} pliki i {countDirs} katalog",
+                "few,few": "Są {countFiles} pliki i {countDirs} katalogi",
+                "few,other": "Są {countFiles} pliki i {countDirs} katalogów",
+                "other,one": "Jest {countFiles} plików i {countDirs} katalog",
+                "other,few": "Jest {countFiles} plików i {countDirs} katalogi",
+                "other,other": "Jest {countFiles} plików i {countDirs} katalogów"
+            },
+            pathName: "a/b/c.java",
+            comment: "foobar foo",
+            state: "accepted",
+            pivots: ["countFiles", "countDirs"]
+        });
+
+        expect(rs).toBeTruthy();
+
+        // should give a superset of the source and target categories
+        expect(rs.getCategories().sort()).toStrictEqual(["zero,zero", "one,one", "one,few", "one,other", "few,one", "few,few", "few,other", "other,one", "other,few", "other,other"].sort());
+    });
 });

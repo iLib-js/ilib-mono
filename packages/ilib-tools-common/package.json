@@ -90,6 +90,7 @@
         "ilib-ctype": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-xliff": "workspace:^",
+        "intl-messageformat": "^10.7.11",
         "micromatch": "^4.0.8"
     }
 }

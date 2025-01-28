@@ -101,7 +101,6 @@ class ResourceArray extends Resource {
     /**
      * Set the array of source strings for this resource.
      *
-     * @override
      * @param {Array.<String>} arr the array of strings to set
      * as the source array
      */
@@ -379,7 +378,7 @@ class ResourceArray extends Resource {
      * resource.
      *
      * @override
-     * @param {Resource} a resource to check
+     * @param {Resource} resource a resource to check
      * @returns {boolean} true if this is an instance of
      * the current resource, false otherwise.
      */
