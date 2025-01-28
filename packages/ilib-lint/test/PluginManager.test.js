@@ -63,6 +63,16 @@ describe("testPluginManager", () => {
         expect(rm).toBeTruthy();
     });
 
+    test("PluginManager get serializer manager", () => {
+        expect.assertions(2);
+
+        const plgmgr = new PluginManager();
+        expect(plgmgr).toBeTruthy();
+
+        const sm = plgmgr.getSerializerManager();
+        expect(sm).toBeTruthy();
+    });
+
     test("PluginManagerGetLoadPlugin", () => {
         expect.assertions(4);
 
@@ -450,5 +460,22 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
             expect(e2).toBeFalsy();
         });
     });
-});
 
+    test("PluginManager make sure we can load a serializer plugin", () => {
+        expect.assertions(4);
+
+        const plgmgr = new PluginManager();
+        expect(plgmgr).toBeTruthy();
+
+        return plgmgr.load([
+            "ilib-lint-plugin-test"
+        ]).then(result => {
+            expect(result).toBeDefined();
+
+            const sm = plgmgr.getSerializerManager();
+            const serializer = sm.get("serializer-xyz");
+            expect(serializer).toBeDefined();
+            expect(serializer?.getName()).toBe("serializer-xyz");
+        });
+    });
+});

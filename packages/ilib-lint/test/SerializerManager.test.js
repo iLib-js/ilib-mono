@@ -28,6 +28,7 @@ class MockSerializer extends Serializer {
     constructor(options) {
         super(options);
         this.name = "mock-serializer";
+        this.type = "xyz";
     }
 
     serialize(representation) {
@@ -98,6 +99,20 @@ describe("testSerializerManager", () => {
 
         expect(serializer).toBeDefined();
         expect(serializer instanceof LineSerializer).toBeTruthy();
+    });
+
+    test("SerializerManager return a list of serializers of a given type", () => {
+        expect.assertions(4);
+
+        const mgr = new SerializerManager();
+        mgr.add([MockSerializer]);
+
+        const serializers = mgr.getSerializers("xyz");
+
+        expect(serializers).toBeDefined();
+        expect(Array.isArray(serializers)).toBeTruthy();
+        expect(serializers.length).toBe(1);
+        expect(serializers[0]).toBe("mock-serializer");
     });
 });
 

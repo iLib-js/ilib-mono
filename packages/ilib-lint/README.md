@@ -144,7 +144,8 @@ ilib-lint accepts the following command-line parameters:
   flag implies the write flag.
 * overwrite - If the file is modified by a Fixer or a Transformer and written
   out using a Serializer, it will be written back to the original file, overwriting
-  it. The template property of the file type will be ignored.
+  it. The template property of the file type will be ignored. This option implies
+  the write flag.
 
 If multiple limits are exceeded (maximum number of errors, warnings, or suggestions,
 or minimum I18N score), the exit code will be the most severe amongst them
