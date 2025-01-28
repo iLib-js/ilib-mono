@@ -25,8 +25,9 @@ import log4js from 'log4js';
 import FormatterManager from './FormatterManager.js';
 import ParserManager from './ParserManager.js';
 import RuleManager from './RuleManager.js';
-import BuiltinPlugin from './plugins/BuiltinPlugin.js';
 import FixerManager from './FixerManager.js';
+import SerializerManager from './SerializerManager.js';
+import BuiltinPlugin from './plugins/BuiltinPlugin.js';
 
 const logger = log4js.getLogger("ilib-lint.PluginManager");
 
@@ -53,6 +54,7 @@ class PluginManager {
         this.formatterMgr = new FormatterManager();
         this.ruleMgr = new RuleManager();
         this.fixerMgr = new FixerManager();
+        this.serializerMgr = new SerializerManager();
         this.sourceLocale = options && options.sourceLocale;
 
         if (options) {
@@ -229,6 +231,18 @@ class PluginManager {
     }
 
     /**
+     * Return the serializer manager for this plugin manager. This
+     * manages both the built-in serializers, and the serializers
+     * loaded from the plugins.
+     *
+     * @returns {SerializerManager} the serializer manager for this
+     * plugin manager.
+     */
+    getSerializerManager() {
+        return this.serializerMgr;
+    }
+
+    /**
      * Return the rules in this manager. This is from both the
      * built-in rules and the rules loaded from the plugins.
      *
@@ -250,6 +264,7 @@ class PluginManager {
         this.ruleMgr.add(plugin.getRules());
         this.ruleMgr.addRuleSetDefinitions(plugin.getRuleSets());
         this.fixerMgr.add(plugin.getFixers());
+        this.serializerMgr.add(plugin.getSerializers());
     }
 
     /**

@@ -31,14 +31,36 @@ const logger = log4js.getLogger("ilib-lint.SerializerManager");
  * knows about.
  */
 class SerializerManager {
+
+    /**
+     * A cache of serializer classes that this factory knows about.
+     * @type {Object.<String, Class>} the cache of serializer classes
+     * @private
+     */
+    serializerCache = {};
+
+    /**
+     * A cache of serializer descriptions that this factory knows about.
+     * @type {Object.<String, String>} the cache of serializer
+     * descriptions
+     * @private
+     */
+    descriptions = {};
+
+    /**
+     * A cache of serializer names by type that this factory knows about.
+     * @type {Object.<String, Array.<String>>} the cache of serializer names
+     * by type
+     * @private
+     */
+    byType = {};
+
     /**
      * Create a new serializer manager instance.
      * @params {Object} options options controlling the construction of this object
      * @constructor
      */
     constructor(options) {
-        this.serializerCache = {};
-        this.descriptions = {};
         this.add([XliffSerializer, LineSerializer]);
         if (options?.serializers) {
             this.add(options.serializers);
@@ -55,7 +77,7 @@ class SerializerManager {
      * @returns {Serializer|undefined} the serializer instance to use, or undefined if
      * the serializer is not found
      */
-    get(name, options) {
+    get(name, options = undefined) {
         const serializerConfig = this.serializerCache[name];
         if (!serializerConfig) return;
 
@@ -82,12 +104,28 @@ class SerializerManager {
                 });
                 this.serializerCache[serializer.getName()] = ser;
                 this.descriptions[serializer.getName()] = serializer.getDescription();
+                const type = serializer.getType();
+                if (!this.byType[type]) {
+                    this.byType[type] = [serializer.getName()];
+                } else {
+                    this.byType[type].push(serializer.getName());
+                }
                 logger.trace(`Added programmatic serializer ${serializer.getName()} to the serializer manager`);
             } else {
                 logger.debug(`Attempt to add a non-serializer to the serializer manager`);
                 if (typeof(serializer?.getName) === 'function') logger.debug(`Name is ${serializer.getName()}`);
             }
         }
+    }
+
+    /**
+     * Return an array of all known serializer names that handle the given type of
+     * of intermediate representation.
+     *
+     * @returns {Array.<String>} array of serializer names
+     */
+    getSerializers(type) {
+        return this.byType[type] || [];
     }
 
     /**

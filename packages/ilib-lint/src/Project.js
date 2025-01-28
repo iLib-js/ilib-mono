@@ -437,6 +437,15 @@ class Project extends DirItem {
     }
 
     /**
+     * Return the serializer manager for this project.
+     * @returns {SerializerManager} the serializer
+     */
+    getSerializerManager() {
+        const pluginMgr = this.options.pluginManager;
+        return pluginMgr.getSerializerManager();
+    }
+
+    /**
      * Return the named file type definition. Projects have two
      * default file types that are always defined for every project:
      * "xliff", and "unknown".
@@ -545,8 +554,10 @@ class Project extends DirItem {
     /**
      * Apply any transformer plugins to the intermediate representation of
      * each file.
+     *
+     * @param {Array.<Result>} results the results of the linting process
      */
-    applyTransformers() {
+    applyTransformers(results) {
         // this.files.forEach(file => file.applyTransformers());
     }
 
@@ -555,6 +566,9 @@ class Project extends DirItem {
      * file type of each file.
      */
     serialize() {
+        if (this.options.opt.write) {
+            // this.files.forEach(file => file.serialize());
+        }
         // this.files.forEach(file => file.serialize());
     }
 
@@ -597,8 +611,8 @@ class Project extends DirItem {
         let startTime = new Date();
 
         const results = this.findIssues(this.options.opt.locales);
-        this.applyTransformers();
-
+        this.applyTransformers(results);
+        this.serialize();
         let endTime = new Date();
 
         this.resultStats = {

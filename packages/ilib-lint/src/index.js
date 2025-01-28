@@ -108,6 +108,21 @@ const optionConfig = {
         "default": false,
         help: "If auto-fixes are available for some of the errors, apply them (overwriting the original file)."
     },
+    write: {
+        flag: true,
+        default: false,
+        help: "If a file is changed by a fix or transformer, write the file to disk again."
+    },
+    "auto-fix": {
+        flag: true,
+        "default": false,
+        help: "If auto-fixes are available for some of the errors, apply them and write the file back to disk again."
+    },
+    overwrite: {
+        flag: true,
+        "default": false,
+        help: "If a file is changed by an auto-fix or a transformer, write the file to disk again, but instead of writing to a new file, it overwrites the original file."
+    },
     "max-errors": {
         short: "me",
         varName: "NUMBER",
@@ -169,7 +184,7 @@ if (options.opt.quiet) {
     logger.level = "debug";
 }
 
-logger.info("ilib-lint - Copyright (c) 2022-2024 JEDLsoft, All rights reserved.");
+logger.info("ilib-lint - Copyright (c) 2022-2025 JEDLsoft, All rights reserved.");
 
 let paths = options.args;
 if (paths.length === 0) {
@@ -187,6 +202,12 @@ options.opt.locales = options.opt.locales.map(spec => {
     }
     return loc.getSpec();
 });
+
+if (options.opt["auto-fix"] || options.opt.overwrite) {
+    // The write option indicates that modified files should be written back to disk.
+    // The write option is implicit if either auto-fix or overwrite is set.
+    options.opt.write = true;
+}
 
 // Load configuration
 let config;
@@ -226,6 +247,8 @@ try {
         const ruleSetDefinitions = ruleMgr.getRuleSetDefinitions();
         const parserMgr = pluginMgr.getParserManager();
         const parserDescriptions = parserMgr.getDescriptions();
+        const serializerMgr = pluginMgr.getSerializerManager();
+        const serializerDescriptions = serializerMgr.getDescriptions();
         const formatterMgr = pluginMgr.getFormatterManager();
         const formatterDescriptions = formatterMgr.getDescriptions();
 
@@ -256,6 +279,13 @@ try {
         output.push("Formatters:");
         for (name in formatterDescriptions) {
             output = output.concat(indent(wrap(`${name} - ${formatterDescriptions[name]}`, 76, "  "), 2));
+        }
+
+        output.push("");
+
+        output.push("Serializers:");
+        for (name in serializerDescriptions) {
+            output = output.concat(indent(wrap(`${name} - ${serializerDescriptions[name]}`, 76, "  "), 2));
         }
 
         console.log(output.join('\n'));
