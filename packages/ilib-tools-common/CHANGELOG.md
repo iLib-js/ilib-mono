@@ -1,5 +1,16 @@
 # ilib-tools-common
 
+## 1.13.0
+
+### Minor Changes
+
+- 4965315: Added functions convertPluralResToICU and convertICUToPluralRes to convert
+  ICU-style plural strings encoded in ResourceString instances into ResourcePlural
+  instances and vice-versa
+- 32ac524: - added directory walk routines
+  - returns a js object that models the file system under the given directory
+  - allows for arrays of include and exclude micromatch expressions
+
 ## 1.12.2
 
 ### Patch Changes

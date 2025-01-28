@@ -1,5 +1,34 @@
 # loctool
 
+## 2.28.0
+
+### Minor Changes
+
+- 32ac524: Modified the way loctool reads translated resource files
+
+  - The way loctool reads resource files from the xliffsDir directories
+    has changed.
+    - Previously, it would read `[dir]/*.xliff` and now it reads `[dir]/**/*.xliff`
+      or `[dir]/**/*.po`. That is, it reads each directory recursively.
+  - renamed -x and --xliffsDir to -t and --translations but the old
+    command-line arguments are still accepted
+  - does not read only resource files that have a locale in their
+    file name. It reads all files in the xliffDir.
+
+- 90c28fa: - added the ability to read and write .pot files as
+  intermediate file format and as translation file
+  format.
+  - Also, .po file can still be read and written if necessary
+    as the format for po and pot files are the same.
+
+### Patch Changes
+
+- 4965315: Now uses ICU<->Plural conversion code from the ilib-tools-common library instead of its
+  own implementation. This way, the code can be shared between tools.
+- Updated dependencies [4965315]
+- Updated dependencies [32ac524]
+  - ilib-tools-common@1.13.0
+
 ## 2.27.0
 
 ### Minor Changes
