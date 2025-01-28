@@ -20,8 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
-/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
-/* @ignore @typedef {import("SourceFile")} SourceFile */
+/* @ignore @typedef {import("IntermediateRepresentation.js")} IntermediateRepresentation */
+/* @ignore @typedef {import("SourceFile.js")} SourceFile */
 
 /**
  * @class common SPI for serializer plugins
@@ -58,9 +58,15 @@ class Serializer extends PipelineElement {
      * convert it into xliff file format and set that as the content of the SourceFile
      * it produces.
      *
+     * The type of the intermediate representation that this serializer can handle
+     * is specified in the `type` property of this instance passed to the constructor.
+     * The linter will only allow this serializer to be used for intermediate
+     * representations of that type so they must match. The source file that is
+     * returned must have the same type as the intermediate representation.
+     *
+     * @abstract
      * @param {IntermediateRepresentation} representation the representation
      * to serialize
-     * @abstract
      * @returns {SourceFile} the source file that contains the serialized form of the
      * given intermediate representation
      */
