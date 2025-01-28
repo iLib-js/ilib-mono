@@ -8,12 +8,13 @@ with regular expressions.
 
 ### Standard Settings
 
-To use this plugin, you should set these two settings:
+To use this plugin, you should set these two settings at the top level
+of the `project.json` file:
 
 - The `projectType` setting should be set to `custom`
 - The `resourceFileTypes` setting should be set to an object that
-  includes the `regex` property. The value names the plugin
-  that will be used as a resource file format.
+  maps a resource file type to a loctool plugin that implements
+  the resource file format.
 
 ### Custom Settings
 
@@ -29,8 +30,8 @@ used within the `regex` property:
   similar to the the `includes` and `excludes` section of a
   `project.json` file. The value of that mapping is an object that
   can contain the following properties:
-    - resourceFileType - the name of the type of the resource file that
-      will be generated from the localized strings extracted from these
+    - resourceFileType - the name of the type of the resource file type
+      that will be generated from the localized strings extracted from these
       files. The resource file types are defined in the `resourceFileTypes`
       setting at the top level of the `project.json` file. The name can
       be any string as long as it is defined in `resourceFileTypes` object.
@@ -38,6 +39,7 @@ used within the `regex` property:
       and the npm package name of the plugin that implements the resource
       file type. The plugin must be installed in the project, with a
       dependency in the `package.json` file in order to be loaded successfully.
+      (Usually, it is a `devDependency`.)
     - template - the template to specify the output resource file
       path. See the loctool documentation for more information on
       how to use path name templates.
@@ -77,6 +79,9 @@ used within the `regex` property:
               translator
             - `context` - the context of the string
             - `flavor` - the flavor of the string (mostly for Android)
+          Examples of various regular expressions are given below in the section
+          "Example Configuration" which give an idea of how to use these
+          capturing groups.
         - flags - the regular expression flags to use when extracting
           the strings. See the [JavaScript regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)
           documentation for more information on regular expression flags.
@@ -106,6 +111,8 @@ used within the `regex` property:
               quite long, but it is always unique.
             - "truncate" - use the first 32 characters of the source
               string as the key. This fixed-length key is usually unique.
+
+### Example Configuration
 
 Example configuration for a web project with PHP and JavaScript files:
 
