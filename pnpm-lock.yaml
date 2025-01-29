@@ -1625,6 +1625,28 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-regex:
+    dependencies:
+      ilib-istring:
+        specifier: workspace:^
+        version: link:../ilib-istring
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../ilib-locale
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../ilib-loctool-javascript-resource
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+      loctool:
+        specifier: workspace:^
+        version: link:../loctool
+
   packages/ilib-loctool-ruby-ilib:
     dependencies:
       ilib:
