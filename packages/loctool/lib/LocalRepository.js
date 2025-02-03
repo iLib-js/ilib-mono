@@ -80,20 +80,33 @@ var poFileFilter = /(^|[^a-z])([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A-
 var numericRegionCode = /^[0-9][0-9][0-9]$/;
 
 /**
- * Take a file list returned from the walk() function and return a list of
- * full path names for each file. We do not need the names of the directories.
+ * Flatten a file list tree returned from the walk() function into a single array.
  * @private
- * @param {Array.<File>} fileList the list of files to filter
+ * @param {Array.<File>} fileList a tree of files to flatten
+ * @returns {Array.<String>} the list of files flattened into a single array
+ */
+function getAllFiles(fileList) {
+    return fileList.flatMap(function(file) {
+        if (file.type === "directory") {
+            return getAllFiles(file.children);
+        }
+        return file.path;
+    });
+}
+
+/**
+ * Take a file list tree returned from the walk() function and return a list of
+ * full path names for each file. The tree is flattened into a single array and
+ * the directory is prepended to each file name.
+ * @private
+ * @param {Array.<File>} fileList a tree of files to filter
  * @param {String} directory the directory to prepend to each file name
- * @returns {Array.<String>} the list of full path names
+ * @returns {Array.<String>} the list of full path names flattened into a single array
+ * and with the directory prepended to each file name
  */
 function getFullPaths(fileList, directory) {
-    return fileList.flatMap(function(file) {
-        var pathName = path.join(directory, file.path);
-        if (file.type === "directory") {
-            return getFullPaths(file.children, pathName);
-        }
-        return pathName;
+    return getAllFiles(fileList).map(function(relativePath) {
+        return path.join(directory, relativePath);
     });
 }
 
