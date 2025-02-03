@@ -1,6 +1,9 @@
 Localization Tool
 =================
 
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nmkedziora/627fa09639e2b63a847c54d909ffb2aa/raw/88cf16fd088e7669b1e7983d4b65ca07cdbbefe6/loctool.json)
+
+
 This tool reads source files in various formats, extracts strings
 for translation, and writes out the translated strings the various
 resource file formats needed by each project.

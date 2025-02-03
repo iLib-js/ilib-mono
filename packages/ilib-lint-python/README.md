@@ -1,5 +1,8 @@
 # ilib-lint-python
 
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nmkedziora/627fa09639e2b63a847c54d909ffb2aa/raw/88cf16fd088e7669b1e7983d4b65ca07cdbbefe6/ilib-lint-python.json)
+
+
 An ilib-lint plugin that provides the ability to parse po files and provides
 rules to check resources that come from code written in python.
 

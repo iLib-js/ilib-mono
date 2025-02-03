@@ -1,5 +1,8 @@
 # ilib-lint-python-gnu
 
+![badge](https://img.shields.io/endpoint?url=https://gist.github.com/nmkedziora/627fa09639e2b63a847c54d909ffb2aa#file-ilib-lint-python-gnu-json)
+
+
 An ilib-lint plugin that provides the ability to check resources that come
 from code written in python using the gnu gettext library.
 

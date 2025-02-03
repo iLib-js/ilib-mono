@@ -1,5 +1,8 @@
 # ilib-lint
 
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nmkedziora/627fa09639e2b63a847c54d909ffb2aa/raw/88cf16fd088e7669b1e7983d4b65ca07cdbbefe6/ilib-lint.json)
+
+
 A static analysis linter for many types of source files that looks for i18n problems.
 
 This i18n linter differs from other static linters in the following ways:
