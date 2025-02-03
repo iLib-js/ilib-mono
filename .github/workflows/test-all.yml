@@ -37,7 +37,7 @@ jobs:
                 coverage-summary-path: ./packages/ilib-lint-python/coverage/coverage-summary.json
             - name: Update README with Coverage HTML
               run: |
-                dupa=$(echo "${{ steps.coverageComment.outputs.summaryHtml }}" | sed 's/[&/\]/\\&/g')
+                dupa=$(echo '${{ steps.coverageComment.outputs.summaryHtml }}' | sed 's/[&/\]/\\&/g')
 
                 dupa=$(echo "$dupa" | sed ':a;N;$!ba;s/\n/\\n/g')
 
