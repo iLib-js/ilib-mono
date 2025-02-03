@@ -3,19 +3,19 @@
 <!-- Jest Coverage Comment:Begin -->
 | Lines | Statements | Branches | Functions |
 | --- | --- | --- | --- |
-| <a href="https://github.com/iLib-js/ilib-mono/blob/d3b053d9294c23bd1d6c7e594c308e8223f73f74/README.md"><img alt="Coverage: 84%" src="https://img.shields.io/badge/Coverage-84%25-green.svg" /></a><br/> | 83.66% (1485/1775) | 74.97% (827/1103) | 84.81% (296/349) |
+| <a href="https://github.com/iLib-js/ilib-mono/blob/e4ce43f6a0e53075cba2478a890d5d00a8337d61/README.md"><img alt="Coverage ilib-lint: 84%" src="https://img.shields.io/badge/Coverage ilib-lint-84%25-green.svg" /></a><br/> | 83.66% (1485/1775) | 74.97% (827/1103) | 84.81% (296/349) |
 | Lines | Statements | Branches | Functions |
 | --- | --- | --- | --- |
-| <a href="https://github.com/iLib-js/ilib-mono/blob/d3b053d9294c23bd1d6c7e594c308e8223f73f74/README.md"><img alt="Coverage: 64%" src="https://img.shields.io/badge/Coverage-64%25-yellow.svg" /></a><br/> | 64.09% (141/220) | 48.59% (52/107) | 52.94% (18/34) |
+| <a href="https://github.com/iLib-js/ilib-mono/blob/e4ce43f6a0e53075cba2478a890d5d00a8337d61/README.md"><img alt="Coverage ilib-lint-python: 64%" src="https://img.shields.io/badge/Coverage ilib-lint-python-64%25-yellow.svg" /></a><br/> | 64.09% (141/220) | 48.59% (52/107) | 52.94% (18/34) |
 | Lines | Statements | Branches | Functions |
 | --- | --- | --- | --- |
-| <a href="https://github.com/iLib-js/ilib-mono/blob/d3b053d9294c23bd1d6c7e594c308e8223f73f74/README.md"><img alt="Coverage: 74%" src="https://img.shields.io/badge/Coverage-74%25-yellow.svg" /></a><br/> | 73.29% (118/161) | 71.18% (42/59) | 59.52% (25/42) |
+| <a href="https://github.com/iLib-js/ilib-mono/blob/e4ce43f6a0e53075cba2478a890d5d00a8337d61/README.md"><img alt="Coverage ilib-lint-python-gnu: 74%" src="https://img.shields.io/badge/Coverage ilib-lint-python-gnu-74%25-yellow.svg" /></a><br/> | 73.29% (118/161) | 71.18% (42/59) | 59.52% (25/42) |
 | Lines | Statements | Branches | Functions |
 | --- | --- | --- | --- |
-| <a href="https://github.com/iLib-js/ilib-mono/blob/d3b053d9294c23bd1d6c7e594c308e8223f73f74/README.md"><img alt="Coverage: 96%" src="https://img.shields.io/badge/Coverage-96%25-brightgreen.svg" /></a><br/> | 95.88% (303/316) | 84.91% (152/179) | 91.04% (61/67) |
+| <a href="https://github.com/iLib-js/ilib-mono/blob/e4ce43f6a0e53075cba2478a890d5d00a8337d61/README.md"><img alt="Coverage ilib-lint-react: 96%" src="https://img.shields.io/badge/Coverage ilib-lint-react-96%25-brightgreen.svg" /></a><br/> | 95.88% (303/316) | 84.91% (152/179) | 91.04% (61/67) |
 | Lines | Statements | Branches | Functions |
 | --- | --- | --- | --- |
-| <a href="https://github.com/iLib-js/ilib-mono/blob/d3b053d9294c23bd1d6c7e594c308e8223f73f74/README.md"><img alt="Coverage: 81%" src="https://img.shields.io/badge/Coverage-81%25-green.svg" /></a><br/> | 81.5% (6666/8179) | 74.26% (3387/4561) | 72.72% (760/1045) |
+| <a href="https://github.com/iLib-js/ilib-mono/blob/e4ce43f6a0e53075cba2478a890d5d00a8337d61/README.md"><img alt="Coverage loctool: 81%" src="https://img.shields.io/badge/Coverage loctool-81%25-green.svg" /></a><br/> | 81.5% (6666/8179) | 74.26% (3387/4561) | 72.72% (760/1045) |
 <!-- Jest Coverage Comment:End -->
 
 This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
