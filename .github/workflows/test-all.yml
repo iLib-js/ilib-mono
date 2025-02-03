@@ -29,32 +29,54 @@ jobs:
             - name: Run code coverage
               run: pnpm coverage:ci
 
-            - name: Generate coverage data
+            - name: Jest Coverage Comment
+              if: github.ref == 'refs/heads/add-code-coverage-1'
               id: coverageComment
               uses: MishaKav/jest-coverage-comment@main
               with:
-                hide-comment: true
+                hide-summary: true
                 coverage-summary-path: ./packages/ilib-lint-python/coverage/coverage-summary.json
-            - name: Check the output coverage
-              run: |
-                echo "Coverage Percentage - ${{ steps.coverageComment.outputs }}"
-                echo "Coverage Color - ${{ steps.coverageComment.outputs }}"
-                echo "Summary HTML - ${{ steps.coverageComment.outputs }}"
-            - name: Update coverage badge in README
+
+            - name: Update README with Coverage HTML
               if: github.ref == 'refs/heads/add-code-coverage-1'
-              uses: schneegans/dynamic-badges-action@v1.6.0
+              run: sed -i '/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->\n\${{ steps.coverageComment.outputs.summaryHtml }}\n<!-- Jest Coverage Comment:End -->' ./README.md
+
+            - name: Commit & Push changes in README
+              if: github.ref == 'refs/heads/add-code-coverage-1'
+              uses: actions-js/push@master
               with:
-#                 TODO @Edwin
-#                1. Create gist
-#                2. Create token for authorization to update gist (scope gist)
-#                3. Add token to lib-mono actions' secrets and used here
-                auth: ${{ secrets.GIST_TOKEN }}
-                gistID: ${{ gistID }}
-                filename: ilib-lint-python.json
-                label: Coverage
-                message: ${{ steps.coverageComment.outputs.coverage }}%
-                color: ${{ steps.coverageComment.outputs.color }}
-                namedLogo: javascript
+                message: Update coverage in README
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+#
+#            - name: Generate coverage data
+#              id: coverageComment
+#              uses: MishaKav/jest-coverage-comment@main
+#              with:
+#                hide-comment: true
+#                coverage-summary-path: ./packages/ilib-lint-python/coverage/coverage-summary.json
+#            - name: Check the output coverage
+#              run: |
+#                echo "Coverage Percentage - ${{ steps.coverageComment.outputs }}"
+#                echo "Coverage Color - ${{ steps.coverageComment.outputs }}"
+#                echo "Summary HTML - ${{ steps.coverageComment.outputs }}"
+#
+#            - name: Update coverage badge in README
+#              if: github.ref == 'refs/heads/add-code-coverage-1'
+#              uses: schneegans/dynamic-badges-action@v1.6.0
+#              with:
+##                 TODO @Edwin
+##                1. Create gist
+##                2. Create token for authorization to update gist (scope gist)
+##                3. Add token to lib-mono actions' secrets and used here
+#                auth: ${{ secrets.GIST_TOKEN }}
+#                gistID: ${{ gistID }}
+#                filename: ilib-lint-python.json
+#                label: Coverage
+#                message: ${{ steps.coverageComment.outputs.coverage }}%
+#                color: ${{ steps.coverageComment.outputs.color }}
+#                namedLogo: javascript
 
             - name: Upload coverage report
               uses: actions/upload-artifact@v4
