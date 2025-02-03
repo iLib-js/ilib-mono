@@ -55,6 +55,7 @@
         "node": ">=10.0.0"
     },
     "scripts": {
+        "coverage": "pnpm test -- --coverage --coverageReporters json-summary --coverageReporters text > ./coverage.txt --reporters=default --reporters=jest-junit",
         "clean": "ant clean",
         "build": "pnpm generate",
         "generate": "node generate/genPluralCategories.js",

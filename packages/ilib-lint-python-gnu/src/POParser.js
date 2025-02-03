@@ -149,6 +149,17 @@ class POParser extends Parser {
             sourceFile
         })];
     }
+
+    testCodeCoverageComment(sourceFile) {
+        const pofile = this.potype.newFile(sourceFile.getPath());
+        pofile.extract();
+        this.ts = pofile.getTranslationSet();
+        return [new IntermediateRepresentation({
+            type: "resource",
+            ir: this.ts.getAll(),
+            sourceFile
+        })];
+    }
 }
 
 export default POParser;

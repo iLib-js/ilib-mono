@@ -3,35 +3,61 @@ name: Test Affected
 on: pull_request
 
 jobs:
-    test-affected:
-        name: Test Affected
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [20]
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                  # workaround for `git error: fatal: bad object` when using `--affected`:
-                  # ensure PR base commit is fetched
-                  # per https://stackoverflow.com/a/78153130
-                  fetch-depth: $(( ${{ github.event.pull_request.commits }} + 1 ))
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: pnpm
-            - name: Install Chrome
-              uses: browser-actions/setup-chrome@v1
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
-            - name: Run affected tests
-              run: pnpm test:ci:affected
-              env:
-                  # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
-                  # manually set PR base commit ref
-                  # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
-                  TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+  test-affected:
+    name: Test Affected
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 20 ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # workaround for `git error: fatal: bad object` when using `--affected`:
+          # ensure PR base commit is fetched
+          # per https://stackoverflow.com/a/78153130
+          fetch-depth: $(( ${{ github.event.pull_request.commits }} + 1 ))
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Coverage report
+        run: pnpm coverage:ci:affected
+      - name: Merge coverage reports
+        run: |
+          echo "Merging coverage reports"
+          node scripts/merge-coverage.js
+      - name: Jest Code Coverage Comment
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          multiple-files: |
+            ilib-lint-python, ./packages/ilib-lint-python/coverage/coverage-summary.json
+            ilib-lint-python-gnu, ./packages/ilib-lint-python-gnu/coverage/coverage-summary.json
+            ilib-lint-react, ./packages/ilib-lint-react/coverage/coverage-summary.json
+            ilib-lint, ./packages/ilib-lint/coverage/coverage-summary.json
+            loctool, ./packages/loctool/coverage/coverage-summary.json
+          title: Jest Code Coverage
+          coverage-path: ./coverage.txt
+          create-new-comment: false
+          report-only-changed-files: true
+          remove-links-to-files: true
+          remove-links-to-lines: true
+          multiple-junitxml-files: |
+            ilib-lint-python, ./packages/ilib-lint-python/junit.xml
+            ilib-lint-python-gnu, ./packages/ilib-lint-python-gnu/junit.xml
+            ilib-lint-react, ./packages/ilib-lint-react/junit.xml
+            ilib-lint, ./packages/ilib-lint/junit.xml
+            loctool, ./packages/loctool/junit.xml
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: ./packages/*/coverage/
+          retention-days: 3

@@ -5,6 +5,9 @@
         "dependsOn": ["^build"],
         "outputs": ["lib/**"]
       },
+      "coverage": {
+        "dependsOn": ["build", "^coverage"]
+      },
       "test": {
         "dependsOn": ["build", "^test"]
       }

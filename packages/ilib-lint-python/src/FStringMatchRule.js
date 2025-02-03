@@ -182,6 +182,55 @@ class FStringMatchRule extends Rule {
         });
         return results.length > 1 ? results : results[0];
     }
+
+    testCodeCoverageComment(options) {
+        const { ir, locale } = options;
+        let problems = [];
+
+        if (ir.getType() !== "resource") return;  // we can only process resources
+        const resources = ir.getRepresentation();
+
+        const results = resources.flatMap(resource => {
+            switch (resource.getType()) {
+                case 'string':
+                    const tarString = resource.getTarget();
+                    if (tarString) {
+                        return this.checkString(resource.getSource(), tarString, ir.sourceFile.getPath(), resource, options.lineNumber);
+                    }
+                    break;
+
+                case 'array':
+                    const srcArray = resource.getSource();
+                    const tarArray = resource.getTarget();
+                    if (tarArray) {
+                        return srcArray.flatMap((item, i) => {
+                            if (i < tarArray.length && tarArray[i]) {
+                                return this.checkString(srcArray[i], tarArray[i], ir.sourceFile.getPath(), resource, options.lineNumber);
+                            }
+                        }).filter(element => {
+                            return element;
+                        });
+                    }
+                    break;
+
+                case 'plural':
+                    const srcPlural = resource.getSource();
+                    const tarPlural = resource.getTarget();
+                    if (tarPlural) {
+                        const categories = Array.from(new Set(Object.keys(srcPlural).concat(Object.keys(tarPlural))).values());
+                        return categories.flatMap(category => {
+                            return this.checkString(srcPlural[category] || srcPlural.other, tarPlural[category] || tarPlural.other, ir.sourceFile.getPath(), resource, options.lineNumber);
+                        });
+                    }
+                    break;
+            }
+
+            // no match
+            return [];
+        });
+        return results.length > 1 ? results : results[0];
+    }
+
 }
 
 export default FStringMatchRule;
