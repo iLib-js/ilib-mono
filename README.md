@@ -1,6 +1,7 @@
 # ilib-mono
 
 <!-- Jest Coverage Comment:Begin -->
+$dupa
 <!-- Jest Coverage Comment:End -->
 
 This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
