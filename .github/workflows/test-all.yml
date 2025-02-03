@@ -39,7 +39,7 @@ jobs:
               env:
                 dupa: ${{ steps.coverageComment.outputs.summaryHtml }}
               run: |
-                sed -i '/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->\n$dupa\n<!-- Jest Coverage Comment:End -->' ./README.md
+                sed -i '/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->\n${{env.dupa}}\n<!-- Jest Coverage Comment:End -->' ./README.md
                 cat ./README.md
             - name: Commit & Push changes in README
               uses: actions-js/push@master
