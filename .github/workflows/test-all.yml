@@ -35,10 +35,6 @@ jobs:
               with:
                 hide-summary: true
                 coverage-summary-path: ./packages/ilib-lint-python/coverage/coverage-summary.json
-
-#            - name: Escape
-#              run: echo "::set-output name=summaryHtml::$(echo "${{ steps.coverageComment.outputs.summaryHtml }}" | sed 's/"/\\"/g')"
-
             - name: Update README with Coverage HTML
               env:
                 dupa: ${{ steps.coverageComment.outputs.summaryHtml }}
