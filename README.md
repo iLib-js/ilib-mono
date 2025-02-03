@@ -1,6 +1,7 @@
 # ilib-mono
 
-<!-- Jest Coverage Comment:Begin -->${dupa}<!-- Jest Coverage Comment:End -->
+<!-- Jest Coverage Comment:Begin -->
+<!-- Jest Coverage Comment:End -->
 
 This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
 It aims to contain all the packages that are part of the iLib-js, even though every package is published to npm as a separate package.
