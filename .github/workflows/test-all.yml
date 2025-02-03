@@ -37,7 +37,7 @@ jobs:
                 coverage-summary-path: ./packages/ilib-lint-python/coverage/coverage-summary.json
             - name: Update README with Coverage HTML
               run: |
-                dupa=$(echo "${{ steps.coverageComment.outputs.summaryHtml }}" | sed 's/|/\\|/g')
+                dupa=$(echo "${{ steps.coverageComment.outputs.summaryHtml }}" | sed 's/"/\\"/g' | sed 's/|/\\|/g' | sed 's/</\\</g')
                 sed -i "/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->\n${dupa}\n<!-- Jest Coverage Comment:End -->" ./README.md
                 cat ./README.md
             - name: Commit & Push changes in README
