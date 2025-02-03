@@ -62,7 +62,7 @@ jobs:
 
             - name: Update README with Coverage HTML
               run: |
-                DUPAAAA=$(echo "${{ steps.coverageComment1.outputs.summaryHtml }}${{ steps.coverageComment2.outputs.summaryHtml }}${{ steps.coverageComment3.outputs.summaryHtml }}${{ steps.coverageComment4.outputs.summaryHtml }}${{ steps.coverageComment5.outputs.summaryHtml }}" | sed 's/[&/\]/\\&/g')
+                DUPAAAA=$(echo '${{ steps.coverageComment1.outputs.summaryHtml }}${{ steps.coverageComment2.outputs.summaryHtml }}${{ steps.coverageComment3.outputs.summaryHtml }}${{ steps.coverageComment4.outputs.summaryHtml }}${{ steps.coverageComment5.outputs.summaryHtml }}' | sed 's/[&/\]/\\&/g')
                 DUPAAAA=$(echo "$DUPAAAA" | sed ':a;N;$!ba;s/\n/\\n/g')
               
 
