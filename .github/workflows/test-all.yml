@@ -41,8 +41,8 @@ jobs:
 
             - name: Update README with Coverage HTML
               run: |
-                dupa=$(echo "${{ steps.coverageComment.outputs.summaryHtml }}")
-                sed -i '/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->${ dupa }<!-- Jest Coverage Comment:End -->' ./README.md
+                dupa=$(echo "${{ steps.coverageComment.outputs.summaryHtml }}" | sed 's/"/\\"/g')
+                sed -i '/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->${dupa}<!-- Jest Coverage Comment:End -->' ./README.md
 
             - name: Commit & Push changes in README
               uses: actions-js/push@master
