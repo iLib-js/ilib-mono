@@ -30,18 +30,43 @@ jobs:
               run: pnpm coverage:ci
 
             - name: Jest Coverage Comment
-              id: coverageComment
+              id: coverageComment1
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                hide-summary: true
+                coverage-summary-path: ./packages/ilib-lint/coverage/coverage-summary.json
+            - name: Jest Coverage Comment
+              id: coverageComment2
               uses: MishaKav/jest-coverage-comment@main
               with:
                 hide-summary: true
                 coverage-summary-path: ./packages/ilib-lint-python/coverage/coverage-summary.json
+            - name: Jest Coverage Comment
+              id: coverageComment3
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                hide-summary: true
+                coverage-summary-path: ./packages/ilib-lint-python-gnu/coverage/coverage-summary.json
+            - name: Jest Coverage Comment
+              id: coverageComment4
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                hide-summary: true
+                coverage-summary-path: ./packages/ilib-lint-react/coverage/coverage-summary.json
+            - name: Jest Coverage Comment
+              id: coverageComment5
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                hide-summary: true
+                coverage-summary-path: ./packages/loctool/coverage/coverage-summary.json
+
             - name: Update README with Coverage HTML
               run: |
-                dupa=$(echo '${{ steps.coverageComment.outputs.summaryHtml }}' | sed 's/[&/\]/\\&/g')
+                DUPAAAA=$(echo "${{ steps.coverageComment1.outputs.summaryHtml }}${{ steps.coverageComment2.outputs.summaryHtml }}${{ steps.coverageComment3.outputs.summaryHtml }}${{ steps.coverageComment4.outputs.summaryHtml }}${{ steps.coverageComment5.outputs.summaryHtml }}" | sed 's/[&/\]/\\&/g')
+                DUPAAAA=$(echo "$DUPAAAA" | sed ':a;N;$!ba;s/\n/\\n/g')
+              
 
-                dupa=$(echo "$dupa" | sed ':a;N;$!ba;s/\n/\\n/g')
-
-                sed -i "/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->\n$dupa\n<!-- Jest Coverage Comment:End -->" ./README.md
+                sed -i "/<!-- Jest Coverage Comment:Begin -->/,/<!-- Jest Coverage Comment:End -->/c\<!-- Jest Coverage Comment:Begin -->\n$DUPAAAA\n<!-- Jest Coverage Comment:End -->" ./README.md
 
                 cat ./README.md
             - name: Commit & Push changes in README
