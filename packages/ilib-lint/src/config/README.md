@@ -120,6 +120,11 @@ The `ilib-lint-config.json` file can have any of the following properties:
 The `ilib-lint-config.json` file can be written in [JSON5](https://github.com/json5/json5)
 syntax, which means it can contain comments and other enhancements.
 
+If you would like to see what parsers, transformers, and serializers you can use in your
+config file, you can run the linter with the `--list` option in the root of your project.
+This will list all of the parsers, rules, rulesets, formatters, transformers, and serializers
+that are available in the plugins that are installed in your project.
+
 ### Example Config File
 
 Here is an example of a configuration file:

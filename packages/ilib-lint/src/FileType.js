@@ -48,7 +48,7 @@ class FileType {
      * @param {Project} options.project the Project that this file type is a part of
      * @param {Array.<String>} [options.locales] list of locales to use with this file type
      * @param {String} [options.type] specifies the way that files of this file type
-     * are parsed. This can be one of "resource", "source", "line", or
+     * are parsed. This can be one of "resource", "source", "line", "string", or
      * "ast".
      * @param {String} [options.template] the path name template for this file type
      * which shows how to extract the locale from the path
@@ -61,7 +61,7 @@ class FileType {
      * apply to this file type
      * @param {Array.<String>} [options.transformers] an array of transformer names
      * to apply to files of this type after the rules have been applied
-     * @param {String} [options.serializer] a serializer to use if the file has been
+     * @param {String|Object} [options.serializer] a serializer to use if the file has been
      * modified by a transformer or a fixer
      * @constructor
      */
@@ -118,9 +118,12 @@ class FileType {
         */
 
         if (this.serializer) {
+            // if it is a string, then that string is the name of the serializer. If it is an object,
+            // then it the name and the settings to pass to the the serializer constructor.
+            const name = typeof(this.serializer) === 'string' ? this.serializer : this.serializer.name;
             const serializerMgr = this.project.getSerializerManager();
-            this.serializerClass = serializerMgr.getByName(this.serializer);
-            if (!this.serializerClass) {
+            this.serializerInst = serializerMgr.get(name, this.serializer);
+            if (!this.serializerInst) {
                 throw `Could not find serializer ${this.serializer} named in the configuration for filetype ${this.name}`;
             }
         }
@@ -217,9 +220,7 @@ class FileType {
      * file type or undefined if there is no serializer for this file type.
      */
     getSerializer() {
-        if (this.serializerClass) {
-            return new this.serializerClass();
-        }
+        return this.serializerInst;
     }
 }
 

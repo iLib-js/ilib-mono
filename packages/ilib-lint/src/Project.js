@@ -136,17 +136,6 @@ class Project extends DirItem {
      * idea is that you can exclude a whole category of files (like all json files),
      * but include specific ones. For example, you may exclude all json files, but
      * still want to include the "config.json" file.<p>
-
-     * The options parameter may include any of the following optional properties:
-     *
-     * <ul>
-     * <li><i>excludes</i> (Array of strings) - A list of micromatch patterns to
-     * exclude from the output. If a pattern matches a directory, that directory
-     * will not be recursively searched.
-     * <li><i>includes</i> (Array of strings) - A list of micromatch patterns to
-     * include in the walk. If a pattern matches both an exclude and an include, the
-     * include will override the exclude.
-     * </ul>
      *
      * @param {String} root Directory to walk
      * @returns {Promise<DirItem[]>} an array of file names in the directory, filtered
@@ -514,8 +503,8 @@ class Project extends DirItem {
     }
 
     /**
-     * Return all directory items in this project.
-     * @returns {Array.<LintableFile>} the directory items in this project.
+     * Return all lintable files in this project.
+     * @returns {Array.<LintableFile>} the lintable files in this project.
      */
     get() {
         return this.files.flatMap(dirItem => {
@@ -566,11 +555,13 @@ class Project extends DirItem {
      * file type of each file.
      */
     serialize() {
+debugger;
         if (this.options.opt.write) {
-            this.files.forEach(file => {
-                const ir = file.getIR();
+            const lintables = this.get();
+            lintables.forEach(file => {
+                const ir = file.getIRs();
                 const serializer = file.getFileType().getSerializer();
-                if (ir.isDirty() && serializer) {
+                if (file.isDirty() && serializer) {
                     serializer.serialize(ir);
                 }
             });
