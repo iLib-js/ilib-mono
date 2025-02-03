@@ -25,6 +25,7 @@ class TestSerializer extends Serializer {
         this.overwrite = options?.opt?.overwrite ?? false;
         this.name = "serializer-xyz";
         this.description = "A test serializer for xyz files, which are really just json files.";
+        this.type = "resource";
     }
 
     init() {

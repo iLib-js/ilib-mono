@@ -28,6 +28,7 @@ class TestRule extends Rule {
         this.name = "resource-test";
         this.description = "Test for the existence of the word 'test' in the strings.";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
+        this.type = "resource";
     }
 
     getRuleType() {
@@ -101,9 +102,6 @@ class TestRule extends Rule {
                 });
         }
     }
-
-    // no match
-    return;
 }
 
 export default TestRule;

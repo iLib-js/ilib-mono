@@ -58,6 +58,9 @@ class TestPlugin extends Plugin {
         return [ ];
     }
 
+    getSerializers() {
+        return [ ];
+    }
 }
 
 export default TestPlugin;

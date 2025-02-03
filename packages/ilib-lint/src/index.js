@@ -74,7 +74,7 @@ const optionConfig = {
     },
     list: {
         flag: true,
-        help: "Load all plugins, and then list out all available parsers, rules, rulesets, and formatters, then exit."
+        help: "Load all plugins, and then list out all available parsers, rules, rulesets, formatters, transformers, and serializers then exit."
     },
     locales: {
         short: "l",
@@ -103,25 +103,20 @@ const optionConfig = {
         flag: true,
         help: "Produce lots of progress output during the run."
     },
-    fix: {
-        flag: true,
-        "default": false,
-        help: "If auto-fixes are available for some of the errors, apply them (overwriting the original file)."
-    },
     write: {
         flag: true,
         default: false,
         help: "If a file is changed by a fix or transformer, write the file to disk again."
     },
-    "auto-fix": {
+    fix: {
         flag: true,
         "default": false,
-        help: "If auto-fixes are available for some of the errors, apply them and write the file back to disk again."
+        help: "If auto-fixes are available for some of the errors, apply them and write the file back to disk again. Implies --write."
     },
     overwrite: {
         flag: true,
         "default": false,
-        help: "If a file is changed by an auto-fix or a transformer, write the file to disk again, but instead of writing to a new file, it overwrites the original file."
+        help: "When writing a modified file to disk, overwrite the original file instead of writing to a new file."
     },
     "max-errors": {
         short: "me",

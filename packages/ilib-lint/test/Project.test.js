@@ -16,7 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import fs from 'fs';
 import { ResourceString } from 'ilib-tools-common';
+import { Serializer, SourceFile } from 'ilib-lint-common';
 
 import Project from '../src/Project.js';
 import PluginManager from '../src/PluginManager.js';
@@ -106,6 +108,18 @@ const genericConfig = {
             "ruleset": [
                 "react-rules"
             ]
+        },
+        // fake file type that is really json underneath so that we can test
+        // transformers and serializers
+        "xyz": {
+            "template": "[dir]/[localeDir]/[basename].xyz",
+            "ruleset": [
+                "react-rules"
+            ],
+            "transformers": [
+                "transformer-xyz"
+            ],
+            "serializer": "serializer-xyz"
         }
     },
     // this maps micromatch path expressions to a file type definition
@@ -122,17 +136,75 @@ const genericConfig = {
                 "formatjs-match-substitution-params": true,
                 "match-quote-style": "localeOnly"
             }
-        }
+        },
+        "**/*.xyz": "xyz"
     }
 };
 
 const genericConfig2 = {
-    // the name is reaquired and should be unique amongst all your projects
+    // the name is required and should be unique amongst all your projects
     "name": "tester2",
     "sourceLocale": "en-KR",
 };
 
+const testConfig = {
+    // the name is reaquired and should be unique amongst all your projects
+    "name": "tester3",
+    // this is the global set of locales that applies unless something else overrides it
+    "locales": [
+        "en-US",
+        "de-DE",
+        "ja-JP",
+        "ko-KR"
+    ],
+    // list of plugins to load
+    "plugins": [
+        "ilib-lint-plugin-test"
+    ],
+    // default micromatch expressions to exclude from recursive dir searches
+    "excludes": [
+        "node_modules/**",
+        ".git/**",
+        "docs/**"
+    ],
+    // named rule sets to be used with the file types
+    "rulesets": {
+        "react-rules": {
+            // this is the declarative rule defined above
+            "resource-named-params": true,
+            // the "localeOnly" is an option that the quote matcher supports
+            // so this both includes the rule in the rule set and instantiates
+            // it with the "localeOnly" option
+            "resource-quote-matcher": "localeOnly"
+        }
+    },
+    // defines common settings for a particular types of file
+    "filetypes": {
+        // fake file type that is really json underneath so that we can test
+        // transformers and serializers
+        "xyz": {
+            "template": "[dir]/[localeDir]/[basename].xyz",
+            "ruleset": [
+                "react-rules"
+            ],
+            "transformers": [
+                "transformer-xyz"
+            ],
+            "serializer": "serializer-xyz"
+        }
+    },
+    // this maps micromatch path expressions to a file type definition
+    "paths": {
+        "**/*.xyz": "xyz"
+    }
+};
+
 describe("testProject", () => {
+    beforeAll(() => {
+        // load the test serializer plugin
+        pluginManager.loadPlugin("ilib-lint-plugin-test");
+    });
+
     test("ProjectConstructorEmpty", () => {
         expect.assertions(1);
 
@@ -471,6 +543,97 @@ describe("testProject", () => {
         // should not throw
         const issues = project.findIssues(["en-US"]);
         expect(issues).toBeTruthy();
+    });
+
+    test("Verify that serialization doesn't do anything if files are not modified", async () => {
+        expect.assertions(17);
+
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+
+        const project = new Project("test/testproject", {pluginManager, opt: {
+            write: true
+        }}, testConfig);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        const serialized = project.serialize();
+        expect(serialized).toBeTruthy();
+
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+    });
+
+    test("Verify that serialization works when the files are modified", async () => {
+        expect.assertions(18);
+
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+
+        const project = new Project("test/testproject", {pluginManager, opt: {
+            write: true
+        }}, testConfig);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        // artificially mark the files as modified
+        const files = project.get();
+        expect(files).toBeTruthy();
+        files.forEach(file => {
+            // sneakily mark the file as dirty when it really hasn't been modified
+            file.dirty = true;
+        });
+
+        const serialized = project.serialize();
+        expect(serialized).toBeTruthy();
+
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(true);
+
+        // cleanup
+        fs.unlinkSync("test/testproject/x/empty.xyz.modified");
+        fs.unlinkSync("test/testproject/x/test_ru_RU.xyz.modified");
+        fs.unlinkSync("test/testproject/x/test.xyz.modified");
     });
 });
 

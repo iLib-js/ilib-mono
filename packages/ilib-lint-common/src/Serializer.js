@@ -38,9 +38,10 @@ class Serializer extends PipelineElement {
      * Construct a new serializer instance.
      *
      * @param {Object} [options] options to the constructor
-     * @param {Function} [options.getLogger] a callback function provided by
+     * @param {Function} [options.getLogger] a callback function provided by the linter
+     * to retrieve the log4js logger
      * @param {object} [options.settings] additional settings that can be passed to the serializer
-     * the linter to retrieve the log4js logger
+     * implementation
      */
     constructor(options) {
         super(options);
@@ -65,12 +66,12 @@ class Serializer extends PipelineElement {
      * returned must have the same type as the intermediate representation.
      *
      * @abstract
-     * @param {IntermediateRepresentation} representation the representation
-     * to serialize
+     * @param {IntermediateRepresentation[]} representations the array of intermediate
+     * representations to serialize
      * @returns {SourceFile} the source file that contains the serialized form of the
      * given intermediate representation
      */
-    serialize(representation) {
+    serialize(representations) {
         throw new NotImplementedError();
     }
 };

@@ -16,12 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs';
-
 import { ResourceArray, ResourcePlural, ResourceString } from 'ilib-tools-common';
 
 import { IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
-import XliffParser from '../src/plugins/XliffParser.js';
 import XliffSerializer from '../src/plugins/XliffSerializer.js';
 
 describe("test the XliffParser plugin", () => {
@@ -60,7 +57,7 @@ describe("test the XliffParser plugin", () => {
         });
 
         const xs = new XliffSerializer();
-        const newSourceFile = xs.serialize(ir);
+        const newSourceFile = xs.serialize([ir]);
         expect(newSourceFile).toBeTruthy();
         expect(newSourceFile.getPath()).toBe(sourceFile.getPath());
         expect(newSourceFile.getContent()).toBe(
@@ -133,7 +130,7 @@ describe("test the XliffParser plugin", () => {
         });
 
         const xs = new XliffSerializer();
-        const newSourceFile = xs.serialize(ir);
+        const newSourceFile = xs.serialize([ir]);
         expect(newSourceFile).toBeTruthy();
         expect(newSourceFile.getPath()).toBe(sourceFile.getPath());
         expect(newSourceFile.getContent()).toBe(

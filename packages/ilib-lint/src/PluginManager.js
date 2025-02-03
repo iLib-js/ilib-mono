@@ -259,12 +259,24 @@ class PluginManager {
      */
     add(plugin) {
         if (!plugin) return;
-        this.parserMgr.add(plugin.getParsers());
-        this.formatterMgr.add(plugin.getFormatters());
-        this.ruleMgr.add(plugin.getRules());
-        this.ruleMgr.addRuleSetDefinitions(plugin.getRuleSets());
-        this.fixerMgr.add(plugin.getFixers());
-        this.serializerMgr.add(plugin.getSerializers());
+        if (typeof(plugin.getParsers) === 'function') {
+            this.parserMgr.add(plugin.getParsers());
+        }
+        if (typeof(plugin.getFormatters) === 'function') {
+            this.formatterMgr.add(plugin.getFormatters());
+        }
+        if (typeof(plugin.getRules) === 'function') {
+            this.ruleMgr.add(plugin.getRules());
+        }
+        if (typeof(plugin.getRuleSets) === 'function') {
+            this.ruleMgr.addRuleSetDefinitions(plugin.getRuleSets());
+        }
+        if (typeof(plugin.getFixers) === 'function') {
+            this.fixerMgr.add(plugin.getFixers());
+        }
+        if (typeof(plugin.getSerializers) === 'function') {
+            this.serializerMgr.add(plugin.getSerializers());
+        }
     }
 
     /**

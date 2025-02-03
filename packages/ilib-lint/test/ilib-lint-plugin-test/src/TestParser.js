@@ -26,6 +26,7 @@ class TestParser extends Parser {
         super(options);
         this.name = "parser-xyz";
         this.description = "A test parser for xyz files, which are really just json files.";
+        this.type = "resource";
     }
 
     init() {

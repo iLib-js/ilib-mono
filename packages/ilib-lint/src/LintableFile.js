@@ -32,6 +32,36 @@ const logger = log4js.getLogger("ilib-lint.root.LintableFile");
  */
 class LintableFile extends DirItem {
     /**
+     * Whether the file has been modified since it was last written or since it was read.
+     * @type {boolean}
+     */
+    dirty = false;
+
+    /**
+     * The list of parsers that can parse this file.
+     * @type {Parser[]}
+     */
+    parsers = [];
+
+    /**
+     * The serializer for this file type.
+     * @type {Serializer|undefined}
+     */
+    serializer;
+
+    /**
+     * The file type of this source file
+     * @type {FileType}
+     */
+    filetype;
+
+    /**
+     * The intermediate representations of this file
+     * @type {IntermediateRepresentation[]}
+     */
+    irs = [];
+
+    /**
      * Construct a source file instance
      * The options parameter can contain any of the following properties:
      *
@@ -66,6 +96,7 @@ class LintableFile extends DirItem {
             extension = extension.substring(1);
             this.parsers = this.filetype.getParserClasses(extension);
         }
+        this.serializer = this.filetype.getSerializer();
     }
 
     /**
@@ -169,7 +200,7 @@ class LintableFile extends DirItem {
                             // and that any fixable results were produced
                             fixable.length > 0 &&
                             // and that the current parser is able to write
-                            parser.canWrite &&
+                            this.serializer &&
                             // and that the fixer for this type of IR is avaliable
                             (fixer = this.project.getFixerManager().get(ir.getType()))
                         ) {
@@ -179,9 +210,13 @@ class LintableFile extends DirItem {
 
                             // check if anything had been applied
                             if (fixes.some((fix) => fix.applied)) {
+                                // remember that a fix modified the file and that it needs to be
+                                // written out to disk again after all fixes have been applied
+                                this.dirty = true;
+
                                 // fixer should modify the provided IR
                                 // so tell current parser to write out the modified representation
-                                parser.write(ir);
+                                this.sourceFile = this.serializer.serialize(irs);
 
                                 // after writing out the fixed content, we want to reparse to see if any new issues appeared,
                                 // while preserving the results that have been fixed so far;
@@ -239,6 +274,37 @@ class LintableFile extends DirItem {
     }
 
     /**
+     * Set the intermediate representations of this file.
+     * @param {Array.<IntermediateRepresentation>} irs the intermediate representations
+     * of this file
+     */
+    setIRs(irs) {
+        if (irs.every(ir => ir instanceof IntermediateRepresentation)) {
+            this.irs = irs;
+        } else {
+            // should never happen
+            throw new Error("Invalid intermediate representations provided to setIRs");
+        }
+    }
+
+    /**
+     * Return whether or not the file has been modified since it was last written
+     * or since it was read.
+     * @returns {boolean} true if the file is dirty, false otherwise
+     */
+    isDirty() {
+        return this.dirty;
+    }
+
+    /**
+     * Return the source file of this lintable file.
+     * @returns {SourceFile} the source file
+     */
+    getSourceFile() {
+        return this.sourceFile;
+    }
+
+    /**
      * Return the stats for the file after issues were found.
      * @returns {FileStats} the stats for the current file
      */
@@ -252,6 +318,14 @@ class LintableFile extends DirItem {
             });
         }
         return fileStats;
+    }
+
+    /**
+     * Return the file type of this file.
+     * @returns {FileType} the file type of this file
+     */
+    getFileType() {
+        return this.filetype;
     }
 }
 

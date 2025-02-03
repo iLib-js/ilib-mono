@@ -39,11 +39,13 @@ class XliffSerializer extends Serializer {
      * Convert the intermediate representation back into a source file.
      *
      * @override
-     * @param {IntermediateRepresentation} ir the intermediate representation to convert
+     * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
      * @returns {SourceFile} the source file with the contents of the intermediate
      * representation
      */
-    serialize(ir) {
+    serialize(irs) {
+        // should only be one ir in this array
+        const ir = irs[0];
         const resources = ir.getRepresentation();
         const xliff = new ResourceXliff({
             path: ir.sourceFile.getPath()
