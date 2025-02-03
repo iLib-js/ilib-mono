@@ -1,7 +1,9 @@
 # ilib-mono
 
 <!-- Jest Coverage Comment:Begin -->
-${dupa}
+| Lines | Statements | Branches | Functions |
+| --- | --- | --- | --- |
+| <a href=https://github.com/iLib-js/ilib-mono/blob/13f83447421209f5ff84541627889761ae6c9667/README.md><img alt=Coverage: 64% src=https://img.shields.io/badge/Coverage-64%25-yellow.svg /></a><br/> | 64.09% (141/220) | 48.59% (52/107) | 52.94% (18/34) |
 <!-- Jest Coverage Comment:End -->
 
 This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
