@@ -556,7 +556,6 @@ class Project extends DirItem {
      * file type of each file.
      */
     serialize() {
-debugger;
         if (this.options.opt.write) {
             const lintables = this.get();
             lintables.forEach(file => {
