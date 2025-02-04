@@ -1,7 +1,7 @@
 /*
  * FileType.js - Represents a type of file in an ilib-lint project
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,35 +47,60 @@ class FileType {
      * @param {String} options.name the name or glob spec for this file type
      * @param {Project} options.project the Project that this file type is a part of
      * @param {Array.<String>} [options.locales] list of locales to use with this file type
-     * @param {String} [options.type] specifies the way that files of this file type
-     * are parsed. This can be one of "resource", "source", "line", "string", or
-     * "ast".
      * @param {String} [options.template] the path name template for this file type
      * which shows how to extract the locale from the path
      * name if the path includes it. Many file types
      * do not include the locale in the path, and in those cases,
-     * the template can be left out.
-     * @param {Array.<String>} [options.ruleset] a list of rule set names
-     * to use with this file type
+     * the template can be left out. If a serializer is specified, then the template
+     * is also used by the serializer to determine how to name the output files.
      * @param {Array.<String>} [options.parsers] an array of names of parsers to
-     * apply to this file type
+     * apply to this file type. The first parser is the most important one, as its
+     * type will be used to determine the type of intermediate representation, the
+     * type of the rules, and the type of the transformers and serializer. If no
+     * parsers are specified, then the parser manager will be asked to find all
+     * parsers that can parse files of this type.
+     * @param {Array.<String>} [options.ruleset] a list of rule set names
+     * to use with this file type. Only rules in these rule sets that operate
+     * on the same type of intermediate representation as the parsers will
+     * be applied to the file.
      * @param {Array.<String>} [options.transformers] an array of transformer names
-     * to apply to files of this type after the rules have been applied
-     * @param {String|Object} [options.serializer] a serializer to use if the file has been
-     * modified by a transformer or a fixer
+     * to apply to files of this type after the rules have been applied. Every transformer
+     * must operate on the same type of intermediate representation as the parser.
+     * @param {String|Object} [options.serializer] the name of the serializer to use if
+     * the file has been modified by a transformer or a fixer. The serializer must
+     * operate on the same type of intermediate representation as the parser.
      * @constructor
+     * @throws {Error} if a transformer or serializer is specified that does not
+     * operate on the same type of intermediate representation as the parser, or
+     * if a parser, transformer, or serializer cannot be found.
      */
     constructor(options) {
         if (!options || !options.name || !options.project) {
             throw "Missing required options to the FileType constructor";
         }
-        ["name", "project", "locales", "ruleset", "template", "type", "parsers", "transformers", "serializer"].forEach(prop => {
+        ["name", "project", "locales", "ruleset", "template", "parsers", "transformers", "serializer"].forEach(prop => {
             if (typeof(options[prop]) !== 'undefined') {
                 this[prop] = options[prop];
             }
         });
 
-        this.type = this.type || "string";
+        let parserType;
+
+        if (this.parsers) {
+            const parserMgr = this.project.getParserManager();
+            this.parserClasses = this.parsers.map(parserName => {
+                const parser = parserMgr.getByName(parserName);
+                if (!parser) {
+                    throw `Could not find parser ${parserName} named in the configuration for filetype ${this.name}`;
+                }
+                if (!parserType) {
+                    parserType = parserMgr.getType(parserName);
+                }
+                return parser;
+            });
+        }
+
+        this.type = parserType || "string";
 
         if (this.ruleset) {
             if (typeof(this.ruleset) === 'string') {
@@ -93,17 +118,6 @@ class FileType {
             }
         }
 
-        if (this.parsers) {
-            const parserMgr = this.project.getParserManager();
-            this.parserClasses = this.parsers.map(parserName => {
-                const parser = parserMgr.getByName(parserName);
-                if (!parser) {
-                    throw `Could not find parser ${parserName} named in the configuration for filetype ${this.name}`;
-                }
-                return parser;
-            });
-        }
-
         /*
         if (this.transformers) {
             const transformerMgr = this.project.getTransformerManager();
@@ -111,6 +125,10 @@ class FileType {
                 const transformer = transformerMgr.getByName(transformerName);
                 if (!transformer) {
                     throw `Could not find transformer ${transformerName} named in the configuration for filetype ${this.name}`;
+                }
+                const transformerType = this.transformerInst.getType();
+                if (transformerType !== this.type) {
+                     throw new Error(`The transformer ${name} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
                 }
                 return transformer;
             });
@@ -124,7 +142,11 @@ class FileType {
             const serializerMgr = this.project.getSerializerManager();
             this.serializerInst = serializerMgr.get(name, this.serializer);
             if (!this.serializerInst) {
-                throw `Could not find serializer ${this.serializer} named in the configuration for filetype ${this.name}`;
+                throw new Error(`Could not find or instantiate serializer ${this.serializer} named in the configuration for filetype ${this.name}`);
+            }
+            const serializerType = this.serializerInst.getType();
+            if (serializerType !== this.type) {
+                throw new Error(`The serializer ${name} processes representations of type ${serializerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
             }
         }
     }

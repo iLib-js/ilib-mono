@@ -1,7 +1,7 @@
 /*
  * TestRule.js - test an ilib-lint Rule plugin
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

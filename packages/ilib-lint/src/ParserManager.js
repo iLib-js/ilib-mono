@@ -1,7 +1,7 @@
 /*
  * ParserManager.js - Factory to create and return the right parser for the file
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,21 @@ function getSuperClassName(obj) {
  * knows about.
  */
 class ParserManager {
+    /**
+     * Information about the parsers that this instance of ilib-lint knows about.
+     * Each entry in the object is a parser name and the value is an object
+     * with the properties:
+     * <ul>
+     * <li>description - a description of the parser</li>
+     * <li>type - the type of parser</li>
+     * <li>extensions - an array of file name extensions that this parser can handle</li>
+     * </ul>
+     *
+     * @type {Object}
+     * @private
+     */
+    parserInfo = {};
+
     /**
      * Create a new parser manager instance.
      * @params {Object} options options controlling the construction of this object
@@ -79,13 +94,18 @@ class ParserManager {
                 const p = new parser({
                     getLogger: log4js.getLogger.bind(log4js)
                 });
+                const name = p.getName();
+                this.parserInfo[name] = {
+                    description: p.getDescription(),
+                    type: p.getType(),
+                    extensions: p.getExtensions()
+                };
                 for (const extension of p.getExtensions()) {
                     if (!this.parserCache[extension]) {
                         this.parserCache[extension] = [];
                     }
                     this.parserCache[extension].push(p);
                 }
-                this.descriptions[p.getName()] = p.getDescription();
                 this.parserByName[p.getName()] = p;
 
                 logger.trace(`Added parser to the parser manager.`);
@@ -102,10 +122,30 @@ class ParserManager {
      * @returns {Object} the parser names and descriptions
      */
     getDescriptions() {
-        return this.descriptions;
+        return Object.keys(this.parserInfo).map((name) => {
+            return {
+                name,
+                description: this.parserInfo[name].description
+            };
+        });
     }
 
-    // for use with the unit tests
+    /**
+     * Return the type of the parser with the given name. The type is
+     * the type of intermediate represetnation that the parser produces.
+     *
+     * @param {String} name the name of the parser to get the type for
+     * @returns {String} the type of parser with the given name
+     */
+    getType(name) {
+        return this.parserInfo[name].type;
+    }
+
+    /**
+     * Clear the parsers from the factory. This is only intended
+     * for use with the unit tests
+     * @private
+     */
     clear() {
         this.parserCache = {};
     }
