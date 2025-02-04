@@ -16,6 +16,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.27.9
         version: 2.27.9
+      jest-junit:
+        specifier: ^16.0.0
+        version: 16.0.0
       semver:
         specifier: ^7.6.3
         version: 7.6.3
@@ -2110,7 +2113,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
+        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -5933,6 +5936,10 @@ packages:
     resolution: {integrity: sha512-fP8u2pyfqx0K1rGn1R9pyE0/KTn+G7PxktWidOBTqFPLYX0b9ksaMFkhK5vrS3DVun09pckLdlx90QthlW7AmA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
+  jest-junit@16.0.0:
+    resolution: {integrity: sha512-A94mmw6NfJab4Fg/BlvVOUXzXgF0XIH6EmTgJ5NDPp4xoKq0Kr7sErb+4Xs9nZvu58pJojz5RFGpqnZYJTrRfQ==}
+    engines: {node: '>=10.12.0'}
+
   jest-leak-detector@29.7.0:
     resolution: {integrity: sha512-kYA8IJcSYtST2BY9I+SMC32nDpBT3J2NvWJx8+JCuCdl/CR1I4EKUJROiP8XtCcxqgTTBGJNdbB1A8XRKbTetw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -6279,6 +6286,7 @@ packages:
 
   lodash.omit@4.5.0:
     resolution: {integrity: sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==}
+    deprecated: This package is deprecated. Use destructuring assignment syntax instead.
 
   lodash.padend@4.6.1:
     resolution: {integrity: sha512-sOQs2aqGpbl27tmCS1QNZA09Uqp01ZzWfDUoD+xzTii0E7dSQfRKcRetFwa+uXaxaqL+TKm7CgD2JdKP7aZBSw==}
@@ -8581,6 +8589,9 @@ packages:
   xml2json@0.12.0:
     resolution: {integrity: sha512-EPJHRWJnJUYbJlzR4pBhZODwWdi2IaYGtDdteJi0JpZ4OD31IplWALuit8r73dJuM4iHZdDVKY1tLqY2UICejg==}
     hasBin: true
+
+  xml@1.0.1:
+    resolution: {integrity: sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==}
 
   xmlcreate@2.0.4:
     resolution: {integrity: sha512-nquOebG4sngPmGPICTS5EnxqhKbCmz5Ox5hsszI2T6U5qdrJizBc+0ilYSEjTSzU0yZcmvppztXe/5Al5fUwdg==}
@@ -12031,6 +12042,15 @@ snapshots:
       hooker: 0.2.3
       jshint: 2.13.6
 
+  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+    dependencies:
+      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+    transitivePeerDependencies:
+      - flow-remove-types
+      - supports-color
+      - ts-node
+      - typescript
+
   grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
@@ -13233,6 +13253,13 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  jest-junit@16.0.0:
+    dependencies:
+      mkdirp: 1.0.4
+      strip-ansi: 6.0.1
+      uuid: 8.3.2
+      xml: 1.0.1
+
   jest-leak-detector@29.7.0:
     dependencies:
       jest-get-type: 29.6.3
@@ -14276,6 +14303,16 @@ snapshots:
       nodemailer-smtp-transport: 2.7.2
       socks: 1.1.9
     optional: true
+
+  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+    dependencies:
+      ejs: 3.1.10
+      tap: 15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+    transitivePeerDependencies:
+      - flow-remove-types
+      - supports-color
+      - ts-node
+      - typescript
 
   nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
@@ -15793,6 +15830,36 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  tap@15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+    dependencies:
+      chokidar: 3.6.0
+      coveralls: 3.1.1
+      findit: 2.0.0
+      foreground-child: 2.0.0
+      fs-exists-cached: 1.0.0
+      glob: 7.2.3
+      isexe: 2.0.0
+      istanbul-lib-processinfo: 2.0.3
+      jackspeak: 1.4.2
+      libtap: 1.4.1
+      minipass: 3.3.6
+      mkdirp: 1.0.4
+      nyc: 15.1.0
+      opener: 1.5.2
+      rimraf: 3.0.2
+      signal-exit: 3.0.7
+      source-map-support: 0.5.21
+      tap-mocha-reporter: 5.0.4
+      tap-parser: 11.0.2
+      tap-yaml: 1.0.2
+      tcompare: 5.0.7
+      which: 2.0.2
+    optionalDependencies:
+      ts-node: 8.10.2(typescript@3.9.10)
+      typescript: 3.9.10
+    transitivePeerDependencies:
+      - supports-color
+
   tap@15.2.3(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       chokidar: 3.6.0
@@ -16628,6 +16695,8 @@ snapshots:
       hoek: 4.3.1
       joi: 13.7.0
       node-expat: 2.4.1
+
+  xml@1.0.1: {}
 
   xmlcreate@2.0.4: {}
 

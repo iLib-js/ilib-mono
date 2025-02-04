@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "postinstall": "cp git-hooks/* .git/hooks/",
+    "coverage:ci:affected": "turbo coverage --concurrency=5 --affected",
     "test": "pnpm test:affected",
     "test:affected": "turbo test --affected --output-logs=new-only",
     "test:all": "turbo test",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
+    "jest-junit": "^16.0.0",
     "semver": "^7.6.3",
     "turbo": "^2.2.3"
   },
