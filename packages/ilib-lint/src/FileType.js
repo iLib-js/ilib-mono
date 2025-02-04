@@ -100,6 +100,22 @@ class FileType {
             }
         }
 
+        if (false) {
+            if (typeof(this.ruleset) === 'string') {
+                // single string -> convert to an array with a single element
+                this.ruleset = [ this.ruleset ];
+            } else if (!Array.isArray(this.ruleset)) {
+                // rule set definition instead of a ruleset name. Save a new
+                // rule set definition in the rule manager and give it a
+                // temp name so we can refer to it and make sure that this.ruleset
+                // always points to an array of rule set names
+                const ruleMgr = this.project.getRuleManager();
+                const setName = `${this.name}-unnamed-ruleset`;
+                ruleMgr.addRuleSetDefinition(setName, this.ruleset);
+                this.ruleset = [ setName ];
+            }
+        }
+
         if (this.parsers) {
             const parserMgr = this.project.getParserManager();
             this.parserClasses = this.parsers.map(parserName => {
