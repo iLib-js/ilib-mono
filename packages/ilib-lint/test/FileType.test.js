@@ -1,7 +1,7 @@
 /*
  * FileType.test.js - test the file type object
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Serializer } from 'ilib-lint-common';
+
 import FileType from '../src/FileType.js';
 import Project from '../src/Project.js';
 import PluginManager from '../src/PluginManager.js';
@@ -37,13 +40,103 @@ const project = new Project("x", {
     pluginManager
 }, {});
 
+const projectWithValidPlugins = new Project("y", {
+    locales: ["fr-FR", "nl-NL"],
+    pluginManager
+}, {
+    plugins: [
+        "ilib-lint-plugin-test"
+    ],
+    fileTypes: {
+        "test": {
+            "name": "test",
+            "parsers": ["parser-xyz"],
+            "formatter": ["formatter-xyz"],
+            "serializer": "serializer-xyz"
+        }
+    }
+});
+
+const projectWithParserAndUnknownSerializer = new Project("z", {
+    locales: ["fr-FR", "nl-NL"],
+    pluginManager
+}, {
+    plugins: [
+        "ilib-lint-plugin-test"
+    ],
+    fileTypes: {
+        "test": {
+            "name": "test",
+            "parsers": ["parser-xyz"],
+            "formatter": ["formatter-xyz"],
+            "serializer": "non-existent-serializer"
+        }
+    }
+});
+
+class MockSerializer extends Serializer {
+    constructor(options) {
+        super(options);
+
+        this.extensions = [ "mock" ];
+        this.name = "mock-serializer";
+        // this is different than the parser from ilib-lint-plugin-test which
+        // is of type "resource"
+        this.type = "mock-type";
+    }
+
+    serialize(irs) {
+        return undefined;
+    }
+}
+
+const serializerMgr = pluginManager.getSerializerManager();
+serializerMgr.add([ MockSerializer ]);
+
+const projectWithWrongTypeOfSerializer = new Project("a", {
+    locales: ["fr-FR", "nl-NL"],
+    pluginManager
+}, {
+    plugins: [
+        "ilib-lint-plugin-test"
+    ],
+    fileTypes: {
+        "test": {
+            "name": "test",
+            "parsers": ["parser-xyz"],
+            "formatter": ["formatter-xyz"],
+            // this serializer is different than the parser from ilib-lint-plugin-test which
+            // is of type "resource"
+            "serializer": "mock-serializer"
+        }
+    }
+});
+
 describe("testFileType", () => {
+    beforeAll(async () => {
+        await project.init();
+        await projectWithValidPlugins.init();
+        await projectWithParserAndUnknownSerializer.init();
+        await projectWithWrongTypeOfSerializer.init();
+    });
+
     test("FileTypeConstructorEmpty", () => {
         expect.assertions(1);
 
         const ft = new FileType({
             name: "test",
             project
+        });
+        expect(ft).toBeTruthy();
+    });
+
+    test("FileTypeConstructor loads plugins properly", () => {
+        expect.assertions(1);
+
+        const ft = new FileType({
+            name: "test",
+            project: projectWithValidPlugins,
+            ...projectWithValidPlugins.config.fileTypes.test
         });
         expect(ft).toBeTruthy();
     });
@@ -55,7 +148,7 @@ describe("testFileType", () => {
             const ft = new FileType({
                 project
             });
-        }).toThrow();
+        }).toThrow(/Missing required options to the FileType constructor/);
     });
 
     test("FileTypeConstructorInsufficientParamsProject", () => {
@@ -65,7 +158,31 @@ describe("testFileType", () => {
             const ft = new FileType({
                 name: "test"
             });
-        }).toThrow();
+        }).toThrow(/Missing required options to the FileType constructor/);
+    });
+
+    test("FileTypeConstructor throws exception if the serializer names a type that doesn't exist", () => {
+        expect.assertions(1);
+
+        expect(() => {
+            const ft = new FileType({
+                name: "test",
+                project: projectWithParserAndUnknownSerializer,
+                ...projectWithParserAndUnknownSerializer.config.fileTypes.test
+            });
+        }).toThrow(/Could not find or instantiate serializer non-existent-serializer named in the configuration for filetype test/);
+    });
+
+    test("FileTypeConstructor throws exception if the serializer is a different type than the parser", () => {
+        expect.assertions(1);
+
+        expect(() => {
+            const ft = new FileType({
+                name: "test",
+                project: projectWithWrongTypeOfSerializer,
+                ...projectWithWrongTypeOfSerializer.config.fileTypes.test
+            });
+        }).toThrow(/The serializer mock-serializer processes representations of type mock-type, but the filetype test handles representations of type resource. The two types must match./);
     });
 
     test("FileTypeGetName", () => {

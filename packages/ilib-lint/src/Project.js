@@ -1,7 +1,7 @@
 /*
  * Project.js - Represents a particular ilin-lint project
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import log4js from 'log4js';
 import mm from 'micromatch';
 
 import { FileStats } from 'ilib-lint-common';
+import { parsePath, formatPath } from 'ilib-tools-common';
 
 import LintableFile from './LintableFile.js';
 import DirItem from './DirItem.js';
@@ -254,7 +255,7 @@ class Project extends DirItem {
      * @accept {boolean} true when everything was initialized correct
      * @reject the initialization failed
      */
-    init() {
+    async init() {
         let promise = Promise.resolve(true);
 
         if (this.config.plugins) {
@@ -560,9 +561,19 @@ debugger;
             const lintables = this.get();
             lintables.forEach(file => {
                 const ir = file.getIRs();
-                const serializer = file.getFileType().getSerializer();
+                const fileType = file.getFileType();
+                const serializer = fileType.getSerializer();
                 if (file.isDirty() && serializer) {
-                    serializer.serialize(ir);
+                    const sourceFile = serializer.serialize(ir);
+                    if (!this.options.opt.overwrite) {
+                        let template = fileType.getTemplate();
+                        const pathParts = parsePath(template, sourceFile.getPath());
+                        let outputPath = template ?
+                            formatPath(template, pathParts) :
+                            `${sourceFile.getPath()}.modified`;
+                        sourceFile.setPath(outputPath);
+                    }
+                    sourceFile.write();
                 }
             });
         }
