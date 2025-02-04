@@ -1,0 +1,13 @@
+#!/bin/bash
+
+files=$(git diff --cached --name-only --diff-filter=ACM main)
+
+# Check for debugger statements in JavaScript files
+lines=$(grep -n 'debugger\;' $files)
+if [ "$lines" != "" ]
+then
+  echo "Debugger statement found in:"
+  echo $lines
+  echo "These must be removed before pushing to the server."
+  exit 1
+fi

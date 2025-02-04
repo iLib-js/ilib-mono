@@ -58,3 +58,11 @@ pnpm install
 ```
 You do NOT need to run `pnpm install` from package directories, as the monorepo is set up to handle dependencies for all packages.
 
+#### 4. Install Git hooks
+
+To install the standard Git hooks for the project, run:
+
+```bash
+pnpm postinstall
+```
+
