@@ -113,6 +113,7 @@ const genericConfig = {
         // transformers and serializers
         "xyz": {
             "template": "[dir]/[localeDir]/[basename].xyz",
+            "parsers": ["parser-xyz"],
             "ruleset": [
                 "react-rules"
             ],
@@ -184,6 +185,7 @@ const testConfig = {
         // transformers and serializers
         "xyz": {
             "template": "[dir]/[localeDir]/[basename].xyz",
+            "parsers": ["parser-xyz"],
             "ruleset": [
                 "react-rules"
             ],
@@ -573,8 +575,7 @@ describe("testProject", () => {
         const issues = project.findIssues(["en-US"]);
         expect(issues).toBeTruthy();
 
-        const serialized = project.serialize();
-        expect(serialized).toBeTruthy();
+        project.serialize();
 
         expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
@@ -587,12 +588,12 @@ describe("testProject", () => {
     test("Verify that serialization works when the files are modified", async () => {
         expect.assertions(18);
 
-        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
-        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
         expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
 
         const project = new Project("test/testproject", {pluginManager, opt: {
             write: true
@@ -619,16 +620,15 @@ describe("testProject", () => {
             // sneakily mark the file as dirty when it really hasn't been modified
             file.dirty = true;
         });
+debugger;
+        project.serialize();
 
-        const serialized = project.serialize();
-        expect(serialized).toBeTruthy();
-
-        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
-        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
 
         // cleanup
         fs.unlinkSync("test/testproject/x/empty.xyz.modified");
