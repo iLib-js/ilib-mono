@@ -12,6 +12,7 @@ node_modules/
 # Editors / IDEs
 .vscode/
 .idea/
+ilib-mono.iml
 .project
 
 # Logs
@@ -22,6 +23,10 @@ node_modules/
 
 # Testing
 
+# Coverage
+coverage/
+junit.xml
+coverage*.txt
 
 # Turbo
 .turbo/
@@ -51,4 +56,3 @@ packages/ilib-istring/test-web
 !packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz
 !packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz
 !packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz
-
