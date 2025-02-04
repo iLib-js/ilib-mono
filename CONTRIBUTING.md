@@ -14,6 +14,7 @@ Project status and project structure are described in the [README.md](./README.m
 - [Coding Guidelines](#coding-guidelines)
 - [Adding a New Package](#adding-a-new-package)
 - [Running scripts](#running-scripts)
+- [Code Coverage](#code-coverage)
 - [Documentation](#documentation)
 - [Versioning](#versioning)
 - [Publishing](#publishing)
@@ -61,11 +62,14 @@ TBD
 
 ## Adding a New Package
 
-TBD
+### Package Template
 
 Currently, there is no package template as we are moving existing `iLib-js` packages into the monorepo without
 unification.
 This will be addressed in the future.
+
+### Manual Package Creation
+
 To manually create a new package, follow these steps:
 
 1. Create a new directory under `packages/`.
@@ -92,6 +96,11 @@ To manually create a new package, follow these steps:
 ## Running Scripts
 
 To run scripts for a single package run commands from the package root directory.
+
+```bash
+# cd packages/loctool
+pnpm [script-name] 
+```
 
 ### Build
 
@@ -172,6 +181,71 @@ or `cd` into the package directory and run:
 # cd packages/loctool
 pnpm test -- "ResourceConvert.test.js"
 ```
+
+## Code Coverage
+
+Currently, only some of the packages use has code coverage reporting enabled. For the other packages, code coverage will be
+added in the future.
+
+### Running Code Coverage
+
+For the packages that already use code coverage, it has been integrated into the `ilib-mono` GitHub Actions workflow for
+pull requests. Code coverage is calculated with Jest for selected packages, and the coverage report is automatically
+added as a comment to each pull request.
+
+The comment contains detailed information about the code coverage for the files changed in a PR, along with information
+about uncovered lines and direct links to them. Additionally, overall information for each package is also added as a
+comment to each pull request. This includes details about the percentage of covered lines (statements, branches, and
+functions) and information about the number of tests (total, skipped, failures, errors) along with their execution time.
+
+A full code coverage report is saved as an artifact and is available for download from the GitHub Actions CI workflow
+for pull requests.
+
+To run code coverage locally for all packages in the monorepo, run the following command from the root directory:
+
+```bash
+pnpm coverage
+```
+To run it only for affected package(s), use:
+
+```bash
+pnpm coverage:affected
+```
+
+Additionally, code coverage can be run for a single package in the monorepo by navigating to the package directory:
+
+```bash
+# cd packages/package-name
+pnpm coverage
+```
+The `coverage` script in all of these cases produces, in the root of the package,  a `coverage/` directory, as well as `coverage.txt` and `junit.xml` files containing the code coverage details.
+
+### Adding Code Coverage
+To include a new package in the code coverage comment in a pull request, follow these steps:  
+
+1. Define the `coverage` script in `package.json`. This script should generate the coverage report.
+     ```bash
+    "scripts": {
+        # ...
+        "coverage": "pnpm test -- --coverage --coverageReporters json-summary --coverageReporters html --coverageReporters text > ./coverage.txt --reporters=default --reporters=jest-junit",
+    }
+    ```
+    
+2. .Update GitHub Actions Workflow for pull request. Add the package coverage source to the `test-affected` workflow in the `.github/workflows/test-affected.yml` file.
+Specifically, update the Jest Code Coverage Comment step to include the new package in both `multiple-files` and `multiple-junitxml-files`.
+    ```yml
+    - name: Jest Code Coverage Comment
+      # ...
+      with:
+        multiple-files: |
+          # ...
+          package-name, ./packages/package-name/coverage/coverage-summary.json
+        multiple-junitxml-files: |
+          #...
+          package-name, ./packages/package-name/junit.xml
+    ```
+
+By following these steps, the package will be included in the code coverage report, and the results will be automatically commented on each pull request to `ilib-mono`.
 
 ## Documentation
 

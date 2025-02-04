@@ -5,6 +5,8 @@
   "scripts": {
     "build": "turbo build",
     "postinstall": "cp git-hooks/* .git/hooks/",
+    "coverage": "turbo coverage",
+    "coverage:affected": "turbo coverage --affected",
     "coverage:ci:affected": "turbo coverage --concurrency=5 --affected",
     "test": "pnpm test:affected",
     "test:affected": "turbo test --affected --output-logs=new-only",
