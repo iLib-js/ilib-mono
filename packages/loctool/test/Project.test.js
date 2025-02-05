@@ -134,7 +134,10 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
-        var project = ProjectFactory('./test/testfiles', {'locales': ['ja-JP']});
+        var project = ProjectFactory('./test/testfiles', {
+            'xliffsDir': "xliffs",
+            'locales': ['ja-JP']
+        });
         project.addPath("md/test1.md");
         project.init(function() {
             project.extract(function() {
@@ -159,6 +162,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.po")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.pot")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {
+            'xliffsDir': "xliffs",
             'locales': ['ja-JP'],
             'intermediateFormat': 'po'
         });

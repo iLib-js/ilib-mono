@@ -28,7 +28,8 @@ function hasItems(list) {
 /**
  * Does the actual directory walk and return a list of files and directories.
  *
- * @param {String} dirPath The path to the directory to walk
+ * @param {String} root The path to the directory to walk
+ * @param {String} dirPath The path to the directory to walk, relative to root
  * @param {Array<String>} includes A list of micromatch patterns to include in the walk.
  *   If a pattern matches both an exclude and an include, the
  *   include will override the exclude.
@@ -144,6 +145,7 @@ function walkDir(root, dirPath, includes, excludes) {
  * property that contains an array of the children of that directory. The path property is the full path
  * to the file or directory relative to the root directory.
  *
+ * @param {String} root The path to the directory to walk
  * @param {Array<String>} includes A list of micromatch patterns to include in the walk.
  * If a pattern matches both an exclude and an include, the
  * include will override the exclude.
