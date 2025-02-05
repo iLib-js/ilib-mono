@@ -40,6 +40,8 @@ describe("SourceFile", () => {
     const filePath2 = "./test/testfiles/testfile2.txt";
     const filePath3 = "./test/testfiles/testfile3.txt";
     const filePath4 = "./test/testfiles/testfile4.txt";
+    const filePath5 = "./test/testfiles/testfile5.txt";
+    const filePath6 = "./test/testfiles/a/b/c/testfile6.txt";
 
     test("should throw an error if created without a file path", () => {
         expect.assertions(1);
@@ -222,5 +224,68 @@ describe("SourceFile", () => {
             content: newLines.join("\n"),
         });
         expect(newSourceFile.isDirty()).toBeTruthy();
+    });
+
+    test("writing the file works", () => {
+        expect.assertions(3);
+
+        expect(fs.existsSync(filePath5)).toBe(false);
+        const newLines = ["New Line 1", "New Line 2", "New Line 3"];
+        const newSourceFile = new SourceFile(filePath5, {
+            content: newLines.join("\n"),
+        });
+        expect(newSourceFile.write()).toBe(true);
+        expect(fs.existsSync(filePath5)).toBe(true);
+
+        fs.unlinkSync(filePath5);
+    });
+
+    test("writing the file fails", () => {
+        expect.assertions(3);
+
+        expect(fs.existsSync(filePath5)).toBe(false);
+        const newLines = ["New Line 1", "New Line 2", "New Line 3"];
+        const newSourceFile = new SourceFile(filePath5, {
+            content: newLines.join("\n")
+        });
+        jest.spyOn(fs, "writeFileSync").mockImplementation(() => {
+            throw new Error("Write error");
+        });
+        expect(() => {
+            newSourceFile.write();
+        }).toThrow(/Write error/);
+        expect(fs.existsSync(filePath5)).toBe(false);
+
+        jest.restoreAllMocks();
+    });
+
+    test("writing the file when not dirty", () => {
+        expect.assertions(4);
+
+        expect(fs.existsSync(filePath5)).toBe(false);
+        const newLines = ["New Line 1", "New Line 2", "New Line 3"];
+        const newSourceFile = new SourceFile(filePath5, {
+            content: newLines.join("\n"),
+        });
+        newSourceFile.dirty = false;
+        expect(newSourceFile.isDirty()).toBe(false);
+        expect(newSourceFile.write()).toBe(false);
+        expect(fs.existsSync(filePath5)).toBe(false);
+    });
+
+    test("writing the file to a directory that does not exist", () => {
+        expect.assertions(4);
+
+        expect(fs.existsSync(filePath6)).toBe(false);
+        const newLines = ["New Line 1", "New Line 2", "New Line 3"];
+        const newSourceFile = new SourceFile(filePath6, {
+            content: newLines.join("\n")
+        });
+        expect(newSourceFile.isDirty()).toBe(true);
+        // should make the missing directories
+        expect(newSourceFile.write()).toBe(true);
+        expect(fs.existsSync(filePath6)).toBe(true);
+
+        fs.rmdirSync("./test/testfiles/a", { recursive: true });
     });
 });
