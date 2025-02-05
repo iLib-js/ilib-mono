@@ -16,7 +16,6 @@ You can find installation instructions at:
 - [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
 - [pnpm.io/](https://pnpm.io/)
 
-
 ### Repository clone
 
 Clone the repository to your local machine with HTTPS:
@@ -39,7 +38,6 @@ cd ilib-mono
 
 Every command from now on should be run in the root directory of the project, unless stated otherwise.
 
-
 ### Installation
 
 Once Node.js, nvm and pnpm are installed, you can continue with the following steps.
@@ -53,18 +51,21 @@ Run:
 nvm use
 ```
 
-Optional: You can add automated `nvm use` to shell profile. See guide [here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh).
+Optional: You can add automated `nvm use` to shell profile. See
+guide [here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh).
 
 #### 2. Enabling pnpm
 
-Since v16.13, Node.js is shipping [Corepack](https://nodejs.org/api/corepack.html) for managing package managers, so you do not need to install pnpm separately.
+Since v16.13, Node.js is shipping [Corepack](https://nodejs.org/api/corepack.html) for managing package managers, so you
+do not need to install pnpm separately.
 However, this is an experimental feature, so you need to enable it by running:
 
 ```bash
 corepack enable pnpm
 ```
 
-Optional: `pnpm` might be hard to type, so you may use a shorter alias like `pn` instead. See guide [here](https://pnpm.io/installation#using-a-shorter-alias).
+Optional: `pnpm` might be hard to type, so you may use a shorter alias like `pn` instead. See
+guide [here](https://pnpm.io/installation#using-a-shorter-alias).
 
 #### 3. Installing project dependencies
 
@@ -73,13 +74,21 @@ The final step is to install the project dependencies. Run:
 ```bash
 pnpm install
 ```
-You do NOT need to run `pnpm install` from package directories, as the monorepo is set up to handle dependencies for all packages.
 
-#### 4. Install Git hooks
+You do NOT need to run `pnpm install` from package directories, as the monorepo is set up to handle dependencies for all
+packages automatically.
 
-To install the standard Git hooks for the project, run:
+#### 4. Install Git Hooks
+
+The project comes with a set of Git Hooks that are automatically installed as part of the post-installation process.
+You do not need to run a separate command for this. The hooks are set up when you run:
+
+```bash
+pnpm install
+```
+
+In case you need to install Git Hooks manually, you can run:
 
 ```bash
 pnpm postinstall
 ```
-
