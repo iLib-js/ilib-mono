@@ -28,8 +28,13 @@ jobs:
         uses: browser-actions/setup-chrome@v1
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Coverage report
+      - name: Affected packages test and coverage
         run: pnpm coverage:ci:affected
+        env:
+          # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
+          # manually set PR base commit ref
+          # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
+          TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
       - name: Merge coverage reports
         run: |
           echo "Merging coverage reports"
