@@ -242,6 +242,8 @@ try {
         const ruleSetDefinitions = ruleMgr.getRuleSetDefinitions();
         const parserMgr = pluginMgr.getParserManager();
         const parserDescriptions = parserMgr.getDescriptions();
+        const transformerMgr = pluginMgr.getTransformerManager();
+        const transformerDescriptions = transformerMgr.getDescriptions();
         const serializerMgr = pluginMgr.getSerializerManager();
         const serializerDescriptions = serializerMgr.getDescriptions();
         const formatterMgr = pluginMgr.getFormatterManager();
@@ -269,18 +271,32 @@ try {
         for (name in ruleSetDefinitions) {
             output = output.concat(indent(wrap(`${name} - ${ruleSetDefinitions[name].join(", ")}`, 76, "  "), 2));
         }
-        output.push("");
 
-        output.push("Formatters:");
-        for (name in formatterDescriptions) {
-            output = output.concat(indent(wrap(`${name} - ${formatterDescriptions[name]}`, 76, "  "), 2));
+        if (Object.keys(formatterDescriptions).length > 0) {
+            output.push("");
+
+            output.push("Formatters:");
+            for (name in formatterDescriptions) {
+                output = output.concat(indent(wrap(`${name} - ${formatterDescriptions[name]}`, 76, "  "), 2));
+            }
         }
 
-        output.push("");
+        if (Object.keys(transformerDescriptions).length > 0) {
+            output.push("");
 
-        output.push("Serializers:");
-        for (name in serializerDescriptions) {
-            output = output.concat(indent(wrap(`${name} - ${serializerDescriptions[name]}`, 76, "  "), 2));
+            output.push("Transformers:");
+            for (name in transformerDescriptions) {
+                output = output.concat(indent(wrap(`${name} - ${transformerDescriptions[name]}`, 76, "  "), 2));
+            }
+        }
+
+        if (Object.keys(serializerDescriptions).length > 0) {
+            output.push("");
+
+            output.push("Serializers:");
+            for (name in serializerDescriptions) {
+                output = output.concat(indent(wrap(`${name} - ${serializerDescriptions[name]}`, 76, "  "), 2));
+            }
         }
 
         console.log(output.join('\n'));

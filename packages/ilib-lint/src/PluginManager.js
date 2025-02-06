@@ -26,6 +26,7 @@ import FormatterManager from './FormatterManager.js';
 import ParserManager from './ParserManager.js';
 import RuleManager from './RuleManager.js';
 import FixerManager from './FixerManager.js';
+import TransformerManager from './TransformerManager.js';
 import SerializerManager from './SerializerManager.js';
 import BuiltinPlugin from './plugins/BuiltinPlugin.js';
 
@@ -54,6 +55,7 @@ class PluginManager {
         this.formatterMgr = new FormatterManager();
         this.ruleMgr = new RuleManager();
         this.fixerMgr = new FixerManager();
+        this.transformerMgr = new TransformerManager();
         this.serializerMgr = new SerializerManager();
         this.sourceLocale = options && options.sourceLocale;
 
@@ -231,6 +233,18 @@ class PluginManager {
     }
 
     /**
+     * Return the transformer manager for this plugin manager. This
+     * manages both the built-in transformers, and the transformers
+     * loaded from the plugins.
+     *
+     * @returns {TransformerManager} the transformer manager for this
+     * plugin manager.
+     */
+    getTransformerManager() {
+        return this.transformerMgr;
+    }
+
+    /**
      * Return the serializer manager for this plugin manager. This
      * manages both the built-in serializers, and the serializers
      * loaded from the plugins.
@@ -273,6 +287,9 @@ class PluginManager {
         }
         if (typeof(plugin.getFixers) === 'function') {
             this.fixerMgr.add(plugin.getFixers());
+        }
+        if (typeof(plugin.getTransformers) === 'function') {
+            this.serializerMgr.add(plugin.getTransformers());
         }
         if (typeof(plugin.getSerializers) === 'function') {
             this.serializerMgr.add(plugin.getSerializers());

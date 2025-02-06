@@ -24,6 +24,7 @@ import XliffSerializer from './XliffSerializer.js';
 import LineParser from './LineParser.js';
 import LineSerializer from './LineSerializer.js';
 import StringParser from './string/StringParser.js';
+import ErrorFilterTransformer from './ErrorFilterTransformer.js';
 import StringSerializer from './string/StringSerializer.js';
 import AnsiConsoleFormatter from '../formatters/AnsiConsoleFormatter.js';
 import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
@@ -302,10 +303,21 @@ class BuiltinPlugin extends Plugin {
     }
 
     /**
+     * For a "transformer" type of plugin, this returns a list of Transformer classes
+     * that this plugin implements.
+     *
+     * @returns {Array.<Transformer>} list of Transformer classes implemented by this
+     * plugin
+     */
+    getTransformers() {
+        return [ErrorFilterTransformer];
+    }
+
+    /**
      * For a "serializer" type of plugin, this returns a list of Serializer classes
      * that this plugin implements.
      *
-     * @returns {Array.<Parser>} list of Serializer classes implemented by this
+     * @returns {Array.<Serializer>} list of Serializer classes implemented by this
      * plugin
      */
     getSerializers() {

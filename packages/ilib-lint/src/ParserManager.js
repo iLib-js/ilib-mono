@@ -126,12 +126,11 @@ class ParserManager {
      * @returns {Object} the parser names and descriptions
      */
     getDescriptions() {
-        return Object.keys(this.parserInfo).map((name) => {
-            return {
-                name,
-                description: this.parserInfo[name].description
-            };
+        let json = {};
+        Object.keys(this.parserInfo).forEach((name) => {
+            json[name] = this.parserInfo[name].description;
         });
+        return json;
     }
 
     /**
