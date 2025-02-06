@@ -22,8 +22,7 @@ import path from 'node:path';
 import log4js from 'log4js';
 import mm from 'micromatch';
 
-import { FileStats } from 'ilib-lint-common';
-import { parsePath, formatPath } from 'ilib-tools-common';
+import { FileStats, SourceFile } from 'ilib-lint-common';
 
 import LintableFile from './LintableFile.js';
 import DirItem from './DirItem.js';
@@ -166,6 +165,7 @@ class Project extends DirItem {
                         excludes = newProject.getExcludes();
                         logger.trace(`New project ${newProject.getName()}`);
                         this.add(newProject);
+                        await newProject.init();
                         await newProject.scan([root]);
                     } else {
                         list = fs.readdirSync(root);
@@ -559,24 +559,21 @@ class Project extends DirItem {
         if (this.options.opt.write) {
             const lintables = this.get();
             lintables.forEach(file => {
-                const ir = file.getIRs();
+                const irs = file.getIRs();
                 const fileType = file.getFileType();
                 const serializer = fileType.getSerializer();
                 if (file.isDirty() && serializer) {
-                    const sourceFile = serializer.serialize(ir);
+                    let sourceFile = serializer.serialize(irs);
                     if (!this.options.opt.overwrite) {
-                        let template = fileType.getTemplate();
-                        const pathParts = parsePath(template, sourceFile.getPath());
-                        let outputPath = template ?
-                            formatPath(template, pathParts) :
-                            `${sourceFile.getPath()}.modified`;
-                        sourceFile.setPath(outputPath);
+                        let outputPath = `${sourceFile.getPath()}.modified`;
+                        sourceFile = new SourceFile(outputPath, {
+                            file: sourceFile
+                        });
                     }
                     sourceFile.write();
                 }
             });
         }
-        // this.files.forEach(file => file.serialize());
     }
 
     /**

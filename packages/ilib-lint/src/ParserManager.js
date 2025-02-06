@@ -95,6 +95,10 @@ class ParserManager {
                     getLogger: log4js.getLogger.bind(log4js)
                 });
                 const name = p.getName();
+                if (this.parserInfo[name]) {
+                    logger.debug(`Parser ${name} already exists. Cannot add twice. Ignoring.`);
+                    continue;
+                }
                 this.parserInfo[name] = {
                     description: p.getDescription(),
                     type: p.getType(),
