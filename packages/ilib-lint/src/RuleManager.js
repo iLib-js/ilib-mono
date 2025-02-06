@@ -102,27 +102,6 @@ class RuleManager {
         }
     }
 
-    testCodeCoverageComment(name, options) {
-        const ruleConfig = this.ruleCache[name];
-        if (!name || !ruleConfig) return;
-
-        if (typeof(ruleConfig) === 'object') {
-            const ruleClass = typeMap[ruleConfig.type];
-            return new ruleClass({
-                ...ruleConfig,
-                ...options,
-                sourceLocale: this.sourceLocale,
-                getLogger: log4js.getLogger.bind(log4js)
-            });
-        } else {
-            return new ruleConfig({
-                ...options,
-                sourceLocale: this.sourceLocale,
-                getLogger: log4js.getLogger.bind(log4js)
-            });
-        }
-    }
-
     /**
      * Recursively look up the inheritance tree to see if this rule eventually
      * inherited from the Rule class somewhere along the way. We finish looking
