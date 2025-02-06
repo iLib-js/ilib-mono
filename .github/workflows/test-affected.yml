@@ -50,6 +50,7 @@ jobs:
             loctool, ./packages/loctool/coverage/coverage-summary.json
           title: Jest Code Coverage
           coverage-path: ./coverage.txt
+          coverage-title: Code Coverage for changed files
           create-new-comment: false
           report-only-changed-files: true
           multiple-junitxml-files: |
