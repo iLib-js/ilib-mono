@@ -694,7 +694,7 @@ describe("testProject", () => {
         rmf("test/testproject/x/test_ru_RU.xyz.modified");
         rmf("test/testproject/x/test.xyz.modified");
     });
-    
+
     test("Verify that serialization works when the overwrite flag is set", async () => {
         expect.assertions(11);
 
@@ -716,7 +716,7 @@ describe("testProject", () => {
             write: true,
             overwrite: true
         }}, testConfig);
-        
+
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();

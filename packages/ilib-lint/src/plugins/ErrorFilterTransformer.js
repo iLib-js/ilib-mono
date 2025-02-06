@@ -18,8 +18,7 @@
  * limitations under the License.
  */
 
-import { ResourceXliff } from 'ilib-tools-common';
-import { IntermediateRepresentation, SourceFile, Transformer, Result, FileStats } from 'ilib-lint-common';
+import { IntermediateRepresentation, Transformer, Result } from 'ilib-lint-common';
 
 /**
  * Filter out errors from the intermediate representation.
@@ -30,6 +29,9 @@ class ErrorFilterTransformer extends Transformer {
      */
     constructor(options) {
         super(options);
+        this.name = "errorfilter";
+        this.description = "Filter out translation units that have errors from the resources representation.";
+        this.type = "resource";
     }
 
     /**
