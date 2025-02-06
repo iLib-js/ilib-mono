@@ -201,6 +201,12 @@ const testConfig = {
     }
 };
 
+function rmf(file) {
+    if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+    }
+}
+
 describe("testProject", () => {
     beforeAll(() => {
         // load the test serializer plugin
@@ -504,7 +510,7 @@ describe("testProject", () => {
         const prsr = parserMgr.get("parser-xyz");
         expect(prsr).toBeTruthy();
 
-        await project.scan(["./test/testproject"]);
+        await project.scan(["./test/testproject/x"]);
         const files = project.get();
 
         expect(files).toBeTruthy();
@@ -548,7 +554,7 @@ describe("testProject", () => {
     });
 
     test("Verify that serialization doesn't do anything if files are not modified", async () => {
-        expect.assertions(17);
+        expect.assertions(15);
 
         expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
@@ -570,7 +576,7 @@ describe("testProject", () => {
         const prsr = parserMgr.get("parser-xyz");
         expect(prsr).toBeTruthy();
 
-        await project.scan(["./test/testproject"]);
+        await project.scan(["./test/testproject/x"]);
 
         const issues = project.findIssues(["en-US"]);
         expect(issues).toBeTruthy();
@@ -583,10 +589,14 @@ describe("testProject", () => {
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
         expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+
+        rmf("test/testproject/x/empty.xyz.modified");
+        rmf("test/testproject/x/test_ru_RU.xyz.modified");
+        rmf("test/testproject/x/test.xyz.modified");
     });
 
     test("Verify that serialization works when the files are modified", async () => {
-        expect.assertions(18);
+        expect.assertions(16);
 
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
@@ -608,7 +618,7 @@ describe("testProject", () => {
         const prsr = parserMgr.get("parser-xyz");
         expect(prsr).toBeTruthy();
 
-        await project.scan(["./test/testproject"]);
+        await project.scan(["./test/testproject/x"]);
 
         const issues = project.findIssues(["en-US"]);
         expect(issues).toBeTruthy();
@@ -620,7 +630,7 @@ describe("testProject", () => {
             // sneakily mark the file as dirty when it really hasn't been modified
             file.dirty = true;
         });
-debugger;
+
         project.serialize();
 
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
@@ -629,11 +639,128 @@ debugger;
         expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(true);
         expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
-
-        // cleanup
-        fs.unlinkSync("test/testproject/x/empty.xyz.modified");
-        fs.unlinkSync("test/testproject/x/test_ru_RU.xyz.modified");
-        fs.unlinkSync("test/testproject/x/test.xyz.modified");
-    });
+        rmf("test/testproject/x/empty.xyz.modified");
+        rmf("test/testproject/x/test_ru_RU.xyz.modified");
+        rmf("test/testproject/x/test.xyz.modified");
 });
 
+    test("Verify that serialization works when only some of the files are modified", async () => {
+        expect.assertions(17);
+
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+
+        const project = new Project("test/testproject", {pluginManager, opt: {
+            write: true
+        }}, testConfig);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject/x"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        // artificially mark the files as modified
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(3);
+        files[0].dirty = true;
+        // not files[1]
+        files[2].dirty = true;
+
+        project.serialize();
+
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        // since this one was not marked as dirty, it should not have been modified
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(true);
+
+        rmf("test/testproject/x/empty.xyz.modified");
+        rmf("test/testproject/x/test_ru_RU.xyz.modified");
+        rmf("test/testproject/x/test.xyz.modified");
+    });
+    
+    test("Verify that serialization works when the overwrite flag is set", async () => {
+        expect.assertions(11);
+
+        const testFile = "test/testproject/y/test_de-DE.xyz";
+
+        // create a fake file first
+        if (!fs.existsSync("test/testproject/y")) {
+            fs.mkdirSync("test/testproject/y");
+        }
+        const content = {
+            "this is a string": "this is a translation"
+        };
+        fs.writeFileSync(testFile, JSON.stringify(content), "utf-8");
+
+        expect(fs.existsSync(testFile)).toBe(true);
+        expect(fs.existsSync(testFile + ".modified")).toBe(false);
+
+        const project = new Project("test/testproject/y", {pluginManager, opt: {
+            write: true,
+            overwrite: true
+        }}, testConfig);
+        
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject/y"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        // artificially mark the files as modified
+        const files = project.get();
+        expect(files).toBeTruthy();
+        files.forEach(file => {
+            // sneakily mark the file as dirty when it really hasn't been modified
+            if (file.getFilePath() === testFile) {
+                file.dirty = true;
+                const irs = file.getIRs();
+                expect(irs.length).toBe(1);
+                const resources = irs[0].getRepresentation();
+                expect(resources.length).toBe(1);
+                resources[0].setSource("a");
+                resources[0].setTarget("b");
+            }
+        });
+
+        project.serialize();
+
+        expect(fs.existsSync(testFile)).toBe(true);
+        expect(fs.existsSync(testFile + ".modified")).toBe(false);
+
+        const expected =
+`{
+    "a": "b"
+}`;
+
+        // expect that it writes to the same file
+        expect(fs.readFileSync(testFile, "utf-8")).toBe(expected);
+
+        // clean up
+        fs.rmdirSync("test/testproject/y", {recursive: true});
+    });
+});

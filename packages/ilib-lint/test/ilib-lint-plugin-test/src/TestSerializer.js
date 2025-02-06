@@ -32,9 +32,13 @@ class TestSerializer extends Serializer {
         console.log("TestSerializer.init called");
     }
 
-    serialize(ir) {
-        const data = ir?.getRepresentation();
-        if (!ir || !data || !Array.isArray(data) || data.length === 0) {
+    serialize(irs) {
+        if (!irs || !Array.isArray(irs) || irs.length === 0 || !irs[0]) {
+            throw new Error("ilib-lint-plugin-test: attempt to serialize empty data");
+        }
+        const ir = irs[0];
+        const data = ir.getRepresentation();
+        if (!ir || !data || !Array.isArray(data)) {
             throw new Error("ilib-lint-plugin-test: attempt to serialize empty data");
         }
 
@@ -44,9 +48,7 @@ class TestSerializer extends Serializer {
         });
         const jsonString = JSON.stringify(json, null, 4);
 
-        const fileName = ir.getSourceFile().getPath() + (this.overwrite ? "" : ".modified");
-
-        return new SourceFile(fileName, {
+        return new SourceFile(ir.getSourceFile().getPath(), {
             file: ir.getSourceFile(),
             content: jsonString
         });
