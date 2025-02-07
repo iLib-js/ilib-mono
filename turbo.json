@@ -5,6 +5,10 @@
         "dependsOn": ["^build"],
         "outputs": ["lib/**"]
       },
+      "coverage": {
+        "dependsOn": ["build", "test", "^coverage"],
+        "outputs": ["coverage/**", "coverage.txt", "junit.xml"]
+      },
       "test": {
         "dependsOn": ["build", "^test"]
       }
