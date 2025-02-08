@@ -1,0 +1,12 @@
+{
+    "extends": "@tsconfig/node12",
+    "compilerOptions": {
+        "allowJs": true,
+        "noEmit": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitAny": true
+    },
+    "include": ["."],
+    "exclude": ["node_modules", "lib", "docs"]
+}
