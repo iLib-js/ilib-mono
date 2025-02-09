@@ -58,6 +58,7 @@
         "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
     },
     "devDependencies": {
+        "@formatjs/cli-lib": "6.6.6",
         "@tsconfig/node12": "^12.1.4",
         "@types/jest": "^29.5.14",
         "@types/node": "12",

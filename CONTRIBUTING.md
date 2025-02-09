@@ -106,8 +106,22 @@ pnpm [script-name]
 
 TBD
 
-To run the build, use:
+#### 1. Run build for all packages
 
+To run build for all packages in the monorepo, from the root directory, run:
+
+```bash
+pnpm build
+```
+
+#### 2. Run build for a single package in the monorepo:
+
+1. From the root directory:
+```bash
+pnpm --filter loctool build
+```
+
+2. From the package directory:
 ```bash
 pnpm build
 ```
