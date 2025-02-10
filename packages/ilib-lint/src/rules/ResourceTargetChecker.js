@@ -2,7 +2,7 @@
  * ResourceTargetChecker.js - implement a declarative rule to check
  * target strings for problems
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import { stripPlurals } from './utils.js';
 
 /**
  * @class Resource checker class that checks that any regular expressions
- * that matches in the source also appears in the translation.
+ * that matches in the target causes a Result to be created.
  */
 class ResourceTargetChecker extends DeclarativeResourceRule {
     /**

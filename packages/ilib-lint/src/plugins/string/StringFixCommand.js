@@ -152,10 +152,10 @@ export class StringFixCommand {
 
     /**
      * Apply multiple StringFixCommands to a supplied string
-     * 
+     *
      * @throws when some of the provided commands overlap (as defined in {@link StringFixCommand.overlaps})
      * @throws when some of the provided commands intend to modify range outside of input string bounds
-     * 
+     *
      * @param {string} content string to apply commands to
      * @param {StringFixCommand[]} commands commands that should be applied to the content string
      * @return {string} modified content

@@ -428,6 +428,15 @@ class Project extends DirItem {
 
     /**
      * Return the serializer manager for this project.
+     * @returns {TransformerManager} the serializer
+     */
+    getTransformerManager() {
+        const pluginMgr = this.options.pluginManager;
+        return pluginMgr.getTransformerManager();
+    }
+
+    /**
+     * Return the serializer manager for this project.
      * @returns {SerializerManager} the serializer
      */
     getSerializerManager() {
@@ -548,7 +557,7 @@ class Project extends DirItem {
      * @param {Array.<Result>} results the results of the linting process
      */
     applyTransformers(results) {
-        // this.files.forEach(file => file.applyTransformers());
+        this.files.forEach(file => file.applyTransformers(results));
     }
 
     /**

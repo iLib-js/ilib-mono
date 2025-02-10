@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import fs from 'fs';
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 import { Serializer, SourceFile } from 'ilib-lint-common';
 
 import Project from '../src/Project.js';
@@ -198,6 +198,41 @@ const testConfig = {
     // this maps micromatch path expressions to a file type definition
     "paths": {
         "**/*.xyz": "xyz"
+    }
+};
+
+const testConfig2 = {
+    // the name is reaquired and should be unique amongst all your projects
+    "name": "tester4",
+    // this is the global set of locales that applies unless something else overrides it
+    "locales": [
+        "en-US",
+        "de-DE",
+        "ja-JP",
+        "ko-KR"
+    ],
+    // default micromatch expressions to exclude from recursive dir searches
+    "excludes": [
+        "node_modules/**",
+        ".git/**",
+        "docs/**"
+    ],
+    // defines common settings for a particular types of file
+    "filetypes": {
+        "xliff": {
+            "template": "[dir]/[localeDir]/[basename].xliff",
+            "ruleset": [
+                "generic"
+            ],
+            "transformers": [
+                "errorfilter"
+            ],
+            "serializer": "xliff"
+        }
+    },
+    // this maps micromatch path expressions to a file type definition
+    "paths": {
+        "**/*.xliff": "xliff"
     }
 };
 
@@ -761,6 +796,241 @@ describe("testProject", () => {
         expect(fs.readFileSync(testFile, "utf-8")).toBe(expected);
 
         // clean up
-        fs.rmdirSync("test/testproject/y", {recursive: true});
+        fs.rmSync("test/testproject/y", {recursive: true});
+    });
+
+    test("Run rules on an xliff file and then use a transformer to transform the file", async () => {
+        expect.assertions(11);
+
+        const project = new Project("test/testproject/x", { pluginManager, opt: {} }, testConfig2);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("xliff");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["test/testfiles/xliff/param-problems.xliff"]);
+
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(1);
+        const xliffFile = files[0];
+        expect(xliffFile.getFilePath()).toBe("test/testfiles/xliff/param-problems.xliff");
+
+        const results = project.findIssues(["en-US"]);
+        expect(results).toBeTruthy();
+        expect(results.length).toBe(2);
+
+        // findIssues calls the parsers, so we can only get the intermediate representations
+        // after we have called findIssues
+        let irs = xliffFile.getIRs();
+        expect(irs.length).toBe(1);
+        let resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(7);
+
+        // should remove the resources that have problems
+        project.applyTransformers(results);
+
+        // make sure we deleted 2 of the 7 resources
+        irs = xliffFile.getIRs();
+        expect(irs.length).toBe(1);
+        resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(5);
+    });
+
+    test("Run rules on an xliff file, apply the error filter transformer, and make sure we have the right resources left over", async () => {
+        expect.assertions(10);
+
+        const project = new Project("test/testproject/x", { pluginManager, opt: {} }, testConfig2);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("xliff");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["test/testfiles/xliff/param-problems.xliff"]);
+
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(1);
+        const xliffFile = files[0];
+        expect(xliffFile.getFilePath()).toBe("test/testfiles/xliff/param-problems.xliff");
+
+        const results = project.findIssues(["en-US"]);
+        expect(results).toBeTruthy();
+        expect(results.length).toBe(2);
+
+        // should remove the resources that have problems
+        project.applyTransformers(results);
+
+        // make sure we have the right resources left over
+        const irs = xliffFile.getIRs();
+        expect(irs.length).toBe(1);
+        const resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(5);
+
+        const expected = [
+            new ResourceString({
+                reskey: "foobar1",
+                source: "This string has an {url} in it",
+                sourceLocale: "en-US",
+                target: "This string also has {url} in it",
+                targetLocale: "de-DE",
+                project: "webapp",
+                pathName: "foo/bar/asdf.java",
+                datatype: "plaintext",
+                id: "1",
+                state: "translated",
+                location: new Location({
+                    "char": 7,
+                    "line": 4
+                })
+            }),
+            new ResourceString({
+                reskey: "foobar2",
+                source: "This string has no param in it",
+                sourceLocale: "en-US",
+                target: "This string too.",
+                targetLocale: "de-DE",
+                project: "webapp",
+                pathName: "foo/bar/asdf.java",
+                datatype: "plaintext",
+                id: "2",
+                state: "translated",
+                location: new Location({
+                    "char": 7,
+                    "line": 8
+                })
+            }),
+            new ResourceString({
+                reskey: "foobar3",
+                source: "This string has multiple {params} in it: {sub}",
+                sourceLocale: "en-US",
+                target: "This string also has multiple {params} in it: {sub}",
+                targetLocale: "de-DE",
+                project: "webapp",
+                pathName: "foo/bar/asdf.java",
+                datatype: "plaintext",
+                id: "3",
+                state: "translated",
+                location: new Location({
+                    "char": 7,
+                    "line": 12
+                })
+            }),
+            new ResourceString({
+                reskey: "foobar6",
+                source: "This string has no params in it",
+                sourceLocale: "en-US",
+                target: "This string is does have {params} in it",
+                targetLocale: "de-DE",
+                project: "webapp",
+                pathName: "foo/bar/asdf.java",
+                datatype: "plaintext",
+                id: "6", // 4 and 5 were removed
+                state: "translated",
+                location: new Location({
+                    "char": 7,
+                    "line": 24
+                })
+            }),
+            new ResourceString({
+                reskey: "foobar7",
+                source: "This string has one {param} in it",
+                sourceLocale: "en-US",
+                target: "This string has multiple {param} in it: {different}",
+                targetLocale: "de-DE",
+                project: "webapp",
+                pathName: "foo/bar/asdf.java",
+                datatype: "plaintext",
+                id: "7",
+                state: "translated",
+                location: new Location({
+                    "char": 7,
+                    "line": 28
+                })
+            })
+        ];
+        expected.forEach(resource => {
+            resource.dirty = true;
+            resource.resfile = "test/testfiles/xliff/param-problems.xliff";
+        });
+        expect(resources).toStrictEqual(expected);
+    });
+
+    test("Run rules on an xliff file, apply the error filter transformer, and then use a serializer to serialize the file", async () => {
+        expect.assertions(9);
+
+        const project = new Project("test/testproject/x", { pluginManager, opt: {
+            write: true
+        } }, testConfig2);
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("xliff");
+        expect(prsr).toBeTruthy();
+
+        const fileName = "test/testfiles/xliff/param-problems.xliff";
+        await project.scan([fileName]);
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(1);
+        const xliffFile = files[0];
+        expect(xliffFile.getFilePath()).toBe(fileName);
+
+        const results = project.findIssues(["en-US"]);
+        expect(results).toBeTruthy();
+        expect(results.length).toBe(2);
+
+        // should remove the resources that have problems
+        project.applyTransformers(results);
+
+        // serialize any modified files
+        project.serialize();
+
+        // make sure we got the right file contents
+        const modifiedFileName = fileName + ".modified";
+        const expected =
+            `<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">
+    <body>
+      <trans-unit id="1" resname="foobar1" restype="string" datatype="plaintext">
+        <source>This string has an {url} in it</source>
+        <target state="translated">This string also has {url} in it</target>
+      </trans-unit>
+      <trans-unit id="2" resname="foobar2" restype="string" datatype="plaintext">
+        <source>This string has no param in it</source>
+        <target state="translated">This string too.</target>
+      </trans-unit>
+      <trans-unit id="3" resname="foobar3" restype="string" datatype="plaintext">
+        <source>This string has multiple {params} in it: {sub}</source>
+        <target state="translated">This string also has multiple {params} in it: {sub}</target>
+      </trans-unit>
+      <trans-unit id="6" resname="foobar6" restype="string" datatype="plaintext">
+        <source>This string has no params in it</source>
+        <target state="translated">This string is does have {params} in it</target>
+      </trans-unit>
+      <trans-unit id="7" resname="foobar7" restype="string" datatype="plaintext">
+        <source>This string has one {param} in it</source>
+        <target state="translated">This string has multiple {param} in it: {different}</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>`;
+
+        expect(fs.existsSync(modifiedFileName)).toBe(true);
+        expect(fs.readFileSync(modifiedFileName, "utf-8")).toBe(expected);
     });
 });
