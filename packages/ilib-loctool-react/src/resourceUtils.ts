@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-import {extract as extractFromFile} from '@formatjs/cli-lib'
+import {execSync} from 'child_process';
 import {
     InstantiatedResource,
     NewResourceOptions,
     ResourceString,
     ResTypeString,
 } from "loctool";
+import * as console from "console";
 
 export interface Message {
     description: string;
@@ -35,11 +36,8 @@ export interface Messages {
 /**
  * Extracts localizable strings from the content of React file.
  */
-export async function extract(path: string): Promise<Messages> {
-    const extracted = await extractFromFile([path], {
-        idInterpolationPattern: '[sha512:contenthash:base64:6]',
-        throws: true
-    });
+export function extract(path: string): any {
+    const extracted = execSync(`formatjs extract ${path}`).toString();
 
     return JSON.parse(extracted);
 }
@@ -48,10 +46,10 @@ export async function extract(path: string): Promise<Messages> {
  * Maps the messages to ResourceString objects.
  */
 export function mapToResources({
-   messages,
-   options: {sourceLocale, projectId},
-   createResource,
-}: {
+                                   messages,
+                                   options: {sourceLocale, projectId},
+                                   createResource,
+                               }: {
     messages: Messages;
     options: {
         sourceLocale: string;

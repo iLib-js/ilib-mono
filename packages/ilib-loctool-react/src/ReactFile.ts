@@ -44,18 +44,18 @@ export class ReactFile implements File {
      *   * adds each string it finds to the project's translation set, which can be retrieved from the API passed to the constructor.
      */
     extract(): void {
-        extract(this.path).then((messages) => {
-            const resources = mapToResources({
-                messages,
-                options: {
-                    sourceLocale: this.sourceLocale,
-                    projectId: this.project.getProjectId(),
-                },
-                createResource: this.loctoolApi.newResource.bind(this),
-            });
+        const messages = extract(this.path);
 
-            this.translationSet.addAll(resources);
+        const resources = mapToResources({
+            messages,
+            options: {
+                sourceLocale: this.sourceLocale,
+                projectId: this.project.getProjectId(),
+            },
+            createResource: this.loctoolApi.newResource.bind(this),
         });
+
+        this.translationSet.addAll(resources);
     }
 
     /**
