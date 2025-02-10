@@ -289,7 +289,7 @@ class PluginManager {
             this.fixerMgr.add(plugin.getFixers());
         }
         if (typeof(plugin.getTransformers) === 'function') {
-            this.serializerMgr.add(plugin.getTransformers());
+            this.transformerMgr.add(plugin.getTransformers());
         }
         if (typeof(plugin.getSerializers) === 'function') {
             this.serializerMgr.add(plugin.getSerializers());

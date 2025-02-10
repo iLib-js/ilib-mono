@@ -96,6 +96,7 @@ class LintableFile extends DirItem {
             extension = extension.substring(1);
             this.parsers = this.filetype.getParserClasses(extension);
         }
+        this.transformers = this.filetype.getTransformers();
         this.serializer = this.filetype.getSerializer();
     }
 
@@ -326,6 +327,33 @@ class LintableFile extends DirItem {
      */
     getFileType() {
         return this.filetype;
+    }
+
+    /**
+     * Apply the available transformers to the intermediate representations of this file.
+     * @param {Array.<Result>} results the results of the rules that were applied earlier
+     *   in the pipeline, or undefined if there are no results or if the rules have not been
+     *   applied yet
+     */
+    applyTransformers(results) {
+        const transformers = this.filetype.getTransformers();
+        if (this.irs && this.irs.length > 0 && transformers && transformers.length > 0) {
+            // For each intermediate representation, attempt to apply every transformer.
+            // However, only those transformers that have the same type as the intermediate
+            // representation can be applied.
+            for (let i = 0; i < this.irs.length; i++) {
+                if (!this.irs[i]) continue;
+                transformers.forEach(transformer => {
+                    if (this.irs[i].getType() === transformer.getType()) {
+                        const newIR = transformer.transform(this.irs[i], results);
+                        if (newIR) {
+                            this.irs[i] = newIR;
+                            this.dirty = true;
+                        }
+                    }
+                });
+            }
+        }
     }
 }
 

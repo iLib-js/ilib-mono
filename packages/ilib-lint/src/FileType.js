@@ -33,6 +33,78 @@ const logger = log4js.getLogger("ilib-lint.FileType");
  */
 class FileType {
     /**
+     * The lint project that this file is a part of.
+     * @type {Project}
+     */
+    project;
+
+    /**
+     * The name or glob spec for this file type
+     * @type {String|undefined}
+     */
+    name;
+
+    /**
+     * The list of locales to use with this file type
+     * @type {Array.<String>|undefined}
+     */
+    locales;
+
+    /**
+     * The intermediate representation type of this file type.
+     * @type {String}
+     */
+    type;
+
+    /**
+     * The array of names of classes of parsers to use with this file type.
+     * @type {Array.<String>|undefined}
+     */
+    parsers = undefined;
+
+    /**
+     * The array of classes of parsers to use with this file type.
+     * @type {Array.<Class>|undefined}
+     */
+    parserClasses = undefined;
+
+    /**
+     * The array of names of transformers to use with this file type.
+     * @type {Array.<String>|undefined}
+     */
+    transformers = undefined;
+
+    /**
+     * The array of instances of transformers to use with this file type.
+     * @type {Array.<Transformer>|undefined}
+     */
+    transformerInstances = undefined;
+
+    /**
+     * The serializer to use with this file type.
+     * @type {String|undefined}
+     */
+    serializer = undefined;
+
+    /**
+     * The instance of the serializer to use with this file type.
+     * @type {Serializer|undefined}
+     */
+    serializerInst = undefined;
+
+    /**
+     * The array of rule sets to apply to files of this type.
+     * @type {Array<String>|undefined}
+     */
+    ruleset = undefined;
+
+    /**
+     * The path template for this file type.
+     * @type {String|undefined}
+     */
+    template = undefined;
+
+    /**
      * Contructor a new instance of a file type.
      *
      * The array of parsers will be used to attempt to parse each
@@ -84,8 +156,6 @@ class FileType {
             }
         });
 
-        let parserType;
-
         if (this.parsers) {
             const parserMgr = this.project.getParserManager();
             this.parserClasses = this.parsers.map(parserName => {
@@ -93,14 +163,12 @@ class FileType {
                 if (!parser) {
                     throw `Could not find parser ${parserName} named in the configuration for filetype ${this.name}`;
                 }
-                if (!parserType) {
-                    parserType = parserMgr.getType(parserName);
+                if (!this.type) {
+                    this.type = parserMgr.getType(parserName);
                 }
                 return parser;
             });
         }
-
-        this.type = parserType || "string";
 
         if (this.ruleset) {
             if (typeof(this.ruleset) === 'string') {
@@ -118,22 +186,23 @@ class FileType {
             }
         }
 
-        /*
         if (this.transformers) {
+            const names = Array.isArray(this.transformers) ? this.transformers : [ this.transformers ];
             const transformerMgr = this.project.getTransformerManager();
-            this.transformerClasses = this.transformers.map(transformerName => {
-                const transformer = transformerMgr.getByName(transformerName);
+            this.transformerInstances = names.map(transformerName => {
+                const transformer = transformerMgr.get(transformerName);
                 if (!transformer) {
                     throw `Could not find transformer ${transformerName} named in the configuration for filetype ${this.name}`;
                 }
-                const transformerType = this.transformerInst.getType();
-                if (transformerType !== this.type) {
-                     throw new Error(`The transformer ${name} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
+                const transformerType = transformer.getType();
+                if (!this.type) {
+                    this.type = transformerType;
+                } else if (transformerType !== this.type) {
+                     throw new Error(`The transformer ${transformerName} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
                 }
                 return transformer;
             });
         }
-        */
 
         if (this.serializer) {
             // if it is a string, then that string is the name of the serializer. If it is an object,
@@ -145,9 +214,15 @@ class FileType {
                 throw new Error(`Could not find or instantiate serializer ${this.serializer} named in the configuration for filetype ${this.name}`);
             }
             const serializerType = this.serializerInst.getType();
-            if (serializerType !== this.type) {
+            if (!this.type) {
+                this.type = serializerType;
+            } else if (serializerType !== this.type) {
                 throw new Error(`The serializer ${name} processes representations of type ${serializerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
             }
+        }
+
+        if (!this.type) {
+            this.type = "string";
         }
     }
 
@@ -233,6 +308,16 @@ class FileType {
         // can just return the list of rule instances. Cache it for subsequent calls.
         this.rules = set.getRules();
         return this.rules;
+    }
+
+    /**
+     * Return the list of transformers to use with this file type.
+     *
+     * @returns {Array.<Transformer>|undefined} an array of transformer instances to use
+     * with this file type, or undefined if there are none.
+     */
+    getTransformers() {
+        return this.transformerInstances;
     }
 
     /**
