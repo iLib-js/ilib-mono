@@ -36,7 +36,7 @@ class JavaEscaper extends Escaper {
         super("java");
         this.description = "Escapes and unescapes strings in Java";
     }
-    
+
     /**
      * @override
      */
@@ -80,7 +80,7 @@ class JavaEscaper extends Escaper {
                 reUnicodeChar.lastIndex = 0;
             }
         }
-    
+
         while ((match = reOctalChar.exec(unescaped))) {
             if (match && match.length > 1) {
                 const value = parseInt(match[1], 8);
@@ -88,7 +88,7 @@ class JavaEscaper extends Escaper {
                 reOctalChar.lastIndex = 0;
             }
         }
-    
+
         unescaped = unescaped.
             replace(/^\\\\/g, "\\").
             replace(/([^\\])\\\\/g, "$1\\").

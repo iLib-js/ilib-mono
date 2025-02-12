@@ -58,7 +58,7 @@ class RegexBasedEscaper extends Escaper {
     constructor(style) {
         super(style);
         this.description = "Escapes and unescapes strings in various styles using regular expressions.";
-        
+
         this.escapeMap = escapeMap[style];
         if (!this.escapeMap) {
             throw new Error("No escape map for style " + style);
