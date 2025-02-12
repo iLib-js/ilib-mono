@@ -62,4 +62,19 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper.unescape("fo\\\"o\\\'b\\\\a\\u317dr\\u{1d11e}")).toBe("fo\"o'b\\aㅽr𝄞");
         expect(escaper.unescape("test \\\ntest test")).toBe("test test test");
     });
+    
+    test("the json escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("json");
+        expect(escaper.escape("abc \\ \0\f\n\b\t\v\r\x65ㅽr𝄞")).toBe("abc \\\\ \\0\\f\\n\\b\\t\\v\\reㅽr𝄞");
+    });
+    
+    test("the json unescape works properly", () => {
+        expect.assertions(2);
+
+        const escaper = escaperFactory("json");
+        expect(escaper.unescape("abc \\\\ \\u0000\\f\\n\\b\\t\\u000b\\rㅽr𝄞")).toBe('abc \\ \0\f\n\b\t\v\rㅽr𝄞');
+        expect(escaper.unescape("abc \\\\ \\0\\f\\n\\b\\t\\v\\rㅽr𝄞")).toBe('abc \\ \0\f\n\b\t\v\rㅽr𝄞');
+    });
 });
