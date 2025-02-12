@@ -1,5 +1,5 @@
 /*
- * JavascriptEscaper.js - class that escapes and unescapes strings in Java
+ * JsonEscaper.js - class that escapes and unescapes strings in json files
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -20,45 +20,26 @@
 import IString from 'ilib-istring';
 
 import Escaper from '../Escaper.js';
-import { escapeU, escapeUBrackets, escapeHex, escapeOctal, escapeJS, unescapeJS } from './JSCommon.js';
+import { escapeU, escapeJS, unescapeJS } from './JSCommon.js';
 
 /**
  * @class Escaper for Java
  * @extends Escaper
  */
-class JavascriptEscaper extends Escaper {
+class JsonEscaper extends Escaper {
     /**
      * @constructor
      */
     constructor() {
-        super("js");
-        this.description = "Escapes and unescapes strings in Javascript";
+        super("json");
+        this.description = "Escapes and unescapes strings in json files";
     }
 
     /**
      * @override
      */
     escape(string) {
-        let escaped = string;
-
-        escaped = escapeJS(escaped);
-
-        let output = "";
-        for (const ch of escaped) {
-            const code = IString.toCodePoint(ch, 0);
-            if (code > 0x00FF) {
-                const str = code.toString(16).toUpperCase();
-                if (code > 0xFFFF) {
-                    output += "\\u{" + str + "}";
-                } else {
-                    output += "\\u" + str.padStart(4, "0");
-                }
-            } else {
-                output += ch;
-            }
-        }
-
-        return output;
+        return escapeJS(string);
     }
 
     /**
@@ -68,9 +49,6 @@ class JavascriptEscaper extends Escaper {
         let unescaped = string;
 
         unescaped = escapeU(unescaped);
-        unescaped = escapeUBrackets(unescaped);
-        unescaped = escapeHex(unescaped);
-        unescaped = escapeOctal(unescaped);
 
         unescaped = unescapeJS(unescaped);
 
@@ -78,4 +56,4 @@ class JavascriptEscaper extends Escaper {
     }
 }
 
-export default JavascriptEscaper;
+export default JsonEscaper;

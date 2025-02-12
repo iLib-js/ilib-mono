@@ -18,6 +18,7 @@
  */
 import JavaEscaper from "./escapes/JavaEscaper.js";
 import JavascriptEscaper from "./escapes/JavascriptEscaper.js";
+import JsonEscaper from "./escapes/JsonEscaper.js";
 import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
 
 const escaperCache = {
@@ -50,6 +51,12 @@ function escaperFactory(style) {
         case 'java':
             if (!escaperCache[style]) {
                 escaperCache[style] = new JavaEscaper();
+            }
+            break;
+
+        case 'json':
+            if (!escaperCache[style]) {
+                escaperCache[style] = new JsonEscaper();
             }
             break;
 
