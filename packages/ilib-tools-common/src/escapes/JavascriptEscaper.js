@@ -62,7 +62,7 @@ class JavascriptEscaper extends Escaper {
         super("java");
         this.description = "Escapes and unescapes strings in Java";
     }
-    
+
     /**
      * @override
      */
@@ -105,7 +105,7 @@ class JavascriptEscaper extends Escaper {
                 reUnicodeBMPChar.lastIndex = 0;
             }
         }
-    
+
         while ((match = reUnicodeAstralPlaneChar.exec(unescaped))) {
             if (match && match.length > 1) {
                 const value = parseInt(match[1], 16);
@@ -121,11 +121,11 @@ class JavascriptEscaper extends Escaper {
                 reOctalChar.lastIndex = 0;
             }
         }
-    
+
         for (const [key, value] of Object.entries(regexes.unescape)) {
             unescaped = unescaped.replace(new RegExp(key, "g"), value);
         }
-        
+
         return unescaped;
     }
 }

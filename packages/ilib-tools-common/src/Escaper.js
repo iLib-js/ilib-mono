@@ -27,7 +27,7 @@ class Escaper {
      * @type {string}
      */
     style;
-    
+
     /**
      * A short description of the escaper
      * @type {string}
