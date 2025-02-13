@@ -91,4 +91,18 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("php-double");
         expect(escaper.unescape("abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}")).toBe("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\u{317d} ㅽr𝄞");
     });
+
+    test("the php single escape works properly", () => {
+        expect.assertions(1);
+    
+        const escaper = escaperFactory("php-single");
+        expect(escaper.escape("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+    });
+    
+    test("the php single unescape works properly", () => {
+        expect.assertions(1);
+    
+        const escaper = escaperFactory("php-singele");
+        expect(escaper.unescape("abc \\'d\\' \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\\u{317d} ㅽr𝄞");
+    });
 });

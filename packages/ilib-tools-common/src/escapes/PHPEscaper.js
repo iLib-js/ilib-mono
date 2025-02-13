@@ -71,33 +71,11 @@ const phpRegexes = {
     },
     "php-single": {
         "unescape": {
-            "\\\\\\\\n": "",                 // line continuation
-            "\\\\\\n": "",                   // line continuation
-            "^\\\\\\\\": "\\",               // unescape backslashes
-            "([^\\\\])\\\\\\\\": "$1\\",
             "^\\\\'": "'",                   // unescape quotes
-            "([^\\\\])\\\\'": "$1'",
-            '^\\\\"': '"',
-            '([^\\\\])\\\\"': '$1"',
-            "\\\\$": "\$",
-            "\\\\n": "\n",
-            "\\\\b": "\b",
-            "\\\\f": "\f",
-            "\\\\r": "\r",
-            "\\\\t": "\t",
-            "\\\\v": "\v"
+            "([^\\\\])\\\\'": "$1'"
         },
         "escape": {
-            "\\\\": "\\\\",
-            "'": "\\'",
-            '"': '\\"',
-            "\\0": "\\0",
-            "\x08": "\\b",
-            "\\f": "\\f",
-            "\\n": "\\n",
-            "\\r": "\\r",
-            "\\t": "\\t",
-            "\\v": "\\v",
+            "'": "\\'"
         }
     }
 };
@@ -138,8 +116,10 @@ class PHPEscaper extends Escaper {
         let escaped = string;
 
         escaped = escapeRules(escaped, phpRegexes[this.style]);
-        escaped = escapeHex(escaped);
-        escaped = escapeUnicodeWithBracketsOnly(escaped);
+        if (this.style === "php-double") {
+            escaped = escapeHex(escaped);
+            escaped = escapeUnicodeWithBracketsOnly(escaped);
+        }
         return escaped;
     }
 
@@ -149,10 +129,11 @@ class PHPEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        unescaped = unescapeUnicodeWithBrackets(unescaped);
-        unescaped = unescapeHex(unescaped);
+        if (this.style === "php-double") {
+            unescaped = unescapeUnicodeWithBrackets(unescaped);
+            unescaped = unescapeHex(unescaped);
+        }
         unescaped = unescapeRules(unescaped, phpRegexes[this.style]);
-
         return unescaped;
     }
 }
