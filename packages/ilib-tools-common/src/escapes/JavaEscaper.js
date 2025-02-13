@@ -20,6 +20,7 @@
 import IString from 'ilib-istring';
 
 import Escaper from '../Escaper.js';
+import { escapeUnicode, unescapeUnicode, unescapeOctal } from './EscapeCommon.js';
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,6})/g;
 var reOctalChar = /\\([0-8]{1,3})/g;
@@ -49,21 +50,7 @@ class JavaEscaper extends Escaper {
             replace(/"/g, '\\"').
             replace(/'/g, "\\'");
 
-        let output = "";
-        for (const ch of escaped) {
-            const code = IString.toCodePoint(ch, 0);
-            if (code > 0x00FF) {
-                const str = code.toString(16).toUpperCase();
-                if (code > 0xFFFF) {
-                    output += "\\u" + str;
-                } else {
-                    output += "\\u" + str.padStart(4, "0");
-                }
-            } else {
-                output += ch;
-            }
-        }
-        return output;
+        return escapeUnicode(escaped);
     }
 
     /**
@@ -71,23 +58,9 @@ class JavaEscaper extends Escaper {
      */
     unescape(string) {
         let unescaped = string;
-        let match;
 
-        while ((match = reUnicodeChar.exec(unescaped))) {
-            if (match && match.length > 1) {
-                const value = parseInt(match[1], 16);
-                unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
-                reUnicodeChar.lastIndex = 0;
-            }
-        }
-
-        while ((match = reOctalChar.exec(unescaped))) {
-            if (match && match.length > 1) {
-                const value = parseInt(match[1], 8);
-                unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
-                reOctalChar.lastIndex = 0;
-            }
-        }
+        unescaped = unescapeUnicode(unescaped);
+        unescaped = unescapeOctal(unescaped);
 
         unescaped = unescaped.
             replace(/^\\\\/g, "\\").

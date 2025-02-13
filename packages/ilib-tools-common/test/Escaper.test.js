@@ -69,12 +69,26 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("json");
         expect(escaper.escape("abc \\ \0\f\n\b\t\v\r\x65ㅽr𝄞")).toBe("abc \\\\ \\0\\f\\n\\b\\t\\v\\reㅽr𝄞");
     });
-    
+
     test("the json unescape works properly", () => {
         expect.assertions(2);
 
         const escaper = escaperFactory("json");
         expect(escaper.unescape("abc \\\\ \\u0000\\f\\n\\b\\t\\u000b\\rㅽr𝄞")).toBe('abc \\ \0\f\n\b\t\v\rㅽr𝄞');
         expect(escaper.unescape("abc \\\\ \\0\\f\\n\\b\\t\\v\\rㅽr𝄞")).toBe('abc \\ \0\f\n\b\t\v\rㅽr𝄞');
+    });
+
+    test("the php double escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("php-double");
+        expect(escaper.escape("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\u{317d} ㅽr𝄞")).toBe("abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}");
+    });
+
+    test("the php double unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("php-double");
+        expect(escaper.unescape("abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}")).toBe("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\u{317d} ㅽr𝄞");
     });
 });

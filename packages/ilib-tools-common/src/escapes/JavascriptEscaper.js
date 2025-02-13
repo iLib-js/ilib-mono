@@ -20,7 +20,15 @@
 import IString from 'ilib-istring';
 
 import Escaper from '../Escaper.js';
-import { escapeU, escapeUBrackets, escapeHex, escapeOctal, escapeJS, unescapeJS } from './JSCommon.js';
+import {
+    escapeUnicodeWithBrackets,
+    escapeJS,
+    unescapeJS,
+    unescapeHex,
+    unescapeOctal,
+    unescapeUnicode,
+    unescapeUnicodeWithBrackets
+} from './EscapeCommon.js';
 
 /**
  * @class Escaper for Java
@@ -43,22 +51,7 @@ class JavascriptEscaper extends Escaper {
 
         escaped = escapeJS(escaped);
 
-        let output = "";
-        for (const ch of escaped) {
-            const code = IString.toCodePoint(ch, 0);
-            if (code > 0x00FF) {
-                const str = code.toString(16).toUpperCase();
-                if (code > 0xFFFF) {
-                    output += "\\u{" + str + "}";
-                } else {
-                    output += "\\u" + str.padStart(4, "0");
-                }
-            } else {
-                output += ch;
-            }
-        }
-
-        return output;
+        return escapeUnicodeWithBrackets(escaped);
     }
 
     /**
@@ -67,11 +60,10 @@ class JavascriptEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        unescaped = escapeU(unescaped);
-        unescaped = escapeUBrackets(unescaped);
-        unescaped = escapeHex(unescaped);
-        unescaped = escapeOctal(unescaped);
-
+        unescaped = unescapeUnicode(unescaped);
+        unescaped = unescapeUnicodeWithBrackets(unescaped);
+        unescaped = unescapeHex(unescaped);
+        unescaped = unescapeOctal(unescaped);
         unescaped = unescapeJS(unescaped);
 
         return unescaped;

@@ -20,6 +20,7 @@ import JavaEscaper from "./escapes/JavaEscaper.js";
 import JavascriptEscaper from "./escapes/JavascriptEscaper.js";
 import JsonEscaper from "./escapes/JsonEscaper.js";
 import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
+import PHPEscaper from "./escapes/PHPEscaper.js";
 
 const escaperCache = {
 };
@@ -34,7 +35,11 @@ const escaperCache = {
  * <li>js - escape for JavaScript</li>
  * <li>java - escape for Java</li>
  * <li>kotlin - escape for Kotlin</li>
- * <li>php - escape for PHP</li>
+ * <li>php - escape for PHP (default, same as php-double)</li>
+ * <li>php-double - escape for double-quoted PHP strings</li>
+ * <li>php-single - escape for single-quoted PHP strings</li>
+ * <li>php-heredoc - escape for PHP heredoc strings</li>
+ * <li>php-nowdoc - escape for PHP nowdoc strings</li>
  * <li>smarty - escape for Smarty templates</li>
  * <li>python - escape for Python</li>
  * <li>Swift - escape for Swift</li>
@@ -67,8 +72,12 @@ function escaperFactory(style) {
             break;
 
         case 'php':
+        case 'php-double':
+        case 'php-single':
+        case 'php-heredoc':
+        case 'php-nowdoc':
             if (!escaperCache[style]) {
-                escaperCache[style] = new RegexBasedEscaper("php");
+                escaperCache[style] = new PHPEscaper(style);
             }
             break;
     }
