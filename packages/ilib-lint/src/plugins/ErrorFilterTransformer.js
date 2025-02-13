@@ -20,12 +20,15 @@
 
 import { IntermediateRepresentation, Transformer, Result } from 'ilib-lint-common';
 
+/** @ignore @typedef {ConstructorParameters<typeof Transformer>[0]} TransformerOptions */
+
 /**
  * Filter out errors from the intermediate representation.
  */
 class ErrorFilterTransformer extends Transformer {
     /**
      * Create a new transformer instance.
+     * @param {TransformerOptions} [options]
      */
     constructor(options) {
         super(options);
