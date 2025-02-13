@@ -427,8 +427,8 @@ class Project extends DirItem {
     }
 
     /**
-     * Return the serializer manager for this project.
-     * @returns {TransformerManager} the serializer
+     * Return the transformer manager for this project.
+     * @returns {TransformerManager} the transformer manager for this project
      */
     getTransformerManager() {
         const pluginMgr = this.options.pluginManager;
@@ -437,7 +437,7 @@ class Project extends DirItem {
 
     /**
      * Return the serializer manager for this project.
-     * @returns {SerializerManager} the serializer
+     * @returns {SerializerManager} the serializer manager for this project
      */
     getSerializerManager() {
         const pluginMgr = this.options.pluginManager;
