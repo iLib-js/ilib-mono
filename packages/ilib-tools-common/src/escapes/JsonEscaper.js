@@ -20,7 +20,7 @@
 import IString from 'ilib-istring';
 
 import Escaper from '../Escaper.js';
-import { escapeU, escapeJS, unescapeJS } from './JSCommon.js';
+import { unescapeUnicode, escapeJS, unescapeJS } from './EscapeCommon.js';
 
 /**
  * @class Escaper for Java
@@ -48,8 +48,7 @@ class JsonEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        unescaped = escapeU(unescaped);
-
+        unescaped = unescapeUnicode(unescaped);
         unescaped = unescapeJS(unescaped);
 
         return unescaped;
