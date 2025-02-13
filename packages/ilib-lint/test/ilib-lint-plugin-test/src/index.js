@@ -23,6 +23,7 @@ import TestParser from './TestParser.js';
 import TestRule from './TestRule.js';
 import TestFormatter from './TestFormatter.js';
 import TestFixer from './TestFixer.js';
+import TestTransformer from './TestTransformer.js';
 import TestSerializer from './TestSerializer.js';
 
 class TestPlugin extends Plugin {
@@ -64,6 +65,10 @@ class TestPlugin extends Plugin {
 
     getFixers() {
         return [ TestFixer ];
+    }
+
+    getTransformers() {
+        return [ TestTransformer ];
     }
 
     getSerializers() {
