@@ -19,7 +19,7 @@
 
 import IString from 'ilib-istring';
 
-import Escaper from '../Escaper.js';
+import Escaper from './Escaper.js';
 import { escapeUnicode, unescapeUnicode, unescapeOctal } from './EscapeCommon.js';
 
 var reUnicodeChar = /\\u([a-fA-F0-9]{1,6})/g;
@@ -35,6 +35,7 @@ class JavaEscaper extends Escaper {
      */
     constructor() {
         super("java");
+        this.name = "java-escaper";
         this.description = "Escapes and unescapes strings in Java";
     }
 

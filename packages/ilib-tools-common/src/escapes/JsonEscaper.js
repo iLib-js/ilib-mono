@@ -19,7 +19,7 @@
 
 import IString from 'ilib-istring';
 
-import Escaper from '../Escaper.js';
+import Escaper from './Escaper.js';
 import { unescapeUnicode, escapeJS, unescapeJS } from './EscapeCommon.js';
 
 /**
@@ -32,6 +32,7 @@ class JsonEscaper extends Escaper {
      */
     constructor() {
         super("json");
+        this.name = "json-escaper";
         this.description = "Escapes and unescapes strings in json files";
     }
 

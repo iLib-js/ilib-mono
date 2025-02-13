@@ -29,7 +29,13 @@ class Escaper {
     style;
 
     /**
-     * A short description of the escaper
+     * The unique name of the escaper instance
+     * @type {string}
+     */
+    name;
+
+    /**
+     * A short description of this escaper instance
      * @type {string}
      */
     description;
@@ -43,6 +49,33 @@ class Escaper {
         this.style = style;
     }
 
+    /**
+     * Get the style object for this escaper.
+     *
+     * @returns {Object} the style object for this escaper
+     */
+    getStyle() {
+        return this.style;
+    }
+    
+    /**
+     * Get the name of this escaper.
+     *
+     * @returns {String} the name of this escaper
+     */
+    getName() {
+        return this.name;
+    }
+    
+    /**
+     * Get a short description of this escaper.
+     *
+     * @returns {String} the description of this escaper
+     */
+    getDescription() {
+        return this.description;
+    }
+    
     /**
      * Escape the given string for the given style. The escaped string is what
      * the programming language would use in source code.

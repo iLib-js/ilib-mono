@@ -19,7 +19,7 @@
 
 import IString from 'ilib-istring';
 
-import Escaper from '../Escaper.js';
+import Escaper from './Escaper.js';
 import {
     escapeUnicodeWithBracketsOnly,
     escapeHex,
@@ -71,11 +71,45 @@ const phpRegexes = {
     },
     "php-single": {
         "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
             "^\\\\'": "'",                   // unescape quotes
             "([^\\\\])\\\\'": "$1'"
         },
         "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
             "'": "\\'"
+        }
+    },
+    "php-heredoc": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "\\\\\\$": "$",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\e": "\u001B",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "\\$": "\\$",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\u001B": "\\e",
+            "\\f": "\\f",
+            "\\v": "\\v"
+        }
+    },
+    "php-nowdoc": { // no escaping or unescaping whatsoever!!!
+        "unescape": {
+        },
+        "escape": {
         }
     }
 };
@@ -107,6 +141,8 @@ class PHPEscaper extends Escaper {
             // use the double-quoted style by default
             this.style = "php-double";
         }
+        this.name = "php-escaper";
+        this.description = "Escapes and unescapes various types of strings in PHP";
     }
 
     /**
@@ -116,7 +152,7 @@ class PHPEscaper extends Escaper {
         let escaped = string;
 
         escaped = escapeRules(escaped, phpRegexes[this.style]);
-        if (this.style === "php-double") {
+        if (this.style === "php-double" || this.style === "php-heredoc") {
             escaped = escapeHex(escaped);
             escaped = escapeUnicodeWithBracketsOnly(escaped);
         }
@@ -129,7 +165,7 @@ class PHPEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        if (this.style === "php-double") {
+        if (this.style === "php-double" || this.style === "php-heredoc") {
             unescaped = unescapeUnicodeWithBrackets(unescaped);
             unescaped = unescapeHex(unescaped);
         }
