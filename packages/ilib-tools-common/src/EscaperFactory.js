@@ -65,6 +65,7 @@ function escaperFactory(style) {
             }
             break;
 
+        case 'javascript':
         case 'js':
             if (!escaperCache[style]) {
                 escaperCache[style] = new JavascriptEscaper();

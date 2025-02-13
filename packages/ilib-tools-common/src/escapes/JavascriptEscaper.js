@@ -19,7 +19,7 @@
 
 import IString from 'ilib-istring';
 
-import Escaper from '../Escaper.js';
+import Escaper from './Escaper.js';
 import {
     escapeUnicodeWithBrackets,
     escapeJS,
@@ -40,6 +40,7 @@ class JavascriptEscaper extends Escaper {
      */
     constructor() {
         super("js");
+        this.name = "javascript-escaper";
         this.description = "Escapes and unescapes strings in Javascript";
     }
 

@@ -34,6 +34,16 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper).toBeUndefined();
     });
 
+    test("we got the right escaper for the style", () => {
+        expect.assertions(4);
+        
+        const escaper = escaperFactory("php-single");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("php-single");
+        expect(escaper.getName()).toBe("php-escaper");
+        expect(escaper.getDescription()).toBe("Escapes and unescapes various types of strings in PHP");
+    });
+
     test("the java escape works properly", () => {
         expect.assertions(1);
 
@@ -50,7 +60,7 @@ describe("test the Escaper class and its subclasses", () => {
 
     test("the javascript escape works properly", () => {
         expect.assertions(1);
-        
+
         const escaper = escaperFactory("js");
         expect(escaper.escape("fo\"o'b\\aㅽr𝄞")).toBe("fo\\\"o\\\'b\\\\a\\u317Dr\\u{1D11E}");
     });
@@ -61,6 +71,14 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("js");
         expect(escaper.unescape("fo\\\"o\\\'b\\\\a\\u317dr\\u{1d11e}")).toBe("fo\"o'b\\aㅽr𝄞");
         expect(escaper.unescape("test \\\ntest test")).toBe("test test test");
+    });
+
+    test("that javascript is an alias for js", () => {
+        expect.assertions(2);
+        
+        const escaper = escaperFactory("javascript");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("js");
     });
     
     test("the json escape works properly", () => {
@@ -94,15 +112,51 @@ describe("test the Escaper class and its subclasses", () => {
 
     test("the php single escape works properly", () => {
         expect.assertions(1);
-    
+
         const escaper = escaperFactory("php-single");
-        expect(escaper.escape("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+        expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞");
     });
-    
+
     test("the php single unescape works properly", () => {
         expect.assertions(1);
+
+        const escaper = escaperFactory("php-single");
+        expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+    });
+
+    test("the php heredoc escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("php-heredoc");
+        expect(escaper.escape("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\u{317d} ㅽr𝄞")).toBe("abc 'd' \"e\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}");
+    });
+
+    test("the php heredoc unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("php-heredoc");
+        expect(escaper.unescape("abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}")).toBe("abc 'd' \\\"e\\\" $\n\r\t\u001B\f\v\x54\u{317d} ㅽr𝄞");
+    });
+
+    test("the php nowdoc escape works properly", () => {
+        expect.assertions(1);
     
-        const escaper = escaperFactory("php-singele");
-        expect(escaper.unescape("abc \\'d\\' \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\\u{317d} ㅽr𝄞");
+        const escaper = escaperFactory("php-nowdoc");
+        expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+    });
+    
+    test("the php nowdoc unescape works properly", () => {
+        expect.assertions(1);
+    
+        const escaper = escaperFactory("php-nowdoc");
+        expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+    });
+    
+    test("that php is an alias for php-double", () => {
+        expect.assertions(2);
+
+        const escaper = escaperFactory("php");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("php-double");
     });
 });

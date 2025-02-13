@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import Escaper from '../Escaper.js';
+import Escaper from './Escaper.js';
 
 const escapeMap = {
     "js": {
