@@ -22,7 +22,14 @@ import path from 'node:path';
 import log4js from 'log4js';
 import mm from 'micromatch';
 
-import { FileStats, SourceFile } from 'ilib-lint-common';
+import { FileStats, SourceFile, Result } from 'ilib-lint-common';
+
+import PluginManager from "./PluginManager.js";
+import ParserManager from "./ParserManager.js";
+import RuleManager from "./RuleManager.js";
+import FixerManager from "./FixerManager.js";
+import TransformerManager from "./TransformerManager.js";
+import SerializerManager from "./SerializerManager.js";
 
 import LintableFile from './LintableFile.js';
 import DirItem from './DirItem.js';
@@ -117,6 +124,8 @@ class Project extends DirItem {
             "xliff": new FileType({project: this, ...xliffFileTypeDefinition}),
             "unknown": new FileType({project: this, ...unknownFileTypeDefinition})
         };
+
+        this.fileStats = new FileStats();
     }
 
     /**
@@ -461,6 +470,7 @@ class Project extends DirItem {
      * there is no such file type
      */
     getFileType(name) {
+        throw new Error("Method not implemented.");
     }
 
     /**
@@ -533,7 +543,6 @@ class Project extends DirItem {
      * @returns {Array.<Result>} a list of results
      */
     findIssues(locales) {
-        this.fileStats = new FileStats();
         return this.files.flatMap(file => {
             //logger.debug(`Examining ${file.filePath}`);
             if (!this.options.opt.quiet && this.options.opt.progressInfo) {

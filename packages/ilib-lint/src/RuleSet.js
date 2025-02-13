@@ -18,6 +18,8 @@
  */
 import log4js from 'log4js';
 
+/** @ignore @typedef {import("ilib-lint-common").Rule} Rule */
+
 const logger = log4js.getLogger("ilib-lint.RuleSet");
 
 /**
@@ -31,7 +33,7 @@ class RuleSet {
      * Construct an ilib-lint rule set.
      *
      * @constructor
-     * @param {Array.<Rule>} rules a list of rules to initialize
+     * @param {Array.<Rule>} [rules] a list of rules to initialize
      * this set
      */
     constructor(rules) {
@@ -89,7 +91,7 @@ class RuleSet {
     /**
      * Return a list of rule instances in this set.
      *
-     * @param {String} type optional parameter that restricts
+     * @param {String} [type] optional parameter that restricts
      * the type of rules returned. If no type is specified,
      * all rules are returned.
      *

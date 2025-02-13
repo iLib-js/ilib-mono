@@ -56,7 +56,7 @@ class FileStats {
      * the result.
      *
      * @param {FileStats} stats the other instance to add to the current one
-     * @returns {FileStats] the current instance
+     * @returns {FileStats} the current instance
      */
     addStats(stats) {
         if (!stats || typeof(stats) !== 'object' || !(stats instanceof FileStats)) return this;

@@ -19,6 +19,7 @@
  */
 
 import FileStats from "./FileStats.js";
+import SourceFile from "./SourceFile.js";
 
 /**
  * @class Representation of parser results

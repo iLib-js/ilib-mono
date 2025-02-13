@@ -19,9 +19,8 @@
 
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
-
-/** @ignore @typedef {import("./IntermediateRepresentation.js").default} IntermediateRepresentation */
-/** @ignore @typedef {import("./Result.js").default} Result */
+import IntermediateRepresentation from "./IntermediateRepresentation.js";
+import Result from "./Result.js";
 
 /**
  * @class common SPI for transformer plugins
@@ -67,6 +66,6 @@ class Transformer extends PipelineElement {
     transform(representation, results) {
         throw new NotImplementedError();
     }
-};
+}
 
 export default Transformer;
