@@ -19,9 +19,9 @@
 
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
-import Results from "./Result.js";
 
-/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
+/** @ignore @typedef {import("./IntermediateRepresentation.js").default} IntermediateRepresentation */
+/** @ignore @typedef {import("./Result.js").default} Result */
 
 /**
  * @class common SPI for transformer plugins

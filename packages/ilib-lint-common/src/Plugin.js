@@ -17,6 +17,13 @@
  * limitations under the License.
  */
 
+/** @ignore @typedef {typeof import("./Rule.js").default} RuleClass */
+/** @ignore @typedef {typeof import("./Parser.js").default} ParserClass */
+/** @ignore @typedef {typeof import("./Fixer.js").default} FixerClass */
+/** @ignore @typedef {typeof import("./Formatter.js").default} FormatterClass */
+/** @ignore @typedef {typeof import("./Transformer.js").default} TransformerClass */
+/** @ignore @typedef {typeof import("./Serializer.js").default} SerializerClass */
+
 /**
  * @class common SPI that all plugins must implement
  * @abstract
@@ -52,7 +59,7 @@ class Plugin {
      * not an instance of the class. The linter may need to instantiate
      * this rule multiple times with different optional parameters.
      *
-     * @returns {Array.<Class|Object>} list of Rule classes implemented
+     * @returns {Array.<RuleClass|Object>} list of Rule classes implemented
      * by this plugin or objects that are definitions of declarative rules
      */
     getRules() {
@@ -96,7 +103,7 @@ class Plugin {
      * instance of the class. The linter may need to instantiate this
      * parser multiple times.
      *
-     * @returns {Array.<Class>} list of Parser classes implemented by this
+     * @returns {Array.<ParserClass>} list of Parser classes implemented by this
      * plugin
      */
     getParsers() {
@@ -109,7 +116,7 @@ class Plugin {
      * instance of the class. The linter may need to instantiate this
      * formatter multiple times.
      *
-     * @returns {Array.<Class|Object>} list of Formatter classes implemented
+     * @returns {Array.<FormatterClass|Object>} list of Formatter classes implemented
      * by this plugin or objects that are definitions of declarative formatters
      */
     getFormatters() {
@@ -122,7 +129,7 @@ class Plugin {
      * instance of the class. The linter may need to instantiate this
      * formatter multiple times.
      *
-     * @returns {Array.<Class>} array of Fixer classes implemented
+     * @returns {Array.<FixerClass>} array of Fixer classes implemented
      * by this plugin
      */
     getFixers() {
@@ -135,7 +142,7 @@ class Plugin {
      * instance of the class. The linter may need to instantiate this transformer
      * multiple times.
      *
-     * @returns {Array.<Class>} list of Transformer classes implemented
+     * @returns {Array.<TransformerClass>} list of Transformer classes implemented
      * by this plugin
      */
     getTransformers() {
@@ -147,12 +154,12 @@ class Plugin {
      * classes that this plugin implements. Note this is the class, not an
      * instance of the class. The linter may need to instantiate this serializer
      * multiple times.
-     * @returns {Array.<Class>} list of Serializer classes implemented
+     * @returns {Array.<SerializerClass>} list of Serializer classes implemented
      * by this plugin
      */
     getSerializers() {
         return [];
     }
-};
+}
 
 export default Plugin;
