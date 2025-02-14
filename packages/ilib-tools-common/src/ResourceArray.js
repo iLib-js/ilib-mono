@@ -24,9 +24,7 @@ import log4js from "@log4js-node/log4js-api";
 const logger = log4js.getLogger("tools-common.ResourceArray");
 
 /**
- * @class A class that models a resource that is an array of strings.
- *
- * @extends Resource
+ * A class that models a resource that is an array of strings.
  */
 class ResourceArray extends Resource {
     /**

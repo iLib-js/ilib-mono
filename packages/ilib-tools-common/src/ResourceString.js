@@ -24,10 +24,8 @@ import log4js from "@log4js-node/log4js-api";
 const logger = log4js.getLogger("tools-common.ResourceString");
 
 /**
- * @class Represents a string resource from a resource file or
+ * Represents a string resource from a resource file or
  * extracted from the code.
-
- * @extends Resource
  */
 class ResourceString extends Resource {
     /**
