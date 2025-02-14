@@ -29,6 +29,7 @@ import FixerManager from './FixerManager.js';
 import TransformerManager from './TransformerManager.js';
 import SerializerManager from './SerializerManager.js';
 import BuiltinPlugin from './plugins/BuiltinPlugin.js';
+import { Plugin } from 'ilib-lint-common';
 
 const logger = log4js.getLogger("ilib-lint.PluginManager");
 
@@ -257,19 +258,9 @@ class PluginManager {
     }
 
     /**
-     * Return the rules in this manager. This is from both the
-     * built-in rules and the rules loaded from the plugins.
-     *
-     * @returns {FormatterManager} the rule set for this plugin manager.
-     */
-    getRuleSet() {
-        return this.rules;
-    }
-
-    /**
      * Add the already-loaded plugin to this manager.
      *
-     * @param {Plugin} a plugin to add
+     * @param {Plugin} plugin a plugin to add
      */
     add(plugin) {
         if (!plugin) return;
@@ -310,7 +301,7 @@ class PluginManager {
      * @reject the plugins could not be found or loaded
      */
     load(names) {
-        if (typeof(name) === 'string') {
+        if (typeof(names) === 'string') {
             names = [ names ];
         }
         return Promise.allSettled(names.map(name => {

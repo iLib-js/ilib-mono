@@ -76,7 +76,7 @@ class RuleManager {
      * Return a rule instance for the given name.
      *
      * @param {String} name name of the rule to return
-     * @param {Object|undefined} options options for this instance of the
+     * @param {Object|undefined} [options] options for this instance of the
      * rule from the config file, if any
      * @returns {Rule|undefined} an instance of the required rule or undefined if
      * the rule cannot be found

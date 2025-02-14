@@ -97,6 +97,7 @@ class Project extends DirItem {
     constructor(root, options, config) {
         super(root, options, config);
 
+        /** @type {(Project|LintableFile)[]} */
         this.files = [];
 
         if (!options || !root || !config || !options.pluginManager) {
@@ -126,6 +127,12 @@ class Project extends DirItem {
         };
 
         this.fileStats = new FileStats();
+
+        this.resultStats = {
+            errors: 0,
+            warnings: 0,
+            suggestions: 0
+        };
     }
 
     /**
@@ -163,6 +170,8 @@ class Project extends DirItem {
         let pathName, included, stat, glob;
 
         try {
+            // @ts-ignore -- throwIfNoEntry:true is default behaviour since Node 14
+            // on older versions it does not throw and the property is ignoreds
             stat = fs.statSync(root, {throwIfNoEntry: false});
             if (stat) {
                 if (stat.isDirectory()) {
@@ -275,7 +284,7 @@ class Project extends DirItem {
 
         // initialize any projects or files that have an init method.
         this.files.forEach(file => {
-            if (typeof(file.init) === 'function') {
+            if ('init' in file && typeof(file.init) === 'function') {
                 promise = promise.then(() => {
                     return file.init();
                 });
@@ -334,7 +343,7 @@ class Project extends DirItem {
             }
             this.formatter = fmtMgr.get(this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter");
             if (!this.formatter) {
-                logger.error(`Could not find formatter ${options.formatter}. Aborting...`);
+                logger.error(`Could not find formatter ${this.options.formatter}. Aborting...`);
                 process.exit(3);
             }
 
@@ -360,7 +369,7 @@ class Project extends DirItem {
 
     /**
      * Return the includes list for this project.
-     * @returns {Array.<String>} the includes for this project
+     * @returns {Array.<String>|undefined} the includes for this projects
      */
     getIncludes() {
         return this.includes;
@@ -516,7 +525,7 @@ class Project extends DirItem {
     /**
      * Add a directory item to this project.
      *
-     * @param {DirItem} item directory item to add
+     * @param {Project|LintableFile} item directory item to add
      */
     add(item) {
         this.files.push(item);
@@ -532,8 +541,17 @@ class Project extends DirItem {
                 return dirItem;
             } else if (dirItem instanceof DirItem) {
                 return dirItem.get();
+            } else {
+                return [];
             }
         });
+    }
+
+    /**
+     * @returns {FileStats} the file stats for this project
+     */
+    getStats() {
+        return this.fileStats;
     }
 
     /**
@@ -556,7 +574,7 @@ class Project extends DirItem {
                 logger.error(`Error while finding issues in the file ${file.filePath}`);
                 logger.error(e);
             }
-        }).filter(result => result);
+        }).filter(result => result !== undefined);
     }
 
     /**
@@ -662,7 +680,7 @@ class Project extends DirItem {
             });
         }
         const fmt = new Intl.NumberFormat("en-US", {
-            maxFractionDigits: 2
+            maximumFractionDigits: 2
         });
         const score = this.getScore();
         if (isOwnMethod(this.formatter, "formatOutput")) {

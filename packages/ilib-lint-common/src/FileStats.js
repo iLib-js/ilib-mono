@@ -21,10 +21,25 @@
  * @class Represent statistics about source files.
  */
 class FileStats {
-    /** @private */ files = 1;
-    /** @private */ lines = 0;
-    /** @private */ bytes = 0;
-    /** @private */ modules = 0;
+    /** @private */ _files = 1;
+    get files() {
+        return this._files;
+    }
+    
+    /** @private */ _lines = 0;
+    get lines() {
+        return this._lines;
+    }
+    
+    /** @private */ _bytes = 0;
+    get bytes() {
+        return this._bytes;
+    }
+    
+    /** @private */ _modules = 0;
+    get modules() {
+        return this._modules;
+    }
 
     /**
      * Construct an file statistics instance. Each count in the
@@ -64,7 +79,7 @@ class FileStats {
             this[property] += stats[property] || 0;
         });
         if (typeof(stats.files) !== 'number') {
-            this.files++;
+            this._files++;
         }
         return this;
     }
@@ -75,7 +90,7 @@ class FileStats {
      * @returns {Number} the number of source files being counted
      */
     getFiles() {
-        return this.files || 1;
+        return this._files || 1;
     }
 
     /**
@@ -85,7 +100,7 @@ class FileStats {
      */
     addFiles(num) {
         if (typeof(num) !== 'number') return this;
-        this.files += num;
+        this._files += num;
         return this;
     }
 
@@ -95,7 +110,7 @@ class FileStats {
      * @returns {Number} the number of source file lines being counted
      */
     getLines() {
-        return this.lines || 0;
+        return this._lines || 0;
     }
 
     /**
@@ -106,7 +121,7 @@ class FileStats {
      */
     addLines(num) {
         if (typeof(num) !== 'number') return this;
-        this.lines += num;
+        this._lines += num;
         return this;
     }
 
@@ -116,7 +131,7 @@ class FileStats {
      * @returns {Number} the number of source file bytes being counted
      */
     getBytes() {
-        return this.bytes || 0;
+        return this._bytes || 0;
     }
 
     /**
@@ -127,7 +142,7 @@ class FileStats {
      */
     addBytes(num) {
         if (typeof(num) !== 'number') return this;
-        this.bytes += num;
+        this._bytes += num;
         return this;
     }
 
@@ -142,7 +157,7 @@ class FileStats {
      * @returns {Number} the number of source file modules being counted
      */
     getModules() {
-        return this.modules || 0;
+        return this._modules || 0;
     }
 
     /**
@@ -153,7 +168,7 @@ class FileStats {
      */
     addModules(num) {
         if (typeof(num) !== 'number') return this;
-        this.modules += num;
+        this._modules += num;
         return this;
     }
 }

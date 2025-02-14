@@ -21,6 +21,7 @@ import log4js from "log4js";
 
 import { IntermediateRepresentation, Result } from "ilib-lint-common";
 import Locale from "ilib-locale";
+import LintableFile from "./LintableFile.js";
 
 const logger = log4js.getLogger("ilib-lint.DirItem");
 
@@ -81,6 +82,14 @@ class DirItem {
      * @abstract
      */
     findIssues(locales) {
+        throw new Error("Method not implemented.");
+    }
+
+    /**
+     * Return all lintable files in this project.
+     * @returns {Array.<LintableFile>} the lintable files in this project.
+     */
+    get() {
         throw new Error("Method not implemented.");
     }
 }
