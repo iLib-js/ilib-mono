@@ -6,7 +6,6 @@ import {Result} from 'ilib-lint-common';
 /**
  * @classdesc Class representing an ilib-lint programmatic rule for linting snake cased strings.
  * @class
- * @augments ResourceRule
  */
 class ResourceSnakeCase extends ResourceRule {
     /**
@@ -30,8 +29,7 @@ class ResourceSnakeCase extends ResourceRule {
 
     /**
      * Check if a source string is in snake case and if the target string is the same as the source.
-     * @public
-     * @override ResourceRule.matchString
+     * @override
      * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in snake case and target string is not the same as the source string, otherwise undefined.
      */

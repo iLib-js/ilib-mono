@@ -14,7 +14,7 @@
     "test:all:force": "turbo test --force",
     "test:ci": "turbo test --concurrency=5",
     "test:ci:affected": "pnpm test:ci --affected",
-    "doc": "pnpm -F '[origin/main]' -F '!ilib-tools-common' -F '!ilib-lint' doc",
+    "doc": "pnpm -F '[origin/main]' -F '!ilib-tools-common' doc",
     "release": "pnpm build && pnpm changeset publish"
   },
   "devDependencies": {
