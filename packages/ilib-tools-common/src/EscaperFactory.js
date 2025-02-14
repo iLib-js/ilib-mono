@@ -21,6 +21,7 @@ import JavascriptEscaper from "./escapes/JavascriptEscaper.js";
 import JsonEscaper from "./escapes/JsonEscaper.js";
 import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
 import PHPEscaper from "./escapes/PHPEscaper.js";
+import SmartyEscaper from "./escapes/SmartyEscaper.js";
 
 const escaperCache = {
 };
@@ -40,7 +41,9 @@ const escaperCache = {
  * <li>php-single - escape for single-quoted PHP strings</li>
  * <li>php-heredoc - escape for PHP heredoc strings</li>
  * <li>php-nowdoc - escape for PHP nowdoc strings</li>
- * <li>smarty - escape for Smarty templates</li>
+ * <li>smarty - escape for Smarty templates (default, same as smarty-double)</li>
+ * <li>smarty-double - escape for double-quoted Smarty strings</li>
+ * <li>smarty-single - escape for single-quoted Smarty strings</li>
  * <li>python - escape for Python</li>
  * <li>Swift - escape for Swift</li>
  * <li>url - escape for URLs and URIs</li>
@@ -79,6 +82,14 @@ function escaperFactory(style) {
         case 'php-nowdoc':
             if (!escaperCache[style]) {
                 escaperCache[style] = new PHPEscaper(style);
+            }
+            break;
+
+        case 'smarty':
+        case 'smarty-double':
+        case 'smarty-single':
+            if (!escaperCache[style]) {
+                escaperCache[style] = new SmartyEscaper(style);
             }
             break;
     }

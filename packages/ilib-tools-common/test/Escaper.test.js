@@ -36,7 +36,7 @@ describe("test the Escaper class and its subclasses", () => {
 
     test("we got the right escaper for the style", () => {
         expect.assertions(4);
-        
+
         const escaper = escaperFactory("php-single");
         expect(escaper).toBeTruthy();
         expect(escaper.getStyle()).toBe("php-single");
@@ -75,12 +75,12 @@ describe("test the Escaper class and its subclasses", () => {
 
     test("that javascript is an alias for js", () => {
         expect.assertions(2);
-        
+
         const escaper = escaperFactory("javascript");
         expect(escaper).toBeTruthy();
         expect(escaper.getStyle()).toBe("js");
     });
-    
+
     test("the json escape works properly", () => {
         expect.assertions(1);
 
@@ -140,23 +140,59 @@ describe("test the Escaper class and its subclasses", () => {
 
     test("the php nowdoc escape works properly", () => {
         expect.assertions(1);
-    
+
         const escaper = escaperFactory("php-nowdoc");
         expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
     });
-    
+
     test("the php nowdoc unescape works properly", () => {
         expect.assertions(1);
-    
+
         const escaper = escaperFactory("php-nowdoc");
         expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
     });
-    
+
     test("that php is an alias for php-double", () => {
         expect.assertions(2);
 
         const escaper = escaperFactory("php");
         expect(escaper).toBeTruthy();
         expect(escaper.getStyle()).toBe("php-double");
+    });
+
+    test("the Smarty double escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("smarty-double");
+        expect(escaper.escape("abc 'd' \"e\" $\n\r\t\u001B\f\v\x54\u{317d} ㅽr𝄞")).toBe("abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vTㅽ ㅽr𝄞");
+    });
+
+    test("the Smarty double unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("smarty-double");
+        expect(escaper.unescape("abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}")).toBe("abc 'd' \"e\" $\n\r\t\u001B\f\vT\\u{317D} \\u{317D}r\\u{1D11E}");
+    });
+
+    test("the Smarty single escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("smarty-single");
+        expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞");
+    });
+
+    test("the Smarty single unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("smarty-single");
+        expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+    });
+
+    test("that smarty is an alias for smarty-double", () => {
+        expect.assertions(2);
+
+        const escaper = escaperFactory("smarty");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("smarty-double");
     });
 });

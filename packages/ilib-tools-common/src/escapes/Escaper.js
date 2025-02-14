@@ -57,7 +57,7 @@ class Escaper {
     getStyle() {
         return this.style;
     }
-    
+
     /**
      * Get the name of this escaper.
      *
@@ -66,7 +66,7 @@ class Escaper {
     getName() {
         return this.name;
     }
-    
+
     /**
      * Get a short description of this escaper.
      *
@@ -75,7 +75,7 @@ class Escaper {
     getDescription() {
         return this.description;
     }
-    
+
     /**
      * Escape the given string for the given style. The escaped string is what
      * the programming language would use in source code.
