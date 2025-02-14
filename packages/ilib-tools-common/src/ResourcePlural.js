@@ -24,9 +24,8 @@ import log4js from "@log4js-node/log4js-api";
 const logger = log4js.getLogger("tools-common.ResourcePlural");
 
 /**
- * @class A class that models a resource that handles translations of
+ * A class that models a resource that handles translations of
  * plurals.
- * @extends Resource
  */
 class ResourcePlural extends Resource {
     /**

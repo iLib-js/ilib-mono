@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ResourceConvert.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#getLocation">getLocation</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#addInstance">addInstance</a></li><li data-type='method'><a href="Resource.html#clearDirty">clearDirty</a></li><li data-type='method'><a href="Resource.html#escapeText">escapeText</a></li><li data-type='method'><a href="Resource.html#getAutoKey">getAutoKey</a></li><li data-type='method'><a href="Resource.html#getComment">getComment</a></li><li data-type='method'><a href="Resource.html#getContext">getContext</a></li><li data-type='method'><a href="Resource.html#getDNT">getDNT</a></li><li data-type='method'><a href="Resource.html#getDataType">getDataType</a></li><li data-type='method'><a href="Resource.html#getFlavor">getFlavor</a></li><li data-type='method'><a href="Resource.html#getId">getId</a></li><li data-type='method'><a href="Resource.html#getInstances">getInstances</a></li><li data-type='method'><a href="Resource.html#getKey">getKey</a></li><li data-type='method'><a href="Resource.html#getLocalize">getLocalize</a></li><li data-type='method'><a href="Resource.html#getLocation">getLocation</a></li><li data-type='method'><a href="Resource.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="Resource.html#getPath">getPath</a></li><li data-type='method'><a href="Resource.html#getProject">getProject</a></li><li data-type='method'><a href="Resource.html#getSource">getSource</a></li><li data-type='method'><a href="Resource.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Resource.html#getState">getState</a></li><li data-type='method'><a href="Resource.html#getTarget">getTarget</a></li><li data-type='method'><a href="Resource.html#getTargetLocale">getTargetLocale</a></li><li data-type='method'><a href="Resource.html#getType">getType</a></li><li data-type='method'><a href="Resource.html#isDirty">isDirty</a></li><li data-type='method'><a href="Resource.html#isInstance">isInstance</a></li><li data-type='method'><a href="Resource.html#same">same</a></li><li data-type='method'><a href="Resource.html#setComment">setComment</a></li><li data-type='method'><a href="Resource.html#setDNT">setDNT</a></li><li data-type='method'><a href="Resource.html#setProject">setProject</a></li><li data-type='method'><a href="Resource.html#setSourceLocale">setSourceLocale</a></li><li data-type='method'><a href="Resource.html#setState">setState</a></li><li data-type='method'><a href="Resource.html#setTargetLocale">setTargetLocale</a></li></ul></li><li><a href="ResourceArray.html">ResourceArray</a><ul class='methods'><li data-type='method'><a href="ResourceArray.html#addSourceItem">addSourceItem</a></li><li data-type='method'><a href="ResourceArray.html#addTargetItem">addTargetItem</a></li><li data-type='method'><a href="ResourceArray.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceArray.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourceArray.html#clone">clone</a></li><li data-type='method'><a href="ResourceArray.html#equals">equals</a></li><li data-type='method'><a href="ResourceArray.html#equals">equals</a></li><li data-type='method'><a href="ResourceArray.html#getSourceArray">getSourceArray</a></li><li data-type='method'><a href="ResourceArray.html#getSourceItem">getSourceItem</a></li><li data-type='method'><a href="ResourceArray.html#getTargetArray">getTargetArray</a></li><li data-type='method'><a href="ResourceArray.html#getTargetItem">getTargetItem</a></li><li data-type='method'><a href="ResourceArray.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourceArray.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourceArray.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourceArray.html#setSource">setSource</a></li><li data-type='method'><a href="ResourceArray.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourceArray.html#size">size</a></li><li data-type='method'><a href="ResourceArray.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourcePlural.html">ResourcePlural</a><ul class='methods'><li data-type='method'><a href="ResourcePlural.html#addSourcePlural">addSourcePlural</a></li><li data-type='method'><a href="ResourcePlural.html#addTargetPlural">addTargetPlural</a></li><li data-type='method'><a href="ResourcePlural.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourcePlural.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourcePlural.html#clone">clone</a></li><li data-type='method'><a href="ResourcePlural.html#equals">equals</a></li><li data-type='method'><a href="ResourcePlural.html#getAllValidCategories">getAllValidCategories</a></li><li data-type='method'><a href="ResourcePlural.html#getCategories">getCategories</a></li><li data-type='method'><a href="ResourcePlural.html#getClasses">getClasses</a></li><li data-type='method'><a href="ResourcePlural.html#getPivots">getPivots</a></li><li data-type='method'><a href="ResourcePlural.html#getSourcePlural">getSourcePlural</a></li><li data-type='method'><a href="ResourcePlural.html#getSourcePlurals">getSourcePlurals</a></li><li data-type='method'><a href="ResourcePlural.html#getSourceStrings">getSourceStrings</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetPlural">getTargetPlural</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetPlurals">getTargetPlurals</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetStrings">getTargetStrings</a></li><li data-type='method'><a href="ResourcePlural.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourcePlural.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourcePlural.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourcePlural.html#setSource">setSource</a></li><li data-type='method'><a href="ResourcePlural.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourcePlural.html#size">size</a></li><li data-type='method'><a href="ResourcePlural.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourceString.html">ResourceString</a><ul class='methods'><li data-type='method'><a href="ResourceString.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceString.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourceString.html#clone">clone</a></li><li data-type='method'><a href="ResourceString.html#equals">equals</a></li><li data-type='method'><a href="ResourceString.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourceString.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourceString.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourceString.html#setSource">setSource</a></li><li data-type='method'><a href="ResourceString.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourceString.html#size">size</a></li><li data-type='method'><a href="ResourceString.html#.cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceString.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourceXliff.html">ResourceXliff</a><ul class='methods'><li data-type='method'><a href="ResourceXliff.html#getLines">getLines</a></li><li data-type='method'><a href="ResourceXliff.html#getVersion">getVersion</a></li><li data-type='method'><a href="ResourceXliff.html#size">size</a></li></ul></li><li><a href="TranslationSet.html">TranslationSet</a><ul class='methods'><li data-type='method'><a href="TranslationSet.html#add">add</a></li><li data-type='method'><a href="TranslationSet.html#addAll">addAll</a></li><li data-type='method'><a href="TranslationSet.html#addSet">addSet</a></li><li data-type='method'><a href="TranslationSet.html#clear">clear</a></li><li data-type='method'><a href="TranslationSet.html#diff">diff</a></li><li data-type='method'><a href="TranslationSet.html#get">get</a></li><li data-type='method'><a href="TranslationSet.html#getAll">getAll</a></li><li data-type='method'><a href="TranslationSet.html#getBy">getBy</a></li><li data-type='method'><a href="TranslationSet.html#getBySource">getBySource</a></li><li data-type='method'><a href="TranslationSet.html#getClean">getClean</a></li><li data-type='method'><a href="TranslationSet.html#getContexts">getContexts</a></li><li data-type='method'><a href="TranslationSet.html#getLocales">getLocales</a></li><li data-type='method'><a href="TranslationSet.html#getProjects">getProjects</a></li><li data-type='method'><a href="TranslationSet.html#isDirty">isDirty</a></li><li data-type='method'><a href="TranslationSet.html#remove">remove</a></li><li data-type='method'><a href="TranslationSet.html#setClean">setClean</a></li><li data-type='method'><a href="TranslationSet.html#size">size</a></li></ul></li><li><a href="TranslationUnit.html">TranslationUnit</a><ul class='methods'><li data-type='method'><a href="TranslationUnit.html#addProperties">addProperties</a></li><li data-type='method'><a href="TranslationUnit.html#addVariant">addVariant</a></li><li data-type='method'><a href="TranslationUnit.html#addVariants">addVariants</a></li><li data-type='method'><a href="TranslationUnit.html#clone">clone</a></li><li data-type='method'><a href="TranslationUnit.html#getProperties">getProperties</a></li><li data-type='method'><a href="TranslationUnit.html#getVariants">getVariants</a></li><li data-type='method'><a href="TranslationUnit.html#hashKey">hashKey</a></li></ul></li><li><a href="TranslationVariant.html">TranslationVariant</a><ul class='methods'><li data-type='method'><a href="TranslationVariant.html#hashKey">hashKey</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#cleanString">cleanString</a></li><li><a href="global.html#containsActualText">containsActualText</a></li><li><a href="global.html#convertICUToPluralRes">convertICUToPluralRes</a></li><li><a href="global.html#convertPluralResToICU">convertPluralResToICU</a></li><li><a href="global.html#formatPath">formatPath</a></li><li><a href="global.html#getLocaleFromPath">getLocaleFromPath</a></li><li><a href="global.html#hashKey">hashKey</a></li><li><a href="global.html#ignoreTags">ignoreTags</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#localizableAttributes">localizableAttributes</a></li><li><a href="global.html#nonBreakingTags">nonBreakingTags</a></li><li><a href="global.html#objectMap">objectMap</a></li><li><a href="global.html#parsePath">parsePath</a></li><li><a href="global.html#selfClosingTags">selfClosingTags</a></li><li><a href="global.html#walk">walk</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ResourceConvert.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * ResourceConvert.js - functions to convert between resource types
+ *
+ * Copyright © 2024-2025 Box, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import ResourceString from "./ResourceString.js";
+import ResourcePlural from "./ResourcePlural.js";
+import { IntlMessageFormat } from "intl-messageformat";
+
+/**
+ * Convert the plural categories in a plural resource to an ICU-style
+ * plural string resource.
+ * @example
+ * if plurals is {
+ *   "one": "# item",
+ *   "other": "# items"
+ * }
+ * then this function returns the string:
+ *   "one {# item} other {# items}"
+ * @private
+ * @param {Object} plurals the plural categories to convert
+ * @returns {String} the plural categories in ICU-style
+ */
+function getPluralCategories(plurals) {
+    if (!plurals) return "";
+    return Object.keys(plurals).map(category => {
+        return `${category} {${plurals[category]}}`;
+    }).join(" ");
+}
+
+/**
+ * Calculate the depth of a tree. See the jsdoc for constructPluralTree()
+ * for a discussion of plural trees.
+ * @private
+ * @param {Object} tree the tree to calculate the depth
+ * @returns {Number} the depth of the tree
+ */
+function treeDepth(tree) {
+    if (!tree || typeof(tree) !== 'object') return 0;
+
+    let maxDepth = 0;
+    for (let category in tree) {
+        maxDepth = Math.max(maxDepth, treeDepth(tree[category]));
+    }
+    return maxDepth + 1;
+}
+
+/**
+ * Convert a plural tree and an array of pivots into an ICU-style plural string.
+ * @example
+ * if the plural tree is {
+ *   "one": {
+ *     "one": "{f} file {d} directory",
+ *     "other": "{f} file {d} directories"
+ *   },
+ *   "other": {
+ *     "one": "{f} files {d} directory",
+ *     "other": "{f} files {d} directories"
+ *   }
+ * }
+ * and the pivots are `["f", "d"]` then this function returns the string:
+ *   "{f, plural, one {{d, plural, one {{f} file {d} directory} other {{f} file {d} directories}}} other {{d, plural, one {{f} files {d} directory} other {{f} files {d} directories}}}}"
+ * @private
+ * @param {Object|undefined} pluralTree the plural tree to convert
+ * @param {Array&lt;String>} pivots the pivot variable names of levels of the tree
+ * @returns {String|undefined} the ICU-style plural string, or undefined if the plural
+ * tree is not defined
+ */
+function getPluralString(pluralTree, pivots) {
+    if (!pluralTree) return undefined;
+
+    let currentTree = pluralTree;
+    if (treeDepth(pluralTree) > 1) {
+        const subpivots = pivots?.slice(1);
+        currentTree = {};
+        for (let category in pluralTree) {
+            currentTree[category] = getPluralString(pluralTree[category], subpivots);
+        }
+    }
+    const pivot = pivots?.[0] ?? "count";
+    return `{${pivot}, plural, ${getPluralCategories(currentTree)}}`;
+}
+
+/**
+ * Enum for the type of node in an AST, as defined by the IntlMessageFormat `declare enum TYPE`.
+ * Source: formatjs/icu-messageformat-parser/types.d.ts: 6
+ *
+ * @private
+ * @readonly
+ * @enum {number}
+ */
+
+const NodeType = {
+    'literal': 0,
+    'argument': 1,
+    'number': 2,
+    'date': 3,
+    'time': 4,
+    'select': 5,
+    'plural': 6,
+    'pound': 7,
+    'tag': 8,
+};
+
+/**
+ * Serialize the AST to the string that this node represents.
+ * Formatjs does not publish a function that does this, so we
+ * have to reconstruct/serialize the tree ourselves.
+ *
+ * @private
+ * @param {Node | Node[]} node the node to reconstruct
+ * @returns {string} the reconstructed string
+ */
+function serializeToIcuMessage(node) {
+    if (Array.isArray(node)) {
+        return node.map(serializeToIcuMessage).join('');
+    }
+
+    switch (node.type) {
+        case NodeType.pound:
+            return '#';
+        case NodeType.literal:
+            return node.value;
+        case NodeType.argument:
+            return `{${node.value}}`;
+        case NodeType.number:
+            return `{${node.value}, number}`;
+        case NodeType.date:
+            return `{${node.value}, date}`;
+        case NodeType.time:
+            return `{${node.value}, time}`;
+        case NodeType.select: {
+            const options = Object.entries(node.options).
+                map(entry => `${entry[0]} {${serializeToIcuMessage(entry[1].value)}}`).join(' ');
+
+            return `{${node.value}, select, ${options}}`;
+        }
+        case NodeType.plural: {
+            const options = Object.entries(node.options).
+                map(entry => `${entry[0]} {${serializeToIcuMessage(entry[1].value)}}`).join(' ');
+
+            return `{${node.value}, plural, ${options}}`;
+        }
+        case NodeType.tag:
+            const children = serializeToIcuMessage(node.children);
+
+            return `&lt;${node.value}>${children}&lt;/${node.value}>`;
+        default:
+            throw new Error(`Unsupported AST node type: ${node.type}`);
+    }
+}
+
+/**
+ * Construct a tree of plural choices from a set of plural choices. A
+ * plural tree is an intermediate representation of the choices that
+ * are available in a multi-key plural resource.
+ *
+ * It is structured like this:
+ * - the top level is the first plural category for the first pivot variable
+ * - the second level is the second plural category for second pivot variable
+ * - [etc]
+ * - the leafs the string for that plural category combination
+ *
+ * This works properly for any number of pivot variables, including if there
+ * are zero or one. The plural tree is used to generate an ICU-style plural
+ * string.
+ *
+ * @example
+ * if the set of choices are {
+ *   "one,one": "{f} file {d} directory",
+ *   "one,other": "{f} file {d} directories",
+ *   "other,one": "{f} files {d} directory",
+ *   "other,other": "{f} files {d} directories"
+ * }
+ * Then this function returns the tree:
+ * {
+ *   "one": {
+ *     "one": "{f} file {d} directory",
+ *     "other": "{f} file {d} directories"
+ *   },
+ *   "other": {
+ *     "one": "{f} files {d} directory",
+ *     "other": "{f} files {d} directories"
+ *   }
+ * }
+ * @private
+ * @param {Object|undefined} choices the plurals (either source or target)
+ * from a ResourcePlural instance
+ * @returns {Object|undefined} the plural tree, or undefined if the source
+ * choices are not defined
+ */
+function constructPluralTree(choices) {
+    if (!choices) return undefined;
+
+    let tree = {};
+    let i, category;
+
+    for (category in choices) {
+        if (choices.hasOwnProperty(category)) {
+            const categories = category.split(',');
+            let current = tree;
+            for (i = 0; i &lt; categories.length-1; i++) {
+                const cat = categories[i];
+                if (!current[cat]) {
+                    current[cat] = {};
+                }
+                current = current[cat];
+            }
+            current[categories[categories.length-1]] = choices[category];
+        }
+    }
+
+    return tree;
+}
+
+/**
+ * Convert a plural resource to an ICU-style plural string resource.
+ * This allows for shoe-horning plurals into systems that do not
+ * support plurals, or at least don't offer a way to import them
+ * properly. All other fields are copied from the plural resource
+ * parameter into the returned resource string unchanged.
+ * The complement function is convertICUToPluralRes() which does
+ * the opposite.
+ *
+ * @example
+ * if plural resource has source plurals like this:
+ * {
+ *   "one": "# item",
+ *   "other": "# items"
+ * }
+ * and the pivot variable name is "count", then this function returns
+ * a ResourceString instance that contains the string:
+ *   "{count, plural, one {# item} other {# items}}"
+ *
+ * @param {ResourcePlural} resource the resource to convert into an
+ * ICU-style plural resource string
+ * @returns {ResourceString|undefined} the plural resource converted into a
+ * string resource, or undefined if the resource is not a plural resource
+ */
+export function convertPluralResToICU(resource) {
+    if (resource.getType() === "plural") {
+        const source = resource.getSource();
+        const target = resource.getTarget();
+        const pivots = resource.getPivots();
+        return new ResourceString({
+            key: resource.getKey(),
+            sourceLocale: resource.getSourceLocale(),
+            source: getPluralString(constructPluralTree(source), pivots),
+            targetLocale: resource.getTargetLocale(),
+            target: getPluralString(constructPluralTree(target), pivots),
+            project: resource.getProject(),
+            pathName: resource.getPath(),
+            datatype: resource.getDataType(),
+            flavor: resource.getFlavor(),
+            comment: resource.getComment(),
+            state: resource.getState()
+        });
+    }
+    return undefined;
+};
+
+/**
+ * Distribute non-plural nodes in an AST into the inside of plural nodes.
+ * Some plural strings contain a part that is outside of the plural and a part
+ * that is inside of the plural. eg. "There {count, plural, one {is # item} other {are # items}}."
+ *
+ * This kind of string makes it more difficult for translators
+ * to translate properly in all of the plural cases because they have to put it
+ * the whole string together mentally for each plural category. Translators are not
+ * programmers, so the ICU plural syntax is often confusing for them. Also, it may be
+ * valid grammatically to put certain parts of a sentence outside of the plural in English
+ * but not in other languages. The English-speaking engineer who wrote the string
+ * may not even be aware that in some languages, the parts they have put outside
+ * of the plural are also grammatically affected by the plurality of the pivot variable.
+ *
+ * This function takes an AST and distributes the non-plural nodes inside the plural
+ * nodes so that the plural choices end up being whole sentences or phrases. This allows
+ * translators to see the whole sentence or phrase for each plural category and translate
+ * all of the parts of the sentence properly, including the parts that the English-speaking
+ * engineer did not realize would be important to the translator.
+ *
+ * Another affect of representing the string with the plurals "on the outside" is that
+ * it is easier to represent the plural choices in a translation system that does
+ * not support plurals at all. Each plural choice can be sent for translation as an
+ * independent, whole string. After translation, the independent plural choice strings
+ * can be recombined to form the full set of plural strings for the target locale encoded
+ * in a single ResourcePlural instance. From there, it can be converted into an ICU
+ * style plural in a string resource using convertPluralResToICU().
+ *
+ * This function will perform this distribution recursively on the AST in case
+ * there are nested or multiple plural nodes. The end result is that all of the
+ * plural nodes in a tree are pushed up to the root, and the text and other
+ * nodes are pushed down to the leaves.
+ *
+ * After translation, the structure of the AST may be very different from the original
+ * English source string, but it should be functionally equivalent from the software
+ * user's perspective. They will see properly translated plurals in the user interface.
+ *
+ * @example If the source string is,
+ *   "By clicking 'Accept', you agree to delete {count, plural, one {# item} other {# items}}."
+ * Some languages may need to have plurality agreement between the verb "delete" and the number
+ * of items. In to translate that properly in all languages, the source string should be reworked to,
+ *   "{count, plural, one {By clicking 'Accept', you agree to delete # item.} other {By clicking 'Accept', you agree to delete # items.}}"
+ * That is, the non-plural part of the string is distributed into the plural nodes such that
+ * a plural node is the root of the AST. That way, the translator can translate the whole string
+ * for each plural case and use the proper plurality agreement in the verb if necessary.
+ *
+ * @private
+ * @param {Node | Node[]} node the AST to distribute
+ * @returns {Node | Node[]} the distributed AST
+ */
+function distributePlurals(node) {
+    let i, opts;
+
+    let output = node;
+    if (Array.isArray(node)) {
+        for (i = 0; i &lt; node.length; i++) {
+            if (node[i].type === NodeType.plural) {
+                // This is a plural node, so distribute anything before and after it into the plural nodes.
+                // Doesn't matter what type of nodes these are.
+                const preNodes = node.slice(0, i);
+                const postNodes = node.slice(i + 1);
+                const originalOpts = node[i].options;
+                const pivot = node[i].value ?? "count";
+                opts = {};
+                for (let pluralCategory in originalOpts) {
+                    let optionValue = originalOpts[pluralCategory].value;
+                    if (Array.isArray(optionValue)) {
+                        optionValue = [...preNodes, ...optionValue, ...postNodes];
+                    } else {
+                        optionValue = [...preNodes, optionValue, ...postNodes];
+                    }
+                    // make sure to convert the pound nodes to argument nodes so that we can disambiguate them
+                    optionValue = optionValue.map(node => {
+                        if (node.type === NodeType.pound) {
+                            // use the name of the last pivot as the argument name
+                            return { type: NodeType.argument, value: pivot };
+                        }
+                        return node;
+                    });
+                    // also distribute the option value in case there are nested plural nodes.
+                    opts[pluralCategory] = {
+                        value: distributePlurals(optionValue)
+                    };
+                }
+                output = {
+                    type: node[i].type,
+                    offset: node[i].offset,
+                    options: opts,
+                    pluralType: node[i].pluralType,
+                    value: pivot
+                };
+                break;
+            }
+        }
+    }
+
+    return output;
+}
+
+/**
+ * Get the name of the pivot variables of all of the plural AST node at the
+ * root of the tree. These are listed in the array in the order that they
+ * appear in the AST.
+ *
+ * @private
+ * @param {Node|Node[]} node the AST node to get the pivot variables from
+ * @returns {Array&lt;String>} the pivot variables
+ */
+function getPivots(node) {
+    const firstNode = Array.isArray(node) ? node[0] : node;
+    if (firstNode.type === NodeType.plural) {
+        return [firstNode.value, ...getPivots(firstNode.options.other.value)];
+    }
+    return [];
+}
+
+/**
+ * Convert nested plural nodes into a set of possibly multi-key
+ * plural choices. It is assumed that the top level of the AST is a plural
+ * node which is the output of the distribute() function above.
+ *
+ * For one-level plurals, this function will return an object with a key for
+ * each plural category. The value for each key will be the plural string
+ * for that category.
+ *
+ * If there are nested plural nodes, the function will return an object with
+ * a multi-key for each plural category. The value for each multi-key will be
+ * the plural string for that combination of categories.
+ *
+ * @private
+ * @param {Node | Node[]} ast the AST to convert
+ * @param {String|undefined} pivot the pivot variable of the parent node
+ * @param {Array&lt;String>} categories the plural categories of all parent nodes of the current node
+ * @returns {Object} the converted plural choices
+ */
+function convertASTToPluralChoices(ast, pivot = undefined, categories = []) {
+    let opts;
+    let choices = {};
+
+    if (!Array.isArray(ast)) {
+        ast = [ast];
+    }
+
+    if (ast.length === 1 &amp;&amp; ast[0].type === NodeType.plural) {
+        // this is a plural node, so convert it recursively
+        opts = ast[0].options;
+        for (let pluralCategory in opts) {
+            const newChoices = convertASTToPluralChoices(opts[pluralCategory].value, ast[0].value, [...categories, pluralCategory]);
+            choices = { ...choices, ...newChoices };
+        }
+    } else {
+        // leaf node, so add it to the choices directly using the multi-key syntax
+        const category = categories.join(',');
+        choices[category] = serializeToIcuMessage(ast);
+    }
+
+    return choices;
+}
+
+/**
+ * Convert a an ICU-style plural string resource into plural resource.
+ * This allows for shoe-horning plurals into systems that do not
+ * support plurals, or at least don't offer a way to export them
+ * properly. All other fields are copied from the string resource
+ * parameter into the returned resource plural unchanged.
+ * The complement function is convertPluralResToICU() which does
+ * the opposite.
+ *
+ * @param {ResourceString} resource the ICU-style plural resource string
+ * to convert into a plural resource
+ * @returns {ResourcePlural|undefined} the resource string converted into a
+ * plural resource, or undefined if the resource is not a string resource
+ */
+export function convertICUToPluralRes(resource) {
+    if (resource.getType() === "string") {
+        try {
+            let i;
+            let imf = new IntlMessageFormat(resource.getSource(), resource.getSourceLocale());
+            let ast = imf.getAst();
+            let foundPlural = false;
+
+            for (i = 0; i &lt; ast.length; i++) {
+                if (ast[i].type === NodeType.plural) {
+                    foundPlural = true;
+                    break;
+                }
+            }
+
+            if (!foundPlural) {
+                // this is a regular non-plural string, so don't convert anything
+                return undefined;
+            }
+
+            // distribute the plural nodes to make it easier for translators to translate
+            ast = distributePlurals(ast);
+            const sourceChoices = convertASTToPluralChoices(ast);
+            const pivots = getPivots(ast);
+
+            let targetChoices = undefined;
+            const target = resource.getTarget();
+            if (target) {
+                imf = new IntlMessageFormat(target, resource.getTargetLocale());
+                ast = imf.getAst();
+                ast = distributePlurals(ast);
+                targetChoices = convertASTToPluralChoices(ast);
+            }
+
+            return new ResourcePlural({
+                key: resource.getKey(),
+                sourceLocale: resource.getSourceLocale(),
+                source: sourceChoices,
+                targetLocale: resource.getTargetLocale(),
+                target: targetChoices,
+                project: resource.getProject(),
+                pathName: resource.getPath(),
+                datatype: resource.getDataType(),
+                flavor: resource.getFlavor(),
+                comment: resource.getComment(),
+                state: resource.getState(),
+                pivots
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    return undefined;
+};
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Feb 14 2025 18:30:31 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
