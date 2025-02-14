@@ -21,11 +21,21 @@ import log4js from 'log4js';
 
 import { Parser } from 'ilib-lint-common';
 
+/** @ignore @typedef {typeof import("ilib-lint-common").Parser} ParserClass */
+
 const logger = log4js.getLogger("ilib-lint.ParserManager");
 
 function getSuperClassName(obj) {
     return Object.getPrototypeOf(Object.getPrototypeOf(obj)).constructor.name;
 }
+
+/**
+ * @typedef {Object} ParserInfo Information about a parser.
+ * 
+ * @property {string} description a description of the parser
+ * @property {string} type the type of parser
+ * @property {Array.<string>} extensions an array of file name extensions that this parser can handle
+ */
 
 /**
  * @class Manages a collection of parsers that this instance of ilib-lint
@@ -34,15 +44,8 @@ function getSuperClassName(obj) {
 class ParserManager {
     /**
      * Information about the parsers that this instance of ilib-lint knows about.
-     * Each entry in the object is a parser name and the value is an object
-     * with the properties:
-     * <ul>
-     * <li>description - a description of the parser</li>
-     * <li>type - the type of parser</li>
-     * <li>extensions - an array of file name extensions that this parser can handle</li>
-     * </ul>
-     *
-     * @type {Object}
+     * Each entry in the object is a parser name and the value is a {@link ParserInfo} object
+     * @type {Object.<string, ParserInfo>}
      * @private
      */
     parserInfo = {};
@@ -85,7 +88,7 @@ class ParserManager {
      * Add a list of parsers to this factory so that other code
      * can find them.
      *
-     * @param {Array.<Parser>} parsers the list of parsers to add
+     * @param {Array.<ParserClass>} parsers the list of parsers to add
      */
     add(parsers) {
         if (!parsers || !Array.isArray(parsers)) return;

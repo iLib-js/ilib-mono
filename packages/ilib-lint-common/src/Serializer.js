@@ -20,8 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
-/* @ignore @typedef {import("IntermediateRepresentation.js")} IntermediateRepresentation */
-/* @ignore @typedef {import("SourceFile.js")} SourceFile */
+import IntermediateRepresentation from "./IntermediateRepresentation.js";
+import SourceFile from "./SourceFile.js";
 
 /**
  * @class common SPI for serializer plugins

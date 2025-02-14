@@ -30,7 +30,7 @@ import log4js from "log4js";
 /** @ignore @typedef {import("@formatjs/icu-messageformat-parser").SelectElement} SelectElement */
 /** @ignore @typedef {import("@formatjs/icu-messageformat-parser").PluralElement} PluralElement */
 /** @ignore @typedef {import("@formatjs/icu-messageformat-parser").TagElement} TagElement */
-/** @ignore @typedef {import("./ResourceSourceICUPluralCategories.js").Location} Location */
+/** @ignore @typedef {import("@formatjs/icu-messageformat-parser").Location} Location */
 
 const logger = log4js.getLogger("ilib-lint.ResourceSourceICUUnexplainedParams");
 

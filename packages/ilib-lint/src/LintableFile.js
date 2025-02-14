@@ -20,7 +20,7 @@
 import path from "node:path";
 import log4js from "log4js";
 import { getLocaleFromPath } from "ilib-tools-common";
-import { Fix, IntermediateRepresentation, Parser, Result, SourceFile, FileStats } from "ilib-lint-common";
+import { Fix, IntermediateRepresentation, Parser, Result, SourceFile, FileStats, Serializer } from "ilib-lint-common";
 import DirItem from "./DirItem.js";
 import Project from "./Project.js";
 import FileType from "./FileType.js";
@@ -72,6 +72,7 @@ class LintableFile extends DirItem {
      * @param {FileType} options.filetype file type of this source file
      * @param {String} options.filePath path to the file
      * @param {object} [options.settings] additional settings from the ilib-lint config that apply to this file
+     * @param {string} [options.locale] the locale of this file
      * @param {Project} project the project where this file is located
      */
     constructor(filePath, options, project) {
@@ -130,7 +131,7 @@ class LintableFile extends DirItem {
             }
         });
         if (!irs || irs.length === 0) {
-            throw new Error(`All available parsers failed to parse file ${file.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`);
+            throw new Error(`All available parsers failed to parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`);
         }
         return irs;
     }
@@ -245,7 +246,10 @@ class LintableFile extends DirItem {
                 if (this.parsers.length === 1) {
                     // if this is the only parser for this file, throw an exception right away so the user
                     // can see what the specific parse error was from the parser
-                    throw new Error(`Could not parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`, {
+                    throw new Error(`Could not parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`,
+                    // @ts-ignore -- options.cause is available since Node 16,
+                    // but in older versions the extra arg it's simply ignored so it can be kept here
+                    {
                         cause: e
                     });
                 }

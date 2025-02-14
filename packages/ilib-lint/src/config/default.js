@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/** @ignore @typedef {import("./Configuration.js").Configuration} Configuration */
+import Configuration from "./Configuration.js";
 
 export const /** @type {Configuration} */ defaultConfiguration = {
         name: "ilib-lint",

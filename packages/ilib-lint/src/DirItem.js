@@ -17,7 +17,11 @@
  * limitations under the License.
  */
 
-import log4js from 'log4js';
+import log4js from "log4js";
+
+import { IntermediateRepresentation, Result } from "ilib-lint-common";
+import Locale from "ilib-locale";
+import LintableFile from "./LintableFile.js";
 
 const logger = log4js.getLogger("ilib-lint.DirItem");
 
@@ -66,16 +70,28 @@ class DirItem {
      * representations of this file
      * @abstract
      */
-    parse() {}
+    parse() {
+        throw new Error("Method not implemented.");
+    }
 
     /**
      * Check the directory item and return a list of issues found in it.
      *
-     * @param {Array.<Locale>} locales a set of locales to apply
+     * @param {Array.<Locale|string>} locales a set of locales to applys
      * @returns {Array.<Result>} a list of natch results
      * @abstract
      */
-    findIssues(locales) {}
-};
+    findIssues(locales) {
+        throw new Error("Method not implemented.");
+    }
+
+    /**
+     * Return all lintable files in this project.
+     * @returns {Array.<LintableFile>} the lintable files in this project.
+     */
+    get() {
+        throw new Error("Method not implemented.");
+    }
+}
 
 export default DirItem;

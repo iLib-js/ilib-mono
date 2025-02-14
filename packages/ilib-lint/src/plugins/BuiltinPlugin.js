@@ -295,7 +295,7 @@ class BuiltinPlugin extends Plugin {
      * For a "parser" type of plugin, this returns a list of Parser classes
      * that this plugin implements.
      *
-     * @returns {Array.<Parser>} list of Parser classes implemented by this
+     * @returns list of Parser classes implemented by this
      * plugin
      */
     getParsers() {
@@ -306,7 +306,7 @@ class BuiltinPlugin extends Plugin {
      * For a "transformer" type of plugin, this returns a list of Transformer classes
      * that this plugin implements.
      *
-     * @returns {Array.<Transformer>} list of Transformer classes implemented by this
+     * @returns list of Transformer classes implemented by this
      * plugin
      */
     getTransformers() {
@@ -317,7 +317,7 @@ class BuiltinPlugin extends Plugin {
      * For a "serializer" type of plugin, this returns a list of Serializer classes
      * that this plugin implements.
      *
-     * @returns {Array.<Serializer>} list of Serializer classes implemented by this
+     * @returns list of Serializer classes implemented by this
      * plugin
      */
     getSerializers() {
