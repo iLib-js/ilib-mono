@@ -111,35 +111,108 @@ export function unescapeOctal(string) {
     return unescaped;
 };
 
-const jsRegexes = {
-    "unescape": {
-        "\\\\\\\\n": "",                 // line continuation
-        "\\\\\\n": "",                   // line continuation
-        "^\\\\\\\\": "\\",               // unescape backslashes
-        "([^\\\\])\\\\\\\\": "$1\\",
-        "^\\\\'": "'",                   // unescape quotes
-        "([^\\\\])\\\\'": "$1'",
-        '^\\\\"': '"',
-        '([^\\\\])\\\\"': '$1"',
-        "\\\\0": "\0",
-        "\\\\b": "\b",
-        "\\\\f": "\f",
-        "\\\\n": "\n",
-        "\\\\r": "\r",
-        "\\\\t": "\t",
-        "\\\\v": "\v"
+export const escapeRegexes = {
+    "js": {
+        "unescape": {
+            "\\\\\\\\n": "",                 // line continuation
+            "\\\\\\n": "",                   // line continuation
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\0",
+            "\\\\b": "\b",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "\\\\": "\\\\",
+            "'": "\\'",
+            '"': '\\"',
+            "\\0": "\\0",
+            "\x08": "\\b",
+            "\\f": "\\f",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\\v": "\\v",
+        }
     },
-    "escape": {
-        "\\\\": "\\\\",
-        "'": "\\'",
-        '"': '\\"',
-        "\\0": "\\0",
-        "\x08": "\\b",
-        "\\f": "\\f",
-        "\\n": "\\n",
-        "\\r": "\\r",
-        "\\t": "\\t",
-        "\\v": "\\v",
+    "php-double": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            '^\\\\"': '"',                   // unescape double quotes only, not single
+            '([^\\\\])\\\\"': '$1"',         // unescape double quotes only, not single
+            "\\\\\\$": "$",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\e": "\u001B",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "\\$": "\\$",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\u001B": "\\e",
+            "\\f": "\\f",
+            "\\v": "\\v"
+        }
+    },
+    "php-single": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "'": "\\'"
+        }
+    },
+    "php-heredoc": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "\\\\\\$": "$",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\e": "\u001B",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "\\$": "\\$",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\u001B": "\\e",
+            "\\f": "\\f",
+            "\\v": "\\v"
+        }
+    },
+    "php-nowdoc": { // no escaping or unescaping whatsoever!!!
+        "unescape": {
+        },
+        "escape": {
+        }
     }
 };
 
@@ -154,7 +227,7 @@ const jsRegexes = {
 export function escapeJS(string) {
     let escaped = string;
 
-    for (const [key, value] of Object.entries(jsRegexes.escape)) {
+    for (const [key, value] of Object.entries(escapeRegexes.js.escape)) {
         escaped = escaped.replace(new RegExp(key, "g"), value);
     }
 
@@ -172,7 +245,7 @@ export function escapeJS(string) {
 export function unescapeJS(string) {
     let unescaped = string;
 
-    for (const [key, value] of Object.entries(jsRegexes.unescape)) {
+    for (const [key, value] of Object.entries(escapeRegexes.js.unescape)) {
         unescaped = unescaped.replace(new RegExp(key, "g"), value);
     }
 
