@@ -343,12 +343,35 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
         if (!schema) return this.sparseValue(json);
 
         localizable |= schema.localizable;
+        const isComment = schema.isComment ?? false;
+
         var type = schema.type || typeof(json);
         switch (type) {
         case "boolean":
         case "number":
         case "integer":
         case "string":
+            if(isComment) {
+                this.comment = json;
+
+                /*
+                Find the resource related to the currently processed JSON value and
+                update its comment property with the associated comment.
+
+                This is necessary because JSON values are processed in the order
+                they are defined in the JSON file, meaning we need to account for
+                different value orderings. For example, in one case, we may get
+                "description" first, which has "isComment" set to true, and therefore, it is a comment source.
+                In another case, we may get "defaultMessage" first, which is instead used as a
+                source string for translation.
+                */
+                const resources = this.set.getBy({ reskey: ref })
+                if(resources && resources.length) {
+                    const resource = resources[0];
+                    resource.comment = this.comment;
+                }
+            }
+
             if (localizable) {
                 if (isPrimitive(typeof(json))) {
                     var text = String(json);
@@ -414,7 +437,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                         var opts = {
                             resType: "string",
                             project: this.project.getProjectId(),
-                            key: key,
+                            key: this.key ?? key,
                             sourceLocale: this.project.sourceLocale,
                             pathName: this.pathName,
                             state: "new",
@@ -447,11 +470,15 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
             break;
 
         case "object":
-            if (typeof(json) !== "object") {
-               this.logger.warn(this.pathName + '/' + ref + " is a " +
-                   typeof(json) + " but should be an object according to the schema...  skipping.");
-                return;
-            }
+        if(schema.usePropertyKeyAsResname) {
+            this.key = JsonFile.unescapeRef(ref).substring(2);
+        }
+
+        if(typeof(json) !== "object") {
+            this.logger.warn(this.pathName + '/' + ref + " is a " +
+                typeof(json) + " but should be an object according to the schema...  skipping.");
+            return;
+        }
             if (isPlural(json)) {
                 // handle this as a single plural resource instance instead
                 // of an object that has resources inside of it
@@ -553,7 +580,7 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
                             json[prop],
                             root,
                             schema.properties[prop],
-                            ref + '/' + JsonFile.escapeRef(prop),
+                            this.key ?? ref + '/' + JsonFile.escapeRef(prop),
                             prop,
                             localizable,
                             translations,
