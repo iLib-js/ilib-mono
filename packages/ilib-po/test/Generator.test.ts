@@ -473,6 +473,80 @@ describe("generator", () => {
         expect(actual).toBe(expected);
     });
 
+    test("Generator generate text while preserving multiple comments", () => {
+        expect.assertions(2);
+
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "fr-FR",
+            contextInKey: false,
+            datatype: "po",
+            projectName: "foo"
+        });
+        expect(generator).toBeTruthy();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 1",
+            targetLocale: "fr-FR",
+            datatype: "po"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "string 2",
+            source: "string 2",
+            sourceLocale: "en-US",
+            target: "chaîne numéro 2",
+            targetLocale: "fr-FR",
+            datatype: "po",
+            comment: JSON.stringify({
+                translator: ["note for translators 1", "note for translators 2"],
+                extracted: ["extracted comment 1 first line\nand second line", "extracted comment 2 first line\nand second line"],
+                paths: ["src/a/b/c.js:32", "src/a/b/x.js:32"],
+                flags: ["c-format", "javascript-format"],
+                previous: ["str2", "string2"]
+            })
+        }));
+
+        const actual = generator.generate(translations);
+        const expected =
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: fr-FR\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
+            '\n' +
+            'msgid "string 1"\n' +
+            'msgstr "chaîne numéro 1"\n' +
+            '\n' +
+            '# note for translators 1\n' +
+            '# note for translators 2\n' +
+            '#. extracted comment 1 first line\n' +
+            '#. and second line\n' +
+            '#. extracted comment 2 first line\n' +
+            '#. and second line\n' +
+            '#: src/a/b/c.js:32\n' +
+            '#: src/a/b/x.js:32\n' +
+            '#, c-format\n' +
+            '#, javascript-format\n' +
+            '#| str2\n' +
+            '#| string2\n' +
+            'msgid "string 2"\n' +
+            'msgstr "chaîne numéro 2"\n';
+
+        expect(actual).toBe(expected);
+    });
+
     test("Generator generate text where the path is not in the comments yet", () => {
         expect.assertions(2);
 

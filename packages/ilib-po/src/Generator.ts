@@ -134,29 +134,29 @@ class Generator {
             }
 
             if (c[CommentType.TRANSLATOR]?.length) {
-                c[CommentType.TRANSLATOR].forEach(str => {
+                c[CommentType.TRANSLATOR].flatMap(str => str.split('\n')).forEach(str => {
                     output += `# ${str}\n`;
                 });
             }
             if (c[CommentType.EXTRACTED]?.length) {
-                c[CommentType.EXTRACTED].forEach(str => {
+                c[CommentType.EXTRACTED].flatMap(str => str.split('\n')).forEach(str => {
                     output += `#. ${str}\n`;
                 });
             }
             if (c[CommentType.PATHS]?.length) {
-                c[CommentType.PATHS].forEach(str => {
+                c[CommentType.PATHS].flatMap(str => str.split('\n')).forEach(str => {
                     output += `#: ${str}\n`;
                 });
             } else if (r.getPath()) {
                 output += `#: ${r.getPath()}\n`;
             }
             if (c[CommentType.FLAGS]?.length) {
-                c[CommentType.FLAGS].forEach(str => {
+                c[CommentType.FLAGS].flatMap(str => str.split('\n')).forEach(str => {
                     output += `#, ${str}\n`;
                 });
             }
             if (c[CommentType.PREVIOUS]?.length) {
-                c[CommentType.PREVIOUS].forEach(str => {
+                c[CommentType.PREVIOUS].flatMap(str => str.split('\n')).forEach(str => {
                     output += `#| ${str}\n`;
                 });
             }

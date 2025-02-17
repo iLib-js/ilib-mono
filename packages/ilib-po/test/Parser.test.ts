@@ -788,6 +788,62 @@ describe("parser", () => {
         expect(resources[1].getPath()).toBe("src/bar.html");
     });
 
+    test("ParserParseExtractComments multiline", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            '# translator\'s comments\n' +
+            '#: src/foo.html:32 src/bar.html:234\n' +
+            '#. This is comments from the engineer to the translator for string 1 - first line\n' +
+            '#. and a second line.\n' +
+            '#, c-format\n' +
+            '#| str 1\n' +
+            'msgid "string 1"\n' +
+            'msgstr ""\n' +
+            '\n' +
+            '# translator\'s comments 2\n' +
+            '#: src/bar.html:644 src/asdf.html:232\n' +
+            '#. This is comments from the engineer to the translator for string 2 - first line\n' +
+            '#. and a second line.\n' +
+            '#, javascript-format,gcc-internal-format\n' +
+            '#| str 2\n' +
+            'msgid "string 2"\n' +
+            'msgstr ""\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(2);
+        const resources = set.getAll();
+        expect(resources.length).toBe(2);
+
+        expect(resources[0].getSource()).toBe("string 1");
+        expect(resources[0].getKey()).toBe("string 1");
+        expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments"],' +
+             '"paths":["src/foo.html:32 src/bar.html:234"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 1 - first line","and a second line."],' +
+             '"flags":["c-format"],' +
+             '"previous":["str 1"]}');
+        expect(resources[0].getPath()).toBe("src/foo.html");
+
+        expect(resources[1].getSource()).toBe("string 2");
+        expect(resources[1].getKey()).toBe("string 2");
+        expect(resources[1].getComment()).toBe('{"translator":["translator\'s comments 2"],' +
+             '"paths":["src/bar.html:644 src/asdf.html:232"],' +
+             '"extracted":["This is comments from the engineer to the translator for string 2 - first line","and a second line."],' +
+             '"flags":["javascript-format,gcc-internal-format"],' +
+             '"previous":["str 2"]}');
+        expect(resources[1].getPath()).toBe("src/bar.html");
+    });
+
     test("ParserParseExtractComments with our po extensions", () => {
         expect.assertions(12);
 
