@@ -22,6 +22,7 @@ import JsonEscaper from "./escapes/JsonEscaper.js";
 import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
 import PHPEscaper from "./escapes/PHPEscaper.js";
 import SmartyEscaper from "./escapes/SmartyEscaper.js";
+import PythonEscaper from "./escapes/PythonEscaper.js";
 
 const escaperCache = {
 };
@@ -44,7 +45,10 @@ const escaperCache = {
  * <li>smarty - escape for Smarty templates (default, same as smarty-double)</li>
  * <li>smarty-double - escape for double-quoted Smarty strings</li>
  * <li>smarty-single - escape for single-quoted Smarty strings</li>
- * <li>python - escape for Python</li>
+ * <li>python - escape for Python regular strings (default)</li>
+ * <li>python-raw - escape for Python raw strings</li>
+ * <li>python-byte - escape for Python byte strings</li>
+ * <li>python-multi - escape for Python multi-line strings</li>
  * <li>Swift - escape for Swift</li>
  * <li>url - escape for URLs and URIs</li>
  * <li>c# - escape for C#</li>
@@ -90,6 +94,15 @@ function escaperFactory(style) {
         case 'smarty-single':
             if (!escaperCache[style]) {
                 escaperCache[style] = new SmartyEscaper(style);
+            }
+            break;
+
+        case 'python':
+        case 'python-raw':
+        case 'python-byte':
+        case 'python-multi':
+            if (!escaperCache[style]) {
+                escaperCache[style] = new PythonEscaper(style);
             }
             break;
     }

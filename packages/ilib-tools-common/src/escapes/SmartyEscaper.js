@@ -17,16 +17,10 @@
  * limitations under the License.
  */
 
-import IString from 'ilib-istring';
-
 import Escaper from './Escaper.js';
 import {
-    escapeUnicodeWithBracketsOnly,
-    escapeHex,
     escapeRules,
     unescapeRules,
-    unescapeHex,
-    unescapeUnicodeWithBrackets,
     escapeRegexes
 } from './EscapeCommon.js';
 

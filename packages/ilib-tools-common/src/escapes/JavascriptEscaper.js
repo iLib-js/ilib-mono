@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import IString from 'ilib-istring';
-
 import Escaper from './Escaper.js';
 import {
+    escapeHex,
+    escapeUnicode,
     escapeUnicodeWithBrackets,
     escapeJS,
     unescapeJS,
@@ -51,8 +51,11 @@ class JavascriptEscaper extends Escaper {
         let escaped = string;
 
         escaped = escapeJS(escaped);
+        escaped = escapeUnicode(escaped);
+        escaped = escapeUnicodeWithBrackets(escaped);
+        escaped = escapeHex(escaped);
 
-        return escapeUnicodeWithBrackets(escaped);
+        return escaped;
     }
 
     /**

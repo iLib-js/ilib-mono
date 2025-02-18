@@ -19,10 +19,11 @@
 
 import IString from 'ilib-istring';
 
-var reUnicodeChar = /\\u([a-fA-F0-9]{1,5})/g;
-var reUnicodeBracketedChar = /\\u\{([a-fA-F0-9]{1,5})\}/g;
-var reHexadecimalChar = /\\x([a-fA-F0-9]{1,2})/g;
-var reOctalChar = /\\([0-7]{1,3})/g;
+const reUnicodeChar = /\\u([a-fA-F0-9]{1,5})/g;
+const reUnicodeBracketedChar = /\\u\{([a-fA-F0-9]{1,5})\}/g;
+const reUnicodeExtendedChar = /\\U([a-fA-F0-9]{1,8})/g;
+const reHexadecimalChar = /\\x([a-fA-F0-9]{1,2})/g;
+const reOctalChar = /\\([0-7]{1,3})/g;
 
 /**
  * Unescape a string that has sequences like \uXXXX
@@ -60,6 +61,27 @@ export function unescapeUnicodeWithBrackets(string) {
             const value = parseInt(match[1], 16);
             unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
             reUnicodeBracketedChar.lastIndex = 0;
+        }
+    }
+
+    return unescaped;
+};
+
+/**
+ * Unescape a string that has sequences like \U000XXXXXX
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function unescapeUnicodeExtended(string) {
+    let unescaped = string;
+    let match;
+
+    while ((match = reUnicodeExtendedChar.exec(unescaped))) {
+        if (match && match.length > 1) {
+            const value = parseInt(match[1], 16);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reUnicodeExtendedChar.lastIndex = 0;
         }
     }
 
@@ -213,6 +235,92 @@ export const escapeRegexes = {
         },
         "escape": {
         }
+    },
+    "python": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\v": "\v",
+            "\\\\a": "\x07"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\x08": "\\b",
+            "\\f": "\\f",
+            "\\v": "\\v",
+            "\x07": "\\a"
+        }
+    },
+    "python-raw": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "'": "\\'"
+        }
+    },
+    "python-byte": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "'": "\\'"
+        }
+    },
+    "python-multi": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            '^\\\\"': '"',                   // unescape double quotes only, not single
+            '([^\\\\])\\\\"': '$1"',         // unescape double quotes only, not single
+            "\\\\\\$": "$",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\e": "\u001B",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "\\$": "\\$",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\u001B": "\\e",
+            "\\f": "\\f",
+            "\\v": "\\v"
+        }
     }
 };
 
@@ -251,8 +359,10 @@ export function unescapeJS(string) {
 
     return unescaped;
 }
+
 /**
- * Convert all code points above U+FFFF to \uXXXX form.
+ * Convert all code points above U+00FF and below U+10000
+ * to \uXXXX form.
  *
  * @param {string} string the string to unescape
  * @returns {string} the unescaped string
@@ -263,13 +373,32 @@ export function escapeUnicode(string) {
 
     for (const ch of string) {
         const code = IString.toCodePoint(ch, 0);
-        if (code > 0x00FF) {
+        if (code < 0x10000 && code > 0x00FF) {
             const str = code.toString(16).toUpperCase();
-            if (code > 0xFFFF) {
-                output += "\\u" + str;
-            } else {
-                output += "\\u" + str.padStart(4, "0");
-            }
+            output += "\\u" + str;
+        } else {
+            output += ch;
+        }
+    }
+
+    return output;
+}
+
+/**
+ * Convert all code points above U+FFFF to \uXXXXX form.
+ *
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function escapeUnicodeAstral(string) {
+    let output = "";
+
+    for (const ch of string) {
+        const code = IString.toCodePoint(ch, 0);
+        if (code > 0xFFFF) {
+            const str = code.toString(16).toUpperCase();
+            output += "\\u" + str;
         } else {
             output += ch;
         }
@@ -280,10 +409,9 @@ export function escapeUnicode(string) {
 
 /**
  * Convert all code points above U+FFFF to \u{XXXXX} form
- * and all code points from U+0100 to U+FFFF to \uXXXX form.
  *
- * @param {string} string the string to unescape
- * @returns {string} the unescaped string
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
  * @static
  */
 export function escapeUnicodeWithBrackets(string) {
@@ -293,11 +421,7 @@ export function escapeUnicodeWithBrackets(string) {
         const code = IString.toCodePoint(ch, 0);
         if (code > 0x00FF) {
             const str = code.toString(16).toUpperCase();
-            if (code > 0xFFFF) {
-                output += "\\u{" + str + "}";
-            } else {
-                output += "\\u" + str.padStart(4, "0");
-            }
+            output += "\\u{" + str + "}";
         } else {
             output += ch;
         }
@@ -307,21 +431,20 @@ export function escapeUnicodeWithBrackets(string) {
 }
 
 /**
- * Convert all code points above U+FFFF to \u{XXXXX} form
- * and all code points from U+0100 to U+FFFF to \uXXXX form.
+ * Convert all code points above U+FFFF to \U000XXXXXX form
  *
- * @param {string} string the string to unescape
- * @returns {string} the unescaped string
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
  * @static
  */
-export function escapeUnicodeWithBracketsOnly(string) {
+export function escapeUnicodeExtended(string) {
     let output = "";
 
     for (const ch of string) {
         const code = IString.toCodePoint(ch, 0);
-        if (code > 0x00FF) {
-            const str = code.toString(16).toUpperCase();
-            output += `\\u{${str}}`;
+        if (code > 0xFFFF) {
+            const str = code.toString(16).toUpperCase().padStart(8, "0");
+            output += `\\U${str}`;
         } else {
             output += ch;
         }
@@ -341,7 +464,7 @@ export function escapeUnicodeWithBracketsOnly(string) {
  *
  * @param {string} string the string to escape
  * @returns {string} the escaped string
- * @static
+ * @staticaaaa
  */
 export function escapeHex(string) {
     let output = "";

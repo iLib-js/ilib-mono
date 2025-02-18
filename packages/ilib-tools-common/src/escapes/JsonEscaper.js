@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import IString from 'ilib-istring';
-
 import Escaper from './Escaper.js';
 import { unescapeUnicode, escapeJS, unescapeJS } from './EscapeCommon.js';
 

@@ -17,13 +17,8 @@
  * limitations under the License.
  */
 
-import IString from 'ilib-istring';
-
 import Escaper from './Escaper.js';
-import { escapeUnicode, unescapeUnicode, unescapeOctal } from './EscapeCommon.js';
-
-var reUnicodeChar = /\\u([a-fA-F0-9]{1,6})/g;
-var reOctalChar = /\\([0-8]{1,3})/g;
+import { escapeUnicode, escapeUnicodeAstral, unescapeUnicode, unescapeOctal } from './EscapeCommon.js';
 
 /**
  * @class Escaper for Java
@@ -51,7 +46,10 @@ class JavaEscaper extends Escaper {
             replace(/"/g, '\\"').
             replace(/'/g, "\\'");
 
-        return escapeUnicode(escaped);
+        escaped = escapeUnicode(escaped);
+        escaped = escapeUnicodeAstral(escaped);
+
+        return escaped;
     }
 
     /**
@@ -60,6 +58,7 @@ class JavaEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
+        // unescapeUnicode does the whole range of Unicode
         unescaped = unescapeUnicode(unescaped);
         unescaped = unescapeOctal(unescaped);
 

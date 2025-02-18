@@ -1,5 +1,5 @@
 /*
- * PHPEscaper.js - class that escapes and unescapes strings in PHP
+ * PythonEscaper.js - class that escapes and unescapes strings in Python
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -19,35 +19,37 @@
 
 import Escaper from './Escaper.js';
 import {
+    escapeUnicode,
+    escapeUnicodeExtended,
     escapeHex,
     escapeRules,
-    escapeRegexes,
-    escapeUnicodeWithBrackets,
     unescapeRules,
     unescapeHex,
-    unescapeUnicodeWithBrackets
+    unescapeUnicode,
+    unescapeUnicodeExtended,
+    escapeRegexes
 } from './EscapeCommon.js';
 
 const validStyles = new Set([
-    "php",           // defaults to double-quoted strings
-    "php-double",    // double-quoted strings (default)
-    "php-single",    // single-quoted strings
-    "php-heredoc",   // heredoc strings
-    "php-nowdoc"     // nowdoc strings
+    "python",           // defaults to double-quoted strings
+    "python-double",    // double-quoted strings (default)
+    "python-single",    // single-quoted strings
+    "python-heredoc",   // heredoc strings
+    "python-nowdoc"     // nowdoc strings
 ]);
 
 /**
- * @class Escaper for PHP
+ * @class Escaper for Python
  * @extends Escaper
  */
-class PHPEscaper extends Escaper {
+class PythonEscaper extends Escaper {
     /**
      * Can support the following styles:
-     * - php (default): double-quoted strings
-     * - php-double: double-quoted strings
-     * - php-single: single-quoted strings
-     * - php-heredoc: heredoc strings
-     * - php-nowdoc: nowdoc strings
+     * - python (default): double-quoted strings
+     * - python-double: double-quoted strings
+     * - python-single: single-quoted strings
+     * - python-heredoc: heredoc strings
+     * - python-nowdoc: nowdoc strings
      *
      * @param {string} style the style to use for escaping
      * @constructor
@@ -55,16 +57,12 @@ class PHPEscaper extends Escaper {
      */
     constructor(style) {
         super(style);
-        this.description = "Escapes and unescapes strings in PHP";
+        this.description = "Escapes and unescapes strings in Python";
         if (!validStyles.has(style)) {
-            throw new Error(`invalid php escape style ${style}`);
+            throw new Error(`invalid python escape style ${style}`);
         }
-        if (this.style === "php") {
-            // use the double-quoted style by default
-            this.style = "php-double";
-        }
-        this.name = "php-escaper";
-        this.description = "Escapes and unescapes various types of strings in PHP";
+        this.name = "python-escaper";
+        this.description = "Escapes and unescapes various types of strings in Python";
     }
 
     /**
@@ -74,9 +72,10 @@ class PHPEscaper extends Escaper {
         let escaped = string;
 
         escaped = escapeRules(escaped, escapeRegexes[this.style]);
-        if (this.style === "php-double" || this.style === "php-heredoc") {
+        if (this.style === "python") {
             escaped = escapeHex(escaped);
-            escaped = escapeUnicodeWithBrackets(escaped);
+            escaped = escapeUnicode(escaped);
+            escaped = escapeUnicodeExtended(escaped);
         }
         return escaped;
     }
@@ -87,8 +86,9 @@ class PHPEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        if (this.style === "php-double" || this.style === "php-heredoc") {
-            unescaped = unescapeUnicodeWithBrackets(unescaped);
+        if (this.style === "python") {
+            unescaped = unescapeUnicodeExtended(unescaped);
+            unescaped = unescapeUnicode(unescaped);
             unescaped = unescapeHex(unescaped);
         }
         unescaped = unescapeRules(unescaped, escapeRegexes[this.style]);
@@ -96,4 +96,4 @@ class PHPEscaper extends Escaper {
     }
 }
 
-export default PHPEscaper;
+export default PythonEscaper;
