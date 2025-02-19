@@ -31,11 +31,10 @@ import {
 } from './EscapeCommon.js';
 
 const validStyles = new Set([
-    "python",           // defaults to double-quoted strings
-    "python-double",    // double-quoted strings (default)
-    "python-single",    // single-quoted strings
-    "python-heredoc",   // heredoc strings
-    "python-nowdoc"     // nowdoc strings
+    "python",           // regular single or double-quoted strings
+    "python-raw",       // raw strings like r"foo"
+    "python-byte",      // byte strings like b"foo"
+    "python-multi"      // multi-line strings like """foo"""
 ]);
 
 /**
@@ -45,11 +44,10 @@ const validStyles = new Set([
 class PythonEscaper extends Escaper {
     /**
      * Can support the following styles:
-     * - python (default): double-quoted strings
-     * - python-double: double-quoted strings
-     * - python-single: single-quoted strings
-     * - python-heredoc: heredoc strings
-     * - python-nowdoc: nowdoc strings
+     * - python (default): single or double-quoted strings
+     * - python-raw: python raw strings like r"foo"
+     * - python-byte: python byte strings like b"foo"
+     * - python-multi: python multi-line strings like """foo"""
      *
      * @param {string} style the style to use for escaping
      * @constructor
@@ -72,7 +70,7 @@ class PythonEscaper extends Escaper {
         let escaped = string;
 
         escaped = escapeRules(escaped, escapeRegexes[this.style]);
-        if (this.style === "python") {
+        if (this.style === "python" || this.style === "python-multi") {
             escaped = escapeHex(escaped);
             escaped = escapeUnicode(escaped);
             escaped = escapeUnicodeExtended(escaped);
@@ -86,7 +84,7 @@ class PythonEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        if (this.style === "python") {
+        if (this.style === "python" || this.style === "python-multi") {
             unescaped = unescapeUnicodeExtended(unescaped);
             unescaped = unescapeUnicode(unescaped);
             unescaped = unescapeHex(unescaped);

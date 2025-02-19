@@ -210,47 +210,45 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper.unescape("abc \\'d\\' \\\"e\\\" \\\\ \\n\\r\\t\\b\\f\\v\\aT\\u317D \\U0001D11E")).toBe("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07Tㅽ 𝄞");
     });
 
-    /*
     test("the python raw string escape works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("python-raw");
-        expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞");
+        expect(escaper.escape("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞")).toBe("abc \\'d\\' \"e\" \\\\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞");
     });
 
     test("the python raw string unescape works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("python-raw");
-        expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+        expect(escaper.unescape("abc \\'d\\' \"e\" \\\\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞")).toBe("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞");
     });
 
     test("the python byte string escape works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("python-byte");
-        expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞");
+        expect(escaper.escape("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞")).toBe("abc \\'d\\' \"e\" \\\\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞");
     });
 
     test("the python byte string unescape works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("python-byte");
-        expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+        expect(escaper.unescape("abc \\'d\\' \"e\" \\\\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞")).toBe("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞");
     });
 
     test("the python multi-line string escape works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("python-multi");
-        expect(escaper.escape("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞");
+        expect(escaper.escape("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07\x54\u317d 𝄞")).toBe("abc 'd' \\\"e\\\" \\\\ \\n\\r\\t\\b\\f\\v\\aT\\u317D \\U0001D11E");
     });
 
     test("the python multi-line string unescape works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("python-multi");
-        expect(escaper.unescape("abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞")).toBe("abc 'd' \\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞");
+        expect(escaper.unescape("abc 'd' \\\"e\\\" \\\\ \\n\\r\\t\\b\\f\\v\\aT\\u317D \\U0001D11E")).toBe("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07Tㅽ 𝄞");
     });
-*/
 });
