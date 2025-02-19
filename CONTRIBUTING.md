@@ -14,6 +14,7 @@ Project status and project structure are described in the [README.md](./README.m
 - [Coding Guidelines](#coding-guidelines)
 - [Adding a New Package](#adding-a-new-package)
 - [Running scripts](#running-scripts)
+- [Debugging pluggable CLI applications](#debugging-pluggable-cli-applications)
 - [Code Coverage](#code-coverage)
 - [Documentation](#documentation)
 - [Versioning](#versioning)
@@ -181,6 +182,41 @@ or `cd` into the package directory and run:
 # cd packages/loctool
 pnpm test -- "ResourceConvert.test.js"
 ```
+
+## Debugging pluggable CLI applications
+
+This monorepo publishes some CLI applications that support plugins; alongside, it also publishes those plugins. For example:
+- [`loctool`](./packages/loctool)
+  - [`ilib-loctool-json`](./packages/ilib-loctool-json)
+- [`ilib-lint`](./packages/ilib-lint)
+  - [`ilib-lint-react`](./packages/ilib-lint-react)
+
+To easily debug those CLI applications with plugins directly within monorepo, you can use the environment variable [`NODE_PATH`](https://nodejs.org/api/modules.html#loading-from-the-global-folders).
+
+For example, to debug `loctool` with `ilib-loctool-json` plugin, you can run:
+
+```bash
+# first make sure you have built all packages within the monorepo
+pnpm build
+# set NODE_PATH to monorepo context to allow loading plugins directly from the monorepo
+export NODE_PATH=$(pwd)/packages
+# run the app from the monorepo on a project that uses the plugin ilib-loctool-json
+node loctool/lib/loctool.js localize ~/ilib-loctool-samples/js-json
+```
+
+This way, you can easily test your changes to both the CLI application and the plugin at the same time without the need to publish them or otherwise link them manually (e.g. with `yarn link`).
+
+To make this even easier, monorepo provides `run:*` scripts which set `NODE_PATH` for you. The above example can be simplified to:
+
+```bash
+# build is still required
+pnpm build
+# run the app from monorepo using script
+pnpm run:loctool localize ~/ilib-loctool-samples/js-json
+```
+
+Those scripts also embed the `--inspect` flag to allow debugging with e.g. VSCode's _Auto Attach: With Flag_ feature.
+
 
 ## Code Coverage
 
