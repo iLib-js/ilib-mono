@@ -378,6 +378,20 @@ YamlFile.prototype.convertToToolsResource = function(resource) {
 };
 
 /**
+ * Additional plural categories required for specified languages.
+ * 
+ * @type {Map<String, Array<String>>}
+ */
+var requiredPluralCategories = new Map([
+    ["pl", [
+        "many"
+    ]],
+    ["ru", [
+        "many"
+    ]]
+]);
+
+/**
  * Generate the content of the resource file.
  *
  * @param {TranslationSet} set the set to use to get the content
@@ -396,8 +410,28 @@ YamlFile.prototype.getContent = function(set) {
         if (resource.getType() === "plural") {
             var sourcePlurals = resource.getSourcePlurals();
             var targetPlurals = resource.getTargetPlurals();
-            var pluralCategories = Object.keys(targetPlurals || sourcePlurals).sort();
-            pluralCategories.forEach(function(category) {
+
+            // accumulate all plural categories which should be present in the output file:
+            // 0. every plural must have at least the "other" category
+            // 1a. categories from the target plural - translation should be provided for every category
+            //     required in the target language
+            // 1b. fallback to categories from the source plural in case no translations were provided
+            // 2. categories required for the target language - some languages may require specific categories
+            //    to be present in the output file even if they were not provided in translation
+            //    (in this case the translation from "other" plural category will be used as a fallback)
+            var pluralCategories = new Set(["other"]);
+            Object.keys(targetPlurals || sourcePlurals).forEach(function (category) {
+                pluralCategories.add(category);
+            });
+            var language = new Locale(resource.getTargetLocale()).getLanguage();
+            var additionalCategories = requiredPluralCategories.get(language);
+            if (additionalCategories) {
+                additionalCategories.forEach(function (category) {
+                    pluralCategories.add(category);
+                });
+            }
+            
+            Array.from(pluralCategories).sort().forEach(function(category) {
                 var newres = new tools.ResourceString({
                     key: resource.getKey() + "_" + category,
                     sourceLocale: resource.getSourceLocale(),
@@ -411,7 +445,7 @@ YamlFile.prototype.getContent = function(set) {
                     state: "new"
                 });
                 if (targetPlurals) {
-                    newres.setTarget(targetPlurals[category]);
+                    newres.setTarget(targetPlurals[category] ?? targetPlurals.other);
                     newres.setTargetLocale(resource.getTargetLocale());
                 }
                 filtered.add(newres);
