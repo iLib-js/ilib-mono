@@ -1,7 +1,7 @@
 /*
  * SourceFile.js - Represent a file that will be linted
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,25 @@
  */
 
 import fs from 'fs';
+import path from 'path';
 import { Buffer } from 'buffer';
 import NotImplementedError from "./NotImplementedError.js";
+
+/**
+ * Create the directories in the given path if they do not already exist.
+ * @param {String} path the path to create
+ * @private
+ */
+function makeDirs(path) {
+    const parts = path.split(/[\\\/]/);
+
+    for (let i = 1; i <= parts.length; i++) {
+        const p = parts.slice(0, i).join("/");
+        if (p && p.length > 0 && !fs.existsSync(p)) {
+            fs.mkdirSync(p);
+        }
+    }
+};
 
 /**
  * @class Represent a source file. Source files are text files that are
@@ -251,9 +268,12 @@ class SourceFile {
      *
      * @returns {Boolean} true if the file was successfully written, false
      * if there was some error or if the file was not modified from the original
+     * @throws Error if the file could not be written
      */
     write() {
         if (this.filePath && this.isDirty()) {
+            const dir = path.dirname(this.filePath);
+            makeDirs(dir);
             fs.writeFileSync(this.filePath, this.getContent() || "", "utf-8");
             this.dirty = false;
             return true;

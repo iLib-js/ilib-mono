@@ -1,7 +1,7 @@
 /*
  * PluginManager.test.js - test the plugin manager
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,16 @@ describe("testPluginManager", () => {
 
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
+    });
+
+    test("PluginManager get serializer manager", () => {
+        expect.assertions(2);
+
+        const plgmgr = new PluginManager();
+        expect(plgmgr).toBeTruthy();
+
+        const sm = plgmgr.getSerializerManager();
+        expect(sm).toBeTruthy();
     });
 
     test("PluginManagerGetLoadPlugin", () => {
@@ -450,5 +460,40 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
             expect(e2).toBeFalsy();
         });
     });
-});
 
+    test("PluginManager make sure we can load in a transformer plugin", () => {
+        expect.assertions(4);
+        
+        const plgmgr = new PluginManager();
+        expect(plgmgr).toBeTruthy();
+        
+        return plgmgr.load([
+            "ilib-lint-plugin-test"
+        ]).then(result => {
+            expect(result).toBeDefined();
+            
+            const tm = plgmgr.getTransformerManager();
+            const transformer = tm.get("transformer-xyz");
+            expect(transformer).toBeDefined();
+            expect(transformer?.getName()).toBe("transformer-xyz");
+        });
+    });
+    
+    test("PluginManager make sure we can load a serializer plugin", () => {
+        expect.assertions(4);
+
+        const plgmgr = new PluginManager();
+        expect(plgmgr).toBeTruthy();
+
+        return plgmgr.load([
+            "ilib-lint-plugin-test"
+        ]).then(result => {
+            expect(result).toBeDefined();
+
+            const sm = plgmgr.getSerializerManager();
+            const serializer = sm.get("serializer-xyz");
+            expect(serializer).toBeDefined();
+            expect(serializer?.getName()).toBe("serializer-xyz");
+        });
+    });
+});

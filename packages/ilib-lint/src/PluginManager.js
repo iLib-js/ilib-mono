@@ -1,7 +1,7 @@
 /*
  * PluginManager.js - Load a list of plugins and maintain them
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,10 @@ import log4js from 'log4js';
 import FormatterManager from './FormatterManager.js';
 import ParserManager from './ParserManager.js';
 import RuleManager from './RuleManager.js';
-import BuiltinPlugin from './plugins/BuiltinPlugin.js';
 import FixerManager from './FixerManager.js';
+import TransformerManager from './TransformerManager.js';
+import SerializerManager from './SerializerManager.js';
+import BuiltinPlugin from './plugins/BuiltinPlugin.js';
 
 const logger = log4js.getLogger("ilib-lint.PluginManager");
 
@@ -53,6 +55,8 @@ class PluginManager {
         this.formatterMgr = new FormatterManager();
         this.ruleMgr = new RuleManager();
         this.fixerMgr = new FixerManager();
+        this.transformerMgr = new TransformerManager();
+        this.serializerMgr = new SerializerManager();
         this.sourceLocale = options && options.sourceLocale;
 
         if (options) {
@@ -229,6 +233,30 @@ class PluginManager {
     }
 
     /**
+     * Return the transformer manager for this plugin manager. This
+     * manages both the built-in transformers, and the transformers
+     * loaded from the plugins.
+     *
+     * @returns {TransformerManager} the transformer manager for this
+     * plugin manager.
+     */
+    getTransformerManager() {
+        return this.transformerMgr;
+    }
+
+    /**
+     * Return the serializer manager for this plugin manager. This
+     * manages both the built-in serializers, and the serializers
+     * loaded from the plugins.
+     *
+     * @returns {SerializerManager} the serializer manager for this
+     * plugin manager.
+     */
+    getSerializerManager() {
+        return this.serializerMgr;
+    }
+
+    /**
      * Return the rules in this manager. This is from both the
      * built-in rules and the rules loaded from the plugins.
      *
@@ -245,11 +273,27 @@ class PluginManager {
      */
     add(plugin) {
         if (!plugin) return;
-        this.parserMgr.add(plugin.getParsers());
-        this.formatterMgr.add(plugin.getFormatters());
-        this.ruleMgr.add(plugin.getRules());
-        this.ruleMgr.addRuleSetDefinitions(plugin.getRuleSets());
-        this.fixerMgr.add(plugin.getFixers());
+        if (typeof(plugin.getParsers) === 'function') {
+            this.parserMgr.add(plugin.getParsers());
+        }
+        if (typeof(plugin.getFormatters) === 'function') {
+            this.formatterMgr.add(plugin.getFormatters());
+        }
+        if (typeof(plugin.getRules) === 'function') {
+            this.ruleMgr.add(plugin.getRules());
+        }
+        if (typeof(plugin.getRuleSets) === 'function') {
+            this.ruleMgr.addRuleSetDefinitions(plugin.getRuleSets());
+        }
+        if (typeof(plugin.getFixers) === 'function') {
+            this.fixerMgr.add(plugin.getFixers());
+        }
+        if (typeof(plugin.getTransformers) === 'function') {
+            this.transformerMgr.add(plugin.getTransformers());
+        }
+        if (typeof(plugin.getSerializers) === 'function') {
+            this.serializerMgr.add(plugin.getSerializers());
+        }
     }
 
     /**

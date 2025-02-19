@@ -92,7 +92,7 @@ class ResourceDNTTerms extends ResourceRule {
      * @param {Object} props
      * @param {string} props.source the source string
      * @param {string} props.target the target string
-     * @param {Resource} props.resource the resource being checked 
+     * @param {Resource} props.resource the resource being checked
      * @param {string} props.file the file where the resource came from
      * @returns {Array.<Result>|undefined} the results
      */

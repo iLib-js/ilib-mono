@@ -20,9 +20,12 @@ This i18n linter differs from other static linters in the following ways:
       a rule that checks that the translations in a resource file of a plural resource
       contain the correct set of plural categories for the target language.
 * It can load plugins
-    * Parsers - you can add parsers for new programming languages or resource file types
-    * Formatters - you can make the output look exactly the way you want
-    * Rules - you can add new rules declaratively or programmatically
+    * Parsers - add parsers for new programming languages or resource file types
+    * Formatters - make the output look exactly the way you want
+    * Rules - add new rules declaratively or programmatically
+    * Fixers - apply auto-fixes to the file
+    * Transformers - transform the file in some way
+    * Serializers - serialize the file to a particular format
 
 See the [release notes](./docs/ReleaseNotes.md) for details on what is
 new and what has changed.
@@ -132,6 +135,17 @@ ilib-lint accepts the following command-line parameters:
   of 2. There is no default minimum, so the linter will not give an exit code
   unless this parameter is specified or unless one of the other limits is
   exceeded.
+* write - if a file is modified in memory during the linter run, write
+  the modified file contents back out to the file system. If the file was not
+  modified, it will not be written out. The file name of the file will be calculated
+  using the template property of the matching file type in the configuration.
+* autoFix - apply any auto-fixes that go along with the rules that were applied to
+  each file. If a file is successfully fixed, it can be written out. The autoFix
+  flag implies the write flag.
+* overwrite - If the file is modified by a Fixer or a Transformer and written
+  out using a Serializer, it will be written back to the original file, overwriting
+  it. The template property of the file type will be ignored. This option implies
+  the write flag.
 
 If multiple limits are exceeded (maximum number of errors, warnings, or suggestions,
 or minimum I18N score), the exit code will be the most severe amongst them
@@ -230,12 +244,15 @@ plugins, which allow the plugin to define multiple plugins. For example, many
 plugins define multiple related rules at the same time which check for
 different aspects of a string.
 
-The linter plugin should override and implement these three methods:
+The linter plugin should override and implement these methods:
 
 - getParsers - return an array of classes that inherit from the Parser class
 - getRules - return an array of classes that inherit from the Rule class
 - getRuleSets - return an array of named rule sets that define which rules to use
+- getFixers - return an array of classes that inherit from the Fixer class
 - getFormatters - return an array of classes that inherit from the Formatter class
+- getTransformers - return an array of classes that inherit from the Transformer class
+- getSerializers - return an array of classes that inherit from the Serializer class
 
 For rules and formatters, each array entry can be either declarative or
 programmatic. See the descriptions below about declarative and programmatic
@@ -570,7 +587,7 @@ ilib-lint plugins from v1 of ilib-lint to v2.
 
 ## License
 
-Copyright © 2022-2024, JEDLSoft
+Copyright © 2022-2025, JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

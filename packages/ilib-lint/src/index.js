@@ -2,7 +2,7 @@
 /*
  * index.js - main program of ilib-lint
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ const optionConfig = {
     },
     list: {
         flag: true,
-        help: "Load all plugins, and then list out all available parsers, rules, rulesets, and formatters, then exit."
+        help: "Load all plugins, and then list out all available parsers, rules, rulesets, formatters, transformers, and serializers then exit."
     },
     locales: {
         short: "l",
@@ -103,10 +103,20 @@ const optionConfig = {
         flag: true,
         help: "Produce lots of progress output during the run."
     },
+    write: {
+        flag: true,
+        default: false,
+        help: "If a file is changed by a fix or transformer, write the file to disk again."
+    },
     fix: {
         flag: true,
         "default": false,
-        help: "If auto-fixes are available for some of the errors, apply them (overwriting the original file)."
+        help: "If auto-fixes are available for some of the errors, apply them and write the file back to disk again. Implies --write."
+    },
+    overwrite: {
+        flag: true,
+        "default": false,
+        help: "When writing a modified file to disk, overwrite the original file instead of writing to a new file."
     },
     "max-errors": {
         short: "me",
@@ -169,7 +179,7 @@ if (options.opt.quiet) {
     logger.level = "debug";
 }
 
-logger.info("ilib-lint - Copyright (c) 2022-2024 JEDLsoft, All rights reserved.");
+logger.info("ilib-lint - Copyright (c) 2022-2025 JEDLsoft, All rights reserved.");
 
 let paths = options.args;
 if (paths.length === 0) {
@@ -187,6 +197,12 @@ options.opt.locales = options.opt.locales.map(spec => {
     }
     return loc.getSpec();
 });
+
+if (options.opt["auto-fix"] || options.opt.overwrite) {
+    // The write option indicates that modified files should be written back to disk.
+    // The write option is implicit if either auto-fix or overwrite is set.
+    options.opt.write = true;
+}
 
 // Load configuration
 let config;
@@ -226,6 +242,10 @@ try {
         const ruleSetDefinitions = ruleMgr.getRuleSetDefinitions();
         const parserMgr = pluginMgr.getParserManager();
         const parserDescriptions = parserMgr.getDescriptions();
+        const transformerMgr = pluginMgr.getTransformerManager();
+        const transformerDescriptions = transformerMgr.getDescriptions();
+        const serializerMgr = pluginMgr.getSerializerManager();
+        const serializerDescriptions = serializerMgr.getDescriptions();
         const formatterMgr = pluginMgr.getFormatterManager();
         const formatterDescriptions = formatterMgr.getDescriptions();
 
@@ -251,11 +271,32 @@ try {
         for (name in ruleSetDefinitions) {
             output = output.concat(indent(wrap(`${name} - ${ruleSetDefinitions[name].join(", ")}`, 76, "  "), 2));
         }
-        output.push("");
 
-        output.push("Formatters:");
-        for (name in formatterDescriptions) {
-            output = output.concat(indent(wrap(`${name} - ${formatterDescriptions[name]}`, 76, "  "), 2));
+        if (Object.keys(formatterDescriptions).length > 0) {
+            output.push("");
+
+            output.push("Formatters:");
+            for (name in formatterDescriptions) {
+                output = output.concat(indent(wrap(`${name} - ${formatterDescriptions[name]}`, 76, "  "), 2));
+            }
+        }
+
+        if (Object.keys(transformerDescriptions).length > 0) {
+            output.push("");
+
+            output.push("Transformers:");
+            for (name in transformerDescriptions) {
+                output = output.concat(indent(wrap(`${name} - ${transformerDescriptions[name]}`, 76, "  "), 2));
+            }
+        }
+
+        if (Object.keys(serializerDescriptions).length > 0) {
+            output.push("");
+
+            output.push("Serializers:");
+            for (name in serializerDescriptions) {
+                output = output.concat(indent(wrap(`${name} - ${serializerDescriptions[name]}`, 76, "  "), 2));
+            }
         }
 
         console.log(output.join('\n'));
