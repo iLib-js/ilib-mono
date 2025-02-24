@@ -19,33 +19,7 @@
  */
 
 import Escaper from './Escaper.js';
-
-const escapeMap = {
-    "js": {
-        "unescape": {
-            "\\\\\\\\n": "",               // line continuation
-            "\\\\\n": "",                  // line continuation
-            "^\\\\\\\\": "\\\\",           // unescape backslashes
-            "([^\\])\\\\\\\\": "$1\\\\",
-            "^\\'": "'",                   // unescape quotes
-            "([^\\])\\'": "$1'",
-            '^\\\\"': '"',
-            '([^\\\\])\\\\"': '$1"'
-        },
-        "escape": {
-            "\\\\": "\\\\\\\\",
-            "'": "\\\\'",
-            '"': '\\\\"',
-            "\0": "\\\\0",
-            "\b": "\\\\b",
-            "\f": "\\\\f",
-            "\n": "\\\\n",
-            "\r": "\\\\r",
-            "\t": "\\\\t",
-            "\v": "\\\\v",
-        }
-    },
-};
+import { escapeRegexes } from './EscapeCommon.js';
 
 /**
  * @class Escaper for various string formats based on regular expressions.
@@ -59,7 +33,7 @@ class RegexBasedEscaper extends Escaper {
         super(style);
         this.description = "Escapes and unescapes strings in various styles using regular expressions.";
 
-        this.escapeMap = escapeMap[style];
+        this.escapeMap = escapeRegexes[style];
         if (!this.escapeMap) {
             throw new Error("No escape map for style " + style);
         }

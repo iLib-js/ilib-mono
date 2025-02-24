@@ -251,4 +251,32 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("python-multi");
         expect(escaper.unescape("abc 'd' \\\"e\\\" \\\\ \\n\\r\\t\\b\\f\\v\\aT\\u317D \\U0001D11E")).toBe("abc 'd' \"e\" \\ \n\r\t\x08\f\v\x07Tㅽ 𝄞");
     });
+
+    test("the xml escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("xml");
+        expect(escaper.escape("This is <b>bold</b> & uses \'single\' and \"double\" quotes")).toBe("This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes");
+    });
+
+    test("the xml unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("xml");
+        expect(escaper.unescape("This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes")).toBe("This is <b>bold</b> & uses 'single' and \"double\" quotes");
+    });
+
+    test("the xml attribute escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("xml-attr");
+        expect(escaper.escape("This is <b>bold</b> & uses \'single\' and \"double\" quotes. Now some chars \n\r\t\x08\f\v")).toBe("This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes. Now some chars \\n\\r\\t\\b\\f\\v");
+    });
+
+    test("the xml attribute unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("xml-attr");
+        expect(escaper.unescape("This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes. Now some chars \\n\\r\\t\\b\\f\\v")).toBe("This is <b>bold</b> & uses \'single\' and \"double\" quotes. Now some chars \n\r\t\x08\f\v");
+    });
 });

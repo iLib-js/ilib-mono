@@ -53,6 +53,8 @@ const escaperCache = {
  * <li>url - escape for URLs and URIs</li>
  * <li>c# - escape for C#</li>
  * <li>regexp - escape for regular expressions</li>
+ * <li>xml - escape for XML text</li>
+ * <li>xml-attr - escape for XML attributes</li>
  * </ul>
  * @param {string} style the style to use to determine how to escape
  * @returns {Escaper} a new Escaper instance, or undefined if the style
@@ -103,6 +105,17 @@ function escaperFactory(style) {
         case 'python-multi':
             if (!escaperCache[style]) {
                 escaperCache[style] = new PythonEscaper(style);
+            }
+            break;
+
+        default:
+            if (!escaperCache[style]) {
+                try {
+                    escaperCache[style] = new RegexBasedEscaper(style);
+                } catch (e) {
+                    // if the style is not recognized, just return undefined
+                    return undefined;
+                }
             }
             break;
     }
