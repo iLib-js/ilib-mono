@@ -365,4 +365,50 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("swift-extended");
         expect(escaper.unescape("     five spaces\n   three spaces\n    four spaces")).toBe("  five spaces\nthree spaces\n four spaces");
     });
+
+    test("the c# escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp");
+        expect(escaper.escape("This string uses all the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}")).toBe("This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\0\\a\\b\\e\\f\\n\\r\\t\\v \\u317D \\U0001D11E");
+    });
+
+    test("the c# unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp");
+        expect(escaper.unescape("This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\0\\a\\b\\e\\f\\n\\r\\t\\v \\x54 \\u317D \\U0001D11E")).toBe("This string uses all the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v T \u317D 𝄞");
+    });
+
+    test("the c# raw escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp-raw");
+        // only Unicode characters are escaped
+        expect(escaper.escape("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}")).toBe("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E");
+    });
+
+    test("the c# raw unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp-raw");
+        // only Unicode characters are unescaped
+        expect(escaper.unescape("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E")).toBe("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}");
+    });
+
+    test("the c# verbatim escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp-verbatim");
+        // nothing is escaped except double quotes
+        expect(escaper.escape("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}")).toBe("This string uses\nall the escapes! \'single\' \"\"double\"\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}");
+    });
+
+    test("the c# verbatim unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp-verbatim");
+        // nothing is unescaped except double quotes
+        expect(escaper.unescape("This string uses\nall the escapes! \'single\' \"\"double\"\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}")).toBe("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}");
+    });
 });

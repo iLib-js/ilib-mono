@@ -134,6 +134,59 @@ export function unescapeOctal(string) {
 };
 
 export const escapeRegexes = {
+    // from https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/
+    "csharp": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\x00",
+            "\\\\a": "\x07",
+            "\\\\b": "\x08",
+            "\\\\e": "\x1B",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\x00": "\\0",
+            "\x07": "\\a",
+            "\x08": "\\b",
+            "\x1B": "\\e",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v"
+        }
+    },
+    "csharp-verbatim": {
+        "unescape": {
+            '""': '"'                        // unescape quotes
+        },
+        "escape": {
+            '"': '""'                        // escape quotes
+        }
+    },
+    "csharp-raw": {
+        "unescape": {
+            // none
+        },
+        "escape": {
+            // none
+        }
+    },
     "js": {
         "unescape": {
             "\\\\\\\\n": "",                 // line continuation
