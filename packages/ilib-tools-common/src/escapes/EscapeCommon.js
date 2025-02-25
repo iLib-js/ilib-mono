@@ -309,7 +309,6 @@ export const escapeRegexes = {
             "\\\\a": "\x07"
         },
         "escape": {
-            "^\\\\": "\\\\",
             "([^\\\\])\\\\": "$1\\\\",
             '^"': '\\"',
             '([^\\\\])"': '$1\\"',
@@ -321,6 +320,72 @@ export const escapeRegexes = {
             "\\v": "\\v",
             "\x07": "\\a"
          }
+    },
+    // from https://docs.swift.org/swift-book/documentation/the-swift-programming-language/stringsandcharacters
+    "swift": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\x00",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\\x00": "\\0",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t"
+        }
+    },
+    "swift-multi": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\x00",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\\n": ""                     // remove line continuation
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+        }
+    },
+    "swift-extended": {
+        "unescape": {
+            "^\\\\#+\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\#+\\\\": "$1\\",     // unescape backslashes
+            "^\\\\#+'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\#+'": "$1'",
+            '^\\\\#+"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\#+"': '$1"',
+            "\\\\#+0": "\x00",
+            "\\\\#+n": "\n",
+            "\\\\#+r": "\r",
+            "\\\\#+t": "\t",
+            "\\\\#+\n": ""                     // remove line continuation
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+        }
     },
     "xml": {
         "unescape": {

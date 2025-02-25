@@ -279,4 +279,90 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("xml-attr");
         expect(escaper.unescape("This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes. Now some chars \\n\\r\\t\\b\\f\\v")).toBe("This is <b>bold</b> & uses \'single\' and \"double\" quotes. Now some chars \n\r\t\x08\f\v");
     });
+
+    test("the swift escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift");
+        expect(escaper.escape("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}")).toBe("This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\n\\r\\t\\0 \\u{1D11E}");
+    });
+
+    test("the swift unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift");
+        expect(escaper.unescape("This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\n\\r\\t\\0 \\u{1D11E}")).toBe("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}");
+    });
+
+    test("the swift multiline escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-multi");
+        // does not escape the \n or \r needlessly
+        expect(escaper.escape("This string uses all the escapes!\n\'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}")).toBe("This string uses all the escapes!\n\'single\' \"double\" \\\\ \n\r\t\x00 \u{1D11E}");
+    });
+
+    test("the swift multiline unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-multi");
+        // does unescape the \n or \r because they are okay in the unescaped string
+        expect(escaper.unescape("This string uses all the escapes!\\n\\'single\\' \\\"double\\\" \\\\ \n\\r\\t\\0 \u{1D11E}\\u{1D11E}")).toBe("This string uses all the escapes!\n\'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}\u{1D11E}");
+    });
+
+    test("the swift multiline escape properly unindents", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-multi");
+        expect(escaper.unescape("     five spaces\n   three spaces\n    four spaces")).toBe("  five spaces\nthree spaces\n four spaces");
+    });
+
+    test("the swift multiline escape properly unindents with tabs", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-multi");
+        expect(escaper.unescape("\t\t\t\t\tfive spaces\n\t\t\tthree spaces\n\t\t\t\tfour spaces")).toBe("\t\tfive spaces\nthree spaces\n\tfour spaces");
+    });
+
+    test("the swift multiline escape properly removes line continuations", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-multi");
+        expect(escaper.unescape("five spaces\\\nthree spaces\\\nfour spaces")).toBe("five spacesthree spacesfour spaces");
+    });
+
+    test("the swift extended escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-extended");
+        expect(escaper.escape("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}")).toBe("This string uses all the escapes! \'single\' \"double\" \\\\ \n\r\t\x00 \u{1D11E}");
+    });
+
+    test("the swift extended unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-extended");
+        expect(escaper.unescape("This string uses all the escapes! \\#'single\\#' \\#\"double\\#\" \\#\\ \\#n\\#r\\#t\\#0 \u{1D11E}")).toBe("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}");
+    });
+
+    test("the swift extended unescape does not unescape things without hashes", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-extended");
+        expect(escaper.unescape("This string uses all the escapes! 'single' \"double\" \\ \n\r\t\x00 \u{1D11E}")).toBe("This string uses all the escapes! 'single' \"double\" \\ \n\r\t\x00 \u{1D11E}");
+    });
+
+    test("the swift extended properly removes line continations", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-extended");
+        expect(escaper.unescape("five spaces\\#\nthree spaces\\#\nfour spaces")).toBe("five spacesthree spacesfour spaces");
+    });
+
+    test("the swift extended properly unindents", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("swift-extended");
+        expect(escaper.unescape("     five spaces\n   three spaces\n    four spaces")).toBe("  five spaces\nthree spaces\n four spaces");
+    });
 });

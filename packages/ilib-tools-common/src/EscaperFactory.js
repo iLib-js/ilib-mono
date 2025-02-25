@@ -23,6 +23,7 @@ import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
 import PHPEscaper from "./escapes/PHPEscaper.js";
 import SmartyEscaper from "./escapes/SmartyEscaper.js";
 import PythonEscaper from "./escapes/PythonEscaper.js";
+import SwiftEscaper from "./escapes/SwiftEscaper.js";
 
 const escaperCache = {
 };
@@ -49,7 +50,9 @@ const escaperCache = {
  * <li>python-raw - escape for Python raw strings</li>
  * <li>python-byte - escape for Python byte strings</li>
  * <li>python-multi - escape for Python multi-line strings</li>
- * <li>Swift - escape for Swift</li>
+ * <li>swift - escape for regular Swift strings</li>
+ * <li>swift-multi - escape for Swift multi-line strings</li>
+ * <li>swift-extended - escape for Swift extended strings</li>
  * <li>url - escape for URLs and URIs</li>
  * <li>c# - escape for C#</li>
  * <li>regexp - escape for regular expressions</li>
@@ -105,6 +108,14 @@ function escaperFactory(style) {
         case 'python-multi':
             if (!escaperCache[style]) {
                 escaperCache[style] = new PythonEscaper(style);
+            }
+            break;
+
+        case 'swift':
+        case 'swift-multi':
+        case 'swift-extended':
+            if (!escaperCache[style]) {
+                escaperCache[style] = new SwiftEscaper(style);
             }
             break;
 
