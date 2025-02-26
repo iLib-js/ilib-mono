@@ -38,7 +38,7 @@ const validStyles = new Set([
 /**
  * Remove leading whitespace from each line of a string
  * in the same way that the CSharp compiler does.
- * This is used for multi-line strings and extended strings
+ * This is used for raw strings and extended strings
  * to remove the leading whitespace that is used to align
  * the string with the rest of the code.
  * @private

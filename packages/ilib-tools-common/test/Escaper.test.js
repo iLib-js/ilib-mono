@@ -395,6 +395,13 @@ describe("test the Escaper class and its subclasses", () => {
         // only Unicode characters are unescaped
         expect(escaper.unescape("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E")).toBe("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}");
     });
+    
+    test("the c# raw unescape unindents properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp-raw");
+        expect(escaper.unescape("     five spaces\n     six spaces\n    four spaces\n   ")).toBe("  five spaces\n   six spaces\n four spaces");
+    });
 
     test("the c# verbatim escape works properly", () => {
         expect.assertions(1);
