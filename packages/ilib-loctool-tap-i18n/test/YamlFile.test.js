@@ -1400,6 +1400,7 @@ describe("yamlfile", function() {
                 targetStrings: {
                     one: "Jest {n} pozycja.",
                     few: "Jest {n} pozycje.",
+                    many: "Jest {n} pozycji.",
                     other: "Jest {n} pozycji."
                 },
                 targetLocale: "pl-PL",
@@ -1410,6 +1411,67 @@ describe("yamlfile", function() {
         var expected =
             'thanked_note_time_saved:\n' +
             '  email_subject_few: Jest {n} pozycje.\n' +
+            '  email_subject_many: Jest {n} pozycji.\n' +
+            '  email_subject_one: Jest {n} pozycja.\n' +
+            '  email_subject_other: Jest {n} pozycji.\n';
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("YamlFile localize text with plurals and filling a missing required plural category", function() {
+        expect.assertions(7);
+        var yml = new YamlFile({
+            project: p,
+            type: yft
+        });
+        expect(yml).toBeTruthy();
+        yml.parse(
+            'thanked_note_time_saved:\n' +
+            '  email_subject_one: There is {n} item.\n' +
+            '  email_subject_other: There are {n} items.\n'
+        );
+        var set = yml.getTranslationSet("en-US");
+        expect(set).toBeTruthy();
+        var resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        var r = resources[0];
+        expect(r).toBeTruthy();
+        expect(r.getType()).toBe("plural");
+
+        expect(r.getSourcePlurals()).toStrictEqual({
+            one: "There is {n} item.",
+            other: "There are {n} items."
+        });
+
+        var translations = new TranslationSet("en-US");
+        translations.add(
+            new ResourcePlural({
+                project: "webapp",
+                key: 'thanked_note_time_saved.email_subject',
+                sourceStrings: {
+                    one: "There is {n} item.",
+                    other: "There are {n} items."
+                },
+                sourceLocale: "en-US",
+                targetStrings: {
+                    one: "Jest {n} pozycja.",
+                    few: "Jest {n} pozycje.",
+                    // translation for "many" is missing
+                    // but it is required by tap-i18n library for Polish
+                    other: "Jest {n} pozycji."
+                },
+                targetLocale: "pl-PL",
+                datatype: "x-yaml"
+            })
+        );
+        var actual = yml.localizeText(translations, "pl-PL");
+        var expected =
+            'thanked_note_time_saved:\n' +
+            '  email_subject_few: Jest {n} pozycje.\n' +
+            // "many" is present in the output and
+            // its value matches the value of "other"
+            '  email_subject_many: Jest {n} pozycji.\n' + 
             '  email_subject_one: Jest {n} pozycja.\n' +
             '  email_subject_other: Jest {n} pozycji.\n';
         diff(actual, expected);
