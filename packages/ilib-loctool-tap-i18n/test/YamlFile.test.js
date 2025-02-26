@@ -1469,7 +1469,7 @@ describe("yamlfile", function() {
         var expected =
             'thanked_note_time_saved:\n' +
             '  email_subject_few: Jest {n} pozycje.\n' +
-            // "many" is present in the ouput and
+            // "many" is present in the output and
             // its value matches the value of "other"
             '  email_subject_many: Jest {n} pozycji.\n' + 
             '  email_subject_one: Jest {n} pozycja.\n' +
