@@ -36,6 +36,12 @@ const validStyles = new Set([
     "csharp-verbatim"   // verbatim strings like @"foo"
 ]);
 
+const styleMap = {
+    "c#": "csharp",
+    "c#-raw": "csharp-raw",
+    "c#-verbatim": "csharp-verbatim"
+};
+
 /**
  * @class Escaper for CSharp
  * @extends Escaper
@@ -53,9 +59,11 @@ class CSharpEscaper extends Escaper {
      */
     constructor(style) {
         super(style);
-        if (!validStyles.has(style)) {
+        const effectiveStyle = styleMap[style.toLowerCase()] ?? style;
+        if (!validStyles.has(effectiveStyle)) {
             throw new Error(`invalid c# escape style ${style}`);
         }
+        this.style = effectiveStyle;
         this.name = "csharp-escaper";
         this.description = "Escapes and unescapes various types of strings in C#";
     }

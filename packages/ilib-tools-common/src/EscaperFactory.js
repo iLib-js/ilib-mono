@@ -25,6 +25,7 @@ import PHPEscaper from "./escapes/PHPEscaper.js";
 import SmartyEscaper from "./escapes/SmartyEscaper.js";
 import PythonEscaper from "./escapes/PythonEscaper.js";
 import SwiftEscaper from "./escapes/SwiftEscaper.js";
+import URIEscaper from "./escapes/URIEscaper.js";
 
 const escaperCache = {
 };
@@ -56,7 +57,7 @@ const escaperCache = {
  * <li>swift - escape for regular Swift strings</li>
  * <li>swift-multi - escape for Swift multi-line strings</li>
  * <li>swift-extended - escape for Swift extended strings</li>
- * <li>url - escape for URLs and URIs</li>
+ * <li>uri - escape for URLs and URIs</li>
  * <li>xml - escape for XML text, including HTML</li>
  * <li>xml-attr - escape for XML attributes, including HTML</li>
  * </ul>
@@ -65,6 +66,9 @@ const escaperCache = {
  * is not recognized
  */
 function escaperFactory(style) {
+    if (style === "html") {
+        style = "xml";
+    }
     switch (style) {
         case 'csharp':
         case 'c#':
@@ -131,6 +135,13 @@ function escaperFactory(style) {
         case 'swift-extended':
             if (!escaperCache[style]) {
                 escaperCache[style] = new SwiftEscaper(style);
+            }
+            break;
+
+        case 'uri':
+        case 'url':
+            if (!escaperCache[style]) {
+                escaperCache[style] = new URIEscaper(style);
             }
             break;
 

@@ -364,6 +364,14 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper.unescape("This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes. Now some chars \\n\\r\\t\\b\\f\\v")).toBe("This is <b>bold</b> & uses \'single\' and \"double\" quotes. Now some chars \n\r\t\x08\f\v");
     });
 
+    test("that html is an alias for xml", () => {
+        expect.assertions(2);
+
+        const escaper = escaperFactory("html");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("xml");
+    });
+
     test("the swift escape works properly", () => {
         expect.assertions(1);
 
@@ -508,5 +516,43 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("csharp-verbatim");
         // nothing is unescaped except double quotes
         expect(escaper.unescape("This string uses\nall the escapes! \'single\' \"\"double\"\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}")).toBe("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}");
+    });
+
+    test("that c# is an alias for csharp", () => {
+        expect.assertions(6);
+
+        let escaper = escaperFactory("c#");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("csharp");
+
+        escaper = escaperFactory("c#-raw");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("csharp-raw");
+
+        escaper = escaperFactory("c#-verbatim");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("csharp-verbatim");
+    });
+
+    test("the URI escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("uri");
+        expect(escaper.escape("https://github.com/ilib-js/ilib-mono?q=foo bar&\u317D=\u{1D11E}&ü=ue#ł")).toBe("https://github.com/ilib-js/ilib-mono?q=foo%20bar&%E3%85%BD=%F0%9D%84%9E&%C3%BC=ue#%C5%82");
+    });
+
+    test("the URI unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("uri");
+        expect(escaper.unescape("https://github.com/ilib-js/ilib-mono?q=foo%20bar&%E3%85%BD=%F0%9D%84%9E&%C3%BC=ue#%C5%82")).toBe("https://github.com/ilib-js/ilib-mono?q=foo bar&\u317D=\u{1D11E}&ü=ue#ł");
+    });
+
+    test("test that url is an alias for uri", () => {
+        expect.assertions(2);
+
+        const escaper = escaperFactory("url");
+        expect(escaper).toBeTruthy();
+        expect(escaper.getStyle()).toBe("uri");
     });
 });
