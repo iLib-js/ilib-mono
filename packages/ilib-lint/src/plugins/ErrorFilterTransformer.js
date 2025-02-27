@@ -46,14 +46,8 @@ class ErrorFilterTransformer extends Transformer {
             return ir;
         }
         const resources = ir.getRepresentation();
-        const resultIndex = {};
-        results.forEach(result => {
-            resultIndex[result.id] = result;
-        });
-        const filteredResources = resources.filter(resource => {
-            const result = resultIndex[resource.getKey()];
-            return !result || result.severity !== 'error';
-        });
+        const idsToExclude = results.filter(result => result.id && result.severity === 'error').map(result => result.id);
+        const filteredResources = resources.filter(resource => !idsToExclude.includes(resource.getKey()));
         return new IntermediateRepresentation({
             type: ir.getType(),
             ir: filteredResources,

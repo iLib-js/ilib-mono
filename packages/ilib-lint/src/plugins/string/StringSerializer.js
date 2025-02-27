@@ -45,7 +45,8 @@ class StringSerializer extends Serializer {
      * representation
      */
     serialize(irs) {
-        // should only have 1 intermediate representation in the array
+        // should only have 1 intermediate representation in the array because the StringParser
+        // only creates one
         const ir = irs[0];
         const data = ir.getRepresentation();
         return new SourceFile(ir.sourceFile.getPath(), {
