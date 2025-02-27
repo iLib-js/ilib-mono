@@ -49,6 +49,14 @@ track of all the rules that are known to this run of the linter,
 and a RuleSet is a named set of rule instances that have been
 initialized with certain options for some or all of those rules.</p>
 </dd>
+<dt><a href="#SerializerManager">SerializerManager</a></dt>
+<dd><p>Manages a collection of serializers that this instance of ilib-lint
+knows about.</p>
+</dd>
+<dt><a href="#TransformerManager">TransformerManager</a></dt>
+<dd><p>Manages a collection of transformers that this instance of ilib-lint
+knows about.</p>
+</dd>
 <dt><a href="#FileConfigurationProvider">FileConfigurationProvider</a></dt>
 <dd></dd>
 <dt><a href="#FolderConfigurationProvider">FolderConfigurationProvider</a></dt>
@@ -61,6 +69,9 @@ initialized with certain options for some or all of those rules.</p>
 </dd>
 <dt><a href="#BuiltinPlugin">BuiltinPlugin</a></dt>
 <dd><p>ilib-lint plugin that can parse XLIFF files</p>
+</dd>
+<dt><a href="#ErrorFilterTransformer">ErrorFilterTransformer</a></dt>
+<dd><p>Filter out errors from the intermediate representation.</p>
 </dd>
 <dt><a href="#LineParser">LineParser</a></dt>
 <dd><p>Parser for plain text files that splits them by lines</p>
@@ -123,7 +134,7 @@ that matches in the source also appears in the translation.</p>
 </dd>
 <dt><a href="#ResourceSourceChecker">ResourceSourceChecker</a></dt>
 <dd><p>Resource checker class that checks that any regular expressions
-that matches in the source also appears in the translation.</p>
+that matches in the source causes a result to be returned.</p>
 </dd>
 <dt><a href="#ResourceSourceICUPluralCategories">ResourceSourceICUPluralCategories</a></dt>
 <dd><p>Verifies that categories of an ICU plural in a Resource&#39;s source are valid</p>
@@ -147,7 +158,7 @@ job of translating if they know what each replacement parameter represents.</p>
 </dd>
 <dt><a href="#ResourceTargetChecker">ResourceTargetChecker</a></dt>
 <dd><p>Resource checker class that checks that any regular expressions
-that matches in the source also appears in the translation.</p>
+that matches in the target causes a Result to be created.</p>
 </dd>
 <dt><a href="#ResourceUniqueKeys">ResourceUniqueKeys</a></dt>
 <dd><p>Represent an ilib-lint rule.</p>
@@ -356,9 +367,23 @@ Files in the unknown file type are usually not processed.
 
 * [FileType](#FileType)
     * [new FileType(options)](#new_FileType_new)
+    * [.project](#FileType+project) : [<code>Project</code>](#Project)
+    * [.name](#FileType+name) : <code>String</code> \| <code>undefined</code>
+    * [.locales](#FileType+locales) : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+    * [.type](#FileType+type) : <code>String</code>
+    * [.parsers](#FileType+parsers) : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+    * [.parserClasses](#FileType+parserClasses) : <code>Array.&lt;Class&gt;</code> \| <code>undefined</code>
+    * [.transformers](#FileType+transformers) : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+    * [.transformerInstances](#FileType+transformerInstances) : <code>Array.&lt;Transformer&gt;</code> \| <code>undefined</code>
+    * [.serializer](#FileType+serializer) : <code>String</code> \| <code>undefined</code>
+    * [.serializerInst](#FileType+serializerInst) : <code>Serializer</code> \| <code>undefined</code>
+    * [.ruleset](#FileType+ruleset) : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+    * [.template](#FileType+template) : <code>String</code> \| <code>undefined</code>
     * [.getParserClasses(extension)](#FileType+getParserClasses) ⇒ <code>Array.&lt;Class&gt;</code>
     * [.getRuleSetNames()](#FileType+getRuleSetNames) ⇒ <code>Array.&lt;String&gt;</code>
     * [.getRules()](#FileType+getRules) ⇒ <code>Array.&lt;Rule&gt;</code>
+    * [.getTransformers()](#FileType+getTransformers) ⇒ <code>Array.&lt;Transformer&gt;</code> \| <code>undefined</code>
+    * [.getSerializer()](#FileType+getSerializer) ⇒ <code>Serializer</code> \| <code>undefined</code>
 
 
 * * *
@@ -366,33 +391,7 @@ Files in the unknown file type are usually not processed.
 <a name="new_FileType_new"></a>
 
 ### new FileType(options)
-Contructor a new instance of a file type. The options
-for a file type must contain the following properties:
-
-- name - the name or glob spec for this file type
-- project - the Project that this file type is a part of
-
-Additionally, the options may optionally contain the
-following properties:
-
-- locales (Array of String) - list of locales to use with this file type,
-  which overrides the global locales for the project
-- type (String) - specifies the way that files of this file type
-  are parsed. This can be one of "resource", "source", "line", or
-  "ast".
-- template (String) - the path name template for this file type
-  which shows how to extract the locale from the path
-  name if the path includes it. Many file types do not
-  include the locale in the path, and in those cases,
-  the template can be left out.
-- ruleset (Array of String) - a list of rule set names
-  to use with this file type
-- parsers (Array of String) - an array of names of parsers to
-  apply to this file type. This is mainly useful when the source
-  code is in a file with an unexpected or ambiguous file
-  name extension. For example, a ".js" file may contain
-  regular Javascript code, but it may also be React JSX
-  code, or even Javascript with JSX and Flow type definitions.
+Contructor a new instance of a file type.
 
 The array of parsers will be used to attempt to parse each
 source file. If a parser throws an exception/error while parsing,
@@ -401,11 +400,133 @@ the next parser to see if that one will work. If ALL parsers
 fail for a particular file, then this tool will print an
 error message to the output about it.
 
+**Throws**:
+
+- <code>Error</code> if a transformer or serializer is specified that does not
+operate on the same type of intermediate representation as the parser, or
+if a parser, transformer, or serializer cannot be found.
+
 
 | Param | Type | Description |
 | --- | --- | --- |
 | options | <code>Object</code> | the options governing the construction of this file type as documented above |
+| options.name | <code>String</code> | the name or glob spec for this file type |
+| options.project | [<code>Project</code>](#Project) | the Project that this file type is a part of |
+| [options.locales] | <code>Array.&lt;String&gt;</code> | list of locales to use with this file type |
+| [options.template] | <code>String</code> | the path name template for this file type which shows how to extract the locale from the path name if the path includes it. Many file types do not include the locale in the path, and in those cases, the template can be left out. If a serializer is specified, then the template is also used by the serializer to determine how to name the output files. |
+| [options.parsers] | <code>Array.&lt;String&gt;</code> | an array of names of parsers to apply to this file type. The first parser is the most important one, as its type will be used to determine the type of intermediate representation, the type of the rules, and the type of the transformers and serializer. If no parsers are specified, then the parser manager will be asked to find all parsers that can parse files of this type. |
+| [options.ruleset] | <code>Array.&lt;String&gt;</code> | a list of rule set names to use with this file type. Only rules in these rule sets that operate on the same type of intermediate representation as the parsers will be applied to the file. |
+| [options.transformers] | <code>Array.&lt;String&gt;</code> | an array of transformer names to apply to files of this type after the rules have been applied. Every transformer must operate on the same type of intermediate representation as the parser. |
+| [options.serializer] | <code>String</code> \| <code>Object</code> | the name of the serializer to use if the file has been modified by a transformer or a fixer. The serializer must operate on the same type of intermediate representation as the parser. |
 
+
+* * *
+
+<a name="FileType+project"></a>
+
+### fileType.project : [<code>Project</code>](#Project)
+The lint project that this file is a part of.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+name"></a>
+
+### fileType.name : <code>String</code> \| <code>undefined</code>
+The name or glob spec for this file type
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+locales"></a>
+
+### fileType.locales : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+The list of locales to use with this file type
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+type"></a>
+
+### fileType.type : <code>String</code>
+The intermediate representation type of this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+parsers"></a>
+
+### fileType.parsers : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+The array of names of classes of parsers to use with this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+parserClasses"></a>
+
+### fileType.parserClasses : <code>Array.&lt;Class&gt;</code> \| <code>undefined</code>
+The array of classes of parsers to use with this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+transformers"></a>
+
+### fileType.transformers : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+The array of names of transformers to use with this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+transformerInstances"></a>
+
+### fileType.transformerInstances : <code>Array.&lt;Transformer&gt;</code> \| <code>undefined</code>
+The array of instances of transformers to use with this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+serializer"></a>
+
+### fileType.serializer : <code>String</code> \| <code>undefined</code>
+The serializer to use with this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+serializerInst"></a>
+
+### fileType.serializerInst : <code>Serializer</code> \| <code>undefined</code>
+The instance of the serializer to use with this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+ruleset"></a>
+
+### fileType.ruleset : <code>Array.&lt;String&gt;</code> \| <code>undefined</code>
+The array of rule sets to apply to files of this type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
+
+* * *
+
+<a name="FileType+template"></a>
+
+### fileType.template : <code>String</code> \| <code>undefined</code>
+The path template for this file type.
+
+**Kind**: instance property of [<code>FileType</code>](#FileType)  
 
 * * *
 
@@ -448,6 +569,28 @@ definitions.
 **Kind**: instance method of [<code>FileType</code>](#FileType)  
 **Returns**: <code>Array.&lt;Rule&gt;</code> - a list of rule instances of all the rules in
 all of the ruleset definitions  
+
+* * *
+
+<a name="FileType+getTransformers"></a>
+
+### fileType.getTransformers() ⇒ <code>Array.&lt;Transformer&gt;</code> \| <code>undefined</code>
+Return the list of transformers to use with this file type.
+
+**Kind**: instance method of [<code>FileType</code>](#FileType)  
+**Returns**: <code>Array.&lt;Transformer&gt;</code> \| <code>undefined</code> - an array of transformer instances to use
+with this file type, or undefined if there are none.  
+
+* * *
+
+<a name="FileType+getSerializer"></a>
+
+### fileType.getSerializer() ⇒ <code>Serializer</code> \| <code>undefined</code>
+Return an instance of the serializer class for this file type.
+
+**Kind**: instance method of [<code>FileType</code>](#FileType)  
+**Returns**: <code>Serializer</code> \| <code>undefined</code> - an instance of the serializer class for this
+file type or undefined if there is no serializer for this file type.  
 
 * * *
 
@@ -613,12 +756,22 @@ Represent a source file
 
 * [LintableFile](#LintableFile)
     * [new LintableFile(filePath, options, project)](#new_LintableFile_new)
+    * [.dirty](#LintableFile+dirty) : <code>boolean</code>
+    * [.parsers](#LintableFile+parsers) : <code>Array.&lt;Parser&gt;</code>
+    * [.serializer](#LintableFile+serializer) : <code>Serializer</code> \| <code>undefined</code>
+    * [.filetype](#LintableFile+filetype) : [<code>FileType</code>](#FileType)
+    * [.irs](#LintableFile+irs) : <code>Array.&lt;IntermediateRepresentation&gt;</code>
     * [.irs](#LintableFile+irs) : <code>Array.&lt;IntermediateRepresentation&gt;</code>
     * [.getLocaleFromPath()](#LintableFile+getLocaleFromPath) ⇒ <code>String</code>
     * [.parse()](#LintableFile+parse) ⇒ <code>Array.&lt;IntermediateRepresentation&gt;</code>
     * [.findIssues(locales)](#LintableFile+findIssues) ⇒ <code>Array.&lt;Result&gt;</code>
     * [.getIRs()](#LintableFile+getIRs) ⇒ <code>Array.&lt;IntermediateRepresentation&gt;</code>
+    * [.setIRs(irs)](#LintableFile+setIRs)
+    * [.isDirty()](#LintableFile+isDirty) ⇒ <code>boolean</code>
+    * [.getSourceFile()](#LintableFile+getSourceFile) ⇒ <code>SourceFile</code>
     * [.getStats()](#LintableFile+getStats) ⇒ <code>FileStats</code>
+    * [.getFileType()](#LintableFile+getFileType) ⇒ [<code>FileType</code>](#FileType)
+    * [.applyTransformers(results)](#LintableFile+applyTransformers)
 
 
 * * *
@@ -639,6 +792,51 @@ The options parameter can contain any of the following properties:
 | [options.settings] | <code>object</code> | additional settings from the ilib-lint config that apply to this file |
 | project | [<code>Project</code>](#Project) | the project where this file is located |
 
+
+* * *
+
+<a name="LintableFile+dirty"></a>
+
+### lintableFile.dirty : <code>boolean</code>
+Whether the file has been modified since it was last written or since it was read.
+
+**Kind**: instance property of [<code>LintableFile</code>](#LintableFile)  
+
+* * *
+
+<a name="LintableFile+parsers"></a>
+
+### lintableFile.parsers : <code>Array.&lt;Parser&gt;</code>
+The list of parsers that can parse this file.
+
+**Kind**: instance property of [<code>LintableFile</code>](#LintableFile)  
+
+* * *
+
+<a name="LintableFile+serializer"></a>
+
+### lintableFile.serializer : <code>Serializer</code> \| <code>undefined</code>
+The serializer for this file type.
+
+**Kind**: instance property of [<code>LintableFile</code>](#LintableFile)  
+
+* * *
+
+<a name="LintableFile+filetype"></a>
+
+### lintableFile.filetype : [<code>FileType</code>](#FileType)
+The file type of this source file
+
+**Kind**: instance property of [<code>LintableFile</code>](#LintableFile)  
+
+* * *
+
+<a name="LintableFile+irs"></a>
+
+### lintableFile.irs : <code>Array.&lt;IntermediateRepresentation&gt;</code>
+The intermediate representations of this file
+
+**Kind**: instance property of [<code>LintableFile</code>](#LintableFile)  
 
 * * *
 
@@ -701,6 +899,41 @@ of this file
 
 * * *
 
+<a name="LintableFile+setIRs"></a>
+
+### lintableFile.setIRs(irs)
+Set the intermediate representations of this file.
+
+**Kind**: instance method of [<code>LintableFile</code>](#LintableFile)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| irs | <code>Array.&lt;IntermediateRepresentation&gt;</code> | the intermediate representations of this file |
+
+
+* * *
+
+<a name="LintableFile+isDirty"></a>
+
+### lintableFile.isDirty() ⇒ <code>boolean</code>
+Return whether or not the file has been modified since it was last written
+or since it was read.
+
+**Kind**: instance method of [<code>LintableFile</code>](#LintableFile)  
+**Returns**: <code>boolean</code> - true if the file is dirty, false otherwise  
+
+* * *
+
+<a name="LintableFile+getSourceFile"></a>
+
+### lintableFile.getSourceFile() ⇒ <code>SourceFile</code>
+Return the source file of this lintable file.
+
+**Kind**: instance method of [<code>LintableFile</code>](#LintableFile)  
+**Returns**: <code>SourceFile</code> - the source file  
+
+* * *
+
 <a name="LintableFile+getStats"></a>
 
 ### lintableFile.getStats() ⇒ <code>FileStats</code>
@@ -708,6 +941,30 @@ Return the stats for the file after issues were found.
 
 **Kind**: instance method of [<code>LintableFile</code>](#LintableFile)  
 **Returns**: <code>FileStats</code> - the stats for the current file  
+
+* * *
+
+<a name="LintableFile+getFileType"></a>
+
+### lintableFile.getFileType() ⇒ [<code>FileType</code>](#FileType)
+Return the file type of this file.
+
+**Kind**: instance method of [<code>LintableFile</code>](#LintableFile)  
+**Returns**: [<code>FileType</code>](#FileType) - the file type of this file  
+
+* * *
+
+<a name="LintableFile+applyTransformers"></a>
+
+### lintableFile.applyTransformers(results)
+Apply the available transformers to the intermediate representations of this file.
+
+**Kind**: instance method of [<code>LintableFile</code>](#LintableFile)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| results | <code>Array.&lt;Result&gt;</code> | the results of the rules that were applied earlier   in the pipeline, or undefined if there are no results or if the rules have not been   applied yet |
+
 
 * * *
 
@@ -726,6 +983,7 @@ knows about.
     * [.getByName(name)](#ParserManager+getByName) ⇒ <code>Parser</code> \| <code>undefined</code>
     * [.add(parsers)](#ParserManager+add)
     * [.getDescriptions()](#ParserManager+getDescriptions) ⇒ <code>Object</code>
+    * [.getType(name)](#ParserManager+getType) ⇒ <code>String</code>
 
 
 * * *
@@ -796,6 +1054,22 @@ values are the parser descriptions.
 
 * * *
 
+<a name="ParserManager+getType"></a>
+
+### parserManager.getType(name) ⇒ <code>String</code>
+Return the type of the parser with the given name. The type is
+the type of intermediate represetnation that the parser produces.
+
+**Kind**: instance method of [<code>ParserManager</code>](#ParserManager)  
+**Returns**: <code>String</code> - the type of parser with the given name  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | the name of the parser to get the type for |
+
+
+* * *
+
 <a name="PluginManager"></a>
 
 ## PluginManager
@@ -810,6 +1084,8 @@ and then maintains references to them
     * [.getFormatterManager()](#PluginManager+getFormatterManager) ⇒ [<code>FormatterManager</code>](#FormatterManager)
     * [.getFixerManager()](#PluginManager+getFixerManager) ⇒ [<code>FixerManager</code>](#FixerManager)
     * [.getRuleManager()](#PluginManager+getRuleManager) ⇒ [<code>RuleManager</code>](#RuleManager)
+    * [.getTransformerManager()](#PluginManager+getTransformerManager) ⇒ [<code>TransformerManager</code>](#TransformerManager)
+    * [.getSerializerManager()](#PluginManager+getSerializerManager) ⇒ [<code>SerializerManager</code>](#SerializerManager)
     * [.getRuleSet()](#PluginManager+getRuleSet) ⇒ [<code>FormatterManager</code>](#FormatterManager)
     * [.add(a)](#PluginManager+add)
     * [.load(names)](#PluginManager+load) ⇒ <code>Promise</code>
@@ -873,6 +1149,32 @@ loaded from the plugins.
 
 **Kind**: instance method of [<code>PluginManager</code>](#PluginManager)  
 **Returns**: [<code>RuleManager</code>](#RuleManager) - the rule manager for this
+plugin manager.  
+
+* * *
+
+<a name="PluginManager+getTransformerManager"></a>
+
+### pluginManager.getTransformerManager() ⇒ [<code>TransformerManager</code>](#TransformerManager)
+Return the transformer manager for this plugin manager. This
+manages both the built-in transformers, and the transformers
+loaded from the plugins.
+
+**Kind**: instance method of [<code>PluginManager</code>](#PluginManager)  
+**Returns**: [<code>TransformerManager</code>](#TransformerManager) - the transformer manager for this
+plugin manager.  
+
+* * *
+
+<a name="PluginManager+getSerializerManager"></a>
+
+### pluginManager.getSerializerManager() ⇒ [<code>SerializerManager</code>](#SerializerManager)
+Return the serializer manager for this plugin manager. This
+manages both the built-in serializers, and the serializers
+loaded from the plugins.
+
+**Kind**: instance method of [<code>PluginManager</code>](#PluginManager)  
+**Returns**: [<code>SerializerManager</code>](#SerializerManager) - the serializer manager for this
 plugin manager.  
 
 * * *
@@ -952,11 +1254,15 @@ file in the subdirectory.
     * [.getParserManager()](#Project+getParserManager) ⇒ [<code>ParserManager</code>](#ParserManager)
     * [.getRuleManager()](#Project+getRuleManager) ⇒ [<code>RuleManager</code>](#RuleManager)
     * [.getFixerManager()](#Project+getFixerManager) ⇒ [<code>FixerManager</code>](#FixerManager)
+    * [.getTransformerManager()](#Project+getTransformerManager) ⇒ [<code>TransformerManager</code>](#TransformerManager)
+    * [.getSerializerManager()](#Project+getSerializerManager) ⇒ [<code>SerializerManager</code>](#SerializerManager)
     * [.getFileType(name)](#Project+getFileType) ⇒ [<code>FileType</code>](#FileType)
     * [.getFileTypeForPath(pathName)](#Project+getFileTypeForPath) ⇒ [<code>FileType</code>](#FileType)
     * [.add(item)](#Project+add)
     * [.get()](#Project+get) ⇒ [<code>Array.&lt;LintableFile&gt;</code>](#LintableFile)
     * [.findIssues()](#Project+findIssues) ⇒ <code>Array.&lt;Result&gt;</code>
+    * [.applyTransformers(results)](#Project+applyTransformers)
+    * [.serialize()](#Project+serialize)
     * [.getScore()](#Project+getScore) ⇒ <code>Number</code>
     * [.run()](#Project+run) ⇒ <code>Number</code>
 
@@ -1118,6 +1424,26 @@ Return the fixer manager for this project.
 
 * * *
 
+<a name="Project+getTransformerManager"></a>
+
+### project.getTransformerManager() ⇒ [<code>TransformerManager</code>](#TransformerManager)
+Return the transformer manager for this project.
+
+**Kind**: instance method of [<code>Project</code>](#Project)  
+**Returns**: [<code>TransformerManager</code>](#TransformerManager) - the transformer manager for this project  
+
+* * *
+
+<a name="Project+getSerializerManager"></a>
+
+### project.getSerializerManager() ⇒ [<code>SerializerManager</code>](#SerializerManager)
+Return the serializer manager for this project.
+
+**Kind**: instance method of [<code>Project</code>](#Project)  
+**Returns**: [<code>SerializerManager</code>](#SerializerManager) - the serializer manager for this project  
+
+* * *
+
 <a name="Project+getFileType"></a>
 
 ### project.getFileType(name) ⇒ [<code>FileType</code>](#FileType)
@@ -1177,10 +1503,10 @@ Add a directory item to this project.
 <a name="Project+get"></a>
 
 ### project.get() ⇒ [<code>Array.&lt;LintableFile&gt;</code>](#LintableFile)
-Return all directory items in this project.
+Return all lintable files in this project.
 
 **Kind**: instance method of [<code>Project</code>](#Project)  
-**Returns**: [<code>Array.&lt;LintableFile&gt;</code>](#LintableFile) - the directory items in this project.  
+**Returns**: [<code>Array.&lt;LintableFile&gt;</code>](#LintableFile) - the lintable files in this project.  
 
 * * *
 
@@ -1192,6 +1518,31 @@ all subprojects, and return them together in an array.
 
 **Kind**: instance method of [<code>Project</code>](#Project)  
 **Returns**: <code>Array.&lt;Result&gt;</code> - a list of results  
+
+* * *
+
+<a name="Project+applyTransformers"></a>
+
+### project.applyTransformers(results)
+Apply any transformer plugins to the intermediate representation of
+each file.
+
+**Kind**: instance method of [<code>Project</code>](#Project)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| results | <code>Array.&lt;Result&gt;</code> | the results of the linting process |
+
+
+* * *
+
+<a name="Project+serialize"></a>
+
+### project.serialize()
+Serialize files in this project using the Serializer plugin for the
+file type of each file.
+
+**Kind**: instance method of [<code>Project</code>](#Project)  
 
 * * *
 
@@ -1559,6 +1910,192 @@ Return the number of rules in this set.
 
 * * *
 
+<a name="SerializerManager"></a>
+
+## SerializerManager
+Manages a collection of serializers that this instance of ilib-lint
+knows about.
+
+**Kind**: global class  
+**Params**: <code>Object</code> options options controlling the construction of this object  
+
+* [SerializerManager](#SerializerManager)
+    * [new SerializerManager()](#new_SerializerManager_new)
+    * [.get(name, options)](#SerializerManager+get) ⇒ <code>Serializer</code> \| <code>undefined</code>
+    * [.add(serializers)](#SerializerManager+add)
+    * [.getSerializers()](#SerializerManager+getSerializers) ⇒ <code>Array.&lt;String&gt;</code>
+    * [.getDescriptions()](#SerializerManager+getDescriptions) ⇒ <code>Object</code>
+    * [.size()](#SerializerManager+size) ⇒ <code>Number</code>
+
+
+* * *
+
+<a name="new_SerializerManager_new"></a>
+
+### new SerializerManager()
+Create a new serializer manager instance.
+
+
+* * *
+
+<a name="SerializerManager+get"></a>
+
+### serializerManager.get(name, options) ⇒ <code>Serializer</code> \| <code>undefined</code>
+Return a serializer instance with the given name for use in
+formatting the output.
+
+**Kind**: instance method of [<code>SerializerManager</code>](#SerializerManager)  
+**Returns**: <code>Serializer</code> \| <code>undefined</code> - the serializer instance to use, or undefined if
+the serializer is not found  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | name of the serializer to return |
+| options | <code>Object</code> \| <code>undefined</code> | options for this instance of the serializer from the config file, if any |
+
+
+* * *
+
+<a name="SerializerManager+add"></a>
+
+### serializerManager.add(serializers)
+Add a list of serializer classes to this factory so that other code
+can find them.
+
+**Kind**: instance method of [<code>SerializerManager</code>](#SerializerManager)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| serializers | <code>Array.&lt;(Class\|Object)&gt;</code> | the list of serializer classes or definitions to add |
+
+
+* * *
+
+<a name="SerializerManager+getSerializers"></a>
+
+### serializerManager.getSerializers() ⇒ <code>Array.&lt;String&gt;</code>
+Return an array of all known serializer names that handle the given type of
+of intermediate representation.
+
+**Kind**: instance method of [<code>SerializerManager</code>](#SerializerManager)  
+**Returns**: <code>Array.&lt;String&gt;</code> - array of serializer names  
+
+* * *
+
+<a name="SerializerManager+getDescriptions"></a>
+
+### serializerManager.getDescriptions() ⇒ <code>Object</code>
+Return an object where the properties are the serializer names and the
+values are the serializer descriptions.
+
+**Kind**: instance method of [<code>SerializerManager</code>](#SerializerManager)  
+**Returns**: <code>Object</code> - the serializer names and descriptions  
+
+* * *
+
+<a name="SerializerManager+size"></a>
+
+### serializerManager.size() ⇒ <code>Number</code>
+Return how many rules this manager knows about.
+
+**Kind**: instance method of [<code>SerializerManager</code>](#SerializerManager)  
+**Returns**: <code>Number</code> - the number of rules this manager knows about.  
+
+* * *
+
+<a name="TransformerManager"></a>
+
+## TransformerManager
+Manages a collection of transformers that this instance of ilib-lint
+knows about.
+
+**Kind**: global class  
+**Params**: <code>Object</code> options options controlling the construction of this object  
+
+* [TransformerManager](#TransformerManager)
+    * [new TransformerManager()](#new_TransformerManager_new)
+    * [.get(name, options)](#TransformerManager+get) ⇒ <code>Transformer</code> \| <code>undefined</code>
+    * [.add(transformers)](#TransformerManager+add)
+    * [.getTransformers()](#TransformerManager+getTransformers) ⇒ <code>Array.&lt;String&gt;</code>
+    * [.getDescriptions()](#TransformerManager+getDescriptions) ⇒ <code>Object</code>
+    * [.size()](#TransformerManager+size) ⇒ <code>Number</code>
+
+
+* * *
+
+<a name="new_TransformerManager_new"></a>
+
+### new TransformerManager()
+Create a new transformer manager instance.
+
+
+* * *
+
+<a name="TransformerManager+get"></a>
+
+### transformerManager.get(name, options) ⇒ <code>Transformer</code> \| <code>undefined</code>
+Return a transformer instance with the given name for use in
+formatting the output.
+
+**Kind**: instance method of [<code>TransformerManager</code>](#TransformerManager)  
+**Returns**: <code>Transformer</code> \| <code>undefined</code> - the transformer instance to use, or undefined if
+the transformer is not found  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | name of the transformer to return |
+| options | <code>Object</code> \| <code>undefined</code> | options for this instance of the transformer from the config file, if any |
+
+
+* * *
+
+<a name="TransformerManager+add"></a>
+
+### transformerManager.add(transformers)
+Add a list of transformer classes to this factory so that other code
+can find them.
+
+**Kind**: instance method of [<code>TransformerManager</code>](#TransformerManager)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| transformers | <code>Array.&lt;(Class\|Object)&gt;</code> | the list of transformer classes or definitions to add |
+
+
+* * *
+
+<a name="TransformerManager+getTransformers"></a>
+
+### transformerManager.getTransformers() ⇒ <code>Array.&lt;String&gt;</code>
+Return an array of all known transformer names that handle the given type of
+of intermediate representation.
+
+**Kind**: instance method of [<code>TransformerManager</code>](#TransformerManager)  
+**Returns**: <code>Array.&lt;String&gt;</code> - array of transformer names  
+
+* * *
+
+<a name="TransformerManager+getDescriptions"></a>
+
+### transformerManager.getDescriptions() ⇒ <code>Object</code>
+Return an object where the properties are the transformer names and the
+values are the transformer descriptions.
+
+**Kind**: instance method of [<code>TransformerManager</code>](#TransformerManager)  
+**Returns**: <code>Object</code> - the transformer names and descriptions  
+
+* * *
+
+<a name="TransformerManager+size"></a>
+
+### transformerManager.size() ⇒ <code>Number</code>
+Return how many rules this manager knows about.
+
+**Kind**: instance method of [<code>TransformerManager</code>](#TransformerManager)  
+**Returns**: <code>Number</code> - the number of rules this manager knows about.  
+
+* * *
+
 <a name="AnsiConsoleFormatter"></a>
 
 ## AnsiConsoleFormatter
@@ -1607,7 +2144,8 @@ ilib-lint plugin that can parse XLIFF files
 * [BuiltinPlugin](#BuiltinPlugin)
     * [new BuiltinPlugin()](#new_BuiltinPlugin_new)
     * [.getParsers()](#BuiltinPlugin+getParsers) ⇒ <code>Array.&lt;Parser&gt;</code>
-    * [.getSerializers()](#BuiltinPlugin+getSerializers) ⇒ <code>Array.&lt;Parser&gt;</code>
+    * [.getTransformers()](#BuiltinPlugin+getTransformers) ⇒ <code>Array.&lt;Transformer&gt;</code>
+    * [.getSerializers()](#BuiltinPlugin+getSerializers) ⇒ <code>Array.&lt;Serializer&gt;</code>
     * [.getRules()](#BuiltinPlugin+getRules)
     * [.getRuleSets()](#BuiltinPlugin+getRuleSets)
     * [.getFormatters()](#BuiltinPlugin+getFormatters)
@@ -1635,14 +2173,26 @@ plugin
 
 * * *
 
+<a name="BuiltinPlugin+getTransformers"></a>
+
+### builtinPlugin.getTransformers() ⇒ <code>Array.&lt;Transformer&gt;</code>
+For a "transformer" type of plugin, this returns a list of Transformer classes
+that this plugin implements.
+
+**Kind**: instance method of [<code>BuiltinPlugin</code>](#BuiltinPlugin)  
+**Returns**: <code>Array.&lt;Transformer&gt;</code> - list of Transformer classes implemented by this
+plugin  
+
+* * *
+
 <a name="BuiltinPlugin+getSerializers"></a>
 
-### builtinPlugin.getSerializers() ⇒ <code>Array.&lt;Parser&gt;</code>
+### builtinPlugin.getSerializers() ⇒ <code>Array.&lt;Serializer&gt;</code>
 For a "serializer" type of plugin, this returns a list of Serializer classes
 that this plugin implements.
 
 **Kind**: instance method of [<code>BuiltinPlugin</code>](#BuiltinPlugin)  
-**Returns**: <code>Array.&lt;Parser&gt;</code> - list of Serializer classes implemented by this
+**Returns**: <code>Array.&lt;Serializer&gt;</code> - list of Serializer classes implemented by this
 plugin  
 
 * * *
@@ -1665,6 +2215,44 @@ plugin
 
 ### builtinPlugin.getFormatters()
 **Kind**: instance method of [<code>BuiltinPlugin</code>](#BuiltinPlugin)  
+
+* * *
+
+<a name="ErrorFilterTransformer"></a>
+
+## ErrorFilterTransformer
+Filter out errors from the intermediate representation.
+
+**Kind**: global class  
+
+* [ErrorFilterTransformer](#ErrorFilterTransformer)
+    * [new ErrorFilterTransformer()](#new_ErrorFilterTransformer_new)
+    * [.transform(ir, results)](#ErrorFilterTransformer+transform) ⇒ <code>IntermediateRepresentation</code>
+
+
+* * *
+
+<a name="new_ErrorFilterTransformer_new"></a>
+
+### new ErrorFilterTransformer()
+Create a new transformer instance.
+
+
+* * *
+
+<a name="ErrorFilterTransformer+transform"></a>
+
+### errorFilterTransformer.transform(ir, results) ⇒ <code>IntermediateRepresentation</code>
+Filter out errors from the intermediate representation.
+
+**Kind**: instance method of [<code>ErrorFilterTransformer</code>](#ErrorFilterTransformer)  
+**Returns**: <code>IntermediateRepresentation</code> - the filtered intermediate representation  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ir | <code>IntermediateRepresentation</code> | the intermediate representation to filter |
+| results | <code>Array.&lt;Result&gt;</code> \| <code>undefined</code> | the results of the linting process |
+
 
 * * *
 
@@ -1715,7 +2303,7 @@ Serializer for plain text files that splits them by lines
 
 * [LineSerializer](#LineSerializer)
     * [new LineSerializer()](#new_LineSerializer_new)
-    * [.serialize(ir)](#LineSerializer+serialize) ⇒ <code>SourceFile</code>
+    * [.serialize(irs)](#LineSerializer+serialize) ⇒ <code>SourceFile</code>
 
 
 * * *
@@ -1730,7 +2318,7 @@ Construct a new plugin.
 
 <a name="LineSerializer+serialize"></a>
 
-### lineSerializer.serialize(ir) ⇒ <code>SourceFile</code>
+### lineSerializer.serialize(irs) ⇒ <code>SourceFile</code>
 Convert the intermediate representation back into a source file.
 
 **Kind**: instance method of [<code>LineSerializer</code>](#LineSerializer)  
@@ -1739,7 +2327,7 @@ representation
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ir | <code>IntermediateRepresentation</code> | the intermediate representation to convert |
+| irs | <code>Array.&lt;IntermediateRepresentation&gt;</code> | the intermediate representations to convert |
 
 
 * * *
@@ -1791,7 +2379,7 @@ Serializer for XLIFF files based on the ilib-xliff library.
 
 * [XliffSerializer](#XliffSerializer)
     * [new XliffSerializer()](#new_XliffSerializer_new)
-    * [.serialize(ir)](#XliffSerializer+serialize) ⇒ <code>SourceFile</code>
+    * [.serialize(irs)](#XliffSerializer+serialize) ⇒ <code>SourceFile</code>
 
 
 * * *
@@ -1806,7 +2394,7 @@ Construct a new plugin.
 
 <a name="XliffSerializer+serialize"></a>
 
-### xliffSerializer.serialize(ir) ⇒ <code>SourceFile</code>
+### xliffSerializer.serialize(irs) ⇒ <code>SourceFile</code>
 Convert the intermediate representation back into a source file.
 
 **Kind**: instance method of [<code>XliffSerializer</code>](#XliffSerializer)  
@@ -1815,7 +2403,7 @@ representation
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ir | <code>IntermediateRepresentation</code> | the intermediate representation to convert |
+| irs | <code>Array.&lt;IntermediateRepresentation&gt;</code> | the intermediate representations to convert |
 
 
 * * *
@@ -1875,7 +2463,7 @@ simple string.
 
 * [StringSerializer](#StringSerializer)
     * [new StringSerializer()](#new_StringSerializer_new)
-    * [.serialize(ir)](#StringSerializer+serialize) ⇒ <code>SourceFile</code>
+    * [.serialize(irs)](#StringSerializer+serialize) ⇒ <code>SourceFile</code>
 
 
 * * *
@@ -1890,7 +2478,7 @@ Construct a new plugin.
 
 <a name="StringSerializer+serialize"></a>
 
-### stringSerializer.serialize(ir) ⇒ <code>SourceFile</code>
+### stringSerializer.serialize(irs) ⇒ <code>SourceFile</code>
 Convert the intermediate representation back into a source file.
 
 **Kind**: instance method of [<code>StringSerializer</code>](#StringSerializer)  
@@ -1899,7 +2487,7 @@ representation
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ir | <code>IntermediateRepresentation</code> | the intermediate representation to convert |
+| irs | <code>Array.&lt;IntermediateRepresentation&gt;</code> | the intermediate representations to convert |
 
 
 * * *
@@ -2571,7 +3159,7 @@ Otherwise, returns false.
 
 ## ResourceSourceChecker
 Resource checker class that checks that any regular expressions
-that matches in the source also appears in the translation.
+that matches in the source causes a result to be returned.
 
 **Kind**: global class  
 
@@ -2666,7 +3254,7 @@ Resource instances have the state field value of
 
 ## ResourceTargetChecker
 Resource checker class that checks that any regular expressions
-that matches in the source also appears in the translation.
+that matches in the target causes a Result to be created.
 
 **Kind**: global class  
 
