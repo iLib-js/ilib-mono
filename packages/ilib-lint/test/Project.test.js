@@ -1032,5 +1032,8 @@ describe("testProject", () => {
 
         expect(fs.existsSync(modifiedFileName)).toBe(true);
         expect(fs.readFileSync(modifiedFileName, "utf-8")).toBe(expected);
+
+        // clean-up
+        rmf(modifiedFileName);
     });
 });
