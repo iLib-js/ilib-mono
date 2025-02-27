@@ -77,9 +77,12 @@ function escaperFactory(style) {
             }
             break;
 
+        case 'kotlin':
+        case 'kotlin-raw':
         case 'java':
+        case 'java-raw':
             if (!escaperCache[style]) {
-                escaperCache[style] = new JavaEscaper();
+                escaperCache[style] = new JavaEscaper(style);
             }
             break;
 

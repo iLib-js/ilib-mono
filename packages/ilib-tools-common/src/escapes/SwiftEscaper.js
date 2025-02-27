@@ -23,7 +23,8 @@ import {
     escapeUnicodeWithBrackets,
     unescapeRules,
     unescapeUnicodeWithBrackets,
-    escapeRegexes
+    escapeRegexes,
+    unindent
 } from './EscapeCommon.js';
 
 const validStyles = new Set([
@@ -31,35 +32,6 @@ const validStyles = new Set([
     "swift-multi",     // multi-line strings like """foo"""
     "swift-extended"   // extended strings like #"""foo"""#
 ]);
-
-/**
- * Remove leading whitespace from each line of a string
- * in the same way that the Swift compiler does.
- * This is used for multi-line strings and extended strings
- * to remove the leading whitespace that is used to align
- * the string with the rest of the code.
- * @private
- * @param {string} string the string to unindent
- * @returns {string} the unindented string
- */
-function unindent(string) {
-    // Remove leading whitespace from each line
-    const lines = string.split('\n');
-    if (lines.length < 2) {
-        return string;
-    }
-    // Find the minimum indentation level amongst all lines, ignoring empty lines
-    // and lines that only contain whitespace, as that will give us the amount
-    // of indentation to remove from each line
-    const minIndent = Math.min(...lines.map(line => line.search(/\S/)));
-    if (minIndent < 0) {
-        // No indentation found, so return the original string
-        return string;
-    }
-    // Remove the minimum indentation from each line
-    const unindentedLines = lines.map(line => line.slice(minIndent));
-    return unindentedLines.join('\n');
-}
 
 /**
  * @class Escaper for Swift
@@ -78,7 +50,6 @@ class SwiftEscaper extends Escaper {
      */
     constructor(style) {
         super(style);
-        this.description = "Escapes and unescapes strings in Swift";
         if (!validStyles.has(style)) {
             throw new Error(`invalid swift escape style ${style}`);
         }

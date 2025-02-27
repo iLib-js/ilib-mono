@@ -55,7 +55,6 @@ class PHPEscaper extends Escaper {
      */
     constructor(style) {
         super(style);
-        this.description = "Escapes and unescapes strings in PHP";
         if (!validStyles.has(style)) {
             throw new Error(`invalid php escape style ${style}`);
         }

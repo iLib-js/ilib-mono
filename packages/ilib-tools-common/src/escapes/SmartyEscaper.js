@@ -48,7 +48,6 @@ class SmartyEscaper extends Escaper {
      */
     constructor(style) {
         super(style);
-        this.description = "Escapes and unescapes strings in Smarty";
         if (!validStyles.has(style)) {
             throw new Error(`invalid smarty escape style ${style}`);
         }

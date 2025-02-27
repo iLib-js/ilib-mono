@@ -32,6 +32,9 @@ const reOctalChar = /\\([0-7]{1,3})/g;
  * @static
  */
 export function unescapeUnicode(string) {
+    if (!string) {
+        return "";
+    }
     let unescaped = string;
     let match;
 
@@ -53,6 +56,9 @@ export function unescapeUnicode(string) {
  * @static
  */
 export function unescapeUnicodeWithBrackets(string) {
+    if (!string) {
+        return "";
+    }
     let unescaped = string;
     let match;
 
@@ -74,6 +80,9 @@ export function unescapeUnicodeWithBrackets(string) {
  * @static
  */
 export function unescapeUnicodeExtended(string) {
+    if (!string) {
+        return "";
+    }
     let unescaped = string;
     let match;
 
@@ -97,6 +106,9 @@ export function unescapeUnicodeExtended(string) {
  * @static
  */
 export function unescapeHex(string) {
+    if (!string) {
+        return "";
+    }
     let unescaped = string;
     let match;
 
@@ -182,6 +194,43 @@ export const escapeRegexes = {
     "csharp-raw": {
         "unescape": {
             // none
+        },
+        "escape": {
+            // none
+        }
+    },
+    "java": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t"
+        }
+    },
+    "java-raw": {
+        "unescape": {
+            "\\\\\\\\n": "",                 // line continuation
+            "\\\\\\n": ""                    // line continuation
         },
         "escape": {
             // none
@@ -495,6 +544,9 @@ export const escapeRegexes = {
  * @static
  */
 export function escapeJS(string) {
+    if (!string) {
+        return "";
+    }
     let escaped = string;
 
     for (const [key, value] of Object.entries(escapeRegexes.js.escape)) {
@@ -513,6 +565,9 @@ export function escapeJS(string) {
  * @static
  */
 export function unescapeJS(string) {
+    if (!string) {
+        return "";
+    }
     let unescaped = string;
 
     for (const [key, value] of Object.entries(escapeRegexes.js.unescape)) {
@@ -531,6 +586,9 @@ export function unescapeJS(string) {
  * @static
  */
 export function escapeUnicode(string) {
+    if (!string) {
+        return "";
+    }
     let output = "";
 
     for (const ch of string) {
@@ -554,6 +612,9 @@ export function escapeUnicode(string) {
  * @static
  */
 export function escapeUnicodeAstral(string) {
+    if (!string) {
+        return "";
+    }
     let output = "";
 
     for (const ch of string) {
@@ -577,6 +638,9 @@ export function escapeUnicodeAstral(string) {
  * @static
  */
 export function escapeUnicodeWithBrackets(string) {
+    if (!string) {
+        return "";
+    }
     let output = "";
 
     for (const ch of string) {
@@ -600,6 +664,9 @@ export function escapeUnicodeWithBrackets(string) {
  * @static
  */
 export function escapeUnicodeExtended(string) {
+    if (!string) {
+        return "";
+    }
     let output = "";
 
     for (const ch of string) {
@@ -616,6 +683,36 @@ export function escapeUnicodeExtended(string) {
 }
 
 /**
+ * Convert all code points above U+00FF as \uXXXX and
+ * all code points above U+FFFF as surrogate pairs in that
+ * same format.
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function escapeUnicodeAsSurrogatePairs(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+
+    // access the original string character by character to get
+    // the surrogate pairs for code points above U+FFFF
+    for (let i = 0; i < string.length; i++) {
+        const ch = string[i];
+        const code = ch.charCodeAt(0);
+        if (code < 0x10000 && code > 0x00FF) {
+            const str = code.toString(16).toUpperCase();
+            output += "\\u" + str;
+        } else {
+            output += ch;
+        }
+    }
+    return output;
+}
+
+/**
  * Escape a string so that it has hexadecimal escape sequences
  * in it instead of the characters themselves. This function
  * will only convert characters from U+0000 to U+001F. The rest
@@ -626,9 +723,12 @@ export function escapeUnicodeExtended(string) {
  *
  * @param {string} string the string to escape
  * @returns {string} the escaped string
- * @staticaaaa
+ * @static
  */
 export function escapeHex(string) {
+    if (!string) {
+        return "";
+    }
     let output = "";
     for (const ch of string) {
         const code = IString.toCodePoint(ch, 0);
@@ -648,6 +748,9 @@ export function escapeHex(string) {
  * @returns {string} the escaped string
  */
 export function escapeRules(string, rules) {
+    if (!string) {
+        return "";
+    }
     let escaped = string;
     for (const [key, value] of Object.entries(rules.escape)) {
         escaped = escaped.replace(new RegExp(key, "g"), value);
@@ -662,9 +765,48 @@ export function escapeRules(string, rules) {
  * @returns {string} the unescaped string
  */
 export function unescapeRules(string, rules) {
+    if (!string) {
+        return "";
+    }
     let unescaped = string;
     for (const [key, value] of Object.entries(rules.unescape)) {
         unescaped = unescaped.replace(new RegExp(key, "g"), value);
     }
     return unescaped;
 }
+
+/**
+ * Remove leading whitespace from each line of a string.
+ * This is used for things like "raw" strings
+ * to remove the leading whitespace that is used to align
+ * and indent the contents of the string with the rest of
+ * the code.
+ *
+ * @param {string} string the string to unindent
+ * @returns {string} the unindented string
+ */
+export function unindent(string) {
+    if (!string) {
+        return "";
+    }
+    // Remove leading whitespace from each line
+    const lines = string.split('\n');
+    if (lines.length < 2) {
+        return string;
+    }
+    // Find the minimum indentation level amongst all lines, ignoring empty lines
+    // and lines that only contain whitespace, as that will give us the amount
+    // of indentation to remove from each line
+    const minIndent = Math.min(...lines.map(line => {
+        const indent = line.search(/\S/);
+        return indent > -1 ? indent : (line.length > 0 ? line.length : Number.MAX_SAFE_INTEGER);
+    }));
+    if (minIndent === Number.MAX_SAFE_INTEGER) {
+        // No indentation found, so return the original string
+        return string;
+    }
+    // Remove the minimum indentation from each line
+    const unindentedLines = lines.map(line => line.slice(minIndent));
+    return unindentedLines.join('\n');
+}
+

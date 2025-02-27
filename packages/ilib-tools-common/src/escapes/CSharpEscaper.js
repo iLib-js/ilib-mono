@@ -26,7 +26,8 @@ import {
     unescapeRules,
     unescapeUnicode,
     unescapeUnicodeExtended,
-    unescapeHex
+    unescapeHex,
+    unindent
 } from './EscapeCommon.js';
 
 const validStyles = new Set([
@@ -34,35 +35,6 @@ const validStyles = new Set([
     "csharp-raw",       // raw strings like """foo"""
     "csharp-verbatim"   // verbatim strings like @"foo"
 ]);
-
-/**
- * Remove leading whitespace from each line of a string
- * in the same way that the CSharp compiler does.
- * This is used for raw strings and extended strings
- * to remove the leading whitespace that is used to align
- * the string with the rest of the code.
- * @private
- * @param {string} string the string to unindent
- * @returns {string} the unindented string
- */
-function unindent(string) {
-    // Remove leading whitespace from each line
-    const lines = string.split('\n');
-    if (lines.length < 2) {
-        return string;
-    }
-    // Find the minimum indentation level amongst all lines, ignoring empty lines
-    // and lines that only contain whitespace, as that will give us the amount
-    // of indentation to remove from each line
-    const minIndent = Math.min(...lines.map(line => line.search(/\S/)));
-    if (minIndent < 0) {
-        // No indentation found, so return the original string
-        return string;
-    }
-    // Remove the minimum indentation from each line
-    const unindentedLines = lines.map(line => line.slice(minIndent));
-    return unindentedLines.join('\n');
-}
 
 /**
  * @class Escaper for CSharp
@@ -81,7 +53,6 @@ class CSharpEscaper extends Escaper {
      */
     constructor(style) {
         super(style);
-        this.description = "Escapes and unescapes strings in C#";
         if (!validStyles.has(style)) {
             throw new Error(`invalid c# escape style ${style}`);
         }
@@ -109,7 +80,7 @@ class CSharpEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        if (this.style === "csharp-verbatim") {
+        if (this.style === "csharp-raw") {
             unescaped = unindent(unescaped);
         }
         if (this.style === "csharp" || this.style === "csharp-raw") {

@@ -18,7 +18,22 @@
  */
 
 import Escaper from './Escaper.js';
-import { escapeUnicode, escapeUnicodeAstral, unescapeUnicode, unescapeOctal } from './EscapeCommon.js';
+import {
+    escapeUnicode,
+    escapeUnicodeAsSurrogatePairs,
+    escapeRules,
+    unescapeUnicode,
+    unescapeRules,
+    escapeRegexes,
+    unindent
+} from './EscapeCommon.js';
+
+const validStyles = new Set([
+    "java",            // regular single or double-quoted strings
+    "java-raw",        // Java raw strings like """foo"""
+    "kotlin",          // regular single or double-quoted strings"
+    "kotlin-raw",      // Kotlin raw strings like """foo"""
+]);
 
 /**
  * @class Escaper for Java
@@ -28,26 +43,30 @@ class JavaEscaper extends Escaper {
     /**
      * @constructor
      */
-    constructor() {
-        super("java");
+    constructor(style) {
+        super(style);
+        if (!validStyles.has(style)) {
+            throw new Error(`invalid java/kotlin escape style ${style}`);
+        }
         this.name = "java-escaper";
-        this.description = "Escapes and unescapes strings in Java";
+        this.description = "Escapes and unescapes strings in Java or Kotlin";
     }
 
     /**
      * @override
      */
     escape(string) {
-        // convert all code points above U+FFFF to \uXXXX form
         let escaped = string;
 
-        escaped = escaped.
-            replace(/\\/g, "\\\\").
-            replace(/"/g, '\\"').
-            replace(/'/g, "\\'");
-
-        escaped = escapeUnicode(escaped);
-        escaped = escapeUnicodeAstral(escaped);
+        if (this.style === "java" || this.style === "kotlin") {
+            // these share the same escape rules
+            escaped = escapeRules(escaped, escapeRegexes.java);
+            escaped = escapeUnicodeAsSurrogatePairs(escaped);
+        } else if (this.style === "java-raw") {
+            // java raw strings only support line continuation characters and Unicode
+            escaped = escapeRules(escaped, escapeRegexes["java-raw"]);
+            escaped = escapeUnicodeAsSurrogatePairs(escaped);
+        }
 
         return escaped;
     }
@@ -58,16 +77,20 @@ class JavaEscaper extends Escaper {
     unescape(string) {
         let unescaped = string;
 
-        // unescapeUnicode does the whole range of Unicode
-        unescaped = unescapeUnicode(unescaped);
-        unescaped = unescapeOctal(unescaped);
+        if (this.style === "java-raw" || this.style === "kotlin-raw") {
+            unescaped = unindent(unescaped);
+        }
 
-        unescaped = unescaped.
-            replace(/^\\\\/g, "\\").
-            replace(/([^\\])\\\\/g, "$1\\").
-            replace(/\\'/g, "'").
-            replace(/\\"/g, '"');
-
+        if (this.style === "java" || this.style === "kotlin") {
+            // these share the same escape rules
+            unescaped = unescapeRules(unescaped, escapeRegexes.java);
+            // unescapeUnicode does the whole range of Unicode
+            unescaped = unescapeUnicode(unescaped);
+        } else if (this.style === "java-raw") {
+            // java raw strings only support line continuation characters and Unicode
+            unescaped = unescapeRules(unescaped, escapeRegexes["java-raw"]);
+            unescaped = unescapeUnicode(unescaped);
+        }
         return unescaped;
     }
 }

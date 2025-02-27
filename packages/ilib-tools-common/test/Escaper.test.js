@@ -48,14 +48,98 @@ describe("test the Escaper class and its subclasses", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("java");
-        expect(escaper.escape("fo\"o'b\\aㅽr𝄞")).toBe("fo\\\"o\\'b\\\\a\\u317Dr\\u1D11E");
+        // astral plane characters are represented as surrogate pairs in Java
+        expect(escaper.escape("fo\"o'b\\aㅽr𝄞")).toBe("fo\\\"o\\'b\\\\a\\u317Dr\\uD834\\uDD1E");
     });
 
     test("the java unescaper works properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("java");
-        expect(escaper.unescape("fo\\\"o\\'b\\\\a\\u317dr\\u1d11e")).toBe("fo\"o'b\\aㅽr𝄞");
+        expect(escaper.unescape("fo\\\"o\\'b\\\\a\\u317dr\\uD834\\uDD1E")).toBe("fo\"o'b\\aㅽr𝄞");
+    });
+
+    test("the java escape does not croak on invalid input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java");
+        // should return the empty string if we pass in undefined
+        expect(escaper.escape()).toBe("");
+    });
+
+    test("the java escape does not croak on empty input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java");
+        // should return the empty string if we pass in the empty string
+        expect(escaper.escape("")).toBe("");
+    });
+
+    test("the java unescaper does not croak on invalid input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java");
+        // should return the empty string if we pass in undefined
+        expect(escaper.unescape()).toBe("");
+    });
+
+    test("the java unescaper does not croak on empty input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java");
+        // should return the empty string if we pass in the empty string
+        expect(escaper.unescape("")).toBe("");
+    });
+
+    test("the java raw escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java-raw");
+        expect(escaper.escape("fo\"o'b\\n\u317D")).toBe("fo\"o'b\\n\\u317D");
+    });
+
+    test("the java raw unescaper works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java-raw");
+        expect(escaper.unescape("fo\"o'b\\n\\u317D")).toBe("fo\"o'b\\n\u317D");
+    });
+
+    test("the java raw unescaper handles line continuations properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("java-raw");
+        expect(escaper.unescape("fo\"o'b\\\n\\u317D")).toBe("fo\"o'b\u317D");
+    });
+
+    test("the kotlin escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("kotlin");
+        expect(escaper.escape("fo\"o'b\\aㅽr𝄞")).toBe("fo\\\"o\\'b\\\\a\\u317Dr\\uD834\\uDD1E");
+    });
+
+    test("the kotlin unescaper works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("kotlin");
+        expect(escaper.unescape("fo\\\"o\\'b\\\\a\\u317dr\\uD834\\uDD1E")).toBe("fo\"o'b\\aㅽr𝄞");
+    });
+
+    test("the kotlin raw escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("kotlin-raw");
+        // does absolutely nothing at all to the string
+        expect(escaper.escape("fo\"o'b\\n\u317D")).toBe("fo\"o'b\\n\u317D");
+    });
+
+    test("the kotlin raw unescaper works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("kotlin-raw");
+        // does absolutely nothing at all to the string
+        expect(escaper.unescape("fo\"o'b\\n\u317D")).toBe("fo\"o'b\\n\u317D");
     });
 
     test("the javascript escape works properly", () => {
@@ -395,12 +479,19 @@ describe("test the Escaper class and its subclasses", () => {
         // only Unicode characters are unescaped
         expect(escaper.unescape("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E")).toBe("This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}");
     });
-    
+
     test("the c# raw unescape unindents properly", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("csharp-raw");
-        expect(escaper.unescape("     five spaces\n     six spaces\n    four spaces\n   ")).toBe("  five spaces\n   six spaces\n four spaces");
+        expect(escaper.unescape("     five spaces\n      six spaces\n    four spaces")).toBe(" five spaces\n  six spaces\nfour spaces");
+    });
+
+    test("the c# raw unescape unindents properly if the last line with the closing quotes is also indented", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("csharp-raw");
+        expect(escaper.unescape("     five spaces\n      six spaces\n    four spaces\n   ")).toBe("  five spaces\n   six spaces\n four spaces\n");
     });
 
     test("the c# verbatim escape works properly", () => {
