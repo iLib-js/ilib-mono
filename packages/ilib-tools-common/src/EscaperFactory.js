@@ -1,5 +1,5 @@
 /*
- * Escaper.js - class that escapes and unescapes strings
+ * EscaperFactory.js - factory function that returns escaper instances
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -27,8 +27,7 @@ import PythonEscaper from "./escapes/PythonEscaper.js";
 import SwiftEscaper from "./escapes/SwiftEscaper.js";
 import URIEscaper from "./escapes/URIEscaper.js";
 
-const escaperCache = {
-};
+const escaperCache = {};
 
 /**
  * Return an Escaper instance for the given style. The style must be one of the
@@ -38,9 +37,11 @@ const escaperCache = {
  * <li>csharp-raw - escape for C# raw strings</li>
  * <li>csharp-verbatim - escape for C# verbatim strings</li>
  * <li>java - escape for Java</li>
+ * <li>java-raw - escape for JSON raw strings</li>
  * <li>js - escape for JavaScript</li>
  * <li>json - escape for JSON</li>
  * <li>kotlin - escape for Kotlin</li>
+ * <li>kotlin-raw - escape for Kotlin raw strings</li>
  * <li>php - escape for PHP (default, same as php-double)</li>
  * <li>php-double - escape for double-quoted PHP strings</li>
  * <li>php-single - escape for single-quoted PHP strings</li>

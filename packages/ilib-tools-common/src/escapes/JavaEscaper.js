@@ -19,7 +19,6 @@
 
 import Escaper from './Escaper.js';
 import {
-    escapeUnicode,
     escapeUnicodeAsSurrogatePairs,
     escapeRules,
     unescapeUnicode,
