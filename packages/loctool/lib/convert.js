@@ -27,6 +27,9 @@ var TMX = require("./TMX.js");
 var logger = log4js.getLogger("loctool.lib.convert");
 
 function convert(settings) {
+    // don't need to load all the translations because we are just converting
+    // some files and need a project to do it
+    settings.loadTranslations = false;
     var project = ProjectFactory(".", settings);
     if (!project) project = new CustomProject({
         name: settings.id,

@@ -184,14 +184,16 @@ var Project = function(options, root, settings) {
     this.paths = new Queue();
     this.files = new Queue();
 
-    this.db = new LocalRepository({
-        sourceLocale: this.sourceLocale,
-        pseudoLocale: this.pseudoLocale,
-        pathName: ((this.settings.xliffVersion !== 2) ? (path.join(this.xliffsDir[0], this.options.id + ".xliff")): undefined),
-        project: this,
-        xliffsDir: this.xliffsDir,
-        intermediateFormat: this.settings.intermediateFormat
-    });
+    if (!settings || typeof(settings.loadTranslations) !== 'boolean' || settings.loadTranslations) {
+        this.db = new LocalRepository({
+            sourceLocale: this.sourceLocale,
+            pseudoLocale: this.pseudoLocale,
+            pathName: ((this.settings.xliffVersion !== 2) ? (path.join(this.xliffsDir[0], this.options.id + ".xliff")): undefined),
+            project: this,
+            xliffsDir: this.xliffsDir,
+            intermediateFormat: this.settings.intermediateFormat
+        });
+    }
 
     logger.debug("New Project: " + this.root + " source: " + this.sourceLocale + ", pseudo: " + this.pseudoLocale);
 };
@@ -255,26 +257,30 @@ Project.prototype.init = function(cb) {
         });
         this.extensionMap = extensionMap;
 
-        this.db.init(function() {
-            // use the specified locales if they exist, or else use whatever locales
-            // already exist in the translations. Make sure to also add in the
-            // pseudo-locale.
-            this.db.getLocales(this.options.id, undefined, function(dbLocales) {
-                var locales = this.defaultLocales || dbLocales || [];
-                if (!this.defaultLocales && !this.settings.nopseudo) {
-                    locales = locales.concat(Object.keys(this.pseudoLocales));
-                }
+        if (this.db) {
+            this.db.init(function() {
+                // use the specified locales if they exist, or else use whatever locales
+                // already exist in the translations. Make sure to also add in the
+                // pseudo-locale.
+                this.db.getLocales(this.options.id, undefined, function(dbLocales) {
+                    var locales = this.defaultLocales || dbLocales || [];
+                    if (!this.defaultLocales && !this.settings.nopseudo) {
+                        locales = locales.concat(Object.keys(this.pseudoLocales));
+                    }
 
-                // weed out the source locales -> don't have to translate to those!
-                locales = locales.filter(function(locale) {
-                    return locale !== "en" && locale !== this.sourceLocale;
+                    // weed out the source locales -> don't have to translate to those!
+                    locales = locales.filter(function(locale) {
+                        return locale !== "en" && locale !== this.sourceLocale;
+                    }.bind(this));
+
+                    this.locales = locales;
+
+                    cb();
                 }.bind(this));
-
-                this.locales = locales;
-
-                cb();
             }.bind(this));
-        }.bind(this));
+        } else {
+            cb();
+        }
     }.bind(this));
 };
 
