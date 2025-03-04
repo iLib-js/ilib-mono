@@ -1,5 +1,5 @@
 /*
- * JavascriptEscaper.js - class that escapes and unescapes strings in Java
+ * JavascriptEscaper.js - class that escapes and unescapes strings in JavaScript
  *
  * Copyright © 2025 JEDLSoft
  *
