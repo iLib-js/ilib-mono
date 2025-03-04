@@ -26,16 +26,19 @@ import { escapeRegexes } from './EscapeCommon.js';
  */
 class RegexBasedEscaper extends Escaper {
     /**
+     * Create a new escaper instance that escapes and unescapes strings based
+     * on regular expressions.
      * @constructor
+     * @param {string} style the style to use to determine how to escape
+     * @throws {Error} if the style is not supported
      */
     constructor(style) {
         super(style);
-        this.description = "Escapes and unescapes strings in various styles using regular expressions.";
-
         this.escapeMap = escapeRegexes[style];
         if (!this.escapeMap) {
-            throw new Error("No escape map for style " + style);
+            throw new Error(`No escape map for style ${style}`);
         }
+        this.description = "Escapes and unescapes strings in various styles using regular expressions.";
     }
 
     /**

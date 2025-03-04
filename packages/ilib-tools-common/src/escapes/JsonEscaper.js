@@ -18,7 +18,11 @@
  */
 
 import Escaper from './Escaper.js';
-import { unescapeUnicode, escapeJS, unescapeJS } from './EscapeCommon.js';
+import { unescapeUnicode,
+    escapeRegexes,
+    escapeRules,
+    unescapeRules
+} from './EscapeCommon.js';
 
 /**
  * @class Escaper for Java
@@ -37,7 +41,7 @@ class JsonEscaper extends Escaper {
      * @override
      */
     escape(string) {
-        return escapeJS(string);
+        return escapeRules(string, escapeRegexes.js);
     }
 
     /**
@@ -47,7 +51,7 @@ class JsonEscaper extends Escaper {
         let unescaped = string;
 
         unescaped = unescapeUnicode(unescaped);
-        unescaped = unescapeJS(unescaped);
+        unescaped = unescapeRules(unescaped, escapeRegexes.js);
 
         return unescaped;
     }

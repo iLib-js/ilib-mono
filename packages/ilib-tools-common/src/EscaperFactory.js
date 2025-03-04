@@ -39,6 +39,7 @@ const escaperCache = {};
  * <li>java - escape for Java</li>
  * <li>java-raw - escape for JSON raw strings</li>
  * <li>js - escape for JavaScript</li>
+ * <li>javascript-template - escape for JavaScript template strings</li>
  * <li>json - escape for JSON</li>
  * <li>kotlin - escape for Kotlin</li>
  * <li>kotlin-raw - escape for Kotlin raw strings</li>
@@ -94,9 +95,11 @@ function escaperFactory(style) {
             escaperCache[style] = new JsonEscaper();
             break;
 
-        case 'javascript':
         case 'js':
-            escaperCache[style] = new JavascriptEscaper();
+        case 'js-template':
+        case 'javascript':
+        case 'javascript-template':
+            escaperCache[style] = new JavascriptEscaper(style);
             break;
 
         case 'php':

@@ -146,23 +146,65 @@ describe("test the Escaper class and its subclasses", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("js");
-        expect(escaper.escape("fo\"o'b\\aㅽr𝄞")).toBe("fo\\\"o\\\'b\\\\a\\u317Dr\\u{1D11E}");
+        expect(escaper.escape("fo\"o'b`\\aㅽr𝄞")).toBe("fo\\\"o\\\'b`\\\\a\\u317Dr\\u{1D11E}");
     });
 
     test("the javascript unescape works properly", () => {
-        expect.assertions(2);
+        expect.assertions(1);
 
         const escaper = escaperFactory("js");
-        expect(escaper.unescape("fo\\\"o\\\'b\\\\a\\u317dr\\u{1d11e}")).toBe("fo\"o'b\\aㅽr𝄞");
+        expect(escaper.unescape("fo\\\"o\\\'b`\\\\a\\u317dr\\u{1d11e}")).toBe("fo\"o'b`\\aㅽr𝄞");
+    });
+
+    test("the javascript unescape works with line continuation characters", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("js");
         expect(escaper.unescape("test \\\ntest test")).toBe("test test test");
     });
 
+    test("the javascript template escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("js-template");
+        // escape should not escape the single and double quotes
+        expect(escaper.escape(`fo"o'b\`\f\r\t
+ㅽr𝄞`)).toBe(`fo"o'b\\\`\\f\\r\\t
+\\u317Dr\\u{1D11E}`);
+    });
+
+    test("the javascript template unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("js-template");
+        // unescape should not unescape the single and double quotes
+        expect(escaper.unescape(`fo\\"o\\'b\\\`\\f\\r\\t
+\\u317Dr\\u{1D11E}`)).toBe(`fo"o'b\`\f\r\t
+ㅽr𝄞`);
+    });
+
     test("that javascript is an alias for js", () => {
-        expect.assertions(2);
+        expect.assertions(12);
 
         const escaper = escaperFactory("javascript");
         expect(escaper).toBeTruthy();
         expect(escaper.getStyle()).toBe("js");
+        expect(escaper.getName()).toBe("javascript-escaper");
+        
+        const escaper2 = escaperFactory("js");
+        expect(escaper2).toBeTruthy();
+        expect(escaper2.getStyle()).toBe("js");
+        expect(escaper2.getName()).toBe("javascript-escaper");
+        
+        const escaper3 = escaperFactory("javascript-template");
+        expect(escaper3).toBeTruthy();
+        expect(escaper3.getStyle()).toBe("js-template");
+        expect(escaper3.getName()).toBe("javascript-escaper");
+        
+        const escaper4 = escaperFactory("js-template");
+        expect(escaper4).toBeTruthy();
+        expect(escaper4.getStyle()).toBe("js-template");
+        expect(escaper4.getName()).toBe("javascript-escaper");
     });
 
     test("the json escape works properly", () => {

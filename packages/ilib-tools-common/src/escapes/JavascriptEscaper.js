@@ -22,23 +22,43 @@ import {
     escapeHex,
     escapeUnicode,
     escapeUnicodeWithBrackets,
-    escapeJS,
-    unescapeJS,
+    escapeRules,
+    escapeRegexes,
+    unescapeRules,
     unescapeHex,
     unescapeOctal,
     unescapeUnicode,
     unescapeUnicodeWithBrackets
 } from './EscapeCommon.js';
 
+const validStyles = new Set([
+    "js",                   // regular single or double-quoted strings
+    "js-template"           // JS template strings like `foo`
+]);
+
 /**
- * @class Escaper for Java
+ * @class Escaper for JavaScript
  */
 class JavascriptEscaper extends Escaper {
     /**
+     * Can support the following styles:
+     * - js: single or double-quoted strings
+     * - js-template: JS template strings like `foo`
+     *
+     * @param {string} style the style to use for escaping
      * @constructor
+     * @throws {Error} if the style is not supported
      */
-    constructor() {
-        super("js");
+    constructor(style) {
+        super(style);
+        if (style === "javascript") {
+            this.style = "js";
+        } else if (style === "javascript-template") {
+            this.style = "js-template";
+        }
+        if (!validStyles.has(this.style)) {
+            throw new Error(`invalid escape style ${style}`);
+        }
         this.name = "javascript-escaper";
         this.description = "Escapes and unescapes strings in Javascript";
     }
@@ -49,10 +69,12 @@ class JavascriptEscaper extends Escaper {
     escape(string) {
         let escaped = string;
 
-        escaped = escapeJS(escaped);
+        escaped = escapeRules(escaped, escapeRegexes[this.style]);
         escaped = escapeUnicode(escaped);
         escaped = escapeUnicodeWithBrackets(escaped);
-        escaped = escapeHex(escaped);
+        if (this.style === "js") {
+            escaped = escapeHex(escaped);
+        }
 
         return escaped;
     }
@@ -67,7 +89,7 @@ class JavascriptEscaper extends Escaper {
         unescaped = unescapeUnicodeWithBrackets(unescaped);
         unescaped = unescapeHex(unescaped);
         unescaped = unescapeOctal(unescaped);
-        unescaped = unescapeJS(unescaped);
+        unescaped = unescapeRules(unescaped, escapeRegexes[this.style]);
 
         return unescaped;
     }

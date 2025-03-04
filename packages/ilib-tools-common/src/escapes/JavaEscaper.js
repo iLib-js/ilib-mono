@@ -38,9 +38,17 @@ const validStyles = new Set([
  * @class Escaper for Java
  */
 class JavaEscaper extends Escaper {
-    /**
-     * @constructor
-     */
+   /**
+    * Can support the following styles:
+    * - java: single or double-quoted strings
+    * - java-raw: raw strings like """foo"""
+    * - kotlin: regular single or double-quoted strings
+    * - kotlin-raw: Kotlin raw strings like """foo"""
+    *
+    * @param {string} style the style to use for escaping
+    * @constructor
+    * @throws {Error} if the style is not supported
+    */
     constructor(style) {
         super(style);
         if (!validStyles.has(style)) {

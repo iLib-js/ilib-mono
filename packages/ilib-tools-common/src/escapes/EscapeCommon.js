@@ -258,13 +258,41 @@ export const escapeRegexes = {
             "\\\\": "\\\\",
             "'": "\\'",
             '"': '\\"',
+            "\0": "\\0",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v",
+        }
+    },
+    "js-template": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\0",
+            "\\\\b": "\b",
+            "\\\\f": "\f",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\v": "\v",
+            "\\\\`": "`"
+        },
+        "escape": {
+            "^\\\\\\\\": "\\\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\\\",
             "\\0": "\\0",
             "\x08": "\\b",
-            "\\f": "\\f",
-            "\\n": "\\n",
-            "\\r": "\\r",
-            "\\t": "\\t",
-            "\\v": "\\v",
+            "\f": "\\f",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v",
+            "`": "\\`"
         }
     },
     "php-double": {
@@ -534,48 +562,6 @@ export const escapeRegexes = {
         }
     }
 };
-
-/**
- * Escape a string so that it has Javascript escape sequences
- * in it instead of the characters themselves.
- *
- * @param {string} string the string to escape
- * @returns {string} the escaped string
- * @static
- */
-export function escapeJS(string) {
-    if (!string) {
-        return "";
-    }
-    let escaped = string;
-
-    for (const [key, value] of Object.entries(escapeRegexes.js.escape)) {
-        escaped = escaped.replace(new RegExp(key, "g"), value);
-    }
-
-    return escaped;
-}
-
-/**
- * Unescape a string that has Javascript escape sequences
- * in it.
- *
- * @param {string} string the string to unescape
- * @returns {string} the unescaped string
- * @static
- */
-export function unescapeJS(string) {
-    if (!string) {
-        return "";
-    }
-    let unescaped = string;
-
-    for (const [key, value] of Object.entries(escapeRegexes.js.unescape)) {
-        unescaped = unescaped.replace(new RegExp(key, "g"), value);
-    }
-
-    return unescaped;
-}
 
 /**
  * Convert all code points above U+00FF and below U+10000

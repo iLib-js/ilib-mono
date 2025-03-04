@@ -20,10 +20,11 @@
 import Escaper from './Escaper.js';
 
 /**
- * @class Escaper for Java
+ * @class Escaper for URIs
  */
 class URIEscaper extends Escaper {
     /**
+     * Create a new escaper instance for URIs.
      * @constructor
      */
     constructor() {
