@@ -190,17 +190,17 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper).toBeTruthy();
         expect(escaper.getStyle()).toBe("js");
         expect(escaper.getName()).toBe("javascript-escaper");
-        
+
         const escaper2 = escaperFactory("js");
         expect(escaper2).toBeTruthy();
         expect(escaper2.getStyle()).toBe("js");
         expect(escaper2.getName()).toBe("javascript-escaper");
-        
+
         const escaper3 = escaperFactory("javascript-template");
         expect(escaper3).toBeTruthy();
         expect(escaper3.getStyle()).toBe("js-template");
         expect(escaper3.getName()).toBe("javascript-escaper");
-        
+
         const escaper4 = escaperFactory("js-template");
         expect(escaper4).toBeTruthy();
         expect(escaper4.getStyle()).toBe("js-template");
@@ -469,7 +469,7 @@ describe("test the Escaper class and its subclasses", () => {
         expect.assertions(1);
 
         const escaper = escaperFactory("swift-extended");
-        expect(escaper.escape("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}")).toBe("This string uses all the escapes! \'single\' \"double\" \\\\ \n\r\t\x00 \u{1D11E}");
+        expect(escaper.escape("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}")).toBe("This string uses all the escapes! \'single\' \"double\" \\ \n\r\t\x00 \u{1D11E}");
     });
 
     test("the swift extended unescape works properly", () => {
@@ -596,5 +596,39 @@ describe("test the Escaper class and its subclasses", () => {
         const escaper = escaperFactory("url");
         expect(escaper).toBeTruthy();
         expect(escaper.getStyle()).toBe("uri");
+    });
+
+    test.each([
+        { style: "csharp", str: "This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\0\\a\\b\\e\\f\\n\\r\\t\\v \\u317D \\U0001D11E" },
+        { style: "csharp-raw", str: "This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E" },
+        { style: "csharp-verbatim", str: "This string uses\nall the escapes! \'single\' \"\"double\"\" \\ \x00\x07\x08\x1B\f\n\r\t\v \u317D \u{1D11E}" },
+        { style: "java", str: "fo\\\"o\\'b\\\\a\\u317Dr\\uD834\\uDD1E" },
+        { style: "java-raw", str: "fo\"o'b\\n\\u317D" },
+        { style: "json", str: "abc \\\\ \\0\\f\\n\\b\\t\\v\\reㅽr𝄞" },
+        { style: "js", str: "fo\\\"o\\'b`\\\\a\\u317Dr\\u{1D11E}" },
+        { style: "js-template", str: "fo\"o'b\\`\\f\\r\\t\n\\u317Dr\\u{1D11E}" },
+        { style: "kotlin", str: "fo\\\"o\\'b\\\\a\\u317Dr\\uD834\\uDD1E" },
+        { style: "kotlin-raw", str: "fo\"o'b\\n\\u317D" },
+        { style: "php-double", str: "abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}" },
+        { style: "php-single", str: "abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞" },
+        { style: "php-heredoc", str: "abc 'd' \"e\" \\$\\n\\r\\t\\e\\f\\vT\\u{317D} \\u{317D}r\\u{1D11E}" },
+        { style: "php-nowdoc", str: "abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\u{317d} ㅽr𝄞" },
+        { style: "python", str: "abc \\'d\\' \\\"e\\\" \\\\ \\n\\r\\t\\b\\f\\v\\aT\\u317D \\U0001D11E" },
+        { style: "python-raw", str: "abc \\'d\\' \"e\" \\\\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞" },
+        { style: "python-byte", str: "abc \\'d\\' \"e\" \\\\ \n\r\t\x08\f\v\x07\x54ㅽ 𝄞" },
+        { style: "python-multi", str: "abc 'd' \\\"e\\\" \\\\ \\n\\r\\t\\b\\f\\v\\aT\\u317D \\U0001D11E" },
+        { style: "smarty-double", str: "abc 'd' \\\"e\\\" \\$\\n\\r\\t\\e\\f\\vTㅽ ㅽr𝄞" },
+        { style: "smarty-single", str: "abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞" },
+        { style: "swift", str: "This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\n\\r\\t\\0 \\u{1D11E}" },
+        { style: "swift-multi", str: "This string uses all the escapes!\n\'single\' \"double\" \\\\ \n\r\t\x00 \u317D \u{1D11E}" },
+        { style: "swift-extended", str: "This string uses all the escapes! \'single\' \"double\" \\\\ \n\r\t\x00 \u{1D11E}" },
+        { style: "uri", str: "https://github.com/ilib-js/ilib-mono?q=foo%20bar&%E3%85%BD=%F0%9D%84%9E&%C3%BC=ue#%C5%82" },
+        { style: "xml", str: "This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes" },
+        { style: "xml-attr", str: "This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes. Now some chars \\n\\r\\t\\b\\f\\v" },
+    ])("$style unescaping and re-escaping should give you back the same string for any chars that should be escaped", ({style, str}) => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory(style);
+        expect(escaper.escape(escaper.unescape(str))).toBe(str);
     });
 });

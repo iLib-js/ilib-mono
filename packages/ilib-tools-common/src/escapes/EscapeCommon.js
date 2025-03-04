@@ -513,8 +513,6 @@ export const escapeRegexes = {
             "\\\\#+\n": ""                     // remove line continuation
         },
         "escape": {
-            "^\\\\": "\\\\",
-            "([^\\\\])\\\\": "$1\\\\",
         }
     },
     "xml": {
