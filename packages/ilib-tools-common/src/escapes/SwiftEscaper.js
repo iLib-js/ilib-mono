@@ -35,7 +35,6 @@ const validStyles = new Set([
 
 /**
  * @class Escaper for Swift
- * @extends Escaper
  */
 class SwiftEscaper extends Escaper {
     /**

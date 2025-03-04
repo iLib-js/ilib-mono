@@ -22,7 +22,6 @@ import { unescapeUnicode, escapeJS, unescapeJS } from './EscapeCommon.js';
 
 /**
  * @class Escaper for Java
- * @extends Escaper
  */
 class JsonEscaper extends Escaper {
     /**

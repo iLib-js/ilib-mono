@@ -23,7 +23,6 @@ import { escapeRegexes } from './EscapeCommon.js';
 
 /**
  * @class Escaper for various string formats based on regular expressions.
- * @extends Escaper
  */
 class RegexBasedEscaper extends Escaper {
     /**

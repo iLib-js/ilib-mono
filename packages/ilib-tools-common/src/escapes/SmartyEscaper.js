@@ -33,7 +33,6 @@ const validStyles = new Set([
 
 /**
  * @class Escaper for Smarty
- * @extends Escaper
  */
 class SmartyEscaper extends Escaper {
     /**

@@ -18,7 +18,7 @@
  */
 
 /**
- * @class A class that escape and unescapes strings.
+ * A class that escapes and unescapes strings.
  * @abstract
  */
 class Escaper {

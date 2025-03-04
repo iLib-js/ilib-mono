@@ -36,7 +36,6 @@ const validStyles = new Set([
 
 /**
  * @class Escaper for Java
- * @extends Escaper
  */
 class JavaEscaper extends Escaper {
     /**

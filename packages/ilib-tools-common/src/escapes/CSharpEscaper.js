@@ -44,7 +44,6 @@ const styleMap = {
 
 /**
  * @class Escaper for CSharp
- * @extends Escaper
  */
 class CSharpEscaper extends Escaper {
     /**

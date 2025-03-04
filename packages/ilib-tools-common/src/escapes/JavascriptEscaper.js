@@ -32,7 +32,6 @@ import {
 
 /**
  * @class Escaper for Java
- * @extends Escaper
  */
 class JavascriptEscaper extends Escaper {
     /**

@@ -38,7 +38,6 @@ const validStyles = new Set([
 
 /**
  * @class Escaper for PHP
- * @extends Escaper
  */
 class PHPEscaper extends Escaper {
     /**

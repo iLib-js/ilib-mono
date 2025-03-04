@@ -21,7 +21,6 @@ import Escaper from './Escaper.js';
 
 /**
  * @class Escaper for Java
- * @extends Escaper
  */
 class URIEscaper extends Escaper {
     /**

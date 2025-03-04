@@ -70,6 +70,9 @@ function escaperFactory(style) {
     if (style === "html") {
         style = "xml";
     }
+    if (escaperCache[style]) {
+        return escaperCache[style];
+    }
     switch (style) {
         case 'csharp':
         case 'c#':
@@ -77,31 +80,23 @@ function escaperFactory(style) {
         case 'c#-raw':
         case 'csharp-verbatim':
         case 'c#-verbatim':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new CSharpEscaper(style);
-            }
+            escaperCache[style] = new CSharpEscaper(style);
             break;
 
         case 'kotlin':
         case 'kotlin-raw':
         case 'java':
         case 'java-raw':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new JavaEscaper(style);
-            }
+            escaperCache[style] = new JavaEscaper(style);
             break;
 
         case 'json':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new JsonEscaper();
-            }
+            escaperCache[style] = new JsonEscaper();
             break;
 
         case 'javascript':
         case 'js':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new JavascriptEscaper();
-            }
+            escaperCache[style] = new JavascriptEscaper();
             break;
 
         case 'php':
@@ -109,51 +104,39 @@ function escaperFactory(style) {
         case 'php-single':
         case 'php-heredoc':
         case 'php-nowdoc':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new PHPEscaper(style);
-            }
+            escaperCache[style] = new PHPEscaper(style);
             break;
 
         case 'smarty':
         case 'smarty-double':
         case 'smarty-single':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new SmartyEscaper(style);
-            }
+            escaperCache[style] = new SmartyEscaper(style);
             break;
 
         case 'python':
         case 'python-raw':
         case 'python-byte':
         case 'python-multi':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new PythonEscaper(style);
-            }
+            escaperCache[style] = new PythonEscaper(style);
             break;
 
         case 'swift':
         case 'swift-multi':
         case 'swift-extended':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new SwiftEscaper(style);
-            }
+            escaperCache[style] = new SwiftEscaper(style);
             break;
 
         case 'uri':
         case 'url':
-            if (!escaperCache[style]) {
-                escaperCache[style] = new URIEscaper(style);
-            }
+            escaperCache[style] = new URIEscaper(style);
             break;
 
         default:
-            if (!escaperCache[style]) {
-                try {
-                    escaperCache[style] = new RegexBasedEscaper(style);
-                } catch (e) {
-                    // if the style is not recognized, just return undefined
-                    return undefined;
-                }
+            try {
+                escaperCache[style] = new RegexBasedEscaper(style);
+            } catch (e) {
+                // if the style is not recognized, just return undefined
+                return undefined;
             }
             break;
     }

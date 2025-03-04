@@ -39,7 +39,6 @@ const validStyles = new Set([
 
 /**
  * @class Escaper for Python
- * @extends Escaper
  */
 class PythonEscaper extends Escaper {
     /**
