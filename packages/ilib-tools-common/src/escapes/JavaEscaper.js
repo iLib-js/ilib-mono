@@ -1,5 +1,6 @@
 /*
  * JavaEscaper.js - class that escapes and unescapes strings in Java
+ * and Kotlin
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -35,7 +36,7 @@ const validStyles = new Set([
 ]);
 
 /**
- * @class Escaper for Java
+ * @class Escaper for Java and Kotlin
  */
 class JavaEscaper extends Escaper {
    /**
