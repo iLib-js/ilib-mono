@@ -1,5 +1,13 @@
 # ilib-po
 
+## 1.1.1
+
+### Patch Changes
+
+- 9cadb43: Fixed syntax errors in generated PO file when there are linebreaks in comments for translators.
+- Updated dependencies [c5ee237]
+  - ilib-tools-common@1.14.0
+
 ## 1.1.0
 
 ### Minor Changes
