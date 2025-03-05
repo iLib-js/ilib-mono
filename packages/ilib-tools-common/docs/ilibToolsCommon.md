@@ -38,6 +38,39 @@ phrase in the source language, depending on the context.</p>
 <dt><a href="#TranslationVariant">TranslationVariant</a></dt>
 <dd><p>A class that represents a translation unit variant.</p>
 </dd>
+<dt><a href="#CSharpEscaper">CSharpEscaper</a></dt>
+<dd><p>Escaper for CSharp</p>
+</dd>
+<dt><a href="#Escaper">Escaper</a></dt>
+<dd><p>A class that escapes and unescapes strings.</p>
+</dd>
+<dt><a href="#JavaEscaper">JavaEscaper</a></dt>
+<dd><p>Escaper for Java and Kotlin</p>
+</dd>
+<dt><a href="#JavascriptEscaper">JavascriptEscaper</a></dt>
+<dd><p>Escaper for JavaScript</p>
+</dd>
+<dt><a href="#JsonEscaper">JsonEscaper</a></dt>
+<dd><p>Escaper for Java</p>
+</dd>
+<dt><a href="#PHPEscaper">PHPEscaper</a></dt>
+<dd><p>Escaper for PHP</p>
+</dd>
+<dt><a href="#PythonEscaper">PythonEscaper</a></dt>
+<dd><p>Escaper for Python</p>
+</dd>
+<dt><a href="#RegexBasedEscaper">RegexBasedEscaper</a></dt>
+<dd><p>Escaper for various string formats based on regular expressions.</p>
+</dd>
+<dt><a href="#SmartyEscaper">SmartyEscaper</a></dt>
+<dd><p>Escaper for Smarty</p>
+</dd>
+<dt><a href="#SwiftEscaper">SwiftEscaper</a></dt>
+<dd><p>Escaper for Swift</p>
+</dd>
+<dt><a href="#URIEscaper">URIEscaper</a></dt>
+<dd><p>Escaper for URIs</p>
+</dd>
 </dl>
 
 ## Constants
@@ -112,6 +145,40 @@ still want to include the &quot;config.json&quot; file.<p></p>
 property that contains an array of the children of that directory. The path property is the full path
 to the file or directory relative to the root directory.</p>
 </dd>
+<dt><a href="#escaperFactory">escaperFactory(style)</a> ⇒ <code><a href="#Escaper">Escaper</a></code></dt>
+<dd><p>Return an Escaper instance for the given style. The style must be one of the
+following:</p>
+<ul>
+<li>csharp - escape for C#</li>
+<li>csharp-raw - escape for C# raw strings</li>
+<li>csharp-verbatim - escape for C# verbatim strings</li>
+<li>java - escape for Java</li>
+<li>java-raw - escape for JSON raw strings</li>
+<li>js - escape for JavaScript</li>
+<li>javascript-template - escape for JavaScript template strings</li>
+<li>json - escape for JSON</li>
+<li>kotlin - escape for Kotlin</li>
+<li>kotlin-raw - escape for Kotlin raw strings</li>
+<li>php - escape for PHP (default, same as php-double)</li>
+<li>php-double - escape for double-quoted PHP strings</li>
+<li>php-single - escape for single-quoted PHP strings</li>
+<li>php-heredoc - escape for PHP heredoc strings</li>
+<li>php-nowdoc - escape for PHP nowdoc strings</li>
+<li>python - escape for Python regular strings (default)</li>
+<li>python-raw - escape for Python raw strings</li>
+<li>python-byte - escape for Python byte strings</li>
+<li>python-multi - escape for Python multi-line strings</li>
+<li>regexp - escape for regular expressions</li>
+<li>smarty - escape for Smarty templates (default, same as smarty-double)</li>
+<li>smarty-double - escape for double-quoted Smarty strings</li>
+<li>smarty-single - escape for single-quoted Smarty strings</li>
+<li>swift - escape for regular Swift strings</li>
+<li>swift-multi - escape for Swift multi-line strings</li>
+<li>swift-extended - escape for Swift extended strings</li>
+<li>uri - escape for URLs and URIs</li>
+<li>xml - escape for XML text, including HTML</li>
+<li>xml-attr - escape for XML attributes, including HTML</li>
+</ul></dd>
 <dt><a href="#convertPluralResToICU">convertPluralResToICU(resource)</a> ⇒ <code><a href="#ResourceString">ResourceString</a></code> | <code>undefined</code></dt>
 <dd><p>Convert a plural resource to an ICU-style plural string resource.
 This allows for shoe-horning plurals into systems that do not
@@ -129,6 +196,62 @@ properly. All other fields are copied from the string resource
 parameter into the returned resource plural unchanged.
 The complement function is convertPluralResToICU() which does
 the opposite.</p>
+</dd>
+<dt><a href="#unescapeUnicode">unescapeUnicode(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Unescape a string that has sequences like \uXXXX</p>
+</dd>
+<dt><a href="#unescapeUnicodeWithBrackets">unescapeUnicodeWithBrackets(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Unescape a string that has sequences like \u{XXXXX}</p>
+</dd>
+<dt><a href="#unescapeUnicodeExtended">unescapeUnicodeExtended(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Unescape a string that has sequences like \U000XXXXXX</p>
+</dd>
+<dt><a href="#unescapeHex">unescapeHex(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Unescape a string that has hexadecimal escape sequences in it
+of the form \xXX.</p>
+</dd>
+<dt><a href="#unescapeOctal">unescapeOctal(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Unescape a string that has octal escape sequences in it of the form \XXX.</p>
+</dd>
+<dt><a href="#escapeUnicode">escapeUnicode(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Convert all code points above U+00FF and below U+10000
+to \uXXXX form.</p>
+</dd>
+<dt><a href="#escapeUnicodeAstral">escapeUnicodeAstral(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Convert all code points above U+FFFF to \uXXXXX form.</p>
+</dd>
+<dt><a href="#escapeUnicodeWithBrackets">escapeUnicodeWithBrackets(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Convert all code points above U+FFFF to \u{XXXXX} form</p>
+</dd>
+<dt><a href="#escapeUnicodeExtended">escapeUnicodeExtended(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Convert all code points above U+FFFF to \U000XXXXXX form</p>
+</dd>
+<dt><a href="#escapeUnicodeAsSurrogatePairs">escapeUnicodeAsSurrogatePairs(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Convert all code points above U+00FF as \uXXXX and
+all code points above U+FFFF as surrogate pairs in that
+same format.</p>
+</dd>
+<dt><a href="#escapeHex">escapeHex(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Escape a string so that it has hexadecimal escape sequences
+in it instead of the characters themselves. This function
+will only convert characters from U+0000 to U+001F. The rest
+of the characters will be left alone. If you have characters
+that are less than U+001F that have special escape sequences
+in the target programming language, you should escape them
+first before calling this function.</p>
+</dd>
+<dt><a href="#escapeRules">escapeRules(string, rules)</a> ⇒ <code>string</code></dt>
+<dd><p>Escape a string according to the rules given.</p>
+</dd>
+<dt><a href="#unescapeRules">unescapeRules(string, rules)</a> ⇒ <code>string</code></dt>
+<dd><p>Unescape a string according to the rules given.</p>
+</dd>
+<dt><a href="#unindent">unindent(string)</a> ⇒ <code>string</code></dt>
+<dd><p>Remove leading whitespace from each line of a string.
+This is used for things like &quot;raw&quot; strings
+to remove the leading whitespace that is used to align
+and indent the contents of the string with the rest of
+the code.</p>
 </dd>
 <dt><a href="#cleanString">cleanString(str)</a> ⇒ <code>String</code></dt>
 <dd><p>Clean a string for matching against other strings by removing
@@ -895,7 +1018,7 @@ Set the array of target strings for this resource.
 <a name="ResourceArray+getSourceArray"></a>
 
 ### ~~resourceArray.getSourceArray() ⇒ <code>Array.&lt;String&gt;</code>~~
-***Use getSource() instead***
+***Deprecated***
 
 Return the array of source strings. This method is here
 for backwards compatilibity with the loctool plugins.
@@ -908,7 +1031,7 @@ for backwards compatilibity with the loctool plugins.
 <a name="ResourceArray+getTargetArray"></a>
 
 ### ~~resourceArray.getTargetArray() ⇒ <code>Array.&lt;String&gt;</code>~~
-***Use getTarget() instead***
+***Deprecated***
 
 Return the array of target strings. This method is here
 for backwards compatilibity with the loctool plugins.
@@ -1219,7 +1342,7 @@ Set the source plurals hash of this plurals resource.
 <a name="ResourcePlural+getSourcePlurals"></a>
 
 ### ~~resourcePlural.getSourcePlurals() ⇒ <code>Array.&lt;String&gt;</code>~~
-***Use getSource() instead***
+***Deprecated***
 
 Return the array of source strings. This method is here
 for backwards compatilibity with the loctool plugins.
@@ -1232,7 +1355,7 @@ for backwards compatilibity with the loctool plugins.
 <a name="ResourcePlural+getTargetPlurals"></a>
 
 ### ~~resourcePlural.getTargetPlurals() ⇒ <code>Array.&lt;String&gt;</code>~~
-***Use getTarget() instead***
+***Deprecated***
 
 Return the array of target strings. This method is here
 for backwards compatilibity with the loctool plugins.
@@ -1245,7 +1368,7 @@ for backwards compatilibity with the loctool plugins.
 <a name="ResourcePlural+getSourceStrings"></a>
 
 ### ~~resourcePlural.getSourceStrings() ⇒ <code>Array.&lt;String&gt;</code>~~
-***Use getSource() instead***
+***Deprecated***
 
 Return the array of source strings. This method is here
 for backwards compatilibity with the loctool plugins.
@@ -1258,7 +1381,7 @@ for backwards compatilibity with the loctool plugins.
 <a name="ResourcePlural+getTargetStrings"></a>
 
 ### ~~resourcePlural.getTargetStrings() ⇒ <code>Array.&lt;String&gt;</code>~~
-***Use getTarget() instead***
+***Deprecated***
 
 Return the array of target strings. This method is here
 for backwards compatilibity with the loctool plugins.
@@ -1307,7 +1430,7 @@ plural category
 <a name="ResourcePlural+getClasses"></a>
 
 ### ~~resourcePlural.getClasses() ⇒ <code>Array.&lt;string&gt;</code>~~
-***Use getCategories instead***
+***Deprecated***
 
 Return an array of names of source categories of plurals
 that are used in this resource.
@@ -2343,6 +2466,587 @@ hash key is calculated from the source string and locale.
 
 * * *
 
+<a name="CSharpEscaper"></a>
+
+## CSharpEscaper
+Escaper for CSharp
+
+**Kind**: global class  
+
+* [CSharpEscaper](#CSharpEscaper)
+    * [new CSharpEscaper(style)](#new_CSharpEscaper_new)
+    * [.escape()](#CSharpEscaper+escape)
+    * [.unescape()](#CSharpEscaper+unescape)
+
+
+* * *
+
+<a name="new_CSharpEscaper_new"></a>
+
+### new CSharpEscaper(style)
+Can support the following styles:
+- csharp (default): single or double-quoted strings
+- csharp-raw: csharp multi-line strings like """foo"""
+- csharp-verbatim: csharp raw strings like @"foo"
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="CSharpEscaper+escape"></a>
+
+### cSharpEscaper.escape()
+**Kind**: instance method of [<code>CSharpEscaper</code>](#CSharpEscaper)  
+
+* * *
+
+<a name="CSharpEscaper+unescape"></a>
+
+### cSharpEscaper.unescape()
+**Kind**: instance method of [<code>CSharpEscaper</code>](#CSharpEscaper)  
+
+* * *
+
+<a name="Escaper"></a>
+
+## *Escaper*
+A class that escapes and unescapes strings.
+
+**Kind**: global abstract class  
+
+* *[Escaper](#Escaper)*
+    * *[new Escaper(style)](#new_Escaper_new)*
+    * *[.style](#Escaper+style) : <code>string</code>*
+    * *[.name](#Escaper+name) : <code>string</code>*
+    * *[.description](#Escaper+description) : <code>string</code>*
+    * *[.getStyle()](#Escaper+getStyle) ⇒ <code>Object</code>*
+    * *[.getName()](#Escaper+getName) ⇒ <code>String</code>*
+    * *[.getDescription()](#Escaper+getDescription) ⇒ <code>String</code>*
+    * **[.escape(str)](#Escaper+escape) ⇒ <code>String</code>**
+    * **[.unescape(str)](#Escaper+unescape) ⇒ <code>String</code>**
+
+
+* * *
+
+<a name="new_Escaper_new"></a>
+
+### *new Escaper(style)*
+Create a new escaper instance.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>Object</code> | the style object to use to determine how to escape |
+
+
+* * *
+
+<a name="Escaper+style"></a>
+
+### *escaper.style : <code>string</code>*
+The style to use to determine how to escape
+
+**Kind**: instance property of [<code>Escaper</code>](#Escaper)  
+
+* * *
+
+<a name="Escaper+name"></a>
+
+### *escaper.name : <code>string</code>*
+The unique name of the escaper instance
+
+**Kind**: instance property of [<code>Escaper</code>](#Escaper)  
+
+* * *
+
+<a name="Escaper+description"></a>
+
+### *escaper.description : <code>string</code>*
+A short description of this escaper instance
+
+**Kind**: instance property of [<code>Escaper</code>](#Escaper)  
+
+* * *
+
+<a name="Escaper+getStyle"></a>
+
+### *escaper.getStyle() ⇒ <code>Object</code>*
+Get the style object for this escaper.
+
+**Kind**: instance method of [<code>Escaper</code>](#Escaper)  
+**Returns**: <code>Object</code> - the style object for this escaper  
+
+* * *
+
+<a name="Escaper+getName"></a>
+
+### *escaper.getName() ⇒ <code>String</code>*
+Get the name of this escaper.
+
+**Kind**: instance method of [<code>Escaper</code>](#Escaper)  
+**Returns**: <code>String</code> - the name of this escaper  
+
+* * *
+
+<a name="Escaper+getDescription"></a>
+
+### *escaper.getDescription() ⇒ <code>String</code>*
+Get a short description of this escaper.
+
+**Kind**: instance method of [<code>Escaper</code>](#Escaper)  
+**Returns**: <code>String</code> - the description of this escaper  
+
+* * *
+
+<a name="Escaper+escape"></a>
+
+### **escaper.escape(str) ⇒ <code>String</code>**
+Escape the given string for the given style. The escaped string is what
+the programming language would use in source code.
+
+**Kind**: instance abstract method of [<code>Escaper</code>](#Escaper)  
+**Returns**: <code>String</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| str | <code>String</code> | the string to escape |
+
+
+* * *
+
+<a name="Escaper+unescape"></a>
+
+### **escaper.unescape(str) ⇒ <code>String</code>**
+Unescape the given string for the given style. The unescaped
+string is what the programming language would use in memory as it is running.
+
+**Kind**: instance abstract method of [<code>Escaper</code>](#Escaper)  
+**Returns**: <code>String</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| str | <code>String</code> | the string to unescape |
+
+
+* * *
+
+<a name="JavaEscaper"></a>
+
+## JavaEscaper
+Escaper for Java and Kotlin
+
+**Kind**: global class  
+
+* [JavaEscaper](#JavaEscaper)
+    * [new JavaEscaper(style)](#new_JavaEscaper_new)
+    * [.escape()](#JavaEscaper+escape)
+    * [.unescape()](#JavaEscaper+unescape)
+
+
+* * *
+
+<a name="new_JavaEscaper_new"></a>
+
+### new JavaEscaper(style)
+Can support the following styles:
+- java: single or double-quoted strings
+- java-raw: raw strings like """foo"""
+- kotlin: regular single or double-quoted strings
+- kotlin-raw: Kotlin raw strings like """foo"""
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="JavaEscaper+escape"></a>
+
+### javaEscaper.escape()
+**Kind**: instance method of [<code>JavaEscaper</code>](#JavaEscaper)  
+
+* * *
+
+<a name="JavaEscaper+unescape"></a>
+
+### javaEscaper.unescape()
+**Kind**: instance method of [<code>JavaEscaper</code>](#JavaEscaper)  
+
+* * *
+
+<a name="JavascriptEscaper"></a>
+
+## JavascriptEscaper
+Escaper for JavaScript
+
+**Kind**: global class  
+
+* [JavascriptEscaper](#JavascriptEscaper)
+    * [new JavascriptEscaper(style)](#new_JavascriptEscaper_new)
+    * [.escape()](#JavascriptEscaper+escape)
+    * [.unescape()](#JavascriptEscaper+unescape)
+
+
+* * *
+
+<a name="new_JavascriptEscaper_new"></a>
+
+### new JavascriptEscaper(style)
+Can support the following styles:
+- js: single or double-quoted strings
+- js-template: JS template strings like `foo`
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="JavascriptEscaper+escape"></a>
+
+### javascriptEscaper.escape()
+**Kind**: instance method of [<code>JavascriptEscaper</code>](#JavascriptEscaper)  
+
+* * *
+
+<a name="JavascriptEscaper+unescape"></a>
+
+### javascriptEscaper.unescape()
+**Kind**: instance method of [<code>JavascriptEscaper</code>](#JavascriptEscaper)  
+
+* * *
+
+<a name="JsonEscaper"></a>
+
+## JsonEscaper
+Escaper for Java
+
+**Kind**: global class  
+
+* [JsonEscaper](#JsonEscaper)
+    * [.escape()](#JsonEscaper+escape)
+    * [.unescape()](#JsonEscaper+unescape)
+
+
+* * *
+
+<a name="JsonEscaper+escape"></a>
+
+### jsonEscaper.escape()
+**Kind**: instance method of [<code>JsonEscaper</code>](#JsonEscaper)  
+
+* * *
+
+<a name="JsonEscaper+unescape"></a>
+
+### jsonEscaper.unescape()
+**Kind**: instance method of [<code>JsonEscaper</code>](#JsonEscaper)  
+
+* * *
+
+<a name="PHPEscaper"></a>
+
+## PHPEscaper
+Escaper for PHP
+
+**Kind**: global class  
+
+* [PHPEscaper](#PHPEscaper)
+    * [new PHPEscaper(style)](#new_PHPEscaper_new)
+    * [.escape()](#PHPEscaper+escape)
+    * [.unescape()](#PHPEscaper+unescape)
+
+
+* * *
+
+<a name="new_PHPEscaper_new"></a>
+
+### new PHPEscaper(style)
+Can support the following styles:
+- php (default): double-quoted strings
+- php-double: double-quoted strings
+- php-single: single-quoted strings
+- php-heredoc: heredoc strings
+- php-nowdoc: nowdoc strings
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="PHPEscaper+escape"></a>
+
+### phpEscaper.escape()
+**Kind**: instance method of [<code>PHPEscaper</code>](#PHPEscaper)  
+
+* * *
+
+<a name="PHPEscaper+unescape"></a>
+
+### phpEscaper.unescape()
+**Kind**: instance method of [<code>PHPEscaper</code>](#PHPEscaper)  
+
+* * *
+
+<a name="PythonEscaper"></a>
+
+## PythonEscaper
+Escaper for Python
+
+**Kind**: global class  
+
+* [PythonEscaper](#PythonEscaper)
+    * [new PythonEscaper(style)](#new_PythonEscaper_new)
+    * [.escape()](#PythonEscaper+escape)
+    * [.unescape()](#PythonEscaper+unescape)
+
+
+* * *
+
+<a name="new_PythonEscaper_new"></a>
+
+### new PythonEscaper(style)
+Can support the following styles:
+- python (default): single or double-quoted strings
+- python-raw: python raw strings like r"foo"
+- python-byte: python byte strings like b"foo"
+- python-multi: python multi-line strings like """foo"""
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="PythonEscaper+escape"></a>
+
+### pythonEscaper.escape()
+**Kind**: instance method of [<code>PythonEscaper</code>](#PythonEscaper)  
+
+* * *
+
+<a name="PythonEscaper+unescape"></a>
+
+### pythonEscaper.unescape()
+**Kind**: instance method of [<code>PythonEscaper</code>](#PythonEscaper)  
+
+* * *
+
+<a name="RegexBasedEscaper"></a>
+
+## RegexBasedEscaper
+Escaper for various string formats based on regular expressions.
+
+**Kind**: global class  
+
+* [RegexBasedEscaper](#RegexBasedEscaper)
+    * [new RegexBasedEscaper(style)](#new_RegexBasedEscaper_new)
+    * [.escape()](#RegexBasedEscaper+escape)
+    * [.unescape()](#RegexBasedEscaper+unescape)
+
+
+* * *
+
+<a name="new_RegexBasedEscaper_new"></a>
+
+### new RegexBasedEscaper(style)
+Create a new escaper instance that escapes and unescapes strings based
+on regular expressions.
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use to determine how to escape |
+
+
+* * *
+
+<a name="RegexBasedEscaper+escape"></a>
+
+### regexBasedEscaper.escape()
+**Kind**: instance method of [<code>RegexBasedEscaper</code>](#RegexBasedEscaper)  
+
+* * *
+
+<a name="RegexBasedEscaper+unescape"></a>
+
+### regexBasedEscaper.unescape()
+**Kind**: instance method of [<code>RegexBasedEscaper</code>](#RegexBasedEscaper)  
+
+* * *
+
+<a name="SmartyEscaper"></a>
+
+## SmartyEscaper
+Escaper for Smarty
+
+**Kind**: global class  
+
+* [SmartyEscaper](#SmartyEscaper)
+    * [new SmartyEscaper(style)](#new_SmartyEscaper_new)
+    * [.escape()](#SmartyEscaper+escape)
+    * [.unescape()](#SmartyEscaper+unescape)
+
+
+* * *
+
+<a name="new_SmartyEscaper_new"></a>
+
+### new SmartyEscaper(style)
+Can support the following styles:
+- smarty (default): double-quoted strings
+- smarty-double: double-quoted strings
+- smarty-single: single-quoted strings
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="SmartyEscaper+escape"></a>
+
+### smartyEscaper.escape()
+**Kind**: instance method of [<code>SmartyEscaper</code>](#SmartyEscaper)  
+
+* * *
+
+<a name="SmartyEscaper+unescape"></a>
+
+### smartyEscaper.unescape()
+**Kind**: instance method of [<code>SmartyEscaper</code>](#SmartyEscaper)  
+
+* * *
+
+<a name="SwiftEscaper"></a>
+
+## SwiftEscaper
+Escaper for Swift
+
+**Kind**: global class  
+
+* [SwiftEscaper](#SwiftEscaper)
+    * [new SwiftEscaper(style)](#new_SwiftEscaper_new)
+    * [.escape()](#SwiftEscaper+escape)
+    * [.unescape()](#SwiftEscaper+unescape)
+
+
+* * *
+
+<a name="new_SwiftEscaper_new"></a>
+
+### new SwiftEscaper(style)
+Can support the following styles:
+- swift (default): single or double-quoted strings
+- swift-multi: swift multi-line strings like """foo"""
+- swift-extended: swift raw strings like #"foo"#
+
+**Throws**:
+
+- <code>Error</code> if the style is not supported
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use for escaping |
+
+
+* * *
+
+<a name="SwiftEscaper+escape"></a>
+
+### swiftEscaper.escape()
+**Kind**: instance method of [<code>SwiftEscaper</code>](#SwiftEscaper)  
+
+* * *
+
+<a name="SwiftEscaper+unescape"></a>
+
+### swiftEscaper.unescape()
+**Kind**: instance method of [<code>SwiftEscaper</code>](#SwiftEscaper)  
+
+* * *
+
+<a name="URIEscaper"></a>
+
+## URIEscaper
+Escaper for URIs
+
+**Kind**: global class  
+
+* [URIEscaper](#URIEscaper)
+    * [new URIEscaper()](#new_URIEscaper_new)
+    * [.escape()](#URIEscaper+escape)
+    * [.unescape()](#URIEscaper+unescape)
+
+
+* * *
+
+<a name="new_URIEscaper_new"></a>
+
+### new URIEscaper()
+Create a new escaper instance for URIs.
+
+
+* * *
+
+<a name="URIEscaper+escape"></a>
+
+### uriEscaper.escape()
+**Kind**: instance method of [<code>URIEscaper</code>](#URIEscaper)  
+
+* * *
+
+<a name="URIEscaper+unescape"></a>
+
+### uriEscaper.unescape()
+**Kind**: instance method of [<code>URIEscaper</code>](#URIEscaper)  
+
+* * *
+
 <a name="nonBreakingTags"></a>
 
 ## nonBreakingTags
@@ -2451,6 +3155,54 @@ by the excludes and includes list
 
 * * *
 
+<a name="escaperFactory"></a>
+
+## escaperFactory(style) ⇒ [<code>Escaper</code>](#Escaper)
+Return an Escaper instance for the given style. The style must be one of the
+following:
+<ul>
+<li>csharp - escape for C#</li>
+<li>csharp-raw - escape for C# raw strings</li>
+<li>csharp-verbatim - escape for C# verbatim strings</li>
+<li>java - escape for Java</li>
+<li>java-raw - escape for JSON raw strings</li>
+<li>js - escape for JavaScript</li>
+<li>javascript-template - escape for JavaScript template strings</li>
+<li>json - escape for JSON</li>
+<li>kotlin - escape for Kotlin</li>
+<li>kotlin-raw - escape for Kotlin raw strings</li>
+<li>php - escape for PHP (default, same as php-double)</li>
+<li>php-double - escape for double-quoted PHP strings</li>
+<li>php-single - escape for single-quoted PHP strings</li>
+<li>php-heredoc - escape for PHP heredoc strings</li>
+<li>php-nowdoc - escape for PHP nowdoc strings</li>
+<li>python - escape for Python regular strings (default)</li>
+<li>python-raw - escape for Python raw strings</li>
+<li>python-byte - escape for Python byte strings</li>
+<li>python-multi - escape for Python multi-line strings</li>
+<li>regexp - escape for regular expressions</li>
+<li>smarty - escape for Smarty templates (default, same as smarty-double)</li>
+<li>smarty-double - escape for double-quoted Smarty strings</li>
+<li>smarty-single - escape for single-quoted Smarty strings</li>
+<li>swift - escape for regular Swift strings</li>
+<li>swift-multi - escape for Swift multi-line strings</li>
+<li>swift-extended - escape for Swift extended strings</li>
+<li>uri - escape for URLs and URIs</li>
+<li>xml - escape for XML text, including HTML</li>
+<li>xml-attr - escape for XML attributes, including HTML</li>
+</ul>
+
+**Kind**: global function  
+**Returns**: [<code>Escaper</code>](#Escaper) - a new Escaper instance, or undefined if the style
+is not recognized  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | the style to use to determine how to escape |
+
+
+* * *
+
 <a name="convertPluralResToICU"></a>
 
 ## convertPluralResToICU(resource) ⇒ [<code>ResourceString</code>](#ResourceString) \| <code>undefined</code>
@@ -2502,6 +3254,232 @@ plural resource, or undefined if the resource is not a string resource
 | Param | Type | Description |
 | --- | --- | --- |
 | resource | [<code>ResourceString</code>](#ResourceString) | the ICU-style plural resource string to convert into a plural resource |
+
+
+* * *
+
+<a name="unescapeUnicode"></a>
+
+## unescapeUnicode(string) ⇒ <code>string</code>
+Unescape a string that has sequences like \uXXXX
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unescape |
+
+
+* * *
+
+<a name="unescapeUnicodeWithBrackets"></a>
+
+## unescapeUnicodeWithBrackets(string) ⇒ <code>string</code>
+Unescape a string that has sequences like \u{XXXXX}
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unescape |
+
+
+* * *
+
+<a name="unescapeUnicodeExtended"></a>
+
+## unescapeUnicodeExtended(string) ⇒ <code>string</code>
+Unescape a string that has sequences like \U000XXXXXX
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unescape |
+
+
+* * *
+
+<a name="unescapeHex"></a>
+
+## unescapeHex(string) ⇒ <code>string</code>
+Unescape a string that has hexadecimal escape sequences in it
+of the form \xXX.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+
+
+* * *
+
+<a name="unescapeOctal"></a>
+
+## unescapeOctal(string) ⇒ <code>string</code>
+Unescape a string that has octal escape sequences in it of the form \XXX.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+
+
+* * *
+
+<a name="escapeUnicode"></a>
+
+## escapeUnicode(string) ⇒ <code>string</code>
+Convert all code points above U+00FF and below U+10000
+to \uXXXX form.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unescape |
+
+
+* * *
+
+<a name="escapeUnicodeAstral"></a>
+
+## escapeUnicodeAstral(string) ⇒ <code>string</code>
+Convert all code points above U+FFFF to \uXXXXX form.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unescape |
+
+
+* * *
+
+<a name="escapeUnicodeWithBrackets"></a>
+
+## escapeUnicodeWithBrackets(string) ⇒ <code>string</code>
+Convert all code points above U+FFFF to \u{XXXXX} form
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+
+
+* * *
+
+<a name="escapeUnicodeExtended"></a>
+
+## escapeUnicodeExtended(string) ⇒ <code>string</code>
+Convert all code points above U+FFFF to \U000XXXXXX form
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+
+
+* * *
+
+<a name="escapeUnicodeAsSurrogatePairs"></a>
+
+## escapeUnicodeAsSurrogatePairs(string) ⇒ <code>string</code>
+Convert all code points above U+00FF as \uXXXX and
+all code points above U+FFFF as surrogate pairs in that
+same format.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+
+
+* * *
+
+<a name="escapeHex"></a>
+
+## escapeHex(string) ⇒ <code>string</code>
+Escape a string so that it has hexadecimal escape sequences
+in it instead of the characters themselves. This function
+will only convert characters from U+0000 to U+001F. The rest
+of the characters will be left alone. If you have characters
+that are less than U+001F that have special escape sequences
+in the target programming language, you should escape them
+first before calling this function.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+
+
+* * *
+
+<a name="escapeRules"></a>
+
+## escapeRules(string, rules) ⇒ <code>string</code>
+Escape a string according to the rules given.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the escaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to escape |
+| rules | <code>object</code> | the rules to use for escaping |
+
+
+* * *
+
+<a name="unescapeRules"></a>
+
+## unescapeRules(string, rules) ⇒ <code>string</code>
+Unescape a string according to the rules given.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unescaped string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unescape |
+| rules | <code>object</code> | the rules to use for unescaping |
+
+
+* * *
+
+<a name="unindent"></a>
+
+## unindent(string) ⇒ <code>string</code>
+Remove leading whitespace from each line of a string.
+This is used for things like "raw" strings
+to remove the leading whitespace that is used to align
+and indent the contents of the string with the rest of
+the code.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - the unindented string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | <code>string</code> | the string to unindent |
 
 
 * * *

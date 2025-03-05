@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>escapes/EscapeCommon.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CSharpEscaper.html">CSharpEscaper</a><ul class='methods'><li data-type='method'><a href="CSharpEscaper.html#escape">escape</a></li><li data-type='method'><a href="CSharpEscaper.html#unescape">unescape</a></li></ul></li><li><a href="Escaper.html">Escaper</a><ul class='methods'><li data-type='method'><a href="Escaper.html#escape">escape</a></li><li data-type='method'><a href="Escaper.html#getDescription">getDescription</a></li><li data-type='method'><a href="Escaper.html#getName">getName</a></li><li data-type='method'><a href="Escaper.html#getStyle">getStyle</a></li><li data-type='method'><a href="Escaper.html#unescape">unescape</a></li></ul></li><li><a href="JavaEscaper.html">JavaEscaper</a><ul class='methods'><li data-type='method'><a href="JavaEscaper.html#escape">escape</a></li><li data-type='method'><a href="JavaEscaper.html#unescape">unescape</a></li></ul></li><li><a href="JavascriptEscaper.html">JavascriptEscaper</a><ul class='methods'><li data-type='method'><a href="JavascriptEscaper.html#escape">escape</a></li><li data-type='method'><a href="JavascriptEscaper.html#unescape">unescape</a></li></ul></li><li><a href="JsonEscaper.html">JsonEscaper</a><ul class='methods'><li data-type='method'><a href="JsonEscaper.html#escape">escape</a></li><li data-type='method'><a href="JsonEscaper.html#unescape">unescape</a></li></ul></li><li><a href="Location.html">Location</a><ul class='methods'><li data-type='method'><a href="Location.html#getLocation">getLocation</a></li></ul></li><li><a href="PHPEscaper.html">PHPEscaper</a><ul class='methods'><li data-type='method'><a href="PHPEscaper.html#escape">escape</a></li><li data-type='method'><a href="PHPEscaper.html#unescape">unescape</a></li></ul></li><li><a href="PythonEscaper.html">PythonEscaper</a><ul class='methods'><li data-type='method'><a href="PythonEscaper.html#escape">escape</a></li><li data-type='method'><a href="PythonEscaper.html#unescape">unescape</a></li></ul></li><li><a href="RegexBasedEscaper.html">RegexBasedEscaper</a><ul class='methods'><li data-type='method'><a href="RegexBasedEscaper.html#escape">escape</a></li><li data-type='method'><a href="RegexBasedEscaper.html#unescape">unescape</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#addInstance">addInstance</a></li><li data-type='method'><a href="Resource.html#clearDirty">clearDirty</a></li><li data-type='method'><a href="Resource.html#escapeText">escapeText</a></li><li data-type='method'><a href="Resource.html#getAutoKey">getAutoKey</a></li><li data-type='method'><a href="Resource.html#getComment">getComment</a></li><li data-type='method'><a href="Resource.html#getContext">getContext</a></li><li data-type='method'><a href="Resource.html#getDNT">getDNT</a></li><li data-type='method'><a href="Resource.html#getDataType">getDataType</a></li><li data-type='method'><a href="Resource.html#getFlavor">getFlavor</a></li><li data-type='method'><a href="Resource.html#getId">getId</a></li><li data-type='method'><a href="Resource.html#getInstances">getInstances</a></li><li data-type='method'><a href="Resource.html#getKey">getKey</a></li><li data-type='method'><a href="Resource.html#getLocalize">getLocalize</a></li><li data-type='method'><a href="Resource.html#getLocation">getLocation</a></li><li data-type='method'><a href="Resource.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="Resource.html#getPath">getPath</a></li><li data-type='method'><a href="Resource.html#getProject">getProject</a></li><li data-type='method'><a href="Resource.html#getSource">getSource</a></li><li data-type='method'><a href="Resource.html#getSourceLocale">getSourceLocale</a></li><li data-type='method'><a href="Resource.html#getState">getState</a></li><li data-type='method'><a href="Resource.html#getTarget">getTarget</a></li><li data-type='method'><a href="Resource.html#getTargetLocale">getTargetLocale</a></li><li data-type='method'><a href="Resource.html#getType">getType</a></li><li data-type='method'><a href="Resource.html#isDirty">isDirty</a></li><li data-type='method'><a href="Resource.html#isInstance">isInstance</a></li><li data-type='method'><a href="Resource.html#same">same</a></li><li data-type='method'><a href="Resource.html#setComment">setComment</a></li><li data-type='method'><a href="Resource.html#setDNT">setDNT</a></li><li data-type='method'><a href="Resource.html#setProject">setProject</a></li><li data-type='method'><a href="Resource.html#setSourceLocale">setSourceLocale</a></li><li data-type='method'><a href="Resource.html#setState">setState</a></li><li data-type='method'><a href="Resource.html#setTargetLocale">setTargetLocale</a></li></ul></li><li><a href="ResourceArray.html">ResourceArray</a><ul class='methods'><li data-type='method'><a href="ResourceArray.html#addSourceItem">addSourceItem</a></li><li data-type='method'><a href="ResourceArray.html#addTargetItem">addTargetItem</a></li><li data-type='method'><a href="ResourceArray.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceArray.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourceArray.html#clone">clone</a></li><li data-type='method'><a href="ResourceArray.html#equals">equals</a></li><li data-type='method'><a href="ResourceArray.html#equals">equals</a></li><li data-type='method'><a href="ResourceArray.html#getSourceArray">getSourceArray</a></li><li data-type='method'><a href="ResourceArray.html#getSourceItem">getSourceItem</a></li><li data-type='method'><a href="ResourceArray.html#getTargetArray">getTargetArray</a></li><li data-type='method'><a href="ResourceArray.html#getTargetItem">getTargetItem</a></li><li data-type='method'><a href="ResourceArray.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourceArray.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourceArray.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourceArray.html#setSource">setSource</a></li><li data-type='method'><a href="ResourceArray.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourceArray.html#size">size</a></li><li data-type='method'><a href="ResourceArray.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourcePlural.html">ResourcePlural</a><ul class='methods'><li data-type='method'><a href="ResourcePlural.html#addSourcePlural">addSourcePlural</a></li><li data-type='method'><a href="ResourcePlural.html#addTargetPlural">addTargetPlural</a></li><li data-type='method'><a href="ResourcePlural.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourcePlural.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourcePlural.html#clone">clone</a></li><li data-type='method'><a href="ResourcePlural.html#equals">equals</a></li><li data-type='method'><a href="ResourcePlural.html#getAllValidCategories">getAllValidCategories</a></li><li data-type='method'><a href="ResourcePlural.html#getCategories">getCategories</a></li><li data-type='method'><a href="ResourcePlural.html#getClasses">getClasses</a></li><li data-type='method'><a href="ResourcePlural.html#getPivots">getPivots</a></li><li data-type='method'><a href="ResourcePlural.html#getSourcePlural">getSourcePlural</a></li><li data-type='method'><a href="ResourcePlural.html#getSourcePlurals">getSourcePlurals</a></li><li data-type='method'><a href="ResourcePlural.html#getSourceStrings">getSourceStrings</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetPlural">getTargetPlural</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetPlurals">getTargetPlurals</a></li><li data-type='method'><a href="ResourcePlural.html#getTargetStrings">getTargetStrings</a></li><li data-type='method'><a href="ResourcePlural.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourcePlural.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourcePlural.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourcePlural.html#setSource">setSource</a></li><li data-type='method'><a href="ResourcePlural.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourcePlural.html#size">size</a></li><li data-type='method'><a href="ResourcePlural.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourceString.html">ResourceString</a><ul class='methods'><li data-type='method'><a href="ResourceString.html#cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceString.html#cleanHashKeyForTranslation">cleanHashKeyForTranslation</a></li><li data-type='method'><a href="ResourceString.html#clone">clone</a></li><li data-type='method'><a href="ResourceString.html#equals">equals</a></li><li data-type='method'><a href="ResourceString.html#hashKey">hashKey</a></li><li data-type='method'><a href="ResourceString.html#hashKeyForTranslation">hashKeyForTranslation</a></li><li data-type='method'><a href="ResourceString.html#isInstance">isInstance</a></li><li data-type='method'><a href="ResourceString.html#setSource">setSource</a></li><li data-type='method'><a href="ResourceString.html#setTarget">setTarget</a></li><li data-type='method'><a href="ResourceString.html#size">size</a></li><li data-type='method'><a href="ResourceString.html#.cleanHashKey">cleanHashKey</a></li><li data-type='method'><a href="ResourceString.html#.hashKey">hashKey</a></li></ul></li><li><a href="ResourceXliff.html">ResourceXliff</a><ul class='methods'><li data-type='method'><a href="ResourceXliff.html#getLines">getLines</a></li><li data-type='method'><a href="ResourceXliff.html#getVersion">getVersion</a></li><li data-type='method'><a href="ResourceXliff.html#size">size</a></li></ul></li><li><a href="SmartyEscaper.html">SmartyEscaper</a><ul class='methods'><li data-type='method'><a href="SmartyEscaper.html#escape">escape</a></li><li data-type='method'><a href="SmartyEscaper.html#unescape">unescape</a></li></ul></li><li><a href="SwiftEscaper.html">SwiftEscaper</a><ul class='methods'><li data-type='method'><a href="SwiftEscaper.html#escape">escape</a></li><li data-type='method'><a href="SwiftEscaper.html#unescape">unescape</a></li></ul></li><li><a href="TranslationSet.html">TranslationSet</a><ul class='methods'><li data-type='method'><a href="TranslationSet.html#add">add</a></li><li data-type='method'><a href="TranslationSet.html#addAll">addAll</a></li><li data-type='method'><a href="TranslationSet.html#addSet">addSet</a></li><li data-type='method'><a href="TranslationSet.html#clear">clear</a></li><li data-type='method'><a href="TranslationSet.html#diff">diff</a></li><li data-type='method'><a href="TranslationSet.html#get">get</a></li><li data-type='method'><a href="TranslationSet.html#getAll">getAll</a></li><li data-type='method'><a href="TranslationSet.html#getBy">getBy</a></li><li data-type='method'><a href="TranslationSet.html#getBySource">getBySource</a></li><li data-type='method'><a href="TranslationSet.html#getClean">getClean</a></li><li data-type='method'><a href="TranslationSet.html#getContexts">getContexts</a></li><li data-type='method'><a href="TranslationSet.html#getLocales">getLocales</a></li><li data-type='method'><a href="TranslationSet.html#getProjects">getProjects</a></li><li data-type='method'><a href="TranslationSet.html#isDirty">isDirty</a></li><li data-type='method'><a href="TranslationSet.html#remove">remove</a></li><li data-type='method'><a href="TranslationSet.html#setClean">setClean</a></li><li data-type='method'><a href="TranslationSet.html#size">size</a></li></ul></li><li><a href="TranslationUnit.html">TranslationUnit</a><ul class='methods'><li data-type='method'><a href="TranslationUnit.html#addProperties">addProperties</a></li><li data-type='method'><a href="TranslationUnit.html#addVariant">addVariant</a></li><li data-type='method'><a href="TranslationUnit.html#addVariants">addVariants</a></li><li data-type='method'><a href="TranslationUnit.html#clone">clone</a></li><li data-type='method'><a href="TranslationUnit.html#getProperties">getProperties</a></li><li data-type='method'><a href="TranslationUnit.html#getVariants">getVariants</a></li><li data-type='method'><a href="TranslationUnit.html#hashKey">hashKey</a></li></ul></li><li><a href="TranslationVariant.html">TranslationVariant</a><ul class='methods'><li data-type='method'><a href="TranslationVariant.html#hashKey">hashKey</a></li></ul></li><li><a href="URIEscaper.html">URIEscaper</a><ul class='methods'><li data-type='method'><a href="URIEscaper.html#escape">escape</a></li><li data-type='method'><a href="URIEscaper.html#unescape">unescape</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#cleanString">cleanString</a></li><li><a href="global.html#containsActualText">containsActualText</a></li><li><a href="global.html#convertICUToPluralRes">convertICUToPluralRes</a></li><li><a href="global.html#convertPluralResToICU">convertPluralResToICU</a></li><li><a href="global.html#escapeHex">escapeHex</a></li><li><a href="global.html#escapeRules">escapeRules</a></li><li><a href="global.html#escapeUnicode">escapeUnicode</a></li><li><a href="global.html#escapeUnicodeAsSurrogatePairs">escapeUnicodeAsSurrogatePairs</a></li><li><a href="global.html#escapeUnicodeAstral">escapeUnicodeAstral</a></li><li><a href="global.html#escapeUnicodeExtended">escapeUnicodeExtended</a></li><li><a href="global.html#escapeUnicodeWithBrackets">escapeUnicodeWithBrackets</a></li><li><a href="global.html#escaperFactory">escaperFactory</a></li><li><a href="global.html#formatPath">formatPath</a></li><li><a href="global.html#getLocaleFromPath">getLocaleFromPath</a></li><li><a href="global.html#hashKey">hashKey</a></li><li><a href="global.html#ignoreTags">ignoreTags</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#localizableAttributes">localizableAttributes</a></li><li><a href="global.html#nonBreakingTags">nonBreakingTags</a></li><li><a href="global.html#objectMap">objectMap</a></li><li><a href="global.html#parsePath">parsePath</a></li><li><a href="global.html#selfClosingTags">selfClosingTags</a></li><li><a href="global.html#unescapeHex">unescapeHex</a></li><li><a href="global.html#unescapeOctal">unescapeOctal</a></li><li><a href="global.html#unescapeRules">unescapeRules</a></li><li><a href="global.html#unescapeUnicode">unescapeUnicode</a></li><li><a href="global.html#unescapeUnicodeExtended">unescapeUnicodeExtended</a></li><li><a href="global.html#unescapeUnicodeWithBrackets">unescapeUnicodeWithBrackets</a></li><li><a href="global.html#unindent">unindent</a></li><li><a href="global.html#walk">walk</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">escapes/EscapeCommon.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+ * JSCommon.js - common functions between JS and JSON that unescape strings
+ *
+ * Copyright © 2025 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import IString from 'ilib-istring';
+
+const reUnicodeChar = /\\u([a-fA-F0-9]{1,5})/g;
+const reUnicodeBracketedChar = /\\u\{([a-fA-F0-9]{1,5})\}/g;
+const reUnicodeExtendedChar = /\\U([a-fA-F0-9]{1,8})/g;
+const reHexadecimalChar = /\\x([a-fA-F0-9]{1,2})/g;
+const reOctalChar = /\\([0-7]{1,3})/g;
+
+/**
+ * Unescape a string that has sequences like \uXXXX
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function unescapeUnicode(string) {
+    if (!string) {
+        return "";
+    }
+    let unescaped = string;
+    let match;
+
+    while ((match = reUnicodeChar.exec(unescaped))) {
+        if (match &amp;&amp; match.length > 1) {
+            const value = parseInt(match[1], 16);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reUnicodeChar.lastIndex = 0;
+        }
+    }
+
+    return unescaped;
+};
+
+/**
+ * Unescape a string that has sequences like \u{XXXXX}
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function unescapeUnicodeWithBrackets(string) {
+    if (!string) {
+        return "";
+    }
+    let unescaped = string;
+    let match;
+
+    while ((match = reUnicodeBracketedChar.exec(unescaped))) {
+        if (match &amp;&amp; match.length > 1) {
+            const value = parseInt(match[1], 16);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reUnicodeBracketedChar.lastIndex = 0;
+        }
+    }
+
+    return unescaped;
+};
+
+/**
+ * Unescape a string that has sequences like \U000XXXXXX
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function unescapeUnicodeExtended(string) {
+    if (!string) {
+        return "";
+    }
+    let unescaped = string;
+    let match;
+
+    while ((match = reUnicodeExtendedChar.exec(unescaped))) {
+        if (match &amp;&amp; match.length > 1) {
+            const value = parseInt(match[1], 16);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reUnicodeExtendedChar.lastIndex = 0;
+        }
+    }
+
+    return unescaped;
+};
+
+/**
+ * Unescape a string that has hexadecimal escape sequences in it
+ * of the form \xXX.
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function unescapeHex(string) {
+    if (!string) {
+        return "";
+    }
+    let unescaped = string;
+    let match;
+
+    while ((match = reHexadecimalChar.exec(unescaped))) {
+        if (match &amp;&amp; match.length > 1) {
+            const value = parseInt(match[1], 16);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reHexadecimalChar.lastIndex = 0;
+        }
+    }
+
+    return unescaped;
+};
+
+/**
+ * Unescape a string that has octal escape sequences in it of the form \XXX.
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function unescapeOctal(string) {
+    let unescaped = string;
+    let match;
+
+    while ((match = reOctalChar.exec(unescaped))) {
+        if (match &amp;&amp; match.length > 1) {
+            const value = parseInt(match[1], 8);
+            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
+            reOctalChar.lastIndex = 0;
+        }
+    }
+
+    return unescaped;
+};
+
+export const escapeRegexes = {
+    // from https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/
+    "csharp": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\x00",
+            "\\\\a": "\x07",
+            "\\\\b": "\x08",
+            "\\\\e": "\x1B",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\x00": "\\0",
+            "\x07": "\\a",
+            "\x08": "\\b",
+            "\x1B": "\\e",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v"
+        }
+    },
+    "csharp-verbatim": {
+        "unescape": {
+            '""': '"'                        // unescape quotes
+        },
+        "escape": {
+            '"': '""'                        // escape quotes
+        }
+    },
+    "csharp-raw": {
+        "unescape": {
+            // none
+        },
+        "escape": {
+            // none
+        }
+    },
+    "java": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t"
+        }
+    },
+    "java-raw": {
+        "unescape": {
+            "\\\\\\\\n": "",                 // line continuation
+            "\\\\\\n": ""                    // line continuation
+        },
+        "escape": {
+            // none
+        }
+    },
+    "js": {
+        "unescape": {
+            "\\\\\\\\n": "",                 // line continuation
+            "\\\\\\n": "",                   // line continuation
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\0",
+            "\\\\b": "\b",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "\\\\": "\\\\",
+            "'": "\\'",
+            '"': '\\"',
+            "\0": "\\0",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v",
+        }
+    },
+    "js-template": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\0",
+            "\\\\b": "\b",
+            "\\\\f": "\f",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\v": "\v",
+            "\\\\`": "`"
+        },
+        "escape": {
+            "^\\\\\\\\": "\\\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\\\",
+            "\\0": "\\0",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v",
+            "`": "\\`"
+        }
+    },
+    "php-double": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            '^\\\\"': '"',                   // unescape double quotes only, not single
+            '([^\\\\])\\\\"': '$1"',         // unescape double quotes only, not single
+            "\\\\\\$": "$",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\e": "\u001B",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "\\$": "\\$",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\u001B": "\\e",
+            "\\f": "\\f",
+            "\\v": "\\v"
+        }
+    },
+    "php-single": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "'": "\\'"
+        }
+    },
+    "php-heredoc": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "\\\\\\$": "$",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\e": "\u001B",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "\\$": "\\$",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\u001B": "\\e",
+            "\\f": "\\f",
+            "\\v": "\\v"
+        }
+    },
+    "php-nowdoc": { // no escaping or unescaping whatsoever!!!
+        "unescape": {
+        },
+        "escape": {
+        }
+    },
+    "python": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\v": "\v",
+            "\\\\a": "\x07"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\x08": "\\b",
+            "\\f": "\\f",
+            "\\v": "\\v",
+            "\x07": "\\a"
+        }
+    },
+    "python-raw": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "'": "\\'"
+        }
+    },
+    "python-byte": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape quotes
+            "([^\\\\])\\\\'": "$1'"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "'": "\\'"
+        }
+    },
+    "python-multi": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            '^\\\\"': '"',                   // unescape double quotes only, not single
+            '([^\\\\])\\\\"': '$1"',         // unescape double quotes only, not single
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\v": "\v",
+            "\\\\a": "\x07"
+        },
+        "escape": {
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "\\n": "\\n",
+            "\\r": "\\r",
+            "\\t": "\\t",
+            "\x08": "\\b",
+            "\\f": "\\f",
+            "\\v": "\\v",
+            "\x07": "\\a"
+         }
+    },
+    // from https://docs.swift.org/swift-book/documentation/the-swift-programming-language/stringsandcharacters
+    "swift": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\x00",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\\x00": "\\0",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t"
+        }
+    },
+    "swift-multi": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\0": "\x00",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\\n": ""                     // remove line continuation
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+        }
+    },
+    "swift-extended": {
+        "unescape": {
+            "^\\\\#+\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\#+\\\\": "$1\\",     // unescape backslashes
+            "^\\\\#+'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\#+'": "$1'",
+            '^\\\\#+"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\#+"': '$1"',
+            "\\\\#+0": "\x00",
+            "\\\\#+n": "\n",
+            "\\\\#+r": "\r",
+            "\\\\#+t": "\t",
+            "\\\\#+\n": ""                     // remove line continuation
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+        }
+    },
+    "xml": {
+        "unescape": {
+            "&amp;lt;": "&lt;",
+            "&amp;gt;": ">",
+            "&amp;quot;": "\"",
+            "&amp;apos;": "'",
+            "&amp;amp;": "&amp;"
+        },
+        "escape": {
+            "&amp;": "&amp;amp;",
+            "&lt;": "&amp;lt;",
+            ">": "&amp;gt;",
+            "\"": "&amp;quot;",
+            "'": "&amp;apos;"
+        }
+    },
+    "xml-attr": {
+        "unescape": {
+            "&amp;lt;": "&lt;",
+            "&amp;gt;": ">",
+            "&amp;quot;": "\"",
+            "&amp;apos;": "'",
+            "&amp;amp;": "&amp;",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t",
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\v": "\v"
+        },
+        "escape": {
+            "&amp;": "&amp;amp;",
+            "&lt;": "&amp;lt;",
+            ">": "&amp;gt;",
+            "\"": "&amp;quot;",
+            "'": "&amp;apos;",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\v": "\\v"
+        }
+    }
+};
+
+/**
+ * Convert all code points above U+00FF and below U+10000
+ * to \uXXXX form.
+ *
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function escapeUnicode(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+
+    for (const ch of string) {
+        const code = IString.toCodePoint(ch, 0);
+        if (code &lt; 0x10000 &amp;&amp; code > 0x00FF) {
+            const str = code.toString(16).toUpperCase();
+            output += "\\u" + str;
+        } else {
+            output += ch;
+        }
+    }
+
+    return output;
+}
+
+/**
+ * Convert all code points above U+FFFF to \uXXXXX form.
+ *
+ * @param {string} string the string to unescape
+ * @returns {string} the unescaped string
+ * @static
+ */
+export function escapeUnicodeAstral(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+
+    for (const ch of string) {
+        const code = IString.toCodePoint(ch, 0);
+        if (code > 0xFFFF) {
+            const str = code.toString(16).toUpperCase();
+            output += "\\u" + str;
+        } else {
+            output += ch;
+        }
+    }
+
+    return output;
+}
+
+/**
+ * Convert all code points above U+FFFF to \u{XXXXX} form
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function escapeUnicodeWithBrackets(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+
+    for (const ch of string) {
+        const code = IString.toCodePoint(ch, 0);
+        if (code > 0x00FF) {
+            const str = code.toString(16).toUpperCase();
+            output += "\\u{" + str + "}";
+        } else {
+            output += ch;
+        }
+    }
+
+    return output;
+}
+
+/**
+ * Convert all code points above U+FFFF to \U000XXXXXX form
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function escapeUnicodeExtended(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+
+    for (const ch of string) {
+        const code = IString.toCodePoint(ch, 0);
+        if (code > 0xFFFF) {
+            const str = code.toString(16).toUpperCase().padStart(8, "0");
+            output += `\\U${str}`;
+        } else {
+            output += ch;
+        }
+    }
+
+    return output;
+}
+
+/**
+ * Convert all code points above U+00FF as \uXXXX and
+ * all code points above U+FFFF as surrogate pairs in that
+ * same format.
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function escapeUnicodeAsSurrogatePairs(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+
+    // access the original string character by character to get
+    // the surrogate pairs for code points above U+FFFF
+    for (let i = 0; i &lt; string.length; i++) {
+        const ch = string[i];
+        const code = ch.charCodeAt(0);
+        if (code &lt; 0x10000 &amp;&amp; code > 0x00FF) {
+            const str = code.toString(16).toUpperCase();
+            output += "\\u" + str;
+        } else {
+            output += ch;
+        }
+    }
+    return output;
+}
+
+/**
+ * Escape a string so that it has hexadecimal escape sequences
+ * in it instead of the characters themselves. This function
+ * will only convert characters from U+0000 to U+001F. The rest
+ * of the characters will be left alone. If you have characters
+ * that are less than U+001F that have special escape sequences
+ * in the target programming language, you should escape them
+ * first before calling this function.
+ *
+ * @param {string} string the string to escape
+ * @returns {string} the escaped string
+ * @static
+ */
+export function escapeHex(string) {
+    if (!string) {
+        return "";
+    }
+    let output = "";
+    for (const ch of string) {
+        const code = IString.toCodePoint(ch, 0);
+        if (code &lt; 0x20) {
+            output += `\\x${code.toString(16).padStart(2, "0")}`;
+        } else {
+            output += ch;
+        }
+    }
+    return output;
+}
+
+/**
+ * Escape a string according to the rules given.
+ * @param {string} string the string to escape
+ * @param {object} rules the rules to use for escaping
+ * @returns {string} the escaped string
+ */
+export function escapeRules(string, rules) {
+    if (!string) {
+        return "";
+    }
+    let escaped = string;
+    for (const [key, value] of Object.entries(rules.escape)) {
+        escaped = escaped.replace(new RegExp(key, "g"), value);
+    }
+    return escaped;
+}
+
+/**
+ * Unescape a string according to the rules given.
+ * @param {string} string the string to unescape
+ * @param {object} rules the rules to use for unescaping
+ * @returns {string} the unescaped string
+ */
+export function unescapeRules(string, rules) {
+    if (!string) {
+        return "";
+    }
+    let unescaped = string;
+    for (const [key, value] of Object.entries(rules.unescape)) {
+        unescaped = unescaped.replace(new RegExp(key, "g"), value);
+    }
+    return unescaped;
+}
+
+/**
+ * Remove leading whitespace from each line of a string.
+ * This is used for things like "raw" strings
+ * to remove the leading whitespace that is used to align
+ * and indent the contents of the string with the rest of
+ * the code.
+ *
+ * @param {string} string the string to unindent
+ * @returns {string} the unindented string
+ */
+export function unindent(string) {
+    if (!string) {
+        return "";
+    }
+    // Remove leading whitespace from each line
+    const lines = string.split('\n');
+    if (lines.length &lt; 2) {
+        return string;
+    }
+    // Find the minimum indentation level amongst all lines, ignoring empty lines
+    // and lines that only contain whitespace, as that will give us the amount
+    // of indentation to remove from each line
+    const minIndent = Math.min(...lines.map(line => {
+        const indent = line.search(/\S/);
+        return indent > -1 ? indent : (line.length > 0 ? line.length : Number.MAX_SAFE_INTEGER);
+    }));
+    if (minIndent === Number.MAX_SAFE_INTEGER) {
+        // No indentation found, so return the original string
+        return string;
+    }
+    // Remove the minimum indentation from each line
+    const unindentedLines = lines.map(line => line.slice(minIndent));
+    return unindentedLines.join('\n');
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon Mar 03 2025 22:01:57 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
