@@ -1,5 +1,13 @@
 # ilib-loctool-tap-i18n
 
+## 1.1.3
+
+### Patch Changes
+
+- d20d079: Fixed plural categories in plugin output to always produce required category `many` for Polish and Russian.
+- Updated dependencies [c5ee237]
+  - ilib-tools-common@1.14.0
+
 ## 1.1.2
 
 ### Patch Changes
