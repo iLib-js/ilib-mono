@@ -1,7 +1,7 @@
 /*
  * TestParser.js - test an ilib-lint Parser plugin
  *
- * Copyright © 2022, 2024 JEDLSoft
+ * Copyright © 2022, 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ class TestParser extends Parser {
         super(options);
         this.name = "parser-xyz";
         this.description = "A test parser for xyz files, which are really just json files.";
+        this.type = "resource";
     }
 
     init() {

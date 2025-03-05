@@ -19,6 +19,7 @@
 
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
+import Results from "./Result.js";
 
 /* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
 
@@ -57,10 +58,13 @@ class Transformer extends PipelineElement {
      * @abstract
      * @param {IntermediateRepresentation} representation the intermediate
      *   representation to transform
+     * @param {Array.<Result>|undefined} results the results of the rules that were applied earlier
+     *   in the pipeline, or undefined if there are no results or if the rules have not been
+     *   applied yet
      * @returns {IntermediateRepresentation} the new intermediate representation
      *   that is the transformed version of the original
      */
-    transform(representation) {
+    transform(representation, results) {
         throw new NotImplementedError();
     }
 };

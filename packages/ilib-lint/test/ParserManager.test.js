@@ -90,5 +90,22 @@ describe("testParserManager", () => {
         expect(parsers).toBeTruthy();
         expect(parsers.length).toBe(0);
     });
+
+    test("ParserManager add the same parser multiple times", () => {
+        expect.assertions(5);
+
+        const mgr = new ParserManager();
+        let parsers = mgr.get("xyz");
+        expect(parsers).toBeTruthy();
+        expect(parsers.length).toBe(0);
+
+        mgr.add([MockParser, MockParser, MockParser]);
+        parsers = mgr.get("xyz");
+
+        // should realize that they are the same parser and only add it once
+        expect(parsers).toBeTruthy();
+        expect(parsers.length).toBe(1);
+        expect(parsers[0] instanceof MockParser).toBeTruthy();
+    });
 });
 

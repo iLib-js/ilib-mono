@@ -1,7 +1,7 @@
 /*
  * index.js - main program of ilib-lint plugin test
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import TestParser from './TestParser.js';
 import TestRule from './TestRule.js';
 import TestFormatter from './TestFormatter.js';
 import TestFixer from './TestFixer.js';
+import TestTransformer from './TestTransformer.js';
+import TestSerializer from './TestSerializer.js';
 
 class TestPlugin extends Plugin {
     constructor(options) {
@@ -65,6 +67,13 @@ class TestPlugin extends Plugin {
         return [ TestFixer ];
     }
 
+    getTransformers() {
+        return [ TestTransformer ];
+    }
+
+    getSerializers() {
+        return [ TestSerializer ];
+    }
 }
 
 export default TestPlugin;

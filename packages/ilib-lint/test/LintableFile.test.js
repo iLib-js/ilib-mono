@@ -1,7 +1,7 @@
 /*
  * LintableFile.test.js - test the source file class
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { SourceFile, IntermediateRepresentation } from 'ilib-lint-common';
+import { ResourceString } from 'ilib-tools-common';
 
 import LintableFile from '../src/LintableFile.js';
 import Project from '../src/Project.js';
@@ -301,5 +304,90 @@ describe("testLintableFile", () => {
         const source = ir[0].getRepresentation();
         expect(source).toBeTruthy();
         expect(source.length).toBe(78); // how many chars in this source file?
+    });
+
+    test("LintableFile get the source file", () => {
+        expect.assertions(4);
+
+        const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.pdq");
+        const lf = new LintableFile("test/testfiles/xliff/test.pdq", {
+            filetype
+        }, project);
+
+        expect(lf).toBeTruthy();
+        const source = lf.getSourceFile();
+        expect(source).toBeTruthy();
+        expect(source instanceof SourceFile).toBeTruthy();
+        expect(source.getPath()).toBe("test/testfiles/xliff/test.pdq");
+    });
+
+    test("LintableFile set intermediate represetation", () => {
+        expect.assertions(2);
+
+        const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.pdq");
+        const lf = new LintableFile("test/testfiles/xliff/test.pdq", {
+            filetype
+        }, project);
+        expect(lf).toBeTruthy();
+
+        const irs = [new IntermediateRepresentation({
+            type: "resource",
+            ir: [
+                new ResourceString({
+                    source: "Asdf asdf",
+                    sourceLocale: "en-US",
+                    target: "Asdf asdf in German",
+                    targetLocale: "de-DE",
+                    key: "foobar",
+                    datatype: "plaintext",
+                    restype: "string",
+                    project: "webapp",
+                    pathName: "foo/bar/asdf.java",
+                    comment: "foobar is where it's at!"
+                })
+            ],
+            sourceFile: lf.getSourceFile()
+        })];
+
+        lf.setIRs(irs);
+
+        expect(lf.getIRs()).toEqual(irs);
+    });
+
+    test("LintableFile don't set the intermediate represetation if it is not the right type", () => {
+        expect.assertions(3);
+
+        const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.pdq");
+        const lf = new LintableFile("test/testfiles/xliff/test.pdq", {
+            filetype
+        }, project);
+        expect(lf).toBeTruthy();
+
+        // just use an array of plain object instead
+        const irs = [{
+            type: "resource",
+            ir: [
+                new ResourceString({
+                    source: "Asdf asdf",
+                    sourceLocale: "en-US",
+                    target: "Asdf asdf in German",
+                    targetLocale: "de-DE",
+                    key: "foobar",
+                    datatype: "plaintext",
+                    restype: "string",
+                    project: "webapp",
+                    pathName: "foo/bar/asdf.java",
+                    comment: "foobar is where it's at!"
+                })
+            ],
+            sourceFile: lf.getSourceFile()
+        }];
+
+        expect(() => {
+            // should reject this because the elements of the array are not the right type
+            lf.setIRs(irs);
+        }).toThrow();
+
+        expect(lf.getIRs()).not.toEqual(irs);
     });
 });

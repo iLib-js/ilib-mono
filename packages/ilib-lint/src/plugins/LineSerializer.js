@@ -1,7 +1,7 @@
 /*
  * LineSerializer.js - Serializer for plain text files
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ class LineSerializer extends Serializer {
     constructor(options) {
         super(options);
         this.name = "line";
-        this.description = "A serializer for plain text files that splits them into lines.";
+        this.description = "A serializer for plain text files that joins an array of lines into a file with newlines.";
         this.type = "line";
     }
 
@@ -38,11 +38,13 @@ class LineSerializer extends Serializer {
      * Convert the intermediate representation back into a source file.
      *
      * @override
-     * @param {IntermediateRepresentation} ir the intermediate representation to convert
+     * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
      * @returns {SourceFile} the source file with the contents of the intermediate
      * representation
      */
-    serialize(ir) {
+    serialize(irs) {
+        // should only be one ir in this array
+        const ir = irs[0];
         const lines = ir.getRepresentation();
         const data = lines.join("\n");
         return new SourceFile(ir.sourceFile.getPath(), {

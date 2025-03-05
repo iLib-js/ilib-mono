@@ -136,7 +136,7 @@ class LineRegexpChecker extends Rule {
 
         let results = [];
 
-        // representation should be an array of lines 
+        // representation should be an array of lines
         const lines = ir.getRepresentation();
 
         lines.forEach((line, i) => {

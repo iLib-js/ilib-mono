@@ -49,7 +49,7 @@ class ResourceICUPluralTranslation extends ResourceRule {
      * "x" + "y" vs. " x" + " y "
      * Without adding the spaces and then compressing them before comparison,
      * the two would not be the same, even though the actual translatable text
-     * in them is the same, which is what we were trying to get at. 
+     * in them is the same, which is what we were trying to get at.
      * @private
      */
     reconstruct(nodes) {
