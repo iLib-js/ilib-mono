@@ -299,6 +299,91 @@ For strings that have an `enum` keyword, each of the values in the `enum` will
 not be translated as well, as the code that reads this json file is explicitly
 expecting one of the given fixed values.
 
+### The `isComment` Keyword
+The `isComment` keyword specifies that the property value should be treated as a comment for the translator.
+
+#### Example
+
+Assume we have the following `schema.json`:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "sample-schema",
+  "title": "Sample schema with isComment",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "defaultMessage": {
+        "type": "string",
+        "localizable": true
+      },
+      "description": {
+        "type": "string",
+        "isComment": true
+      }
+    }
+  }
+}
+```
+And a JSON file with the following content:
+```json
+{
+  "project.whatever.text": {
+    "defaultMessage": "Text to translate",
+    "description": "A comment for the translator"
+  }
+}
+```
+The corresponding `<trans-unit>` in XLIFF file will look as follows:
+```xml
+  <trans-unit ... >
+    <source>Text to translate</source>
+    <note>A comment for the translator</note>
+  </trans-unit>
+```
+Note that the `<note>` tag content is set to the `description` property value from the JSON file (`"A comment for the translator"`), as the `isComment` keyword for the property `description` in the associated JSON schema is set to `true`.
+
+
+### The `usePropertyKeyAsResname` Keyword
+The `usePropertyKeyAsResname` keyword specifies that the property key from the JSON file should be used as the resource name for localization.
+
+#### Example
+
+Assume we have the following `schema.json`:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "sample-schema",
+  "title": "Sample schema with usePropertyKeyAsResname",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      ...
+    },
+    "usePropertyKeyAsResname": true,
+  }
+}
+```
+And a JSON file with the following content:
+```json
+{
+  "project.whatever.text": {
+    "defaultMessage": "Text to translate",
+    "description": "A comment for the translator"
+  }
+}
+```
+The corresponding `<trans-unit>` in XLIFF file will look as follows:
+```xml
+  <trans-unit id="1" resname="project.whatever.text" restype="string" datatype="json">
+    ...
+  </trans-unit>
+```
+Mind, that the `resname` attribute is set to the property key from the JSON file (`"project.whatever.text"`).
+
+
 ## JSON File Generation
 
 When you create a new, empty JsonFile instance that is not backed

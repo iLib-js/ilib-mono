@@ -329,6 +329,108 @@ function getSchemaType(schema, type, root) {
     return undefined;
 }
 
+JsonFile.prototype.extracted = function(localizable, json, ref, translations, locale, returnValue, type) {
+    if (localizable) {
+        if (isPrimitive(typeof (json))) {
+            var text = String(json);
+            var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+            if (translations) {
+                // localize it
+                var tester = this.API.newResource({
+                    resType: "string",
+                    project: this.project.getProjectId(),
+                    sourceLocale: this.project.getSourceLocale(),
+                    reskey: key,
+                    datatype: this.type.datatype
+                });
+                var hashkey = tester.hashKeyForTranslation(locale);
+                var translated = translations.getClean(hashkey);
+                var translatedText;
+                if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
+                    translatedText = this.sparseValue(text);
+                } else if (!translated && this.type && this.type.pseudos[locale]) {
+                    var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
+                    if (sourceLocale !== this.project.sourceLocale) {
+                        // translation is derived from a different locale's translation instead of from the source string
+                        var sourceRes = translations.getClean(
+                            tester.cleanHashKey(),
+                            this.type.datatype);
+                        source = sourceRes ? sourceRes.getTarget() : text;
+                    } else {
+                        source = text;
+                    }
+                    translatedText = this.type.pseudos[locale].getString(source);
+                } else {
+                    if (translated) {
+                        translatedText = translated.getTarget();
+                    } else {
+                        if (this.type && this.API.utils.containsActualText(text)) {
+                            this.logger.trace("New string found: " + text);
+                            this.type.newres.add(this.API.newResource({
+                                resType: "string",
+                                project: this.project.getProjectId(),
+                                key: key,
+                                sourceLocale: this.project.sourceLocale,
+                                source: text,
+                                targetLocale: locale,
+                                target: text,
+                                pathName: this.pathName,
+                                state: "new",
+                                datatype: this.type.datatype,
+                                index: this.resourceIndex++
+                            }));
+                            translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
+                                this.type.missingPseudo.getString(text) : text;
+                            translatedText = this.sparseValue(translatedText);
+                        } else {
+                            translatedText = this.sparseValue(text);
+                        }
+                    }
+                }
+                if (translatedText) {
+                    returnValue = convertValueToType(translatedText, type);
+                }
+            } else {
+                // extract this new string
+                var opts = {
+                    resType: "string",
+                    project: this.project.getProjectId(),
+                    key: key,
+                    sourceLocale: this.project.sourceLocale,
+                    pathName: this.pathName,
+                    state: "new",
+                    comment: this.comment,
+                    datatype: this.type.datatype,
+                    index: this.resourceIndex++
+                };
+                if (locale !== this.project.sourceLocale) {
+                    opts.target = text;
+                    opts.targetLocale = locale;
+                } else {
+                    opts.source = text;
+                }
+                this.set.add(this.API.newResource(opts));
+                returnValue = this.sparseValue(text);
+            }
+        } else {
+            // no way to parse the additional items beyond the end of the array,
+            // so just ignore them
+            this.logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof (json));
+            returnValue = this.sparseValue(json);
+        }
+    } else {
+        returnValue = this.sparseValue(json);
+    }
+    return {text, returnValue};
+}
+
+JsonFile.prototype.isLocalizable = function (localizable, schema) {
+    const keywords = ["source"];
+
+    localizable = localizable || schema.localizable === true || keywords.includes(schema.localizable);
+    return localizable;
+}
+
 JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizable, translations, locale) {
     if (!json || !schema) return;
 
@@ -342,104 +444,16 @@ JsonFile.prototype.parseObj = function(json, root, schema, ref, name, localizabl
         // in the tree
         if (!schema) return this.sparseValue(json);
 
-        localizable |= schema.localizable;
+        localizable = this.isLocalizable(localizable, schema);
         var type = schema.type || typeof(json);
         switch (type) {
         case "boolean":
         case "number":
         case "integer":
         case "string":
-            if (localizable) {
-                if (isPrimitive(typeof(json))) {
-                    var text = String(json);
-                    var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
-                    if (translations) {
-                        // localize it
-                        var tester = this.API.newResource({
-                            resType: "string",
-                            project: this.project.getProjectId(),
-                            sourceLocale: this.project.getSourceLocale(),
-                            reskey: key,
-                            datatype: this.type.datatype
-                        });
-                        var hashkey = tester.hashKeyForTranslation(locale);
-                        var translated = translations.getClean(hashkey);
-                        var translatedText;
-                        if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
-                            translatedText = this.sparseValue(text);
-                        } else if (!translated && this.type && this.type.pseudos[locale]) {
-                            var source, sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
-                            if (sourceLocale !== this.project.sourceLocale) {
-                                // translation is derived from a different locale's translation instead of from the source string
-                                var sourceRes = translations.getClean(
-                                    tester.cleanHashKey(),
-                                    this.type.datatype);
-                                source = sourceRes ? sourceRes.getTarget() : text;
-                            } else {
-                                source = text;
-                            }
-                            translatedText = this.type.pseudos[locale].getString(source);
-                        } else {
-                            if (translated) {
-                                translatedText = translated.getTarget();
-                            } else {
-                                if (this.type && this.API.utils.containsActualText(text)) {
-                                    this.logger.trace("New string found: " + text);
-                                    this.type.newres.add(this.API.newResource({
-                                        resType: "string",
-                                        project: this.project.getProjectId(),
-                                        key: key,
-                                        sourceLocale: this.project.sourceLocale,
-                                        source: text,
-                                        targetLocale: locale,
-                                        target: text,
-                                        pathName: this.pathName,
-                                        state: "new",
-                                        datatype: this.type.datatype,
-                                        index: this.resourceIndex++
-                                    }));
-                                    translatedText = this.type && this.type.missingPseudo && !this.project.settings.nopseudo ?
-                                            this.type.missingPseudo.getString(text) : text;
-                                    translatedText = this.sparseValue(translatedText);
-                                } else {
-                                    translatedText = this.sparseValue(text);
-                                }
-                            }
-                        }
-                        if (translatedText) {
-                            returnValue = convertValueToType(translatedText, type);
-                        }
-                    } else {
-                        // extract this new string
-                        var opts = {
-                            resType: "string",
-                            project: this.project.getProjectId(),
-                            key: key,
-                            sourceLocale: this.project.sourceLocale,
-                            pathName: this.pathName,
-                            state: "new",
-                            comment: this.comment,
-                            datatype: this.type.datatype,
-                            index: this.resourceIndex++
-                        };
-                        if (locale !== this.project.sourceLocale) {
-                            opts.target = text;
-                            opts.targetLocale = locale;
-                        } else {
-                            opts.source = text;
-                        }
-                        this.set.add(this.API.newResource(opts));
-                        returnValue = this.sparseValue(text);
-                    }
-                } else {
-                    // no way to parse the additional items beyond the end of the array,
-                    // so just ignore them
-                    this.logger.warn(this.pathName + '/' + ref + ": value should be type " + type + " but found " + typeof(json));
-                    returnValue = this.sparseValue(json);
-                }
-            } else {
-                returnValue = this.sparseValue(json);
-            }
+            const __ret = this.extracted(localizable, json, ref, translations, locale, returnValue, type);
+            var text = __ret.text;
+            returnValue = __ret.returnValue;
             break;
 
         case "array":
