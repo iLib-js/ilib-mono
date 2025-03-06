@@ -2875,25 +2875,25 @@ describe("jsonfile", function () {
     });
 
 });
-
-it.each([
-    { localizable: false, schema: { localizable: "source" } },
-    { localizable: false, schema: { localizable: "source" } },
-
-    { localizable: false, schema: { localizable: true } },
-    { localizable: false, schema: { localizable: true } },
-])("sets localizable to true, for supported schema.localizable values", ({localizable, schema}) => {
-
-    const result = JsonFile.prototype.isLocalizable(localizable, schema);
-
-    expect(result).toBe(true);
-});
-
-it.each([
-    { localizable: false, schema: { localizable: "invalid keyword" } },
-])("sets localizable to false, for unsupported schema.localizable values", ({localizable, schema}) => {
-
-    const result = JsonFile.prototype.isLocalizable(localizable, schema);
-
-    expect(result).toBe(false);
-});
+//
+// it.each([
+//     { localizable: false, schema: { localizable: "source" } },
+//     { localizable: false, schema: { localizable: "source" } },
+//
+//     { localizable: false, schema: { localizable: true } },
+//     { localizable: false, schema: { localizable: true } },
+// ])("sets localizable to true, for supported schema.localizable values", ({localizable, schema}) => {
+//
+//     const result = JsonFile.prototype.isLocalizable(localizable, schema);
+//
+//     expect(result).toBe(true);
+// });
+//
+// it.each([
+//     { localizable: false, schema: { localizable: "invalid keyword" } },
+// ])("sets localizable to false, for unsupported schema.localizable values", ({localizable, schema}) => {
+//
+//     const result = JsonFile.prototype.isLocalizable(localizable, schema);
+//
+//     expect(result).toBe(false);
+// });

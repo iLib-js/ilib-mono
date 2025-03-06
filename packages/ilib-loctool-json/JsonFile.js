@@ -288,7 +288,7 @@ function getSchemaType(schema, type, root) {
             return getSchemaType(subschema, type, root);
         });
         if (subschema) {
-            subschema.localizable |= localizable;
+            subschema.localizable = subschema.localizable || localizable;
         }
         return subschema;
     }
@@ -297,7 +297,8 @@ function getSchemaType(schema, type, root) {
         subschema = getSchemaType(schema.not, type, root);
         if (subschema) {
             if (type === subschema.type) return undefined;  // matches, so "not" fails
-            subschema.localizable |= localizable;
+            subschema.localizable = subschema.localizable || localizable;
+
         }
         return subschema;
     }
@@ -308,7 +309,7 @@ function getSchemaType(schema, type, root) {
         });
         if (matches.length !== 1) return undefined;
         if (matches[0]) {
-            matches[0].localizable |= localizable;
+            matches[0].localizable = matches[0].localizable || localizable;
         }
         return matches[0];
     }
@@ -320,7 +321,7 @@ function getSchemaType(schema, type, root) {
         if (!matches) return undefined;
         // it matches all of them, so just choose the first one
         if (matches[0]) {
-            matches[0].localizable |= localizable;
+            matches[0].localizable = matches[0].localizable || localizable;
         }
         return matches[0];
     }
