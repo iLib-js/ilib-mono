@@ -20,12 +20,17 @@
 var fs = require("fs");
 var path = require("path");
 var Locale = require("ilib-locale");
-var IString = require("ilib-istring");
 var escaperFactory = require("ilib-tools-common").escaperFactory;
 
-function identity(str) {
-    return str;
-}
+// fake escaper for the identity escaper
+var identity = {
+    escape: function(str) {
+        return str;
+    },
+    unescape: function(str) {
+        return str;
+    }
+};
 
 /**
  * Create a new Regex file with the given path name and within
@@ -58,18 +63,18 @@ var RegexFile = function(props) {
                 exp.regex = new RegExp(exp.expression, exp.flags);
             }
             exp.regex.lastIndex = 0;
+
+            // set up the unescaper to use after we have found the strings. The same unescaper
+            // is used for all strings that match this expression. Escapers vary by expression
+            // because different types of strings might have different escaping rules, even within
+            // the same a programming language.
+            // (e.g. double quoted strings in PHP are escaped differently than single quoted strings)
+            var escapeStyle = exp.escapeStyle || "js";
+            exp.escaper = escapeStyle !== "none" ? escaperFactory(escapeStyle) : identity;
         });
     }
     this.resourceIndex = 0;
-
-    // set up the unescaper to use after we have found the strings. The same unescaper
-    // is used for all strings that match the same mapping. If this.escaper is undefined,
-    // then the strings are not unescaped.
-    var escapeStyle = (this.mapping && this.mapping.escapeStyle) || "js";
-    this.escaper = escapeStyle !== "none" ? escaperFactory(escapeStyle) : identity;
 };
-
-var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
 
 /**
  * If the given string is surrounded by quotes, remove the quotes.
@@ -97,11 +102,12 @@ function stripQuotes(str) {
  * code but increases matching.
  *
  * @param {String} string the string to clean
+ * @param {Escaper} escaper the escaper to use to unescape
  * @returns {String} the cleaned string
  */
-RegexFile.prototype.cleanString = function(string) {
+RegexFile.prototype.cleanString = function(string, escaper) {
     if (!string) return string;
-    var unescaped = this.escaper.unescape(string);
+    var unescaped = escaper.unescape(string);
 
     unescaped = unescaped.
         replace(/\\[btnfr]/g, " ").
@@ -131,15 +137,16 @@ RegexFile.prototype.makeKey = function(source) {
  * the array of strings as an actual array.
  *
  * @param {String} data the string to parse
+ * @param {Escaper} escaper the escaper to use to unescape the strings
  * @returns {Array.<String>} the array of strings
  */
-RegexFile.prototype.parseArray = function(data) {
+RegexFile.prototype.parseArray = function(data, escaper) {
     var arr;
 
     if (data) {
         arr = data.split(",");
         arr = arr.map(function(item) {
-            return stripQuotes(this.escaper.unescape(item).trim());
+            return stripQuotes(escaper.unescape(item).trim());
         }.bind(this));
     }
 
@@ -196,26 +203,26 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
 
         if (result.groups) {
             if (result.groups.sourcePlural) {
-                sourcePlural = this.escaper.unescape(result.groups.sourcePlural);
+                sourcePlural = exp.escaper.unescape(result.groups.sourcePlural);
             }
             if (result.groups.comment) {
-                comment = this.escaper.unescape(result.groups.comment);
+                comment = exp.escaper.unescape(result.groups.comment);
             }
             if (result.groups.context) {
-                context = this.escaper.unescape(result.groups.context);
+                context = exp.escaper.unescape(result.groups.context);
             }
             if (result.groups.flavor) {
-                flavor = this.escaper.unescape(result.groups.flavor);
+                flavor = exp.escaper.unescape(result.groups.flavor);
             }
             if (result.groups.key) {
                 // clean string unescapes the key, but also removes things
                 // that foster greater matching, like compressing white space
-                key = this.cleanString(result.groups.key);
+                key = this.cleanString(result.groups.key, exp.escaper);
             }
         }
 
         if (exp.resourceType === "array") {
-            array = this.parseArray(source);
+            array = this.parseArray(source, exp.escaper);
         }
 
         if (!key) {
@@ -224,10 +231,10 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
             switch (exp.resourceType) {
                 default:
                 case "string":
-                    src = this.escaper.unescape(source);
+                    src = exp.escaper.unescape(source);
                     break;
                 case "plural":
-                    src = this.escaper.unescape(sourcePlural);
+                    src = exp.escaper.unescape(sourcePlural);
                     break;
                 case "array":
                     src = array.join("");
@@ -250,7 +257,7 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
 
         switch (exp.resourceType) {
             case "string":
-                source = this.escaper.unescape(source);
+                source = exp.escaper.unescape(source);
                 r = this.API.newResource({
                     resType: exp.resourceType,
                     project: this.project.getProjectId(),
@@ -275,7 +282,7 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
                     sourceLocale: this.project.sourceLocale,
                     source: source,
                     sourcePlurals: {
-                        one: this.escaper.unescape(source),
+                        one: exp.escaper.unescape(source),
                         other: sourcePlural
                     },
                     pathName: this.pathName,

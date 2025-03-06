@@ -94,7 +94,6 @@ var p = new CustomProject({
                 "resourceFileType": "javascript",
                 "template": "resources/Translation[locale].json",
                 "sourceLocale": "en-US",
-                "escapeStyle": "smarty",
                 "expressions": [
                     {
                         // example:
@@ -102,7 +101,8 @@ var p = new CustomProject({
                         "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*?)\\s*\\*\\}.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
-                        "resourceType": "string"
+                        "resourceType": "string",
+                        "escapeStyle": "smarty"
                     },
                     {
                         // example:
@@ -111,7 +111,8 @@ var p = new CustomProject({
                         "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*?)\\s*\\*\\}.*\\n.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
-                        "resourceType": "string"
+                        "resourceType": "string",
+                        "escapeStyle": "smarty"
                     },
                     {
                         // example:
@@ -119,7 +120,17 @@ var p = new CustomProject({
                         "expression": "\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
-                        "resourceType": "string"
+                        "resourceType": "string",
+                        "escapeStyle": "smarty"
+                    },
+                    {
+                        // example:
+                        // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'|noescape}
+                        "expression": "\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'\\s*\\|\\s*noescape\\s*\\}",
+                        "flags": "g",
+                        "datatype": "template",
+                        "resourceType": "string",
+                        "escapeStyle": "none"
                     }
                 ]
             }
@@ -949,6 +960,28 @@ describe("regex file tests", function() {
         var r = set.getBySource("abc \"e\" $\n\r\t\f\vT \\u{317D}r\\u{1D11E}");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("abc \"e\" $\n\r\t\f\vT \\u{317D}r\\u{1D11E}");
+        expect(r.getKey()).toBe("key");
+    });
+
+    test("RegexFile does not unescape the string if the escapeStyle is set to none", function() {
+        expect.assertions(5);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/templates/t1.tmpl",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse("{\'abc \\\"e\\\" \\$\\n\\r\\t\\f\\vT \\u{317D}r\\u{1D11E}\'|f:\'key\'|noescape}");
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        // noescape means don't unescape anything
+        var r = set.getBySource("abc \\\"e\\\" \\$\\n\\r\\t\\f\\vT \\u{317D}r\\u{1D11E}");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("abc \\\"e\\\" \\$\\n\\r\\t\\f\\vT \\u{317D}r\\u{1D11E}");
         expect(r.getKey()).toBe("key");
     });
 });
