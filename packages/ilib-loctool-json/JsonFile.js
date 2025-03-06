@@ -309,6 +309,26 @@ function getSchemaType(schema, type, root) {
     return undefined;
 }
 
+JsonFile.prototype.handleComment = function (json, ref) {
+    this.comment = json;
+    /*
+       Find the resource related to the currently processed JSON value and
+       update its comment property with the associated comment.
+       This is necessary because JSON values are processed in the order
+       they are defined in the JSON file, meaning we need to account for
+       different value orderings. For example, in one case, we may get
+       "description" first, which has "isComment" set to true, and therefore, it is a comment source.
+       In another case, we may get "defaultMessage" first, which is instead used as a
+       source string for translation.
+   */
+    const resources = this.set.getBy({ reskey: ref });
+    if(resources && resources.length) {
+        const resource = resources[0];
+
+        resource.comment = this.comment;
+    }
+}
+
 JsonFile.prototype.handleSource = function (json, ref, translations, locale, returnValue, type) {
     if (isPrimitive(typeof (json))) {
         var text = String(json);
@@ -410,6 +430,10 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
             var text = __ret.text;
             returnValue = __ret.returnValue;
             break
+        case "comment":
+            this.handleComment(json, ref);
+            returnValue = this.sparseValue(json);
+            break;
         default:
             returnValue = this.sparseValue(json);
             break;
