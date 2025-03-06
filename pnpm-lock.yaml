@@ -1636,6 +1636,9 @@ importers:
       ilib-locale:
         specifier: workspace:^
         version: link:../ilib-locale
+      ilib-tools-common:
+        specifier: workspace:^
+        version: link:../ilib-tools-common
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8

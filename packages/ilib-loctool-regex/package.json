@@ -68,6 +68,7 @@
     "dependencies": {
         "ilib-istring": "workspace:^",
         "ilib-locale": "workspace:^",
+        "ilib-tools-common": "workspace:^",
         "micromatch": "^4.0.8"
     }
 }

@@ -48,6 +48,14 @@ used within the `regex` property:
       how to use path name templates.
     - sourceLocale - the locale of the source strings. This is the
       locale in which the strings are written in the source files.
+    - escapeStyle - the style of unescaping when collecting strings
+      for translations and the type of escaping to use when writing the
+      localized strings to the resource file. The valid styles incude
+      "csharp" and "js" (the default), as well as many others. The
+      full list of styles available is given in the documentation
+      for the [ilib-tools-common library](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-tools-common/docs/ilibToolsCommon.md#escaperFactory).
+      In addition to the styles listed there, the escapeStyle setting
+      can also be set to "none" to disable escaping altogether.
     - expressions - an array of objects that document the regular
       expressions to use to extract strings from the source file
       and some additional information. The strings

@@ -94,11 +94,12 @@ var p = new CustomProject({
                 "resourceFileType": "javascript",
                 "template": "resources/Translation[locale].json",
                 "sourceLocale": "en-US",
+                "escapeStyle": "smarty",
                 "expressions": [
                     {
                         // example:
                         // {* @L10N This comment is on the same line *} {'Your password change is cancelled.'|f:'login_password_change_cancelled'}
-                        "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
+                        "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*?)\\s*\\*\\}.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
@@ -107,7 +108,7 @@ var p = new CustomProject({
                         // example:
                         // {* @L10N The message shown to users whose passwords have just been changed *}
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
-                        "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\n.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
+                        "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*?)\\s*\\*\\}.*\\n.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
@@ -329,7 +330,7 @@ describe("regex file tests", function() {
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
-
+debugger;
         var resources = set.getBy({
             reskey: "r523019971"
         });
