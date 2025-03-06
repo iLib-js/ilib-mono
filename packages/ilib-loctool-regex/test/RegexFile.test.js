@@ -330,7 +330,7 @@ describe("regex file tests", function() {
 
         var set = rf.getTranslationSet();
         expect(set).toBeTruthy();
-debugger;
+
         var resources = set.getBy({
             reskey: "r523019971"
         });
@@ -905,5 +905,50 @@ debugger;
         expect(() => rf.parse("$t('This is a test');")).toThrow(
             new Error("No expressions found in project.json for ./testfiles/js/t1.js")
         );
+    });
+
+    test("RegexFile gets the right unescaped source string in a javascript file", function() {
+        expect.assertions(5);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/js/t1.js",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse("$t('foob`\\n\\r\\t\\\\a\\u317Dr\\u{1D11E}');");
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        // javascript escaping is the default, so it doesn't need to be
+        // specified in the mapping
+        var r = set.getBySource("foob`\n\r\t\\a\u317Dr\u{1D11E}");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("foob`\n\r\t\\a\u317Dr\u{1D11E}");
+        expect(r.getKey()).toBe("r157823627");
+    });
+
+    test("RegexFile gets the right unescaped source string in a Smarty template file", function() {
+        expect.assertions(5);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/templates/t1.tmpl",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse("{\'abc \\\"e\\\" \\$\\n\\r\\t\\f\\vT \\u{317D}r\\u{1D11E}\'|f:\'key\'}");
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        // smarty escaping doesn't do Unicode characters
+        var r = set.getBySource("abc \"e\" $\n\r\t\f\vT \\u{317D}r\\u{1D11E}");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("abc \"e\" $\n\r\t\f\vT \\u{317D}r\\u{1D11E}");
+        expect(r.getKey()).toBe("key");
     });
 });
