@@ -31,7 +31,7 @@ module.exports = function(grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: 'src/*.js',
+                src: 'src/**/*.js',
                 dest: 'lib/'
             }
         },
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src',
-                    src: ['*.js'],
+                    src: ['**/*.js'],
                     dest: 'lib/',
                     ext: '.js'
                 }]
