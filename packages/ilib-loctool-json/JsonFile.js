@@ -394,7 +394,7 @@ JsonFile.prototype.handleSource = function (json, ref, translations, locale, ret
             var opts = {
                 resType: "string",
                 project: this.project.getProjectId(),
-                key: key,
+                key: this.key ?? key,
                 sourceLocale: this.project.sourceLocale,
                 pathName: this.pathName,
                 state: "new",
@@ -421,8 +421,6 @@ JsonFile.prototype.handleSource = function (json, ref, translations, locale, ret
 }
 
 JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, translations, locale, returnValue, type) {
-    console.log({localizable})
-
     switch (localizable) {
         case true:
         case "source":
@@ -444,6 +442,7 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
 }
 
 JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizable, translations, locale) {
+    console.log(11111, localizable)
     if (!json || !schema) return;
 
     if (this.type.hasType(schema)) {
@@ -456,7 +455,11 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
         // in the tree
         if (!schema) return this.sparseValue(json);
 
+        const prevLoc = localizable;
         localizable = localizable || schema.localizable
+        console.log(22222, localizable)
+        console.log(33333, prevLoc)
+
         var type = schema.type || typeof (json);
         switch (type) {
             case "boolean":
@@ -473,6 +476,12 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
                 break;
 
             case "object":
+                if(localizable === "key") {
+                    this.key = ref.startsWith("#/") ? JsonFile.unescapeRef(ref).substring(2) : ref;
+                    console.log(11111)
+                    localizable = prevLoc;
+                }
+
                 if (typeof (json) !== "object") {
                     this.logger.warn(this.pathName + '/' + ref + " is a " +
                         typeof (json) + " but should be an object according to the schema...  skipping.");
