@@ -28,6 +28,7 @@ import TranslationVariant from './TranslationVariant.js';
 import Location from './Location.js';
 import walk from './DirectoryWalk.js';
 import {convertPluralResToICU, convertICUToPluralRes} from './ResourceConvert.js';
+import escaperFactory from './EscaperFactory.js';
 
 import {
     formatPath,
@@ -70,5 +71,6 @@ export {
     Location,
     walk,
     convertPluralResToICU,
-    convertICUToPluralRes
+    convertICUToPluralRes,
+    escaperFactory
 };
