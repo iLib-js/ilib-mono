@@ -429,7 +429,7 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
             returnValue = __ret.returnValue;
             break
         case "comment":
-            this.handleComment(json, ref);
+            this.handleComment(json, this.key ?? ref);
             returnValue = this.sparseValue(json);
             break;
         default:
