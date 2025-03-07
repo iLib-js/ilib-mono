@@ -213,7 +213,10 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
 
         if (!source || source.length < 1) {
             this.logger.warn("Found match with no source string, " + this.pathName);
-            return undefined;
+            return {
+                before: data.substring(0, result.index),
+                after: data.substring(result.index + result[0].length)
+            };
         }
 
         if (result.groups) {
