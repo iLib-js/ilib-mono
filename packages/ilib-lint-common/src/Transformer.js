@@ -58,9 +58,8 @@ class Transformer extends PipelineElement {
      * @abstract
      * @param {IntermediateRepresentation} representation the intermediate
      *   representation to transform
-     * @param {Array.<Result>|undefined} results the results of the rules that were applied earlier
-     *   in the pipeline, or undefined if there are no results or if the rules have not been
-     *   applied yet
+     * @param {Array.<Result>|undefined} results results of linting this @link representation,
+     *   or undefined if there are no results yet
      * @returns {IntermediateRepresentation} the new intermediate representation
      *   that is the transformed version of the original
      */

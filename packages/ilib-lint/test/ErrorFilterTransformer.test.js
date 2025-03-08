@@ -92,7 +92,7 @@ describe("ErrorFilterTransformer", () => {
         expect(ir[0]).toEqual(resource2);
     });
 
-    test("returns the same represetation if there are only warnings", () => {
+    test("returns the same representation if there are only warnings", () => {
         expect.assertions(1);
 
         const eft = new ErrorFilterTransformer();
@@ -177,6 +177,44 @@ describe("ErrorFilterTransformer", () => {
         });
 
         const transformed = eft.transform(representation, []);
+
+        expect(transformed).toStrictEqual(representation);
+    });
+
+    test("returns the same representation if results are undefined", () => {
+        expect.assertions(1);
+
+        const eft = new ErrorFilterTransformer();
+        const resource1 = new ResourceString({
+            project: "project",
+            sourceLocale: "en-US",
+            targetLocale: "fr-FR",
+            pathName: "path/to/file.js",
+            reskey: "key1",
+            source: "source1",
+            target: "target1"
+        });
+        const resource2 = new ResourceString({
+            project: "project",
+            sourceLocale: "en-US",
+            targetLocale: "fr-FR",
+            pathName: "path/to/file.js",
+            reskey: "key2",
+            source: "source2",
+            target: "target2"
+        });
+        const resources = [
+            resource1,
+            resource2
+        ];
+
+        const representation = new IntermediateRepresentation({
+            type: "resource",
+            ir: resources,
+            sourceFile: jest.fn(() => "sourceFile")
+        });
+
+        const transformed = eft.transform(representation, undefined);
 
         expect(transformed).toStrictEqual(representation);
     });
