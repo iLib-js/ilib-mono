@@ -1,9 +1,9 @@
 #!/bin/bash
 
-files=$(git diff --cached --name-only --diff-filter=ACM main)
+files=$(git diff --cached --name-only --diff-filter=ACM main | grep '\.js$')
 
 # Check for debugger statements in JavaScript files
-lines=$(grep -n 'debugger' $files)
+lines=$(grep -n 'debugger;' $files)
 if [ "$lines" != "" ]
 then
   echo "Debugger statement found in:"

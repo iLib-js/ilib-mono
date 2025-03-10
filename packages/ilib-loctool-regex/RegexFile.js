@@ -20,7 +20,17 @@
 var fs = require("fs");
 var path = require("path");
 var Locale = require("ilib-locale");
-var IString = require("ilib-istring");
+var escaperFactory = require("ilib-tools-common").escaperFactory;
+
+// fake escaper for the identity escaper
+var identity = {
+    escape: function(str) {
+        return str;
+    },
+    unescape: function(str) {
+        return str;
+    }
+};
 
 /**
  * Create a new Regex file with the given path name and within
@@ -53,45 +63,17 @@ var RegexFile = function(props) {
                 exp.regex = new RegExp(exp.expression, exp.flags);
             }
             exp.regex.lastIndex = 0;
+
+            // set up the unescaper to use after we have found the strings. The same unescaper
+            // is used for all strings that match this expression. Escapers vary by expression
+            // because different types of strings might have different escaping rules, even within
+            // the same a programming language.
+            // (e.g. double quoted strings in PHP are escaped differently than single quoted strings)
+            var escapeStyle = exp.escapeStyle || "js";
+            exp.escaper = escapeStyle !== "none" ? escaperFactory(escapeStyle) : identity;
         });
     }
     this.resourceIndex = 0;
-};
-
-var reUnicodeChar = /\\u([a-fA-F0-9]{1,4})/g;
-
-/**
- * Unescape the string to make the same string that would be
- * in memory in the target programming language.
- *
- * @static
- * @param {String} string the string to unescape
- * @returns {String} the unescaped string
- */
-function unescapeString(string) {
-    if (!string) return string;
-    var unescaped = string;
-
-    // first, unescape unicode characters
-    while ((match = reUnicodeChar.exec(unescaped))) {
-        if (match && match.length > 1) {
-            var value = parseInt(match[1], 16);
-            unescaped = unescaped.replace(match[0], IString.fromCodePoint(value));
-            reUnicodeChar.lastIndex = 0;
-        }
-    }
-
-    unescaped = unescaped.
-        replace(/\\\\n/g, "").                // line continuation
-        replace(/\\\n/g, "").                // line continuation
-        replace(/^\\\\/, "\\").             // unescape backslashes
-        replace(/([^\\])\\\\/g, "$1\\").
-        replace(/^\\'/, "'").               // unescape quotes
-        replace(/([^\\])\\'/g, "$1'").
-        replace(/^\\"/, '"').
-        replace(/([^\\])\\"/g, '$1"');
-
-    return unescaped;
 };
 
 /**
@@ -119,13 +101,13 @@ function stripQuotes(str) {
  * the string from what it looks like in the source
  * code but increases matching.
  *
- * @static
  * @param {String} string the string to clean
+ * @param {Escaper} escaper the escaper to use to unescape
  * @returns {String} the cleaned string
  */
-function cleanString(string) {
+RegexFile.prototype.cleanString = function(string, escaper) {
     if (!string) return string;
-    var unescaped = unescapeString(string);
+    var unescaped = escaper.unescape(string);
 
     unescaped = unescaped.
         replace(/\\[btnfr]/g, " ").
@@ -136,11 +118,10 @@ function cleanString(string) {
 };
 
 /**
- * Make a new key for the given string. This must correspond
- * exactly with the code in htglob jar file so that the
- * resources match up. See the class IResourceBundle in
- * this project under the java directory for the corresponding
- * code.
+ * Make a new key for the given source string. This key is a
+ * hash of the source string that is has a high probability of being
+ * unique for this source string and can be used to identify the
+ * resource.
  *
  * @private
  * @param {String} source the source string to make a resource
@@ -156,16 +137,17 @@ RegexFile.prototype.makeKey = function(source) {
  * the array of strings as an actual array.
  *
  * @param {String} data the string to parse
+ * @param {Escaper} escaper the escaper to use to unescape the strings
  * @returns {Array.<String>} the array of strings
  */
-function parseArray(data) {
+RegexFile.prototype.parseArray = function(data, escaper) {
     var arr;
 
     if (data) {
         arr = data.split(",");
         arr = arr.map(function(item) {
-            return cleanString(item);
-        });
+            return stripQuotes(escaper.unescape(item).trim());
+        }.bind(this));
     }
 
     return arr;
@@ -221,24 +203,26 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
 
         if (result.groups) {
             if (result.groups.sourcePlural) {
-                sourcePlural = cleanString(result.groups.sourcePlural);
+                sourcePlural = exp.escaper.unescape(result.groups.sourcePlural);
             }
             if (result.groups.comment) {
-                comment = cleanString(result.groups.comment);
+                comment = exp.escaper.unescape(result.groups.comment);
             }
             if (result.groups.context) {
-                context = cleanString(result.groups.context);
+                context = exp.escaper.unescape(result.groups.context);
             }
             if (result.groups.flavor) {
-                flavor = cleanString(result.groups.flavor);
+                flavor = exp.escaper.unescape(result.groups.flavor);
             }
             if (result.groups.key) {
-                key = cleanString(result.groups.key);
+                // clean string unescapes the key, but also removes things
+                // that foster greater matching, like compressing white space
+                key = this.cleanString(result.groups.key, exp.escaper);
             }
         }
 
         if (exp.resourceType === "array") {
-            array = parseArray(source);
+            array = this.parseArray(source, exp.escaper);
         }
 
         if (!key) {
@@ -247,10 +231,10 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
             switch (exp.resourceType) {
                 default:
                 case "string":
-                    src = cleanString(source);
+                    src = exp.escaper.unescape(source);
                     break;
                 case "plural":
-                    src = sourcePlural;
+                    src = exp.escaper.unescape(sourcePlural);
                     break;
                 case "array":
                     src = array.join("");
@@ -273,7 +257,7 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
 
         switch (exp.resourceType) {
             case "string":
-                source = cleanString(source);
+                source = exp.escaper.unescape(source);
                 r = this.API.newResource({
                     resType: exp.resourceType,
                     project: this.project.getProjectId(),
@@ -298,7 +282,7 @@ RegexFile.prototype.matchExpression = function(data, exp, cb) {
                     sourceLocale: this.project.sourceLocale,
                     source: source,
                     sourcePlurals: {
-                        one: cleanString(source),
+                        one: exp.escaper.unescape(source),
                         other: sourcePlural
                     },
                     pathName: this.pathName,

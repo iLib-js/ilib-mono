@@ -114,6 +114,14 @@ used within the `regex` property:
               quite long, but it is always unique.
             - "truncate" - use the first 32 characters of the source
               string as the key. This fixed-length key is usually unique.
+        - escapeStyle - the style of unescaping to use when the regular expression
+          matches. The valid styles incude
+          "csharp" and "js" (the default), as well as many others. The
+          full list of styles available is given in the documentation
+          for the [ilib-tools-common library](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-tools-common/docs/ilibToolsCommon.md#escaperFactory).
+          In addition to the styles listed there, the escapeStyle setting
+          can also be set to "none" to disable escaping altogether for strings
+          that are extracted using this regular expression.
 
 ### Example Configuration
 
@@ -135,29 +143,41 @@ Example configuration for a web project with PHP and JavaScript files:
                     "sourceLocale": "en-US",
                     "expressions": [
                         {
-                            "expression": "translate\\s*(\\s*['\"](?<source>[^'\"]*)['\"]\\s*\\)",
+                            "expression": "translate\\s*(\\s*\"(?<source>[^\"]*)\"\\s*\\)",
                             "flags": "g",
                             "datatype": "php",
                             "resourceType": "string",
-                            "keyStrategy": "source"
+                            "keyStrategy": "source",
+                            "escapeStyle": "php-double"
                         },
                         {
-                            "expression": "translate\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*,\\s*['\"](?<key>[^'\"]*)['\"]\\s*\\)",
+                            "expression": "translate\\s*(\\s*'(?<source>[^']*)'\\s*\\)",
                             "flags": "g",
                             "datatype": "php",
-                            "resourceType": "string"
+                            "resourceType": "string",
+                            "keyStrategy": "source",
+                            "escapeStyle": "php-single"
                         },
                         {
-                            "expression": "translateArray\\s*\\(\\s*\\[\\s*(?<source>['\"][^'\"]*['\"](\\s*,\\s*['\"][^'\"]*['\"])*)\\s*\\]\\s*\\)",
+                            "expression": "translate\\s*\\(\\s*\"(?<source>[^\"]*)\"\\s*,\\s*\"(?<key>[^\"]*)\"\\s*\\)",
                             "flags": "g",
                             "datatype": "php",
-                            "resourceType": "array"
+                            "resourceType": "string",
+                            "escapeStyle": "php-double"
                         },
                         {
-                            "expression": "translatePlural\\s*\\(\\s*['\"](?<source>[^'\"]*)['\"]\\s*,\\s*['\"](?<sourcePlural>[^'\"]*)['\"]",
+                            "expression": "translateArray\\s*\\(\\s*\\[\\s*(?<source>\"[^\"]*\"(\\s*,\\s*\"[^\"]*\")*)\\s*\\]\\s*\\)",
                             "flags": "g",
                             "datatype": "php",
-                            "resourceType": "plural"
+                            "resourceType": "array",
+                            "escapeStyle": "php-double"
+                        },
+                        {
+                            "expression": "translatePlural\\s*\\(\\s*\"(?<source>[^\"]*)\"]\\s*,\\s*\"(?<sourcePlural>[^\"]*)\"",
+                            "flags": "g",
+                            "datatype": "php",
+                            "resourceType": "plural",
+                            "escapeStyle": "php-double"
                         }
                     ]
                 },
@@ -188,15 +208,21 @@ given regular expressions. Explanation of the above regexes:
 that are passed as the first parameter to the `translate` function. It will match
 a string like `translate("string to translate")`. Since the string does not have
 a unique id, one is generated using the `source` strategy. That is, the source
-string itself is re-used as its own unique id.
-1. The second regular expression extracts strings that are passed as the first
+string itself is re-used as its own unique id. Note that this regular expression
+extracts strings with double quotes around them. The `escapeStyle` setting is
+used to specify that the `php-double` style should be used to unescape the string.
+1. The second regular expression is similar to the first, but extracts strings
+that use single quotes instead of double quotes. The `escapeStyle` setting is
+used to specify that the `php-single` style should be used to unescape the string.
+(Unescaping is different between single and double quoted strings in PHP.)
+1. The third regular expression extracts strings that are passed as the first
 parameter to the `translate` function and the second parameter is the
 key of the string. It will match a string like `translate("string to translate", "unique.id")`.
-1. The third regular expression is an example of an array translation. The
+1. The fourth regular expression is an example of an array translation. The
 `source` capturing group will have a value like `"a", "b", "c"` which this plugin
 will transform into an array of 3 strings. This will match a string like
 `translateArray(["a", "b", "c"])`.
-1. The fourth regular expression is an example of a plural translation. The
+1. The fifth regular expression is an example of a plural translation. The
 first parameter to the `translatePlural` function is the singular string and is
 assigned to the `source` capturing group. The second parameter is the plural
 string and is assigned to the `sourcePlural` capturing group. This creates a plural
@@ -224,6 +250,9 @@ from js files does not have its own unique id, one is generated using
 the `hash` strategy. That is, the hash of the source string is calculated
 and prepended with an "r" for "resource" (eg. "r34523234") and that is used
 as the unique id for that string.
+
+Note that the default escape style is `js` which is used when the `escapeStyle`
+setting is not given, which is why it is not specified in the last mapping example.
 
 ### Resource Type Field Mapping
 
