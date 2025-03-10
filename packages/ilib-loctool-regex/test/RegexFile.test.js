@@ -116,21 +116,21 @@ var p = new CustomProject({
                     },
                     {
                         // example:
-                        // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
-                        "expression": "\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
-                        "flags": "g",
-                        "datatype": "template",
-                        "resourceType": "string",
-                        "escapeStyle": "smarty"
-                    },
-                    {
-                        // example:
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'|noescape}
                         "expression": "\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'\\s*\\|\\s*noescape\\s*\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string",
                         "escapeStyle": "none"
+                    },
+                    {
+                        // example:
+                        // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
+                        "expression": "\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
+                        "flags": "g",
+                        "datatype": "template",
+                        "resourceType": "string",
+                        "escapeStyle": "smarty"
                     }
                 ]
             }
