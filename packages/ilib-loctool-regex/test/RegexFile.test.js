@@ -98,7 +98,7 @@ var p = new CustomProject({
                     {
                         // example:
                         // {* @L10N This comment is on the same line *} {'Your password change is cancelled.'|f:'login_password_change_cancelled'}
-                        "expression": "\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
@@ -107,7 +107,7 @@ var p = new CustomProject({
                         // example:
                         // {* @L10N The message shown to users whose passwords have just been changed *}
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
-                        "expression": "\\{\\*.*@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\n.*\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "expression": "\\{\\*.*?@L10N\\s*(?<comment>[^*]*)\\*\\}.*\\n.*\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
@@ -115,7 +115,7 @@ var p = new CustomProject({
                     {
                         // example:
                         // {'Your password was changed. Please log in again.'|f:'login_success_password_changed'}
-                        "expression": "\\{.*'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*\\}",
+                        "expression": "\\{.*?'(?<source>[^']*)'\\s*\\|\\s*f:\\s*'(?<key>[^']*)'.*?\\}",
                         "flags": "g",
                         "datatype": "template",
                         "resourceType": "string"
@@ -525,6 +525,43 @@ describe("regex file tests", function() {
             reskey: "kdkdkd"
         });
         expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+        r = resources[0];
+        expect(r.getSource()).toBe("This is also a test");
+        expect(r.getKey()).toBe("kdkdkd");
+        expect(r.getComment()).toBe("bar");
+    });
+
+    test("RegexFileParse when parsing multiple strings, make sure an empty source string does not derail the rest of the file", function() {
+        expect.assertions(9);
+
+        var rf = new RegexFile({
+            project: p,
+            pathName: "./testfiles/templates/t1.tmpl",
+            type: rft
+        });
+        expect(rf).toBeTruthy();
+
+        rf.parse('{* @L10N foo *}{\'\'|f:\'asdf\'}\n' +
+            'stuff stuff stuff stuff stuff\n' +
+            '{* @L10N bar *}{\'This is also a test\'|f:\'kdkdkd\'}\n');
+
+        var set = rf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        var resources = set.getBy({
+            reskey: "asdf"
+        });
+        expect(resources).toBeTruthy();
+        // should not create a resource with an empty source string
+        expect(resources.length).toBe(0);
+
+        resources = set.getBy({
+            reskey: "kdkdkd"
+        });
+        expect(resources).toBeTruthy();
+        // should not stop parsing the file after the empty source string.
+        // should still find the second resource
         expect(resources.length).toBe(1);
         r = resources[0];
         expect(r.getSource()).toBe("This is also a test");
