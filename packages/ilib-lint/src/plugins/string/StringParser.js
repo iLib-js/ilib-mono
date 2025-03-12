@@ -59,7 +59,7 @@ class StringParser extends Parser {
 
     canWrite = true;
 
-    /** 
+    /**
      * @override
      * @param {IntermediateRepresentation} ir
      */

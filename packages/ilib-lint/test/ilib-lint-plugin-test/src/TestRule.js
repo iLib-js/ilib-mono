@@ -1,7 +1,7 @@
 /*
  * TestRule.js - test an ilib-lint Rule plugin
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ class TestRule extends Rule {
         this.name = "resource-test";
         this.description = "Test for the existence of the word 'test' in the strings.";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
+        this.type = "resource";
     }
 
     getRuleType() {
@@ -101,9 +102,6 @@ class TestRule extends Rule {
                 });
         }
     }
-
-    // no match
-    return;
 }
 
 export default TestRule;

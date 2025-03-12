@@ -2,7 +2,7 @@
  * DeclarativeResourceRule.js - subclass of ResourceRule that can iterate over
  * an arrays of regular expressions to apply to a resource
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class DeclarativeResourceRule extends ResourceRule {
     /**
      * Construct a new regular expression-based declarative resource rule.
      *
-     * @param {Object} options options as documented above
+     * @param {Object} options options as documented below
      * @param {String} options.name the unique name of this rule
      * @param {String} options.description a one-line description of what
      *   this rule checks for. Example: "Check that URLs in the source also

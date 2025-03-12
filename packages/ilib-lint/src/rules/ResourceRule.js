@@ -44,7 +44,7 @@ class ResourceRule extends Rule {
         /**
          * Ensure that the rule is only applied to resources that match one of
          * the lang-specs in the the set.
-         * 
+         *
          * These should be language specifiers (e.g. "it", not "it-IT").
          *
          * @type {Set<string> | undefined}
@@ -55,7 +55,7 @@ class ResourceRule extends Rule {
         /**
          * Ensure that the rule is only applied to resources that do not match
          * any of the lang-specs in the set.
-         * 
+         *
          * These should be language specifiers (e.g. "it", not "it-IT").
          *
          * @type {Set<string> | undefined}
@@ -137,12 +137,12 @@ class ResourceRule extends Rule {
                         });
                     }).filter(element => element);
                     return results && results.length ? results : undefined;
-    
+
                 case 'plural':
                     const srcPlural = resource.getSource() ?? {};
                     const tarPlural = resource.getTarget() ?? {};
                     const categorySet = new Set(Object.keys(srcPlural).concat(Object.keys(tarPlural)));
-    
+
                     results = Array.from(categorySet).flatMap(category => {
                         return this.matchString({
                             source: srcPlural[category] ?? srcPlural.other,
