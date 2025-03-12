@@ -67,7 +67,7 @@ const unknownFileTypeDefinition = {
  * @returns {boolean} true if the method is defined in the class itself
  */
 function isOwnMethod(instance, methodName, formatter) {
-    return typeof(instance[methodName]) === 'function' && instance[methodName] !== formatter.prototype[methodName];
+    return typeof(instance[methodName]) === 'function' && instance[methodName] !== formatter[methodName];
 }
 
 /**
@@ -628,7 +628,7 @@ class Project extends DirItem {
         this.applyTransformers(results);
         this.serialize();
         let endTime = new Date();
-
+        let fmtIntacnce = new Formatter();
         this.resultStats = {
             errors: 0,
             warnings: 0,
@@ -657,7 +657,7 @@ class Project extends DirItem {
             maxFractionDigits: 2
         });
         const score = this.getScore();
-        if (isOwnMethod(this.formatter, "formatOutput", Formatter)) {
+        if (isOwnMethod(this.formatter, "formatOutput", fmtIntacnce)) {
             resultAll = this.formatter.formatOutput({
                 name: this.options.opt.name || this.project.name,
                 fileStats: this.fileStats,
