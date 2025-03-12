@@ -213,6 +213,15 @@ This plugin recognizes the new `localizable` keyword as an extension. The
 localized by the methods provided above. By default, values are not
 localizable unless explicitly specified using the `localizable` keyword.
 
+The `localizable` keyword now supports multiple values:
+* `true`
+* `false`
+* `"source"`
+* `"comment"`
+* `"key"`
+More values may be added in future updates, ensuring extensibility.
+Read more about the individual `localizable` values below in [The Supported Localizable Keyword Values](#the-supported-localizable-keyword-values) section.
+
 The `localizable` keyword is ignored for null or undefined values. For
 the primitive types string, integer, number, or boolean values, the value
 is directly localizable. Each property will result in a translation unit
@@ -299,8 +308,12 @@ For strings that have an `enum` keyword, each of the values in the `enum` will
 not be translated as well, as the code that reads this json file is explicitly
 expecting one of the given fixed values.
 
-### The `isComment` Keyword
-The `isComment` keyword specifies that the property value should be treated as a comment for the translator.
+### The Supported Localizable Keyword Values
+The `localizable` keyword supports multiple values:
+* `false`: The default. Indicates that the value should not be localized.
+* `true` or `"source"`: Indicates that the value should be localized as a translatable string.
+* `"comment"`: Specifies that the property should be treated as a comment for the translators.
+* `"key"`: Indicates that the property key should be used as the `Resource` key for localization.
 
 #### Example
 
@@ -309,18 +322,19 @@ Assume we have the following `schema.json`:
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "sample-schema",
-  "title": "Sample schema with isComment",
+  "title": "Sample schema with localizable supported keywords (true, source, comment, key)",
   "type": "object",
   "additionalProperties": {
     "type": "object",
+    "localizable": "key",
     "properties": {
       "defaultMessage": {
         "type": "string",
-        "localizable": true
+        "localizable": "source"
       },
       "description": {
         "type": "string",
-        "isComment": true
+        "localizable": "comment"
       }
     }
   }
@@ -329,59 +343,31 @@ Assume we have the following `schema.json`:
 And a JSON file with the following content:
 ```json
 {
-  "project.whatever.text": {
-    "defaultMessage": "Text to translate",
-    "description": "A comment for the translator"
+  "project.whatever.key": {
+    "defaultMessage": "Text to be translated",
+    "description": "A comment for the translators"
   }
 }
 ```
-The corresponding `<trans-unit>` in XLIFF file will look as follows:
+For such JSON file and such JSON schema, the following `Resource` instance will be created:
+```javascript
+ResourceString {
+    reskey: 'project.whateverModal.key',
+    source: 'Text to be translated',
+    comment: 'A comment for the translators'
+}
+```
+And the corresponding `<trans-unit>` in XLIFF file will look as follows:
 ```xml
-  <trans-unit ... >
-    <source>Text to translate</source>
-    <note>A comment for the translator</note>
+  <trans-unit resname="project.whatever.key">
+    <source>Text to be translated</source>
+    <note>A comment for the translators</note>
   </trans-unit>
 ```
-Note that the `<note>` tag content is set to the `description` property value from the JSON file (`"A comment for the translator"`), as the `isComment` keyword for the property `description` in the associated JSON schema is set to `true`.
-
-
-### The `usePropertyKeyAsResname` Keyword
-The `usePropertyKeyAsResname` keyword specifies that the property key from the JSON file should be used as the resource name for localization.
-
-#### Example
-
-Assume we have the following `schema.json`:
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "sample-schema",
-  "title": "Sample schema with usePropertyKeyAsResname",
-  "type": "object",
-  "additionalProperties": {
-    "type": "object",
-    "properties": {
-      ...
-    },
-    "usePropertyKeyAsResname": true,
-  }
-}
-```
-And a JSON file with the following content:
-```json
-{
-  "project.whatever.text": {
-    "defaultMessage": "Text to translate",
-    "description": "A comment for the translator"
-  }
-}
-```
-The corresponding `<trans-unit>` in XLIFF file will look as follows:
-```xml
-  <trans-unit id="1" resname="project.whatever.text" restype="string" datatype="json">
-    ...
-  </trans-unit>
-```
-Mind, that the `resname` attribute is set to the property key from the JSON file (`"project.whatever.text"`).
+Note that:
+* the `<trans-unit>` `resname` attribute is set to the property key from the JSON file (*project.whatever.key*), as the localizable keyword is set to `"localizable": key"`.
+* the `<source>` tag content is set to the `defaultMessage` property value from the JSON file (*Text to be translated*), as the localizable keyword is set to `"localizable": "source"`.
+* the `<note>` tag content is set to the `description` property value from the JSON file (*A comment for the translators*),  as the localizable keyword is set to `"localizable": "comment"`.
 
 
 ## JSON File Generation
