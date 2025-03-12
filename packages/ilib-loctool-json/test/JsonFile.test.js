@@ -2876,16 +2876,9 @@ describe("jsonfile", function () {
 
 });
 
-describe("JsonFile localizable schema keyword", () => {
-    test('parses localizable properties correctly', () => {
-        const project = createTestProject();
-        const jsonFileType = new JsonFileType(project);
-        const jsonFile = new JsonFile({
-            project: project,
-            type: jsonFileType,
-            pathName: './testfiles/schemas/localizable.json'
-        });
-
+describe("schema 'localizable'", () => {
+    test("supports 'localizable: key' property", () => {
+        const {jsonFile} = setupTest({schema: "localizable-schema"});
         jsonFile.parse(`{
              "project.whateverModal.saveButton": {
                 "defaultMessage": "Save",
@@ -2896,21 +2889,41 @@ describe("JsonFile localizable schema keyword", () => {
         const set = jsonFile.getTranslationSet();
         const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
 
-        expect(resource).toBeTruthy();
-        expect(resource.getSource()).toBe("Save");
         expect(resource.getKey()).toBe("project.whateverModal.saveButton");
+    });
+
+    test("supports 'localizable: source' property", () => {
+        const {jsonFile} = setupTest({schema: "localizable-schema"});
+        jsonFile.parse(`{
+             "project.whateverModal.saveButton": {
+                "defaultMessage": "Save",
+                "description": "Button text for save"
+            }
+        }`);
+
+        const set = jsonFile.getTranslationSet();
+        const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
+
+        expect(resource.getSource()).toBe("Save");
+    });
+
+    test("supports 'localizable: comment' property", () => {
+        const {jsonFile} = setupTest({schema: "localizable-schema"});
+        jsonFile.parse(`{
+             "project.whateverModal.saveButton": {
+                "defaultMessage": "Save",
+                "description": "Button text for save"
+            }
+        }`);
+
+        const set = jsonFile.getTranslationSet();
+        const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
+
         expect(resource.getComment()).toBe("Button text for save");
     });
 
-    test('extracts localizable properties correctly', () => {
-        const project = createTestProject();
-        const jsonFileType = new JsonFileType(project);
-        const jsonFile = new JsonFile({
-            project: project,
-            type: jsonFileType,
-            pathName: './testfiles/schemas/localizable.json'
-        });
-
+    test("supports 'localizable: true' property (backward compatible)", () => {
+        const {jsonFile} = setupTest({schema: "localizable-schema-backward-compatible"});
         jsonFile.parse(`{
              "project.whateverModal.saveButton": {
                 "defaultMessage": "Save",
@@ -2921,18 +2934,24 @@ describe("JsonFile localizable schema keyword", () => {
         const set = jsonFile.getTranslationSet();
         const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
 
-        expect(resource).toBeTruthy();
+        expect(resource.getSource()).toBe("Save");
+    });
 
-        jsonFile.extract();
+    test("extracts resources from JSON file using 'localizable' schema properties", () => {
+        const {jsonFile} = setupTest({schema: "localizable-schema"});
+
+        expect(() => {jsonFile.extract()}).not.toThrow();
+
         const translationSet = jsonFile.getTranslationSet();
-        const resources = translationSet.getAll();
+        const keys = translationSet.getAll().map(resource => resource.getKey());
 
-        expect(resources).toHaveLength(1);
+        expect(translationSet.size()).toEqual(4)
+        expect(keys).toEqual(["project.whateverModal.saveButton", "project.whateverModal.createButton", "project.whateverModal.invalid", "project.whateverModal.nameLabel"]);
     });
 });
 
-function createTestProject() {
-    return new CustomProject({
+function setupTest({schema}) {
+    const project = new CustomProject({
         name: 'foo',
         id: 'foo',
         sourceLocale: 'en-US'
@@ -2946,11 +2965,19 @@ function createTestProject() {
             ],
             mappings: {
                 "**/localizable.json": {
-                    "schema": "localizable-schema",
+                    "schema": schema,
                     "method": "copy",
                     "template": "resources/localizable_[locale].json"
                 }
             }
         }
-    })
+    });
+    const jsonFileType = new JsonFileType(project);
+    const jsonFile = new JsonFile({
+        project: project,
+        type: jsonFileType,
+        pathName: "./json/localizable.json"
+    });
+
+    return {jsonFile};
 }

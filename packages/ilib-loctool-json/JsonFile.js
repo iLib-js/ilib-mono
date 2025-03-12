@@ -317,8 +317,8 @@ JsonFile.prototype.handleComment = function (json, ref) {
        This is necessary because JSON values are processed in the order
        they are defined in the JSON file, meaning we need to account for
        different value orderings. For example, in one case, we may get
-       "description" first, which has "isComment" set to true, and therefore, it is a comment source.
-       In another case, we may get "defaultMessage" first, which is instead used as a
+       "description" first, which has "localizable: comment" set, and therefore, it is a comment source.
+       In another case, we may get "defaultMessage" first, which has "localizable: source" set and which is instead used as a
        source string for translation.
    */
     const resources = this.set.getBy({ reskey: ref });
@@ -394,7 +394,7 @@ JsonFile.prototype.handleSource = function (json, ref, translations, locale, ret
             var opts = {
                 resType: "string",
                 project: this.project.getProjectId(),
-                key: this.key ?? key,
+                key: this.key || key,
                 sourceLocale: this.project.sourceLocale,
                 pathName: this.pathName,
                 state: "new",
@@ -429,7 +429,7 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
             returnValue = __ret.returnValue;
             break
         case "comment":
-            this.handleComment(json, this.key ?? ref);
+            this.handleComment(json, this.key || ref);
             returnValue = this.sparseValue(json);
             break;
         default:
@@ -442,7 +442,6 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
 }
 
 JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizable, translations, locale) {
-    console.log(11111, localizable)
     if (!json || !schema) return;
 
     if (this.type.hasType(schema)) {
@@ -457,8 +456,6 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
 
         const prevLoc = localizable;
         localizable = localizable || schema.localizable
-        console.log(22222, localizable)
-        console.log(33333, prevLoc)
 
         var type = schema.type || typeof (json);
         switch (type) {
@@ -478,7 +475,6 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
             case "object":
                 if(localizable === "key") {
                     this.key = ref.startsWith("#/") ? JsonFile.unescapeRef(ref).substring(2) : ref;
-                    console.log(11111)
                     localizable = prevLoc;
                 }
 
