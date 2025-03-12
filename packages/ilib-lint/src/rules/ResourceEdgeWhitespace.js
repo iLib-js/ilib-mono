@@ -117,7 +117,7 @@ class ResourceEdgeWhitespace extends ResourceRule {
     _truncateFromEnd(/** @type {string} */ str) {
         const maxLength = 5;
         const truncationMark = "…";
-        
+
         if (str.length <= maxLength) {
             return str;
         }

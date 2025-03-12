@@ -1,7 +1,7 @@
 /*
  * Serializer.js - common SPI for serializer plugins
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
-/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
-/* @ignore @typedef {import("SourceFile")} SourceFile */
+/* @ignore @typedef {import("IntermediateRepresentation.js")} IntermediateRepresentation */
+/* @ignore @typedef {import("SourceFile.js")} SourceFile */
 
 /**
  * @class common SPI for serializer plugins
@@ -38,9 +38,10 @@ class Serializer extends PipelineElement {
      * Construct a new serializer instance.
      *
      * @param {Object} [options] options to the constructor
-     * @param {Function} [options.getLogger] a callback function provided by
+     * @param {Function} [options.getLogger] a callback function provided by the linter
+     * to retrieve the log4js logger
      * @param {object} [options.settings] additional settings that can be passed to the serializer
-     * the linter to retrieve the log4js logger
+     * implementation
      */
     constructor(options) {
         super(options);
@@ -58,13 +59,19 @@ class Serializer extends PipelineElement {
      * convert it into xliff file format and set that as the content of the SourceFile
      * it produces.
      *
-     * @param {IntermediateRepresentation} representation the representation
-     * to serialize
+     * The type of the intermediate representation that this serializer can handle
+     * is specified in the `type` property of this instance passed to the constructor.
+     * The linter will only allow this serializer to be used for intermediate
+     * representations of that type so they must match. The source file that is
+     * returned must have the same type as the intermediate representation.
+     *
      * @abstract
+     * @param {IntermediateRepresentation[]} representations the array of intermediate
+     * representations to serialize
      * @returns {SourceFile} the source file that contains the serialized form of the
      * given intermediate representation
      */
-    serialize(representation) {
+    serialize(representations) {
         throw new NotImplementedError();
     }
 };

@@ -33,10 +33,6 @@ class XliffParser extends Parser {
         this.extensions = [ "xliff", "xlif", "xlf" ];
         this.name = "xliff";
         this.description = "A parser for xliff files. This can handle xliff v1.2 and v2.0 format files.";
-
-        // indicate that this parser can write out the intermediate representation if it has been modified
-        // by the linter through a Fixer or by a transformer
-        this.canWrite = true;
     }
 
     /**

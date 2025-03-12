@@ -1552,7 +1552,7 @@ that as the content of the SourceFile it produces.</p>
 
 * *[Serializer](#Serializer)*
     * *[new Serializer([options])](#new_Serializer_new)*
-    * **[.serialize(representation)](#Serializer+serialize) ⇒ [<code>SourceFile</code>](#SourceFile)**
+    * **[.serialize(representations)](#Serializer+serialize) ⇒ [<code>SourceFile</code>](#SourceFile)**
 
 
 * * *
@@ -1566,15 +1566,15 @@ that as the content of the SourceFile it produces.</p>
 | Param | Type | Description |
 | --- | --- | --- |
 | [options] | <code>Object</code> | <p>options to the constructor</p> |
-| [options.getLogger] | <code>function</code> | <p>a callback function provided by</p> |
-| [options.settings] | <code>object</code> | <p>additional settings that can be passed to the serializer the linter to retrieve the log4js logger</p> |
+| [options.getLogger] | <code>function</code> | <p>a callback function provided by the linter to retrieve the log4js logger</p> |
+| [options.settings] | <code>object</code> | <p>additional settings that can be passed to the serializer implementation</p> |
 
 
 * * *
 
 <a name="Serializer+serialize"></a>
 
-### **serializer.serialize(representation) ⇒ [<code>SourceFile</code>](#SourceFile)**
+### **serializer.serialize(representations) ⇒ [<code>SourceFile</code>](#SourceFile)**
 <p>Serialize the given intermediate representation into a SourceFile instance. The
 intermediate representation is an object that represents the parsed
 form of the file. The serializer converts this object into a SourceFile
@@ -1582,6 +1582,11 @@ that can be written back to disk. For example, an xliff serializer can take
 an intermediate representation that is an array of Resource instances and
 convert it into xliff file format and set that as the content of the SourceFile
 it produces.</p>
+<p>The type of the intermediate representation that this serializer can handle
+is specified in the <code>type</code> property of this instance passed to the constructor.
+The linter will only allow this serializer to be used for intermediate
+representations of that type so they must match. The source file that is
+returned must have the same type as the intermediate representation.</p>
 
 **Kind**: instance abstract method of [<code>Serializer</code>](#Serializer)  
 **Returns**: [<code>SourceFile</code>](#SourceFile) - <p>the source file that contains the serialized form of the
@@ -1589,7 +1594,7 @@ given intermediate representation</p>
 
 | Param | Type | Description |
 | --- | --- | --- |
-| representation | [<code>IntermediateRepresentation</code>](#IntermediateRepresentation) | <p>the representation to serialize</p> |
+| representations | [<code>Array.&lt;IntermediateRepresentation&gt;</code>](#IntermediateRepresentation) | <p>the array of intermediate representations to serialize</p> |
 
 
 * * *
@@ -1856,7 +1861,7 @@ add new entries to the intermediate representation.</p>
 
 * *[Transformer](#Transformer)*
     * *[new Transformer([options])](#new_Transformer_new)*
-    * **[.transform(representation)](#Transformer+transform) ⇒ [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)**
+    * **[.transform(representation, results)](#Transformer+transform) ⇒ [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)**
 
 
 * * *
@@ -1878,7 +1883,7 @@ add new entries to the intermediate representation.</p>
 
 <a name="Transformer+transform"></a>
 
-### **transformer.transform(representation) ⇒ [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)**
+### **transformer.transform(representation, results) ⇒ [<code>IntermediateRepresentation</code>](#IntermediateRepresentation)**
 <p>Transform the given intermediate representation and return a new
 intermediate representation that is a modified version of the original.</p>
 
@@ -1889,6 +1894,7 @@ that is the transformed version of the original</p>
 | Param | Type | Description |
 | --- | --- | --- |
 | representation | [<code>IntermediateRepresentation</code>](#IntermediateRepresentation) | <p>the intermediate representation to transform</p> |
+| results | [<code>Array.&lt;Result&gt;</code>](#Result) \| <code>undefined</code> | <p>the results of the rules that were applied earlier in the pipeline, or undefined if there are no results or if the rules have not been applied yet</p> |
 
 
 * * *

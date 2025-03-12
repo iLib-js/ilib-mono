@@ -22,7 +22,7 @@ import path from 'node:path';
 import log4js from 'log4js';
 import mm from 'micromatch';
 
-import { FileStats, Formatter } from 'ilib-lint-common';
+import { FileStats, SourceFile, Formatter } from 'ilib-lint-common';
 
 import LintableFile from './LintableFile.js';
 import DirItem from './DirItem.js';
@@ -137,17 +137,6 @@ class Project extends DirItem {
      * idea is that you can exclude a whole category of files (like all json files),
      * but include specific ones. For example, you may exclude all json files, but
      * still want to include the "config.json" file.<p>
-
-     * The options parameter may include any of the following optional properties:
-     *
-     * <ul>
-     * <li><i>excludes</i> (Array of strings) - A list of micromatch patterns to
-     * exclude from the output. If a pattern matches a directory, that directory
-     * will not be recursively searched.
-     * <li><i>includes</i> (Array of strings) - A list of micromatch patterns to
-     * include in the walk. If a pattern matches both an exclude and an include, the
-     * include will override the exclude.
-     * </ul>
      *
      * @param {String} root Directory to walk
      * @returns {Promise<DirItem[]>} an array of file names in the directory, filtered
@@ -177,6 +166,7 @@ class Project extends DirItem {
                         excludes = newProject.getExcludes();
                         logger.trace(`New project ${newProject.getName()}`);
                         this.add(newProject);
+                        await newProject.init();
                         await newProject.scan([root]);
                     } else {
                         list = fs.readdirSync(root);
@@ -266,7 +256,7 @@ class Project extends DirItem {
      * @accept {boolean} true when everything was initialized correct
      * @reject the initialization failed
      */
-    init() {
+    async init() {
         let promise = Promise.resolve(true);
 
         if (this.config.plugins) {
@@ -438,6 +428,24 @@ class Project extends DirItem {
     }
 
     /**
+     * Return the transformer manager for this project.
+     * @returns {TransformerManager} the transformer manager for this project
+     */
+    getTransformerManager() {
+        const pluginMgr = this.options.pluginManager;
+        return pluginMgr.getTransformerManager();
+    }
+
+    /**
+     * Return the serializer manager for this project.
+     * @returns {SerializerManager} the serializer manager for this project
+     */
+    getSerializerManager() {
+        const pluginMgr = this.options.pluginManager;
+        return pluginMgr.getSerializerManager();
+    }
+
+    /**
      * Return the named file type definition. Projects have two
      * default file types that are always defined for every project:
      * "xliff", and "unknown".
@@ -506,8 +514,8 @@ class Project extends DirItem {
     }
 
     /**
-     * Return all directory items in this project.
-     * @returns {Array.<LintableFile>} the directory items in this project.
+     * Return all lintable files in this project.
+     * @returns {Array.<LintableFile>} the lintable files in this project.
      */
     get() {
         return this.files.flatMap(dirItem => {
@@ -541,6 +549,41 @@ class Project extends DirItem {
                 logger.error(e);
             }
         }).filter(result => result);
+    }
+
+    /**
+     * Apply any transformer plugins to the intermediate representation of
+     * each file.
+     *
+     * @param {Array.<Result>} results the results of the linting process
+     */
+    applyTransformers(results) {
+        this.files.forEach(file => file.applyTransformers(results));
+    }
+
+    /**
+     * Serialize files in this project using the Serializer plugin for the
+     * file type of each file.
+     */
+    serialize() {
+        if (this.options.opt.write) {
+            const lintables = this.get();
+            lintables.forEach(file => {
+                const irs = file.getIRs();
+                const fileType = file.getFileType();
+                const serializer = fileType.getSerializer();
+                if (file.isDirty() && serializer) {
+                    let sourceFile = serializer.serialize(irs);
+                    if (!this.options.opt.overwrite) {
+                        let outputPath = `${sourceFile.getPath()}.modified`;
+                        sourceFile = new SourceFile(outputPath, {
+                            file: sourceFile
+                        });
+                    }
+                    sourceFile.write();
+                }
+            });
+        }
     }
 
     /**
@@ -578,9 +621,12 @@ class Project extends DirItem {
      */
     run() {
         let exitValue = 0;
-        
+
         let startTime = new Date();
+
         const results = this.findIssues(this.options.opt.locales);
+        this.applyTransformers(results);
+        this.serialize();
         let endTime = new Date();
 
         this.resultStats = {

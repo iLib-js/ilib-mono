@@ -1,7 +1,7 @@
 /*
  * StringSerializer.js - Serializer for plain text files
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class StringSerializer extends Serializer {
         super(options);
 
         this.name = "string";
-        this.description = "A serializer for plain text files treats the whole file as a simple string.";
+        this.description = "A serializer for plain text file representations that writes the whole file as a simple string.";
         this.type = "string";
     }
 
@@ -40,11 +40,14 @@ class StringSerializer extends Serializer {
      * Convert the intermediate representation back into a source file.
      *
      * @override
-     * @param {IntermediateRepresentation} ir the intermediate representation to convert
+     * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
      * @returns {SourceFile} the source file with the contents of the intermediate
      * representation
      */
-    serialize(ir) {
+    serialize(irs) {
+        // should only have 1 intermediate representation in the array because the StringParser
+        // only creates one
+        const ir = irs[0];
         const data = ir.getRepresentation();
         return new SourceFile(ir.sourceFile.getPath(), {
             file: ir.sourceFile,

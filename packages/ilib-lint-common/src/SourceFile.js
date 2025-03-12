@@ -1,7 +1,7 @@
 /*
  * SourceFile.js - Represent a file that will be linted
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  */
 
 import fs from 'fs';
+import path from 'path';
 import { Buffer } from 'buffer';
 import NotImplementedError from "./NotImplementedError.js";
 
@@ -254,6 +255,8 @@ class SourceFile {
      */
     write() {
         if (this.filePath && this.isDirty()) {
+            const dir = path.dirname(this.filePath);
+            fs.mkdirSync(path.dirname(this.filePath), {recursive: true});
             fs.writeFileSync(this.filePath, this.getContent() || "", "utf-8");
             this.dirty = false;
             return true;

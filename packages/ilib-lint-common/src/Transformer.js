@@ -19,6 +19,7 @@
 
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
+import Results from "./Result.js";
 
 /* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
 
@@ -57,10 +58,12 @@ class Transformer extends PipelineElement {
      * @abstract
      * @param {IntermediateRepresentation} representation the intermediate
      *   representation to transform
+     * @param {Array.<Result>|undefined} results results of linting this @link representation,
+     *   or undefined if there are no results yet
      * @returns {IntermediateRepresentation} the new intermediate representation
      *   that is the transformed version of the original
      */
-    transform(representation) {
+    transform(representation, results) {
         throw new NotImplementedError();
     }
 };
