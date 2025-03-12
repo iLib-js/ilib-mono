@@ -63,7 +63,7 @@ const unknownFileTypeDefinition = {
  * @private
  * @param {Object} instance the instance to check
  * @param {String} methodName the name of the method to check
- * @param {Formatter} formatter the formatter class
+ * @param {Class} parentClass the parent class of the instance or one of its ancestors
  * @returns {boolean} true if the method is defined in the class itself
  */
 function isOwnMethod(instance, methodName, formatter) {
