@@ -1,5 +1,18 @@
 # ilib-lint-common
 
+## 3.2.0
+
+### Minor Changes
+
+- 4a41879: - Updated Serializer API and clarified docs
+  - Added the ability for SourceFile.write() to make the
+    directories along the path where it wants to write
+    the file if they don't exist already.
+  - Added unit tests for SourceFile.write()
+  - Updated Transformer API to add a results parameter
+    to the transform() function so that the transformer
+    can do things based on these results
+
 ## 3.1.2
 
 ### Patch Changes
