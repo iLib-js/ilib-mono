@@ -31,9 +31,9 @@ class Formatter {
      * the linter to retrieve the log4js logger
      */
     constructor(options) {
-        /*if (this.constructor === Formatter) {
+        if (this.constructor === Formatter) {
             throw new Error("Cannot instantiate abstract class Formatter!");
-        }*/
+        }
     }
 
     /**
