@@ -1,7 +1,7 @@
 /*
  * Project.js - Represents a particular ilin-lint project
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import path from 'node:path';
 import log4js from 'log4js';
 import mm from 'micromatch';
 
-import { FileStats } from 'ilib-lint-common';
+import { FileStats, Formatter } from 'ilib-lint-common';
 
 import LintableFile from './LintableFile.js';
 import DirItem from './DirItem.js';
@@ -63,10 +63,11 @@ const unknownFileTypeDefinition = {
  * @private
  * @param {Object} instance the instance to check
  * @param {String} methodName the name of the method to check
+ * @param {Formatter} formatter the formatter class
  * @returns {boolean} true if the method is defined in the class itself
  */
-function isOwnMethod(instance, methodName) {
-    return typeof(instance[methodName]) === 'function' && instance[methodName].prototype === instance;
+function isOwnMethod(instance, methodName, formatter) {
+    return typeof(instance[methodName]) === 'function' && instance[methodName] !== formatter.prototype[methodName];
 }
 
 /**
@@ -610,7 +611,7 @@ class Project extends DirItem {
             maxFractionDigits: 2
         });
         const score = this.getScore();
-        if (isOwnMethod(this.formatter, "formatOutput")) {
+        if (isOwnMethod(this.formatter, "formatOutput", Formatter)) {
             resultAll = this.formatter.formatOutput({
                 name: this.options.opt.name || this.project.name,
                 fileStats: this.fileStats,
