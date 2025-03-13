@@ -66,8 +66,8 @@ const unknownFileTypeDefinition = {
  * @param {Class} parentClass the parent class of the instance or one of its ancestors
  * @returns {boolean} true if the method is defined in the class itself
  */
-function isOwnMethod(instance, methodName, formatter) {
-    return typeof(instance[methodName]) === 'function' && instance[methodName] !== formatter.prototype[methodName];;
+function isOwnMethod(instance, methodName, parentClass) {
+    return typeof(instance[methodName]) === 'function' && instance[methodName] !== parentClass.prototype[methodName];
 }
 
 /**
