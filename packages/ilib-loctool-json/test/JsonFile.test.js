@@ -2877,6 +2877,15 @@ describe("jsonfile", function () {
 });
 
 describe("schema 'localizable'", () => {
+    const base = path.dirname(module.id);
+    const paths = [
+        `${base}/testfiles/resources/mi/MI/localizable.json`
+    ];
+
+    afterEach(() => {
+        paths.forEach((path) => fs.existsSync(path) && fs.unlinkSync(path));
+    });
+
     test("supports 'localizable: key' property", () => {
         const {jsonFile} = setupTest({schema: "localizable-schema"});
         jsonFile.parse(`{
@@ -2887,7 +2896,7 @@ describe("schema 'localizable'", () => {
         }`);
 
         const set = jsonFile.getTranslationSet();
-        const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
+        const resource = set.get(ResourceString.hashKey("localizable-test", "en-US", "project.whateverModal.saveButton", "json"));
 
         expect(resource.getKey()).toBe("project.whateverModal.saveButton");
     });
@@ -2902,7 +2911,7 @@ describe("schema 'localizable'", () => {
         }`);
 
         const set = jsonFile.getTranslationSet();
-        const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
+        const resource = set.get(ResourceString.hashKey("localizable-test", "en-US", "project.whateverModal.saveButton", "json"));
 
         expect(resource.getSource()).toBe("Save");
     });
@@ -2917,7 +2926,7 @@ describe("schema 'localizable'", () => {
         }`);
 
         const set = jsonFile.getTranslationSet();
-        const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
+        const resource = set.get(ResourceString.hashKey("localizable-test", "en-US", "project.whateverModal.saveButton", "json"));
 
         expect(resource.getComment()).toBe("Button text for save");
     });
@@ -2932,7 +2941,7 @@ describe("schema 'localizable'", () => {
         }`);
 
         const set = jsonFile.getTranslationSet();
-        const resource = set.get(ResourceString.hashKey("foo", "en-US", "project.whateverModal.saveButton", "json"));
+        const resource = set.get(ResourceString.hashKey("localizable-test", "en-US", "project.whateverModal.saveButton", "json"));
 
         expect(resource.getSource()).toBe("Save");
     });
@@ -2948,12 +2957,45 @@ describe("schema 'localizable'", () => {
         expect(translationSet.size()).toEqual(4)
         expect(keys).toEqual(["project.whateverModal.saveButton", "project.whateverModal.createButton", "project.whateverModal.invalid", "project.whateverModal.nameLabel"]);
     });
+
+    test("applies translations to JSON file using 'localizable' schema properties", function () {
+        const {jsonFile} = setupTest({schema: "localizable-schema"});
+
+        jsonFile.extract();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "localizable-test",
+            key: "project.whateverModal.saveButton",
+            source: "Save",
+            sourceLocale: "en-US",
+            target: "Save-a!",
+            targetLocale: "mi-MI",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "localizable-test",
+            key: "project.whateverModal.createButton",
+            source: "Create",
+            comment: "Button text for create",
+            sourceLocale: "en-US",
+            target: "Krayto",
+            targetLocale: "mi-MI",
+            datatype: "json"
+        }));
+
+        jsonFile.localize(translations, ["mi-MI"]);
+
+        const content = fs.readFileSync(path.join(base, "testfiles/resources/mi/MI/localizable.json"), "utf-8");
+
+        expect(content).toMatchSnapshot();
+    })
 });
 
 function setupTest({schema}) {
     const project = new CustomProject({
-        name: 'foo',
-        id: 'foo',
+        name: 'localizable-test',
+        id: 'localizable-test',
         sourceLocale: 'en-US'
     }, './test/testfiles', {
         locales: ['en-GB'],
@@ -2967,7 +3009,7 @@ function setupTest({schema}) {
                 "**/localizable.json": {
                     "schema": schema,
                     "method": "copy",
-                    "template": "resources/localizable_[locale].json"
+                    "template": "resources/[localeDir]/localizable.json"
                 }
             }
         }

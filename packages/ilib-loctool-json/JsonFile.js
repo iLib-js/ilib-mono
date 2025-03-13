@@ -332,7 +332,7 @@ JsonFile.prototype.handleComment = function (json, ref) {
 JsonFile.prototype.handleSource = function (json, ref, translations, locale, returnValue, type) {
     if (isPrimitive(typeof (json))) {
         var text = String(json);
-        var key = JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
+        var key = this.key || JsonFile.unescapeRef(ref).substring(2);  // strip off the #/ part
         if (translations) {
             // localize it
             var tester = this.API.newResource({
