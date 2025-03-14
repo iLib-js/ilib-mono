@@ -315,6 +315,67 @@ The `localizable` keyword supports multiple values:
 * `"comment"`: Specifies that the property should be treated as a comment for the translators.
 * `"key"`: Indicates that the property key should be used as the `Resource` key for localization.
 
+#### Default Localizable Value Behavior
+If the `localizable` keyword is not provided for a field, the default behavior is to treat the value as non-localizable (`localizable: false`).
+This means that it will not be localized in other words, no translation will be applied to that value.
+
+##### Example
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "sample-schema",
+  "title": "Sample schema with default localizable behavior",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "defaultMessage": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    }
+  }
+}
+```
+In the example above, the `defaultMessage` and `description` properties would be treated as non-localizable (neither of them will not be localized), since the `localizable` keyword is not provided for them.
+
+#### Default Key Value Behavior
+For resources that do not specify a field to be used as the key by adding `"localizable": "key"`, or simply have `"localizable": true`, the default key value is the JSON path to the value.
+For example, given the schema above and the following JSON structure:
+```json
+{
+  "project.whatever.key": {
+    "defaultMessage": "Text to be translated",
+    "description": "A comment for the translators"
+  }
+}
+```
+In this case, the key for the value "Text to be translated" would default to `project.whatever.key/defaultMessage`, and this would be used as the `Resource` key for localization.
+However, if the `localizable` keyword is set explicitly to `"key"` for the property, like this:
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "sample-schema",
+  "title": "Sample schema with localizable key",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "localizable": "key",
+    "properties": {
+      "defaultMessage": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    }
+  }
+}
+```
+Then, the key for the value "Text to be translated" would be `project.whatever.key`.
+
 #### Example
 
 Assume we have the following `schema.json`:
