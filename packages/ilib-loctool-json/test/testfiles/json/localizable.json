@@ -1,0 +1,18 @@
+{
+  "project.whateverModal.saveButton": {
+    "defaultMessage": "Save",
+    "description": "Button text for save"
+  },
+  "project.whateverModal.createButton": {
+    "defaultMessage": "Create",
+    "description": "Button text for create"
+  },
+  "project.whateverModal.invalid": {
+    "defaultMessage": "Invalid",
+    "description": "Title for invalid"
+  },
+  "project.whateverModal.nameLabel": {
+    "description": "Input label",
+    "defaultMessage": "Name"
+  }
+}

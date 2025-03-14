@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "localizable-schema-backward-compatible",
+  "title": "Sample schema for testing localizable supported keywords (comment, key, source)",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "localizable": "key",
+    "properties": {
+      "defaultMessage": {
+        "type": "string",
+        "localizable": true
+      },
+      "description": {
+        "type": "string",
+        "localizable": "comment"
+      }
+    },
+    "required": [
+      "defaultMessage",
+      "description"
+    ],
+    "additionalProperties": false
+  }
+}

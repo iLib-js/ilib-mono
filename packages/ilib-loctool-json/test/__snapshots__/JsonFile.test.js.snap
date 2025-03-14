@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`schema 'localizable' applies translations to JSON file using 'localizable' schema properties 1`] = `
+"{
+    "project.whateverModal.saveButton": {
+        "defaultMessage": "Save-a!",
+        "description": "Button text for save"
+    },
+    "project.whateverModal.createButton": {
+        "defaultMessage": "Krayto",
+        "description": "Button text for create"
+    },
+    "project.whateverModal.invalid": {
+        "defaultMessage": "Invalid",
+        "description": "Title for invalid"
+    },
+    "project.whateverModal.nameLabel": {
+        "description": "Input label",
+        "defaultMessage": "Name"
+    }
+}
+"
+`;
