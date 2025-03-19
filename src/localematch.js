@@ -2,7 +2,7 @@
 /*
  * localematch.js - Locale match mappings
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -353,6 +353,8 @@ export const matchdata = {
         "Kore": "ko-Kore-KR",
         "Kore-KP": "ko-Kore-KP",
         "Kore-KR": "ko-Kore-KR",
+        "Kore-TW": "ko-Kore-TW",
+        "Kore-US": "ko-Kore-US",
         "Kthi": "bho-Kthi-IN",
         "LA": "lo-Laoo-LA",
         "LB": "ar-Arab-LB",
@@ -9983,6 +9985,8 @@ export const matchdata = {
         "ko-KP": "ko-Kore-KP",
         "ko-KR": "ko-Kore-KR",
         "ko-Kore": "ko-Kore-KR",
+        "ko-TW": "ko-Kore-TW",
+        "ko-US": "ko-Kore-US",
         "koa": "koa-Latn-PG",
         "koa-Latn": "koa-Latn-PG",
         "koa-PG": "koa-Latn-PG",
