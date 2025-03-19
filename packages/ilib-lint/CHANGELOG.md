@@ -1,5 +1,11 @@
 # ilib-lint
 
+## 2.8.1
+
+### Patch Changes
+
+- c34a1a4: fixed the issue where the formatter defined in another plugin was not being selected correctly.
+
 ## 2.8.0
 
 ### Minor Changes
