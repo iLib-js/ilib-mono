@@ -1,7 +1,7 @@
 /*
  * FormatterManager.test.js - test the formatter manager
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,35 @@ import { Formatter, Result } from 'ilib-lint-common';
 
 import FormatterManager from '../src/FormatterManager.js';
 import ResourceMatcher from '../src/rules/ResourceMatcher.js';
+import PluginManager from '../src/PluginManager.js';
 
 describe("testFormatterManager", () => {
-    test("FormatterManagerNormal", () => {
-        expect.assertions(3);
-
+    test("FormatterManager constructor works nicely", () => {
+        expect.assertions(1);
+        
         const mgr = new FormatterManager();
         expect(mgr).toBeTruthy();
+    });
 
-        const formatter = mgr.get("ansi-console-formatter");
+    test("FormatterManager make sure the default formatter is there", () => {
+        expect.assertions(5);
+
+        const pluginMgr = new PluginManager();
+        const mgr = pluginMgr.getFormatterManager();
+        expect(mgr).toBeTruthy();
+
+        let formatter = mgr.get("ansi-console-formatter");
+
+        expect(formatter).toBeTruthy();
+        expect(formatter instanceof Formatter).toBeTruthy();
+
+        formatter = mgr.get("json-formatter");
 
         expect(formatter).toBeTruthy();
         expect(formatter instanceof Formatter).toBeTruthy();
     });
 
-    test("FormatterManagerNotFound", () => {
+    test("FormatterManager does not find non-existent formatters", () => {
         expect.assertions(2);
 
         const mgr = new FormatterManager();
@@ -44,7 +58,7 @@ describe("testFormatterManager", () => {
         expect(!formatter).toBeTruthy();
     });
 
-    test("FormatterManagerAddDeclarative", () => {
+    test("FormatterManager add a declarative formatter", () => {
         expect.assertions(4);
 
         const mgr = new FormatterManager();
@@ -66,13 +80,13 @@ describe("testFormatterManager", () => {
         expect(formatter.getName()).toBe("minimal-formatter");
     });
 
-    test("FormatterManagerAddDeclarativeRightSize", () => {
+    test("FormatterManager make sure the manager has the right size after adding a declarative manager", () => {
         expect.assertions(3);
 
         const mgr = new FormatterManager();
         expect(mgr).toBeTruthy();
 
-        expect(mgr.size()).toBe(1);
+        expect(mgr.size()).toBe(0);
 
         mgr.add([{
             "name": "minimal-formatter",
@@ -82,10 +96,10 @@ describe("testFormatterManager", () => {
             "highlightEnd": "<<"
         }]);
 
-        expect(mgr.size()).toBe(2);
+        expect(mgr.size()).toBe(1);
     });
 
-    test("FormatterManagerAddDeclarativeRightFormatter", () => {
+    test("FormatterManager make sure the manager has the right formatter after adding a declarative formatter", () => {
         expect.assertions(4);
 
         const mgr = new FormatterManager();
@@ -125,7 +139,7 @@ describe("testFormatterManager", () => {
         expect(actual).toBe(expected);
     });
 
-    test("FormatterManagerFormatWithAllFields", () => {
+    test("FormatterManager format with all fields", () => {
         expect.assertions(4);
 
         const mgr = new FormatterManager();
@@ -166,7 +180,7 @@ describe("testFormatterManager", () => {
         expect(actual).toBe(expected);
     });
 
-    test("FormatterManagerFormatWithAllFieldsSomeBlank", () => {
+    test("FormatterManager format with all fields with some blank", () => {
         expect.assertions(4);
 
         const mgr = new FormatterManager();

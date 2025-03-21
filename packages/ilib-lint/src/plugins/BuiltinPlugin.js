@@ -2,7 +2,7 @@
  * BuiltinPlugin.js - plugin that houses all of the built-in
  * rules and parsers
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import StringParser from './string/StringParser.js';
 import ErrorFilterTransformer from './ErrorFilterTransformer.js';
 import StringSerializer from './string/StringSerializer.js';
 import AnsiConsoleFormatter from '../formatters/AnsiConsoleFormatter.js';
+import JsonFormatter from '../formatters/JsonFormatter.js';
 import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
 import ResourceICUPluralTranslation from '../rules/ResourceICUPluralTranslation.js';
 import ResourceQuoteStyle from '../rules/ResourceQuoteStyle.js';
@@ -360,7 +361,7 @@ class BuiltinPlugin extends Plugin {
      * @override
      */
     getFormatters() {
-        return [AnsiConsoleFormatter];
+        return [AnsiConsoleFormatter, JsonFormatter];
     }
 
     getFixers() {

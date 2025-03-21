@@ -64,6 +64,7 @@
         "@tsconfig/node14": "^14.1.2",
         "@types/jest": "^29.5.14",
         "@types/node": "^14.0.0",
+        "dedent": "^1.5.3",
         "docdash": "^2.0.2",
         "i18nlint-plugin-test-old": "file:test/i18nlint-plugin-test-old",
         "ilib-lint-plugin-obsolete": "file:test/ilib-lint-plugin-obsolete",
