@@ -1,7 +1,7 @@
 /*
  * FormatterManager.js - Factory to create and return the right formatter
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import log4js from 'log4js';
 
 import { Formatter } from 'ilib-lint-common';
 
-import AnsiConsoleFormatter from './formatters/AnsiConsoleFormatter.js';
 import { ConfigBasedFormatter } from './formatters/ConfigBasedFormatter.js';
 
 const logger = log4js.getLogger("ilib-lint.FormatterManager");
@@ -39,7 +38,6 @@ class FormatterManager {
     constructor(options) {
         this.formatterCache = {};
         this.descriptions = {};
-        this.add([AnsiConsoleFormatter]);
         if (options) {
             if (options.formatters) {
                 this.add(options.formatters);
@@ -52,9 +50,10 @@ class FormatterManager {
      * formatting the output.
      *
      * @param {String} name name of the formatter to return
-     * @param {Object|undefined} options options for this instance of the
+     * @param {Object|undefined} [options] options for this instance of the
      * formatter from the config file, if any
-     * @returns {Formatter} the formatter to use
+     * @returns {Formatter|undefined} the formatter to use or undefined if
+     * no formatter with that name exists
      */
     get(name, options) {
         const formatConfig = this.formatterCache[name];
