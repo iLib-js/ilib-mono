@@ -57,7 +57,7 @@ var JsonFileType = function(project) {
     this.resourceFiles = {};
     this.schemas = {};
     this.refs = {};
-    this.loadSchemas(".");
+    this.loadSchemas();
 };
 
 JsonFileType.prototype.loadSchemaFile = function(pathName) {
@@ -185,14 +185,15 @@ JsonFileType.prototype.getSchema = function(uri) {
 /**
  * Load all the schema files into memory.
  */
-JsonFileType.prototype.loadSchemas = function(pathName) {
+JsonFileType.prototype.loadSchemas = function() {
     var jsonSettings = this.project.settings.json;
+    var projectRoot = this.project.root || ".";
 
     if (jsonSettings) {
         var schemas = jsonSettings.schemas;
         if (schemas) {
             schemas.forEach(function(schema) {
-                var full = path.join(pathName, schema);
+                var full = path.resolve(projectRoot, schema);
                 this.loadSchemaDirOrFile(full);
             }.bind(this));
         }
