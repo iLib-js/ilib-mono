@@ -262,7 +262,7 @@ class Parser {
                         case TokenType.PLURAL:
                             if (typeof(token.category) !== 'undefined') {
                                 const language = this.targetLocale?.getLanguage() ?? "en";
-                                const forms = pluralForms[language].categories || pluralForms.en.categories;
+                                const forms = (pluralForms[language] ?? pluralForms.en).categories;
                                 if (token.category >= forms.length) {
                                     restart();
                                 } else {

@@ -404,6 +404,154 @@ describe("parser", () => {
         expect(resources[0].getTargetLocale()).toBe("ru-RU");
     });
 
+    test("ParserParsePluralStringWithTranslations With Locale From Header", () => {
+        expect.assertions(13);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: ru-RU\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '\n' +
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} объект"\n' +
+            'msgstr[1] "{$count} объекта"\n' +
+            'msgstr[2] "{$count} объектов"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        const resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getType()).toBe("plural");
+        let strings = resources[0].getSource();
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        strings = resources[0].getTarget();
+        expect(strings.one).toBe("{$count} объект");
+        expect(strings.few).toBe("{$count} объекта");
+        expect(strings.other).toBe("{$count} объектов");
+        expect(resources[0].getTargetLocale()).toBe("ru-RU");
+    });
+
+    test("ParserParsePluralStringWithTranslations Skip When Too Many Categories", () => {
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "ru-RU",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} объект"\n' +
+            'msgstr[1] "{$count} объекта"\n' +
+            'msgstr[2] "{$count} объектов"\n' +
+            'msgstr[3] "{$count} fourth-category-translation"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(0);
+        const resources = set.getAll();
+        expect(resources.length).toBe(0);
+    });
+
+    test("ParserParsePluralString With Unsupported Locale From Header Fallback To English", () => {
+        expect.assertions(12);
+
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: xx-YY\\n"\n' +
+            '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '\n' +
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} first-category-translation"\n' +
+            'msgstr[1] "{$count} second-category-translation"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        const resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getType()).toBe("plural");
+        let strings = resources[0].getSource();
+        expect(strings.one).toBe("one object");
+        expect(strings.other).toBe("{$count} objects");
+        expect(resources[0].getKey()).toBe("one object");
+        expect(resources[0].getSourceLocale()).toBe("en-US");
+        strings = resources[0].getTarget();
+        expect(strings.one).toBe("{$count} first-category-translation");
+        expect(strings.other).toBe("{$count} second-category-translation");
+        expect(resources[0].getTargetLocale()).toBe("xx-YY");
+    });
+
+    test("ParserParsePluralString With Unsupported Locale From Header With More Categories Than English", () => {
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            projectName: "foo",
+            datatype: "po"
+        });
+        expect(parser).toBeTruthy();
+
+        const set = parser.parse(
+            'msgid ""\n' +
+            'msgstr ""\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
+            '"Content-Transfer-Encoding: 8bit\\n"\n' +
+            '"Generated-By: loctool\\n"\n' +
+            '"Project-Id-Version: 1\\n"\n' +
+            '"Language: yy-ZZ\\n"\n' +
+            '"Plural-Forms: nplurals=3; plural=n%3;\\n"\n' +
+            '\n' +
+            'msgid "one object"\n' +
+            'msgid_plural "{$count} objects"\n' +
+            'msgstr[0] "{$count} first-category-translation"\n' +
+            'msgstr[1] "{$count} second-category-translation"\n' +
+            'msgstr[2] "{$count} third-category-translation"\n'
+        );
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(0);
+        const resources = set.getAll();
+        expect(resources.length).toBe(0);
+        // skipped because there are too many categories
+    });
+
     test("ParserParseSimpleLineContinuations", () => {
         expect.assertions(7);
 
