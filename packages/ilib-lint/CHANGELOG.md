@@ -1,5 +1,14 @@
 # ilib-lint
 
+## 2.9.0
+
+### Minor Changes
+
+- ae97eb7: - add a built-in JsonFormatter to format results in json form for the
+  purposes of graphing the results across your localization batches.
+  This leaves out a lot of the details such as the source string or
+  description, as these are not needed for graphing.
+
 ## 2.8.1
 
 ### Patch Changes
