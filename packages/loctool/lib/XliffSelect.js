@@ -83,7 +83,9 @@ var XliffSelect = function XliffSelect(settings) {
             });
             xliff.deserialize(data);
             xliff.getTranslationUnits().forEach(function(unit) {
-                unit.project = unit.project || projectName;
+                if (projectName) {
+                    unit.project = projectName;
+                }
                 if (settings.extendedAttr) {
                     unit.extended = unit.extended || {};
                     Object.keys(settings.extendedAttr).forEach(function(key) {
