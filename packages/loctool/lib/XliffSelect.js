@@ -47,6 +47,8 @@ function wordCount(string) {
  * @param {string} settings.xliffStyle the style of the xliff file
  * @param {Array.<string>} settings.infiles the paths to input xliff files
  * @param {string} settings.criteria selection criteria from the command-line
+ * @param {Map.<string, string>} settings.extendedAttr extended attributes to add to the selected units
+ * @param {string} settings.id the project id to add to the selected units
  * @returns {Xliff} xliff file with data merged into one
  *
  */
@@ -60,6 +62,7 @@ var XliffSelect = function XliffSelect(settings) {
     // Remember which trans-units were added already, so we don't have
     // to add them again
     var transUnitCache = new ISet();
+    var projectName = settings.id;
 
     var target = new Xliff({
         path: settings.outfile,
@@ -80,6 +83,13 @@ var XliffSelect = function XliffSelect(settings) {
             });
             xliff.deserialize(data);
             xliff.getTranslationUnits().forEach(function(unit) {
+                unit.project = unit.project || projectName;
+                if (settings.extendedAttr) {
+                    unit.extended = unit.extended || {};
+                    Object.keys(settings.extendedAttr).forEach(function(key) {
+                        unit.extended[key] = settings.extendedAttr[key];
+                    });
+                }
                 var hash = unit.hash();
                 if (transUnitCache.has(hash)) return;
                 units.push(unit);
