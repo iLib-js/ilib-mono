@@ -1,5 +1,11 @@
 # ilib-po
 
+## 1.1.2
+
+### Patch Changes
+
+- f7435c5: Fixed Parser attempting to use non-existent plural forms definitions - now it properly falls back to English if the form is not defined for a given language.
+
 ## 1.1.1
 
 ### Patch Changes
