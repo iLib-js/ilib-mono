@@ -324,9 +324,10 @@ class Project extends DirItem {
                     }
                 }
             }
-            this.formatter = fmtMgr.get(this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter");
+            const formatterName = this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter";
+            this.formatter = fmtMgr.get(formatterName);
             if (!this.formatter) {
-                logger.error(`Could not find formatter ${options.formatter}. Aborting...`);
+                logger.error(`Could not find formatter ${formatterName}. Aborting...`);
                 process.exit(3);
             }
 
