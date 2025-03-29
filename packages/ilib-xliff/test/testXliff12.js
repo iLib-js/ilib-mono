@@ -1,7 +1,7 @@
 /*
  * testXliff12.js - test the Xliff object with v1.2 xliff files
  *
- * Copyright © 2016-2017, 2019-2023 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2025 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -473,6 +473,75 @@ export const testXliff12 = {
                 '  <file original="foo/bar/j.java" source-language="en-US" target-language="fr-FR" product-name="webapp">\n' +
                 '    <body>\n' +
                 '      <trans-unit id="2" resname="huzzah" restype="string">\n' +
+                '        <source>baby baby</source>\n' +
+                '        <target>bebe bebe</target>\n' +
+                '        <note>come &amp; enjoy it with us</note>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '</xliff>';
+
+        let actual = x.serialize();
+
+        diff(actual, expected);
+        test.equal(actual, expected);
+
+        test.done();
+    },
+
+    testXliffSerializeWithExtendedAttributes: function(test) {
+        test.expect(2);
+
+        const x = new Xliff();
+        test.ok(x);
+
+        let tu = new TranslationUnit({
+            source: "Asdf asdf",
+            sourceLocale: "en-US",
+            target: "foobarfoo",
+            targetLocale: "de-DE",
+            key: "foobar",
+            file: "foo/bar/asdf.java",
+            project: "webapp",
+            comment: "foobar is where it's at!",
+            extended: {
+                foo: "bar"
+            }
+        });
+
+        x.addTranslationUnit(tu);
+
+        tu = new TranslationUnit({
+            source: "baby baby",
+            sourceLocale: "en-US",
+            target: "bebe bebe",
+            targetLocale: "fr-FR",
+            key: "huzzah",
+            file: "foo/bar/j.java",
+            project: "webapp",
+            comment: "come & enjoy it with us",
+            extended: {
+                baz: "quux"
+            }
+        });
+
+        x.addTranslationUnit(tu);
+
+        let expected =
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="1.2">\n' +
+                '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="1" resname="foobar" restype="string" x-foo="bar">\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '        <target>foobarfoo</target>\n' +
+                '        <note>foobar is where it\'s at!</note>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '  <file original="foo/bar/j.java" source-language="en-US" target-language="fr-FR" product-name="webapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="2" resname="huzzah" restype="string" x-baz="quux">\n' +
                 '        <source>baby baby</source>\n' +
                 '        <target>bebe bebe</target>\n' +
                 '        <note>come &amp; enjoy it with us</note>\n' +
@@ -1106,6 +1175,70 @@ export const testXliff12 = {
         test.equal(tulist[1].targetLocale, "fr-FR");
         test.equal(typeof(tulist[1].translate), 'undefined');
         test.deepEqual(tulist[1].location, {line: 12, char: 7});
+
+        test.done();
+    },
+
+    testXliffDeserializeWithExtendedAttributes: function(test) {
+        test.expect(27);
+
+        const x = new Xliff();
+        test.ok(x);
+
+        x.deserialize(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="1.2">\n' +
+                '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="androidapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="1" resname="foobar" restype="string" x-extension="arbitrary data">\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '        <target>foobarfoo</target>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '  <file original="foo/bar/j.java" source-language="en-US" target-language="fr-FR" product-name="webapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="2" resname="huzzah" restype="string" x-extension="more arbitrary data">\n' +
+                '        <source>baby baby</source>\n' +
+                '        <target>bebe bebe</target>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '</xliff>');
+
+        // console.log("x is " + JSON.stringify(x, undefined, 4));
+        let tulist = x.getTranslationUnits();
+        // console.log("x is now " + JSON.stringify(x, undefined, 4));
+
+        test.ok(tulist);
+
+        test.equal(tulist.length, 2);
+
+        test.equal(tulist[0].source, "Asdf asdf");
+        test.equal(tulist[0].sourceLocale, "en-US");
+        test.equal(tulist[0].key, "foobar");
+        test.equal(tulist[0].file, "foo/bar/asdf.java");
+        test.equal(tulist[0].project, "androidapp");
+        test.equal(tulist[0].resType, "string");
+        test.equal(tulist[0].id, "1");
+        test.equal(tulist[0].target, "foobarfoo");
+        test.equal(tulist[0].targetLocale, "de-DE");
+        test.equal(typeof(tulist[0].translate), 'undefined');
+        test.deepEqual(tulist[0].location, {line: 4, char: 7});
+        test.deepEqual(tulist[0].extended, { "extension": "arbitrary data" });
+
+        test.equal(tulist[1].source, "baby baby");
+        test.equal(tulist[1].sourceLocale, "en-US");
+        test.equal(tulist[1].key, "huzzah");
+        test.equal(tulist[1].file, "foo/bar/j.java");
+        test.equal(tulist[1].project, "webapp");
+        test.equal(tulist[1].resType, "string");
+        test.equal(tulist[1].id, "2");
+        test.equal(tulist[1].target, "bebe bebe");
+        test.equal(tulist[1].targetLocale, "fr-FR");
+        test.equal(typeof(tulist[1].translate), 'undefined');
+        test.deepEqual(tulist[1].location, {line: 12, char: 7});
+        test.deepEqual(tulist[1].extended, { "extension": "more arbitrary data" });
 
         test.done();
     },

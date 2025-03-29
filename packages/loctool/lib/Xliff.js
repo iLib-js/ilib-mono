@@ -50,6 +50,10 @@ var logger = log4js.getLogger("loctool.lib.Xliff");
  * <li><i>comment</i> - the translator's comment for this unit (optional)
  * <li><i>datatype</i> - the source of the data of this unit (optional)
  * <li><i>flavor</i> - the flavor that this string comes from(optional)
+ * <li><i>extended</i> - an object containing any other properties that
+ * are not part of the standard properties of a translation unit. These are
+ * encoded as attributes on the trans-unit element in the xliff file that
+ * have names that start with "x-".
  * </ul>
  *
  * If the required properties are not given, the constructor throws an exception.<p>
@@ -689,7 +693,7 @@ Xliff.prototype.toString1 = function(units) {
                     "x-flavor": tu.flavor
                 }
             };
-            if (this["tool-id"] || this["tool-name"] || this["tool-version"] || this["tool-company"] ||  this["company"]) {
+            if (this["tool-id"] || this["tool-name"] || this["tool-version"] || this["tool-company"] || this["company"]) {
                 file.header = {
                     "tool": {
                         _attributes: {
@@ -716,6 +720,12 @@ Xliff.prototype.toString1 = function(units) {
                 "_text": tu.source
             }
         };
+
+        if (tu.extended) {
+            Object.keys(tu.extended).forEach(function(key) {
+                tujson._attributes["x-" + key] = tu.extended[key];
+            });
+        }
 
         if (tu.id && tu.id > index) {
             index = tu.id + 1;
@@ -858,6 +868,12 @@ Xliff.prototype.toString2 = function(units) {
                 "l:datatype": tu.datatype
             }
         };
+
+        if (tu.extended) {
+            Object.keys(tu.extended).forEach(function(key) {
+                tujson._attributes["l:" + key] = tu.extended[key];
+            });
+        }
 
         if (tu.comment) {
             tujson.notes = {
@@ -1016,6 +1032,11 @@ Xliff.prototype.toStringCustom = function(units) {
             }
         };
 
+        if (tu.extended) {
+            Object.keys(tu.extended).forEach(function(key) {
+                tujson._attributes["x-" + key] = tu.extended[key];
+            });
+        }
         if (tu.comment) {
             tujson.notes = {
                 "note": [
@@ -1201,6 +1222,18 @@ Xliff.prototype.parse1 = function(xliff) {
                             }
                         }
 
+                        var extended;
+                        if (!tu._attributes) {
+                            Object.keys(tu._attributes).forEach(function(key) {
+                                if (key.startsWith("x-")) {
+                                    if (!extended) {
+                                        extended = {};
+                                    }
+                                    extended[key.substring(2)] = tu[key];
+                                }
+                            });
+                        }
+
                         try {
                             var unit = new TranslationUnit({
                                 file: fileSettings.pathName,
@@ -1217,7 +1250,8 @@ Xliff.prototype.parse1 = function(xliff) {
                                 resType: tu._attributes.restype,
                                 state: tu.target && tu.target._attributes && tu.target._attributes.state,
                                 datatype: tu._attributes.datatype,
-                                flavor: fileSettings.flavor
+                                flavor: fileSettings.flavor,
+                                extended: extended
                             });
                             switch (unit.resType) {
                             case "array":
@@ -1292,6 +1326,22 @@ Xliff.prototype.parse2 = function(xliff) {
                             restype = tu._attributes.type.substring(4);
                         }
 
+                        var extended;
+                        if (tu._attributes) {
+                            Object.keys(tu._attributes).forEach(function(key) {
+                                if (key.startsWith("l:") &&
+                                        key !== "l:datatype" &&
+                                        key !== "l:index" &&
+                                        key !== "l:category" &&
+                                        key !== "l:context") {
+                                    if (!extended) {
+                                        extended = {};
+                                    }
+                                    extended[key.substring(2)] = tu._attributes[key];
+                                }
+                            });
+                        }
+
                         if (tu.segment) {
                             var segments = makeArray(tu.segment);
                             for (var j = 0; j < segments.length; j++) {
@@ -1330,7 +1380,8 @@ Xliff.prototype.parse2 = function(xliff) {
                                     resType: restype,
                                     state: state,
                                     datatype: datatype,
-                                    flavor: fileSettings.flavor
+                                    flavor: fileSettings.flavor,
+                                    extended: extended
                                 });
                                 switch (restype) {
                                 case "array":

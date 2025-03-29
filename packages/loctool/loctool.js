@@ -177,7 +177,14 @@ var commandOptionHelp = {
         "outfile\n" +
         "  the path to the file where the selected translation units are written to\n" +
         "filename\n" +
-        "  You may list as many input files to select from as you like",
+        "  You may list as many input files to select from as you like" +
+        "--projectId <projectName>\n" +
+        "  Specify the project name to use when selecting translation units. This is used in the output file\n" +
+        "  if the project name is not already set in the input files.\n" +
+        "--extendedAttr <name>=<value>\n" +
+        "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
+        "  each translation unit in the output file. You may specify this option multiple times to add\n" +
+        "  multiple extended attributes.",
 };
 
 function usage() {
@@ -452,6 +459,17 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "--convertPlurals") {
         settings.convertPlurals = true;
+    } else if (val === "--extendedAttr") {
+        if (i + 1 < argv.length && argv[i + 1]) {
+            var attr = argv[++i].split("=");
+            if (attr.length === 2) {
+                settings.extendedAttr = settings.extendedAttr || {};
+                settings.extendedAttr[attr[0]] = attr[1];
+            } else {
+                console.error("Error: --extendedAttr option requires a name=value argument to follow it.");
+                usage();
+            }
+        }
     } else {
         options.push(val);
     }
