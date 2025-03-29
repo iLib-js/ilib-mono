@@ -1,7 +1,7 @@
 /*
  * Xliff.js - model an xliff file
  *
- * Copyright © 2016-2017, 2019-2023 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2025 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -333,6 +333,12 @@ class Xliff {
                 }
             };
 
+            if (tu.extended) {
+                Object.keys(tu.extended).forEach(key => {
+                    tujson._attributes["x-" + key] = tu.extended[key];
+                });
+            }
+
             // by default, you translate everything, so only put the translate flag
             // when it is false
             if (typeof(tu.translate) === "boolean" && !tu.translate) {
@@ -477,6 +483,12 @@ class Xliff {
                     "l:datatype": tu.datatype
                 }
             };
+
+            if (tu.extended) {
+                Object.keys(tu.extended).forEach(function(key) {
+                    tujson._attributes["l:" + key] = tu.extended[key];
+                });
+            }
 
             // by default, you translate everything, so only put the translate flag
             // when it is false
@@ -638,7 +650,13 @@ class Xliff {
                 }
             };
 
-            // by default, you translate everything, so only put the translate flag
+            if (tu.extended) {
+                Object.keys(tu.extended).forEach(function(key) {
+                    tujson._attributes["x-" + key] = tu.extended[key];
+                });
+            }
+
+                        // by default, you translate everything, so only put the translate flag
             // when it is false
             if (typeof(tu.translate) === "boolean" && !tu.translate) {
                 tujson._attributes.translate = tu.translate;
@@ -846,6 +864,17 @@ class Xliff {
                 const resType = getAttr(tu, "restype");
                 const datatype = getAttr(tu, "datatype");
 
+                let extended = undefined;
+                if (tu?.attributes) {
+                    extended = {};
+                    // copy all other attributes that start with "x-" to the extended object
+                    Object.keys(tu.attributes).forEach(attr => {
+                        if (attr.startsWith("x-")) {
+                            const key = attr.substring(2); // remove the "x-" prefix
+                            extended[key] = tu.attributes[attr];
+                        }
+                    });
+                }
                 const source = getChildren(tu, "source")?.[0];
                 const sourceString = source && Xliff.getTextWithContentMarkup(source);
                 if (!sourceString?.trim()) {
@@ -894,7 +923,8 @@ class Xliff {
                             translate,
                             location,
                             ordinal,
-                            quantity
+                            quantity,
+                            extended
                         })
                     );
                 } catch (e) {
@@ -957,6 +987,22 @@ class Xliff {
                                 location = this.charPositionToLocation(tu._position);
                             }
 
+                            let extended;
+                            if (tu?._attributes) {
+                                Object.keys(tu._attributes).forEach(key => {
+                                    if (key.startsWith("l:") &&
+                                            key !== "l:datatype" &&
+                                            key !== "l:index" &&
+                                            key !== "l:category" &&
+                                            key !== "l:context") {
+                                        if (!extended) {
+                                            extended = {};
+                                        }
+                                        extended[key.substring(2)] = tu._attributes[key];
+                                    }
+                                });
+                            }
+
                             if (tu.segment) {
                                 const segments = makeArray(tu.segment);
                                 for (let j = 0; j < segments.length; j++) {
@@ -1012,7 +1058,8 @@ class Xliff {
                                         datatype: datatype,
                                         flavor: fileSettings.flavor,
                                         translate,
-                                        location
+                                        location,
+                                        extended
                                     });
                                     switch (restype) {
                                     case "array":
