@@ -5,27 +5,27 @@ exports[`xliff select extra unit information Make sure that after select, each f
 <xliff version="1.0">
   <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">
     <body>
-      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">
+      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1a</source>
         <target>app1:String 1a</target>
       </trans-unit>
-      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">
+      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1b</source>
         <target>app1:String 1b</target>
       </trans-unit>
-      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">
+      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1c</source>
         <target>app1:String 1c</target>
       </trans-unit>
     </body>
   </file>
-  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">
+  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app1">
     <body>
-      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript">
+      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <source>app2: String 2a</source>
         <target>app2: String 2a</target>
       </trans-unit>
-      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript">
+      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <source>app2: String 2b</source>
         <target>app2: String 2b</target>
       </trans-unit>
@@ -39,13 +39,13 @@ exports[`xliff select extra unit information Make sure that after select, each f
 <xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">
   <file original="app1" l:project="app1">
     <group id="group_1" name="cpp">
-      <unit id="app1_1" type="res:string" l:datatype="cpp">
+      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1a</source>
           <target>app1:String 1a</target>
         </segment>
       </unit>
-      <unit id="app1_2" type="res:string" l:datatype="cpp">
+      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1b</source>
           <target>app1:String 1b</target>
@@ -53,7 +53,7 @@ exports[`xliff select extra unit information Make sure that after select, each f
       </unit>
     </group>
     <group id="group_2" name="x-json">
-      <unit id="app1_3" type="res:string" l:datatype="x-json">
+      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1c</source>
           <target>app1:String 1c</target>
@@ -61,15 +61,15 @@ exports[`xliff select extra unit information Make sure that after select, each f
       </unit>
     </group>
   </file>
-  <file original="app2" l:project="app2">
+  <file original="app2" l:project="app1">
     <group id="group_3" name="javascript">
-      <unit id="app2_1" type="res:string" l:datatype="javascript">
+      <unit id="app2_1" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <segment>
           <source>app2: String 2a</source>
           <target>app2: String 2a</target>
         </segment>
       </unit>
-      <unit id="app2_2" type="res:string" l:datatype="javascript">
+      <unit id="app2_2" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <segment>
           <source>app2: String 2b</source>
           <target>app2: String 2b</target>
@@ -85,27 +85,27 @@ exports[`xliff select extra unit information Make sure that after select, each u
 <xliff version="1.0">
   <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">
     <body>
-      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-foo="bar">
+      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-foo="bar" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1a</source>
         <target>app1:String 1a</target>
       </trans-unit>
-      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-foo="bar">
+      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-foo="bar" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1b</source>
         <target>app1:String 1b</target>
       </trans-unit>
-      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-foo="bar">
+      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-foo="bar" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1c</source>
         <target>app1:String 1c</target>
       </trans-unit>
     </body>
   </file>
-  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">
+  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app1">
     <body>
-      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-foo="bar">
+      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-foo="bar" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <source>app2: String 2a</source>
         <target>app2: String 2a</target>
       </trans-unit>
-      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-foo="bar">
+      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-foo="bar" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <source>app2: String 2b</source>
         <target>app2: String 2b</target>
       </trans-unit>
@@ -119,13 +119,13 @@ exports[`xliff select extra unit information Make sure that after select, each u
 <xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">
   <file original="app1" l:project="app1">
     <group id="group_1" name="cpp">
-      <unit id="app1_1" type="res:string" l:datatype="cpp" l:foo="bar">
+      <unit id="app1_1" type="res:string" l:datatype="cpp" l:foo="bar" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1a</source>
           <target>app1:String 1a</target>
         </segment>
       </unit>
-      <unit id="app1_2" type="res:string" l:datatype="cpp" l:foo="bar">
+      <unit id="app1_2" type="res:string" l:datatype="cpp" l:foo="bar" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1b</source>
           <target>app1:String 1b</target>
@@ -133,7 +133,7 @@ exports[`xliff select extra unit information Make sure that after select, each u
       </unit>
     </group>
     <group id="group_2" name="x-json">
-      <unit id="app1_3" type="res:string" l:datatype="x-json" l:foo="bar">
+      <unit id="app1_3" type="res:string" l:datatype="x-json" l:foo="bar" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1c</source>
           <target>app1:String 1c</target>
@@ -141,15 +141,15 @@ exports[`xliff select extra unit information Make sure that after select, each u
       </unit>
     </group>
   </file>
-  <file original="app2" l:project="app2">
+  <file original="app2" l:project="app1">
     <group id="group_3" name="javascript">
-      <unit id="app2_1" type="res:string" l:datatype="javascript" l:foo="bar">
+      <unit id="app2_1" type="res:string" l:datatype="javascript" l:foo="bar" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <segment>
           <source>app2: String 2a</source>
           <target>app2: String 2a</target>
         </segment>
       </unit>
-      <unit id="app2_2" type="res:string" l:datatype="javascript" l:foo="bar">
+      <unit id="app2_2" type="res:string" l:datatype="javascript" l:foo="bar" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <segment>
           <source>app2: String 2b</source>
           <target>app2: String 2b</target>
@@ -165,15 +165,15 @@ exports[`xliff select extra unit information Make sure that after select, each u
 <xliff version="1.0">
   <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">
     <body>
-      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-foo="bar">
+      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-foo="bar" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1a</source>
         <target>app1:String 1a</target>
       </trans-unit>
-      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-foo="bar">
+      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-foo="bar" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1b</source>
         <target>app1:String 1b</target>
       </trans-unit>
-      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-foo="bar">
+      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-foo="bar" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <source>app1:String 1c</source>
         <target>app1:String 1c</target>
       </trans-unit>
@@ -181,11 +181,11 @@ exports[`xliff select extra unit information Make sure that after select, each u
   </file>
   <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">
     <body>
-      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-foo="bar">
+      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-foo="bar" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <source>app2: String 2a</source>
         <target>app2: String 2a</target>
       </trans-unit>
-      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-foo="bar">
+      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-foo="bar" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <source>app2: String 2b</source>
         <target>app2: String 2b</target>
       </trans-unit>
@@ -199,13 +199,13 @@ exports[`xliff select extra unit information Make sure that after select, each u
 <xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">
   <file original="app1" l:project="app1">
     <group id="group_1" name="cpp">
-      <unit id="app1_1" type="res:string" l:datatype="cpp" l:foo="bar">
+      <unit id="app1_1" type="res:string" l:datatype="cpp" l:foo="bar" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1a</source>
           <target>app1:String 1a</target>
         </segment>
       </unit>
-      <unit id="app1_2" type="res:string" l:datatype="cpp" l:foo="bar">
+      <unit id="app1_2" type="res:string" l:datatype="cpp" l:foo="bar" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1b</source>
           <target>app1:String 1b</target>
@@ -213,7 +213,7 @@ exports[`xliff select extra unit information Make sure that after select, each u
       </unit>
     </group>
     <group id="group_2" name="x-json">
-      <unit id="app1_3" type="res:string" l:datatype="x-json" l:foo="bar">
+      <unit id="app1_3" type="res:string" l:datatype="x-json" l:foo="bar" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">
         <segment>
           <source>app1:String 1c</source>
           <target>app1:String 1c</target>
@@ -223,13 +223,13 @@ exports[`xliff select extra unit information Make sure that after select, each u
   </file>
   <file original="app2" l:project="app2">
     <group id="group_3" name="javascript">
-      <unit id="app2_1" type="res:string" l:datatype="javascript" l:foo="bar">
+      <unit id="app2_1" type="res:string" l:datatype="javascript" l:foo="bar" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <segment>
           <source>app2: String 2a</source>
           <target>app2: String 2a</target>
         </segment>
       </unit>
-      <unit id="app2_2" type="res:string" l:datatype="javascript" l:foo="bar">
+      <unit id="app2_2" type="res:string" l:datatype="javascript" l:foo="bar" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">
         <segment>
           <source>app2: String 2b</source>
           <target>app2: String 2b</target>

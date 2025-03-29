@@ -86,12 +86,11 @@ var XliffSelect = function XliffSelect(settings) {
                 if (projectName) {
                     unit.project = projectName;
                 }
-                if (settings.extendedAttr) {
-                    unit.extended = unit.extended || {};
-                    Object.keys(settings.extendedAttr).forEach(function(key) {
-                        unit.extended[key] = settings.extendedAttr[key];
-                    });
+                unit.extended = unit.extended || {};
+                if (typeof(settings.extendedAttr) === "object") {
+                    Object.assign(unit.extended, settings.extendedAttr);
                 }
+                unit.extended["original-file"] = file;
                 var hash = unit.hash();
                 if (transUnitCache.has(hash)) return;
                 units.push(unit);

@@ -235,15 +235,15 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -251,11 +251,11 @@ describe("xliff select translation units in xliff v1", function() {
         '  </file>\n' +
         '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript">\n' +
+        '      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <source>app2: String 2a</source>\n' +
         '        <target>app2: String 2a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript">\n' +
+        '      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <source>app2: String 2b</source>\n' +
         '        <target>app2: String 2b</target>\n' +
         '      </trans-unit>\n' +
@@ -286,11 +286,11 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
@@ -323,15 +323,15 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -363,15 +363,15 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -436,7 +436,7 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
@@ -467,7 +467,7 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
@@ -498,11 +498,11 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript">\n' +
+        '      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <source>app2: String 2a</source>\n' +
         '        <target>app2: String 2a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript">\n' +
+        '      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <source>app2: String 2b</source>\n' +
         '        <target>app2: String 2b</target>\n' +
         '      </trans-unit>\n' +
@@ -534,7 +534,7 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -567,15 +567,15 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -606,15 +606,15 @@ describe("xliff select translation units in xliff v1", function() {
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -648,13 +648,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -662,7 +662,7 @@ describe("xliff select translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -672,13 +672,13 @@ describe("xliff select translation units in xliff v2", function() {
         '  </file>\n' +
         '  <file original="app2" l:project="app2">\n' +
         '    <group id="group_3" name="javascript">\n' +
-        '      <unit id="app2_1" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_1" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_2" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
@@ -711,13 +711,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -752,13 +752,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -766,7 +766,7 @@ describe("xliff select translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -800,13 +800,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -814,7 +814,7 @@ describe("xliff select translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -881,7 +881,7 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
@@ -914,7 +914,7 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
@@ -947,13 +947,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app2" l:project="app2">\n' +
         '    <group id="group_1" name="javascript">\n' +
-        '      <unit id="app2_1" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_1" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_2" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
@@ -987,7 +987,7 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -1022,13 +1022,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -1036,7 +1036,7 @@ describe("xliff select translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -1069,13 +1069,13 @@ describe("xliff select translation units in xliff v2", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -1083,7 +1083,7 @@ describe("xliff select translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
