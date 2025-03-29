@@ -1327,13 +1327,17 @@ Xliff.prototype.parse2 = function(xliff) {
                         }
 
                         var extended;
-                        if (!tu._attributes) {
+                        if (tu._attributes) {
                             Object.keys(tu._attributes).forEach(function(key) {
-                                if (key.startsWith("x-")) {
+                                if (key.startsWith("l:") &&
+                                        key !== "l:datatype" &&
+                                        key !== "l:index" &&
+                                        key !== "l:category" &&
+                                        key !== "l:context") {
                                     if (!extended) {
                                         extended = {};
                                     }
-                                    extended[key.substring(2)] = tu[key];
+                                    extended[key.substring(2)] = tu._attributes[key];
                                 }
                             });
                         }
