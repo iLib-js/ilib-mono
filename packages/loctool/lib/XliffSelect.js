@@ -37,6 +37,17 @@ function wordCount(string) {
 }
 
 /**
+ * Return a hash for the translation unit. This is used to identify
+ * translation units in the cache so we can avoid adding duplicates.
+ * @private
+ * @param {TranslationUnit} unit the translation unit to hash
+ * @returns {string} the hash for the translation unit
+ */
+function tuHash(unit) {
+    return [unit.project, unit.targetLocale, unit.key].join("_");
+}
+
+/**
  * Select translation units from the given xliff files and write them
  * to the named xliff outfile
  *
@@ -58,10 +69,6 @@ var XliffSelect = function XliffSelect(settings) {
     // Remember which files we have already read, so we don't have
     // to read them again.
     var fileNameCache = new ISet();
-
-    // Remember which trans-units were added already, so we don't have
-    // to add them again
-    var transUnitCache = new ISet();
     var projectName = settings.id;
 
     var target = new Xliff({
@@ -70,7 +77,7 @@ var XliffSelect = function XliffSelect(settings) {
         style: settings.xliffStyle
     });
 
-    var units = [];
+    var unitCache = {};
 
     settings.infiles.forEach(function (file) {
         if (fileNameCache.has(file)) return;
@@ -91,9 +98,8 @@ var XliffSelect = function XliffSelect(settings) {
                     Object.assign(unit.extended, settings.extendedAttr);
                 }
                 unit.extended["original-file"] = file;
-                var hash = unit.hash();
-                units.push(unit);
-                transUnitCache.add(hash);
+                var hash = tuHash(unit);
+                unitCache[hash] = unit;
             });
             fileNameCache.add(file);
         } else {
@@ -101,10 +107,12 @@ var XliffSelect = function XliffSelect(settings) {
         }
     });
 
+    let units = Object.values(unitCache); // get all the units from the cache
+
     // now that they are merged, select from them according to
     // the selection criteria
 
-    if (settings.criteria) {
+    if (units.length > 0 && settings.criteria) {
         var criteria = XliffSelect.parseCriteria(settings.criteria);
         var totalunits = 0;
         var sourcewords = 0;
@@ -179,7 +187,12 @@ var XliffSelect = function XliffSelect(settings) {
         });
     }
 
-    target.addTranslationUnits(units);
+    if (units.length > 0) {
+        target.addTranslationUnits(units);
+    } else {
+        // if no units were selected, then just return the empty target
+        logger.warn("No translation units matched the selection criteria.");
+    }
 
     return target;
 };

@@ -601,20 +601,24 @@ describe("xliff select translation units in xliff v1", function() {
         expect(target).toBeTruthy();
 
         var actual = target.serialize();
+
+        // the trans-units for the second file should override the ones
+        // from the first file, but since they are identical, it should
+        // only appear once in the output.
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
         '<xliff version="1.0">\n' +
         '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
         '    <body>\n' +
-        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <source>app1:String 1a</source>\n' +
         '        <target>app1:String 1a</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <source>app1:String 1b</source>\n' +
         '        <target>app1:String 1b</target>\n' +
         '      </trans-unit>\n' +
-        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <source>app1:String 1c</source>\n' +
         '        <target>app1:String 1c</target>\n' +
         '      </trans-unit>\n' +
@@ -1064,18 +1068,22 @@ describe("xliff select translation units in xliff v2", function() {
         expect(target).toBeTruthy();
 
         var actual = target.serialize();
+
+        // the units from the second file should override the ones
+        // from the first file, but since they are identical, it should
+        // only appear once in the output.
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -1083,7 +1091,7 @@ describe("xliff select translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
