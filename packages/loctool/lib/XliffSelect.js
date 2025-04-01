@@ -92,7 +92,6 @@ var XliffSelect = function XliffSelect(settings) {
                 }
                 unit.extended["original-file"] = file;
                 var hash = unit.hash();
-                if (transUnitCache.has(hash)) return;
                 units.push(unit);
                 transUnitCache.add(hash);
             });
