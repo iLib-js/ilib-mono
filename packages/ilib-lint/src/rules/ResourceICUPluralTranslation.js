@@ -101,6 +101,25 @@ class ResourceICUPluralTranslation extends ResourceRule {
     }
 
     /**
+     * Reconstruct the string but only give the text nodes of the given tree so we can
+     * see if there is anything to translate.
+     * @private
+     * @param {Object} nodes the top of the tree to reconstruct
+     * @returns {string} the text of the tree
+     */
+    textNodes(nodes) {
+        let result = "";
+
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].type === 0) {
+                result += nodes[i].value;
+            }
+        }
+
+        return result.trim();
+    }
+
+    /**
      * Traverse an array of ast nodes to find any embedded selects or plurals
      * or tags, and then process those separately.
      * @private
@@ -143,6 +162,11 @@ class ResourceICUPluralTranslation extends ResourceRule {
                 const sourceCategory = sourcePlural.options[category] ? category : "other";
                 const sourcePluralCat = sourcePlural.options[sourceCategory];
                 if (!sourcePluralCat) return; // nothing to check!
+
+                // Only compare the source and target if there is some text there to
+                // translate. This will avoid the false positives for the situation where
+                // the only thing in the plural category string is just a {variable}.
+                if (this.textNodes(sourcePluralCat.value).length === 0) return;
 
                 const sourceStr = this.reconstruct(sourcePluralCat.value).replace(/\s+/g, " ").trim();
                 const targetStr = this.reconstruct(targetPlural.options[category].value).replace(/\s+/g, " ").trim();
