@@ -37,6 +37,17 @@ function wordCount(string) {
 }
 
 /**
+ * Return a hash for the translation unit. This is used to identify
+ * translation units in the cache so we can avoid adding duplicates.
+ * @private
+ * @param {TranslationUnit} unit the translation unit to hash
+ * @returns {string} the hash for the translation unit
+ */
+function tuHash(unit) {
+    return [unit.project, unit.targetLocale, unit.key].join("_");
+}
+
+/**
  * Select translation units from the given xliff files and write them
  * to the named xliff outfile
  *
@@ -47,6 +58,8 @@ function wordCount(string) {
  * @param {string} settings.xliffStyle the style of the xliff file
  * @param {Array.<string>} settings.infiles the paths to input xliff files
  * @param {string} settings.criteria selection criteria from the command-line
+ * @param {Map.<string, string>} settings.extendedAttr extended attributes to add to the selected units
+ * @param {string} settings.id the project id to add to the selected units
  * @returns {Xliff} xliff file with data merged into one
  *
  */
@@ -56,10 +69,7 @@ var XliffSelect = function XliffSelect(settings) {
     // Remember which files we have already read, so we don't have
     // to read them again.
     var fileNameCache = new ISet();
-
-    // Remember which trans-units were added already, so we don't have
-    // to add them again
-    var transUnitCache = new ISet();
+    var projectName = settings.id;
 
     var target = new Xliff({
         path: settings.outfile,
@@ -67,7 +77,7 @@ var XliffSelect = function XliffSelect(settings) {
         style: settings.xliffStyle
     });
 
-    var units = [];
+    var unitCache = {};
 
     settings.infiles.forEach(function (file) {
         if (fileNameCache.has(file)) return;
@@ -80,10 +90,16 @@ var XliffSelect = function XliffSelect(settings) {
             });
             xliff.deserialize(data);
             xliff.getTranslationUnits().forEach(function(unit) {
-                var hash = unit.hash();
-                if (transUnitCache.has(hash)) return;
-                units.push(unit);
-                transUnitCache.add(hash);
+                if (projectName) {
+                    unit.project = projectName;
+                }
+                unit.extended = unit.extended || {};
+                if (typeof(settings.extendedAttr) === "object") {
+                    Object.assign(unit.extended, settings.extendedAttr);
+                }
+                unit.extended["original-file"] = file;
+                var hash = tuHash(unit);
+                unitCache[hash] = unit;
             });
             fileNameCache.add(file);
         } else {
@@ -91,10 +107,12 @@ var XliffSelect = function XliffSelect(settings) {
         }
     });
 
+    let units = Object.values(unitCache); // get all the units from the cache
+
     // now that they are merged, select from them according to
     // the selection criteria
 
-    if (settings.criteria) {
+    if (units.length > 0 && settings.criteria) {
         var criteria = XliffSelect.parseCriteria(settings.criteria);
         var totalunits = 0;
         var sourcewords = 0;
@@ -169,7 +187,12 @@ var XliffSelect = function XliffSelect(settings) {
         });
     }
 
-    target.addTranslationUnits(units);
+    if (units.length > 0) {
+        target.addTranslationUnits(units);
+    } else {
+        // if no units were selected, then just return the empty target
+        logger.warn("No translation units matched the selection criteria.");
+    }
 
     return target;
 };

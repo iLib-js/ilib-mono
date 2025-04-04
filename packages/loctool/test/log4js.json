@@ -1,6 +1,6 @@
 {
     "appenders": {
-        "default": { 
+        "default": {
             "type": "console",
             "layout": {
                 "type": "pattern",

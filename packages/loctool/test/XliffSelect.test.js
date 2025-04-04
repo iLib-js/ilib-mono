@@ -21,12 +21,6 @@ var fs = require("fs");
 var Xliff = require("../lib/Xliff.js");
 var XliffSelect = require("../lib/XliffSelect.js");
 
-function rmrf(path) {
-    if (fs.existsSync(path)) {
-        fs.unlinkSync(path);
-    }
-}
-
 describe("xliff select criteria parser", function() {
     test("simple criteria", function() {
         expect.assertions(1);
@@ -203,21 +197,440 @@ describe("xliff select criteria parser", function() {
     });
 });
 
-describe("xliff select translation units", function() {
+describe("xliff select test edge cases", function() {
     test("Select no parameters", function() {
         expect.assertions(1);
 
         var target = XliffSelect();
         expect(target).toBeFalsy();
     });
-    
+
     test("Select Write no parameters", function() {
         expect.assertions(1);
 
         var target = XliffSelect.write();
         expect(target).toBeFalsy();
     });
-    
+});
+
+describe("xliff select translation units in xliff v1", function() {
+    test("Select everything", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ]
+        };
+
+        // no selection criteria, so selects everything
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2a</source>\n' +
+        '        <target>app2: String 2a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2b</source>\n' +
+        '        <target>app2: String 2b</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with max units", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "maxunits:2"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with max source words", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "maxsource:8"
+        };
+
+        // no selection criteria, so selects everything
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with max target words", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "maxtarget:8"
+        };
+
+        // no selection criteria, so selects everything
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    // there is a 1 in 120 chance that this one will fail if the random numbers
+    // cause the array to sort the same way that it originally was, making this
+    // an unstable test. So, making this test.skip for now. Reenable this test
+    // locally if you want to test the randomization functionality.
+    test.skip("Select randomly", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "random"
+        };
+
+        // no selection criteria, so selects everything
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.getTranslationUnits().map(function(unit) {
+            return unit.id;
+        });
+        var expected = [
+            "app1_1",
+            "app1_2",
+            "app1_3",
+            "app2_1",
+            "app2_2"
+        ];
+
+        expect(actual).not.toStrictEqual(expected);
+    });
+
+    test("Select with simple field criteria", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source=1a"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with regex field criteria", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source=^app1:.*a$"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with regex field criteria multiple results", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source=^app2"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app2_1" resname="app2: String 2a" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2a</source>\n' +
+        '        <target>app2: String 2a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app2_2" resname="app2: String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2b</source>\n' +
+        '        <target>app2: String 2b</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with multiple criteria", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source=1,targetLocale=en-US,datatype=x-json"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select while avoiding duplicated file names", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff", // should only read this file once
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ]
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("Select while avoiding duplicated trans units", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/en-US-2.xliff" // has different file name but same contents as the first file
+            ]
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+
+        // the trans-units for the second file should override the ones
+        // from the first file, but since they are identical, it should
+        // only appear once in the output.
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_1" resname="app1:String 1a" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
+        '        <source>app1:String 1a</source>\n' +
+        '        <target>app1:String 1a</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_2" resname="app1:String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="app1:String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+});
+
+describe("xliff select translation units in xliff v2", function() {
     test("Select everything", function() {
         expect.assertions(2);
 
@@ -232,20 +645,20 @@ describe("xliff select translation units", function() {
         // no selection criteria, so selects everything
         var target = XliffSelect(settings);
         expect(target).toBeTruthy();
-        
+
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -253,7 +666,7 @@ describe("xliff select translation units", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -263,13 +676,13 @@ describe("xliff select translation units", function() {
         '  </file>\n' +
         '  <file original="app2" l:project="app2">\n' +
         '    <group id="group_3" name="javascript">\n' +
-        '      <unit id="app2_1" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_1" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_2" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
@@ -280,7 +693,7 @@ describe("xliff select translation units", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
-    
+
     test("Select with max units", function() {
         expect.assertions(2);
 
@@ -302,13 +715,13 @@ describe("xliff select translation units", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -336,20 +749,20 @@ describe("xliff select translation units", function() {
         // no selection criteria, so selects everything
         var target = XliffSelect(settings);
         expect(target).toBeTruthy();
-        
+
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -357,7 +770,7 @@ describe("xliff select translation units", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -368,7 +781,7 @@ describe("xliff select translation units", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
-    
+
     test("Select with max target words", function() {
         expect.assertions(2);
 
@@ -384,20 +797,20 @@ describe("xliff select translation units", function() {
         // no selection criteria, so selects everything
         var target = XliffSelect(settings);
         expect(target).toBeTruthy();
-        
+
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -405,7 +818,7 @@ describe("xliff select translation units", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -436,7 +849,7 @@ describe("xliff select translation units", function() {
         // no selection criteria, so selects everything
         var target = XliffSelect(settings);
         expect(target).toBeTruthy();
-        
+
         var actual = target.getTranslationUnits().map(function(unit) {
             return unit.id;
         });
@@ -450,7 +863,7 @@ describe("xliff select translation units", function() {
 
         expect(actual).not.toStrictEqual(expected);
     });
-    
+
     test("Select with simple field criteria", function() {
         expect.assertions(2);
 
@@ -472,7 +885,7 @@ describe("xliff select translation units", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
@@ -505,7 +918,7 @@ describe("xliff select translation units", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
@@ -538,13 +951,13 @@ describe("xliff select translation units", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app2" l:project="app2">\n' +
         '    <group id="group_1" name="javascript">\n' +
-        '      <unit id="app2_1" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_1" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_2" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
@@ -578,7 +991,7 @@ describe("xliff select translation units", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -613,13 +1026,13 @@ describe("xliff select translation units", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -627,7 +1040,7 @@ describe("xliff select translation units", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -655,18 +1068,22 @@ describe("xliff select translation units", function() {
         expect(target).toBeTruthy();
 
         var actual = target.serialize();
+
+        // the units from the second file should override the ones
+        // from the first file, but since they are identical, it should
+        // only appear once in the output.
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -674,7 +1091,7 @@ describe("xliff select translation units", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/en-US-2.xliff">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -685,5 +1102,131 @@ describe("xliff select translation units", function() {
         '</xliff>';
 
         expect(actual).toBe(expected);
+    });
+});
+
+describe("xliff select extra unit information", function() {
+    test("Make sure that after select, each file has the project id set correctly with xliff v1", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            id: "app1"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        expect(actual).toMatchSnapshot();
+    });
+
+    test("Make sure that after select, each file has the project id set correctly with xliff v2", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            id: "app1"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        expect(actual).toMatchSnapshot();
+    });
+
+    test("Make sure that after select, each unit has the extended attributes set correctly with xliff v1", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            extendedAttr: {
+                foo: "bar"
+            }
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        expect(actual).toMatchSnapshot();
+    });
+
+    test("Make sure that after select, each unit has the extended attributes set correctly with xliff v2", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            extendedAttr: {
+                foo: "bar"
+            }
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        expect(actual).toMatchSnapshot();
+    });
+
+    test("Make sure that after select, each unit has the extended attributes and each file has the project id set correctly with xliff v1", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            extendedAttr: {
+                foo: "bar"
+            },
+            id: "app1"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        expect(actual).toMatchSnapshot();
+    });
+
+    test("Make sure that after select, each unit has the extended attributes and each file has the project id set correctly with xliff v2", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            extendedAttr: {
+                foo: "bar"
+            },
+            id: "app1"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        expect(actual).toMatchSnapshot();
     });
 });

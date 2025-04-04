@@ -1,7 +1,7 @@
 /*
  * TranslationUnit.js - model a translation unit
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,11 @@ class TranslationUnit {
      * <li><i>translate</i> - flag that tells whether to translate this unit (optional)
      * <li><i>location</i> - the line and character location of the start of this
      * translation unit in the xml representation of the file
+     * <li><i>extended</i> - extended properties for this unit. This is an object that
+     * can contain any additional properties that are not explicitly defined in
+     * this class. This is useful for storing additional metadata about the
+     * translation unit that may be specific to a particular application or
+     * use case.
      * </ul>
      *
      * If the required properties are not given, the constructor throws an exception.<p>
