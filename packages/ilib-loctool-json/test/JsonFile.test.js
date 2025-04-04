@@ -52,7 +52,7 @@ var p = new CustomProject({
     nopseudo: true,
     json: {
         schemas: [
-            "./test/testfiles/schemas"
+            "./schemas"
         ],
         mappings: {
             "resources/en/US/strings.json": {
@@ -122,7 +122,7 @@ var p2 = new CustomProject({
     nopseudo: false,
     json: {
         schemas: [
-            "./test/testfiles/schemas"
+            "./schemas"
         ],
         mappings: {
             "**/messages.json": {
@@ -3003,7 +3003,7 @@ function setupTest({schema}) {
         nopseudo: true,
         json: {
             schemas: [
-                "./test/testfiles/schemas"
+                "./schemas"
             ],
             mappings: {
                 "**/localizable.json": {
