@@ -51,7 +51,9 @@ class JsonFormatter extends Formatter {
             severity: result.severity
         };
 
-        return JSON.stringify(obj, null, 4) + "\n";
+        // write as compressed JSON to save space;
+        // the output is intended to be read by a machine, not a human
+        return JSON.stringify(obj) + "\n";
     }
 
     /**
@@ -86,7 +88,9 @@ class JsonFormatter extends Formatter {
             obj[name].stats.modules = fileStats.modules;
         }
 
-        return JSON.stringify(obj, null, 4) + "\n";
+        // write as compressed JSON to save space;
+        // the output is intended to be read by a machine, not a human
+        return JSON.stringify(obj) + "\n";
     }
 }
 
