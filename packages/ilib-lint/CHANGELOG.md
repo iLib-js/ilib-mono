@@ -1,5 +1,13 @@
 # ilib-lint
 
+## 2.9.2
+
+### Patch Changes
+
+- c0059a9: - fixed a bug where the linter would throw an exception if the
+  formatter named on the command-line was not known. Now, it
+  prints out a proper error message.
+
 ## 2.9.1
 
 ### Patch Changes
