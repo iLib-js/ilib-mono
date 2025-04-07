@@ -23,6 +23,8 @@ import Locale from 'ilib-locale';
 
 import { isAlnum, isIdeo } from 'ilib-ctype';
 
+import pluralCategories from './pluralCategories.js';
+
 /**
  * Clean a string for matching against other strings by removing
  * differences that are inconsequential for translation.
@@ -545,7 +547,7 @@ const defaultPluralCategories = [
  * If there is no entry for the given
  * language, then the default English plural categories are returned.
  *
- * @param {string} language the ISO 639 language code to get the plural
+ * @param {string|undefined} language the ISO 639 language code to get the plural
  * categories for
  * @returns {Array} an array of strings containing the names of the plural categories
  */
@@ -553,7 +555,5 @@ export function getLanguagePluralCategories(language) {
     // make sure to get the language only if someone accidentally sends in a full locale
     const locale = new Locale(language);
     const lang = locale.getLanguage() ?? "en";
-    const pluralCategoriesContents = fs.readFileSync("./locale/pluralCategories.json", "utf-8");
-    const pluralCategories = JSON.parse(pluralCategoriesContents);
     return pluralCategories[lang] ?? defaultPluralCategories;
 }

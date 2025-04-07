@@ -20,34 +20,25 @@
 import { IntlMessageFormat } from 'intl-messageformat';
 import Locale from 'ilib-locale';
 import { Result } from 'ilib-lint-common';
+import { getLanguagePluralCategories } from 'ilib-tools-common';
 
 import ResourceRule from './ResourceRule.js';
 
 // all the plural categories from CLDR
 const allCategories = ["zero", "one", "two", "few", "many", "other"];
 
-// Map the language to the set of plural categories that the language
-// uses. If the language is not listed below, it uses the default
-// list of plurals: "one" and "other"
-const categoriesForLang = {
-    "ja": [ "other" ],
-    "zh": [ "other" ],
-    "ko": [ "other" ],
-    "th": [ "other" ],
-    "lv": [ "zero", "one", "other" ],
-    "ga": [ "one", "two", "other" ],
-    "ro": [ "one", "few", "other" ],
-    "lt": [ "one", "few", "other" ],
-    "ru": [ "one", "few", "other" ],
-    "uk": [ "one", "few", "other" ],
-    "be": [ "one", "few", "other" ],
-    "sr": [ "one", "few", "other" ],
-    "hr": [ "one", "few", "other" ],
-    "cs": [ "one", "few", "other" ],
-    "sk": [ "one", "few", "other" ],
-    "pl": [ "one", "few", "other" ],
-    "sl": [ "one", "two", "few", "other" ],
-    "ar": [ "zero", "one", "two", "few", "many", "other" ]
+/**
+ * Deduplicate the array of categories.
+ * @private
+ * @param {Array<string>} categories The array of categories to deduplicate
+ * @returns {Array<string>} The deduplicated array of categories
+ */
+function dedup(categories) {
+    const deduped = {};
+    categories.forEach(category => {
+        deduped[category] = true;
+    });
+    return Object.keys(deduped);
 }
 
 /**
@@ -80,21 +71,28 @@ class ResourceICUPlurals extends ResourceRule {
         let actualNonrequiredSourceCategories = [], actualNonrequiredTargetCategories = [];
 
         if (sourceSelect.node.pluralType === "cardinal") {
-            requiredSourceCategories = categoriesForLang[srcLocale.getLanguage()] || [ "one", "other" ]
-            requiredTargetCategories = categoriesForLang[locale.getLanguage()] || [ "one", "other" ];
+            requiredSourceCategories = getLanguagePluralCategories(srcLocale.getLanguage());
+            requiredTargetCategories = getLanguagePluralCategories(locale.getLanguage());
         } else {
             // for select or selectordinal, only the "other" category is required
             requiredSourceCategories = [ "other" ];
             requiredTargetCategories = [ "other" ];
         }
 
-        const allSourceCategories = Object.keys(sourceSelect.node.options);
+        const allSourceCategories = dedup(Object.keys(sourceSelect.node.options));
         actualRequiredSourceCategories = allSourceCategories.filter(category => requiredSourceCategories.includes(category));
         actualNonrequiredSourceCategories = allSourceCategories.filter(category => !requiredSourceCategories.includes(category));
 
-        const allTargetCategories = Object.keys(targetSelect.node.options);
-        actualRequiredTargetCategories = allTargetCategories.filter(category => requiredTargetCategories.includes(category));
-        actualNonrequiredTargetCategories = allTargetCategories.filter(category => !requiredTargetCategories.includes(category));
+        const allTargetCategories = dedup(Object.keys(targetSelect.node.options));
+        if (sourceSelect.node.pluralType === "cardinal") {
+            actualRequiredTargetCategories = allTargetCategories.filter(category => requiredTargetCategories.includes(category));
+            actualNonrequiredTargetCategories = allTargetCategories.filter(category => !requiredTargetCategories.includes(category));
+        } else {
+            // for select and selectordinal, the target should always have all of the same categories as the source
+            requiredTargetCategories = allSourceCategories;
+            actualRequiredTargetCategories = allSourceCategories;
+            actualNonrequiredTargetCategories = [];
+        }
 
         // first check the required plural categories
         let missing = requiredTargetCategories.filter(category => {

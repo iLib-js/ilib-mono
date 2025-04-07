@@ -1,7 +1,7 @@
 /*
  * ResourceICUPlurals.test.js - test the ICU plural syntax checker rule
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@
  */
 import { ResourceArray, ResourcePlural, ResourceString } from 'ilib-tools-common';
 
-import ResourceICUPlurals from '../src/rules/ResourceICUPlurals.js';
+import ResourceICUPlurals from '../../src/rules/ResourceICUPlurals.js';
 
-import { Result, IntermediateRepresentation } from 'ilib-lint-common';
+import { Result } from 'ilib-lint-common';
 
 describe("testResourceICUPlurals", () => {
     test("ResourceICUPluralsMatchNoError", () => {
@@ -984,3 +984,126 @@ describe("testResourceICUPlurals", () => {
     });
 });
 
+describe("Test ICU select statements", () => {
+    test("ResourceICUPlurals match select statement with no missing categories", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPlurals();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            targetLocale: "de-DE",
+            target: "{gender, select, female {Dies ist weiblich} male {Dies ist mannlich} other {Dies ist andere}}",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceICUPlurals match select statement with a missing other category", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPlurals();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            targetLocale: "de-DE",
+            target: "{gender, select, female {Dies ist weiblich} male {Dies ist mannlich}}",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Incorrect plural or select syntax in target string: SyntaxError: MISSING_OTHER_CLAUSE",
+            id: "plural.test",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            highlight: 'Target: {gender, select, female {Dies ist weiblich} male {Dies ist mannlich}<e0>}</e0>',
+            rule,
+            locale: "de-DE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("ResourceICUPlurals match select statement with a missing category other than 'other'", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPlurals();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            targetLocale: "de-DE",
+            target: "{gender, select, female {Dies ist weiblich} other {Dies ist andere}}",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Missing categories in target string: male. Expecting these: female, male, other",
+            id: "plural.test",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            highlight: 'Target: {gender, select, female {Dies ist weiblich} other {Dies ist andere}<e0>}</e0>',
+            rule,
+            locale: "de-DE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+    
+    test("ResourceICUPlurals match select statement with an extra category", () => {
+        expect.assertions(2);
+        
+        const rule = new ResourceICUPlurals();
+        expect(rule).toBeTruthy();
+        
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            targetLocale: "de-DE",
+            target: "{gender, select, female {Dies ist weiblich} male {Dies ist mannlich} neutral {Dies ist neutral} other {Dies ist andere}}",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Extra categories in target string: neutral. Expecting these: female, male, other",
+            id: "plural.test",
+            source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
+            highlight: 'Target: {gender, select, female {Dies ist weiblich} male {Dies ist mannlich} <e0>neutral {Dies ist neutral}</e0>  other {Dies ist andere}}',
+            rule,
+            locale: "de-DE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+});

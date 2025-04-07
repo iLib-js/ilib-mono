@@ -42,7 +42,6 @@
     "files": [
         "src",
         "lib",
-        "locale",
         "README.md",
         "LICENSE"
     ],
@@ -54,7 +53,7 @@
         "node": ">=10.0.0"
     },
     "scripts": {
-        "build": "pnpm build:prod",
+        "build": "pnpm build:data ; pnpm build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
@@ -74,6 +73,7 @@
         "babel-loader": "^9.1.3",
         "babel-plugin-add-module-exports": "^1.0.4",
         "cldr-core": "^47.0.0",
+        "dedent": "^1.5.3",
         "docdash": "^2.0.2",
         "grunt": "^1.6.1",
         "grunt-babel": "^8.0.0",

@@ -674,4 +674,11 @@ describe("test the plural categories for various languages", () => {
         const categories = getLanguagePluralCategories("hi");
         expect(categories).toStrictEqual(["one", "other"]);
     });
+
+    test("getLanguagePluralCategories for undefined language", () => {
+        expect.assertions(1);
+    
+        const categories = getLanguagePluralCategories(undefined);
+        expect(categories).toStrictEqual(["one", "other"]);
+    });
 });
