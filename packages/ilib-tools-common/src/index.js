@@ -43,7 +43,8 @@ import {
     nonBreakingTags,
     selfClosingTags,
     ignoreTags,
-    localizableAttributes
+    localizableAttributes,
+    getLanguagePluralCategories
 } from './utils.js';
 
 export {
@@ -72,5 +73,6 @@ export {
     walk,
     convertPluralResToICU,
     convertICUToPluralRes,
-    escaperFactory
+    escaperFactory,
+    getLanguagePluralCategories
 };
