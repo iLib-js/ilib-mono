@@ -57,7 +57,7 @@ describe("testResourceICUPlurals", () => {
             sourceLocale: "en-US",
             source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "ru-RU",
-            target: "{count, plural, one {Это единственное число} few {это множественное число} other {это множественное число}}",
+            target: "{count, plural, one {Это единственное число} few {это множественное число} many {это множественное число} other {это множественное число}}",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -274,7 +274,7 @@ describe("testResourceICUPlurals", () => {
             sourceLocale: "en-US",
             source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "ru-RU",
-            target: "{count, plural, one {Это единственное число} other {это множественное число}}",
+            target: "{count, plural, one {Это единственное число} many {это множественное число} other {это множественное число}}",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -285,10 +285,10 @@ describe("testResourceICUPlurals", () => {
         });
         const expected = new Result({
             severity: "error",
-            description: "Missing categories in target string: few. Expecting these: one, few, other",
+            description: "Missing categories in target string: few. Expecting these: one, few, many, other",
             id: "plural.test",
             source: '{count, plural, one {This is singular} other {This is plural}}',
-            highlight: 'Target: {count, plural, one {Это единственное число} other {это множественное число}}<e0></e0>',
+            highlight: 'Target: {count, plural, one {Это единственное число} many {это множественное число} other {это множественное число}}<e0></e0>',
             rule,
             locale: "ru-RU",
             pathName: "a/b/c.xliff"
@@ -355,7 +355,7 @@ describe("testResourceICUPlurals", () => {
             sourceLocale: "en-US",
             source: '{count, plural, =1 {This is singular} other {This is plural}}', // missing the "one" category
             targetLocale: "ru-RU",
-            target: "{count, plural, =1 {Это единственное число} few {это множественное число} other {это множественное число}}",
+            target: "{count, plural, =1 {Это единственное число} few {это множественное число} many {это множественное число} other {это множественное число}}",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -508,12 +508,22 @@ describe("testResourceICUPlurals", () => {
                     {total, plural,
                         one {Есть {count} из {total} статьи}
                         few {Есть {count} из {total} статей}
+                        many {Есть {count} из {total} статей}
                         other {Есть {count} из {total} статей}
                     }
                 }
                 few {
                     {total, plural,
                         one {Есть {count} из {total} статьи}
+                        many {Есть {count} из {total} статей}
+                        other {Есть {count} из {total} статей}
+                    }
+                }
+                many {
+                    {total, plural,
+                        one {Есть {count} из {total} статьи}
+                        few {Есть {count} из {total} статей}
+                        many {Есть {count} из {total} статей}
                         other {Есть {count} из {total} статей}
                     }
                 }
@@ -521,6 +531,7 @@ describe("testResourceICUPlurals", () => {
                     {total, plural,
                         one {Есть {count} из {total} статьи}
                         few {Есть {count} из {total} статей}
+                        many {Есть {count} из {total} статей}
                         other {Есть {count} из {total} статей}
                     }
                 }
@@ -535,19 +546,29 @@ describe("testResourceICUPlurals", () => {
         });
         const expected = new Result({
             severity: "error",
-            description: "Missing categories in target string: few. Expecting these: one, few, other",
+            description: "Missing categories in target string: few. Expecting these: one, few, many, other",
             id: "plural.test",
             highlight: 'Target: {count, plural,\n' +
                 '                one {\n' +
                 '                    {total, plural,\n' +
                 '                        one {Есть {count} из {total} статьи}\n' +
                 '                        few {Есть {count} из {total} статей}\n' +
+                '                        many {Есть {count} из {total} статей}\n' +
                 '                        other {Есть {count} из {total} статей}\n' +
                 '                    }\n' +
                 '                }\n' +
                 '                few {\n' +
                 '                    {total, plural,\n' +
                 '                        one {Есть {count} из {total} статьи}\n' +
+                '                        many {Есть {count} из {total} статей}\n' +
+                '                        other {Есть {count} из {total} статей}\n' +
+                '                    }\n' +
+                '                }\n' +
+                '                many {\n' +
+                '                    {total, plural,\n' +
+                '                        one {Есть {count} из {total} статьи}\n' +
+                '                        few {Есть {count} из {total} статей}\n' +
+                '                        many {Есть {count} из {total} статей}\n' +
                 '                        other {Есть {count} из {total} статей}\n' +
                 '                    }\n' +
                 '                }\n' +
@@ -555,6 +576,7 @@ describe("testResourceICUPlurals", () => {
                 '                    {total, plural,\n' +
                 '                        one {Есть {count} из {total} статьи}\n' +
                 '                        few {Есть {count} из {total} статей}\n' +
+                '                        many {Есть {count} из {total} статей}\n' +
                 '                        other {Есть {count} из {total} статей}\n' +
                 '                    }\n' +
                 '                }\n' +
@@ -609,18 +631,29 @@ describe("testResourceICUPlurals", () => {
                     {total, plural,
                         one {Есть {count} из {total} статьи}
                         few {Есть {count} из {total} статей}
+                        many {Есть {count} из {total} статей}
                         other {Есть {count} из {total} статей}
                     }
                 }
                 few {
                     {total, plural,
                         one {Есть {count} из {total} статьи}
+                        many {Есть {count} из {total} статей}
+                        other {Есть {count} из {total} статей}
+                    }
+                }
+                many {
+                    {total, plural,
+                        one {Есть {count} из {total} статьи}
+                        few {Есть {count} из {total} статей}
+                        many {Есть {count} из {total} статей}
                         other {Есть {count} из {total} статей}
                     }
                 }
                 other {
                     {total, plural,
                         one {Есть {count} из {total} статьи}
+                        many {Есть {count} из {total} статей}
                         other {Есть {count} из {total} статей}
                     }
                 }
@@ -636,25 +669,36 @@ describe("testResourceICUPlurals", () => {
         const expected = [
             new Result({
                 severity: "error",
-                description: "Missing categories in target string: few. Expecting these: one, few, other",
+                description: "Missing categories in target string: few. Expecting these: one, few, many, other",
                 id: "plural.test",
                 highlight: 'Target: {count, plural,\n' +
                     '                one {\n' +
                     '                    {total, plural,\n' +
                     '                        one {Есть {count} из {total} статьи}\n' +
                     '                        few {Есть {count} из {total} статей}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
                     '                        other {Есть {count} из {total} статей}\n' +
                     '                    }\n' +
                     '                }\n' +
                     '                few {\n' +
                     '                    {total, plural,\n' +
                     '                        one {Есть {count} из {total} статьи}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
+                    '                        other {Есть {count} из {total} статей}\n' +
+                    '                    }\n' +
+                    '                }\n' +
+                    '                many {\n' +
+                    '                    {total, plural,\n' +
+                    '                        one {Есть {count} из {total} статьи}\n' +
+                    '                        few {Есть {count} из {total} статей}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
                     '                        other {Есть {count} из {total} статей}\n' +
                     '                    }\n' +
                     '                }\n' +
                     '                other {\n' +
                     '                    {total, plural,\n' +
                     '                        one {Есть {count} из {total} статьи}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
                     '                        other {Есть {count} из {total} статей}\n' +
                     '                    }\n' +
                     '                }\n' +
@@ -679,25 +723,36 @@ describe("testResourceICUPlurals", () => {
             }),
             new Result({
                 severity: "error",
-                description: "Missing categories in target string: few. Expecting these: one, few, other",
+                description: "Missing categories in target string: few. Expecting these: one, few, many, other",
                 id: "plural.test",
                 highlight: 'Target: {count, plural,\n' +
                     '                one {\n' +
                     '                    {total, plural,\n' +
                     '                        one {Есть {count} из {total} статьи}\n' +
                     '                        few {Есть {count} из {total} статей}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
                     '                        other {Есть {count} из {total} статей}\n' +
                     '                    }\n' +
                     '                }\n' +
                     '                few {\n' +
                     '                    {total, plural,\n' +
                     '                        one {Есть {count} из {total} статьи}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
+                    '                        other {Есть {count} из {total} статей}\n' +
+                    '                    }\n' +
+                    '                }\n' +
+                    '                many {\n' +
+                    '                    {total, plural,\n' +
+                    '                        one {Есть {count} из {total} статьи}\n' +
+                    '                        few {Есть {count} из {total} статей}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
                     '                        other {Есть {count} из {total} статей}\n' +
                     '                    }\n' +
                     '                }\n' +
                     '                other {\n' +
                     '                    {total, plural,\n' +
                     '                        one {Есть {count} из {total} статьи}\n' +
+                    '                        many {Есть {count} из {total} статей}\n' +
                     '                        other {Есть {count} из {total} статей}\n' +
                     '                    }\n' +
                     '                }\n' +
@@ -768,8 +823,8 @@ describe("testResourceICUPlurals", () => {
             file: "a/b/c.xliff"
         });
         const expected = new Result({
-            severity: "warning",
-            description: "Missing categories in target string: female. Expecting these: other, male, female",
+            severity: "error",
+            description: "Missing categories in target string: female. Expecting these: male, female, other",
             id: "plural.test",
             highlight: 'Target: {count, select, male {Er sagt} other {Ihnen sagen}}<e0></e0>',
             rule,
@@ -928,7 +983,7 @@ describe("testResourceICUPlurals", () => {
             sourceLocale: "en-US",
             source: 'This is {count, plural, one {singular} other {plural}}',
             targetLocale: "ru-RU",
-            target: "Это {count, plural, one {единственное число} other {множественное число}}",
+            target: "Это {count, plural, one {единственное число} many {множественное число} other {множественное число}}",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -939,10 +994,10 @@ describe("testResourceICUPlurals", () => {
         });
         const expected = new Result({
             severity: "error",
-            description: "Missing categories in target string: few. Expecting these: one, few, other",
+            description: "Missing categories in target string: few. Expecting these: one, few, many, other",
             id: "plural.test",
             source: 'This is {count, plural, one {singular} other {plural}}',
-            highlight: 'Target: Это {count, plural, one {единственное число} other {множественное число}}<e0></e0>',
+            highlight: 'Target: Это {count, plural, one {единственное число} many {множественное число} other {множественное число}}<e0></e0>',
             rule,
             locale: "ru-RU",
             pathName: "a/b/c.xliff"
@@ -961,7 +1016,7 @@ describe("testResourceICUPlurals", () => {
             sourceLocale: "en-US",
             source: 'This is {count, plural, one {singular} other {plural}}',
             targetLocale: "ru-RU",
-            target: "Это {считать, plural, one {единственное число} few {множественное число} other {множественное число}}",
+            target: "Это {считать, plural, one {единственное число} few {множественное число} many {множественное число} other {множественное число}}",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -975,7 +1030,7 @@ describe("testResourceICUPlurals", () => {
             description: "Select or plural with pivot variable считать does not exist in the source string. Possible translated variable name.",
             id: "plural.test",
             source: 'This is {count, plural, one {singular} other {plural}}',
-            highlight: 'Target: Это <e0>{считать</e0>, plural, one {единственное число} few {множественное число} other {множественное число}}',
+            highlight: 'Target: Это <e0>{считать</e0>, plural, one {единственное число} few {множественное число} many {множественное число} other {множественное число}}',
             rule,
             locale: "ru-RU",
             pathName: "a/b/c.xliff"
@@ -1066,14 +1121,14 @@ describe("Test ICU select statements", () => {
             description: "Missing categories in target string: male. Expecting these: female, male, other",
             id: "plural.test",
             source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
-            highlight: 'Target: {gender, select, female {Dies ist weiblich} other {Dies ist andere}<e0>}</e0>',
+            highlight: 'Target: {gender, select, female {Dies ist weiblich} other {Dies ist andere}}<e0></e0>',
             rule,
             locale: "de-DE",
             pathName: "a/b/c.xliff"
         });
         expect(actual).toStrictEqual(expected);
     });
-    
+
     test("ResourceICUPlurals match select statement with an extra category", () => {
         expect.assertions(2);
         
@@ -1095,11 +1150,11 @@ describe("Test ICU select statements", () => {
             file: "a/b/c.xliff"
         });
         const expected = new Result({
-            severity: "error",
-            description: "Extra categories in target string: neutral. Expecting these: female, male, other",
+            severity: "warning",
+            description: "Extra categories in target string: neutral. Expecting only these: female, male, other",
             id: "plural.test",
             source: '{gender, select, female {This is feminine} male {This is masculine} other {This is other}}',
-            highlight: 'Target: {gender, select, female {Dies ist weiblich} male {Dies ist mannlich} <e0>neutral {Dies ist neutral}</e0>  other {Dies ist andere}}',
+            highlight: 'Target: {gender, select, female {Dies ist weiblich} male {Dies ist mannlich} <e0>neutral</e0> {Dies ist neutral} other {Dies ist andere}}',
             rule,
             locale: "de-DE",
             pathName: "a/b/c.xliff"

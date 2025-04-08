@@ -1,7 +1,7 @@
 /*
  * ResourceICUPlurals.js - rule to check formatjs/ICU style plurals in the target string
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@ import { Result } from 'ilib-lint-common';
 import { getLanguagePluralCategories } from 'ilib-tools-common';
 
 import ResourceRule from './ResourceRule.js';
-
-// all the plural categories from CLDR
-const allCategories = ["zero", "one", "two", "few", "many", "other"];
 
 /**
  * Deduplicate the array of categories.
@@ -80,19 +77,18 @@ class ResourceICUPlurals extends ResourceRule {
         }
 
         const allSourceCategories = dedup(Object.keys(sourceSelect.node.options));
-        actualRequiredSourceCategories = allSourceCategories.filter(category => requiredSourceCategories.includes(category));
-        actualNonrequiredSourceCategories = allSourceCategories.filter(category => !requiredSourceCategories.includes(category));
+        actualRequiredSourceCategories = dedup(allSourceCategories.filter(category => requiredSourceCategories.includes(category)));
+        actualNonrequiredSourceCategories = dedup(allSourceCategories.filter(category => !requiredSourceCategories.includes(category)));
 
         const allTargetCategories = dedup(Object.keys(targetSelect.node.options));
         if (sourceSelect.node.pluralType === "cardinal") {
-            actualRequiredTargetCategories = allTargetCategories.filter(category => requiredTargetCategories.includes(category));
-            actualNonrequiredTargetCategories = allTargetCategories.filter(category => !requiredTargetCategories.includes(category));
+            actualRequiredTargetCategories = dedup(allTargetCategories.filter(category => requiredTargetCategories.includes(category)));
         } else {
             // for select and selectordinal, the target should always have all of the same categories as the source
             requiredTargetCategories = allSourceCategories;
             actualRequiredTargetCategories = allSourceCategories;
-            actualNonrequiredTargetCategories = [];
         }
+        actualNonrequiredTargetCategories = dedup(allTargetCategories.filter(category => !requiredTargetCategories.includes(category)));
 
         // first check the required plural categories
         let missing = requiredTargetCategories.filter(category => {
@@ -133,7 +129,7 @@ class ResourceICUPlurals extends ResourceRule {
             let opts = {
                 severity: "error",
                 rule: this,
-                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${dedup(requiredTargetCategories.concat(actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
                 highlight: `Target: ${resource.getTarget()}<e0></e0>`,
                 pathName: resource.getPath(),
@@ -144,23 +140,26 @@ class ResourceICUPlurals extends ResourceRule {
         }
 
         // now deal with the missing non-required categories
-        missing = actualNonrequiredSourceCategories.filter(category => {
-            // if it is in the source, but it is not required, it should also be in the target
-            return !allTargetCategories.includes(category);
-        });
-        if (missing.length) {
-            let opts = {
-                severity: "warning", // non-required categories get a warning
-                rule: this,
-                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
-                id: resource.getKey(),
-                highlight: `Target: ${resource.getTarget()}<e0></e0>`,
-                pathName: resource.getPath(),
-                source: resource.getSource(),
-                locale: resource.getTargetLocale()
-            };
-            problems.push(new Result(opts));
-        }
+        if (sourceSelect.node.pluralType === "cardinal") {
+            missing = actualNonrequiredSourceCategories.filter(category => {
+                // if it is in the source, but it is not required, it should also be in the target
+                // so give a warning
+                return !allTargetCategories.includes(category);
+            });
+            if (missing.length) {
+                let opts = {
+                    severity: "warning", // non-required categories get a warning
+                    rule: this,
+                    description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${dedup(requiredTargetCategories.concat(actualNonrequiredSourceCategories)).join(", ")}`,
+                    id: resource.getKey(),
+                    highlight: `Target: ${resource.getTarget()}<e0></e0>`,
+                    pathName: resource.getPath(),
+                    source: resource.getSource(),
+                    locale: resource.getTargetLocale()
+                };
+                problems.push(new Result(opts));
+            }
+        } // else the source categories are already required in the target, so we don't need to check them again
 
         // now deal with non-required categories that are in the target but not the source
         const extra = actualNonrequiredTargetCategories.filter(category => {
@@ -171,7 +170,7 @@ class ResourceICUPlurals extends ResourceRule {
             let opts = {
                 severity: "warning",
                 rule: this,
-                description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${dedup(requiredTargetCategories.concat(actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
                 highlight: `Target: ${highlight}`,
                 pathName: resource.getPath(),
