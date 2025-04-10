@@ -286,7 +286,7 @@ export const pluralForms: PluralForms = {
         "categories" : [
             "one",
             "few",
-            "other"
+            "many"
         ]
     },
     "sl" : {

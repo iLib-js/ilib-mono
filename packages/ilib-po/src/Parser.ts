@@ -297,8 +297,8 @@ class Parser {
                                         datatype: datatype ?? fileDataType,
                                         context: context,
                                         index: resourceIndex++,
-                                        targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
-                                        targetStrings: translationPlurals
+                                        targetLocale: translationPlurals && this.targetLocale?.getSpec(),
+                                        targetStrings: this.getTargetStrings(translationPlurals)
                                     });
                                 } else if (type === "array") {
                                     // if there is an existing array resource with the same key, use that one
@@ -471,6 +471,35 @@ class Parser {
         }
 
         return set;
+    }
+
+    private getTargetStrings(translationPlurals: Plural | undefined | {
+        other: string | undefined;
+        zero?: string | undefined;
+        one?: string | undefined;
+        two?: string | undefined;
+        few?: string | undefined;
+        many?: string | undefined
+    }) {
+        const language = this.targetLocale?.getLanguage() ?? "en";
+
+        switch (language) {
+            case "pl":
+                /*
+                * In Polish, the plural forms defined in CLDR are: one, few, many, and other.
+                * However, PO files only support three forms: one, few, and many.
+                * Therefore, we need to backfill the "other" form using the "many" form
+                * to comply with ICU pluralization rules, where "other" is required
+                * according to the ICU4J implementation.
+                * This ensures translations are correctly applied to project files.
+                */
+                return {
+                    ...translationPlurals,
+                    other: translationPlurals!.many
+                }
+            default:
+                return translationPlurals;
+        }
     }
 }
 
