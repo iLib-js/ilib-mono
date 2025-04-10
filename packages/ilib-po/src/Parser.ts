@@ -260,7 +260,7 @@ class Parser {
                             }
                             break;
                         case TokenType.PLURAL:
-                            if (typeof(token.category) !== 'undefined') {
+                            if (typeof (token.category) !== 'undefined') {
                                 const language = this.targetLocale?.getLanguage() ?? "en";
                                 const forms = (pluralForms[language] ?? pluralForms.en).categories;
                                 if (token.category >= forms.length) {
@@ -297,8 +297,8 @@ class Parser {
                                         datatype: datatype ?? fileDataType,
                                         context: context,
                                         index: resourceIndex++,
-                                        targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
-                                        targetStrings: translationPlurals
+                                        targetLocale: translationPlurals && this.targetLocale?.getSpec(),
+                                        targetStrings: this.getTargetStrings(translationPlurals)
                                     });
                                 } else if (type === "array") {
                                     // if there is an existing array resource with the same key, use that one
@@ -471,6 +471,38 @@ class Parser {
         }
 
         return set;
+    }
+
+    /**
+     * @private
+     *
+     * Retrieves the appropriate plural forms for the target locale,
+     * applying necessary adjustments to conform to ICU pluralization rules.
+     *
+     * @param translationPlurals - An object containing pluralized translation strings,
+     *                              where keys represent plural categories (e.g., "one", "few", "many").
+     *                              This may be `undefined` if no plural translations are provided.
+     * @returns A plural object with appropriate categories for the target locale.
+     */
+    private getTargetStrings(translationPlurals: Plural | undefined) {
+        const language = this.targetLocale?.getLanguage() ?? "en";
+
+        switch (language) {
+            case "pl":
+                /*
+                 * In Polish (`pl`), the plural forms defined in CLDR are: "one", "few", "many", and "other".
+                 * However, PO files (due to GNU gettext limitations) only support "one", "few", and "many".
+                 * ICU, on the other hand, requires an "other" category for proper pluralization (as per ICU4J).
+                 * To ensure compatibility, we backfill the "other" category using the value from "many".
+                 * This ensures translations are applied correctly in ICU-compliant systems/projects.
+                 */
+                return {
+                    ...translationPlurals,
+                    other: translationPlurals!.many
+                }
+            default:
+                return translationPlurals;
+        }
     }
 }
 
