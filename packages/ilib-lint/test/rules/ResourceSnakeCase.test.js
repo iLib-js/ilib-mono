@@ -40,7 +40,7 @@ describe("ResourceSnakeCase", () => {
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
         const rule = new ResourceSnakeCase({param: {except: invalidExcept}});
-        
+
         const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
         const result = rule.matchString({
             source: resource.source,

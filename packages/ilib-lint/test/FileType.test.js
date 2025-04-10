@@ -139,7 +139,7 @@ class MockTransformer extends Transformer {
         this.type = "mock-type";
         this.description = "A test transformer for xyz files, which are really just json files.";
     }
-    
+
     transform(ir, results) {
         return ir;
     }

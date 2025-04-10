@@ -19,7 +19,7 @@
  */
 import { ResourceString } from 'ilib-tools-common';
 
-import ResourceICUPluralTranslation from "../src/rules/ResourceICUPluralTranslation.js";
+import ResourceICUPluralTranslation from "../../src/rules/ResourceICUPluralTranslation.js";
 
 import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
@@ -82,6 +82,54 @@ describe("testResourceICUPluralTranslation", () => {
             source: 'one {is # file}'
         });
         expect(actual).toStrictEqual(expected);
+    });
+
+    test("ResourceICUPluralTranslations it's not a missing translation if the only thing in the plural string is a variable", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation();
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {{filename}} other {# files}} in the folder.',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {{filename}} other {# Dateien}} in dem Ordner.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceICUPluralTranslations it's not a missing translation if the only thing in the plural string is whitespace", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation();
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {   } other {# files}} in the folder.',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {     } other {# Dateien}} in dem Ordner.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeFalsy();
     });
 
     test("ResourceICUPluralTranslationsMatchMissingTranslationNestedLevel2", () => {
@@ -153,6 +201,30 @@ describe("testResourceICUPluralTranslation", () => {
         ];
         expect(actual).toStrictEqual(expected);
     });
+
+    test("ResourceICUPluralTranslations not a missing translation if there is no translatable text level 2", () => {
+         expect.assertions(2);
+
+         const rule = new ResourceICUPluralTranslation();
+         expect(rule).toBeTruthy();
+
+         const actual = rule.match({
+             ir: new IntermediateRepresentation({
+                 type: "resource",
+                 ir: [new ResourceString({
+                     key: "plural.test",
+                     sourceLocale: "en-US",
+                     source: 'There {count, plural, one {is # file and {folderCount, plural, one {{folderCount}} other {{folderCount} folders}}} other {are # files and {folderCount, plural, one {{folderCount}} other {{folderCount} folders}}}} in the folder.',
+                     targetLocale: "de-DE",
+                     target: "Es {count, plural, one {gibt # Datei und {folderCount, plural, one {{folderCount}} other {{folderCount} Ordner}}} other {gibt # Dateien und {folderCount, plural, one {{folderCount}} other {{folderCount} Ordner}}}} in dem Ordner.",
+                     pathName: "a/b/c.xliff"
+                 })],
+                 sourceFile
+             }),
+             file: "a/b/c.xliff"
+         });
+         expect(actual).toBeFalsy();
+     });
 
     test("ResourceICUPluralTranslationsMatchNotMissingTranslationWithTags", () => {
         expect.assertions(2);

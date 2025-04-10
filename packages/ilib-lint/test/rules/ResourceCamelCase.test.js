@@ -40,7 +40,7 @@ describe("ResourceCamelCase", () => {
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
         const rule = new ResourceCamelCase({param: {except: invalidExcept}});
-        
+
         const resource = createTestResourceString({source: "camelCaseException", target: "someCamelCaseTarget"});
         const result = rule.matchString({
             source: resource.source,

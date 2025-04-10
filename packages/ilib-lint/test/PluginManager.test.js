@@ -463,22 +463,22 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
 
     test("PluginManager make sure we can load in a transformer plugin", () => {
         expect.assertions(4);
-        
+
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
-        
+
         return plgmgr.load([
             "ilib-lint-plugin-test"
         ]).then(result => {
             expect(result).toBeDefined();
-            
+
             const tm = plgmgr.getTransformerManager();
             const transformer = tm.get("transformer-xyz");
             expect(transformer).toBeDefined();
             expect(transformer?.getName()).toBe("transformer-xyz");
         });
     });
-    
+
     test("PluginManager make sure we can load a serializer plugin", () => {
         expect.assertions(4);
 
