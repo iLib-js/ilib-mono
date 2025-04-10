@@ -297,7 +297,7 @@ class Parser {
                                         datatype: datatype ?? fileDataType,
                                         context: context,
                                         index: resourceIndex++,
-                                        targetLocale: translationPlurals?.other && this.targetLocale?.getSpec(),
+                                        targetLocale: translationPlurals && this.targetLocale?.getSpec(),
                                         targetStrings: this.getTargetStrings(translationPlurals)
                                     });
                                 } else if (type === "array") {

@@ -429,7 +429,7 @@ describe("parser", () => {
         const target = resource.getTarget();
 
         expect(type).toBe("plural");
-        // expect(locale).toBe("pl-PL");
+        expect(locale).toBe("pl-PL");
 
         expect(source).toEqual({
             one: "Your item",
