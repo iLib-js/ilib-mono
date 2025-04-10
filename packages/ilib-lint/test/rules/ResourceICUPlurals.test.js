@@ -1131,10 +1131,10 @@ describe("Test ICU select statements", () => {
 
     test("ResourceICUPlurals match select statement with an extra category", () => {
         expect.assertions(2);
-        
+
         const rule = new ResourceICUPlurals();
         expect(rule).toBeTruthy();
-        
+
         const resource = new ResourceString({
             key: "plural.test",
             sourceLocale: "en-US",
