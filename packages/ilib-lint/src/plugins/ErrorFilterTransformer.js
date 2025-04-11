@@ -56,7 +56,8 @@ class ErrorFilterTransformer extends Transformer {
         return new IntermediateRepresentation({
             type: ir.getType(),
             ir: filteredResources,
-            sourceFile: ir.getSourceFile()
+            sourceFile: ir.getSourceFile(),
+            dirty: (filteredResources.length !== resources.length)
         });
     }
 };
