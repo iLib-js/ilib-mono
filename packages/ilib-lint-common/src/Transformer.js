@@ -1,7 +1,7 @@
 /*
  * Transformer - common SPI for a transformer plugin
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,10 @@ class Transformer extends PipelineElement {
     /**
      * Transform the given intermediate representation and return a new
      * intermediate representation that is a modified version of the original.
+     * Implementations should return a new intermediate representation with the
+     * dirty flag set to true if the representation has been modified.
+     * Implementations should not modify the original intermediate
+     * representation.
      *
      * @abstract
      * @param {IntermediateRepresentation} representation the intermediate
