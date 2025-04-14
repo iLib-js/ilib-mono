@@ -56,7 +56,7 @@ class ResourceXliff {
     /**
      * Construct a new resource xliff instance. Operation of the instance
      * is controlled via the options. The options may be undefined, which represents a new,
-     * clean Xliff instance. 
+     * clean Xliff instance.
      *
      * @constructor
      * @param {Object|undefined} options options to
