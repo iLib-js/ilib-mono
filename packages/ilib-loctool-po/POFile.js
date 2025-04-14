@@ -304,6 +304,8 @@ POFile.prototype.parse = function(data) {
                             // emit a resource
                             var options, key;
                             if (sourcePlurals) {
+                                var targetLocale = translationPlurals && this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
+
                                 key = (context && this.mapping && this.mapping.contextInKey) ? sourcePlurals.one + " --- " + context : sourcePlurals.one;
                                 options = {
                                     resType: "plural",
@@ -317,10 +319,10 @@ POFile.prototype.parse = function(data) {
                                     datatype: this.type.datatype,
                                     context: context,
                                     index: this.resourceIndex++,
-                                    targetLocale: translationPlurals && this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
+                                    targetLocale: targetLocale
                                 };
                                 if (translationPlurals) {
-                                    options.targetStrings = translationPlurals;
+                                    options.targetStrings = this.getTargetStrings(translationPlurals, targetLocale);
                                 }
                             } else {
                                 key = (context && this.mapping && this.mapping.contextInKey) ? source + " --- " + context : source;
@@ -818,5 +820,37 @@ POFile.prototype.localize = function(translations, locales) {
         }
     }
 };
+
+/**
+ * @private
+ *
+ * Retrieves the appropriate plural forms for the target locale,
+ * applying necessary adjustments to conform to ICU pluralization rules.
+ *
+ * @param {Object|undefined} translationPlurals - An object containing pluralized translation strings,
+ *        where keys represent plural categories (e.g., "one", "few", "many").
+ *        This may be `undefined` if no plural translations are provided.
+ * @param targetLocale {String|undefined} - The target locale for which the plural forms are required.
+ *
+ * @returns {Object|undefined} A plural object with appropriate categories for the target locale.
+ */
+POFile.prototype.getTargetStrings = function(translationPlurals, targetLocale) {
+    switch (targetLocale) {
+        case "pl-PL":
+            /*
+             * In Polish (`pl`), the plural forms defined in CLDR are: "one", "few", "many", and "other".
+             * However, PO files (due to GNU gettext limitations) only support "one", "few", and "many".
+             * ICU, on the other hand, requires an "other" category for proper pluralization (as per ICU4J).
+             * To ensure compatibility, we backfill the "other" category using the value from "many".
+             * This ensures translations are applied correctly in ICU-compliant systems/projects.
+             */
+            return {
+                ...translationPlurals,
+                other: translationPlurals?.many
+            };
+        default:
+            return translationPlurals;
+    }
+}
 
 module.exports = POFile;

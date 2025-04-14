@@ -405,6 +405,91 @@ describe("pofile", function() {
         expect(resources[0].getTargetLocale()).toBe("de-DE");
     });
 
+    test("POFile correctly parses plural strings with Polish translations", function() {
+        var file = new POFile({
+            project: p,
+            locale: "pl-PL",
+            type: t
+        });
+
+        file.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const set = file.getTranslationSet();
+        const resources = set.getAll();
+        const resource = resources[0];
+        const type = resource.getType();
+        const key = resource.getKey();
+        const sourceLocale = resource.getSourceLocale();
+        const targetLocale = resource.getTargetLocale();
+
+        expect(set.size()).toBe(1);
+        expect(resources.length).toBe(1);
+        expect(key).toBe("Your item");
+        expect(type).toBe("plural");
+        expect(sourceLocale).toBe("en-US");
+        expect(targetLocale).toBe("pl-PL");
+    });
+
+    test("POFile correctly recognizes the Polish plural categories in PO files as 'one', 'few', and 'many'.", function() {
+        var file = new POFile({
+            project: p,
+            locale: "pl-PL",
+            type: t
+        });
+
+        file.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const resource = file.getTranslationSet().getAll()[0];
+        const sourcePlurals = resource.getSourcePlurals();
+        const targetPlurals = resource.getTargetPlurals();
+
+        expect(sourcePlurals).toEqual({
+            one: "Your item",
+            other: "Selected items"
+        });
+        expect(targetPlurals).toEqual(expect.objectContaining({
+            one: "ONE Twój element",
+            few: "FEW Wybrane elementy",
+            many: "MANY Wybrane elementy"
+        }))
+    });
+
+    test("POFile correctly backfills the plural 'other' category with the 'many' category for the Polish language", function() {
+        var file = new POFile({
+            project: p,
+            locale: "pl-PL",
+            type: t
+        });
+
+        file.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const resource = file.getTranslationSet().getAll()[0];
+        const targetPlurals = resource.getTargetPlurals();
+
+        expect(targetPlurals.many).toEqual("MANY Wybrane elementy");
+        expect(targetPlurals.other).toEqual(targetPlurals.many);
+    });
+
+
+
     test("POFileParsePluralStringWithEmptyTranslations", function() {
         expect.assertions(11);
 
