@@ -1,7 +1,7 @@
 /*
  * Xliff.js - convert an Xliff file into a set of resources and vice versa
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,29 +56,25 @@ class ResourceXliff {
     /**
      * Construct a new resource xliff instance. Operation of the instance
      * is controlled via the options. The options may be undefined, which represents a new,
-     * clean Xliff instance. The options object may also
-     * be an object with the following properties:
+     * clean Xliff instance. 
      *
-     * <ul>
-     * <li><i>path</i> - the path to the xliff file on disk
-     * <li><i>tool-id</i> - the id of the tool that saved this xliff file
-     * <li><i>tool-name</i> - the full name of the tool that saved this xliff file
-     * <li><i>tool-version</i> - the version of the tool that save this xliff file
-     * <li><i>tool-company</i> - the name of the company that made this tool
-     * <li><i>copyright</i> - a copyright notice that you would like included into the xliff file
-     * <li><i>sourceLocale</i> - specify the default source locale if a resource doesn't have a locale itself
-     * <li><i>allowDups</i> - allow duplicate resources in the xliff. By default, dups are
+     * @constructor
+     * @param {Object|undefined} options options to
+     * initialize the file, or undefined for a new empty file
+     * @param {string} [options.path] the path to the xliff file on disk
+     * @param {string} [options.tool-id] the id of the tool that saved this xliff file
+     * @param {string} [options.tool-name] the full name of the tool that saved this xliff file
+     * @param {string} [options.tool-version] the version of the tool that save this xliff file
+     * @param {string} [options.tool-company] the name of the company that made this tool
+     * @param {string} [options.copyright] a copyright notice that you would like included into the xliff file
+     * @param {string} [options.sourceLocale] specify the default source locale if a resource doesn't have a locale itself
+     * @param {string} [options.allowDups] allow duplicate resources in the xliff. By default, dups are
      * filtered out. This option allows you to have trans-units that represent instances of the
      * same resource in the file with different metadata. For example, two instances of a
      * resource may have different comments which may both be useful to translators or
      * two instances of the same resource may have been extracted from different source files.
-     * <li><i>version</i> - The version of xliff that will be produced by this instance. This
+     * @param {string} [options.version] The version of xliff that will be produced by this instance. This
      * may be either "1.2" or "2.0"
-     * </ul>
-     *
-     * @constructor
-     * @param {Array.<Object>|undefined} options options to
-     * initialize the file, or undefined for a new empty file
      */
     constructor(options) {
         if (options) {
@@ -257,7 +253,8 @@ class ResourceXliff {
                 datatype: tu.datatype,
                 state: tu.state,
                 flavor: tu.flavor,
-                location: new Location(tu.location)
+                location: new Location(tu.location),
+                resfile: tu.resfile
             });
 
             if (tu.target) {
@@ -283,7 +280,8 @@ class ResourceXliff {
                 datatype: tu.datatype,
                 state: tu.state,
                 flavor: tu.flavor,
-                location: new Location(tu.location)
+                location: new Location(tu.location),
+                resfile: tu.resfile
             });
 
             if (tu.target) {
@@ -309,7 +307,8 @@ class ResourceXliff {
                 datatype: tu.datatype,
                 state: tu.state,
                 flavor: tu.flavor,
-                location: new Location(tu.location)
+                location: new Location(tu.location),
+                resfile: tu.resfile
             });
 
             if (tu.target) {
@@ -333,14 +332,20 @@ class ResourceXliff {
         this.path = newPath;
     }
 
+    /**
+     * Parse the given xml and convert it into a set of resources.
+     *
+     * @param {string} xml the contents of the xliff file to parse
+     * @returns {TranslationSet} the translation set that represents
+     * the resources in the xliff file
+     */
     parse(xml) {
-        const tuList = this.xliff.deserialize(xml);
+        const tuList = this.xliff.deserialize(xml, this.path);
         let res;
 
         if (tuList) {
             for (var j = 0; j < tuList.length; j++) {
                 const tu = tuList[j];
-                let comment;
 
                 switch (tu.resType) {
                 default:
