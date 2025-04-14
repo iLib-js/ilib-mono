@@ -19,7 +19,7 @@
 
 /**
  * @class A class that represents an translation unit in an
- * xliff file. 
+ * xliff file.
  */
 class TranslationUnit {
     /**

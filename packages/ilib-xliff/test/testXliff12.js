@@ -82,7 +82,7 @@ export const testXliff12 = {
 
         const x = new Xliff();
         test.ok(x);
-        
+
         test.equal(x.getVersion(), "1.2");
 
         test.done();
@@ -95,7 +95,7 @@ export const testXliff12 = {
             version: "1.2"
         });
         test.ok(x);
-        
+
         test.equal(x.getVersion(), "1.2");
 
         test.done();
@@ -108,7 +108,7 @@ export const testXliff12 = {
             version: "2.0"
         });
         test.ok(x);
-        
+
         test.equal(x.getVersion(), "2.0");
 
         test.done();
@@ -255,7 +255,7 @@ export const testXliff12 = {
         const x = new Xliff();
         test.ok(x);
 
-        
+
         x.addTranslationUnits([
             new TranslationUnit({
                 source: "Asdf asdf",

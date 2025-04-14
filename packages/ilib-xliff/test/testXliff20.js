@@ -250,7 +250,7 @@ export const testXliff20 = {
         const x = new Xliff({version: 2.0});
         test.ok(x);
 
-        
+
         x.addTranslationUnits([
             new TranslationUnit({
                 source: "Asdf asdf",
