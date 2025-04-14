@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { TranslationSet } from "ilib-tools-common";
+import {TranslationSet} from "ilib-tools-common";
 import Locale from "ilib-locale";
 
-import { Comments, CommentType, escapeQuotes, makeKey } from "./utils";
-import { pluralForms, PluralForm } from "./pluralforms";
+import {Comments, CommentType, escapeQuotes, makeKey, Plural, PluralCategory} from "./utils";
+import {pluralForms, PluralForm} from "./pluralforms";
 
 /** Options for the generator constructor */
 export interface GeneratorOptions {
@@ -45,7 +45,7 @@ export interface GeneratorOptions {
     /**
      * The default data type of the resources
      */
-     datatype?: string;
+    datatype?: string;
 
     /**
      * The name of the project that the resources belong to
@@ -210,14 +210,33 @@ class Generator {
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {
                     this.plurals.categories.forEach((category, index) => {
-                        const translation =
-                            translatedPlurals[category] !== sourcePlurals[category] ? translatedPlurals[category] : "";
+                        const translation = this.getTranslation(translatedPlurals, sourcePlurals, category);
                         output += `msgstr[${index}] "${escapeQuotes(translation)}"\n`;
                     });
                 }
             }
         }
         return output;
+    }
+
+    /**
+     * @private
+     *
+     * Get the translation for a specific plural category.
+     *
+     * @param translatedPlurals the translated plurals
+     * @param sourcePlurals the source plurals
+     * @param category the plural category as defined in the pluralForms.ts
+     *
+     * @returns the translation for the specified plural category
+     */
+    private getTranslation(translatedPlurals: Plural, sourcePlurals: Plural, category: PluralCategory): string {
+        switch (category) {
+            case "one":
+                return translatedPlurals[category] === sourcePlurals[category] ? "" : translatedPlurals[category] ?? "";
+            default:
+                return translatedPlurals[category] === sourcePlurals["other"] ? "" : translatedPlurals[category] ?? "";
+        }
     }
 }
 

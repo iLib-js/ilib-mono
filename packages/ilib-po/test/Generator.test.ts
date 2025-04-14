@@ -909,6 +909,137 @@ describe("generator", () => {
         expect(actual).toBe(expected);
     });
 
+    test("Generator generates empty plural translations for Polish with correct number of categories", () => {
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "pl-PL",
+            contextInKey: false,
+            datatype: "po",
+            projectName: "foo"
+        });
+
+        const translations = new TranslationSet();
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "Your item",
+            source: {
+                one: "Your item",
+                other: "Selected items"
+            },
+            sourceLocale: "en-US",
+            target: {
+                one: "Your item",
+                few: "Selected items",
+                many: "Selected items",
+                other: "Selected items",
+            },
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+
+        const actual = generator.generate(translations);
+        const expected =
+            'msgid "Your item"\n' +
+            'msgid_plural "Selected items"\n' +
+            'msgstr[0] ""\n' +
+            'msgstr[1] ""\n' +
+            'msgstr[2] ""\n';
+
+        expect(actual).toContain(expected);
+    });
+
+    test("Generator generates correct plural translations for Polish with all plural forms except 'other' populated", () => {
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "pl-PL",
+            contextInKey: false,
+            datatype: "po",
+            projectName: "foo"
+        });
+
+        const translations = new TranslationSet();
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "Your item",
+            source: {
+                one: "Your item",
+                other: "Selected items"
+            },
+            sourceLocale: "en-US",
+            target: {
+                one: "ONE Twój element",
+                few: "FEW Wybrane elementy",
+                many: "MANY Wybrane elementy",
+                other: "OTHER Wybrane elementy"
+            },
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+
+        const actual = generator.generate(translations);
+        const expected =
+            'msgid "Your item"\n' +
+            'msgid_plural "Selected items"\n' +
+            'msgstr[0] "ONE Twój element"\n' +
+            'msgstr[1] "FEW Wybrane elementy"\n' +
+            'msgstr[2] "MANY Wybrane elementy"\n';
+
+        expect(actual).toContain(expected);
+        expect(actual).not.toContain("OTHER Wybrane elementy")
+    });
+
+    test("Generates a file with both singular and plural entries for Polish with all plural forms except 'other'", () => {
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "pl-PL",
+            contextInKey: false,
+            datatype: "po",
+            projectName: "foo"
+        });
+
+        const set = new TranslationSet();
+        set.add(new ResourceString({
+            project: "foo",
+            key: "string 1",
+            source: "string 1",
+            sourceLocale: "en-US",
+            target: "słowo 1",
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+        set.add(new ResourcePlural({
+            project: "foo",
+            key: "one string",
+            source: {
+                "one": "one string",
+                "other": "{$count} strings"
+            },
+            sourceLocale: "en-US",
+            target: {
+                "one": "{$count} słowo",
+                "few": "{$count} słowa",
+                "many": "{$count} słów",
+                "other": "{$count} OTHER słowa"
+            },
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+
+        const actual = generator.generate(set);
+        const expected =
+            'msgid "string 1"\n' +
+            'msgstr "słowo 1"\n' +
+            '\n' +
+            'msgid "one string"\n' +
+            'msgid_plural "{$count} strings"\n' +
+            'msgstr[0] "{$count} słowo"\n' +
+            'msgstr[1] "{$count} słowa"\n' +
+            'msgstr[2] "{$count} słów"\n';
+
+        expect(actual).toContain(expected);
+        expect(actual).not.toContain("{$count} OTHER słowa");
+    })
+
     test("Generator generate text plurals with translations", () => {
         expect.assertions(2);
 
