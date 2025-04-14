@@ -49,6 +49,12 @@ class TranslationUnit {
      * this class. This is useful for storing additional metadata about the
      * translation unit that may be specific to a particular application or
      * use case.
+     * <li><i>resfile</i> - the resource file that this unit came from. The file
+     * property is the path to the file in the source code where the
+     * resource was originally extracted from before it was put in the resource
+     * file, and this property is the path to the resource file that contains this
+     * translation unit. This is always the same as the xliff file that is currently
+     * being processed.
      * </ul>
      *
      * If the required properties are not given, the constructor throws an exception.<p>
