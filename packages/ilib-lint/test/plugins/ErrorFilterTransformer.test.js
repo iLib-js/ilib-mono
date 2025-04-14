@@ -37,7 +37,64 @@ describe("ErrorFilterTransformer", () => {
         expect(eft).toBeInstanceOf(ErrorFilterTransformer);
     });
 
-    test("can filter errors out of an intermediate representation", () => {
+    test("can filter errors out of an intermediate representation with resource strings", () => {
+        expect.assertions(4);
+
+        const eft = new ErrorFilterTransformer();
+        const resource1 = new ResourceString({
+            project: "project",
+            sourceLocale: "en-US",
+            targetLocale: "fr-FR",
+            pathName: "path/to/file.js",
+            reskey: "key1",
+            source: "source1",
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
+        });
+        const resource2 = new ResourceString({
+            project: "project",
+            sourceLocale: "en-US",
+            targetLocale: "fr-FR",
+            pathName: "path/to/file.js",
+            reskey: "key2",
+            source: "source2",
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
+        });
+        const resources = [
+            resource1,
+            resource2
+        ];
+        const results = [
+            new Result({
+                severity: "error",
+                pathName: "path/to/resfile.xliff",
+                description: "error description",
+                rule: jest.fn(() => "rule"),
+                highlight: "highlight",
+                id: "key1",
+                source: "source1",
+                locale: "fr-FR"
+            })
+        ];
+
+        const representation = new IntermediateRepresentation({
+            type: "resource",
+            ir: resources,
+            sourceFile: jest.fn(() => "sourceFile")
+        });
+
+        const transformed = eft.transform(representation, results);
+
+        expect(transformed).toBeDefined();
+        const ir = transformed.getRepresentation();
+        expect(Array.isArray(ir)).toBeTruthy();
+        expect(ir.length).toBe(1);
+        // resource1 should be filtered out because it has an error
+        expect(ir[0]).toEqual(resource2);
+    });
+
+    test("can filter errors out of an intermediate representation when the resources do not come from a resource file", () => {
         expect.assertions(4);
 
         const eft = new ErrorFilterTransformer();
@@ -111,7 +168,8 @@ describe("ErrorFilterTransformer", () => {
                 "target1",
                 "target2",
                 "target3"
-            ]
+            ],
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceArray({
             project: "project",
@@ -128,7 +186,8 @@ describe("ErrorFilterTransformer", () => {
                 "targetA",
                 "targetB",
                 "targetC"
-            ]
+            ],
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -137,7 +196,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/file.js",
+                pathName: "path/to/resfile.xliff",
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -180,7 +239,8 @@ describe("ErrorFilterTransformer", () => {
             target: {
                 "one": "target1",
                 "other": "target2"
-            }
+            },
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceArray({
             project: "project",
@@ -196,7 +256,8 @@ describe("ErrorFilterTransformer", () => {
                 "one": "targetA",
                 "manyy": "targetB",
                 "other": "targetC"
-            }
+            },
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -205,7 +266,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/file.js",
+                pathName: "path/to/resfile.xliff",
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -242,7 +303,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -251,7 +313,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -261,7 +324,7 @@ describe("ErrorFilterTransformer", () => {
             new Result({
                 // this is a warning, not an error!
                 severity: "warning",
-                pathName: "path/to/file.js",
+                pathName: "path/to/resfile.xliff",
                 description: "warning description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -293,7 +356,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -302,7 +366,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -331,7 +396,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -340,7 +406,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -399,7 +466,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -408,7 +476,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -417,7 +486,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/other/file.js",
+                pathName: "path/to/resfile.xliff",
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -449,7 +518,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -458,7 +528,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -467,7 +538,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/file.js",
+                pathName: "path/to/resfile.xliff",
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -506,7 +577,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -515,7 +587,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/resfile.xliff"
         });
         const resources = [
             resource1,
@@ -524,7 +597,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/this/file.js",
+                pathName: "path/to/this/file.xliff", // not in the resources array above
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -563,7 +636,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/fr-FR.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -572,7 +646,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target2"
+            target: "target2",
+            resfile: "path/to/de-DE.xliff"
         });
         const resources = [
             resource1,
@@ -581,7 +656,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/file.js",
+                pathName: "path/to/de-DE.xliff", // only matches the second resource
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -603,7 +678,8 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: [resource1],
-            sourceFile: null
+            sourceFile: null,
+            dirty: true
         });
 
         expect(transformed).toEqual(expected);
@@ -620,7 +696,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/fr-FR.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -629,7 +706,8 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/other/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1"
+            target: "target1",
+            resfile: "path/to/other/fr-FR.xliff"
         });
         const resources = [
             resource1,
@@ -638,7 +716,7 @@ describe("ErrorFilterTransformer", () => {
         const results = [
             new Result({
                 severity: "error",
-                pathName: "path/to/other/file.js", // only matches the second resource
+                pathName: "path/to/other/fr-FR.xliff", // only matches the second resource
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
@@ -660,7 +738,8 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: [resource1],
-            sourceFile: null
+            sourceFile: null,
+            dirty: true
         });
 
         expect(transformed).toEqual(expected);

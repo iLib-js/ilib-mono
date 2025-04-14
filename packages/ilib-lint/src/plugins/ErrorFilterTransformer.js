@@ -50,7 +50,8 @@ class ErrorFilterTransformer extends Transformer {
         const hashesToExclude = results.filter(result => result.id && result.severity === 'error').
             map(result => [result.id, result.locale, result.pathName].join('_'));
         const filteredResources = resources.filter(/** @type Resource */ resource => {
-            const hash = [resource.getKey(), resource.getTargetLocale(), resource.getPath()].join('_');
+            const filePath = resource.getResFile() ?? resource.getPath();
+            const hash = [resource.getKey(), resource.getTargetLocale(), filePath].join('_');
             return !hashesToExclude.includes(hash);
         });
         return new IntermediateRepresentation({
