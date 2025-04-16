@@ -25,7 +25,7 @@ import PluginManager from '../src/PluginManager.js';
 describe("testFormatterManager", () => {
     test("FormatterManager constructor works nicely", () => {
         expect.assertions(1);
-        
+
         const mgr = new FormatterManager();
         expect(mgr).toBeTruthy();
     });

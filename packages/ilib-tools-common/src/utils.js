@@ -1,7 +1,7 @@
 /*
  * utils.js - utility functions to support the other code
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import path from 'path';
 import Locale from 'ilib-locale';
 
 import { isAlnum, isIdeo } from 'ilib-ctype';
+
+import pluralCategories from './pluralCategories.js';
 
 /**
  * Clean a string for matching against other strings by removing
@@ -533,3 +535,25 @@ export const localizableAttributes = {
         "aria-valuetext": true
     }
 };
+
+// this is for English and many other languages
+const defaultPluralCategories = [
+    "one",
+    "other"
+];
+
+/**
+ * Return the plural categories for the given language.
+ * If there is no entry for the given
+ * language, then the default English plural categories are returned.
+ *
+ * @param {string|undefined} language the ISO 639 language code to get the plural
+ * categories for
+ * @returns {Array} an array of strings containing the names of the plural categories
+ */
+export function getLanguagePluralCategories(language) {
+    // make sure to get the language only if someone accidentally sends in a full locale
+    const locale = new Locale(language);
+    const lang = locale.getLanguage() ?? "en";
+    return pluralCategories[lang] ?? defaultPluralCategories;
+}

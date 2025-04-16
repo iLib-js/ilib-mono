@@ -1,7 +1,7 @@
 /*
  * Utils.test.js - test the utility functions
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ import {
     nonBreakingTags,
     selfClosingTags,
     ignoreTags,
-    localizableAttributes
+    localizableAttributes,
+    getLanguagePluralCategories
 } from "../src/index.js";
 
 /**
@@ -574,5 +575,110 @@ describe("testUtils", () => {
 
         expect(localizableAttributes.area.alt).toBe(true);
         expect(localizableAttributes["*"]["aria-label"]).toBe(true);
+    });
+});
+
+describe("test the plural categories for various languages", () => {
+    test("getLanguagePluralCategories for English", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("en");
+        expect(categories).toStrictEqual(["one", "other"]);
+    });
+
+    test("getLanguagePluralCategories for English with region", () => {
+        expect.assertions(1);
+
+        // should extract the language part of the locale specification
+        const categories = getLanguagePluralCategories("en-US");
+        expect(categories).toStrictEqual(["one", "other"]);
+    });
+
+    test("getLanguagePluralCategories for German", () => {
+        expect.assertions(1);
+
+        // German is not explicitly defined in the CLDR data, so it should
+        // default to the English plural categories
+        const categories = getLanguagePluralCategories("de");
+        expect(categories).toStrictEqual(["one", "other"]);
+    });
+
+    test("getLanguagePluralCategories for German with region", () => {
+        expect.assertions(1);
+
+        // German is not explicitly defined in the CLDR data, so it should
+        // default to the English plural categories
+        const categories = getLanguagePluralCategories("de-DE");
+        expect(categories).toStrictEqual(["one", "other"]);
+    });
+
+    test("getLanguagePluralCategories for Arabic", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("ar");
+        expect(categories).toStrictEqual(["zero", "one", "two", "few", "many", "other"]);
+    });
+
+    test("getLanguagePluralCategories for Arabic with region", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("ar-SA");
+        expect(categories).toStrictEqual(["zero", "one", "two", "few", "many", "other"]);
+    });
+
+    test("getLanguagePluralCategories for Polish", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("pl");
+        expect(categories).toStrictEqual(["one", "few", "many", "other"]);
+    });
+
+    test("getLanguagePluralCategories for Polish with region", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("pl-PL");
+        expect(categories).toStrictEqual(["one", "few", "many", "other"]);
+    });
+
+    test("getLanguagePluralCategories for Russian", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("ru");
+        expect(categories).toStrictEqual(["one", "few", "many", "other"]);
+    });
+
+    test("getLanguagePluralCategories for Chinese", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("zh");
+        expect(categories).toStrictEqual(["other"]);
+    });
+
+    test("getLanguagePluralCategories for Japanese", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("ja");
+        expect(categories).toStrictEqual(["other"]);
+    });
+
+    test("getLanguagePluralCategories for Japanese with region", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("ja-JP");
+        expect(categories).toStrictEqual(["other"]);
+    });
+
+    test("getLanguagePluralCategories for Hindi", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories("hi");
+        expect(categories).toStrictEqual(["one", "other"]);
+    });
+
+    test("getLanguagePluralCategories for undefined language", () => {
+        expect.assertions(1);
+
+        const categories = getLanguagePluralCategories(undefined);
+        expect(categories).toStrictEqual(["one", "other"]);
     });
 });

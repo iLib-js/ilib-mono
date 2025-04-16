@@ -1,7 +1,7 @@
 /*
  * ResourceICUPlurals.js - rule to check formatjs/ICU style plurals in the target string
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,34 +20,42 @@
 import { IntlMessageFormat } from 'intl-messageformat';
 import Locale from 'ilib-locale';
 import { Result } from 'ilib-lint-common';
+import { getLanguagePluralCategories } from 'ilib-tools-common';
 
 import ResourceRule from './ResourceRule.js';
 
-// all the plural categories from CLDR
-const allCategories = ["zero", "one", "two", "few", "many", "other"];
+/**
+ * Get the difference of two sets. That is, return a set that contains
+ * all the items in set1 that are not in set2.
+ * @private
+ * @param {Set<string>} set1 The first set
+ * @param {Set<string>} set2 The second set
+ * @returns {Set<string>} The difference of the two sets
+ */
+function difference(set1, set2) {
+    const result = new Set();
+    set1.forEach(item => {
+        if (!set2.has(item)) {
+            result.add(item);
+        }
+    });
+    return result;
+}
 
-// Map the language to the set of plural categories that the language
-// uses. If the language is not listed below, it uses the default
-// list of plurals: "one" and "other"
-const categoriesForLang = {
-    "ja": [ "other" ],
-    "zh": [ "other" ],
-    "ko": [ "other" ],
-    "th": [ "other" ],
-    "lv": [ "zero", "one", "other" ],
-    "ga": [ "one", "two", "other" ],
-    "ro": [ "one", "few", "other" ],
-    "lt": [ "one", "few", "other" ],
-    "ru": [ "one", "few", "other" ],
-    "uk": [ "one", "few", "other" ],
-    "be": [ "one", "few", "other" ],
-    "sr": [ "one", "few", "other" ],
-    "hr": [ "one", "few", "other" ],
-    "cs": [ "one", "few", "other" ],
-    "sk": [ "one", "few", "other" ],
-    "pl": [ "one", "few", "other" ],
-    "sl": [ "one", "two", "few", "other" ],
-    "ar": [ "zero", "one", "two", "few", "many", "other" ]
+/**
+ * Get the union of two sets. That is, return a set that contains
+ * all the items in set1 and set2.
+ * @private
+ * @param {Set<string>} set1 The first set
+ * @param {Set<string>} set2 The second set
+ * @returns {Set<string>} The union of the two sets
+ */
+function union(set1, set2) {
+    const result = new Set(set1);
+    set2.forEach(item => {
+        result.add(item);
+    });
+    return result;
 }
 
 /**
@@ -73,31 +81,27 @@ class ResourceICUPlurals extends ResourceRule {
         // categories that are required according to the language rules
         let requiredSourceCategories, requiredTargetCategories;
 
-        // categories that actually exist in the select which are required by the language rules
-        let actualRequiredSourceCategories = [], actualRequiredTargetCategories = [];
-
-        // categories that actually exist in the select which are not required by the language rules
-        let actualNonrequiredSourceCategories = [], actualNonrequiredTargetCategories = [];
-
         if (sourceSelect.node.pluralType === "cardinal") {
-            requiredSourceCategories = categoriesForLang[srcLocale.getLanguage()] || [ "one", "other" ]
-            requiredTargetCategories = categoriesForLang[locale.getLanguage()] || [ "one", "other" ];
+            requiredSourceCategories = new Set(getLanguagePluralCategories(srcLocale.getLanguage()));
+            requiredTargetCategories = new Set(getLanguagePluralCategories(locale.getLanguage()));
         } else {
             // for select or selectordinal, only the "other" category is required
-            requiredSourceCategories = [ "other" ];
-            requiredTargetCategories = [ "other" ];
+            requiredSourceCategories = new Set([ "other" ]);
+            requiredTargetCategories = new Set([ "other" ]);
         }
 
-        const allSourceCategories = Object.keys(sourceSelect.node.options);
-        actualRequiredSourceCategories = allSourceCategories.filter(category => requiredSourceCategories.includes(category));
-        actualNonrequiredSourceCategories = allSourceCategories.filter(category => !requiredSourceCategories.includes(category));
+        const allSourceCategories = new Set(Object.keys(sourceSelect.node.options));
+        let actualNonrequiredSourceCategories = difference(allSourceCategories, requiredSourceCategories);
 
-        const allTargetCategories = Object.keys(targetSelect.node.options);
-        actualRequiredTargetCategories = allTargetCategories.filter(category => requiredTargetCategories.includes(category));
-        actualNonrequiredTargetCategories = allTargetCategories.filter(category => !requiredTargetCategories.includes(category));
+        const allTargetCategories = new Set(Object.keys(targetSelect.node.options));
+        if (sourceSelect.node.pluralType !== "cardinal") {
+            // for select and selectordinal, the target should always have all of the same categories as the source
+            requiredTargetCategories = allSourceCategories;
+        }
+        let actualNonrequiredTargetCategories = difference(allTargetCategories, requiredTargetCategories);
 
         // first check the required plural categories
-        let missing = requiredTargetCategories.filter(category => {
+        let missing = Array.from(requiredTargetCategories).filter(category => {
             if (!targetSelect.node.options[category]) {
                 // if the required category doesn't exist in the target, check if it is required
                 // in the source. If it is required in the source and does not exist there, then
@@ -107,7 +111,7 @@ class ResourceICUPlurals extends ResourceRule {
                 // in the target. If it is not required in the source, then produce a result because
                 // it is required in the target language and it doesn't matter about the source
                 // language.
-                if (!requiredSourceCategories.includes(category) || sourceSelect.node.options[category]) {
+                if (!requiredSourceCategories.has(category) || sourceSelect.node.options[category]) {
                     return true;
                 }
             } else if (sourceSelect.node.options[category]) {
@@ -135,7 +139,7 @@ class ResourceICUPlurals extends ResourceRule {
             let opts = {
                 severity: "error",
                 rule: this,
-                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
                 highlight: `Target: ${resource.getTarget()}<e0></e0>`,
                 pathName: resource.getPath(),
@@ -146,34 +150,37 @@ class ResourceICUPlurals extends ResourceRule {
         }
 
         // now deal with the missing non-required categories
-        missing = actualNonrequiredSourceCategories.filter(category => {
-            // if it is in the source, but it is not required, it should also be in the target
-            return !allTargetCategories.includes(category);
-        });
-        if (missing.length) {
-            let opts = {
-                severity: "warning", // non-required categories get a warning
-                rule: this,
-                description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
-                id: resource.getKey(),
-                highlight: `Target: ${resource.getTarget()}<e0></e0>`,
-                pathName: resource.getPath(),
-                source: resource.getSource(),
-                locale: resource.getTargetLocale()
-            };
-            problems.push(new Result(opts));
-        }
+        if (sourceSelect.node.pluralType === "cardinal") {
+            missing = Array.from(actualNonrequiredSourceCategories).filter(category => {
+                // if it is in the source, but it is not required, it should also be in the target
+                // so give a warning
+                return !allTargetCategories.has(category);
+            });
+            if (missing.length) {
+                let opts = {
+                    severity: "warning", // non-required categories get a warning
+                    rule: this,
+                    description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
+                    id: resource.getKey(),
+                    highlight: `Target: ${resource.getTarget()}<e0></e0>`,
+                    pathName: resource.getPath(),
+                    source: resource.getSource(),
+                    locale: resource.getTargetLocale()
+                };
+                problems.push(new Result(opts));
+            }
+        } // else the source categories are already required in the target, so we don't need to check them again
 
         // now deal with non-required categories that are in the target but not the source
-        const extra = actualNonrequiredTargetCategories.filter(category => {
-            return !allSourceCategories.includes(category);
+        const extra = Array.from(actualNonrequiredTargetCategories).filter(category => {
+            return !allSourceCategories.has(category);
         });
         if (extra.length) {
             const highlight = resource.getTarget().replace(new RegExp(`(${extra.join("|")})\\s*\\{`, "g"), "<e0>$1</e0> {");
             let opts = {
                 severity: "warning",
                 rule: this,
-                description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${requiredTargetCategories.concat(actualNonrequiredSourceCategories).join(", ")}`,
+                description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
                 highlight: `Target: ${highlight}`,
                 pathName: resource.getPath(),
