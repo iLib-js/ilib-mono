@@ -298,7 +298,7 @@ class Parser {
                                         context: context,
                                         index: resourceIndex++,
                                         targetLocale: translationPlurals && this.targetLocale?.getSpec(),
-                                        targetStrings: this.getTargetStrings(translationPlurals)
+                                        targetStrings: this.mapTranslations(translationPlurals)
                                     });
                                 } else if (type === "array") {
                                     // if there is an existing array resource with the same key, use that one
@@ -484,7 +484,7 @@ class Parser {
      *                              This may be `undefined` if no plural translations are provided.
      * @returns A plural object with appropriate categories for the target locale.
      */
-    private getTargetStrings(translationPlurals: Plural | undefined) {
+    private mapTranslations(translationPlurals: Plural | undefined) {
         const language = this.targetLocale?.getLanguage() ?? "en";
 
         switch (language) {

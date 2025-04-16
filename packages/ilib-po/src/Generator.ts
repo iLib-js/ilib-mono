@@ -210,7 +210,7 @@ class Generator {
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {
                     this.plurals.categories.forEach((category, index) => {
-                        const translation = this.getTranslation(translatedPlurals, sourcePlurals, category);
+                        const translation = this.getTranslationOrEmptyString(translatedPlurals, sourcePlurals, category);
                         output += `msgstr[${index}] "${escapeQuotes(translation)}"\n`;
                     });
                 }
@@ -222,21 +222,21 @@ class Generator {
     /**
      * @private
      *
-     * Get the translation for a specific plural category.
+     * Gets the translation for a given plural category.
+     * If the translation is the same as the source, returns an empty string.
+     * Otherwise, returns the translation.
      *
      * @param translatedPlurals the translated plurals
      * @param sourcePlurals the source plurals
      * @param category the plural category as defined in the pluralForms.ts
      *
-     * @returns the translation for the specified plural category
+     * @returns empty string if the translation is the same as the source, otherwise returns the translation
      */
-    private getTranslation(translatedPlurals: Plural, sourcePlurals: Plural, category: PluralCategory): string {
-        switch (category) {
-            case "one":
-                return translatedPlurals[category] === sourcePlurals[category] ? "" : translatedPlurals[category] ?? "";
-            default:
-                return translatedPlurals[category] === sourcePlurals["other"] ? "" : translatedPlurals[category] ?? "";
-        }
+    private getTranslationOrEmptyString(translatedPlurals: Plural, sourcePlurals: Plural, category: PluralCategory): string {
+        const sourceValue = sourcePlurals[category] ?? sourcePlurals["other"];
+        const targetValue = translatedPlurals[category] ?? "";
+
+        return sourceValue === targetValue ? "" : targetValue;
     }
 }
 

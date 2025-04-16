@@ -835,8 +835,10 @@ POFile.prototype.localize = function(translations, locales) {
  * @returns {Object|undefined} A plural object with appropriate categories for the target locale.
  */
 POFile.prototype.getTargetStrings = function(translationPlurals, targetLocale) {
-    switch (targetLocale) {
-        case "pl-PL":
+    const language = new Locale(targetLocale).getLanguage();
+
+    switch (language) {
+        case "pl":
             /*
              * In Polish (`pl`), the plural forms defined in CLDR are: "one", "few", "many", and "other".
              * However, PO files (due to GNU gettext limitations) only support "one", "few", and "many".
