@@ -677,7 +677,7 @@ describe("test the plural categories for various languages", () => {
 
     test("getLanguagePluralCategories for undefined language", () => {
         expect.assertions(1);
-    
+
         const categories = getLanguagePluralCategories(undefined);
         expect(categories).toStrictEqual(["one", "other"]);
     });
