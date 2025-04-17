@@ -54,6 +54,7 @@ describe("resourceplural", function() {
                 "many": "This is the many case"
             }
         });
+
         expect(rp).toBeTruthy();
     });
 

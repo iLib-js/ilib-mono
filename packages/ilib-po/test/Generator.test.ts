@@ -927,12 +927,6 @@ describe("generator", () => {
                 other: "Selected items"
             },
             sourceLocale: "en-US",
-            target: {
-                one: "Your item",
-                few: "Selected items",
-                many: "Selected items",
-                other: "Selected items",
-            },
             targetLocale: "pl-PL",
             datatype: "po"
         }));

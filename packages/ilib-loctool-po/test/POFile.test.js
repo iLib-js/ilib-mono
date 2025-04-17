@@ -489,42 +489,6 @@ describe("pofile", function() {
         expect(targetPlurals.other).toEqual(targetPlurals.many);
     });
 
-    // test("POFile backfills the plural 'many' category with the 'other' category for Polish language, when 'many' is missing in incoming Resource object", () => {
-    //     const generator = new Generator({
-    //         pathName: "./po/messages.po",
-    //         targetLocale: "pl-PL",
-    //         contextInKey: false,
-    //         datatype: "po",
-    //         projectName: "foo"
-    //     });
-    //
-    //     const translations = new TranslationSet();
-    //     translations.add(new ResourcePlural({
-    //         project: "foo",
-    //         key: "Your item",
-    //         source: {
-    //             one: "Your item",
-    //             other: "Selected items"
-    //         },
-    //         sourceLocale: "en-US",
-    //         target: {
-    //             one: "ONE",
-    //             few: "FEW",
-    //             other: "OTHER - should be used as a backfill for MANY"
-    //         },
-    //         targetLocale: "pl-PL",
-    //         datatype: "po"
-    //     }));
-    //
-    //     const actual = generator.generate(translations);
-    //     const expected =
-    //         'msgstr[0] "ONE"\n' +
-    //         'msgstr[1] "FEW"\n' +
-    //         'msgstr[2] "OTHER - should be used as a backfill for MANY"\n';
-    //
-    //     expect(actual).toContain(expected);
-    // })
-
     test("POFileParsePluralStringWithEmptyTranslations", function() {
         expect.assertions(11);
 
@@ -3584,7 +3548,7 @@ describe("pofile", function() {
         expect(content).toBe(expected);
     });
 
-    test("POFile write uses the plural 'many' category for Polish when it exists in Resource object", function() {
+    test("POFile `write` uses the plural 'many' category for Polish when it exists in Resource object", function() {
         const base = path.dirname(module.id);
         const xdd = path.join(base, "testfiles/po/pl-PL.po");
 
@@ -3623,7 +3587,7 @@ describe("pofile", function() {
         expect(content).toContain(expected);
     });
 
-    test("POFile write backfills the plural 'many' category with the plural 'other' category for Polish when 'many' is missing in Resource object", function() {
+    test("POFile `write` backfills the plural 'many' category with the plural 'other' category for Polish when 'many' is missing in Resource object", function() {
         const base = path.dirname(module.id);
         const testFile = path.join(base, "testfiles/po/pl-PL.po");
 
