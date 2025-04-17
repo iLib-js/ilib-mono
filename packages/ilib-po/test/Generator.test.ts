@@ -988,7 +988,7 @@ describe("generator", () => {
         expect(actual).not.toContain("OTHER Wybrane elementy")
     });
 
-    test("Generates a file with both singular and plural entries for Polish with all plural forms except 'other'", () => {
+    test("Generator generates a file with both singular and plural entries for Polish with all plural forms except 'other'", () => {
         const generator = new Generator({
             pathName: "./po/messages.po",
             targetLocale: "pl-PL",
@@ -997,8 +997,8 @@ describe("generator", () => {
             projectName: "foo"
         });
 
-        const set = new TranslationSet();
-        set.add(new ResourceString({
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
             project: "foo",
             key: "string 1",
             source: "string 1",
@@ -1007,7 +1007,7 @@ describe("generator", () => {
             targetLocale: "pl-PL",
             datatype: "po"
         }));
-        set.add(new ResourcePlural({
+        translations.add(new ResourcePlural({
             project: "foo",
             key: "one string",
             source: {
@@ -1025,7 +1025,7 @@ describe("generator", () => {
             datatype: "po"
         }));
 
-        const actual = generator.generate(set);
+        const actual = generator.generate(translations);
         const expected =
             'msgid "string 1"\n' +
             'msgstr "słowo 1"\n' +
@@ -1038,7 +1038,43 @@ describe("generator", () => {
 
         expect(actual).toContain(expected);
         expect(actual).not.toContain("{$count} OTHER słowa");
-    })
+    });
+
+    test("Generator backfills 'many' with 'other' for Polish when 'many' is missing in incoming Resource object", () => {
+        const generator = new Generator({
+            pathName: "./po/messages.po",
+            targetLocale: "pl-PL",
+            contextInKey: false,
+            datatype: "po",
+            projectName: "foo"
+        });
+
+        const translations = new TranslationSet();
+        translations.add(new ResourcePlural({
+            project: "foo",
+            key: "Your item",
+            source: {
+                one: "Your item",
+                other: "Selected items"
+            },
+            sourceLocale: "en-US",
+            target: {
+                one: "ONE",
+                few: "FEW",
+                other: "OTHER - should be used as a backfill for MANY"
+            },
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+
+        const actual = generator.generate(translations);
+        const expected =
+            'msgstr[0] "ONE"\n' +
+            'msgstr[1] "FEW"\n' +
+            'msgstr[2] "OTHER - should be used as a backfill for MANY"\n';
+
+        expect(actual).toContain(expected);
+    });
 
     test("Generator generate text plurals with translations", () => {
         expect.assertions(2);
@@ -1287,7 +1323,6 @@ describe("generator", () => {
 
         expect(actual).toBe(expected);
     });
-
 
     test("Generator generate text with different datatypes, some of which are the same as the default datatype", () => {
         expect.assertions(2);
