@@ -21,7 +21,7 @@ import log4js from "log4js";
 
 import { Fixer } from "ilib-lint-common";
 
-const logger = log4js.getLogger("ilib-lint.FormatterManager");
+const logger = log4js.getLogger("ilib-lint.FixerManager");
 
 /** @typedef {Class} FixerClass Constructor of {@link Fixer} or its subclass */
 /**
@@ -48,7 +48,7 @@ class FixerManager {
     registry = {};
 
     /**
-     * Create a new formatter manager.
+     * Create a new fixer manager.
      * @param {Object} [options] options controlling the construction of this object
      * @param {FixerClass[]} [options.fixers]
      */
@@ -61,7 +61,7 @@ class FixerManager {
     }
 
     /**
-     * Instantiate a formatter for a requested type identifier,
+     * Instantiate a fixer for a requested type identifier,
      * to use it for applying Fixes.
      *
      * @param {String} type type identifier for which a Fixer instance should be returned

@@ -200,7 +200,7 @@ class LintableFile extends DirItem {
                             true === this.project.getConfig().autofix &&
                             // and that any fixable results were produced
                             fixable.length > 0 &&
-                            // and that the current parser is able to write
+                            // and that there is a serializer that is able to write out the modified file
                             this.serializer &&
                             // and that the fixer for this type of IR is avaliable
                             (fixer = this.project.getFixerManager().get(ir.getType()))

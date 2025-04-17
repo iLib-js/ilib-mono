@@ -44,6 +44,8 @@ import ResourceSourceICUUnexplainedParams from '../rules/ResourceSourceICUUnexpl
 import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
+import StringFixer from './string/StringFixer.js';
+import ResourceFixer from './resource/ResourceFixer.js';
 
 // built-in declarative rules
 export const regexRules = [
@@ -365,7 +367,10 @@ class BuiltinPlugin extends Plugin {
     }
 
     getFixers() {
-        return [];
+        return [
+            StringFixer,
+            ResourceFixer
+        ];
     }
 };
 
