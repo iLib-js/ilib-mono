@@ -778,6 +778,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                     }
                 } else {
                     translatedPlurals = r.getTargetPlurals() || {};
+                    translatedPlurals = this.backfillTranslations(translatedPlurals, locale);
                 }
 
                 output += 'msgid_plural "' + escapeQuotes(sourcePlurals.other)  + '"\n';
@@ -854,5 +855,39 @@ POFile.prototype.getTargetStrings = function(translationPlurals, targetLocale) {
             return translationPlurals;
     }
 }
+
+/**
+ * Ensures that plural translations for Polish include the "many" category.
+ *
+ * Due to inconsistencies in how plural forms are handled in some Resource sources
+ * (such as PO files from other loctool plugins, legacy translations, or results
+ * from format conversion via "loctool convert"), Resource instances may not have
+ * the "many" plural category for Polish.
+ *
+ * This method backfills the "many" plural category using the value from "other"
+ * if "many" is missing and the target locale is Polish.
+ *
+ * This is necessary because the correct plural categories for Polish are:
+ * "one", "few", "many", and "other". Failing to include "many" can result in
+ * malformed or incorrect PO file outputs, particularly when generating msgstr[2].
+ *
+ * @param translatedPlurals - The pluralized translation strings object.
+ * @param locale - The locale of the target, used to determine if special handling is required.
+ * @returns A new `Plural` object with "many" backfilled from "other" when applicable.
+ */
+POFile.prototype.backfillTranslations = function (translatedPlurals, locale) {
+    const language = new Locale(locale).getLanguage();
+    const isManyMissing = translatedPlurals.many === undefined;
+
+    if(language === "pl" && isManyMissing) {
+        return {
+            ...translatedPlurals,
+            many: translatedPlurals.other
+        };
+    }
+
+    return translatedPlurals;
+}
+
 
 module.exports = POFile;
