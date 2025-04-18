@@ -1,5 +1,14 @@
 # ilib-po
 
+## 1.1.3
+
+### Patch Changes
+
+- 638b54e: - Fixed handling of Polish plural categories in PO files. The categories `one`, `few`, and `many` are now correctly recognized and processed.
+  - Added logic to backfill the `many` plural category with the `other` category for Polish when `many` is missing in the incoming `Resource` object.
+- Updated dependencies [2e65e98]
+  - ilib-tools-common@1.15.0
+
 ## 1.1.2
 
 ### Patch Changes

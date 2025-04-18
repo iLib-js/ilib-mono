@@ -1,5 +1,23 @@
 # ilib-lint
 
+## 2.9.2
+
+### Patch Changes
+
+- c0059a9: - fixed a bug where the linter would throw an exception if the
+  formatter named on the command-line was not known. Now, it
+  prints out a proper error message.
+- 2e65e98: - Fixed a bug where the linter would give a false positive
+  if a string in an ICU plural category had no translatable
+  text in it, and it was the same as the same category
+  string in the source. Now it just ignores it.
+  - Fixed a bug where the linter would not enforce that all
+    category strings in an ICU select have the same set of
+    categories in the source and target strings. If there are
+    extra or missing strings in the select, it will give results
+- Updated dependencies [2e65e98]
+  - ilib-tools-common@1.15.0
+
 ## 2.9.1
 
 ### Patch Changes
