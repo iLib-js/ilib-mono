@@ -36,12 +36,19 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      */
     constructor(params) {
         super(params);
-        const { position, deleteCount, insertContent } = params;
+        const { locator, position, deleteCount, insertContent = "" } = params;
+        if (!locator) {
+            throw new Error("ResourceStringFixCommand must have a locator");
+        }
         if (!Number.isInteger(position) || position < 0) {
             throw new Error("ResourceStringFixCommand position must be non-negative integer");
         }
         if (!Number.isInteger(deleteCount) || deleteCount < 0) {
             throw new Error("ResourceStringFixCommand deleteCount must be non-negative integer");
+        }
+        const content = locator.getContent();
+        if (position + deleteCount > content.length) {
+            throw new Error("ResourceStringFixCommand position + deleteCount is longer than the length of the content")
         }
         this.stringFix = new StringFixCommand(position, deleteCount, insertContent);
     }

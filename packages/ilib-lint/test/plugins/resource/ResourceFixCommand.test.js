@@ -75,25 +75,6 @@ describe("test ResourceMetadataFixCommand", () => {
             });
         }).toThrow();
     });
-
-    test("ResourceMetadataFixCommand constructor with no value", () => {
-        expect.assertions(1);
-
-        const resource = new ResourceString({
-            key: "key",
-            source: "source",
-            target: "target"
-        });
-        const locator = new ResourceStringLocator(resource);
-
-        expect(() => {
-            // @ts-ignore
-            new ResourceMetadataFixCommand({
-                locator,
-                name: "name"
-            });
-        }).toThrow();
-    });
 });
 
 describe("test ResourceStringFixCommand", () => {
@@ -175,27 +156,6 @@ describe("test ResourceStringFixCommand", () => {
             });
         }).toThrow();
     });
-
-    test("ResourceStringFixCommand constructor with no insertContent", () => {
-        expect.assertions(1);
-
-        const resource = new ResourceString({
-            key: "key",
-            source: "source",
-            target: "target"
-        });
-        const locator = new ResourceStringLocator(resource);
-
-        expect(() => {
-            // @ts-ignore
-            new ResourceStringFixCommand({
-                locator,
-                position: 0,
-                deleteCount: 0
-            });
-        }).toThrow();
-    });
-
 
     test("ResourceStringFixCommand constructor with negative position", () => {
         expect.assertions(1);
@@ -384,7 +344,7 @@ describe("test ResourceStringFixCommand", () => {
         const locator = new ResourceStringLocator(resource);
         const command1 = new ResourceStringFixCommand({
             locator,
-            position: 0,
+            position: 1,
             deleteCount: 0,
             insertContent: "content"
         });

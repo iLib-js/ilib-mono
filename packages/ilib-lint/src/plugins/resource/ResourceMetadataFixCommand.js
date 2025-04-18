@@ -48,6 +48,9 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
      */
     constructor(params) {
         super(params);
+        if (!params || !params.locator || !params.name) {
+            throw new Error("ResourceMetadataFixCommand requires a locator and a name");
+        }
         this.name = params.name;
         this.value = params.value;
     }
