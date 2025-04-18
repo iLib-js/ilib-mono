@@ -560,6 +560,26 @@ class Resource {
     getLocation() {
         return this.location?.getLocation();
     }
+
+    /**
+     * Return the a hash key that uniquely identifies this resource.
+     *
+     * @abstract
+     * @returns {string} a unique hash key for this resource
+     */
+    hashKey() {
+        throw new Error("hashKey() not implemented");
+    }
+
+    /**
+     * Return the a hash key that uniquely identifies this resource, but uses the cleaned version of the string
+     *
+     * @abstract
+     * @returns {string} a unique hash key for this resource with a cleaned string
+     */
+    cleanHashKey() {
+        throw new Error("cleanHashKey() not implemented");
+    }
 }
 
 export default Resource;
