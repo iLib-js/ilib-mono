@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { TranslationSet } from "ilib-tools-common";
+import {TranslationSet} from "ilib-tools-common";
 import Locale from "ilib-locale";
 
-import { Comments, CommentType, escapeQuotes, makeKey } from "./utils";
-import { pluralForms, PluralForm } from "./pluralforms";
+import {Comments, CommentType, escapeQuotes, makeKey, Plural, PluralCategory} from "./utils";
+import {pluralForms, PluralForm} from "./pluralforms";
 
 /** Options for the generator constructor */
 export interface GeneratorOptions {
@@ -45,7 +45,7 @@ export interface GeneratorOptions {
     /**
      * The default data type of the resources
      */
-     datatype?: string;
+    datatype?: string;
 
     /**
      * The name of the project that the resources belong to
@@ -209,15 +209,70 @@ class Generator {
 
                 output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
                 if (translatedPlurals) {
+                    const translated = this.backfillTranslations(translatedPlurals, this.targetLocale);
+
                     this.plurals.categories.forEach((category, index) => {
-                        const translation =
-                            translatedPlurals[category] !== sourcePlurals[category] ? translatedPlurals[category] : "";
+                        const translation = this.getTranslationOrEmptyString(translated, sourcePlurals, category);
                         output += `msgstr[${index}] "${escapeQuotes(translation)}"\n`;
                     });
                 }
             }
         }
         return output;
+    }
+
+    /**
+     * @private
+     *
+     * Gets the translation for a given plural category.
+     * If the translation is the same as the source, returns an empty string.
+     * Otherwise, returns the translation.
+     *
+     * @param translatedPlurals - The object containing the translated plural forms.
+     * @param sourcePlurals - The object containing the original source plural forms.
+     * @param category - The plural category to retrieve (e.g., "one", "few", "many", "other") as defined in the pluralForms.
+     *
+     * @returns empty string if the translation is the same as the source, otherwise returns the translation
+     * @returns The translated string for the given category, or an empty string if the translation matches the source value.
+     */
+    private getTranslationOrEmptyString(translatedPlurals: Plural, sourcePlurals: Plural, category: PluralCategory): string {
+        const sourceValue = sourcePlurals[category] ?? sourcePlurals["other"];
+        const targetValue = translatedPlurals[category] ?? "";
+
+        return sourceValue === targetValue ? "" : targetValue;
+    }
+
+    /**
+     * Ensures that plural translations for Polish include the "many" category.
+     *
+     * Due to inconsistencies in how plural forms are handled in some Resource sources
+     * (such as PO files from other loctool plugins, legacy translations, or results
+     * from format conversion via "loctool convert"), Resource instances may not have
+     * the "many" plural category for Polish.
+     *
+     * This method backfills the "many" plural category using the value from "other"
+     * if "many" is missing and the target locale is Polish.
+     *
+     * This is necessary because the correct plural categories for Polish are:
+     * "one", "few", "many", and "other". Failing to include "many" can result in
+     * malformed or incorrect PO file outputs, particularly when generating msgstr[2].
+     *
+     * @param translatedPlurals - The pluralized translation strings object.
+     * @param targetLocale - The locale of the target language, used to determine if special handling is required.
+     * @returns A new `Plural` object with "many" backfilled from "other" when applicable.
+     */
+    private backfillTranslations(translatedPlurals: Plural, targetLocale: Locale): Plural {
+        const language = targetLocale.getLanguage();
+        const isManyMissing = translatedPlurals?.many === undefined;
+
+        if(language === "pl" && isManyMissing) {
+            return {
+                ...translatedPlurals,
+                many: translatedPlurals.other
+            };
+        }
+
+        return translatedPlurals;
     }
 }
 

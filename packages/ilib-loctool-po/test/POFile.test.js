@@ -134,6 +134,7 @@ afterEach(function() {
         "./test/testfiles/po/fr-FR.po",
         "./test/testfiles/po/no.po",
         "./test/testfiles/po/ru-RU.po",
+        "./test/testfiles/po/pl-PL.po",
         "./test/testfiles/po/ru.po",
         "./test/testfiles/resources/template_ru-RU.po",
         "./test/testfiles/resources/template_nb.po",
@@ -403,6 +404,89 @@ describe("pofile", function() {
         expect(strings.one).toBe("Ein Objekt");
         expect(strings.other).toBe("{$count} Objekten");
         expect(resources[0].getTargetLocale()).toBe("de-DE");
+    });
+
+    test("POFile correctly parses plural strings with Polish translations", function() {
+        var file = new POFile({
+            project: p,
+            locale: "pl-PL",
+            type: t
+        });
+
+        file.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const set = file.getTranslationSet();
+        const resources = set.getAll();
+        const resource = resources[0];
+        const type = resource.getType();
+        const key = resource.getKey();
+        const sourceLocale = resource.getSourceLocale();
+        const targetLocale = resource.getTargetLocale();
+
+        expect(set.size()).toBe(1);
+        expect(resources.length).toBe(1);
+        expect(key).toBe("Your item");
+        expect(type).toBe("plural");
+        expect(sourceLocale).toBe("en-US");
+        expect(targetLocale).toBe("pl-PL");
+    });
+
+    test("POFile correctly recognizes the Polish plural categories in PO files as 'one', 'few', and 'many'.", function() {
+        var file = new POFile({
+            project: p,
+            locale: "pl-PL",
+            type: t
+        });
+
+        file.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const resource = file.getTranslationSet().getAll()[0];
+        const sourcePlurals = resource.getSourcePlurals();
+        const targetPlurals = resource.getTargetPlurals();
+
+        expect(sourcePlurals).toEqual({
+            one: "Your item",
+            other: "Selected items"
+        });
+        expect(targetPlurals).toEqual(expect.objectContaining({
+            one: "ONE Twój element",
+            few: "FEW Wybrane elementy",
+            many: "MANY Wybrane elementy"
+        }))
+    });
+
+    test("POFile correctly backfills the plural 'other' category with the 'many' category for the Polish language", function() {
+        var file = new POFile({
+            project: p,
+            locale: "pl-PL",
+            type: t
+        });
+
+        file.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const resource = file.getTranslationSet().getAll()[0];
+        const targetPlurals = resource.getTargetPlurals();
+
+        expect(targetPlurals.many).toEqual("MANY Wybrane elementy");
+        expect(targetPlurals.other).toEqual(targetPlurals.many);
     });
 
     test("POFileParsePluralStringWithEmptyTranslations", function() {
@@ -3464,6 +3548,83 @@ describe("pofile", function() {
         expect(content).toBe(expected);
     });
 
+    test("POFile `write` uses the plural 'many' category for Polish when it exists in Resource object", function() {
+        const base = path.dirname(module.id);
+        const xdd = path.join(base, "testfiles/po/pl-PL.po");
+
+        if (fs.existsSync(xdd)) {
+            fs.unlinkSync(xdd);
+        }
+
+        const file = createFile('pl-PL')
+
+        file.addResource(new ResourcePlural({
+            project: "foo",
+            key: "one",
+            sourceStrings: {
+                "one": "one",
+                "other": "other"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "JEDEN",
+                "few": "KILKA",
+                "many": "WIELE",
+                "other": "INNE"
+            },
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+
+        file.write();
+
+        const content = fs.readFileSync(xdd, "utf-8");
+        const expected =
+            'msgstr[0] "JEDEN"\n' +
+            'msgstr[1] "KILKA"\n' +
+            'msgstr[2] "WIELE"';
+
+        expect(content).toContain(expected);
+    });
+
+    test("POFile `write` backfills the plural 'many' category with the plural 'other' category for Polish when 'many' is missing in Resource object", function() {
+        const base = path.dirname(module.id);
+        const testFile = path.join(base, "testfiles/po/pl-PL.po");
+
+        if (fs.existsSync(testFile)) {
+            fs.unlinkSync(testFile);
+        }
+
+       const file = createFile('pl-PL')
+
+        file.addResource(new ResourcePlural({
+            project: "foo",
+            key: "one",
+            sourceStrings: {
+                "one": "one",
+                "other": "other"
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "JEDEN",
+                "few": "KILKA",
+                "other": "INNE"
+            },
+            targetLocale: "pl-PL",
+            datatype: "po"
+        }));
+
+        file.write();
+
+        const content = fs.readFileSync(testFile, "utf-8");
+        const expected =
+            'msgstr[0] "JEDEN"\n' +
+            'msgstr[1] "KILKA"\n' +
+            'msgstr[2] "INNE"';
+
+        expect(content).toContain(expected);
+    });
+
     test("POFileWriteWithMissingTranslations", function() {
         expect.assertions(5);
 
@@ -3906,3 +4067,25 @@ describe("pofile", function() {
         expect(content).toBe(expected);
     });
 });
+
+function createFile(locale) {
+    const project = new CustomProject({
+        name: "foo",
+        id: "foo",
+        sourceLocale: "en-US",
+        plugins: [
+            path.join(process.cwd(), "POFileType")
+        ]
+    }, "./test/testfiles", {
+        locales:["en-GB"],
+        targetDir: ".",
+    });
+    const type = new POFileType(project);
+
+    return new POFile({
+        project,
+        pathName: `./po/${locale}.po`,
+        type: type,
+        locale
+    });
+}

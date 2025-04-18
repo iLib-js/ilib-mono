@@ -304,6 +304,8 @@ POFile.prototype.parse = function(data) {
                             // emit a resource
                             var options, key;
                             if (sourcePlurals) {
+                                var targetLocale = translationPlurals && this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
+
                                 key = (context && this.mapping && this.mapping.contextInKey) ? sourcePlurals.one + " --- " + context : sourcePlurals.one;
                                 options = {
                                     resType: "plural",
@@ -317,10 +319,10 @@ POFile.prototype.parse = function(data) {
                                     datatype: this.type.datatype,
                                     context: context,
                                     index: this.resourceIndex++,
-                                    targetLocale: translationPlurals && this.localeSpec && this.localeSpec !== this.project.sourceLocale ? this.localeSpec : undefined
+                                    targetLocale: targetLocale
                                 };
                                 if (translationPlurals) {
-                                    options.targetStrings = translationPlurals;
+                                    options.targetStrings = this.getTargetStrings(translationPlurals, targetLocale);
                                 }
                             } else {
                                 key = (context && this.mapping && this.mapping.contextInKey) ? source + " --- " + context : source;
@@ -776,6 +778,7 @@ POFile.prototype.localizeText = function(translations, locale) {
                     }
                 } else {
                     translatedPlurals = r.getTargetPlurals() || {};
+                    translatedPlurals = this.backfillTranslations(translatedPlurals, locale);
                 }
 
                 output += 'msgid_plural "' + escapeQuotes(sourcePlurals.other)  + '"\n';
@@ -818,5 +821,73 @@ POFile.prototype.localize = function(translations, locales) {
         }
     }
 };
+
+/**
+ * @private
+ *
+ * Retrieves the appropriate plural forms for the target locale,
+ * applying necessary adjustments to conform to ICU pluralization rules.
+ *
+ * @param {Object|undefined} translationPlurals - An object containing pluralized translation strings,
+ *        where keys represent plural categories (e.g., "one", "few", "many").
+ *        This may be `undefined` if no plural translations are provided.
+ * @param targetLocale {String|undefined} - The target locale for which the plural forms are required.
+ *
+ * @returns {Object|undefined} A plural object with appropriate categories for the target locale.
+ */
+POFile.prototype.getTargetStrings = function(translationPlurals, targetLocale) {
+    const language = new Locale(targetLocale).getLanguage();
+
+    switch (language) {
+        case "pl":
+            /*
+             * In Polish (`pl`), the plural forms defined in CLDR are: "one", "few", "many", and "other".
+             * However, PO files (due to GNU gettext limitations) only support "one", "few", and "many".
+             * ICU, on the other hand, requires an "other" category for proper pluralization (as per ICU4J).
+             * To ensure compatibility, we backfill the "other" category using the value from "many".
+             * This ensures translations are applied correctly in ICU-compliant systems/projects.
+             */
+            return {
+                ...translationPlurals,
+                other: translationPlurals?.many
+            };
+        default:
+            return translationPlurals;
+    }
+}
+
+/**
+ * Ensures that plural translations for Polish include the "many" category.
+ *
+ * Due to inconsistencies in how plural forms are handled in some Resource sources
+ * (such as PO files from other loctool plugins, legacy translations, or results
+ * from format conversion via "loctool convert"), Resource instances may not have
+ * the "many" plural category for Polish.
+ *
+ * This method backfills the "many" plural category using the value from "other"
+ * if "many" is missing and the target locale is Polish.
+ *
+ * This is necessary because the correct plural categories for Polish are:
+ * "one", "few", "many", and "other". Failing to include "many" can result in
+ * malformed or incorrect PO file outputs, particularly when generating msgstr[2].
+ *
+ * @param translatedPlurals - The pluralized translation strings object.
+ * @param locale - The locale of the target, used to determine if special handling is required.
+ * @returns A new `Plural` object with "many" backfilled from "other" when applicable.
+ */
+POFile.prototype.backfillTranslations = function (translatedPlurals, locale) {
+    const language = new Locale(locale).getLanguage();
+    const isManyMissing = translatedPlurals.many === undefined;
+
+    if(language === "pl" && isManyMissing) {
+        return {
+            ...translatedPlurals,
+            many: translatedPlurals.other
+        };
+    }
+
+    return translatedPlurals;
+}
+
 
 module.exports = POFile;

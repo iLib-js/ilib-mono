@@ -404,6 +404,66 @@ describe("parser", () => {
         expect(resources[0].getTargetLocale()).toBe("ru-RU");
     });
 
+    test("Parser correctly parses all Polish plural categories from PO file and recognizes them as 'one', 'few', and 'many'", () => {
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "pl-PL",
+            projectName: "boo",
+            datatype: "po"
+        });
+
+        const set = parser.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const resource = set.getAll()[0];
+        const type = resource.getType();
+        const locale = resource.getTargetLocale();
+        const source = resource.getSource();
+        const target = resource.getTarget();
+
+        expect(type).toBe("plural");
+        expect(locale).toBe("pl-PL");
+        expect(source).toEqual({
+            one: "Your item",
+            other: "Selected items"
+        })
+        expect(target).toEqual(expect.objectContaining({
+            one: "ONE Twój element",
+            few: "FEW Wybrane elementy",
+            many: "MANY Wybrane elementy"
+        }))
+    });
+
+    test("Parser backfills the plural 'other' category with the 'many' category for the Polish language", () => {
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "pl-PL",
+            projectName: "boo",
+            datatype: "po"
+        });
+
+        const set = parser.parse(`
+            msgid "Your item"
+            msgid_plural "Selected items"
+            msgstr[0] "ONE Twój element"
+            msgstr[1] "FEW Wybrane elementy"
+            msgstr[2] "MANY Wybrane elementy"
+        `);
+
+        const resource = set.getAll()[0];
+        const target = resource.getTarget();
+
+        expect(target.many).toEqual("MANY Wybrane elementy");
+        expect(target.other).toEqual(target.many);
+    });
+
     test("ParserParsePluralStringWithTranslations With Locale From Header", () => {
         expect.assertions(13);
 
