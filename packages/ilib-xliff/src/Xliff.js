@@ -841,7 +841,9 @@ class Xliff {
      *
      * @private
      * @param {Element} xliff
-     * @param {string} resfile the path to the xliff file
+     * @param {string|undefined} resfile the path to the xliff file
+     * that contains the translation units, or undefined if this xliff
+     * is being parsed from a string
      */
     parse1(xliff, resfile) {
         const files = getChildren(xliff, "file") ?? [];
@@ -1131,7 +1133,9 @@ class Xliff {
      * units already in this instance, they will be removed first.
      *
      * @param {String} xml the xliff format text to parse
-     * @param {string | undefined} resfile the path to the xliff file
+     * @param {string | undefined} resfile the path to the xliff file,
+     * or undefined if this xml file is being parsed from a string
+     * instead of a file
      */
     deserialize(xml, resfile) {
         const json = xmljs.xml2js(xml, {
