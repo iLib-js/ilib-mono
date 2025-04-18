@@ -1,5 +1,5 @@
 /*
- * ResourceResourceLocator.test.js - test the object that helps you locate a string to fix
+ * ResourceStringLocator.test.js - test the object that helps you locate a string to fix
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -42,7 +42,7 @@ describe("test ResourceStringLocator", () => {
 
     test("ResourceStringLocator gives back the right fields", () => {
         expect.assertions(5);
-        
+
         const res = new ResourceString({
             key: "unique.key",
             path: "x/y/z.js",
@@ -77,7 +77,7 @@ describe("test ResourceStringLocator", () => {
 
         const rsl = new ResourceStringLocator(res, false);
         expect(rsl).toBeDefined();
-        
+
         expect(rsl.getResource()).toBe(res);
         expect(rsl.getCategory()).toBeUndefined();
         expect(rsl.getIndex()).toBeUndefined();
@@ -109,7 +109,7 @@ describe("test ResourceStringLocator", () => {
 
     test("ResourceStringLocator plural constructor returns the right fields", () => {
         expect.assertions(5);
-    
+
         const res = new ResourcePlural({
             key: "unique.key",
             path: "x/y/z.js",
@@ -125,7 +125,7 @@ describe("test ResourceStringLocator", () => {
             },
             targetLocale: "de-DE"
         });
-    
+
         const rsl = new ResourceStringLocator(res, undefined, "one");
         expect(rsl).toBeDefined();
 
@@ -137,7 +137,7 @@ describe("test ResourceStringLocator", () => {
 
     test("ResourceStringLocator full plural constructor returns the right fields", () => {
         expect.assertions(5);
-    
+
         const res = new ResourcePlural({
             key: "unique.key",
             path: "x/y/z.js",
@@ -153,16 +153,16 @@ describe("test ResourceStringLocator", () => {
             },
             targetLocale: "de-DE"
         });
-    
+
         const rsl = new ResourceStringLocator(res, false, "one");
         expect(rsl).toBeDefined();
-    
+
         expect(rsl.getResource()).toBe(res);
         expect(rsl.getCategory()).toBe("one");
         expect(rsl.getIndex()).toBeUndefined();
         expect(rsl.getTarget()).toBeFalsy();
     });
-    
+
     test("ResourceStringLocator plural constructor throws if you don't give the plural category", () => {
         expect.assertions(1);
 
@@ -189,30 +189,7 @@ describe("test ResourceStringLocator", () => {
 
     test("ResourceStringLocator basic array constructor", () => {
         expect.assertions(1);
-        
-        const res = new ResourceArray({
-            key: "unique.key",
-            path: "x/y/z.js",
-            resfile: "a/b/c/resources.xliff",
-            source: [
-                "This is the first source string",
-                "This is the second source string"
-            ],
-            sourceLocale: "en-US",
-            target: [
-                "This is the first target string",
-                "This is the second target string"
-            ],
-            targetLocale: "de-DE"
-        });
-        
-        const rsl = new ResourceStringLocator(res, undefined, undefined, 0);
-        expect(rsl).toBeDefined();
-    });
-    
-    test("ResourceStringLocator array constructor returns the right fields", () => {
-        expect.assertions(5);
-        
+
         const res = new ResourceArray({
             key: "unique.key",
             path: "x/y/z.js",
@@ -231,16 +208,39 @@ describe("test ResourceStringLocator", () => {
 
         const rsl = new ResourceStringLocator(res, undefined, undefined, 0);
         expect(rsl).toBeDefined();
-        
+    });
+
+    test("ResourceStringLocator array constructor returns the right fields", () => {
+        expect.assertions(5);
+
+        const res = new ResourceArray({
+            key: "unique.key",
+            path: "x/y/z.js",
+            resfile: "a/b/c/resources.xliff",
+            source: [
+                "This is the first source string",
+                "This is the second source string"
+            ],
+            sourceLocale: "en-US",
+            target: [
+                "This is the first target string",
+                "This is the second target string"
+            ],
+            targetLocale: "de-DE"
+        });
+
+        const rsl = new ResourceStringLocator(res, undefined, undefined, 0);
+        expect(rsl).toBeDefined();
+
         expect(rsl.getResource()).toBe(res);
         expect(rsl.getCategory()).toBeUndefined();
         expect(rsl.getIndex()).toBe(0);
         expect(rsl.getTarget()).toBeTruthy();
     });
-    
+
     test("ResourceStringLocator string locator gets right target content", () => {
         expect.assertions(2);
-        
+
         const res = new ResourceString({
             key: "unique.key",
             path: "x/y/z.js",
@@ -253,13 +253,13 @@ describe("test ResourceStringLocator", () => {
 
         const rsl = new ResourceStringLocator(res);
         expect(rsl).toBeDefined();
-        
+
         expect(rsl.getContent()).toBe("This is the target string");
     });
 
     test("ResourceStringLocator array constructor throws if the array index was not given", () => {
         expect.assertions(1);
-        
+
         const res = new ResourceArray({
             key: "unique.key",
             path: "x/y/z.js",
@@ -275,7 +275,7 @@ describe("test ResourceStringLocator", () => {
             ],
             targetLocale: "de-DE"
         });
-        
+
         expect(() => {
             new ResourceStringLocator(res);
         }).toThrow("Cannot create a ResourceStringLocator for an array resource without an index");
@@ -293,13 +293,13 @@ describe("test ResourceStringLocator", () => {
             target: "This is the target string",
             targetLocale: "de-DE"
         });
-    
+
         const rsl = new ResourceStringLocator(res, false);
         expect(rsl).toBeDefined();
 
         expect(rsl.getContent()).toBe("This is the source string");
     });
-    
+
     test("ResourceStringLocator plural locator gets right target content", () => {
         expect.assertions(2);
 
@@ -321,13 +321,13 @@ describe("test ResourceStringLocator", () => {
 
         const rsl = new ResourceStringLocator(res, undefined, "other");
         expect(rsl).toBeDefined();
-        
+
         expect(rsl.getContent()).toBe("This is the plural target string");
     });
 
     test("ResourceStringLocator plural locator gets right source content", () => {
         expect.assertions(2);
-    
+
         const res = new ResourcePlural({
             key: "unique.key",
             path: "x/y/z.js",
@@ -346,13 +346,13 @@ describe("test ResourceStringLocator", () => {
 
         const rsl = new ResourceStringLocator(res, false, "other");
         expect(rsl).toBeDefined();
-        
+
         expect(rsl.getContent()).toBe("This is the plural source string");
     });
-    
+
     test("ResourceStringLocator array locator gets right target content", () => {
         expect.assertions(2);
-        
+
         const res = new ResourceArray({
             key: "unique.key",
             path: "x/y/z.js",
@@ -371,13 +371,13 @@ describe("test ResourceStringLocator", () => {
 
         const rsl = new ResourceStringLocator(res, undefined, undefined, 1);
         expect(rsl).toBeDefined();
-        
+
         expect(rsl.getContent()).toBe("This is the second target string");
     });
 
     test("ResourceStringLocator array locator gets right source content", () => {
         expect.assertions(2);
-        
+
         const res = new ResourceArray({
             key: "unique.key",
             path: "x/y/z.js",
@@ -393,13 +393,13 @@ describe("test ResourceStringLocator", () => {
             ],
             targetLocale: "de-DE"
         });
-    
+
         const rsl = new ResourceStringLocator(res, false, undefined, 1);
         expect(rsl).toBeDefined();
-        
+
         expect(rsl.getContent()).toBe("This is the second source string");
     });
-    
+
     test("ResourceStringLocator string locator sets the right target content", () => {
         expect.assertions(5);
 
@@ -419,10 +419,10 @@ describe("test ResourceStringLocator", () => {
         expect(rsl.getContent()).toBe("This is the target string");
         expect(rsl.setContent("This is the new target string")).toBeTruthy();
         expect(rsl.getContent()).toBe("This is the new target string");
-        
+
         expect(res.getTarget()).toBe("This is the new target string");
     });
-    
+
     test("ResourceStringLocator string locator sets the right source content", () => {
         expect.assertions(5);
 
@@ -442,7 +442,7 @@ describe("test ResourceStringLocator", () => {
         expect(rsl.getContent()).toBe("This is the source string");
         expect(rsl.setContent("This is the new source string")).toBeTruthy();
         expect(rsl.getContent()).toBe("This is the new source string");
-        
+
         expect(res.getSource()).toBe("This is the new source string");
     });
 
@@ -470,10 +470,10 @@ describe("test ResourceStringLocator", () => {
         expect(rsl.getContent()).toBe("This is the first target string");
         expect(rsl.setContent("This is the new first target string")).toBeTruthy();
         expect(rsl.getContent()).toBe("This is the new first target string");
-        
+
         expect(res.getTarget()[0]).toBe("This is the new first target string");
     });
-    
+
     test("ResourceStringLocator plural locator sets the right source content", () => {
         expect.assertions(5);
 
@@ -501,11 +501,11 @@ describe("test ResourceStringLocator", () => {
 
         expect(res.getSource()[0]).toBe("This is the new first source string");
     });
-    
+
 
     test("ResourceStringLocator isSameAs works when the two locators are actually the same resource strings", () => {
         expect.assertions(3);
-        
+
         const res = new ResourceString({
             key: "unique.key",
             path: "x/y/z.js",
@@ -520,13 +520,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res);
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeTruthy();
     });
 
     test("ResourceStringLocator isSameAs works when the two locators are actually the same resource plurals", () => {
         expect.assertions(3);
-        
+
         const res = new ResourcePlural({
             key: "unique.key",
             path: "x/y/z.js",
@@ -547,13 +547,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res, undefined, "other");
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeTruthy();
     });
 
     test("ResourceStringLocator isSameAs works when the two locators are actually the same resource arrays", () => {
         expect.assertions(3);
-        
+
         const res = new ResourceArray({
             key: "unique.key",
             path: "x/y/z.js",
@@ -580,7 +580,7 @@ describe("test ResourceStringLocator", () => {
 
     test("ResourceStringLocator isSameAs works when the two locators are different instances of the same resource strings", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourceString({
             key: "unique.key",
             path: "x/y/z.js",
@@ -606,13 +606,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res2);
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeTruthy();
     });
 
     test("ResourceStringLocator isSameAs works when the two locators are different instances of the same resource plurals", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourcePlural({
             key: "unique.key",
             path: "x/y/z.js",
@@ -650,13 +650,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res2, undefined, "other");
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeTruthy();
     });
 
     test("ResourceStringLocator isSameAs works when the two locators are different instances of the same resource arrays", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourceArray({
             key: "unique.key",
             path: "x/y/z.js",
@@ -700,7 +700,7 @@ describe("test ResourceStringLocator", () => {
 
     test("ResourceStringLocator isSameAs returns false when the two locators are different resource strings", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourceString({
             key: "unique.key1",
             path: "x/y/z.js",
@@ -725,13 +725,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res2);
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeFalsy();
     });
 
     test("ResourceStringLocator isSameAs returns false when the two locators are different resource plurals", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourcePlural({
             key: "unique.key1",
             path: "x/y/z.js",
@@ -769,13 +769,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res2, undefined, "other");
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeFalsy();
     });
 
     test("ResourceStringLocator isSameAs returns false when the two locators are different resource arrays", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourceArray({
             key: "unique.key1",
             path: "x/y/z.js",
@@ -813,13 +813,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res2, undefined, undefined, 0);
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeFalsy();
     });
 
     test("ResourceStringLocator isSameAs is false when the two locators differ on the source/target", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourceString({
             key: "unique.key",
             path: "x/y/z.js",
@@ -845,13 +845,13 @@ describe("test ResourceStringLocator", () => {
         expect(rsl1).toBeDefined();
         const rsl2 = new ResourceStringLocator(res2, false);
         expect(rsl2).toBeDefined();
-        
+
         expect(rsl1.isSameAs(rsl2)).toBeFalsy();
     });
 
     test("ResourceStringLocator isSameAs is false when the two locators differ on the resource type", () => {
         expect.assertions(3);
-        
+
         const res1 = new ResourceString({
             key: "unique.key",
             path: "x/y/z.js",

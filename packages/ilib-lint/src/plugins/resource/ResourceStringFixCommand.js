@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Resource } from 'ilib-tools-common';
 
 import StringFixCommand from '../string/StringFixCommand.js';
 
@@ -29,23 +28,21 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      * Contains information about a transformation that should be applied to the string content
      * within the given resource.
      *
-     * @param {ResourceStringLocator} locator resource to which the command should be applied
-     * @param {number} position position in string after which the operation should be performed
-     * @param {number} deleteCount count of characters that should be deleted
-     * @param {string} insertContent string that should be inserted
+     * @param {Object} params parameters for this command
+     * @param {ResourceStringLocator} params.locator resource to which the command should be applied
+     * @param {number} params.position position in string after which the operation should be performed
+     * @param {number} params.deleteCount count of characters that should be deleted
+     * @param {string} params.insertContent string that should be inserted
      */
-    constructor(locator, position, deleteCount, insertContent) {
-        super();
-        if (typeof locator !== "object" || !(locator instanceof ResourceStringLocator)) {
-            throw new Error("ResourceStringFixCommand resource must be called with an instance of ResourceStringLocator");
-        }
+    constructor(params) {
+        super(params);
+        const { position, deleteCount, insertContent } = params;
         if (!Number.isInteger(position) || position < 0) {
             throw new Error("ResourceStringFixCommand position must be non-negative integer");
         }
         if (!Number.isInteger(deleteCount) || deleteCount < 0) {
             throw new Error("ResourceStringFixCommand deleteCount must be non-negative integer");
         }
-        this.locator = locator;
         this.stringFix = new StringFixCommand(position, deleteCount, insertContent);
     }
 
@@ -56,15 +53,6 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      */
     get range() {
         return this.stringFix.range;
-    }
-
-    /**
-     * The resource string locator to which the command should be applied.
-     *
-     * @returns {ResourceStringLocator} resource string locator to which the command should be applied
-     */
-    getLocator() {
-        return this.locator;
     }
 
     /**
@@ -83,17 +71,24 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      * - overlap with each other when their position is the same (this is because the outcome
      * of multiple insertions in the same place would depend on the order of execution)
      *
-     * @param {ResourceStringFixCommand} other
+     * @param {ResourceFixCommand} other
      * @returns {boolean} true if the ranges overlap, false otherwise
      */
     overlaps(other) {
-        const thisRange = this.range;
-        const otherRange = other.range;
         return (
+            other instanceof ResourceStringFixCommand &&
             this.locator.isSameAs(other.locator) &&
-            (thisRange[0] < otherRange[1] && otherRange[0] < thisRange[1]) ||
-            (thisRange[0] === otherRange[0] && this.stringFix.deleteCount === 0 && other.stringFix.deleteCount === 0)
+            this.stringFix.overlaps(other.stringFix)
         );
+    }
+
+    /**
+     * Return the string fix command that this command is based on.
+     *
+     * @returns {StringFixCommand} the string fix command that this command is based on
+     */
+    getStringFixCommand() {
+        return this.stringFix;
     }
 }
 

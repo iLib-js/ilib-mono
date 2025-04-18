@@ -75,7 +75,7 @@ class ResourceStringLocator {
         this.category = category;
         this.index = index;
         this.target = target;
-        
+
         if (resource.getType() === "plural" && typeof(category) !== 'string') {
             throw new Error("Cannot create a ResourceStringLocator for a plural resource without a plural category");
         }
@@ -222,6 +222,16 @@ class ResourceStringLocator {
                 break;
         }
         return true;
+    }
+
+    /**
+     * Return the hash of this resource string locator. This is a hash of the resource instance
+     * plus the target, category, and index.
+     *
+     * @returns {string} the hash of this resource string locator
+     */
+    getHash() {
+        return [this.resource.hashKey(), this.target ? "target" : "source", this.category, this.index].join("_");
     }
 }
 
