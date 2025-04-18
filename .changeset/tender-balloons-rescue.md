@@ -9,5 +9,7 @@
     the translation unit was in
   - resfile parameter is always set automatically in
     translation units generated from this library
-    to document which xliff file they came from
+    to document which xliff file they came from. It
+    is not required or used when writing the xliff 
+    translations units back to disk.
 
