@@ -119,6 +119,42 @@ describe("test ResourceFix", () => {
         expect(fix.getCommands()).toHaveLength(1);
     });
 
+    test("ResourceFix return multiple commands correctly", () => {
+        expect.assertions(5);
+
+        const resource = new ResourceString({
+            key: "key",
+            source: "source",
+            target: "target"
+        });
+        const locator = new ResourceStringLocator(resource);
+
+        const command1 = new ResourceMetadataFixCommand({
+            locator,
+            name: "name",
+            value: "value"
+        });
+        const command2 = new ResourceStringFixCommand({
+            locator,
+            position: 0,
+            deleteCount: 2,
+            insertContent: "b"
+        });
+        const command3 = new ResourceMetadataFixCommand({
+            locator,
+            name: "otherName",
+            value: "otherValue"
+        });
+        const fix = new ResourceFix(locator, [command1, command2, command3]);
+
+        expect(fix).toBeDefined();
+        const commands = fix.getCommands();
+        expect(commands).toHaveLength(3);
+        expect(commands[0]).toBe(command1);
+        expect(commands[1]).toBe(command2);
+        expect(commands[2]).toBe(command3);
+    });
+
     test("ResourceFix create a fix with overlapping metadata commands", () => {
         expect.assertions(1);
 

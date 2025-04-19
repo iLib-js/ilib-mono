@@ -75,6 +75,25 @@ describe("test ResourceMetadataFixCommand", () => {
             });
         }).toThrow();
     });
+
+    test("ResourceMetadataFixCommand applying the fix works", () => {
+        expect.assertions(1);
+
+        const resource = new ResourceString({
+            key: "key",
+            source: "source",
+            target: "target"
+        });
+        const locator = new ResourceStringLocator(resource);
+        const command = new ResourceMetadataFixCommand({
+            locator,
+            name: "targetLocale",
+            value: "de-DE"
+        });
+
+        command.apply();
+        expect(resource.getTargetLocale()).toBe("de-DE");
+    });
 });
 
 describe("test ResourceStringFixCommand", () => {

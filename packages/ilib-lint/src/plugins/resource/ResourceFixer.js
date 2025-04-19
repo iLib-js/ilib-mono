@@ -62,9 +62,14 @@ class ResourceFixer extends Fixer {
      * @returns {ResourceFix} a new fix to apply
      */
     createFix(params) {
-        const { resource, target, category, index, commands } = params;
+        const { resource, target, category, index } = params;
+        let { commands } = params;
         const locator = new ResourceStringLocator(resource, target, category, index);
-        return new ResourceFix(locator, commands ?? []);
+        commands = commands ?? [];
+        if (commands.some(command => command.getLocator().getHash() !== locator.getHash())) {
+            throw new Error("All commands in a ResourceFix must apply to the same resource instance");
+        }
+        return new ResourceFix(locator, commands);
     }
 
     /**
@@ -109,11 +114,8 @@ class ResourceFixer extends Fixer {
             return;
         }
 
-        const metadataFixCommands = fixes.flatMap(fix => {
-            return fix.getCommands().filter((command) => command instanceof ResourceMetadataFixCommand);
-        });
-        const stringFixCommands = fixes.flatMap(fix => {
-            return fix.getCommands().filter(command => command instanceof ResourceStringFixCommand);
+        const /** @type {ResourceMetadataFixCommand[]} */ metadataFixCommands = fixes.flatMap(fix => {
+            return fix.getCommands().filter(command => (command instanceof ResourceMetadataFixCommand) && !command.getApplied());
         });
 
         // figure out which commands overlap with each other and only apply the first one
@@ -160,14 +162,18 @@ class ResourceFixer extends Fixer {
             }
             // map to string fix commands so we can depend on the StringFixCommand to process them
             // correctly. Why reinvent the wheel?
-            const commands = fixCommandCache[hash].map(command => command.getStringFixCommand());
+            const commands = fixCommandCache[hash].filter(command =>
+                    (command instanceof ResourceStringFixCommand) &&
+                    !command.getApplied() &&
+                    !command.getHasOverlap());
+            const stringCommands = commands.map(command => command.getStringFixCommand());
 
             let content = locator.getContent();
-            const modified = StringFixCommand.applyCommands(content, commands);
+            const modified = StringFixCommand.applyCommands(content, stringCommands);
             locator.setContent(modified);
             locatorSet.add(hash);
 
-            fixCommandCache[hash].forEach(command => {
+            commands.forEach(command => {
                 command.setApplied(true);
             });
         });
