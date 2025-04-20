@@ -1,7 +1,7 @@
 /*
  * ResourceEdgeWhitespace.js - rule to check that whitespaces on edges of target match those on edges of source
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
  */
 
 import { Result, withVisibleWhitespace } from "ilib-lint-common";
+
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 import ResourceRule from './ResourceRule.js';
 
 /** Rule to check that whitespaces on edges of target match those on edges of source */
@@ -27,8 +29,10 @@ class ResourceEdgeWhitespace extends ResourceRule {
         "Ensure that if there are whitespaces on edges of source string, matching ones are there in target as well";
     /** @readonly */ link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-edge-whitespace.md";
 
-    constructor() {
-        super({});
+    constructor(params = {}) {
+        super(params);
+
+        this.fixer = new ResourceFixer();
     }
 
     /**
@@ -54,6 +58,17 @@ class ResourceEdgeWhitespace extends ResourceRule {
         };
 
         if (whitespaces.target.leading !== whitespaces.source.leading) {
+            const fix = this.fixer.createFix({
+                resource,
+                commands: [
+                    this.fixer.createStringCommand(
+                        resource,
+                        0,
+                        whitespaces.target.leading.length,
+                        whitespaces.source.leading
+                    )
+                ]
+            });
             results.push(
                 new Result({
                     ...resultMetaProps,
@@ -66,11 +81,23 @@ class ResourceEdgeWhitespace extends ResourceRule {
                         ` Target: ` +
                         `<e1>${withVisibleWhitespace(whitespaces.target.leading)}</e1>` +
                         this._truncateFromEnd(target.slice(whitespaces.target.leading.length)),
+                    fix
                 })
             );
         }
 
         if (whitespaces.target.trailing !== whitespaces.source.trailing) {
+            const fix = this.fixer.createFix({
+                resource,
+                commands: [
+                    this.fixer.createStringCommand(
+                        resource,
+                        target.length - 1 - whitespaces.target.trailing.length,
+                        whitespaces.target.trailing.length,
+                        whitespaces.source.trailing
+                    )
+                ]
+            });
             results.push(
                 new Result({
                     ...resultMetaProps,
@@ -83,6 +110,7 @@ class ResourceEdgeWhitespace extends ResourceRule {
                         ` Target: ` +
                         this._truncateFromStart(target.slice(0, target.length - whitespaces.target.trailing.length)) +
                         `<e1>${withVisibleWhitespace(whitespaces.target.trailing)}</e1>`,
+                    fix
                 })
             );
         }
