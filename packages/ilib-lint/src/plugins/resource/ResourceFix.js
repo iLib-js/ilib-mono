@@ -104,6 +104,15 @@ class ResourceFix extends Fix {
                 other.commands.some((otherCommand) => thisCommand.overlaps(otherCommand))
             );
     }
+
+    /**
+     * Return whether or not this fix has been applied to the resource.
+     * @returns {boolean} true if the fix has been applied, false otherwise
+     */
+    getApplied() {
+        this.applied = this.commands.some(command => command.getApplied());
+        return this.applied;
+    }
 }
 
 export default ResourceFix;

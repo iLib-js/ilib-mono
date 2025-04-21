@@ -389,6 +389,56 @@ describe("test ResourceFixer", () => {
         expect(fix2commands[3].getApplied()).toBe(true); // string command
     });
 
+    test("ResourceFixer apply fixes and make sure the fix has the right applied flags afterwards", () => {
+        expect.assertions(2);
+
+        const fixer = new ResourceFixer();
+
+        const resource = new ResourceString({
+            key: "key",
+            source: "source",
+            target: "target"
+        });
+
+        const source = new SourceFile("test.xliff", {
+            sourceLocale: "en-US",
+            type: "resource"
+        });
+
+        const ir = new IntermediateRepresentation({
+            sourceFile: source,
+            type: "resource",
+            ir: [resource],
+            dirty: false
+        });
+
+        const fix1 = fixer.createFix({
+            resource,
+            commands: [
+                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
+                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
+            ]
+        });
+
+        const fix2 = fixer.createFix({
+            resource,
+            commands: [
+                fixer.createMetadataCommand(resource, "sourceLocale", "en"),
+                // this first string command overlaps with the first fix so it should not be applied
+                fixer.createStringCommand(resource, 0, 2, "x", undefined, undefined, true),
+                fixer.createStringCommand(resource, 4, 1, "o", undefined, undefined, true),
+                fixer.createStringCommand(resource, 6, 0, "ten", undefined, undefined, true),
+            ]
+        });
+
+        // the second fix has overlapping commands with the first one
+        fixer.applyFixes(ir, [fix1, fix2]);
+
+        expect(fix1.getApplied()).toBe(true); // metadata command
+
+        expect(fix2.getApplied()).toBe(true); // if some of the commands were applied, the fix is considered applied
+    });
+
     test("ResourceFixer apply fixes but make sure it skips already-applied commands", () => {
         expect.assertions(6);
 

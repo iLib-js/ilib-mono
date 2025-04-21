@@ -128,6 +128,14 @@ class Fix {
      * @type {boolean}
      */
     applied = false;
+
+    /**
+     * Return whether or not the fix has been applied.
+     * @returns {boolean} true if the fix has been applied, false otherwise
+     */
+    getApplied() {
+        return this.applied;
+    }
 }
 
 export default Fix;

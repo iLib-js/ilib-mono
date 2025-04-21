@@ -198,7 +198,7 @@ options.opt.locales = options.opt.locales.map(spec => {
     return loc.getSpec();
 });
 
-if (options.opt["auto-fix"] || options.opt.overwrite) {
+if (options.opt.fix || options.opt.overwrite) {
     // The write option indicates that modified files should be written back to disk.
     // The write option is implicit if either auto-fix or overwrite is set.
     options.opt.write = true;

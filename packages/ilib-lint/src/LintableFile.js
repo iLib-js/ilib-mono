@@ -210,7 +210,7 @@ class LintableFile extends DirItem {
                             fixer.applyFixes(ir, fixes);
 
                             // check if anything had been applied
-                            if (fixes.some((fix) => fix.applied)) {
+                            if (fixes.some((fix) => fix.getApplied())) {
                                 // remember that a fix modified the file and that it needs to be
                                 // written out to disk again after all fixes have been applied
                                 this.dirty = true;
