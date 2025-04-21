@@ -1,5 +1,21 @@
 # ilib-lint
 
+## 2.9.3
+
+### Patch Changes
+
+- f6c2fc0: - the error filter transformer was filtering out any resource
+  with the same key as one of the results. However, it would do
+  this for all locales and across all files, which might represent
+  various localization batches. - now filters out only the resources for the appropriate
+  locale and file - now matches the file path to the resource file with the
+  translation unit came from instead of the source code path
+  where the string originally came from
+- Updated dependencies [f6c2fc0]
+- Updated dependencies [f6c2fc0]
+  - ilib-lint-common@3.3.0
+  - ilib-tools-common@1.16.0
+
 ## 2.9.2
 
 ### Patch Changes

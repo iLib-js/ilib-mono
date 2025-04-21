@@ -1,5 +1,14 @@
 # ilib-lint-common
 
+## 3.3.0
+
+### Minor Changes
+
+- f6c2fc0: - Added IntermediateRepresentation.isDirty flag
+  - can document whether or not a representation differs from an
+    original representation
+  - also added IntermediateRepresentation.isDirty() method
+
 ## 3.2.0
 
 ### Minor Changes
