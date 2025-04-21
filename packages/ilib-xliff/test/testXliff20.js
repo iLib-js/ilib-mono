@@ -250,7 +250,7 @@ export const testXliff20 = {
         const x = new Xliff({version: 2.0});
         test.ok(x);
 
-        
+
         x.addTranslationUnits([
             new TranslationUnit({
                 source: "Asdf asdf",
@@ -1216,6 +1216,68 @@ export const testXliff20 = {
         test.equal(tulist[1].target, "bebe bebe");
         test.equal(tulist[1].targetLocale, "de-DE");
         test.deepEqual(tulist[1].location, {line: 11, char: 5});
+
+        test.done();
+    },
+
+    testXliff20DeserializeWithResfile: function(test) {
+        test.expect(25);
+
+        const x = new Xliff({version: 2.0});
+        test.ok(x);
+
+        x.deserialize(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="2.0" srcLang="en-US" trgLang="de-DE" xmlns:l="http://ilib-js.com/loctool">\n' +
+                '  <file original="foo/bar/asdf.java" l:project="androidapp">\n' +
+                '    <unit id="1" name="foobar" type="res:string">\n' +
+                '      <segment>\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '        <target>foobarfoo</target>\n' +
+                '      </segment>\n' +
+                '    </unit>\n' +
+                '  </file>\n' +
+                '  <file original="foo/bar/j.java" l:project="webapp">\n' +
+                '    <unit id="2" name="huzzah" type="res:string">\n' +
+                '      <segment>\n' +
+                '        <source>baby baby</source>\n' +
+                '        <target>bebe bebe</target>\n' +
+                '      </segment>\n' +
+                '    </unit>\n' +
+                '  </file>\n' +
+                '</xliff>', "a/b/c/resfile.xliff");
+
+        // console.log("x is " + JSON.stringify(x, undefined, 4));
+        let tulist = x.getTranslationUnits();
+        // console.log("x is now " + JSON.stringify(x, undefined, 4));
+
+        test.ok(tulist);
+
+        test.equal(tulist.length, 2);
+
+        test.equal(tulist[0].source, "Asdf asdf");
+        test.equal(tulist[0].sourceLocale, "en-US");
+        test.equal(tulist[0].key, "foobar");
+        test.equal(tulist[0].file, "foo/bar/asdf.java");
+        test.equal(tulist[0].project, "androidapp");
+        test.equal(tulist[0].resType, "string");
+        test.equal(tulist[0].id, "1");
+        test.equal(tulist[0].target, "foobarfoo");
+        test.equal(tulist[0].targetLocale, "de-DE");
+        test.deepEqual(tulist[0].location, {line: 3, char: 5});
+        test.equal(tulist[0].resfile, "a/b/c/resfile.xliff");
+
+        test.equal(tulist[1].source, "baby baby");
+        test.equal(tulist[1].sourceLocale, "en-US");
+        test.equal(tulist[1].key, "huzzah");
+        test.equal(tulist[1].file, "foo/bar/j.java");
+        test.equal(tulist[1].project, "webapp");
+        test.equal(tulist[1].resType, "string");
+        test.equal(tulist[1].id, "2");
+        test.equal(tulist[1].target, "bebe bebe");
+        test.equal(tulist[1].targetLocale, "de-DE");
+        test.deepEqual(tulist[1].location, {line: 11, char: 5});
+        test.equal(tulist[1].resfile, "a/b/c/resfile.xliff");
 
         test.done();
     },

@@ -19,6 +19,7 @@
  */
 
 import { IntermediateRepresentation, Transformer, Result } from 'ilib-lint-common';
+import { Resource } from 'ilib-tools-common';
 
 /**
  * Filter out errors from the intermediate representation.
@@ -46,12 +47,18 @@ class ErrorFilterTransformer extends Transformer {
             return ir;
         }
         const resources = ir.getRepresentation();
-        const idsToExclude = results.filter(result => result.id && result.severity === 'error').map(result => result.id);
-        const filteredResources = resources.filter(resource => !idsToExclude.includes(resource.getKey()));
+        const hashesToExclude = results.filter(result => result.id && result.severity === 'error').
+            map(result => [result.id, result.locale, result.pathName].join('_'));
+        const filteredResources = resources.filter(/** @type Resource */ resource => {
+            const filePath = resource.getResFile() ?? resource.getPath();
+            const hash = [resource.getKey(), resource.getTargetLocale(), filePath].join('_');
+            return !hashesToExclude.includes(hash);
+        });
         return new IntermediateRepresentation({
             type: ir.getType(),
             ir: filteredResources,
-            sourceFile: ir.getSourceFile()
+            sourceFile: ir.getSourceFile(),
+            dirty: (filteredResources.length !== resources.length)
         });
     }
 };

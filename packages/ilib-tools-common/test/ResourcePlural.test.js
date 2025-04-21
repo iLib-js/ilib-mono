@@ -1,7 +1,7 @@
 /*
  * ResourcePlural.test.js - test the resource plural object.
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ describe("testResourcePlural", () => {
     });
 
     test("ResourcePluralConstructorRightContents", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rp = new ResourcePlural({
             key: "asdf",
@@ -63,7 +63,8 @@ describe("testResourcePlural", () => {
                 "two": "This is double",
                 "few": "This is the few case",
                 "many": "This is the many case"
-            }
+            },
+            resfile: "i18n/en-US/strings.xml"
         });
         expect(rp).toBeTruthy();
 
@@ -76,6 +77,7 @@ describe("testResourcePlural", () => {
         });
         expect(rp.getSourceLocale()).toBe("en-US");
         expect(rp.pathName).toBe("a/b/c.java");
+        expect(rp.getResFile()).toBe("i18n/en-US/strings.xml");
     });
 
     test("ResourcePluralConstructorFull", () => {

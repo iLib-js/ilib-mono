@@ -841,8 +841,11 @@ class Xliff {
      *
      * @private
      * @param {Element} xliff
+     * @param {string|undefined} resfile the path to the xliff file
+     * that contains the translation units, or undefined if this xliff
+     * is being parsed from a string
      */
-    parse1(xliff) {
+    parse1(xliff, resfile) {
         const files = getChildren(xliff, "file") ?? [];
         for (const file of files) {
             const pathName = getAttr(file, "original");
@@ -924,7 +927,8 @@ class Xliff {
                             location,
                             ordinal,
                             quantity,
-                            extended
+                            extended,
+                            resfile
                         })
                     );
                 } catch (e) {
@@ -937,8 +941,10 @@ class Xliff {
     /**
      * Parse xliff 2.* files
      * @private
+     * @param {Element} xliff the xliff object to parse
+     * @param {string} resfile the path to the xliff file
      */
-    parse2(xliff) {
+    parse2(xliff, resfile) {
         const sourceLocale = xliff._attributes["srcLang"] || "en-US";
         const targetLocale = xliff._attributes["trgLang"];
 
@@ -1059,7 +1065,8 @@ class Xliff {
                                         flavor: fileSettings.flavor,
                                         translate,
                                         location,
-                                        extended
+                                        extended,
+                                        resfile
                                     });
                                     switch (restype) {
                                     case "array":
@@ -1126,8 +1133,11 @@ class Xliff {
      * units already in this instance, they will be removed first.
      *
      * @param {String} xml the xliff format text to parse
+     * @param {string | undefined} resfile the path to the xliff file,
+     * or undefined if this xml file is being parsed from a string
+     * instead of a file
      */
-    deserialize(xml) {
+    deserialize(xml, resfile) {
         const json = xmljs.xml2js(xml, {
             trim: false,
             nativeTypeAttribute: true,
@@ -1153,9 +1163,9 @@ class Xliff {
                     captureSpacesBetweenElements: true
                 }));
                 const xliffLarge = /** @type {Element} */ (jsonLarge.elements?.find(e => e.type === 'element' && e.name === 'xliff'));
-                this.parse1(xliffLarge);
+                this.parse1(xliffLarge, resfile);
             } else {
-                this.parse2(json.xliff);
+                this.parse2(json.xliff, resfile);
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * Resource.test.js - test the base resource object
  *
- * Copyright © 2022-2023, JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ describe("testResource", () => {
     });
 
     test("ResourceGetAllFields", () => {
-        expect.assertions(16);
+        expect.assertions(17);
 
         const rs = new ResourceString({
             project: "x",
@@ -68,7 +68,8 @@ describe("testResource", () => {
             dnt: true,
             datatype: "d",
             localize: true,
-            flavor: "e"
+            flavor: "e",
+            resfile: "a/b/c/resource.xliff"
         });
         expect(rs).toBeTruthy();
 
@@ -87,6 +88,7 @@ describe("testResource", () => {
         expect(rs.getDataType()).toBe("d");
         expect(rs.localize).toBeTruthy();
         expect(rs.getFlavor()).toBe("e");
+        expect(rs.getResFile()).toBe("a/b/c/resource.xliff");
     });
 
     test("ResourceIsInstanceSame", () => {

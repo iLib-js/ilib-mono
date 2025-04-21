@@ -2,7 +2,7 @@
  * IntermediateRepresentation.js - representation of the results of parsing
  * an input file
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  */
 
 import FileStats from "./FileStats.js";
+import SourceFile from "./SourceFile.js";
 
 /**
  * @class Representation of parser results
@@ -32,6 +33,7 @@ class IntermediateRepresentation {
      * @param {any} params.ir the intermediate representation of this file
      * @param {SourceFile} params.sourceFile the file that is being represented
      * @param {FileStats} [params.stats] statistics about the file that was parsed
+     * @param {boolean} [params.dirty] true if this representation has been modified
      * @constructor
      */
     constructor(params) {
@@ -45,6 +47,7 @@ class IntermediateRepresentation {
         this.ir = params.ir;
         this.sourceFile = params.sourceFile;
         this.stats = params.stats;
+        this.dirty = typeof(params.dirty) === "boolean" ? params.dirty : false;
     }
 
     /**
@@ -101,6 +104,31 @@ class IntermediateRepresentation {
      * @readonly
      */
     stats;
+
+    /**
+     * Return the statistics about the file that was parsed.
+     *
+     * @returns {FileStats | undefined} the statistics about the file
+     * that was parsed
+     */
+    getStats() {
+        return this.stats;
+    }
+
+    /** Whether or not this IR is modified from the original IR
+     * @type {boolean}
+     * @readonly
+     */
+    dirty = false;
+
+    /**
+     * Return true if this IR is modified from the original IR.
+     *
+     * @returns {boolean} true if this IR is modified from the original IR
+     */
+    isDirty() {
+        return this.dirty;
+    }
 }
 
 export default IntermediateRepresentation;

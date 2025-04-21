@@ -348,7 +348,7 @@ class LintableFile extends DirItem {
                         const newIR = transformer.transform(this.irs[i], results);
                         if (newIR) {
                             this.irs[i] = newIR;
-                            this.dirty = true;
+                            this.dirty = newIR.isDirty();
                         }
                     }
                 });

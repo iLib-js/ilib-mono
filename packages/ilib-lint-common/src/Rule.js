@@ -54,7 +54,7 @@ class Rule {
 
     /** name of the rule. This should be a string with a dash-separated
      * set of words (kebab or dash case). Example: "resource-match-whitespace"
-     * 
+     *
      * Subclass must define this property.
      * @readonly
      * @abstract
@@ -68,7 +68,7 @@ class Rule {
      * set of words (kebab or dash case). Example: "resource-match-whitespace"
      *
      * Subclass must define {@link Rule.name}.
-     * 
+     *
      * @returns {String} the name of this rule
      */
     getName() {
@@ -79,7 +79,7 @@ class Rule {
     /** General description of the type of problems that this rule is
      * testing for. This description is not related to particular matches, so
      * it cannot be more specific. Examples:
-     * 
+     *
      * - "translation should use the appropriate quote style"
      * - "parameters to the translation wrapper function must not be concatenated"
      * - "translation should match the whitespace of the source string"
@@ -96,13 +96,13 @@ class Rule {
      * Return a general description of the type of problems that this rule is
      * testing for. This description is not related to particular matches, so
      * it cannot be more specific. Examples:
-     * 
+     *
      * - "translation should use the appropriate quote style"
      * - "parameters to the translation wrapper function must not be concatenated"
      * - "translation should match the whitespace of the source string"
-     * 
+     *
      * Subclass must define {@link Rule.description}.
-     * 
+     *
      * @returns {String} a general description of the type of problems that this rule is
      * testing for
      */
@@ -112,7 +112,7 @@ class Rule {
 
     /** Optional web link that gives more complete explanation about the Rule
      * and how to resolve the problem.
-     * 
+     *
      * Subclass should define this property.
      * @readonly
      * @type {string | undefined}
@@ -122,9 +122,9 @@ class Rule {
     /**
      * Return the optional web link that gives more complete explanation about the Rule
      * and how to resolve the problem.
-     * 
+     *
      * Subclass should define {@link Rule.link}.
-     * 
+     *
      * @returns {String | undefined} an URL to a web page that explains the problem this rule checks for
      */
     getLink() {
@@ -169,7 +169,7 @@ class Rule {
      * be any type as long as there is a parser that produces that type.
      *
      * @see {@link Rule.type}
-     * 
+     *
      * Subclass should define {@link Rule.type}.
      *
      * @returns {String} a string that names the type of intermediate representation

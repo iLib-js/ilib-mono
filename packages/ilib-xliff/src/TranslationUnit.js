@@ -19,37 +19,12 @@
 
 /**
  * @class A class that represents an translation unit in an
- * xliff file. 
+ * xliff file.
  */
 class TranslationUnit {
     /**
      * Construct a new translation unit The options may be undefined, which represents
-     * a new, clean TranslationUnit instance. The options object may also
-     * be an object with the following properties:
-     *
-     * <ul>
-     * <li><i>source</i> - source text for this unit (required)
-     * <li><i>sourceLocale</i> - the source locale spec for this unit (required)
-     * <li><i>target</i> - target text for this unit (optional)
-     * <li><i>targetLocale</i> - the target locale spec for this unit (optional)
-     * <li><i>key</i> - the unique resource key for this translation unit (required)
-     * <li><i>file</i> - path to the original source code file that contains the
-     * source text of this translation unit (required)
-     * <li><i>project</i> - the project that this string/unit is part of
-     * <li><i>resType</i> - type of this resource (string, array, plural) (optional)
-     * <li><i>state</i> - the state of the current unit (optional)
-     * <li><i>comment</i> - the translator's comment for this unit (optional)
-     * <li><i>datatype</i> - the source of the data of this unit (optional)
-     * <li><i>flavor</i> - the flavor that this string comes from (optional)
-     * <li><i>translate</i> - flag that tells whether to translate this unit (optional)
-     * <li><i>location</i> - the line and character location of the start of this
-     * translation unit in the xml representation of the file
-     * <li><i>extended</i> - extended properties for this unit. This is an object that
-     * can contain any additional properties that are not explicitly defined in
-     * this class. This is useful for storing additional metadata about the
-     * translation unit that may be specific to a particular application or
-     * use case.
-     * </ul>
+     * a new, clean TranslationUnit instance.
      *
      * If the required properties are not given, the constructor throws an exception.<p>
      *
@@ -59,8 +34,37 @@ class TranslationUnit {
      * source locale and no target text, but different target locales.
      *
      * @constructor
-     * @param {Object|undefined} options options to
-     * initialize the unit, or undefined for a new empty unit
+     * @param {Object} options options to initialize the unit, or undefined for a new empty unit
+     * @param {string} options.source source text for this unit
+     * @param {string} options.sourceLocale the source locale spec for this unit
+     * @param {string} options.key the unique resource key for this translation unit
+     * @param {string} options.file path to the original source code file that contains the
+     * source text of this translation unit
+     * @param {string} [options.target] target text for this unit
+     * @param {string} [options.targetLocale] the target locale spec for this unit
+     * @param {string} [options.project] the project that this string/unit is part of
+     * @param {string} [options.resType] type of this resource (string, array, plural)
+     * @param {string} [options.state] the state of the current unit
+     * @param {string} [options.comment] the translator's comment for this unit
+     * @param {string} [options.datatype] the source of the data of this unit
+     * @param {string} [options.flavor] the flavor that this string comes from
+     * @param {boolean} [options.translate] flag that tells whether to translate this unit
+     * @param {Object} [options.location] the line and character location of the start of this
+     * translation unit in the xml representation of the file
+     * @param {Object} [options.extended] extended properties for this unit. This is an object that
+     * can contain any additional properties that are not explicitly defined in
+     * this class. This is useful for storing additional metadata about the
+     * translation unit that may be specific to a particular application or
+     * use case.
+     * @param {string} [options.resfile] the resource file that this unit came from. The file
+     * property is the path to the file in the source code where the
+     * resource was originally extracted from before it was put in the resource
+     * file, and this property is the path to the resource file that contains this
+     * translation unit. This is always the same as the xliff file that is currently
+     * being processed. The resfile property is only set when the xliff file is
+     * created from parsing a resource file. It is undefined when the xliff file is
+     * created from parsing a string or when the xliff is new and being created
+     * from scratch.
      */
     constructor(options) {
         if (options) {

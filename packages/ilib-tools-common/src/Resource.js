@@ -1,7 +1,7 @@
 /*
  * Resource.js - super class that represents a resource
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,35 +61,46 @@ class Resource {
     target;
 
     /**
+     * The resource file that this resource was loaded from.
+     * @type {string|undefined}
+     */
+    resfile;
+
+    /**
      * Construct a new Resource instance.
      * The props may contain any
      * of the following properties:
      *
      * <ul>
-     * <li>project {String} - the project that this resource is in
-     * <li><i>context</i> {String} - The context for this resource,
-     * such as "landscape mode", or "7200dp", which differentiates it
-     * from the base resource that has no special context. The default
-     * if this property is not specified is undefined, meaning no
-     * context.
-     * <li>sourceLocale {String} - the locale of the source resource.
-     * <li>targetLocale {String} - the locale of the target resource.
-     * <li>key {String} - the unique key of this string, which should include the context
-     * of the string
-     * <li>pathName {String} - pathName to the file where the string was extracted from
-     * <li>autoKey {boolean} - true if the key was generated based on the source text
-     * <li>state {String} - current state of the resource (ie. "new", "translated", or "accepted")
-     * <li>id {String} - the id of the current resource
-     * <li>comment {String} - the comment (translator's note) of this resource
-     * <li>dnt {boolean} - Do not translate this resource when this is set to true. Default: false
-     * <li>datatype {String} - the type of file that this resource came from
-     * <li>flavor {String} - the "flavor" of this string, if any. (Android)
-     * <li>location {Location} - the location in the file given in pathName where this this resource
-     * is located
      * </ul>
      *
      * @constructor
      * @param {Object} props properties of the string, as defined above
+     * @param {string} [props.project] the project that this resource is in
+     * @param {string} [props.context] The context for this resource,
+     * such as "landscape mode", or "7200dp", which differentiates it
+     * from the base resource that has no special context. The default
+     * if this property is not specified is undefined, meaning no
+     * context.
+     * @param {string} [props.sourceLocale] the locale of the source resource.
+     * @param {string} [props.targetLocale] the locale of the target resource.
+     * @param {string} [props.key] the unique key of this string, which should include the context
+     * of the string
+     * @param {string} [props.pathName] pathName to the file where the string was extracted from
+     * @param {boolean} [props.autoKey] true if the key was generated based on the source text
+     * @param {string} [props.state] current state of the resource (ie. "new", "translated", or "accepted")
+     * @param {string} [props.id] the id of the current resource
+     * @param {string} [props.comment] the comment (translator's note) of this resource
+     * @param {boolean} [props.dnt] Do not translate this resource when this is set to true. Default: false
+     * @param {string} [props.datatype] the type of file that this resource came from
+     * @param {string} [props.flavor] the "flavor" of this string, if any. (Android)
+     * @param {Location} [props.location] the location in the file given in pathName where this this resource
+     * is located
+     * @param {string | undefined} [props.resfile] if this resource was extracted from a resource file, this
+     * is the path to the resource file that contains this resource. This is different from the pathName
+     * property, which is the path to the source file that this resource was extracted from. This property
+     * is only used for resources from resource files, such as Android string.xml files or xliff files.
+     * Otherwise, the property is undefined.
      */
     constructor(props) {
         if (this.constructor === Resource) {
@@ -118,6 +129,7 @@ class Resource {
             this.flavor = props.flavor;
             this.index = props.index;
             this.location = props.location; // optional location of the transunits in the xml file
+            this.resfile = props.resfile; // optional resource file path
         }
 
         this.instances = [];
@@ -128,7 +140,7 @@ class Resource {
     /**
      * Return the project that this resource was found in.
      *
-     * @returns {String} the project of this resource
+     * @returns {string} the project of this resource
      */
     getProject() {
         return this.project;
@@ -137,7 +149,7 @@ class Resource {
     /**
      * Return the unique key of this resource.
      *
-     * @returns {String} the unique key of this resource
+     * @returns {string} the unique key of this resource
      */
     getKey() {
         return this.reskey;
@@ -167,7 +179,7 @@ class Resource {
      * Return the resource type of this resource. This is one of
      * string, array, or plural.
      *
-     * @returns {String} the resource type of this resource
+     * @returns {string} the resource type of this resource
      */
     getType() {
         return this.resType || "string";
@@ -176,7 +188,7 @@ class Resource {
     /**
      * Return the data type of this resource.
      *
-     * @returns {String} the data type of this resource
+     * @returns {string} the data type of this resource
      */
     getDataType() {
         return this.datatype;
@@ -215,7 +227,7 @@ class Resource {
 
     /**
      * Set the source locale of this resource.
-     * @param {String} locale the source locale of this resource
+     * @param {string} locale the source locale of this resource
      */
     setSourceLocale(locale) {
         this.sourceLocale = locale || this.sourceLocale;
@@ -234,7 +246,7 @@ class Resource {
 
     /**
      * Set the target locale of this resource.
-     * @param {String} locale the target locale of this resource
+     * @param {string} locale the target locale of this resource
      */
     setTargetLocale(locale) {
         this.targetLocale = locale || this.targetLocale;
@@ -246,7 +258,7 @@ class Resource {
      * stage of life of this resource. Currently, it can be one of "new",
      * "translated", or "accepted".
      *
-     * @returns {String} the state of this resource
+     * @returns {string} the state of this resource
      */
     getState() {
         return this.state;
@@ -256,7 +268,7 @@ class Resource {
      * Set the project of this resource. This is a string that gives the
      * id of the project for this resource.
      *
-     * @param {String} project the project name to set for this resource
+     * @param {string} project the project name to set for this resource
      */
     setProject(project) {
         this.project = project;
@@ -268,7 +280,7 @@ class Resource {
      * stage of life of this resource. Currently, it can be one of "new",
      * "translated", or "accepted".
      *
-     * @param {String} state the state of this resource
+     * @param {string} state the state of this resource
      */
     setState(state) {
         this.state = validStates[state] ? state : this.state;
@@ -279,7 +291,7 @@ class Resource {
      * Return the original path to the file from which this resource was
      * originally extracted.
      *
-     * @returns {String} the path to the file containing this resource
+     * @returns {string} the path to the file containing this resource
      */
     getPath() {
         return this.pathName;
@@ -347,7 +359,7 @@ class Resource {
      * from the source code, whereas target ones are translations from the
      * translators.
      *
-     * @returns {String} the origin of this resource
+     * @returns {string} the origin of this resource
      */
     getOrigin() {
         return this.origin;
@@ -373,6 +385,21 @@ class Resource {
      */
     getFlavor() {
         return this.flavor;
+    }
+
+    /**
+     * Return the path to the resource file that contains this resource.
+     * This is different from the pathName property, which is the path to
+     * the source file that this resource was extracted from. This property
+     * is only used for resources from resource files, such as Android
+     * string.xml files or xliff files. Otherwise, the property is undefined.
+     *
+     * @returns {string|undefined} the path to the resource file that contains
+     * this resource, or undefined if this resource was not extracted from
+     * a resource file
+     */
+    getResFile() {
+        return this.resfile;
     }
 
     /**
@@ -403,7 +430,7 @@ class Resource {
      * the string are escaped.
      *
      * @param {Object} str the item to escape
-     * @returns {String} the escaped string
+     * @returns {string} the escaped string
      */
     escapeText(str) {
         switch (typeof(str)) {

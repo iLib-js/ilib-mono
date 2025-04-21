@@ -38,9 +38,9 @@
  *
  * Additionally, whitespaces not included in explicit mapping are represented
  * as their Unicode codepoint value, e.g. `\u3000` becomes `[U+3000]`.<p>
- * 
+ *
  * @note If a non-string is passed on input, returned value will be an empty string.
- * 
+ *
  * @param {string} str Input string
  * @returns {string} String in which whitespaces are replaced with visible representations
  */

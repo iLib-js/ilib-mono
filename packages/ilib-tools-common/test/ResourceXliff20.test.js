@@ -1,7 +1,7 @@
 /*
  * Xliff20.test.js - test the Xliff 2.0 object.
  *
- * Copyright © 2019,2021,2023 JEDLSoft
+ * Copyright © 2019,2021,2023,2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1086,7 +1086,72 @@ describe("testResourceXliff20", () => {
     });
 
     test("Xliff20ParseWithSourceOnly", () => {
-        expect.assertions(23);
+        expect.assertions(25);
+
+        var x = new ResourceXliff({
+            path: "foo/bar/asdf.xliff"
+        });
+        expect(x).toBeTruthy();
+
+        x.parse(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="2.0" srcLang="en-US" trgLang="de-DE" \n' +
+                '  xmlns:l="http://ilib-js.com/loctool">\n' +
+                '  <file original="foo/bar/asdf.java" l:project="androidapp">\n' +
+                '    <unit id="1" name="foobar" type="res:string" l:datatype="plaintext">\n' +
+                '      <segment>\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '      </segment>\n' +
+                '    </unit>\n' +
+                '  </file>\n' +
+                '  <file original="foo/bar/j.java" l:project="webapp">\n' +
+                '    <unit id="2" name="huzzah" type="res:string" l:datatype="plaintext">\n' +
+                '      <segment>\n' +
+                '        <source>baby baby</source>\n' +
+                '      </segment>\n' +
+                '    </unit>\n' +
+                '  </file>\n' +
+                '</xliff>');
+
+        var reslist = x.getResources();
+
+        expect(reslist).toBeTruthy();
+
+        expect(reslist.length).toBe(2);
+
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-US");
+        expect(!reslist[0].getTarget()).toBeTruthy();
+        expect(reslist[0].getTargetLocale()).toBe("de-DE");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.java");
+        expect(reslist[0].getProject()).toBe("androidapp");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].getId()).toBe("1");
+        expect(reslist[0].getLocation()).toStrictEqual({
+            line: 4,
+            char: 5
+        });
+        expect(reslist[0].getResFile()).toBe("foo/bar/asdf.xliff");
+
+        expect(reslist[1].getSource()).toBe("baby baby");
+        expect(reslist[1].getSourceLocale()).toBe("en-US");
+        expect(!reslist[1].getTarget()).toBeTruthy();
+        expect(reslist[1].getTargetLocale()).toBe("de-DE");
+        expect(reslist[1].getKey()).toBe("huzzah");
+        expect(reslist[1].getPath()).toBe("foo/bar/j.java");
+        expect(reslist[1].getProject()).toBe("webapp");
+        expect(reslist[1].resType).toBe("string");
+        expect(reslist[1].getId()).toBe("2");
+        expect(reslist[1].getLocation()).toStrictEqual({
+            line: 11,
+            char: 5
+        });
+        expect(reslist[1].getResFile()).toBe("foo/bar/asdf.xliff");
+    });
+
+    test("Xliff20ParseWithSourceOnly with no resfile defined", () => {
+        expect.assertions(25);
 
         var x = new ResourceXliff();
         expect(x).toBeTruthy();
@@ -1130,6 +1195,7 @@ describe("testResourceXliff20", () => {
             line: 4,
             char: 5
         });
+        expect(reslist[0].getResFile()).toBeUndefined();
 
         expect(reslist[1].getSource()).toBe("baby baby");
         expect(reslist[1].getSourceLocale()).toBe("en-US");
@@ -1144,6 +1210,7 @@ describe("testResourceXliff20", () => {
             line: 11,
             char: 5
         });
+        expect(reslist[1].getResFile()).toBeUndefined();
     });
 
     test("Xliff20ParseWithSourceAndTarget", () => {

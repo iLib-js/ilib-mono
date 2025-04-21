@@ -668,7 +668,7 @@ class Project extends DirItem {
                 errorsOnly : this.options.opt.errorsOnly || false
             });
         } else {
-            results.forEach(result => {
+            resultAll = results.map(result => {
                 const str = this.formatter.format(result);
                 if (str) {
                     if (result.severity === "error") {
@@ -683,7 +683,8 @@ class Project extends DirItem {
                         }
                     }
                 }
-            });
+                return str;
+            }).join("\n");
 
             logger.info(`Total Elapse Time: ${String(totalTime)} seconds`);
             logger.info(`                             ${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}`);

@@ -64,12 +64,13 @@ class ResourceUniqueKeys extends Rule {
 
             if (other) {
                 logger.trace(`hash '${hash}' already found in the translation set!`);
+                const otherFile = other.getResFile() ?? other.getPath();
                 let value = {
                     severity: "error",
                     id: resource.getKey(),
                     rule: this,
                     pathName: file,
-                    highlight: `Key is also defined in this file: ${other.resfile}`,
+                    highlight: `Key is also defined in this file: ${otherFile}`,
                     description: `Key is not unique within locale ${locale}.`,
                     locale
                 };
@@ -79,7 +80,6 @@ class ResourceUniqueKeys extends Rule {
                 return new Result(value);
             }
 
-            resource.resfile = file;
             this.ts.add(resource);
 
             // no result

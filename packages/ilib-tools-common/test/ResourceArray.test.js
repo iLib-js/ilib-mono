@@ -1,7 +1,7 @@
 /*
  * ResourceArray.test.js - test the resource array object.
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,13 +55,14 @@ describe("testResourceArray", () => {
     });
 
     test("ResourceArrayConstructorRightContents", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const ra = new ResourceArray({
             key: "asdf",
             source: ["This is a test", "This is also a test", "This is not"],
             sourceLocale: "de-DE",
-            pathName: "a/b/c.java"
+            pathName: "a/b/c.java",
+            resfile: "i18n/en-US/strings.xml"
         });
         expect(ra).toBeTruthy();
 
@@ -69,6 +70,7 @@ describe("testResourceArray", () => {
         expect(ra.getSource()).toStrictEqual(["This is a test", "This is also a test", "This is not"]);
         expect(ra.getSourceLocale()).toBe("de-DE");
         expect(ra.pathName).toBe("a/b/c.java");
+        expect(ra.getResFile()).toBe("i18n/en-US/strings.xml");
     });
 
     test("ResourceArrayConstructorFull", () => {

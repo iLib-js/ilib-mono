@@ -1,7 +1,7 @@
 /*
  * Xliff.test.js - test the Xliff object.
  *
- * Copyright © 2016-2017, 2019-2023 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2023, 2025 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1097,9 +1097,11 @@ describe("testResourceXliff", () => {
     });
 
     test("ResourceXliffParseWithSourceOnly", () => {
-        expect.assertions(23);
+        expect.assertions(25);
 
-        const x = new ResourceXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/asdf.xliff",
+        });
         expect(x).toBeTruthy();
 
         x.parse(
@@ -1140,6 +1142,7 @@ describe("testResourceXliff", () => {
             line: 4,
             char: 7
         });
+        expect(reslist[0].getResFile()).toBe("foo/bar/asdf.xliff");
 
         expect(reslist[1].getSource()).toBe("baby baby");
         expect(reslist[1].getSourceLocale()).toBe("en-US");
@@ -1154,10 +1157,79 @@ describe("testResourceXliff", () => {
             line: 11,
             char: 7
         });
+        expect(reslist[1].getResFile()).toBe("foo/bar/asdf.xliff");
     });
 
     test("ResourceXliffParseWithSourceAndTarget", () => {
-        expect.assertions(23);
+        expect.assertions(25);
+
+        const x = new ResourceXliff({
+            path: "foo/bar/asdf.xliff"
+        });
+        expect(x).toBeTruthy();
+
+        x.parse(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="1.2">\n' +
+                '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="androidapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="1" resname="foobar" restype="string">\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '        <target>foobarfoo</target>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '  <file original="foo/bar/j.java" source-language="en-US" target-language="fr-FR" product-name="webapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="2" resname="huzzah" restype="string">\n' +
+                '        <source>baby baby</source>\n' +
+                '        <target>bebe bebe</target>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '</xliff>');
+
+        // console.log("x is " + JSON.stringify(x, undefined, 4));
+        const reslist = x.getResources();
+        // console.log("x is now " + JSON.stringify(x, undefined, 4));
+
+        expect(reslist).toBeTruthy();
+
+        expect(reslist.length).toBe(2);
+
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-US");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.java");
+        expect(reslist[0].getProject()).toBe("androidapp");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].getId()).toBe("1");
+        expect(reslist[0].getTarget()).toBe("foobarfoo");
+        expect(reslist[0].getTargetLocale()).toBe("de-DE");
+        expect(reslist[0].getLocation()).toStrictEqual({
+            line: 4,
+            char: 7
+        });
+        expect(reslist[0].getResFile()).toBe("foo/bar/asdf.xliff");
+
+        expect(reslist[1].getSource()).toBe("baby baby");
+        expect(reslist[1].getSourceLocale()).toBe("en-US");
+        expect(reslist[1].getKey()).toBe("huzzah");
+        expect(reslist[1].getPath()).toBe("foo/bar/j.java");
+        expect(reslist[1].getProject()).toBe("webapp");
+        expect(reslist[1].resType).toBe("string");
+        expect(reslist[1].getId()).toBe("2");
+        expect(reslist[1].getTarget()).toBe("bebe bebe");
+        expect(reslist[1].getTargetLocale()).toBe("fr-FR");
+        expect(reslist[1].getLocation()).toStrictEqual({
+            line: 12,
+            char: 7
+        });
+        expect(reslist[1].getResFile()).toBe("foo/bar/asdf.xliff");
+    });
+
+    test("ResourceXliffParseWithSourceAndTarget but no resfile path", () => {
+        expect.assertions(25);
 
         const x = new ResourceXliff();
         expect(x).toBeTruthy();
@@ -1204,6 +1276,7 @@ describe("testResourceXliff", () => {
             line: 4,
             char: 7
         });
+        expect(reslist[0].getResFile()).toBeUndefined();
 
         expect(reslist[1].getSource()).toBe("baby baby");
         expect(reslist[1].getSourceLocale()).toBe("en-US");
@@ -1218,6 +1291,7 @@ describe("testResourceXliff", () => {
             line: 12,
             char: 7
         });
+        expect(reslist[1].getResFile()).toBeUndefined();
     });
 
     test("ResourceXliffParseGetLines", () => {

@@ -1,7 +1,7 @@
 /*
  * ResourceString.test.js - test the resource string object.
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,13 +74,14 @@ describe("testResourceString", () => {
     });
 
     test("ResourceStringConstructorRightContents", () => {
-        expect.assertions(7);
+        expect.assertions(8);
 
         const rs = new ResourceString({
             key: "asdf",
             source: "This is a test",
             sourceLocale: "de-DE",
-            pathName: "a/b/c.java"
+            pathName: "a/b/c.java",
+            resfile: "i18n/en-US.properties"
         });
         expect(rs).toBeTruthy();
 
@@ -90,6 +91,7 @@ describe("testResourceString", () => {
         expect(rs.pathName).toBe("a/b/c.java");
         expect(!rs.getTarget()).toBeTruthy(); // source-only string
         expect(!rs.getTargetLocale()).toBeTruthy();
+        expect(rs.getResFile()).toBe("i18n/en-US.properties");
     });
 
     test("ResourceStringConstructorSourceTargetRightContents", () => {

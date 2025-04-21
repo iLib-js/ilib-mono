@@ -82,7 +82,7 @@ export const testXliff12 = {
 
         const x = new Xliff();
         test.ok(x);
-        
+
         test.equal(x.getVersion(), "1.2");
 
         test.done();
@@ -95,7 +95,7 @@ export const testXliff12 = {
             version: "1.2"
         });
         test.ok(x);
-        
+
         test.equal(x.getVersion(), "1.2");
 
         test.done();
@@ -108,7 +108,7 @@ export const testXliff12 = {
             version: "2.0"
         });
         test.ok(x);
-        
+
         test.equal(x.getVersion(), "2.0");
 
         test.done();
@@ -255,7 +255,7 @@ export const testXliff12 = {
         const x = new Xliff();
         test.ok(x);
 
-        
+
         x.addTranslationUnits([
             new TranslationUnit({
                 source: "Asdf asdf",
@@ -1175,6 +1175,70 @@ export const testXliff12 = {
         test.equal(tulist[1].targetLocale, "fr-FR");
         test.equal(typeof(tulist[1].translate), 'undefined');
         test.deepEqual(tulist[1].location, {line: 12, char: 7});
+
+        test.done();
+    },
+
+    testXliffDeserializeWithResfile: function(test) {
+        test.expect(27);
+
+        const x = new Xliff();
+        test.ok(x);
+
+        x.deserialize(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="1.2">\n' +
+                '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="androidapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="1" resname="foobar" restype="string">\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '        <target>foobarfoo</target>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '  <file original="foo/bar/j.java" source-language="en-US" target-language="fr-FR" product-name="webapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="2" resname="huzzah" restype="string">\n' +
+                '        <source>baby baby</source>\n' +
+                '        <target>bebe bebe</target>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '</xliff>', "a/b/c/resfile.xliff");
+
+        // console.log("x is " + JSON.stringify(x, undefined, 4));
+        let tulist = x.getTranslationUnits();
+        // console.log("x is now " + JSON.stringify(x, undefined, 4));
+
+        test.ok(tulist);
+
+        test.equal(tulist.length, 2);
+
+        test.equal(tulist[0].source, "Asdf asdf");
+        test.equal(tulist[0].sourceLocale, "en-US");
+        test.equal(tulist[0].key, "foobar");
+        test.equal(tulist[0].file, "foo/bar/asdf.java");
+        test.equal(tulist[0].project, "androidapp");
+        test.equal(tulist[0].resType, "string");
+        test.equal(tulist[0].id, "1");
+        test.equal(tulist[0].target, "foobarfoo");
+        test.equal(tulist[0].targetLocale, "de-DE");
+        test.equal(typeof(tulist[0].translate), 'undefined');
+        test.deepEqual(tulist[0].location, {line: 4, char: 7});
+        test.equal(tulist[0].resfile, "a/b/c/resfile.xliff");
+
+        test.equal(tulist[1].source, "baby baby");
+        test.equal(tulist[1].sourceLocale, "en-US");
+        test.equal(tulist[1].key, "huzzah");
+        test.equal(tulist[1].file, "foo/bar/j.java");
+        test.equal(tulist[1].project, "webapp");
+        test.equal(tulist[1].resType, "string");
+        test.equal(tulist[1].id, "2");
+        test.equal(tulist[1].target, "bebe bebe");
+        test.equal(tulist[1].targetLocale, "fr-FR");
+        test.equal(typeof(tulist[1].translate), 'undefined');
+        test.deepEqual(tulist[1].location, {line: 12, char: 7});
+        test.equal(tulist[1].resfile, "a/b/c/resfile.xliff");
 
         test.done();
     },
