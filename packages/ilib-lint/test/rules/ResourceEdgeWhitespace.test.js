@@ -19,7 +19,7 @@
 import { ResourceString } from 'ilib-tools-common';
 import ResourceEdgeWhitespace from '../../src/rules/ResourceEdgeWhitespace.js';
 
-import { Result } from 'ilib-lint-common';
+import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
 
 describe("testEdgeWhitespace", () => {
     test("ResourceEdgeWhitespaceEdgesMatch", () => {
@@ -165,7 +165,7 @@ describe("testEdgeWhitespace", () => {
         const fix = rule.fixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource, resource.getTarget().length - 1, 0, " ")
+                rule.fixer.createStringCommand(resource, resource.getTarget().length, 0, " ")
             ]
         });
         expect(result).toStrictEqual(
@@ -210,7 +210,7 @@ describe("testEdgeWhitespace", () => {
         const fix = rule.fixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource, resource.getTarget().length - 2, 1, "")
+                rule.fixer.createStringCommand(resource, resource.getTarget().length - 1, 1, "")
             ]
         });
         expect(result).toStrictEqual(
@@ -255,7 +255,7 @@ describe("testEdgeWhitespace", () => {
         const fix = rule.fixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource, resource.getTarget().length - 3, 2, " ")
+                rule.fixer.createStringCommand(resource, resource.getTarget().length - 2, 2, " ")
             ]
         });
         expect(result).toStrictEqual(
@@ -306,7 +306,7 @@ describe("testEdgeWhitespace", () => {
         const fix2 = rule.fixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource, resource.getTarget().length - 1, 0, " ")
+                rule.fixer.createStringCommand(resource, resource.getTarget().length, 0, " ")
             ]
         });
         expect(result).toStrictEqual([
@@ -456,5 +456,79 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
         expect(result).toBe(undefined); // this rule should not process a resource where target is not a string
+    });
+
+    test("ResourceEdgeWhitespace apply fix to leading and trailing space extra", () => {
+        expect.assertions(6);
+
+        const rule = new ResourceEdgeWhitespace();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "resource-edge-whitespace.trailing-space-extra",
+            sourceLocale: "en-US",
+            source: "Some source string.",
+            targetLocale: "bn-IN",
+            target: " র করতে পারেন। ",
+            pathName: "resource-edge-whitespace-test.xliff",
+            state: "translated",
+        });
+        const subject = {
+            // accidentally added space in the end of target string
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        };
+        const results = rule.matchString(subject);
+
+        const fix1 = rule.fixer.createFix({
+            resource,
+            commands: [
+                rule.fixer.createStringCommand(resource, 0, 1, "")
+            ]
+        });
+        const fix2 = rule.fixer.createFix({
+            resource,
+            commands: [
+                rule.fixer.createStringCommand(resource, resource.getTarget().length - 1, 1, "")
+            ]
+        });
+        expect(results).toBeTruthy();
+        expect(results).toStrictEqual([
+            new Result({
+                rule,
+                severity: "error",
+                pathName: "a/b/c.xliff",
+                locale: "bn-IN",
+                source: "Some source string.",
+                id: "resource-edge-whitespace.trailing-space-extra",
+                description: "Leading whitespace in target does not match leading whitespace in source",
+                highlight: `Source: <e0></e0>Some… Target: <e1>⎵</e1>র কর…`,
+                fix: fix1
+            }),
+            new Result({
+                rule,
+                severity: "error",
+                pathName: "a/b/c.xliff",
+                locale: "bn-IN",
+                source: "Some source string.",
+                id: "resource-edge-whitespace.trailing-space-extra",
+                description: "Trailing whitespace in target does not match trailing whitespace in source",
+                highlight: `Source: …ing.<e0></e0> Target: …রেন।<e1>⎵</e1>`,
+                fix: fix2
+            })
+        ]);
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff"),
+            dirty: false
+        });
+
+        expect(rule.fixer.applyFixes(ir, results.map(result => result.fix))).toBe(true);
+        const fixedResource = ir.getRepresentation()[0];
+        expect(fixedResource).toBeTruthy();
+        expect(fixedResource.getTarget()).toBe("র করতে পারেন।");
     });
 });
