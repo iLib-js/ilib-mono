@@ -668,37 +668,56 @@ class Project extends DirItem {
                 errorsOnly : this.options.opt.errorsOnly || false
             });
         } else {
-            resultAll = results.map(result => {
+            let outputArray = [];
+            results.forEach(result => {
                 const str = this.formatter.format(result);
                 if (str) {
                     if (result.severity === "error") {
-                        logger.error(str);
+                        if (!this.options.opt.output) {
+                            logger.error(str);
+                        }
+                        outputArray.push(str);
                     } else if (result.severity === "warning") {
                         if (!this.options.errorsOnly) {
-                            logger.warn(str);
+                            if (!this.options.opt.output) {
+                                logger.warn(str);
+                            }
+                            outputArray.push(str);
                         }
                     } else {
                         if (!this.options.errorsOnly) {
-                            logger.info(str);
+                            if (!this.options.opt.output) {
+                                logger.info(str);
+                            }
+                            outputArray.push(str);
                         }
                     }
                 }
                 return str;
-            }).join("\n");
+            })
 
-            logger.info(`Total Elapse Time: ${String(totalTime)} seconds`);
-            logger.info(`                             ${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}`);
-            logger.info(`                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, ' ')}${`${String(this.fileStats.modules)} Modules`.padEnd(15, ' ')}${`${String(this.fileStats.lines)} Lines`.padEnd(15, ' ')}`);
+            const lines = [
+                `Total Elapse Time: ${String(totalTime)} seconds`,
+                `                             ${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}`,
+                `                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, ' ')}${`${String(this.fileStats.modules)} Modules`.padEnd(15, ' ')}${`${String(this.fileStats.lines)} Lines`.padEnd(15, ' ')}`
+            ];
             if (results.length) {
-                logger.info(
-                        `Errors:            ${String(this.resultStats.errors).padEnd(10, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.lines).padEnd(15, ' ')}`);
+                lines.push(`Errors:            ${String(this.resultStats.errors).padEnd(10, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.lines).padEnd(15, ' ')}`);
                 if (!this.options.errorsOnly) {
-                    logger.info(
+                    lines.push(
                         `Warnings:          ${String(this.resultStats.warnings).padEnd(10, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.lines).padEnd(15, ' ')}`);
-                    logger.info(
+                    lines.push(
                         `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.lines).padEnd(15, ' ')}`);
                 }
             }
+            lines.push(`I18N Score (0-100) ${fmt.format(score)}`);
+
+            if (!this.options.opt.output) {
+                lines.forEach(line => {
+                    logger.info(line);
+                });
+            }
+            resultAll = outputArray.concat(lines).join("\n");
         }
 
         if (this.options.opt.output) {
@@ -709,13 +728,9 @@ class Project extends DirItem {
             }
             fs.writeFileSync(file, resultAll, "utf8");
             if (!this.options.opt.quiet && this.options.opt.progressInfo) {
-                logger.info("Wrote the results to file " + file);
+                logger.info(`Wrote the results output to file ${file}`);
             }
-        } else {
-            logger.info(resultAll);
         }
-
-        logger.info(`I18N Score (0-100) ${fmt.format(score)}`);
 
         if (this.options.opt["max-errors"]) {
             exitValue = this.resultStats.errors > this.options.opt["max-errors"] ? 2 : 0;
