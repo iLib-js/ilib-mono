@@ -80,7 +80,9 @@ class Fixer {
      * @param {IntermediateRepresentation} ir Intermediate Representation instance which will be
      * modified by the fixer when the fixes are applied
      * @param {Fix[]} fixes Array of fixes which Fixer should attempt to apply
-     * @returns {void}
+     * @returns {boolean} `true` if the file does not need to be reserialized and reparsed after
+     *    applying the fixes before the rules are applied again, `false` or `undefined` if the file
+     *    does need to be reserialized and reparsed.
      * @abstract
      */
     applyFixes(ir, fixes) {

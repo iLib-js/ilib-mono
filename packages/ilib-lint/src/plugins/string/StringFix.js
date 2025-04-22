@@ -50,7 +50,7 @@ export class StringFix extends Fix {
             other.commands.some((otherCommand) => thisCommand.overlaps(otherCommand))
         );
     }
-    
+
     /**
      * Return whether or not the fix has been applied to the string.
      * @returns {boolean} true if the fix has been applied, false otherwise

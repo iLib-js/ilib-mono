@@ -177,6 +177,10 @@ class ResourceFixer extends Fixer {
                 command.setApplied(true);
             });
         });
+
+        // return true to indicate that the file does not have to be serialized and reparsed
+        // before applying the rules again
+        return true;
     }
 }
 

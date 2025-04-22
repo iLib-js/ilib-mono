@@ -181,7 +181,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply fixes", () => {
-        expect.assertions(6);
+        expect.assertions(7);
 
         const fixer = new ResourceFixer();
 
@@ -211,7 +211,7 @@ describe("test ResourceFixer", () => {
             ]
         });
 
-        fixer.applyFixes(ir, [fix]);
+        expect(fixer.applyFixes(ir, [fix])).toBe(true);
 
         // these things should have been applied to the resource
         expect(resource.getTarget()).toBe("forget");
@@ -225,7 +225,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply multiple fixes", () => {
-        expect.assertions(6);
+        expect.assertions(7);
 
         const fixer = new ResourceFixer();
 
@@ -264,7 +264,7 @@ describe("test ResourceFixer", () => {
             ]
         });
 
-        fixer.applyFixes(ir, [fix1, fix2]);
+        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
 
         // these things should have been applied to the resource
         expect(resource.getTarget()).toBe("forgotten");
@@ -278,7 +278,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply fixes but not the overlapping commands within them", () => {
-        expect.assertions(6);
+        expect.assertions(7);
 
         const fixer = new ResourceFixer();
 
@@ -320,7 +320,7 @@ describe("test ResourceFixer", () => {
         });
 
         // the second fix has overlapping commands with the first one
-        fixer.applyFixes(ir, [fix1, fix2]);
+        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
 
         // these things should have been applied to the resource
         expect(resource.getTarget()).toBe("forgotten");
@@ -334,7 +334,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply fixes and make sure commands have the right applied flags afterwards", () => {
-        expect.assertions(6);
+        expect.assertions(7);
 
         const fixer = new ResourceFixer();
 
@@ -376,7 +376,7 @@ describe("test ResourceFixer", () => {
         });
 
         // the second fix has overlapping commands with the first one
-        fixer.applyFixes(ir, [fix1, fix2]);
+        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
 
         const fix1commands = fix1.getCommands();
         expect(fix1commands[0].getApplied()).toBe(true); // metadata command
@@ -390,7 +390,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply fixes and make sure the fix has the right applied flags afterwards", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const fixer = new ResourceFixer();
 
@@ -432,7 +432,7 @@ describe("test ResourceFixer", () => {
         });
 
         // the second fix has overlapping commands with the first one
-        fixer.applyFixes(ir, [fix1, fix2]);
+        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
 
         expect(fix1.getApplied()).toBe(true); // metadata command
 
@@ -440,7 +440,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply fixes but make sure it skips already-applied commands", () => {
-        expect.assertions(6);
+        expect.assertions(7);
 
         const fixer = new ResourceFixer();
 
@@ -490,7 +490,7 @@ describe("test ResourceFixer", () => {
         fix2commands[3].setApplied(true);
 
         // fixes are applied to the IR iteratively, so we don't want to reapply the already-applied commands
-        fixer.applyFixes(ir, [fix1, fix2]);
+        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
 
         // these things should have been applied to the resource
         expect(resource.getTarget()).toBe("forgot");
@@ -502,5 +502,4 @@ describe("test ResourceFixer", () => {
         expect(resource.getKey()).toBe("key");
         expect(resource.getTargetLocale()).toBeUndefined();
     });
-
 });
