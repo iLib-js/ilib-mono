@@ -323,7 +323,7 @@ describe("ErrorFilterTransformer", () => {
         ];
         const results = [
             new Result({
-f                // this is a warning, not an error!
+                // this is a warning, not an error!
                 severity: "warning",
                 pathName: "path/to/resfile.xliff",
                 description: "warning description",
