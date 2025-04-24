@@ -62,12 +62,10 @@ class ResourceFixer extends Fixer {
      * @returns {ResourceFix} a new fix to apply
      */
     createFix(params) {
-        const { resource, target, category, index } = params;
-        let { commands } = params;
+        const { resource, target, category, index, commands } = params;
         const locator = new ResourceStringLocator(resource, target, category, index);
-        commands = commands ?? [];
-        if (commands.some(command => command.getLocator().getHash() !== locator.getHash())) {
-            throw new Error("All commands in a ResourceFix must apply to the same resource instance");
+        if (commands.length === 0) {
+            throw new Error("Cannot create a fix with no commands");
         }
         return new ResourceFix(locator, commands);
     }
@@ -75,32 +73,24 @@ class ResourceFixer extends Fixer {
     /**
      * Factory method to create a new command to modify the metadata of a resource.
      *
-     * @param {Resource} resource the resource to which the metadata applies
      * @param {string} name the name of the metadata field to modify
      * @param {string} value the value to set for the metadata field
      * @returns {ResourceFixCommand} the command to modify the metadata
      */
-    createMetadataCommand(resource, name, value) {
-        const locator = new ResourceStringLocator(resource);
-        return new ResourceMetadataFixCommand({locator, name, value});
+    createMetadataCommand(name, value) {
+        return new ResourceMetadataFixCommand({name, value});
     }
 
     /**
      * Factory method to create a new command to modify the content of a resource.
      *
-     * @param {Resource} resource the resource to which the content applies
      * @param {number} position the position in the content to start modifying
      * @param {number} deleteCount the number of characters to delete from the content
      * @param {string} insertContent the content to insert at the specified position
-     * @param {string} [category] the plural category of the string for plural resources
-     * @param {number} [index] the index of the string in the resource for array resources
-     * @param {boolean} [target] true if the locator is for the target string, false if it
-     * is for the source string
      * @returns {ResourceFixCommand} the command to modify the content
      */
-    createStringCommand(resource, position, deleteCount, insertContent, category, index, target) {
-        const locator = new ResourceStringLocator(resource, target, category, index);
-        return new ResourceStringFixCommand({locator, position, deleteCount, insertContent});
+    createStringCommand(position, deleteCount, insertContent) {
+        return new ResourceStringFixCommand({position, deleteCount, insertContent});
     }
 
     /**
@@ -114,73 +104,60 @@ class ResourceFixer extends Fixer {
             return;
         }
 
-        const /** @type {ResourceMetadataFixCommand[]} */ metadataFixCommands = fixes.flatMap(fix => {
-            return fix.getCommands().filter(command => (command instanceof ResourceMetadataFixCommand) && !command.getApplied());
-        });
-
-        // figure out which commands overlap with each other and only apply the first one
-        metadataFixCommands.forEach((command, index) => {
-            const other = metadataFixCommands.slice(0, index).find(other => command.overlaps(other));
-            if (!other) {
-                command.apply();
-            }
-        });
-
-        // fixes already have a reference to the resource they are modifying, so we just need
-        // to collect the commands for each resource and then apply them all at once
-        const fixCommandCache = {};
-        fixes.forEach(fix => {
-            const locator = fix.getLocator();
-            const commands = fix.getCommands();
-            const hash = locator.getHash();
-            if (!fixCommandCache[hash]) {
-                fixCommandCache[hash] = [];
-            }
-
-            // skip fix if there is any overlap with
-            // the fixes that have already been enqueued for processing
-            fixCommandCache[hash] = commands.reduce((queue, command) => {
-                if (!queue.some((/** @type {ResourceFixCommand} */ previousCommand) => command.overlaps(previousCommand))) {
-                    queue.push(command);
-                } else {
-                    command.setApplied(false);
-                }
-                return queue;
-            }, fixCommandCache[hash]);
-        });
-
-        // this keeps track of which locators have already been processed
-        const locatorSet = new Set();
-
-        // apply the string fixes to the resources
+        // first partition the fixes by resource locator and also determine which ones
+        // we can apply because they do not overlap with other fixes for the same locator.
+        const fixCache = {};
         fixes.forEach(fix => {
             const locator = fix.getLocator();
             const hash = locator.getHash();
-            if (locatorSet.has(hash)) {
-                // already processed the commands for this locator, so skip it
-                return;
+            if (!fixCache[hash]) {
+                fixCache[hash] = [];
             }
-            // map to string fix commands so we can depend on the StringFixCommand to process them
-            // correctly. Why reinvent the wheel?
-            const commands = fixCommandCache[hash].filter(command =>
-                    (command instanceof ResourceStringFixCommand) &&
-                    !command.getApplied() &&
-                    !command.getHasOverlap());
-            const stringCommands = commands.map(command => command.getStringFixCommand());
+            if (fixCache[hash].every(existingFix => {
+                // if the fix overlaps with any existing fix, we cannot apply it
+                return !fix.overlaps(existingFix);
+            })) {
+                fixCache[hash].push(fix);
+            } // else we don't apply and we skip it
+        });
 
-            let content = locator.getContent();
-            const modified = StringFixCommand.applyCommands(content, stringCommands);
-            locator.setContent(modified);
-            locatorSet.add(hash);
+        // now we have a cache of fixes that do not overlap with each other, so we can apply them
+        Object.values(fixCache).forEach(fixes => {
+            // every locator in the cache should have at least one fix and every fix in a cache
+            // entry should have the same locator, so we can safely assume that the first fix
+            // has the correct locator for all fixes
+            const locator = fixes[0].getLocator();
 
-            commands.forEach(command => {
-                command.setApplied(true);
+            const commands = fixes.filter(fix => !fix.applied).flatMap(fix => fix.getCommands());
+
+            // first metadata fixes
+            commands.
+                filter(command => command instanceof ResourceMetadataFixCommand).
+                forEach(command => {
+                    // apply metadata fixes directly to the resource
+                    if (!command.apply(locator)) {
+                        throw new Error(`Failed to apply metadata fix: ${command.getName()} = ${command.getValue()}`);
+                    }
+                });
+
+            // now find the content/string fixes. Must apply all of them at once so that
+            // the indexes into the content are correct.
+            const stringCommands = commands.
+                filter(command => command instanceof ResourceStringFixCommand).
+                map(command => command.getStringFixCommand());
+
+            // if there are no string commands, skip it
+            if (stringCommands.length > 0) {
+                // apply the string commands to the resource content all at once
+                let content = locator.getContent();
+                const modified = StringFixCommand.applyCommands(content, stringCommands);
+                locator.setContent(modified);
+            }
+
+            fixes.forEach(fix => {
+                fix.applied = true;
             });
         });
-
-        // return true to indicate that the file does not have to be serialized and reparsed
-        // before applying the rules again
-        return true;
     }
 }
 

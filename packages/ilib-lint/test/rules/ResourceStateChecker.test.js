@@ -20,8 +20,8 @@
 import { ResourceArray, ResourcePlural, ResourceString } from 'ilib-tools-common';
 import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
-import ResourceStateChecker from '../src/rules/ResourceStateChecker.js';
-import ResourceFixer from '../src/plugins/resource/ResourceFixer.js';
+import ResourceStateChecker from '../../src/rules/ResourceStateChecker.js';
+import ResourceFixer from '../../src/plugins/resource/ResourceFixer.js';
 
 const sourceFile = new SourceFile("a/b/c.xliff", {});
 
@@ -114,7 +114,7 @@ describe("testResourceStateChecker", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "state", "translated")
+                fixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -160,7 +160,7 @@ describe("testResourceStateChecker", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "state", "translated")
+                fixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -229,7 +229,7 @@ describe("testResourceStateChecker", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "state", "translated")
+                fixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -274,7 +274,7 @@ describe("testResourceStateChecker", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "state", "translated")
+                fixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -292,7 +292,7 @@ describe("testResourceStateChecker", () => {
     });
 
     test("ResourceStateChecker apply fix to correct the state", () => {
-        expect.assertions(2);
+        expect.assertions(4);
 
         const rule = new ResourceStateChecker({
             // all resources should have this state:
@@ -320,7 +320,7 @@ describe("testResourceStateChecker", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "state", "translated")
+                fixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -335,5 +335,18 @@ describe("testResourceStateChecker", () => {
             fix
         });
         expect(actual).toStrictEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff"),
+            dirty: false
+        });
+
+        rule.fixer.applyFixes(ir, [actual.fix]);
+
+        const fixedResource = ir.getRepresentation()[0];
+        expect(fixedResource).toBeTruthy();
+        expect(fixedResource.getState()).toBe("translated");
     });
 });

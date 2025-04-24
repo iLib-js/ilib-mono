@@ -52,10 +52,6 @@ export class StringFixer extends Fixer {
             ir.ir,
             enqueued.flatMap((fix) => fix.commands)
         );
-
-        // return false to indicate to the caller that the IR has been modified
-        // and that the file should be reserialized and reparsed before continuing
-        return false;
     }
 }
 

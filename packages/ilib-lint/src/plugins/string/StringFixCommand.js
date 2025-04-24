@@ -73,13 +73,6 @@ export class StringFixCommand {
     insertContent;
 
     /**
-     * Whether or not the fix command has been applied.
-     * @type {boolean}
-     * @default false
-     */
-    applied = false;
-
-    /**
      * Range of the original string which this command intends to modify
      *
      * @see {@link StringFixCommand.overlaps}
@@ -199,18 +192,13 @@ export class StringFixCommand {
         const preservedChunks = complementRanges.map((range) => content.slice(...range));
 
         // create modified string by interlacing the preserved chunks of original with the replacement contents from each command
-        const chunks = preservedChunks
+        return preservedChunks
             .flatMap((_, idx) => [
                 preservedChunks[idx],
                 // there is always 1 more of chunks preserved than of commands to apply
                 sortedCommands[idx]?.insertContent ?? "",
             ])
             .join("");
-
-        sortedCommands.forEach(command => {
-            command.applied = true;
-        });
-        return chunks;
     }
 }
 

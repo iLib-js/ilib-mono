@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 
-import ResourceStringLocator from './ResourceStringLocator.js';
 import ResourceFixCommand from './ResourceFixCommand.js';
+import ResourceStringLocator from './ResourceStringLocator.js';
 
 class ResourceMetadataFixCommand extends ResourceFixCommand {
     /**
@@ -42,15 +42,15 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
      * Contains information about a transformation that should be applied to a string.
      *
      * @param {Object} params parameters for this command
-     * @param {ResourceStringLocator} params.locator the locator to use
      * @param {string} params.name name of the metadata field to be modified
      * @param {string} params.value value to be set in the metadata field
      */
     constructor(params) {
         super(params);
-        if (!params || !params.locator || !params.name) {
-            throw new Error("ResourceMetadataFixCommand requires a locator and a name");
+        if (!params || !params.name || typeof params.name !== 'string') {
+            throw new Error("ResourceMetadataFixCommand requires a name");
         }
+
         this.name = params.name;
         this.value = params.value;
     }
@@ -76,17 +76,19 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
      */
     overlaps(other) {
         return other instanceof ResourceMetadataFixCommand &&
-            this.locator.isSameAs(other.locator) &&
             this.name === other.name;
     }
 
     /**
      * Apply this command to the resource.
+     * @param {ResourceStringLocator} locator location of the resource to apply this command to
+     * @returns {boolean} true if the command was successfully applied, false otherwise
      */
-    apply() {
-        const res = this.locator.getResource();
-        res[this.name] = this.value;
+    apply(locator) {
+        const resource = locator.getResource();
+        resource[this.name] = this.value;
         this.applied = true;
+        return true;
     }
 }
 

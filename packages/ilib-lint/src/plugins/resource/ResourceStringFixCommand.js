@@ -29,26 +29,18 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      * within the given resource.
      *
      * @param {Object} params parameters for this command
-     * @param {ResourceStringLocator} params.locator resource to which the command should be applied
      * @param {number} params.position position in string after which the operation should be performed
      * @param {number} params.deleteCount count of characters that should be deleted
      * @param {string} params.insertContent string that should be inserted
      */
     constructor(params) {
         super(params);
-        const { locator, position, deleteCount, insertContent = "" } = params;
-        if (!locator) {
-            throw new Error("ResourceStringFixCommand must have a locator");
-        }
+        const { position, deleteCount, insertContent = "" } = params;
         if (!Number.isInteger(position) || position < 0) {
             throw new Error("ResourceStringFixCommand position must be non-negative integer");
         }
         if (!Number.isInteger(deleteCount) || deleteCount < 0) {
             throw new Error("ResourceStringFixCommand deleteCount must be non-negative integer");
-        }
-        const content = locator.getContent();
-        if (position + deleteCount > content.length) {
-            throw new Error("ResourceStringFixCommand position + deleteCount is longer than the length of the content")
         }
         this.stringFix = new StringFixCommand(position, deleteCount, insertContent);
     }
@@ -84,7 +76,6 @@ class ResourceStringFixCommand extends ResourceFixCommand {
     overlaps(other) {
         return (
             other instanceof ResourceStringFixCommand &&
-            this.locator.isSameAs(other.locator) &&
             this.stringFix.overlaps(other.stringFix)
         );
     }

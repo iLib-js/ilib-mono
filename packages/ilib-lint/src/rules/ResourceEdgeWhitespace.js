@@ -62,7 +62,6 @@ class ResourceEdgeWhitespace extends ResourceRule {
                 resource,
                 commands: [
                     this.fixer.createStringCommand(
-                        resource,
                         0,
                         whitespaces.target.leading.length,
                         whitespaces.source.leading
@@ -91,7 +90,6 @@ class ResourceEdgeWhitespace extends ResourceRule {
                 resource,
                 commands: [
                     this.fixer.createStringCommand(
-                        resource,
                         target.length - whitespaces.target.trailing.length,
                         whitespaces.target.trailing.length,
                         whitespaces.source.trailing

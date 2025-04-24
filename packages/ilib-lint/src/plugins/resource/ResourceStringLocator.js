@@ -231,7 +231,7 @@ class ResourceStringLocator {
      * @returns {string} the hash of this resource string locator
      */
     getHash() {
-        return [this.resource.hashKey(), this.target ? "target" : "source", this.category, this.index].join("_");
+        return [this.target ? "target" : "source", this.category, this.index, this.resource.hashKey()].join("_");
     }
 }
 

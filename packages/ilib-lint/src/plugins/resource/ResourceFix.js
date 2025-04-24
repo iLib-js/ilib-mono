@@ -59,6 +59,12 @@ class ResourceFix extends Fix {
      */
     constructor(locator, commands) {
         super();
+        if (!(locator instanceof ResourceStringLocator)) {
+            throw new Error("Cannot create a fix without a locator");
+        }
+        if (!commands || !Array.isArray(commands) || commands.length === 0) {
+            throw new Error("Cannot create a fix without any commands");
+        }
         if (commands.some((one, idx) => commands.slice(idx + 1).some((other) => one.overlaps(other)))) {
             throw new Error("Cannot create a fix because some of the commands overlap with each other");
         }
@@ -97,21 +103,13 @@ class ResourceFix extends Fix {
     /**
      * Determines if two instances intend to modify the same range of the original string
      * @param {ResourceFix} other
+     * @returns {boolean} true if the two fixes overlap, false otherwise
      */
     overlaps(other) {
         return this.locator.isSameAs(other.locator) &&
             this.commands.some((thisCommand) =>
                 other.commands.some((otherCommand) => thisCommand.overlaps(otherCommand))
             );
-    }
-
-    /**
-     * Return whether or not this fix has been applied to the resource.
-     * @returns {boolean} true if the fix has been applied, false otherwise
-     */
-    getApplied() {
-        this.applied = this.commands.some(command => command.getApplied());
-        return this.applied;
     }
 }
 

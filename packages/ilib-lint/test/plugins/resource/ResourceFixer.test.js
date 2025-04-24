@@ -21,11 +21,8 @@ import { ResourceString, ResourcePlural, ResourceArray } from 'ilib-tools-common
 
 import { IntermediateRepresentation, SourceFile } from "ilib-lint-common";
 
-import ResourceStringLocator from "../../../src/plugins/resource/ResourceStringLocator.js";
-
 import ResourceFixer from "../../../src/plugins/resource/ResourceFixer.js";
 import ResourceFix from "../../../src/plugins/resource/ResourceFix.js";
-import ResourceFixCommand from "../../../src/plugins/resource/ResourceFixCommand.js";
 import ResourceMetadataFixCommand from '../../../src/plugins/resource/ResourceMetadataFixCommand.js';
 import ResourceStringFixCommand from '../../../src/plugins/resource/ResourceStringFixCommand.js';
 
@@ -51,12 +48,14 @@ describe("test ResourceFixer", () => {
                 source: "source",
                 target: "target"
             }),
-            commands: []
+            commands: [
+                fixer.createStringCommand(0, 2, "Z")
+            ]
         });
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(0);
+        expect(fix.getCommands()).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with a plural resource", () => {
@@ -77,12 +76,14 @@ describe("test ResourceFixer", () => {
                 },
             }),
             category: "one",
-            commands: []
+            commands: [
+                fixer.createStringCommand(0, 2, "Zs")
+            ]
         });
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(0);
+        expect(fix.getCommands()).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with an array resource", () => {
@@ -97,12 +98,14 @@ describe("test ResourceFixer", () => {
                 target: ["Zone", "Ztwo"]
             }),
             index: 1,
-            commands: []
+            commands: [
+                fixer.createStringCommand(0, 2, "Zt")
+            ]
         });
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(0);
+        expect(fix.getCommands()).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with multiple commands", () => {
@@ -119,8 +122,8 @@ describe("test ResourceFixer", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "b", undefined, undefined, true)
+                fixer.createMetadataCommand("targetLocale", "de-DE"),
+                fixer.createStringCommand(0, 2, "b")
             ]
         });
         expect(fix).toBeDefined();
@@ -129,33 +132,6 @@ describe("test ResourceFixer", () => {
         expect(commands).toHaveLength(2);
         expect(commands[0]).toBeInstanceOf(ResourceMetadataFixCommand);
         expect(commands[1]).toBeInstanceOf(ResourceStringFixCommand);
-    });
-
-    test("ResourceFixer create a fix with a command for the wrong resource", () => {
-        expect.assertions(1);
-
-        const fixer = new ResourceFixer();
-
-        const resource1 = new ResourceString({
-            key: "key",
-            source: "source",
-            target: "target"
-        });
-        const resource2 = new ResourceString({
-            key: "key2",
-            source: "source2",
-            target: "target2"
-        });
-
-        expect(() => {
-            const fix = fixer.createFix({
-                resource: resource1,
-                commands: [
-                    fixer.createMetadataCommand(resource2, "targetLocale", "de-DE"),
-                    fixer.createStringCommand(resource1, 0, 2, "b", undefined, undefined, true)
-                ]
-            });
-        }).toThrow("All commands in a ResourceFix must apply to the same resource instance");
     });
 
     test("ResourceFixer create a fix with overlapping commands", () => {
@@ -173,15 +149,15 @@ describe("test ResourceFixer", () => {
             fixer.createFix({
                 resource,
                 commands: [
-                    fixer.createStringCommand(resource, 1, 2, "x"),
-                    fixer.createStringCommand(resource, 0, 2, "b")
+                    fixer.createStringCommand(1, 2, "x"),
+                    fixer.createStringCommand(0, 2, "b")
                 ]
             });
         }).toThrow("Cannot create a fix because some of the commands overlap with each other");
     });
 
     test("ResourceFixer apply fixes", () => {
-        expect.assertions(7);
+        expect.assertions(6);
 
         const fixer = new ResourceFixer();
 
@@ -206,12 +182,12 @@ describe("test ResourceFixer", () => {
         const fix = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
+                fixer.createMetadataCommand("targetLocale", "de-DE"),
+                fixer.createStringCommand(0, 2, "fo")
             ]
         });
 
-        expect(fixer.applyFixes(ir, [fix])).toBe(true);
+        fixer.applyFixes(ir, [fix]);
 
         // these things should have been applied to the resource
         expect(resource.getTarget()).toBe("forget");
@@ -225,7 +201,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply multiple fixes", () => {
-        expect.assertions(7);
+        expect.assertions(6);
 
         const fixer = new ResourceFixer();
 
@@ -250,21 +226,21 @@ describe("test ResourceFixer", () => {
         const fix1 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
+                fixer.createMetadataCommand("targetLocale", "de-DE"),
+                fixer.createStringCommand(0, 2, "fo")
             ]
         });
 
         const fix2 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "sourceLocale", "en"),
-                fixer.createStringCommand(resource, 4, 1, "o", undefined, undefined, true),
-                fixer.createStringCommand(resource, 6, 0, "ten", undefined, undefined, true)
+                fixer.createMetadataCommand("sourceLocale", "en"),
+                fixer.createStringCommand(4, 1, "o"),
+                fixer.createStringCommand(6, 0, "ten")
             ]
         });
 
-        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
+        fixer.applyFixes(ir, [fix1, fix2]);
 
         // these things should have been applied to the resource
         expect(resource.getTarget()).toBe("forgotten");
@@ -278,7 +254,7 @@ describe("test ResourceFixer", () => {
     });
 
     test("ResourceFixer apply fixes but not the overlapping commands within them", () => {
-        expect.assertions(7);
+        expect.assertions(6);
 
         const fixer = new ResourceFixer();
 
@@ -303,94 +279,38 @@ describe("test ResourceFixer", () => {
         const fix1 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
+                fixer.createMetadataCommand("targetLocale", "de-DE"),
+                fixer.createStringCommand(0, 2, "fo")
             ]
         });
 
         const fix2 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "sourceLocale", "en"),
+                fixer.createMetadataCommand("sourceLocale", "en"),
                 // this first string command overlaps with the first fix so it should not be applied
-                fixer.createStringCommand(resource, 0, 2, "x", undefined, undefined, true),
-                fixer.createStringCommand(resource, 4, 1, "o", undefined, undefined, true),
-                fixer.createStringCommand(resource, 6, 0, "ten", undefined, undefined, true),
+                fixer.createStringCommand(0, 2, "x"),
+                fixer.createStringCommand(4, 1, "o"),
+                fixer.createStringCommand(6, 0, "ten"),
             ]
         });
 
-        // the second fix has overlapping commands with the first one
-        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
+        // the second fix has overlapping commands with the first one, so the entire fix should not be applied
+        fixer.applyFixes(ir, [fix1, fix2]);
 
         // these things should have been applied to the resource
-        expect(resource.getTarget()).toBe("forgotten");
+        expect(resource.getTarget()).toBe("forget");
         expect(resource.getTargetLocale()).toBe("de-DE");
-        expect(resource.getSourceLocale()).toBe("en");
         expect(resource.isDirty()).toBe(true);
 
         // these things should be the same as before
+        expect(resource.getSourceLocale()).toBe("en-US");
         expect(resource.getSource()).toBe("source");
         expect(resource.getKey()).toBe("key");
-    });
-
-    test("ResourceFixer apply fixes and make sure commands have the right applied flags afterwards", () => {
-        expect.assertions(7);
-
-        const fixer = new ResourceFixer();
-
-        const resource = new ResourceString({
-            key: "key",
-            source: "source",
-            target: "target"
-        });
-
-        const source = new SourceFile("test.xliff", {
-            sourceLocale: "en-US",
-            type: "resource"
-        });
-
-        const ir = new IntermediateRepresentation({
-            sourceFile: source,
-            type: "resource",
-            ir: [resource],
-            dirty: false
-        });
-
-        const fix1 = fixer.createFix({
-            resource,
-            commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
-            ]
-        });
-
-        const fix2 = fixer.createFix({
-            resource,
-            commands: [
-                fixer.createMetadataCommand(resource, "sourceLocale", "en"),
-                // this first string command overlaps with the first fix so it should not be applied
-                fixer.createStringCommand(resource, 0, 2, "x", undefined, undefined, true),
-                fixer.createStringCommand(resource, 4, 1, "o", undefined, undefined, true),
-                fixer.createStringCommand(resource, 6, 0, "ten", undefined, undefined, true),
-            ]
-        });
-
-        // the second fix has overlapping commands with the first one
-        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
-
-        const fix1commands = fix1.getCommands();
-        expect(fix1commands[0].getApplied()).toBe(true); // metadata command
-        expect(fix1commands[1].getApplied()).toBe(true); // string command
-
-        const fix2commands = fix2.getCommands();
-        expect(fix2commands[0].getApplied()).toBe(true); // metadata command
-        expect(fix2commands[1].getApplied()).toBe(false); // overlapping string command
-        expect(fix2commands[2].getApplied()).toBe(true); // string command
-        expect(fix2commands[3].getApplied()).toBe(true); // string command
     });
 
     test("ResourceFixer apply fixes and make sure the fix has the right applied flags afterwards", () => {
-        expect.assertions(3);
+        expect.assertions(2);
 
         const fixer = new ResourceFixer();
 
@@ -415,32 +335,32 @@ describe("test ResourceFixer", () => {
         const fix1 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
+                fixer.createMetadataCommand("targetLocale", "de-DE"),
+                fixer.createStringCommand(0, 2, "fo")
             ]
         });
 
         const fix2 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "sourceLocale", "en"),
+                fixer.createMetadataCommand("sourceLocale", "en"),
                 // this first string command overlaps with the first fix so it should not be applied
-                fixer.createStringCommand(resource, 0, 2, "x", undefined, undefined, true),
-                fixer.createStringCommand(resource, 4, 1, "o", undefined, undefined, true),
-                fixer.createStringCommand(resource, 6, 0, "ten", undefined, undefined, true),
+                fixer.createStringCommand(0, 2, "x"),
+                fixer.createStringCommand(4, 1, "o"),
+                fixer.createStringCommand(6, 0, "ten"),
             ]
         });
 
         // the second fix has overlapping commands with the first one
-        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
+        fixer.applyFixes(ir, [fix1, fix2]);
 
-        expect(fix1.getApplied()).toBe(true); // metadata command
+        expect(fix1.applied).toBe(true); // metadata command
 
-        expect(fix2.getApplied()).toBe(true); // if some of the commands were applied, the fix is considered applied
+        expect(fix2.applied).toBe(false); // if some of the commands overlap, the entire fix is not applied
     });
 
     test("ResourceFixer apply fixes but make sure it skips already-applied commands", () => {
-        expect.assertions(7);
+        expect.assertions(6);
 
         const fixer = new ResourceFixer();
 
@@ -465,41 +385,35 @@ describe("test ResourceFixer", () => {
         const fix1 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "targetLocale", "de-DE"),
-                fixer.createStringCommand(resource, 0, 2, "fo", undefined, undefined, true)
+                fixer.createMetadataCommand("targetLocale", "de-DE"),
+                fixer.createStringCommand(0, 2, "fo")
             ]
         });
-
-        const fix1commands = fix1.getCommands();
-        // mark the first command (the metadata one) as already applied so it should not get applied again
-        fix1commands[0].setApplied(true);
 
         const fix2 = fixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand(resource, "sourceLocale", "en"),
-                // this first string command overlaps with a command in the first fix so it should not be applied
-                fixer.createStringCommand(resource, 0, 2, "x", undefined, undefined, true),
-                fixer.createStringCommand(resource, 4, 1, "o", undefined, undefined, true),
-                fixer.createStringCommand(resource, 6, 0, "ten", undefined, undefined, true),
+                fixer.createMetadataCommand("sourceLocale", "en"),
+                // no overlap with the first fix, so these should be applied
+                fixer.createStringCommand(4, 1, "o"),
+                fixer.createStringCommand(6, 0, "ten"),
             ]
         });
 
-        const fix2commands = fix2.getCommands();
-        // mark the last command (the string one) as already applied so it should not get applied again
-        fix2commands[3].setApplied(true);
+        // pretend the second one was already applied
+        fix2.applied = true;
 
         // fixes are applied to the IR iteratively, so we don't want to reapply the already-applied commands
-        expect(fixer.applyFixes(ir, [fix1, fix2])).toBe(true);
+        fixer.applyFixes(ir, [fix1, fix2]);
 
-        // these things should have been applied to the resource
-        expect(resource.getTarget()).toBe("forgot");
-        expect(resource.getSourceLocale()).toBe("en");
+        // these things should have been applied to the resource by fix1
+        expect(resource.getTarget()).toBe("forget");
+        expect(resource.getTargetLocale()).toBe("de-DE");
         expect(resource.isDirty()).toBe(true);
 
-        // these things should be the same as before
+        // these things should be the same as before because fix2 was not applied again
+        expect(resource.getSourceLocale()).toBe("en-US");
         expect(resource.getSource()).toBe("source");
         expect(resource.getKey()).toBe("key");
-        expect(resource.getTargetLocale()).toBeUndefined();
     });
 });

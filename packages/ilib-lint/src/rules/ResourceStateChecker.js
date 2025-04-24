@@ -118,7 +118,7 @@ class ResourceStateChecker extends Rule {
                 fix: this.fixer.createFix({
                     resource,
                     commands: [
-                        this.fixer.createMetadataCommand(resource, "state", this.states[0])
+                        this.fixer.createMetadataCommand("state", this.states[0])
                     ]
                 })
             };
