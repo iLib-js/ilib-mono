@@ -17,12 +17,17 @@
  * limitations under the License.
  */
 
-import { Transformer, IntermediateRepresentation, Result } from "ilib-lint-common";
+import { Transformer, IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
 import { ResourceString, ResourceArray, ResourcePlural } from "ilib-tools-common";
 import { jest } from '@jest/globals';
 
 import ErrorFilterTransformer from "../../src/plugins/ErrorFilterTransformer.js";
 import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+
+const sourceFile = new SourceFile("path/to/file.xliff", {
+    sourceLocale: "en-US",
+    type: "resource"
+});
 
 describe("ErrorFilterTransformer", () => {
     test("is a subclass of Transformer", () => {
@@ -82,7 +87,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -137,7 +142,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -210,7 +215,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -280,7 +285,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -338,7 +343,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -378,7 +383,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, []);
@@ -418,7 +423,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, undefined);
@@ -433,7 +438,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "not-resource",
             ir: "ir",
-            sourceFile: "sourceFile"
+            sourceFile
         });
 
         const transformed = eft.transform(representation, []);
@@ -448,7 +453,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: [],
-            sourceFile: "sourceFile"
+            sourceFile
         });
 
         const transformed = eft.transform(representation, []);
@@ -500,7 +505,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile")
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -552,7 +557,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: null
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -561,7 +566,7 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: null
+            sourceFile
         });
 
         expect(transformed).toEqual(expected);
@@ -611,7 +616,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: null
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -620,7 +625,7 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: null
+            sourceFile
         });
 
         expect(transformed).toEqual(expected);
@@ -670,7 +675,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: null
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -679,7 +684,7 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: [resource1],
-            sourceFile: null,
+            sourceFile,
             dirty: true
         });
 
@@ -730,7 +735,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: null
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -739,7 +744,8 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: [resource1],
-            sourceFile: null,
+            // @ts-ignore
+            sourceFile,
             dirty: true
         });
 
@@ -788,18 +794,19 @@ describe("ErrorFilterTransformer", () => {
                 fix: fixer.createFix({
                     resource: resource1,
                     commands: [
-                        fixer.createStringCommand(resource1, 0, 3, "fixedSource")
+                        fixer.createStringCommand(0, 3, "fixedSource")
                     ]
                 })
             })
         ];
 
         // pretend that the fix has been applied
+        // @ts-ignore
         results[0].fix.applied = true;
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile: jest.fn(() => "sourceFile"),
+            sourceFile,
             dirty: true
         });
 

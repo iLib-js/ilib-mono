@@ -164,13 +164,10 @@ class LintableFile extends DirItem {
 
             try {
                 let changesMade = false;
-                let irs = undefined;
+                let irs = parser.parse(this.sourceFile);
 
                 do {
-                    if (!irs) {
-                        irs = parser.parse(this.sourceFile);
-                    }
-                    // indicate that for current intermediate representations, we did not modify the current representations yet
+                    // indicate that for current round, we did not modify the current representations yet
                     changesMade = false;
                     // clear the results of the current parse in case any results were left over from the previous iteration
                     // which do not match the current intermediate representations any more, or which repeat the same issues
@@ -207,10 +204,10 @@ class LintableFile extends DirItem {
                         ) {
                             // attempt to apply fixes to the current IR
                             const fixes = /** @type {Fix[]} */ (fixable.map((result) => result.fix));
-                            const reparseNeeded = !fixer.applyFixes(ir, fixes);
+                            fixer.applyFixes(ir, fixes);
 
                             // check if anything had been applied
-                            if (fixes.some((fix) => fix.getApplied())) {
+                            if (fixes.some((fix) => fix.applied)) {
                                 // remember that a fix modified the file and that it needs to be
                                 // written out to disk again after all fixes have been applied
                                 this.dirty = true;
@@ -223,28 +220,15 @@ class LintableFile extends DirItem {
                                 // fixer should have set the `applied` flag of each applied Fix
                                 // so accumulate the corresponding results
                                 fixedResults.push(...results.filter((result) => result.fix?.applied));
-
-                                if (reparseNeeded && this.serializer) {
-                                    // fixer should modify the provided IR
-                                    // so tell current parser to write out the modified representation
-                                    this.sourceFile = this.serializer.serialize(irs);
-
-                                    // clear the current IRs to indicate we should starting from scratch again
-                                    // and re-parse the file
-                                    irs = undefined;
-
-                                    // don't process subsequent representations after modifying the file
-                                    // because they don't match the new file
-                                    break;
-                                }
                             }
                         }
 
-                        // otherwise, just accumulate the results of the current parse for each IRs
-                        currentParseResults.push(...results);
+                        if (!changesMade) {
+                            // otherwise, just accumulate the results of the current parse for each IRs
+                            currentParseResults.push(...results);
+                        }
                     }
-
-                    // if a write had occurred for a given parser, reparse
+                    // if a write had occurred for a given parser, redo the rule application
                 } while (changesMade);
 
                 if (irs) {
