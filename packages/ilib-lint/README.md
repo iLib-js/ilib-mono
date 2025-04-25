@@ -379,6 +379,11 @@ Each declarative rule should have the following properties:
     - Suggestions are things that may not necessarily be wrong, but
       where a better way exists or where a recommended practice should
       be followed.
+* fixes (Array<Object>) - declare auto-fixes to this problem
+  This is an array of objects where that contain any parameters that the fix
+  needs to apply. The fix will be applied automatically if the
+  `--fix` command-line parameter is given. See [./src/config/README.md](./src/config/README.md)
+  for more details on how to declare the fix.
 
 Programmatic rules are used when the requirements for the rules are more complicated
 than a simple regular expression string can handle. For example, a rule that checks
