@@ -54,7 +54,32 @@ The `ilib-lint-config.json` file can have any of the following properties:
         is, if any one of the expressions matches, the rule will create a
         single Result and the other regular expressions will not be tested. If you
         want to match multiple regular expressions, you should make multiple
-        separate declarative rules.
+    - fixes (Array<Object>) - declare auto-fixes to this problem. The properties
+        in each fix can either be a name/value pair or a search/replace pair. You
+        cannot mix the two. Each entry
+        in the fixes array is an object that contains the following properties:
+        - name/value style
+            - name (String) - this gives the name of the metadata field to update
+            - value (String) - this gives the value of the metadata field to update.
+              If the name exists, but the value is missing or its value is empty,
+              then the metadata field will be removed from the resource.
+              Name/value pairs are used to update metadata fields in the resource
+              that match the rule, and therefore only be used when the rule applies
+              to resource files. If the name does not exist, then it will be added
+              to the resource with the specified value.
+        - search/replace style
+            - search (String) - a regular expression to match against the previously
+              matched string. The search
+              will only be run against the part of the string that caused this rule
+              to match in the first place. The regular expression should use
+              javascript syntax.
+            - replace (String) - a string to replace the matched text with. This
+              string can use the normal javascript replacement syntax (eg. `$1`,
+              `$2`, etc.) to re-insert the text that matched capturing groups in
+              the search regular expression. If the replace property is not
+              specified or if the value is the empty string, then the text
+              that matched the search regular expression will be removed from the
+              string.
 -   formatters (Array of Object) - a set of declarative formatters. Each array element is
     an object that contains the following properties:
     -   name - a unique name for this formatter
@@ -149,6 +174,25 @@ Here is an example of a configuration file:
             "note": "The named parameter '{matchString}' from the source string does not appear in the target string",
             "regexps": ["\\{\\w+\\}"],
             "link": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/README.md"
+        },
+        // example of a declarative rule that includes auto-fixing
+        {
+            "name": "resource-quote-matcher",
+            "type": "resource-target",
+            "description": "Ensure that quotes in the target string are only single quotes",
+            "note": "The quote {matchString} in the target string can only be single quote \"'\"",
+            "regexps": ["[\"`]"],
+            // this rule has an auto-fixer that will fix the quotes in the target string
+            "fixes": [
+                {
+                    "search": "[\"`]",
+                    "replace": "'"
+                }
+            ],
+            // this rule has an option to only match quotes that are locale-specific
+            "options": {
+                "localeOnly": true
+            }
         }
     ],
     "formatters": [
