@@ -2,4 +2,4 @@
 "loctool": patch
 ---
 
-Change the name of the duplicate option
+Change the duplicate option name.
