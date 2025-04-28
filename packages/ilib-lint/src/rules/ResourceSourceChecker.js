@@ -30,18 +30,16 @@ class ResourceSourceChecker extends DeclarativeResourceRule {
     /**
      * Construct a new regular expression-based resource checker.
      *
-     * The options must contain the following required properties:
-     *
-     * - name - a unique name for this rule
-     * - description - a one-line description of what this rule checks for.
+     * @param {Object} options options as documented above
+     * @param {string} options.name a unique name for this rule
+     * @param {string} options.description a one-line description of what this rule checks for.
      *   Example: "Check that URLs in the source conform to proper URL syntax"
-     * - note - a one-line note that will be printed on screen when the
+     * @param {string} options.note a one-line note that will be printed on screen when the
      *   check fails. Example: "The URL {matchString} is not well-formed."
      *   (Currently, matchString is the only replacement
      *   param that is supported.)
-     * - regexps - an array of strings that encode regular expressions to
+     * @param {string[]} options.regexps an array of strings that encode regular expressions to
      *   look for
-     * @param {Object} options options as documented above
      * @constructor
      */
     constructor(options) {

@@ -50,6 +50,62 @@ function getLangSpec(spec) {
 
 class DeclarativeResourceRule extends ResourceRule {
     /**
+     * @type {string}
+     */
+    name;
+
+    /**
+     * @type {string}
+     */
+    description;
+    
+    /**
+     * @type {string}
+     */
+    note;
+    
+    /**
+     * @type {string}
+     */
+    sourceLocale;
+    
+    /**
+     * @type {string}
+     */
+    link;
+
+    /**
+     * @type {Severity}
+     */
+    severity;
+
+    /**
+     * @type {boolean}
+     */
+    useStripped;
+    
+    /**
+     * @type {Set.<string>}
+     */
+    locales = new Set();
+    
+    /**
+     * @type {Set.<string>}
+     */
+    skipLocales = new Set();
+    
+    /**
+     * Fixes that can be applied to the source or target string. The fixes are
+     * applied in the order they are specified here, so the first one that matches
+     * will be applied first, then the second one, and so on. The ResourceFix
+     * instances are created after the rule has been applied, so that the fixes
+     * do not have to be regex-based. They just modify the source or target string
+     * simply.
+     * @type {Array<{search: RegExp, replace: string}>|undefined}
+     */
+    fixes = undefined;
+
+    /**
      * Construct a new regular expression-based declarative resource rule.
      *
      * @param {Object} options options as documented below
@@ -83,9 +139,11 @@ class DeclarativeResourceRule extends ResourceRule {
      *   part of any of the given locales. If not specified, the rule applies to all
      *   target locales. If both locales and skipLocales are specified, only the
      *   locales will used.
-     * @param {Boolean} [options.useStripped] if true, the string will stripped of all
+     * @param {boolean} [options.useStripped] if true, the string will stripped of all
      *   plurals before attempting a match. If false, the original source string with
      *   possible plurals in it will be used for the match. Default is "true".
+     * @param {Array<{search: string, replace: string}>|undefined} [options.fixes] for rules
+     * that can be fixed automatically, this is an array of objects that describe how to fix the problem.
      * @constructor
      */
     constructor(options) {
@@ -116,6 +174,21 @@ class DeclarativeResourceRule extends ResourceRule {
             } else if (Array.isArray(options.skipLocales)) {
                 this.skipLocales = new Set(options.skipLocales.map(spec => getLangSpec(spec)));
             }
+        }
+        
+        if (options.fixes) {
+            options.fixes.forEach(fix => {
+                if (typeof(fix.search) !== 'string' || typeof(fix.replace) !== 'string') {
+                    throw `Declarative rule ${this.name} fixes must have a search and a replace string`;
+                }
+                if (!this.fixes) {
+                    this.fixes = [];
+                }
+                this.fixes.push({
+                    search: new RegExp(fix.search, regexFlags),
+                    replace: fix.replace
+                });
+            });
         }
     }
 

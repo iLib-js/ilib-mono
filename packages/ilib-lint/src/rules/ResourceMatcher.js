@@ -40,23 +40,20 @@ class ResourceMatcher extends DeclarativeResourceRule {
     /**
      * Construct a new regular expression-based resource checker.
      *
-     * The options must contain the following required properties:
-     *
-     * - name - a unique name for this rule
-     * - description - a one-line description of what this rule checks for.
+     * @param {Object} options options as documented above
+     * @param {string} options.name a unique name for this rule
+     * @param {string} options.description a one-line description of what this rule checks for.
      *   Example: "Check that URLs in the source also appear in the target"
-     * - note - a one-line note that will be printed on screen when the
+     * @param {string} options.note a one-line note that will be printed on screen when the
      *   check fails. Example: "The URL {matchString} did not appear in the
      *   the target." (Currently, matchString is the only replacement
      *   param that is supported.)
-     * - sourceLocale - locale (if any) of the source
-     * - link - an URL to a document that explains this rule in more detail
-     * - severity - severity of the results of this rule. This should be one of
+     * @param {string} options.sourceLocale locale (if any) of the source
+     * @param {string} options.link an URL to a document that explains this rule in more detail
+     * @param {string} options.severity severity of the results of this rule. This should be one of
      *   "error", "warning", or "suggestion".
-     * - regexps - an array of strings that encode regular expressions to
+     * @param {string[]} options.regexps an array of strings that encode regular expressions to
      *   look for
-     *
-     * @param {Object} options options as documented above
      * @constructor
      */
     constructor(options) {
