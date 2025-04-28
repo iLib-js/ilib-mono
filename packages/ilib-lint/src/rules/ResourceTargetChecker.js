@@ -30,18 +30,16 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
     /**
      * Construct a new regular expression-based resource checker.
      *
-     * The options must contain the following required properties:
-     *
-     * - name - a unique name for this rule
-     * - description - a one-line description of what this rule checks for.
+     * @param {Object} options options as documented above
+     * @param {string} options.name a unique name for this rule
+     * @param {string} options.description - a one-line description of what this rule checks for.
      *   Example: "Check that URLs in the target are valid."
-     * - note - a one-line note that will be printed on screen when the
+     * @param {string} options.note - a one-line note that will be printed on screen when the
      *   check fails. Example: "The URL {matchString} is not valid."
      *   (Currently, matchString is the only replacement
      *   param that is supported.)
-     * - regexps - an array of strings that encode regular expressions to
+     * @param {Array<string>} options.regexps - an array of strings that encode regular expressions to
      *   look for
-     * @param {Object} options options as documented above
      * @constructor
      */
     constructor(options) {
@@ -80,6 +78,25 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 startIndex = match.index;
                 endIndex = match.index+match[0].length;
             }
+            let fix = [];
+            if (this.fixes) {
+                this.fixes.forEach(fix => {
+                    const match = fix.search.exec(text);
+                    if (match) {
+                        const text = match[0].replace(fix.search, fix.replace);
+                        fix.push(this.fixer.createFix({
+                            resource,
+                            commands: [
+                                this.fixer.createStringReplaceCommand({
+                                    position: startIndex,
+                                    deleteCount: match[0].length,
+                                    insertText: text
+                                })
+                            ]
+                        }));
+                    }
+                });
+            }
             let value = {
                 severity: this.severity,
                 id: resource.getKey(),
@@ -90,6 +107,9 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 description: this.note.replace(/\{matchString\}/g, text),
                 locale: resource.getTargetLocale()
             };
+            if (fix) {
+                value.fix = fix;
+            }
             if (typeof(resource.lineNumber) !== 'undefined') {
                 value.lineNumber = resource.lineNumber;
             }
