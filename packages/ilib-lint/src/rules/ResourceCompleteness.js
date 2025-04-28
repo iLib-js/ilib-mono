@@ -66,7 +66,8 @@ class ResourceCompleteness extends ResourceRule {
             return new Result({
                 ...resultMetaProps,
                 severity: "error",
-                description: "Missing target string in resource"
+                description: "Missing target string in resource",
+                locale: resource.getTargetLocale()
             });
         }
         // if there's an extra translation string for which there is no source, just warn
@@ -75,7 +76,8 @@ class ResourceCompleteness extends ResourceRule {
                 ...resultMetaProps,
                 severity: "warning",
                 description: "Extra target string in resource",
-                highlight: `<e0>${target}</e0>`
+                highlight: `<e0>${target}</e0>`,
+                locale: resource.getTargetLocale()
             });
         }
         else return /* no error */;

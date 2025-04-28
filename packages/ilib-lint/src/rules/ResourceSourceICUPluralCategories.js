@@ -1,7 +1,7 @@
 /*
  * ResourceSourceICUPluralCategories.js
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,6 +116,7 @@ export class ResourceSourceICUPluralCategories extends ResourceRule {
                             highlight: `<e0>${this.substringForLocation(source, partialResult.location)}</e0>`,
                             severity: partialResult.severity,
                             description: partialResult.description,
+                            locale: resource.getTargetLocale(),
                         })
                 )
         );
