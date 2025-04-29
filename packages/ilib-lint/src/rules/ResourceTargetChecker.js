@@ -21,6 +21,7 @@
 import { Result } from 'ilib-lint-common';
 import DeclarativeResourceRule from './DeclarativeResourceRule.js';
 import { stripPlurals } from './utils.js';
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
 /**
  * @class Resource checker class that checks that any regular expressions
@@ -38,8 +39,9 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
      *   check fails. Example: "The URL {matchString} is not valid."
      *   (Currently, matchString is the only replacement
      *   param that is supported.)
-     * @param {Array<string>} options.regexps - an array of strings that encode regular expressions to
+     * @param {Array<string>} options.regexps an array of strings that encode regular expressions to
      *   look for
+     * @param {ResourceFixer} [options.fixer] an instance of a ResourceFixer to use
      * @constructor
      */
     constructor(options) {
@@ -78,24 +80,28 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 startIndex = match.index;
                 endIndex = match.index+match[0].length;
             }
-            let fix = [];
+            let fix = undefined;
             if (this.fixes) {
+                let commands = [];
+                // the declarative fixes array is really an array of commands to apply,
+                // so we need to convert the search/replace pairs into commands
                 this.fixes.forEach(fix => {
                     const match = fix.search.exec(text);
                     if (match) {
                         const text = match[0].replace(fix.search, fix.replace);
-                        fix.push(this.fixer.createFix({
-                            resource,
-                            commands: [
-                                this.fixer.createStringReplaceCommand({
-                                    position: startIndex,
-                                    deleteCount: match[0].length,
-                                    insertText: text
-                                })
-                            ]
-                        }));
+                        commands.push(this.fixer.createStringCommand(
+                            startIndex,
+                            match[0].length,
+                            text
+                        ));
                     }
                 });
+                if (commands.length > 0) {
+                    fix = this.fixer.createFix({
+                        resource,
+                        commands
+                    });
+                }
             }
             let value = {
                 severity: this.severity,

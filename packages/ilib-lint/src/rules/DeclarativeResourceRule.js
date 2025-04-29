@@ -85,14 +85,14 @@ class DeclarativeResourceRule extends ResourceRule {
     useStripped;
     
     /**
-     * @type {Set.<string>}
+     * @type {Set.<string>|undefined}
      */
-    locales = new Set();
+    locales = undefined;
     
     /**
-     * @type {Set.<string>}
+     * @type {Set.<string>|undefined}
      */
-    skipLocales = new Set();
+    skipLocales = undefined;
     
     /**
      * Fixes that can be applied to the source or target string. The fixes are
