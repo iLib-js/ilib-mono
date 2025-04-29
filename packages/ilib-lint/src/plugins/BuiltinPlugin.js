@@ -79,7 +79,19 @@ export const regexRules = [
         description: "Ensure that the target does not contain any full-width digits.",
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII digits instead.",
         regexps: [ "[\\uFF10-\\uFF19]+" ],
-        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-digits.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-digits.md",
+        fixes: [
+            { search: "\\uFF10", replace: "0" },
+            { search: "\\uFF11", replace: "1" },
+            { search: "\\uFF12", replace: "2" },
+            { search: "\\uFF13", replace: "3" },
+            { search: "\\uFF14", replace: "4" },
+            { search: "\\uFF15", replace: "5" },
+            { search: "\\uFF16", replace: "6" },
+            { search: "\\uFF17", replace: "7" },
+            { search: "\\uFF18", replace: "8" },
+            { search: "\\uFF19", replace: "9" }
+        ]
     },
     {
         type: "resource-target",
@@ -88,7 +100,12 @@ export const regexRules = [
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII symbols instead.",
         regexps: [ "[\\uFF01\\uFF05\\uFF1F]+" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-punctuation-subset.md",
-        locales: "ja"
+        locales: "ja",
+        fixes: [
+            { search: "\\uFF01", replace: "!" },
+            { search: "\\uFF05", replace: "%" },
+            { search: "\\uFF1F", replace: "?" }
+        ]
     },
         {
         type: "resource-target",
