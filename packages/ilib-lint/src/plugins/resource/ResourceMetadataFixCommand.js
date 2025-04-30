@@ -18,9 +18,12 @@
  * limitations under the License.
  */
 
-import ResourceFixCommand from './ResourceFixCommand.js';
-import ResourceStringLocator from './ResourceStringLocator.js';
+import ResourceFixCommand from "./ResourceFixCommand.js";
+import ResourceStringLocator from "./ResourceStringLocator.js";
 
+/**
+ * Class representing a command to change value of the metadata field of a resource.
+ */
 class ResourceMetadataFixCommand extends ResourceFixCommand {
     /**
      * The name of the metadata field to be modified.
@@ -39,15 +42,13 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
     value;
 
     /**
-     * Contains information about a transformation that should be applied to a string.
-     *
      * @param {Object} params parameters for this command
      * @param {string} params.name name of the metadata field to be modified
      * @param {string} params.value value to be set in the metadata field
      */
     constructor(params) {
         super(params);
-        if (!params || !params.name || typeof params.name !== 'string') {
+        if (!params || !params.name || typeof params.name !== "string") {
             throw new Error("ResourceMetadataFixCommand requires a name");
         }
 
@@ -56,27 +57,13 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
     }
 
     /**
-     * Determines if the ranges of two fix commands have any overlap
-     * i.e. if they attempt to modify the same characters of a given string
-     *
-     * @note
-     * Comparison is performed as if the ranges were left-closed, right-open intervals
-     * (replacement of 1st and 2nd char has range `[0,2)`,
-     * replacement of the 3rd and 4th char has range `[2, 4)` and they don't overlap)
-     *
-     * **with the exception of** 0-length replacements, i.e. pure insertion commands
-     * which (even though mathematically `[1,1)` would be empty interval):
-     * - overlap with different commands from the left side (i.e. insertion at 1 overlaps removal `[0,2)`,
-     * but not removal `[0,1)`)
-     * - overlap with each other when their position is the same (this is because the outcome
-     * of multiple insertions in the same place would depend on the order of execution)
+     * Determines if this command attempts to modify the same metadata field as another command.
      *
      * @param {ResourceFixCommand} other
-     * @returns {boolean} true if the ranges overlap, false otherwise
+     * @returns {boolean} true if the commands overlap, false otherwise
      */
     overlaps(other) {
-        return other instanceof ResourceMetadataFixCommand &&
-            this.name === other.name;
+        return other instanceof ResourceMetadataFixCommand && this.name === other.name;
     }
 
     /**
