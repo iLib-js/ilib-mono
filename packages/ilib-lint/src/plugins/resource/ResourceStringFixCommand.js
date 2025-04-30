@@ -34,7 +34,7 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      * @param {string} params.insertContent string that should be inserted
      */
     constructor(params) {
-        super(params);
+        super();
         const { position, deleteCount, insertContent = "" } = params;
         if (!Number.isInteger(position) || position < 0) {
             throw new Error("ResourceStringFixCommand position must be non-negative integer");

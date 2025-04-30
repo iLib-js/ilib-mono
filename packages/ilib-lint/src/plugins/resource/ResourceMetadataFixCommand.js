@@ -47,7 +47,7 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
      * @param {string} params.value value to be set in the metadata field
      */
     constructor(params) {
-        super(params);
+        super();
         if (!params || !params.name || typeof params.name !== "string") {
             throw new Error("ResourceMetadataFixCommand requires a name");
         }
