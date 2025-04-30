@@ -1,7 +1,7 @@
 /*
  * XliffParser.test.js - test the built-in XliffParser plugin
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,5 +114,26 @@ describe("test the XliffParser plugin", () => {
         expect(() => {
             xp.parse(sourceFile);
         }).toThrow();
+    });
+
+    test("Parse a regular xliff file and return the correct file stats", () => {
+        expect.assertions(9);
+
+        const xp = new XliffParser();
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+
+        const ir = xp.parse(sourceFile);
+        expect(ir).toBeTruthy();
+        expect(ir.length).toBe(1);
+        expect(ir[0] instanceof IntermediateRepresentation).toBeTruthy();
+
+        const stats = ir[0].getStats();
+        expect(stats).toBeTruthy();
+        expect(stats?.getFiles()).toBe(1);
+        expect(stats?.getLines()).toBe(12);
+        expect(stats?.getBytes()).toBe(9);
+        expect(stats?.getModules()).toBe(1);
+        expect(stats?.getWords()).toBe(2);
     });
 });

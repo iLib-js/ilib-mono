@@ -25,7 +25,7 @@ import { Rule } from 'ilib-lint-common';
 class ResourceRule extends Rule {
     /**
      * Construct a new resource checker rule.
-*
+     *
      * If a subclass defines a property "locales" with the
      * value being a Set of locale lang-specs, then this
      * class will ensure that the rule is only applied to

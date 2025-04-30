@@ -1,7 +1,7 @@
 /*
  * XliffParser.js - Parser for XLIFF files
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,38 @@
  * limitations under the License.
  */
 
-import { ResourceXliff } from 'ilib-tools-common';
+import { ResourceXliff, Resource } from 'ilib-tools-common';
 import { FileStats, Parser, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
+
+/**
+ * Count the number of words in the source strings of the resources.
+ * This is a very simple word count that splits the source string
+ * on whitespace and counts the number of resulting pieces. We can replace it
+ * later with a more sophisticated word count if needed.
+ *
+ * @param {Array.<Resource>} resources the resources to count words in
+ * @returns {Number} the total number of words in the source strings
+ */
+function countSourceWords(resources) {
+    return resources.reduce((sum, res) =>
+        sum + (res.getSource() ? res.getSource().split(/\s+/).length : 0), 0);
+}
+
+/**
+ * Count the number of bytes in the source strings of the resources.
+ * This is a simple byte count that counts the number of characters in the
+ * source string, assuming that each character is one byte. This is not
+ * necessarily accurate for all languages, but it is a good enough approximation
+ * for most cases. We can replace it later with a more sophisticated byte count
+ * if needed.
+ *
+ * @param {Array.<Resource>} resources the resources to count bytes in
+ * @returns {Number} the total number of bytes in the source strings
+ */
+function countSourceBytes(resources) {
+    return resources.reduce((sum, res) =>
+        sum + (res.getSource() ? res.getSource().length : 0), 0);
+}
 
 /**
  * @class Parser for XLIFF files based on the ilib-xliff library.
@@ -49,15 +79,17 @@ class XliffParser extends Parser {
         });
 
         xliff.parse(data);
-        const resources = xliff.getResources();
+        const resources = xliff.getResources() ?? [];
         return [new IntermediateRepresentation({
             type: "resource",
             ir: resources,
             sourceFile,
             stats: new FileStats({
                 lines: xliff.getLines(),
-                bytes: xliff.size(),
-                modules: resources.length
+                files: 1,
+                bytes: countSourceBytes(resources),
+                modules: resources.length,
+                words: countSourceWords(resources)
             })
         })];
     }

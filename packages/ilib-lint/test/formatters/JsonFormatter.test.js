@@ -37,11 +37,12 @@ describe('JsonFormatter', () => {
                     pathName: "test.txt",
                     rule: getTestRule(),
                     severity: "error",
-                    source: "test"
+                    source: "test",
+                    locale: "en-US"
                 })
             ],
             resultStats: undefined,
-            expected: `{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"}]}}`+"\n"
+            expected: `{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US"}]}}`+"\n"
         },
         {
             testName: "format a single result with stats",
@@ -55,7 +56,8 @@ describe('JsonFormatter', () => {
                     pathName: "test.txt",
                     rule: getTestRule(),
                     severity: "error",
-                    source: "test"
+                    source: "test",
+                    locale: "de-DE"
                 })
             ],
             resultStats: {
@@ -63,7 +65,7 @@ describe('JsonFormatter', () => {
                 warnings: 0,
                 suggestions: 0
             },
-            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"de-DE"}]}}`+"\n"
         },
         {
             testName: "format a single result with file stats",
@@ -77,16 +79,18 @@ describe('JsonFormatter', () => {
                     pathName: "test.txt",
                     rule: getTestRule(),
                     severity: "error",
-                    source: "test"
+                    source: "test",
+                    locale: "fr-FR"
                 })
             ],
             fileStats: {
                 files: 1,
                 lines: 10,
                 bytes: 100,
-                modules: 1
+                modules: 1,
+                words: 50
             },
-            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"fr-FR"}]}}`+"\n"
         },
         {
             testName: "format a single result with file and result stats",
@@ -100,7 +104,8 @@ describe('JsonFormatter', () => {
                     pathName: "test.txt",
                     rule: getTestRule(),
                     severity: "error",
-                    source: "test"
+                    source: "test",
+                    locale: "es-ES"
                 })
             ],
             resultStats: {
@@ -112,9 +117,10 @@ describe('JsonFormatter', () => {
                 files: 1,
                 lines: 10,
                 bytes: 100,
-                modules: 1
+                modules: 1,
+                words: 50
             },
-            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0,"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0,"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"es-ES"}]}}`+"\n"
         },
         {
             testName: "format multiple results",
@@ -128,7 +134,8 @@ describe('JsonFormatter', () => {
                     pathName: "test.txt",
                     rule: getTestRule(),
                     severity: "error",
-                    source: "test"
+                    source: "test",
+                    locale: "en-US"
                 }),
                 new Result({
                     description: "Another description for testing purposes",
@@ -138,10 +145,11 @@ describe('JsonFormatter', () => {
                     pathName: "test2.txt",
                     rule: getTestRule(),
                     severity: "warning",
-                    source: "test"
+                    source: "test",
+                    locale: "en-US"
                 })
             ],
-            expected:`{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"},{"pathName":"test2.txt","rule":"testRule","severity":"warning"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US"},{"pathName":"test2.txt","rule":"testRule","severity":"warning","locale":"en-US"}]}}`+"\n"
         },
         {
             testName: "format multiple results with stats",

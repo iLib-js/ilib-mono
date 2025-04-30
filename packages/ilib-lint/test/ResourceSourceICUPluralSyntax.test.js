@@ -118,7 +118,8 @@ describe("testResourceSourceICUPluralSyntax", () => {
             source: '{count, plural, one {{This is singular} other {This is plural}}',
             highlight: '{count, plural, one {<e0>{This </e0>is singular} other {This is plural}}',
             rule,
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            locale: "en-US"
         });
         expect(result).toStrictEqual(expected);
     });
@@ -147,7 +148,8 @@ describe("testResourceSourceICUPluralSyntax", () => {
             source: '{count, plural, one {This is singular} other {This is plural}',
             highlight: '<e0>{count, plural, one {This is singular} other {This is plural}</e0>',
             rule,
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            locale: "en-US"
         });
         expect(result).toStrictEqual(expected);
     });
@@ -176,7 +178,8 @@ describe("testResourceSourceICUPluralSyntax", () => {
             source: '{count, plural, one {This is singular}}',
             highlight: '{count, plural, one {This is singular}<e0></e0>}',
             rule,
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            locale: "en-US"
         });
         expect(result).toStrictEqual(expected);
     });
@@ -247,7 +250,8 @@ describe("testResourceSourceICUPluralSyntax", () => {
             highlight: 'The file is located in {count, plural, one {# collection} other {# collections} visible <e0></e0>to user {name}.',
             rule,
             pathName: "a/b/c.xliff",
-            source: 'The file is located in {count, plural, one {# collection} other {# collections} visible to user {name}.'
+            source: 'The file is located in {count, plural, one {# collection} other {# collections} visible to user {name}.',
+            locale: "en-US"
         });
         expect(result).toStrictEqual(expected);
     });
