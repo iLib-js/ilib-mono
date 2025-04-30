@@ -1,5 +1,12 @@
 # ilib-lint-common
 
+## 3.4.0
+
+### Minor Changes
+
+- b182d42: - Added support for counting the number of source words
+  in the FileStats object
+
 ## 3.3.0
 
 ### Minor Changes
