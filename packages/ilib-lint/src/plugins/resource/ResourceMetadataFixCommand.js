@@ -74,7 +74,6 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
     apply(locator) {
         const resource = locator.getResource();
         resource[this.name] = this.value;
-        this.applied = true;
         return true;
     }
 }
