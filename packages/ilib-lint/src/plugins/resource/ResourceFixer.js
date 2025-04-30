@@ -106,6 +106,7 @@ class ResourceFixer extends Fixer {
 
         // first partition the fixes by resource locator and also determine which ones
         // we can apply because they do not overlap with other fixes for the same locator.
+        /** @type {Record<string, ResourceFix[]>} */
         const fixCache = {};
         fixes.forEach(fix => {
             const locator = fix.getLocator();
@@ -136,7 +137,7 @@ class ResourceFixer extends Fixer {
                 forEach(command => {
                     // apply metadata fixes directly to the resource
                     if (!command.apply(locator)) {
-                        throw new Error(`Failed to apply metadata fix: ${command.getName()} = ${command.getValue()}`);
+                        throw new Error(`Failed to apply metadata fix: ${command.name} = ${command.value}`);
                     }
                 });
 
