@@ -242,7 +242,7 @@ function usage() {
         "  are single locale.\n" +
         "-v or --version\n" +
         "  Print the current loctool version and exit\n" +
-        "-t or --translations\n" +
+        "-r or --translations\n" +
         "  Specify a dir or comma-separated array of dirs where the translation files live. The files\n" +
         "  maybe in xliff or po or pot file format. Default: \".\"\n" +
         "--noxliffDups\n" +
@@ -415,12 +415,12 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "-v" || val === "--version") {
         printVersion();
-    } else if (val === "-x" || val === "--xliffs" || val === '-t' || val === '--translations') {
-        // support the old "-x" and "--xliffs" options as well as the new "-t" and "--translations" options
+    } else if (val === "-x" || val === "--xliffs" || val === '-r' || val === '--translations') {
+        // support the old "-x" and "--xliffs" options as well as the new "-r" and "--translations" options
         if (i+1 < argv.length && argv[i+1] && argv[i+1][0] !== "-") {
             settings.xliffsDir = argv[++i].split(/,/g);
         } else {
-            console.error("Error: -t (--translations or -x or --xliffs) option requires a directory name argument to follow it.");
+            console.error("Error: -r (--translations or -x or --xliffs) option requires a directory name argument to follow it.");
             usage();
         }
     } else if (val === "-z" || val === "--xliffsOut") {
