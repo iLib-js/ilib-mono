@@ -25,7 +25,6 @@ class ResourceStringLocator {
      * The resource instance that contains this content.
      *
      * @type {Resource}
-     * @protected
      * @readonly
      */
     resource;
@@ -35,7 +34,6 @@ class ResourceStringLocator {
      * plural category of the content.
      *
      * @type {string|undefined}
-     * @protected
      * @readonly
      */
     category;
@@ -45,7 +43,6 @@ class ResourceStringLocator {
      * content within the array.
      *
      * @type {number|undefined}
-     * @protected
      * @readonly
      */
     index;
@@ -56,7 +53,6 @@ class ResourceStringLocator {
      * source string.
      *
      * @type {boolean}
-     * @protected
      * @readonly
      */
     target;
@@ -83,44 +79,6 @@ class ResourceStringLocator {
         if (resource.getType() === "array" && typeof(index) !== 'number') {
             throw new Error("Cannot create a ResourceStringLocator for an array resource without an index");
         }
-    }
-
-    /**
-     * Return the resource instance that contains this content.
-     *
-     * @returns {Resource} the resource instance that contains this content
-     */
-    getResource() {
-        return this.resource;
-    }
-
-    /**
-     * Return the plural category of the content, if any.
-     *
-     * @returns {string|undefined} the plural category of the content, if any
-     */
-    getCategory() {
-        return this.category;
-    }
-
-    /**
-     * Return the index of the content within the array, if any.
-     *
-     * @returns {number|undefined} the index of the content within the array, if any
-     */
-    getIndex() {
-        return this.index;
-    }
-
-    /**
-     * Return true if the content is the target string. If true, then the
-     * content is the target string. If false, then the content is the
-     * source string.
-     *
-     * @returns {boolean} true if the content is the target string
-     */
-    getTarget() {
-        return this.target;
     }
 
     /**

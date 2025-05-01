@@ -71,7 +71,7 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
      * @param {ResourceStringLocator} locator location of the resource to apply this command to
      */
     apply(locator) {
-        const resource = locator.getResource();
+        const resource = locator.resource;
         switch (this.name) {
             // known metadata fields which can hold a string value and be set directly
             case "context":
