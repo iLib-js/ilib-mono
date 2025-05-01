@@ -80,7 +80,7 @@ describe("test ResourceStringFixCommand", () => {
 
         expect(command).toBeDefined();
 
-        const stringFixCommand = command.getStringFixCommand();
+        const stringFixCommand = command.stringFix;
         expect(stringFixCommand).toBeDefined();
         expect(stringFixCommand.position).toBe(0);
         expect(stringFixCommand.deleteCount).toBe(0);

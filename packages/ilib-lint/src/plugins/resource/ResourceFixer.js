@@ -143,7 +143,7 @@ class ResourceFixer extends Fixer {
             // the indexes into the content are correct.
             const stringCommands = commands.
                 filter(command => command instanceof ResourceStringFixCommand).
-                map(command => command.getStringFixCommand());
+                map(command => command.stringFix);
 
             // if there are no string commands, skip it
             if (stringCommands.length > 0) {

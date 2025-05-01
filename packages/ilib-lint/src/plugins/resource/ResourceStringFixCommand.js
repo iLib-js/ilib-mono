@@ -23,6 +23,12 @@ import ResourceFixCommand from './ResourceFixCommand.js';
 
 class ResourceStringFixCommand extends ResourceFixCommand {
     /**
+     * @readonly
+     * @type {StringFixCommand}
+     */
+    stringFix;
+
+    /**
      * Contains information about a transformation that should be applied to the string content
      * within the given resource.
      *
@@ -76,15 +82,6 @@ class ResourceStringFixCommand extends ResourceFixCommand {
             other instanceof ResourceStringFixCommand &&
             this.stringFix.overlaps(other.stringFix)
         );
-    }
-
-    /**
-     * Return the string fix command that this command is based on.
-     *
-     * @returns {StringFixCommand} the string fix command that this command is based on
-     */
-    getStringFixCommand() {
-        return this.stringFix;
     }
 }
 
