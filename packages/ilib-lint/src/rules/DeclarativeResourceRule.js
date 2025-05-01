@@ -58,17 +58,17 @@ class DeclarativeResourceRule extends ResourceRule {
      * @type {string}
      */
     description;
-    
+
     /**
      * @type {string}
      */
     note;
-    
+
     /**
      * @type {string}
      */
     sourceLocale;
-    
+
     /**
      * @type {string}
      */
@@ -83,17 +83,17 @@ class DeclarativeResourceRule extends ResourceRule {
      * @type {boolean}
      */
     useStripped;
-    
+
     /**
      * @type {Set.<string>|undefined}
      */
     locales = undefined;
-    
+
     /**
      * @type {Set.<string>|undefined}
      */
     skipLocales = undefined;
-    
+
     /**
      * Fixes that can be applied to the source or target string. The fixes are
      * applied in the order they are specified here, so the first one that matches
@@ -175,7 +175,7 @@ class DeclarativeResourceRule extends ResourceRule {
                 this.skipLocales = new Set(options.skipLocales.map(spec => getLangSpec(spec)));
             }
         }
-        
+
         if (options.fixes) {
             options.fixes.forEach(fix => {
                 if (typeof(fix.search) !== 'string' || typeof(fix.replace) !== 'string') {
