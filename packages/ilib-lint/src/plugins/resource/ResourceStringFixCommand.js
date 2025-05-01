@@ -19,9 +19,7 @@
 
 
 import StringFixCommand from '../string/StringFixCommand.js';
-
 import ResourceFixCommand from './ResourceFixCommand.js';
-import ResourceStringLocator from './ResourceStringLocator.js';
 
 class ResourceStringFixCommand extends ResourceFixCommand {
     /**
