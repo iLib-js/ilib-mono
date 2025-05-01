@@ -86,11 +86,13 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 // the declarative fixes array is really an array of commands to apply,
                 // so we need to convert the search/replace pairs into commands
                 this.fixes.forEach(fix => {
+                    fix.search.lastIndex = 0;  // just in case
                     const match = fix.search.exec(text);
                     if (match) {
+                        fix.search.lastIndex = 0;  // just in case
                         const text = match[0].replace(fix.search, fix.replace);
                         commands.push(this.fixer.createStringCommand(
-                            startIndex,
+                            startIndex+match.index,
                             match[0].length,
                             text
                         ));
