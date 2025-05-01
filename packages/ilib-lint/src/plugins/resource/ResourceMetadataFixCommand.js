@@ -73,7 +73,40 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
      */
     apply(locator) {
         const resource = locator.getResource();
-        resource[this.name] = this.value;
+        switch (this.name) {
+            // known metadata fields which can hold a string value and be set directly
+            case "context":
+            case "reskey":
+            case "pathName":
+            case "id":
+            case "formatted":
+            case "comment":
+            case "origin":
+            case "datatype":
+            case "sourceHash":
+            case "flavor":
+            case "index":
+            case "location":
+            case "resfile":
+                resource[this.name] = this.value;
+                break;
+            // metadata fields for which the value is a string but they require using a setter
+            case "project":
+                resource.setProject(this.value);
+                break;
+            case "state":
+                resource.setState(this.value);
+                break;
+            case "sourceLocale":
+                resource.setSourceLocale(this.value);
+                break;
+            case "targetLocale":
+                resource.setTargetLocale(this.value);
+                break;
+            // not settable
+            default:
+                throw new Error(`Unable to set value for Resource metadata field ${this.name}`);
+        }
         return true;
     }
 }
