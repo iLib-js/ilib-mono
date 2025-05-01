@@ -109,6 +109,11 @@ class ResourceFixer extends Fixer {
         /** @type {Record<string, ResourceFix[]>} */
         const fixCache = {};
         fixes.forEach(fix => {
+            if (fix.applied) {
+                // if the fix has already been applied, skip it
+                // this should probably never happen, but just in case
+                return;
+            }
             const locator = fix.locator;
             const hash = locator.getHash();
             if (!fixCache[hash]) {
@@ -123,13 +128,13 @@ class ResourceFixer extends Fixer {
         });
 
         // now we have a cache of fixes that do not overlap with each other, so we can apply them
-        Object.values(fixCache).forEach(fixes => {
-            // every locator in the cache should have at least one fix and every fix in a cache
-            // entry should have the same locator, so we can safely assume that the first fix
+        Object.values(fixCache).forEach(fixesForLocator => {
+            // every given cache bucket should have at least one fix and all fixes in this cache
+            // bucket should have the same locator, so we can safely assume that the first fix
             // has the correct locator for all fixes
-            const locator = fixes[0].locator;
+            const locator = fixesForLocator[0].locator;
 
-            const commands = fixes.filter(fix => !fix.applied).flatMap(fix => fix.commands);
+            const commands = fixesForLocator.flatMap(fix => fix.commands);
 
             // first metadata fixes
             commands.
@@ -148,12 +153,12 @@ class ResourceFixer extends Fixer {
             // if there are no string commands, skip it
             if (stringCommands.length > 0) {
                 // apply the string commands to the resource content all at once
-                let content = locator.getContent();
+                const content = locator.getContent();
                 const modified = StringFixCommand.applyCommands(content, stringCommands);
                 locator.setContent(modified);
             }
 
-            fixes.forEach(fix => {
+            fixesForLocator.forEach(fix => {
                 fix.applied = true;
             });
         });
