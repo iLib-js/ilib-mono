@@ -39,12 +39,15 @@ class ResourceFix extends Fix {
     type = "resource";
 
     /**
+     * The locator that this fix applies to. This is the resource instance
+     * that the fix applies to.
      * @readonly
      * @type {ResourceStringLocator}
      */
     locator;
 
     /**
+     * The list of commands that this fix applies.
      * @readonly
      * @type {ResourceFixCommand[]}
      */
@@ -73,43 +76,17 @@ class ResourceFix extends Fix {
     }
 
     /**
-     * Return the type of this fix. This is used to determine if the fix can
-     * be applied to the given intermediate representation.
-     *
-     * @returns {string} the type of this fix
-     */
-    getType() {
-        return this.type;
-    }
-
-    /**
-     * Return the list of commands that this fix applies. This can be a mix of metadata commands
-     * and string commands.
-     * @returns {ResourceFixCommand[]} the list of commands that this fix applies
-     */
-    getCommands() {
-        return this.commands;
-    }
-
-    /**
-     * Return the locator that this fix applies to. This is the resource instance
-     * that the fix applies to.
-     * @returns {ResourceStringLocator} the locator that this fix applies to
-     */
-    getLocator() {
-        return this.locator;
-    }
-
-    /**
      * Determines if two instances intend to modify the same range of the original string
      * @param {ResourceFix} other
      * @returns {boolean} true if the two fixes overlap, false otherwise
      */
     overlaps(other) {
-        return this.locator.isSameAs(other.locator) &&
+        return (
+            this.locator.isSameAs(other.locator) &&
             this.commands.some((thisCommand) =>
                 other.commands.some((otherCommand) => thisCommand.overlaps(otherCommand))
-            );
+            )
+        );
     }
 }
 

@@ -41,7 +41,7 @@ describe("test ResourceFix", () => {
         ]);
 
         expect(fix).toBeDefined();
-        expect(fix.getType()).toBe("resource");
+        expect(fix.type).toBe("resource");
     });
 
     test("ResourceFix constructor with no commands", () => {
@@ -93,7 +93,7 @@ describe("test ResourceFix", () => {
         ]);
 
         expect(fix).toBeDefined();
-        expect(fix.getType()).toBe("resource");
+        expect(fix.type).toBe("resource");
     });
 
     test("ResourceFix create a fix with an array resource", () => {
@@ -111,7 +111,7 @@ describe("test ResourceFix", () => {
         ]);
 
         expect(fix).toBeDefined();
-        expect(fix.getType()).toBe("resource");
+        expect(fix.type).toBe("resource");
     });
 
     test("ResourceFix return the locator correctly", () => {
@@ -129,7 +129,7 @@ describe("test ResourceFix", () => {
         ]);
 
         expect(fix).toBeDefined();
-        expect(fix.getLocator()).toBe(locator);
+        expect(fix.locator).toBe(locator);
     });
 
     test("ResourceFix return the commands correctly", () => {
@@ -149,7 +149,7 @@ describe("test ResourceFix", () => {
         const fix = new ResourceFix(locator, [command]);
 
         expect(fix).toBeDefined();
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFix return multiple commands correctly", () => {
@@ -178,7 +178,7 @@ describe("test ResourceFix", () => {
         const fix = new ResourceFix(locator, [command1, command2, command3]);
 
         expect(fix).toBeDefined();
-        const commands = fix.getCommands();
+        const commands = fix.commands;
         expect(commands).toHaveLength(3);
         expect(commands[0]).toBe(command1);
         expect(commands[1]).toBe(command2);

@@ -55,7 +55,7 @@ describe("test ResourceFixer", () => {
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with a plural resource", () => {
@@ -83,7 +83,7 @@ describe("test ResourceFixer", () => {
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with an array resource", () => {
@@ -105,7 +105,7 @@ describe("test ResourceFixer", () => {
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with multiple commands", () => {
@@ -128,7 +128,7 @@ describe("test ResourceFixer", () => {
         });
         expect(fix).toBeDefined();
 
-        const commands = fix.getCommands();
+        const commands = fix.commands;
         expect(commands).toHaveLength(2);
         expect(commands[0]).toBeInstanceOf(ResourceMetadataFixCommand);
         expect(commands[1]).toBeInstanceOf(ResourceStringFixCommand);

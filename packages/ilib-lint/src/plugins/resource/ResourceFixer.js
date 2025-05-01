@@ -109,7 +109,7 @@ class ResourceFixer extends Fixer {
         /** @type {Record<string, ResourceFix[]>} */
         const fixCache = {};
         fixes.forEach(fix => {
-            const locator = fix.getLocator();
+            const locator = fix.locator;
             const hash = locator.getHash();
             if (!fixCache[hash]) {
                 fixCache[hash] = [];
@@ -127,9 +127,9 @@ class ResourceFixer extends Fixer {
             // every locator in the cache should have at least one fix and every fix in a cache
             // entry should have the same locator, so we can safely assume that the first fix
             // has the correct locator for all fixes
-            const locator = fixes[0].getLocator();
+            const locator = fixes[0].locator;
 
-            const commands = fixes.filter(fix => !fix.applied).flatMap(fix => fix.getCommands());
+            const commands = fixes.filter(fix => !fix.applied).flatMap(fix => fix.commands);
 
             // first metadata fixes
             commands.
