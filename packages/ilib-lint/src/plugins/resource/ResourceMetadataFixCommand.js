@@ -69,7 +69,6 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
     /**
      * Apply this command to the resource.
      * @param {ResourceStringLocator} locator location of the resource to apply this command to
-     * @returns {boolean} true if the command was successfully applied, false otherwise
      */
     apply(locator) {
         const resource = locator.getResource();
@@ -105,9 +104,8 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
                 break;
             // not settable
             default:
-                throw new Error(`Unable to set value for Resource metadata field ${this.name}`);
+                throw new Error(`Failed to set Resource metadata field ${this.name} = ${this.value}`);
         }
-        return true;
     }
 }
 

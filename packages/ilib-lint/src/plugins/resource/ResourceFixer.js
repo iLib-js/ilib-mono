@@ -136,9 +136,7 @@ class ResourceFixer extends Fixer {
                 filter(command => command instanceof ResourceMetadataFixCommand).
                 forEach(command => {
                     // apply metadata fixes directly to the resource
-                    if (!command.apply(locator)) {
-                        throw new Error(`Failed to apply metadata fix: ${command.name} = ${command.value}`);
-                    }
+                    command.apply(locator);
                 });
 
             // now find the content/string fixes. Must apply all of them at once so that
