@@ -401,7 +401,7 @@ describe("test ResourceStringLocator", () => {
     });
 
     test("ResourceStringLocator string locator sets the right target content", () => {
-        expect.assertions(5);
+        expect.assertions(4);
 
         const res = new ResourceString({
             key: "unique.key",
@@ -417,14 +417,14 @@ describe("test ResourceStringLocator", () => {
         expect(rsl).toBeDefined();
 
         expect(rsl.getContent()).toBe("This is the target string");
-        expect(rsl.setContent("This is the new target string")).toBeTruthy();
+        rsl.setContent("This is the new target string");
         expect(rsl.getContent()).toBe("This is the new target string");
 
         expect(res.getTarget()).toBe("This is the new target string");
     });
 
     test("ResourceStringLocator string locator sets the right source content", () => {
-        expect.assertions(5);
+        expect.assertions(4);
 
         const res = new ResourceString({
             key: "unique.key",
@@ -440,14 +440,14 @@ describe("test ResourceStringLocator", () => {
         expect(rsl).toBeDefined();
 
         expect(rsl.getContent()).toBe("This is the source string");
-        expect(rsl.setContent("This is the new source string")).toBeTruthy();
+        rsl.setContent("This is the new source string");
         expect(rsl.getContent()).toBe("This is the new source string");
 
         expect(res.getSource()).toBe("This is the new source string");
     });
 
     test("ResourceStringLocator plural locator sets the right target content", () => {
-        expect.assertions(5);
+        expect.assertions(4);
 
         const res = new ResourceArray({
             key: "unique.key",
@@ -468,14 +468,14 @@ describe("test ResourceStringLocator", () => {
         const rsl = new ResourceStringLocator(res, undefined, undefined, 0);
         expect(rsl).toBeDefined();
         expect(rsl.getContent()).toBe("This is the first target string");
-        expect(rsl.setContent("This is the new first target string")).toBeTruthy();
+        rsl.setContent("This is the new first target string");
         expect(rsl.getContent()).toBe("This is the new first target string");
 
         expect(res.getTarget()[0]).toBe("This is the new first target string");
     });
 
     test("ResourceStringLocator plural locator sets the right source content", () => {
-        expect.assertions(5);
+        expect.assertions(4);
 
         const res = new ResourceArray({
             key: "unique.key",
@@ -496,7 +496,7 @@ describe("test ResourceStringLocator", () => {
         const rsl = new ResourceStringLocator(res, false, undefined, 0);
         expect(rsl).toBeDefined();
         expect(rsl.getContent()).toBe("This is the first source string");
-        expect(rsl.setContent("This is the new first source string")).toBeTruthy();
+        rsl.setContent("This is the new first source string");
         expect(rsl.getContent()).toBe("This is the new first source string");
 
         expect(res.getSource()[0]).toBe("This is the new first source string");

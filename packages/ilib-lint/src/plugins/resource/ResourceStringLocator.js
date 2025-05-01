@@ -137,14 +137,13 @@ class ResourceStringLocator {
      * string, array, and plural resources.
      *
      * @param {string} content the content of this resource
-     * @returns {boolean} true if the set succeeded, false if the content was not found
      */
     setContent(content) {
         let res;
         // update the resource with the modified content
         switch (this.resource.getType()) {
             default:
-                return false;
+                return;
 
             case "string":
                 res = /** @type {ResourceString} */ (this.resource);
@@ -157,7 +156,7 @@ class ResourceStringLocator {
             case "array":
                 if (typeof(this.index) === 'undefined') {
                     // the fix is not applicable to this resource
-                    return false;
+                    return;
                 }
                 res = /** @type {ResourceArray} */ (this.resource);
                 if (this.target) {
@@ -169,7 +168,7 @@ class ResourceStringLocator {
             case "plural":
                 if (!this.category) {
                     // the fix is not applicable to this resource
-                    return false;
+                    return;
                 }
                 res = /** @type {ResourcePlural} */ (this.resource);
                 if (this.target) {
@@ -179,7 +178,6 @@ class ResourceStringLocator {
                 }
                 break;
         }
-        return true;
     }
 
     /**
