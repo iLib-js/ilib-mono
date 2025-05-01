@@ -90,7 +90,7 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                     const match = fix.search.exec(text);
                     if (match) {
                         fix.search.lastIndex = 0;  // just in case
-                        const text = match[0].replace(fix.search, fix.replace);
+                        const text = match[0].replace(fix.search, fix.replace || '');
                         commands.push(this.fixer.createStringCommand(
                             startIndex+match.index,
                             match[0].length,
