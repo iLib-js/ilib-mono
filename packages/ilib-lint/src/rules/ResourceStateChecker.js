@@ -74,8 +74,6 @@ class ResourceStateChecker extends Rule {
         if (!this.states) {
             this.states = [ "translated" ];
         }
-
-        this.fixer = new ResourceFixer();
     }
 
     getRuleType() {
@@ -115,10 +113,10 @@ class ResourceStateChecker extends Rule {
                     `Resources must have the following state: ${this.states[0]}`,
                 locale,
                 source: resource.getSource(),
-                fix: this.fixer.createFix({
+                fix: ResourceFixer.createFix({
                     resource,
                     commands: [
-                        this.fixer.createMetadataCommand("state", this.states[0])
+                        ResourceFixer.createMetadataCommand("state", this.states[0])
                     ]
                 })
             };

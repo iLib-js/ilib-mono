@@ -791,10 +791,10 @@ describe("ErrorFilterTransformer", () => {
                 id: "key1",
                 source: "source1",
                 locale: "fr-FR",
-                fix: fixer.createFix({
+                fix: ResourceFixer.createFix({
                     resource: resource1,
                     commands: [
-                        fixer.createStringCommand(0, 3, "fixedSource")
+                        ResourceFixer.createStringCommand(0, 3, "fixedSource")
                     ]
                 })
             })

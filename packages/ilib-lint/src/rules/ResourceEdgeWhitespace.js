@@ -31,8 +31,6 @@ class ResourceEdgeWhitespace extends ResourceRule {
 
     constructor(params = {}) {
         super(params);
-
-        this.fixer = new ResourceFixer();
     }
 
     /**
@@ -58,10 +56,10 @@ class ResourceEdgeWhitespace extends ResourceRule {
         };
 
         if (whitespaces.target.leading !== whitespaces.source.leading) {
-            const fix = this.fixer.createFix({
+            const fix = ResourceFixer.createFix({
                 resource,
                 commands: [
-                    this.fixer.createStringCommand(
+                    ResourceFixer.createStringCommand(
                         0,
                         whitespaces.target.leading.length,
                         whitespaces.source.leading
@@ -86,10 +84,10 @@ class ResourceEdgeWhitespace extends ResourceRule {
         }
 
         if (whitespaces.target.trailing !== whitespaces.source.trailing) {
-            const fix = this.fixer.createFix({
+            const fix = ResourceFixer.createFix({
                 resource,
                 commands: [
-                    this.fixer.createStringCommand(
+                    ResourceFixer.createStringCommand(
                         target.length - whitespaces.target.trailing.length,
                         whitespaces.target.trailing.length,
                         whitespaces.source.trailing

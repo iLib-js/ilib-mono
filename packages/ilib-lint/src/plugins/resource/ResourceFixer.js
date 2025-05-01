@@ -61,7 +61,7 @@ class ResourceFixer extends Fixer {
      * @param {ResourceFixCommand[]} params.commands the commands to apply for this fix
      * @returns {ResourceFix} a new fix to apply
      */
-    createFix(params) {
+    static createFix(params) {
         const { resource, target, category, index, commands } = params;
         const locator = new ResourceStringLocator(resource, target, category, index);
         if (commands.length === 0) {
@@ -77,7 +77,7 @@ class ResourceFixer extends Fixer {
      * @param {string} value the value to set for the metadata field
      * @returns {ResourceFixCommand} the command to modify the metadata
      */
-    createMetadataCommand(name, value) {
+    static createMetadataCommand(name, value) {
         return new ResourceMetadataFixCommand({name, value});
     }
 
@@ -89,7 +89,7 @@ class ResourceFixer extends Fixer {
      * @param {string} insertContent the content to insert at the specified position
      * @returns {ResourceFixCommand} the command to modify the content
      */
-    createStringCommand(position, deleteCount, insertContent) {
+    static createStringCommand(position, deleteCount, insertContent) {
         return new ResourceStringFixCommand({position, deleteCount, insertContent});
     }
 

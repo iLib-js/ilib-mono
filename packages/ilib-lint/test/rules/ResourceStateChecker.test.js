@@ -111,10 +111,10 @@ describe("testResourceStateChecker", () => {
                 sourceFile
             })
         });
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("state", "translated")
+                ResourceFixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -157,10 +157,10 @@ describe("testResourceStateChecker", () => {
                 sourceFile
             })
         });
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("state", "translated")
+                ResourceFixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -226,10 +226,10 @@ describe("testResourceStateChecker", () => {
                 sourceFile
             })
         });
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("state", "translated")
+                ResourceFixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -271,10 +271,10 @@ describe("testResourceStateChecker", () => {
                 sourceFile
             })
         });
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("state", "translated")
+                ResourceFixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -317,10 +317,10 @@ describe("testResourceStateChecker", () => {
                 sourceFile
             })
         });
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("state", "translated")
+                ResourceFixer.createMetadataCommand("state", "translated")
             ]
         });
         const expected = new Result({
@@ -343,7 +343,7 @@ describe("testResourceStateChecker", () => {
             dirty: false
         });
 
-        rule.fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual.fix]);
 
         const fixedResource = ir.getRepresentation()[0];
         expect(fixedResource).toBeTruthy();
