@@ -1,5 +1,23 @@
 # ilib-lint
 
+## 2.10.0
+
+### Minor Changes
+
+- b182d42: - Added ability to count source words
+  - Added support from FileStats for source words
+  - Added support to most results to output the locale of the result
+    so we can slice and dice by locale if necessary
+  - Added tests for XliffParser to make sure it is producing the right
+    file stats
+  - Added support in the json formatter for source words and for
+    target locales of results
+
+### Patch Changes
+
+- Updated dependencies [b182d42]
+  - ilib-lint-common@3.4.0
+
 ## 2.9.3
 
 ### Patch Changes
