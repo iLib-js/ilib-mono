@@ -1,7 +1,7 @@
 /*
  * POFile.test.js - test the po and pot file handler object.
  *
- * Copyright © 2021, 2023-2024 Box, Inc.
+ * Copyright © 2021, 2023-2025 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ var CustomProject =  require("loctool/lib/CustomProject.js");
 var TranslationSet =  require("loctool/lib/TranslationSet.js");
 var ContextResourceString =  require("loctool/lib/ContextResourceString.js");
 var ResourcePlural =  require("loctool/lib/ResourcePlural.js");
-var ResourceArray =  require("loctool/lib/ResourceArray.js");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -463,7 +462,7 @@ describe("pofile", function() {
         expect(targetPlurals).toEqual(expect.objectContaining({
             one: "ONE Twój element",
             few: "FEW Wybrane elementy",
-            many: "MANY Wybrane elementy"
+            other: "MANY Wybrane elementy"  // 'many' is backfilled to 'other'
         }))
     });
 
@@ -1125,7 +1124,7 @@ describe("pofile", function() {
         expect(resources[0].getComment()).toBe('{"translator":["translator\'s comments 1","translator\'s comments 2"],' +
              '"extracted":["This is comments from the engineer to the translator for string 1.",'+
              '"This is more comments from the engineer to the translator for string 1."],' +
-             '"previous":["str 1","str 2"]}');
+             '"flags":["c-format\","javascript-format"],"previous":["str 1","str 2"],"paths":["path1.py:234","asdf/path2.py:868"]}');
     });
 
     test("POFileParseIgnoreAllComments", function() {
@@ -1163,7 +1162,7 @@ describe("pofile", function() {
 
         expect(resources[0].getSource()).toBe("string 1");
         expect(resources[0].getKey()).toBe("string 1");
-        expect(!resources[0].getComment()).toBeTruthy();
+        expect(resources[0].getComment()).toBeTruthy();
     });
 
     test("POFileExtractFile", function() {
@@ -1276,7 +1275,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1287,12 +1286,14 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1336,7 +1337,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1347,12 +1348,14 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr "chaîne numéro 2"\n\n';
+            'msgstr "chaîne numéro 2"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1400,7 +1403,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1411,6 +1414,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -1420,7 +1425,7 @@ describe("pofile", function() {
             '#: src/a/b/c.js:32\n' +
             '#, c-format\n' +
             'msgid "string 2"\n' +
-            'msgstr "chaîne numéro 2"\n\n';
+            'msgstr "chaîne numéro 2"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1474,7 +1479,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1485,6 +1490,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
@@ -1500,7 +1507,7 @@ describe("pofile", function() {
             '#| str2\n' +
             '#| string2\n' +
             'msgid "string 2"\n' +
-            'msgstr "chaîne numéro 2"\n\n';
+            'msgstr "chaîne numéro 2"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1532,7 +1539,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1543,9 +1550,11 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string \\"quoted\\" 1"\n' +
-            'msgstr "chaîne \\"numéro\\" 1"\n\n';
+            'msgstr "chaîne \\"numéro\\" 1"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1593,7 +1602,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1604,6 +1613,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgctxt "context 1"\n' +
             'msgid "string 1"\n' +
@@ -1611,7 +1622,7 @@ describe("pofile", function() {
             '\n' +
             'msgctxt "context 2"\n' +
             'msgid "string 1"\n' +
-            'msgstr "chaîne numéro 2 contexte 2"\n\n';
+            'msgstr "chaîne numéro 2 contexte 2"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1659,25 +1670,29 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/context.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
+            '#k string 1 --- context 1\n' +
             'msgctxt "context 1"\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1 contexte 1"\n' +
             '\n' +
+            '#k string 1 --- context 2\n' +
             'msgctxt "context 2"\n' +
             'msgid "string 1"\n' +
-            'msgstr "chaîne numéro 2 contexte 2"\n\n';
+            'msgstr "chaîne numéro 2 contexte 2"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1721,7 +1736,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1732,12 +1747,14 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1763,7 +1780,7 @@ describe("pofile", function() {
 
         var translations = new TranslationSet();
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1774,6 +1791,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "[šţŕíñğ 13210]"\n' +
@@ -1781,7 +1800,7 @@ describe("pofile", function() {
             'msgid "string 2"\n' +
             'msgid_plural "string 2 plural"\n' +
             'msgstr[0] "[šţŕíñğ 23210]"\n' +
-            'msgstr[1] "[šţŕíñğ 2 þľüŕàľ76543210]"\n\n';
+            'msgstr[1] "[šţŕíñğ 2 þľüŕàľ76543210]"\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1825,7 +1844,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1836,12 +1855,14 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1897,7 +1918,7 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
@@ -1908,6 +1929,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "{$count} object"\n' +
             'msgid_plural "{$count} objects"\n' +
@@ -1917,7 +1940,7 @@ describe("pofile", function() {
             'msgid "{$count} item"\n' +
             'msgid_plural "{$count} items"\n' +
             'msgstr[0] ""\n' +
-            'msgstr[1] ""\n\n';
+            'msgstr[1] ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -1952,23 +1975,25 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/messages.pot  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -2003,23 +2028,25 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -2054,23 +2081,25 @@ describe("pofile", function() {
             datatype: "po"
         }));
 
-        var actual = pof.localizeText(translations, "fr-FR");
+        var actual = pof.localizeText(translations, "fr-FR", "./po/messages.po");
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/foo.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-Latn-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -2198,13 +2227,15 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  resources/fr-FR.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -2222,7 +2253,7 @@ describe("pofile", function() {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "chaîne 3 et 4"\n\n';
+            'msgstr "chaîne 3 et 4"\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -2232,13 +2263,15 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  resources/de-DE.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: de-DE\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -2256,7 +2289,7 @@ describe("pofile", function() {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "Zeichenfolge 3 und 4"\n\n';
+            'msgstr "Zeichenfolge 3 und 4"\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -2518,13 +2551,15 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/foo.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  po/no.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: no\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -2542,7 +2577,7 @@ describe("pofile", function() {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
@@ -2626,13 +2661,15 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  resources/template_nb.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: nb\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -2650,7 +2687,7 @@ describe("pofile", function() {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
@@ -2700,19 +2737,21 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/messages.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  resources/fr-FR.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: fr-FR\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n>1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "C\'est la chaîne numéro 1"\n' +
             '\n' +
             'msgid "string 2"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -3411,7 +3450,9 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: ru-RU\\n"\n' +
             '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
-            '\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
+           '\n' +
             'msgid "string 1"\n' +
             'msgstr ""\n' +
             '\n' +
@@ -3425,7 +3466,7 @@ describe("pofile", function() {
             'msgstr[2] ""\n' +
             '\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -3528,6 +3569,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: ru-RU\\n"\n' +
             '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "строка 1"\n' +
@@ -3542,7 +3585,7 @@ describe("pofile", function() {
             'msgstr[2] "{$count} струн"\n' +
             '\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "строка 3 и 4"\n\n';
+            'msgstr "строка 3 и 4"\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -3719,6 +3762,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: ru-RU\\n"\n' +
             '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "строка 1"\n' +
@@ -3733,7 +3778,7 @@ describe("pofile", function() {
             'msgstr[2] "{$count} струн"\n' +
             '\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -3836,6 +3881,8 @@ describe("pofile", function() {
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: de-DE\\n"\n' +
             '"Plural-Forms: nplurals=2; plural=n != 1;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr ""\n' +
@@ -3849,7 +3896,7 @@ describe("pofile", function() {
             'msgstr[1] ""\n' +
             '\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr ""\n\n';
+            'msgstr ""\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -3932,13 +3979,15 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/template.pot  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  po/ru.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: ru-RU\\n"\n' +
             '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             'msgid "string 1"\n' +
             'msgstr "строка 1"\n' +
@@ -3953,7 +4002,7 @@ describe("pofile", function() {
             'msgstr[2] "{$count} струн"\n' +
             '\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "строка 3 и 4"\n\n';
+            'msgstr "строка 3 и 4"\n';
 
         diff(content, expected);
         expect(content).toBe(expected);
@@ -4036,13 +4085,15 @@ describe("pofile", function() {
         var expected =
             'msgid ""\n' +
             'msgstr ""\n' +
-            '"#-#-#-#-#  ./po/template.po  #-#-#-#-#\\n"\n' +
+            '"#-#-#-#-#  resources/template_ru-RU.po  #-#-#-#-#\\n"\n' +
             '"Content-Type: text/plain; charset=UTF-8\\n"\n' +
             '"Content-Transfer-Encoding: 8bit\\n"\n' +
             '"Generated-By: loctool\\n"\n' +
             '"Project-Id-Version: 1\\n"\n' +
             '"Language: ru\\n"\n' +
             '"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\\n"\n' +
+            '"Data-Type: po\\n"\n' +
+            '"Project: foo\\n"\n' +
             '\n' +
             '#: a/b/c.js:32\n' +
             'msgid "string 1"\n' +
@@ -4061,7 +4112,7 @@ describe("pofile", function() {
             '\n' +
             '# string with continuation\n' +
             'msgid "string 3 and 4"\n' +
-            'msgstr "строка 3 и 4"\n\n';
+            'msgstr "строка 3 и 4"\n';
 
         diff(content, expected);
         expect(content).toBe(expected);

@@ -1,7 +1,7 @@
 /*
  * POFileType.test.js - test the po file type handler object.
  *
- * Copyright © 2021, 2023 Box, Inc.
+ * Copyright © 2021, 2023, 2025 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-if (!POFileType) {
-    var POFileType = require("../POFileType.js");
-    var CustomProject =  require("loctool/lib/CustomProject.js");
-}
+var CustomProject = require("loctool/lib/CustomProject.js");
+var POFileType = require("../POFileType.js");
 
 var p = new CustomProject({
     sourceLocale: "en-US"
