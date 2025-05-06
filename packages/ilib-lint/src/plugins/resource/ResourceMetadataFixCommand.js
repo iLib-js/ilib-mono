@@ -107,6 +107,16 @@ class ResourceMetadataFixCommand extends ResourceFixCommand {
                 throw new Error(`Failed to set Resource metadata field ${this.name} = ${this.value}`);
         }
     }
+
+    /**
+     * Creates a command to set the value of a metadata field in a resource.
+     * @param {string} name 
+     * @param {string} value 
+     * @returns 
+     */
+    static set(name, value) {
+        return new ResourceMetadataFixCommand({ name, value });
+    }
 }
 
 export default ResourceMetadataFixCommand;

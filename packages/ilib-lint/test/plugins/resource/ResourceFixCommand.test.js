@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString } from "ilib-tools-common";
 
 import ResourceStringLocator from "../../../src/plugins/resource/ResourceStringLocator.js";
 
-import ResourceMetadataFixCommand from '../../../src/plugins/resource/ResourceMetadataFixCommand.js';
-import ResourceStringFixCommand from '../../../src/plugins/resource/ResourceStringFixCommand.js';
+import ResourceMetadataFixCommand from "../../../src/plugins/resource/ResourceMetadataFixCommand.js";
+import ResourceStringFixCommand from "../../../src/plugins/resource/ResourceStringFixCommand.js";
+import StringFixCommand from "../../../src/plugins/string/StringFixCommand.js";
 
 describe("test ResourceMetadataFixCommand", () => {
     test("ResourceMetadataFixCommand basic constructor", () => {
@@ -30,7 +31,7 @@ describe("test ResourceMetadataFixCommand", () => {
 
         const command = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value"
+            value: "value",
         });
 
         expect(command).toBeDefined();
@@ -44,7 +45,7 @@ describe("test ResourceMetadataFixCommand", () => {
         expect(() => {
             // @ts-ignore
             new ResourceMetadataFixCommand({
-                value: "value"
+                value: "value",
             });
         }).toThrow();
     });
@@ -55,12 +56,12 @@ describe("test ResourceMetadataFixCommand", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target"
+            target: "target",
         });
         const locator = new ResourceStringLocator(resource);
         const command = new ResourceMetadataFixCommand({
             name: "targetLocale",
-            value: "de-DE"
+            value: "de-DE",
         });
 
         command.apply(locator);
@@ -72,11 +73,7 @@ describe("test ResourceStringFixCommand", () => {
     test("ResourceStringFixCommand basic constructor", () => {
         expect.assertions(5);
 
-        const command = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 0,
-            insertContent: "content"
-        });
+        const command = new ResourceStringFixCommand(new StringFixCommand(0, 0, "content"));
 
         expect(command).toBeDefined();
 
@@ -87,64 +84,10 @@ describe("test ResourceStringFixCommand", () => {
         expect(stringFixCommand.insertContent).toBe("content");
     });
 
-    test("ResourceStringFixCommand constructor with no position", () => {
-        expect.assertions(1);
-
-        expect(() => {
-            // @ts-ignore
-            new ResourceStringFixCommand({
-                deleteCount: 0,
-                insertContent: "content"
-            });
-        }).toThrow();
-    });
-
-    test("ResourceStringFixCommand constructor with no deleteCount", () => {
-        expect.assertions(1);
-
-        expect(() => {
-            // @ts-ignore
-            new ResourceStringFixCommand({
-                position: 0,
-                insertContent: "content"
-            });
-        }).toThrow();
-    });
-
-    test("ResourceStringFixCommand constructor with negative position", () => {
-        expect.assertions(1);
-
-        expect(() => {
-            // @ts-ignore
-            new ResourceStringFixCommand({
-                position: -1,
-                deleteCount: 0,
-                insertContent: "content"
-            });
-        }).toThrow();
-    });
-
-    test("ResourceStringFixCommand constructor with negative deleteCount", () => {
-        expect.assertions(1);
-
-        expect(() => {
-            // @ts-ignore
-            new ResourceStringFixCommand({
-                position: 0,
-                deleteCount: -1,
-                insertContent: "content"
-            });
-        }).toThrow();
-    });
-
     test("ResourceStringFixCommand overlaps with itself", () => {
         expect.assertions(1);
 
-        const command = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 0,
-            insertContent: "content"
-        });
+        const command = ResourceStringFixCommand.replaceAfter(0, 0, "content");
 
         expect(command.overlaps(command)).toBe(true);
     });
@@ -152,16 +95,8 @@ describe("test ResourceStringFixCommand", () => {
     test("ResourceStringFixCommand overlaps with another command", () => {
         expect.assertions(1);
 
-        const command1 = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 2,
-            insertContent: "content"
-        });
-        const command2 = new ResourceStringFixCommand({
-            position: 1,
-            deleteCount: 2,
-            insertContent: "content"
-        });
+        const command1 = ResourceStringFixCommand.replaceAfter(0, 2, "content");
+        const command2 = ResourceStringFixCommand.replaceAfter(1, 2, "content");
 
         expect(command1.overlaps(command2)).toBe(true);
     });
@@ -169,16 +104,8 @@ describe("test ResourceStringFixCommand", () => {
     test("ResourceStringFixCommand does not overlap with another command", () => {
         expect.assertions(1);
 
-        const command1 = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 2,
-            insertContent: "content"
-        });
-        const command2 = new ResourceStringFixCommand({
-            position: 3,
-            deleteCount: 2,
-            insertContent: "content"
-        });
+        const command1 = ResourceStringFixCommand.replaceAfter(0, 2, "content");
+        const command2 = ResourceStringFixCommand.replaceAfter(3, 2, "content");
 
         expect(command1.overlaps(command2)).toBe(false);
     });
@@ -186,16 +113,8 @@ describe("test ResourceStringFixCommand", () => {
     test("ResourceStringFixCommand overlaps with another command with the same position", () => {
         expect.assertions(1);
 
-        const command1 = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 2,
-            insertContent: "content"
-        });
-        const command2 = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 2,
-            insertContent: "content"
-        });
+        const command1 = ResourceStringFixCommand.replaceAfter(0, 2, "content");
+        const command2 = ResourceStringFixCommand.replaceAfter(0, 2, "content");
 
         expect(command1.overlaps(command2)).toBe(true);
     });
@@ -203,16 +122,8 @@ describe("test ResourceStringFixCommand", () => {
     test("ResourceStringFixCommand overlaps with another command with the same position and no deleteCount", () => {
         expect.assertions(1);
 
-        const command1 = new ResourceStringFixCommand({
-            position: 1,
-            deleteCount: 0,
-            insertContent: "content"
-        });
-        const command2 = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 2,
-            insertContent: "content"
-        });
+        const command1 = ResourceStringFixCommand.replaceAfter(1, 0, "content");
+        const command2 = ResourceStringFixCommand.replaceAfter(0, 2, "content");
 
         expect(command1.overlaps(command2)).toBe(true);
     });
@@ -220,24 +131,16 @@ describe("test ResourceStringFixCommand", () => {
     test("ResourceStringFixCommand range is correct", () => {
         expect.assertions(1);
 
-        const command = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 2,
-            insertContent: "content"
-        });
+        const command = ResourceStringFixCommand.replaceAfter(0, 2, "content");
 
-        expect(command.range).toEqual([0, 2]);
+        expect(command.stringFix.range).toEqual([0, 2]);
     });
 
     test("ResourceStringFixCommand range is correct with no deleteCount", () => {
         expect.assertions(1);
 
-        const command = new ResourceStringFixCommand({
-            position: 0,
-            deleteCount: 0,
-            insertContent: "content"
-        });
+        const command = ResourceStringFixCommand.replaceAfter(0, 0, "content");
 
-        expect(command.range).toEqual([0, 0]);
+        expect(command.stringFix.range).toEqual([0, 0]);
     });
- });
+});
